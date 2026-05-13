@@ -43,6 +43,7 @@ interface Fish {
   radius: number;
   pattern: FishPattern;
   bumpCooldown: number;
+  aggro: number;
 }
 
 interface Flora {
@@ -111,13 +112,22 @@ interface LooseItem {
   life: number;
 }
 
+interface FloatingText {
+  label: Phaser.GameObjects.Text;
+  age: number;
+  life: number;
+  vx: number;
+  vy: number;
+}
+
 const TILE = 24;
 const WORLD_W = 104;
-const WORLD_H = 156;
+const WORLD_H = 312;
 const SURFACE_Y = TILE * 4;
-const TARGET_DEPTH = 900;
+const TARGET_DEPTH = 1800;
 const BARGE_UPGRADE_COST = 5000;
 let seed = Math.floor(Math.random() * 1_000_000);
+const deepScale = WORLD_H / 156;
 
 const tiles: Record<Tile, TileDef> = {
   water: { color: 0x0b2b38, hp: 0, value: 0, name: 'Water', solid: false },
@@ -129,7 +139,7 @@ const tiles: Record<Tile, TileDef> = {
   cobalt: { color: 0x4f8df7, hp: 58, value: 140, name: 'Cobalt Bloom', solid: true },
   sunstone: { color: 0xffb347, hp: 72, value: 310, name: 'Sunstone', solid: true },
   relic: { color: 0xb9f27c, hp: 70, value: 180, name: 'Relic Shard', solid: true },
-  anchorstone: { color: 0x11141c, hp: Infinity, value: 0, name: 'Anchorstone', solid: true },
+  anchorstone: { color: 0x465064, hp: Infinity, value: 0, name: 'Anchorstone', solid: true },
   bedrock: { color: 0x191f2a, hp: Infinity, value: 0, name: 'Bedrock', solid: true },
 };
 
@@ -217,6 +227,8 @@ let uiEventsBound = false;
 class DeepdiveScene extends Phaser.Scene {
   private terrain!: Phaser.GameObjects.Graphics;
   private actors!: Phaser.GameObjects.Graphics;
+  private darkness!: Phaser.GameObjects.Graphics;
+  private lampGloom!: Phaser.GameObjects.Graphics;
   private overlay!: Phaser.GameObjects.Graphics;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
@@ -226,6 +238,7 @@ class DeepdiveScene extends Phaser.Scene {
   private flora: Flora[] = [];
   private hazards: Hazard[] = [];
   private looseItems: LooseItem[] = [];
+  private floatingTexts: FloatingText[] = [];
   private terrainBoundsKey = '';
   private terrainDirty = true;
   private player = {
@@ -247,19 +260,26 @@ class DeepdiveScene extends Phaser.Scene {
   create() {
     this.cameras.main.setBounds(0, 0, WORLD_W * TILE, WORLD_H * TILE);
     this.cameras.main.setRoundPixels(true);
+    this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,SPACE,R') as Record<string, Phaser.Input.Keyboard.Key>;
     this.terrain = this.add.graphics();
     this.actors = this.add.graphics();
-    this.overlay = this.add.graphics().setScrollFactor(0);
+    this.darkness = this.add.graphics();
+    this.lampGloom = this.add.graphics();
+    this.overlay = this.add.graphics();
     this.generateWorld();
+    this.cameras.main.centerOn(this.player.x, this.player.y);
     renderHud();
   }
 
   update(_: number, deltaMs: number) {
     const delta = deltaMs / 1000;
-    if (Phaser.Input.Keyboard.JustDown(this.keys.R)) restart(this);
+    if (Phaser.Input.Keyboard.JustDown(this.keys.R)) {
+      restart(this);
+      return;
+    }
     if (state.lost || state.won) {
       this.draw();
       return;
@@ -275,6 +295,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.updateFish(delta);
     this.updateHazards(delta);
     this.updateSystems(delta);
+    this.updateFloatingTexts(delta);
     this.updateCameraZoom();
     this.cameras.main.centerOn(this.player.x, this.player.y);
     this.draw();
@@ -326,6 +347,22 @@ class DeepdiveScene extends Phaser.Scene {
     }
   }
 
+  private resetPlayerStart() {
+    this.player.x = WORLD_W * TILE * 0.5;
+    this.player.y = SURFACE_Y - 10;
+    this.player.vx = 0;
+    this.player.vy = 0;
+    this.player.facing.set(0, 1);
+    this.player.mineCooldown = 0;
+    this.player.scanCooldown = 0;
+    this.player.scanTarget = null;
+    this.hudTimer = 0;
+    this.floatingTexts.forEach((entry) => entry.label.destroy());
+    this.floatingTexts = [];
+    this.terrainBoundsKey = '';
+    this.terrainDirty = true;
+  }
+
   private generateWorld() {
     this.world = [];
     this.damage = [];
@@ -361,7 +398,7 @@ class DeepdiveScene extends Phaser.Scene {
     const vents: Hazard[] = [];
     const count = state.biome === 3 ? 26 : 18;
     for (let i = 0; i < count; i += 1) {
-      const point = this.findOpenWaterInBand(340 + i * 42, 1800);
+      const point = this.findOpenWaterInBand(scaledDepthPx(340 + i * 42), scaledDepthPx(1800));
       vents.push({
         x: point.x,
         y: point.y,
@@ -376,7 +413,7 @@ class DeepdiveScene extends Phaser.Scene {
   private makeSchool(species: FishSpecies): Fish[] {
     const school: Fish[] = [];
     for (let i = 0; i < species.count; i += 1) {
-      const point = this.findOpenWaterInBand(species.minY, species.maxY);
+      const point = this.findOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY));
       const angle = Math.random() * Math.PI * 2;
       school.push({
         kind: 'fish',
@@ -398,6 +435,7 @@ class DeepdiveScene extends Phaser.Scene {
         radius: species.radius,
         pattern: species.pattern,
         bumpCooldown: 0,
+        aggro: 0,
       });
     }
     return school;
@@ -406,7 +444,7 @@ class DeepdiveScene extends Phaser.Scene {
   private makeFloraPatch(species: FloraSpecies): Flora[] {
     const patch: Flora[] = [];
     for (let i = 0; i < species.count; i += 1) {
-      const point = this.findOpenWaterInBand(species.minY, species.maxY);
+      const point = this.findOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY));
       patch.push({
         kind: 'flora',
         species: species.species,
@@ -467,36 +505,69 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private carveDeepTunnelNetwork(center: number) {
-    const startY = 56;
+    const startY = Math.floor(56 * deepScale);
     const endY = WORLD_H - 10;
-    const laneCount = state.biome === 2 ? 9 : 7;
-    const lanes: Array<{ y: number; xs: number[] }> = [];
+    const laneCount = state.biome === 3 ? 10 : state.biome === 2 ? 9 : 8;
+    const lanes: Array<{ points: Array<{ x: number; y: number }> }> = [];
+    const tunnelRadius = state.biome >= 2 ? 2 : 1;
 
     for (let i = 0; i < laneCount; i += 1) {
       const y = Math.floor(Phaser.Math.Linear(startY, endY, (i + 0.5) / laneCount));
-      const xs: number[] = [];
+      const points: Array<{ x: number; y: number }> = [];
       for (let x = 5; x < WORLD_W - 5; x += 1) {
         const wave = Math.sin(x * 0.16 + i * 1.7 + seed * 0.01) * 5;
         const tunnelY = Math.floor(y + wave + Math.sin(x * 0.05 + seed) * 4);
-        this.carveDisc(x, tunnelY, state.biome === 2 ? 2 : 1);
-        if (x % 6 === 0) xs.push(x);
+        this.carveDisc(x, tunnelY, tunnelRadius);
+        if (x % 4 === 0) points.push({ x, y: tunnelY });
       }
-      lanes.push({ y, xs });
+      lanes.push({ points });
     }
 
     for (let i = 0; i < lanes.length - 1; i += 1) {
-      const connectors = state.biome === 2 ? 4 : 3;
+      const connectors = state.biome === 3 ? 6 : state.biome === 2 ? 5 : 4;
       for (let c = 0; c < connectors; c += 1) {
-        const x = lanes[i].xs[Math.floor(hash(i, c, seed) * lanes[i].xs.length)] ?? center;
-        this.carveWindingTunnel(x, lanes[i].y, x + Math.floor((hash(c, i, seed) - 0.5) * 22), lanes[i + 1].y);
+        const from = this.pickLanePoint(lanes[i].points, i * 17 + c * 5);
+        const targetX = from.x + Math.floor((hash(c, i, seed) - 0.5) * 30);
+        const to = this.nearestLanePoint(lanes[i + 1].points, targetX) ?? { x: center, y: lanes[i + 1].points[0]?.y ?? startY };
+        this.carveWindingTunnel(from.x, from.y, to.x, to.y, tunnelRadius);
       }
     }
+
+    const branches = state.biome === 3 ? 32 : state.biome === 2 ? 24 : 18;
+    for (let i = 0; i < branches; i += 1) {
+      const lane = lanes[Math.floor(hash(i, 91, seed) * lanes.length)];
+      const from = this.pickLanePoint(lane.points, i * 11 + 3);
+      const length = Phaser.Math.Between(12, state.biome >= 2 ? 28 : 22);
+      const angle = Phaser.Math.FloatBetween(-0.85, 0.85) + (hash(i, 33, seed) > 0.5 ? 0 : Math.PI);
+      const toX = Phaser.Math.Clamp(Math.floor(from.x + Math.cos(angle) * length), 4, WORLD_W - 5);
+      const toY = Phaser.Math.Clamp(Math.floor(from.y + Math.sin(angle) * length * 0.6), startY, endY);
+      this.carveWindingTunnel(from.x, from.y, toX, toY, tunnelRadius);
+      this.carveDisc(toX, toY, state.biome >= 2 ? 4 : 3);
+    }
+  }
+
+  private pickLanePoint(points: Array<{ x: number; y: number }>, salt: number) {
+    if (!points.length) return { x: Math.floor(WORLD_W / 2), y: Math.floor(WORLD_H / 2) };
+    return points[Math.floor(hash(salt, points.length, seed) * points.length)];
+  }
+
+  private nearestLanePoint(points: Array<{ x: number; y: number }>, targetX: number) {
+    let best = points[0];
+    let bestDistance = Infinity;
+    for (const point of points) {
+      const distance = Math.abs(point.x - targetX);
+      if (distance < bestDistance) {
+        best = point;
+        bestDistance = distance;
+      }
+    }
+    return best;
   }
 
   private carveAnchorstoneStrata() {
     if (state.biome < 3) return;
     for (let band = 0; band < 7; band += 1) {
-      const baseY = 38 + band * 16;
+      const baseY = Math.floor((38 + band * 32) * deepScale);
       for (let x = 4; x < WORLD_W - 4; x += 1) {
         const y = Math.floor(baseY + Math.sin(x * 0.11 + band * 1.3 + seed) * 5);
         if (x % 17 > 3 && x % 17 < 14) {
@@ -507,13 +578,13 @@ class DeepdiveScene extends Phaser.Scene {
     }
   }
 
-  private carveWindingTunnel(x0: number, y0: number, x1: number, y1: number) {
+  private carveWindingTunnel(x0: number, y0: number, x1: number, y1: number, radius = state.biome === 2 ? 2 : 1) {
     const steps = Math.max(8, Math.abs(y1 - y0));
     for (let i = 0; i <= steps; i += 1) {
       const t = i / steps;
       const x = Math.floor(Phaser.Math.Linear(x0, x1, t) + Math.sin(t * Math.PI * 4 + seed) * 4);
       const y = Math.floor(Phaser.Math.Linear(y0, y1, t));
-      this.carveDisc(x, y, state.biome === 2 ? 2 : 1);
+      this.carveDisc(x, y, radius);
     }
   }
 
@@ -532,16 +603,16 @@ class DeepdiveScene extends Phaser.Scene {
       axis(this.cursors.left, this.keys.A, this.cursors.right, this.keys.D),
       axis(this.cursors.up, this.keys.W, this.cursors.down, this.keys.S),
     );
-    if (input.lengthSq() > 0) {
+    const hasInput = input.lengthSq() > 0;
+    if (hasInput) {
       input.normalize();
-      this.player.facing.copy(input);
     }
 
     const topSpeed = swimTopSpeed();
-    const thrust = (this.isAtBoat() ? 780 : 470) + state.upgrades.speed * 62;
+    const thrust = (this.isAtBoat() ? 620 : 320) + state.upgrades.speed * 42;
     this.player.vx += input.x * thrust * delta;
     this.player.vy += input.y * thrust * delta;
-    const drag = input.lengthSq() > 0 ? 1.9 : 3.8;
+    const drag = input.lengthSq() > 0 ? 1.45 : 2.65;
     const dragFactor = Math.exp(-drag * delta);
     this.player.vx *= dragFactor;
     this.player.vy *= dragFactor;
@@ -549,6 +620,11 @@ class DeepdiveScene extends Phaser.Scene {
     if (speed > topSpeed) {
       this.player.vx = (this.player.vx / speed) * topSpeed;
       this.player.vy = (this.player.vy / speed) * topSpeed;
+    }
+    if (hasInput) {
+      this.rotateFacingToward(input.angle(), delta, 6.2 + state.upgrades.speed * 0.22);
+    } else if (speed > 12) {
+      this.rotateFacingToward(Math.atan2(this.player.vy, this.player.vx), delta, 2.8);
     }
 
     this.moveAxis('x', this.player.vx * delta);
@@ -562,6 +638,11 @@ class DeepdiveScene extends Phaser.Scene {
       this.mineAt(this.player.x + this.player.facing.x * 34, this.player.y + this.player.facing.y * 34);
     }
     this.scanNearbyLife(delta);
+  }
+
+  private rotateFacingToward(targetAngle: number, delta: number, turnRate: number) {
+    const nextAngle = Phaser.Math.Angle.RotateTo(this.player.facing.angle(), targetAngle, turnRate * delta);
+    this.player.facing.set(Math.cos(nextAngle), Math.sin(nextAngle));
   }
 
   private moveAxis(axisName: 'x' | 'y', amount: number) {
@@ -688,8 +769,10 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.scanTarget = target;
     target.scanning = true;
     target.scan += delta * (0.85 + state.upgrades.scanner * 0.28);
-    target.vx += (target.x - this.player.x) * delta * 0.22;
-    target.vy += (target.y - this.player.y) * delta * 0.22;
+    if (target.kind === 'fish') {
+      target.vx += (target.x - this.player.x) * delta * 0.22;
+      target.vy += (target.y - this.player.y) * delta * 0.22;
+    }
     if (target.scan < 1) return;
 
     target.scan = 0;
@@ -699,6 +782,7 @@ class DeepdiveScene extends Phaser.Scene {
       state.scannedSpecies.add(target.species);
       const reward = scanReward(target);
       state.credits += reward;
+      this.spawnFloatingText(`Scanned ${target.species} +${reward}c`, 0xb9f27c);
       state.status = `Cataloged ${target.species}. Research paid ${reward} credits.`;
       const apexSpecies = currentApexSpecies();
       if (target.species === apexSpecies && state.depth >= TARGET_DEPTH) {
@@ -764,6 +848,7 @@ class DeepdiveScene extends Phaser.Scene {
         if (distance < 24) {
           state.cargo.push({ name: item.name, value: item.value });
           state.status = `Recovered loose ${item.name} worth ${item.value} credits.`;
+          this.spawnFloatingText(`${item.name} +${item.value}c`, item.color);
           pickedUp = true;
           return false;
         }
@@ -771,6 +856,51 @@ class DeepdiveScene extends Phaser.Scene {
       return item.life > 0;
     });
     if (pickedUp) renderHud();
+  }
+
+  private spawnFloatingText(message: string, color: number) {
+    const label = this.add.text(
+      this.player.x + Phaser.Math.FloatBetween(-10, 10),
+      this.player.y - 28 + Phaser.Math.FloatBetween(-4, 4),
+      message,
+      {
+        color: Phaser.Display.Color.IntegerToColor(color).rgba,
+        fontFamily: 'Inter, system-ui, sans-serif',
+        fontSize: '12px',
+        fontStyle: 'bold',
+        stroke: '#020509',
+        strokeThickness: 4,
+      },
+    );
+    label.setOrigin(0.5);
+    label.setDepth(10);
+    label.setResolution(2);
+    label.setScale(0.78);
+    this.floatingTexts.push({
+      label,
+      age: 0,
+      life: 1.15,
+      vx: Phaser.Math.FloatBetween(-8, 8),
+      vy: -32,
+    });
+    if (this.floatingTexts.length > 12) {
+      this.floatingTexts.shift()?.label.destroy();
+    }
+  }
+
+  private updateFloatingTexts(delta: number) {
+    this.floatingTexts = this.floatingTexts.filter((entry) => {
+      entry.age += delta;
+      entry.label.x += entry.vx * delta;
+      entry.label.y += entry.vy * delta;
+      entry.vy += 12 * delta;
+      const t = Phaser.Math.Clamp(entry.age / entry.life, 0, 1);
+      entry.label.setAlpha(1 - Phaser.Math.SmoothStep(t, 0.62, 1));
+      entry.label.setScale(Phaser.Math.Linear(0.78, 1, Phaser.Math.Clamp(t / 0.22, 0, 1)));
+      if (entry.age < entry.life) return true;
+      entry.label.destroy();
+      return false;
+    });
   }
 
   private drawLooseItems(camera: Phaser.Cameras.Scene2D.Camera) {
@@ -809,10 +939,25 @@ class DeepdiveScene extends Phaser.Scene {
     const toPlayerX = this.player.x - fish.x;
     const toPlayerY = this.player.y - fish.y;
     const playerDistance = Math.hypot(toPlayerX, toPlayerY);
+    const homeDistance = Phaser.Math.Distance.Between(fish.x, fish.y, fish.homeX, fish.homeY);
+    const detectionRange = fish.pattern === 'circle' ? 245 : 205;
+    const leashRange = fish.pattern === 'circle' ? 390 : 320;
+    const chaseActive = fish.hostile && !fish.scanned && !this.isAtBoat() && playerDistance < detectionRange && homeDistance < leashRange;
+    if (chaseActive) {
+      fish.aggro = Math.max(fish.aggro, fish.pattern === 'circle' ? 2.6 : 2);
+    } else {
+      fish.aggro = Math.max(0, fish.aggro - delta);
+    }
+
     let targetX = fish.homeX;
     let targetY = fish.homeY;
 
-    if (fish.pattern === 'school') {
+    if (fish.aggro > 0 && fish.hostile && !fish.scanned) {
+      const lead = Phaser.Math.Clamp(playerDistance / 230, 0.12, 0.75);
+      const flank = Math.sin(fish.phase * 5.2) * (fish.pattern === 'circle' ? 28 : 18);
+      targetX = this.player.x + this.player.vx * lead - (toPlayerY / Math.max(1, playerDistance)) * flank;
+      targetY = this.player.y + this.player.vy * lead + (toPlayerX / Math.max(1, playerDistance)) * flank;
+    } else if (fish.pattern === 'school') {
       targetX += Math.sin(fish.phase * 1.8) * 110;
       targetY += Math.cos(fish.phase * 1.25) * 34;
     } else if (fish.pattern === 'sway') {
@@ -825,13 +970,8 @@ class DeepdiveScene extends Phaser.Scene {
       targetX += Math.cos(fish.phase * 0.52) * 120;
       targetY += Math.sin(fish.phase * 0.52) * 80;
     } else if (fish.pattern === 'stalk') {
-      if (playerDistance < 170 && !fish.scanned) {
-        targetX = this.player.x;
-        targetY = this.player.y;
-      } else {
-        targetX += Math.sin(fish.phase * 0.9) * 130;
-        targetY += Math.cos(fish.phase * 0.7) * 44;
-      }
+      targetX += Math.sin(fish.phase * 0.9) * 130;
+      targetY += Math.cos(fish.phase * 0.7) * 44;
     }
 
     if (!fish.hostile && playerDistance < 72) {
@@ -842,11 +982,13 @@ class DeepdiveScene extends Phaser.Scene {
     const dx = targetX - fish.x;
     const dy = targetY - fish.y;
     const len = Math.max(1, Math.hypot(dx, dy));
-    const desiredSpeed = fish.speed * (fish.hostile && playerDistance < 170 ? 1.2 : 1);
-    fish.vx += (dx / len) * desiredSpeed * delta * 2.6;
-    fish.vy += (dy / len) * desiredSpeed * delta * 2.6;
+    const pursuit = fish.aggro > 0 && fish.hostile && !fish.scanned;
+    const desiredSpeed = fish.speed * (pursuit ? (fish.pattern === 'circle' ? 1.42 : 1.58) : 1);
+    const steering = pursuit ? 4.4 : 2.6;
+    fish.vx += (dx / len) * desiredSpeed * delta * steering;
+    fish.vy += (dy / len) * desiredSpeed * delta * steering;
     const speed = Math.hypot(fish.vx, fish.vy);
-    const maxSpeed = fish.speed * 1.45;
+    const maxSpeed = fish.speed * (pursuit ? 2.05 : 1.45);
     if (speed > maxSpeed) {
       fish.vx = (fish.vx / speed) * maxSpeed;
       fish.vy = (fish.vy / speed) * maxSpeed;
@@ -915,7 +1057,7 @@ class DeepdiveScene extends Phaser.Scene {
     }
 
     const apexSpecies = currentApexSpecies();
-    if (state.depth > 760 && !state.scannedSpecies.has(apexSpecies)) {
+    if (state.depth > 1520 && !state.scannedSpecies.has(apexSpecies)) {
       state.status = state.biome === 1
         ? 'Something huge is moving below. Scan it before your suit gives out.'
         : state.biome === 2
@@ -944,6 +1086,8 @@ class DeepdiveScene extends Phaser.Scene {
   private draw() {
     const camera = this.cameras.main;
     this.actors.clear();
+    this.darkness.clear();
+    this.lampGloom.clear();
     this.overlay.clear();
     camera.setBackgroundColor(depthColor(state.depth));
     this.drawWorld(camera);
@@ -954,6 +1098,23 @@ class DeepdiveScene extends Phaser.Scene {
     this.drawFish(camera);
     this.drawPlayer();
     this.drawDarkness(camera);
+    this.drawGameOver(camera);
+  }
+
+  private drawGameOver(camera: Phaser.Cameras.Scene2D.Camera) {
+    if (!state.lost) return;
+    const view = camera.worldView;
+    const cx = this.player.x;
+    const cy = this.player.y;
+    this.overlay.fillStyle(0x05070d, 0.62);
+    this.overlay.fillRect(view.x, view.y, view.width, view.height);
+    this.actors.lineStyle(3, 0xff6f7f, 0.75);
+    this.actors.strokeCircle(cx, cy, 28 + Math.sin(performance.now() * 0.006) * 4);
+    this.actors.fillStyle(0xff6f7f, 0.25);
+    this.actors.fillCircle(cx, cy, 34);
+    this.actors.lineStyle(2, 0xfff7df, 0.55);
+    this.actors.lineBetween(cx - 16, cy - 14, cx + 16, cy + 14);
+    this.actors.lineBetween(cx + 16, cy - 14, cx - 16, cy + 14);
   }
 
   private drawWorld(camera: Phaser.Cameras.Scene2D.Camera) {
@@ -989,8 +1150,13 @@ class DeepdiveScene extends Phaser.Scene {
         );
         this.terrain.fillStyle(Phaser.Display.Color.GetColor(color.r, color.g, color.b), 1);
         this.terrain.fillRect(x * TILE, y * TILE, TILE, TILE);
-        this.terrain.lineStyle(1, 0x071016, 0.35);
+        this.terrain.lineStyle(tile === 'anchorstone' ? 2 : 1, tile === 'anchorstone' ? 0xb9c2d0 : 0x071016, tile === 'anchorstone' ? 0.5 : 0.35);
         this.terrain.strokeRect(x * TILE, y * TILE, TILE, TILE);
+        if (tile === 'anchorstone') {
+          this.terrain.lineStyle(1, 0x11141c, 0.4);
+          this.terrain.lineBetween(x * TILE + 4, y * TILE + 7, x * TILE + 20, y * TILE + 7);
+          this.terrain.lineBetween(x * TILE + 6, y * TILE + 16, x * TILE + 18, y * TILE + 16);
+        }
         if (fracture > 0) {
           this.terrain.lineStyle(1, 0xeef9f7, 0.2 + fracture * 0.35);
           this.terrain.lineBetween(x * TILE + 5, y * TILE + 6, x * TILE + 17, y * TILE + 18);
@@ -1032,7 +1198,9 @@ class DeepdiveScene extends Phaser.Scene {
       const angle = Math.atan2(fish.vy, fish.vx);
       const bodyAlpha = fish.scanned ? Math.max(alpha, 0.9) : alpha;
       const threatDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
-      const threat = fish.hostile ? 1 - Phaser.Math.Clamp((threatDistance - 52) / 170, 0, 1) : 0;
+      const movingTowardPlayer = (fish.vx * (this.player.x - fish.x) + fish.vy * (this.player.y - fish.y)) > 0;
+      const attacking = fish.hostile && !fish.scanned && fish.aggro > 0 && movingTowardPlayer && threatDistance < 220;
+      const threat = attacking ? 1 - Phaser.Math.Clamp((threatDistance - 52) / 118, 0, 1) : 0;
       this.actors.save();
       this.actors.translateCanvas(fish.x, fish.y);
       this.actors.rotateCanvas(angle);
@@ -1061,7 +1229,7 @@ class DeepdiveScene extends Phaser.Scene {
         this.actors.fillCircle(fish.radius * 0.56, -2, 2.5);
       }
       this.actors.restore();
-      if (fish.hostile) {
+      if (attacking) {
         const markerAlpha = Math.max(0.35, threat) * alpha;
         const markerY = fish.y - fish.radius - 18 - Math.sin(fish.phase * 7) * 2;
         this.actors.fillStyle(0xff4f64, markerAlpha);
@@ -1155,16 +1323,101 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private drawDarkness(camera: Phaser.Cameras.Scene2D.Camera) {
-    const darkness = Phaser.Math.Clamp((state.depth - 80) / 700, 0, 0.8);
+    const darkness = darknessAtDepth();
     if (darkness <= 0) return;
-    this.overlay.fillStyle(0x02070b, darkness);
-    this.overlay.fillRect(0, 0, camera.width, camera.height);
-    const px = (this.player.x - camera.scrollX) * camera.zoom;
-    const py = (this.player.y - camera.scrollY) * camera.zoom;
-    this.overlay.fillStyle(0xb8edf0, 0.1 + state.upgrades.lamp * 0.035);
-    this.overlay.fillCircle(px, py, lightRadius() * camera.zoom);
-    this.overlay.lineStyle(2, 0xcdfcff, 0.1 + state.upgrades.lamp * 0.04);
-    this.overlay.strokeCircle(px, py, lightRadius() * camera.zoom);
+    const view = camera.worldView;
+    const left = view.x;
+    const right = view.right;
+    const top = view.y;
+    const bottom = view.bottom;
+    const cx = this.player.x;
+    const cy = this.player.y;
+    const dir = this.player.facing.clone().normalize();
+    const normal = new Phaser.Math.Vector2(-dir.y, dir.x);
+    const length = lightBeamLength();
+    const nearWidth = 16;
+    const farWidth = lightBeamHalfWidth();
+    const haloRadius = 23;
+    const beam = [
+      new Phaser.Math.Vector2(cx + normal.x * nearWidth, cy + normal.y * nearWidth),
+      new Phaser.Math.Vector2(cx + dir.x * length + normal.x * farWidth, cy + dir.y * length + normal.y * farWidth),
+      new Phaser.Math.Vector2(cx + dir.x * length - normal.x * farWidth, cy + dir.y * length - normal.y * farWidth),
+      new Phaser.Math.Vector2(cx - normal.x * nearWidth, cy - normal.y * nearWidth),
+    ];
+
+    const occlusion = darknessOpacity(darkness);
+    this.darkness.fillStyle(0x000205, occlusion);
+    const stripHeight = 4;
+    for (let y = top; y < bottom; y += stripHeight) {
+      const nextY = Math.min(y + stripHeight, bottom);
+      const sampleY = (y + nextY) * 0.5;
+      const litIntervals = this.lampIntervalsAtY(sampleY, beam, haloRadius, left, right);
+      let cursor = left;
+      for (const interval of litIntervals) {
+        if (interval.left > cursor) this.darkness.fillRect(cursor, y, interval.left - cursor, nextY - y);
+        cursor = Math.max(cursor, interval.right);
+      }
+      if (cursor < right) this.darkness.fillRect(cursor, y, right - cursor, nextY - y);
+    }
+
+    const edgeAlpha = Math.min(0.5, darkness * 0.34);
+    this.lampGloom.lineStyle(8, 0x020509, edgeAlpha);
+    this.lampGloom.lineBetween(beam[0].x, beam[0].y, beam[1].x, beam[1].y);
+    this.lampGloom.lineBetween(beam[3].x, beam[3].y, beam[2].x, beam[2].y);
+    this.lampGloom.lineStyle(2, 0x9fb3b8, 0.03 + state.upgrades.lamp * 0.008);
+    this.lampGloom.lineBetween(beam[0].x, beam[0].y, beam[1].x, beam[1].y);
+    this.lampGloom.lineBetween(beam[3].x, beam[3].y, beam[2].x, beam[2].y);
+    this.lampGloom.lineStyle(4, 0x020509, Math.min(0.3, darkness * 0.18));
+    this.lampGloom.strokeCircle(cx, cy, haloRadius);
+  }
+
+  private lampIntervalsAtY(
+    sampleY: number,
+    beam: Phaser.Math.Vector2[],
+    haloRadius: number,
+    left: number,
+    right: number,
+  ): Array<{ left: number; right: number }> {
+    const intervals: Array<{ left: number; right: number }> = [];
+    const haloDy = sampleY - this.player.y;
+    if (Math.abs(haloDy) < haloRadius) {
+      const halfWidth = Math.sqrt(haloRadius * haloRadius - haloDy * haloDy);
+      intervals.push({
+        left: Phaser.Math.Clamp(this.player.x - halfWidth, left, right),
+        right: Phaser.Math.Clamp(this.player.x + halfWidth, left, right),
+      });
+    }
+
+    const intersections: number[] = [];
+    for (let i = 0; i < beam.length; i += 1) {
+      const a = beam[i];
+      const b = beam[(i + 1) % beam.length];
+      if (a.y === b.y) continue;
+      const minY = Math.min(a.y, b.y);
+      const maxY = Math.max(a.y, b.y);
+      if (sampleY < minY || sampleY >= maxY) continue;
+      const t = (sampleY - a.y) / (b.y - a.y);
+      intersections.push(Phaser.Math.Linear(a.x, b.x, t));
+    }
+
+    intersections.sort((a, b) => a - b);
+    for (let i = 0; i < intersections.length - 1; i += 2) {
+      const intervalLeft = Phaser.Math.Clamp(intersections[i], left, right);
+      const intervalRight = Phaser.Math.Clamp(intersections[i + 1], left, right);
+      if (intervalRight > intervalLeft) intervals.push({ left: intervalLeft, right: intervalRight });
+    }
+
+    intervals.sort((a, b) => a.left - b.left);
+    const merged: Array<{ left: number; right: number }> = [];
+    for (const interval of intervals) {
+      const previous = merged[merged.length - 1];
+      if (previous && interval.left <= previous.right) {
+        previous.right = Math.max(previous.right, interval.right);
+      } else {
+        merged.push(interval);
+      }
+    }
+    return merged;
   }
 
   private tileAtWorld(worldX: number, worldY: number): Tile {
@@ -1187,7 +1440,7 @@ function generateTile(x: number, y: number): Tile {
   if (y < 7) return 'water';
   if (x <= 1 || x >= WORLD_W - 2 || y >= WORLD_H - 2) return 'bedrock';
   const depth = y * TILE;
-  const shallow = Phaser.Math.Clamp(1 - (y - 7) / 52, 0, 1);
+  const shallow = Phaser.Math.Clamp(1 - (y - 7) / (52 * deepScale), 0, 1);
   const cave =
     Math.sin(x * 0.31 + seed) * 0.72 +
     Math.cos(y * 0.21 + seed * 0.01) * 0.64 +
@@ -1197,25 +1450,25 @@ function generateTile(x: number, y: number): Tile {
   if (cave > caveThreshold && y > 8) return 'water';
   const r = hash(x * 11, y * 17, seed);
   if (state.biome === 3) {
-    if (depth > 420 && hash(x * 3, y * 5, seed) > 0.93 && (x + y) % 4 !== 0) return 'anchorstone';
-    if (depth > 1350 && r > 0.94) return 'sunstone';
-    if (depth > 780 && r > 0.895) return 'cobalt';
-    if (depth > 1180 && r > 0.978) return 'relic';
-    if (depth > 300 && r > 0.86) return 'ruby';
-    return depth > 280 || hash(y, x, seed) > 0.58 ? 'stone' : 'sand';
+    if (depth > scaledDepthPx(420) && hash(x * 3, y * 5, seed) > 0.93 && (x + y) % 4 !== 0) return 'anchorstone';
+    if (depth > scaledDepthPx(1350) && r > 0.94) return 'sunstone';
+    if (depth > scaledDepthPx(780) && r > 0.895) return 'cobalt';
+    if (depth > scaledDepthPx(1180) && r > 0.978) return 'relic';
+    if (depth > scaledDepthPx(300) && r > 0.86) return 'ruby';
+    return depth > scaledDepthPx(280) || hash(y, x, seed) > 0.58 ? 'stone' : 'sand';
   }
   if (state.biome === 2) {
-    if (depth > 1250 && r > 0.955) return 'sunstone';
-    if (depth > 620 && r > 0.915) return 'cobalt';
-    if (depth > 1040 && r > 0.982) return 'relic';
-    if (depth > 260 && r > 0.88) return 'quartz';
-    return depth > 360 || hash(y, x, seed) > 0.66 ? 'stone' : 'sand';
+    if (depth > scaledDepthPx(1250) && r > 0.955) return 'sunstone';
+    if (depth > scaledDepthPx(620) && r > 0.915) return 'cobalt';
+    if (depth > scaledDepthPx(1040) && r > 0.982) return 'relic';
+    if (depth > scaledDepthPx(260) && r > 0.88) return 'quartz';
+    return depth > scaledDepthPx(360) || hash(y, x, seed) > 0.66 ? 'stone' : 'sand';
   }
-  if (depth > 1300 && r > 0.982) return 'relic';
-  if (depth > 950 && r > 0.956) return 'ruby';
-  if (depth > 460 && r > 0.925) return 'quartz';
-  if (depth > 180 && r > 0.89) return 'copper';
-  return depth > 520 || hash(y, x, seed) > 0.74 ? 'stone' : 'sand';
+  if (depth > scaledDepthPx(1300) && r > 0.982) return 'relic';
+  if (depth > scaledDepthPx(950) && r > 0.956) return 'ruby';
+  if (depth > scaledDepthPx(460) && r > 0.925) return 'quartz';
+  if (depth > scaledDepthPx(180) && r > 0.89) return 'copper';
+  return depth > scaledDepthPx(520) || hash(y, x, seed) > 0.74 ? 'stone' : 'sand';
 }
 
 function hash(x: number, y: number, s: number): number {
@@ -1240,7 +1493,7 @@ function cargoCapacity() {
 }
 
 function swimTopSpeed() {
-  return 150 + state.upgrades.speed * 26;
+  return 112 + state.upgrades.speed * 18;
 }
 
 function mineCooldown() {
@@ -1269,11 +1522,29 @@ function bargeUpgradeCost() {
 }
 
 function oxygenDrain() {
-  return 5.4 + Math.max(0, state.depth - 300) / 260;
+  return 4.2 + Math.max(0, state.depth - 500) / 520;
 }
 
 function lightRadius() {
   return 72 + state.upgrades.lamp * 22;
+}
+
+function lightBeamLength() {
+  return 150 + state.upgrades.lamp * 42;
+}
+
+function lightBeamHalfWidth() {
+  return 32 + state.upgrades.lamp * 9;
+}
+
+function darknessAtDepth() {
+  if (state.biome === 1) return Phaser.Math.Clamp((state.depth - 260) / 1450, 0, 0.9);
+  if (state.biome === 2) return Phaser.Math.Clamp((state.depth - 150) / 980, 0, 1);
+  return Phaser.Math.Clamp((state.depth - 70) / 720, 0, 1);
+}
+
+function darknessOpacity(darkness: number) {
+  return Phaser.Math.Clamp(darkness * 1.12, 0, 1);
 }
 
 function upgradeCost(upgrade: Upgrade) {
@@ -1293,18 +1564,22 @@ function refillAtBoat(delta = 1) {
 
 function depthColor(depth: number) {
   if (state.biome === 3) {
-    if (depth < 220) return '#161d32';
-    if (depth < 560) return '#111424';
+    if (depth < 440) return '#161d32';
+    if (depth < 1120) return '#111424';
     return '#090913';
   }
   if (state.biome === 2) {
-    if (depth < 220) return '#18313a';
-    if (depth < 560) return '#171f2b';
+    if (depth < 440) return '#18313a';
+    if (depth < 1120) return '#171f2b';
     return '#110f18';
   }
-  if (depth < 220) return '#0b3741';
-  if (depth < 520) return '#092430';
+  if (depth < 440) return '#0b3741';
+  if (depth < 1040) return '#092430';
   return '#06111d';
+}
+
+function scaledDepthPx(value: number) {
+  return value * deepScale;
 }
 
 function restart(scene: DeepdiveScene) {
@@ -1373,6 +1648,7 @@ function renderHud() {
     </div>
     ${state.won || state.lost ? '<button data-restart>Restart run</button>' : ''}
   `;
+  renderGameOver(app);
   bargeMenu.classList.toggle('is-open', state.atBoat && !state.lost && !state.won);
   bargeMenu.innerHTML = state.atBoat && !state.lost && !state.won
     ? `
@@ -1394,6 +1670,32 @@ function renderHud() {
       </div>
     `
     : '';
+}
+
+function renderGameOver(app: HTMLDivElement) {
+  let modal = app.querySelector<HTMLElement>('#game-over');
+  if (!state.lost) {
+    modal?.remove();
+    return;
+  }
+  if (!modal) {
+    modal = document.createElement('aside');
+    modal.id = 'game-over';
+    modal.className = 'game-over';
+    const shell = app.querySelector('.shell');
+    if (!shell) return;
+    shell.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <span>Dive failed</span>
+    <h2>Helmet breach</h2>
+    <p>You reached ${state.maxDepth.toLocaleString()} m in ${biomeName()} before the suit gave out.</p>
+    <div class="game-over__stats">
+      <strong>${state.credits.toLocaleString()}c</strong><small>credits banked</small>
+      <strong>${state.scannedSpecies.size}/${lifeCatalogTotal()}</strong><small>lifeforms scanned</small>
+    </div>
+    <button data-restart>Restart run</button>
+  `;
 }
 
 function bindUiEvents(app: HTMLDivElement) {

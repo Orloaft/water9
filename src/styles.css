@@ -64,7 +64,8 @@ button:disabled {
 
 .hud,
 .barge-menu,
-.controls {
+.controls,
+.game-over {
   position: absolute;
   z-index: 2;
   border: 1px solid rgba(236, 251, 255, 0.14);
@@ -276,6 +277,66 @@ button:disabled {
 
 .barge-menu.is-open ~ .controls {
   display: none;
+}
+
+.game-over {
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: min(440px, calc(100vw - 32px));
+  transform: translate(-50%, -50%);
+  gap: 12px;
+  padding: 18px;
+  text-align: center;
+  background: rgba(9, 11, 19, 0.9);
+}
+
+.game-over span {
+  color: #ff8a6b;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.game-over h2,
+.game-over p {
+  margin: 0;
+}
+
+.game-over h2 {
+  color: #fff7df;
+  font-size: 2.2rem;
+  line-height: 0.95;
+}
+
+.game-over p {
+  color: rgba(236, 251, 255, 0.78);
+  line-height: 1.4;
+}
+
+.game-over__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.game-over__stats strong,
+.game-over__stats small {
+  display: block;
+  border-radius: 7px;
+  background: rgba(236, 251, 255, 0.07);
+}
+
+.game-over__stats strong {
+  padding: 10px 8px 2px;
+  color: #ffd166;
+}
+
+.game-over__stats small {
+  padding: 0 8px 10px;
+  color: rgba(236, 251, 255, 0.58);
+  font-weight: 850;
+  text-transform: uppercase;
 }
 
 @media (max-width: 900px) {
