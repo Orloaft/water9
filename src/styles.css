@@ -1,0 +1,314 @@
+:root {
+  color: #ecfbff;
+  background: #06111d;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% -20%, rgba(142, 231, 244, 0.16), transparent 28rem),
+    linear-gradient(180deg, #0c3340 0%, #07151e 44%, #050b12 100%);
+}
+
+button {
+  min-height: 36px;
+  border: 1px solid rgba(236, 251, 255, 0.18);
+  border-radius: 7px;
+  padding: 0 12px;
+  background: rgba(236, 251, 255, 0.08);
+  color: #ecfbff;
+  font: inherit;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: rgba(255, 209, 102, 0.7);
+  background: rgba(255, 209, 102, 0.16);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.shell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#game,
+#game canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#game {
+  background: #0b3741;
+}
+
+.hud,
+.barge-menu,
+.controls {
+  position: absolute;
+  z-index: 2;
+  border: 1px solid rgba(236, 251, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(6, 17, 29, 0.78);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(10px);
+}
+
+.hud {
+  top: 14px;
+  left: 14px;
+  width: min(380px, calc(100vw - 28px));
+  padding: 14px;
+}
+
+.hud header {
+  margin-bottom: 10px;
+}
+
+.hud header span,
+.shop-title span,
+.controls span,
+.meter-block span,
+.dock-summary span {
+  color: rgba(236, 251, 255, 0.68);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.hud header h1 {
+  margin: 2px 0 0;
+  color: #fff7df;
+  font-size: clamp(1.55rem, 2.5vw, 2.7rem);
+  line-height: 0.92;
+}
+
+#gauges {
+  display: grid;
+  gap: 9px;
+}
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.readout div {
+  border-radius: 7px;
+  background: rgba(236, 251, 255, 0.08);
+}
+
+.readout strong {
+  display: block;
+  padding: 8px 8px 1px;
+  color: #ffd166;
+  font-size: 0.98rem;
+}
+
+.readout span {
+  display: block;
+  padding: 0 8px 8px;
+  color: rgba(236, 251, 255, 0.58);
+  font-size: 0.68rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.meter-block {
+  display: grid;
+  gap: 6px;
+}
+
+.meter-block div,
+.shop-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.meter-block strong,
+.shop-title strong {
+  color: #fff7df;
+}
+
+.meter-block i {
+  display: block;
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(236, 251, 255, 0.12);
+}
+
+.meter-block b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.status {
+  margin: 0;
+  border: 1px solid rgba(236, 251, 255, 0.11);
+  border-radius: 7px;
+  padding: 9px;
+  background: rgba(236, 251, 255, 0.055);
+  color: rgba(236, 251, 255, 0.82);
+  line-height: 1.35;
+}
+
+.utility-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.barge-menu {
+  top: 18px;
+  right: 18px;
+  display: none;
+  width: min(430px, calc(100vw - 36px));
+  max-height: calc(100vh - 36px);
+  padding: 14px;
+  overflow: auto;
+}
+
+.barge-menu.is-open {
+  display: grid;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.shop-title > div {
+  display: grid;
+  gap: 3px;
+}
+
+.dock-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+}
+
+.dock-summary span,
+.dock-summary strong {
+  border-radius: 7px;
+  padding: 9px;
+  background: rgba(236, 251, 255, 0.07);
+}
+
+.dock-summary strong {
+  color: #ffd166;
+  white-space: nowrap;
+}
+
+.upgrade-list {
+  display: grid;
+  gap: 8px;
+}
+
+.upgrade,
+.travel-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(236, 251, 255, 0.12);
+  border-radius: 7px;
+  padding: 10px;
+  background: rgba(236, 251, 255, 0.055);
+}
+
+.upgrade strong,
+.upgrade span,
+.travel-card strong,
+.travel-card span {
+  display: block;
+}
+
+.upgrade span,
+.travel-card span {
+  margin-top: 3px;
+  color: rgba(236, 251, 255, 0.66);
+  font-size: 0.86rem;
+  line-height: 1.28;
+}
+
+.travel-card {
+  border-color: rgba(255, 209, 102, 0.28);
+  background: rgba(255, 209, 102, 0.07);
+}
+
+.controls {
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  gap: 5px;
+  width: 310px;
+  padding: 12px;
+  pointer-events: none;
+}
+
+.controls strong,
+.shop-title strong {
+  color: #ffd166;
+}
+
+.barge-menu.is-open ~ .controls {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .hud {
+    width: min(340px, calc(100vw - 20px));
+    top: 10px;
+    left: 10px;
+  }
+
+  .barge-menu {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    max-height: min(56vh, 520px);
+  }
+
+  .controls {
+    display: none;
+  }
+
+}
+
+@media (max-width: 520px) {
+  .readout,
+  .dock-summary,
+  .utility-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .upgrade,
+  .travel-card {
+    grid-template-columns: 1fr;
+  }
+}
