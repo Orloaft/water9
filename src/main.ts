@@ -1,10 +1,26 @@
 import Phaser from 'phaser';
 import './styles.css';
 
-type Tile = 'water' | 'sand' | 'stone' | 'copper' | 'quartz' | 'ruby' | 'cobalt' | 'sunstone' | 'relic' | 'anchorstone' | 'bedrock';
+type Tile =
+  | 'water'
+  | 'sand'
+  | 'stone'
+  | 'copper'
+  | 'quartz'
+  | 'ruby'
+  | 'cobalt'
+  | 'sunstone'
+  | 'relic'
+  | 'drownedIdol'
+  | 'precursorEngine'
+  | 'abyssalCrown'
+  | 'alienAlloy'
+  | 'ruinCore'
+  | 'anchorstone'
+  | 'bedrock';
 type UpgradeId = 'oxygen' | 'cargo' | 'laser' | 'lamp' | 'scanner' | 'suit' | 'speed' | 'thermal';
 type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
-type Biome = 1 | 2 | 3;
+type Biome = 1 | 2 | 3 | 4;
 
 interface TileDef {
   color: number;
@@ -90,6 +106,7 @@ interface FloraSpecies {
 interface CargoItem {
   name: string;
   value: number;
+  color: number;
 }
 
 interface Hazard {
@@ -122,9 +139,9 @@ interface FloatingText {
 
 const TILE = 24;
 const WORLD_W = 104;
-const WORLD_H = 312;
+const WORLD_H = 420;
 const SURFACE_Y = TILE * 4;
-const TARGET_DEPTH = 1800;
+const TARGET_DEPTH = 1500;
 const BARGE_UPGRADE_COST = 5000;
 let seed = Math.floor(Math.random() * 1_000_000);
 const deepScale = WORLD_H / 156;
@@ -139,6 +156,11 @@ const tiles: Record<Tile, TileDef> = {
   cobalt: { color: 0x4f8df7, hp: 58, value: 140, name: 'Cobalt Bloom', solid: true },
   sunstone: { color: 0xffb347, hp: 72, value: 310, name: 'Sunstone', solid: true },
   relic: { color: 0xb9f27c, hp: 70, value: 180, name: 'Relic Shard', solid: true },
+  drownedIdol: { color: 0xd6fff8, hp: 82, value: 1200, name: 'Drowned Idol', solid: true },
+  precursorEngine: { color: 0xffd166, hp: 104, value: 3200, name: 'Precursor Engine', solid: true },
+  abyssalCrown: { color: 0xf48cff, hp: 128, value: 7200, name: 'Abyssal Crown', solid: true },
+  alienAlloy: { color: 0x73fbd3, hp: 116, value: 520, name: 'Alien Alloy', solid: true },
+  ruinCore: { color: 0xffffff, hp: 150, value: 14500, name: 'Ruin Core', solid: true },
   anchorstone: { color: 0x465064, hp: Infinity, value: 0, name: 'Anchorstone', solid: true },
   bedrock: { color: 0x191f2a, hp: Infinity, value: 0, name: 'Bedrock', solid: true },
 };
@@ -160,6 +182,7 @@ const biomeFish: Record<Biome, FishSpecies[]> = {
   { species: 'Ribbon Eel', count: 10, minY: 320, maxY: 760, color: 0xf2b66d, hostile: false, pattern: 'sway', radius: 11, speed: [22, 38] },
   { species: 'Glass Ray', count: 8, minY: 640, maxY: 1160, color: 0xd8f7ff, hostile: false, pattern: 'glide', radius: 15, speed: [18, 32] },
   { species: 'Needlejaw', count: 9, minY: 520, maxY: 1320, color: 0xff6f7f, hostile: true, pattern: 'stalk', radius: 13, speed: [34, 62] },
+  { species: 'Gulper Maw', count: 5, minY: 1560, maxY: 2240, color: 0xff8a5c, hostile: true, pattern: 'stalk', radius: 18, speed: [30, 54] },
   { species: 'Abyss Warden', count: 4, minY: 1220, maxY: 1900, color: 0xb9f27c, hostile: true, pattern: 'circle', radius: 20, speed: [16, 29] },
   ],
   2: [
@@ -167,6 +190,7 @@ const biomeFish: Record<Biome, FishSpecies[]> = {
     { species: 'Smoke Ribbon', count: 12, minY: 320, maxY: 880, color: 0xa9b8c9, hostile: false, pattern: 'sway', radius: 12, speed: [24, 42] },
     { species: 'Cinder Ray', count: 8, minY: 660, maxY: 1260, color: 0xff8a5c, hostile: false, pattern: 'glide', radius: 16, speed: [22, 36] },
     { species: 'Vent Snapper', count: 11, minY: 520, maxY: 1480, color: 0xff4f64, hostile: true, pattern: 'stalk', radius: 14, speed: [40, 70] },
+    { species: 'Ashen Devourer', count: 6, minY: 1500, maxY: 2360, color: 0xff6f3c, hostile: true, pattern: 'stalk', radius: 19, speed: [42, 76] },
     { species: 'Brine Leviathan', count: 3, minY: 1320, maxY: 2100, color: 0xd06bff, hostile: true, pattern: 'circle', radius: 23, speed: [18, 32] },
   ],
   3: [
@@ -174,7 +198,16 @@ const biomeFish: Record<Biome, FishSpecies[]> = {
     { species: 'Ink Ribbon', count: 12, minY: 360, maxY: 980, color: 0x8f8cff, hostile: false, pattern: 'sway', radius: 12, speed: [28, 46] },
     { species: 'Void Manta', count: 8, minY: 680, maxY: 1380, color: 0xbdb2ff, hostile: false, pattern: 'glide', radius: 17, speed: [26, 44] },
     { species: 'Shardjaw', count: 12, minY: 560, maxY: 1640, color: 0xff4f90, hostile: true, pattern: 'stalk', radius: 15, speed: [48, 82] },
+    { species: 'Blind Cathedral', count: 5, minY: 1580, maxY: 2440, color: 0x9a8cff, hostile: true, pattern: 'circle', radius: 27, speed: [20, 36] },
+    { species: 'Silt Reaper', count: 6, minY: 1820, maxY: 2480, color: 0xff5d8f, hostile: true, pattern: 'stalk', radius: 18, speed: [54, 92] },
     { species: 'Trench Crown', count: 3, minY: 1380, maxY: 2200, color: 0xffd166, hostile: true, pattern: 'circle', radius: 25, speed: [22, 38] },
+  ],
+  4: [
+    { species: 'Static Fry', count: 18, minY: 180, maxY: 760, color: 0x73fbd3, hostile: false, pattern: 'school', radius: 8, speed: [44, 76] },
+    { species: 'Glyph Ray', count: 10, minY: 520, maxY: 1260, color: 0xb8f7ff, hostile: false, pattern: 'glide', radius: 18, speed: [28, 48] },
+    { species: 'Ruin Eel', count: 13, minY: 700, maxY: 1720, color: 0xffd166, hostile: true, pattern: 'stalk', radius: 15, speed: [52, 88] },
+    { species: 'Vault Maw', count: 8, minY: 1480, maxY: 2440, color: 0xf48cff, hostile: true, pattern: 'stalk', radius: 22, speed: [46, 82] },
+    { species: 'Sentinel Leviathan', count: 4, minY: 1720, maxY: 2580, color: 0xffffff, hostile: true, pattern: 'circle', radius: 30, speed: [24, 42] },
   ],
 };
 
@@ -193,6 +226,11 @@ const biomeFlora: Record<Biome, FloraSpecies[]> = {
     { species: 'Black Fan', count: 18, minY: 220, maxY: 980, color: 0x9a8cff, hazardous: false, rare: false, radius: 13 },
     { species: 'Needle Garden', count: 12, minY: 640, maxY: 1680, color: 0xff5d8f, hazardous: true, rare: false, radius: 16 },
     { species: 'Crown Polyp', count: 4, minY: 1200, maxY: 2200, color: 0xffd166, hazardous: true, rare: true, radius: 18 },
+  ],
+  4: [
+    { species: 'Circuit Kelp', count: 18, minY: 260, maxY: 1120, color: 0x73fbd3, hazardous: false, rare: false, radius: 13 },
+    { species: 'Glass Obelisk', count: 10, minY: 820, maxY: 1880, color: 0xb8f7ff, hazardous: true, rare: false, radius: 18 },
+    { species: 'Oracle Polyp', count: 5, minY: 1420, maxY: 2480, color: 0xf48cff, hazardous: true, rare: true, radius: 20 },
   ],
 };
 
@@ -220,6 +258,7 @@ const state = {
   paused: false,
   won: false,
   lost: false,
+  started: false,
 };
 
 let uiEventsBound = false;
@@ -263,7 +302,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,SPACE,R') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
     this.terrain = this.add.graphics();
     this.actors = this.add.graphics();
     this.darkness = this.add.graphics();
@@ -276,6 +315,16 @@ class DeepdiveScene extends Phaser.Scene {
 
   update(_: number, deltaMs: number) {
     const delta = deltaMs / 1000;
+    if (!state.started) {
+      if (Phaser.Input.Keyboard.JustDown(this.keys.SPACE) || Phaser.Input.Keyboard.JustDown(this.keys.ENTER)) {
+        this.startRun();
+        return;
+      }
+      this.updateFish(delta * 0.35);
+      this.updateFlora(delta * 0.35);
+      this.draw();
+      return;
+    }
     if (Phaser.Input.Keyboard.JustDown(this.keys.R)) {
       restart(this);
       return;
@@ -320,9 +369,17 @@ class DeepdiveScene extends Phaser.Scene {
     renderHud();
   }
 
+  startRun() {
+    state.started = true;
+    state.status = 'Barge lights are green. Drop below and start the claim.';
+    this.resetPlayerStart();
+    this.cameras.main.centerOn(this.player.x, this.player.y);
+    renderHud();
+  }
+
   travelToNextBiome() {
     const cost = bargeUpgradeCost();
-    if (!state.atBoat || state.biome >= 3 || state.credits < cost) return;
+    if (!state.atBoat || state.biome >= 4 || state.credits < cost) return;
     state.credits -= cost;
     state.depth = 0;
     state.maxDepth = 0;
@@ -396,15 +453,15 @@ class DeepdiveScene extends Phaser.Scene {
 
   private makeVentFields(): Hazard[] {
     const vents: Hazard[] = [];
-    const count = state.biome === 3 ? 26 : 18;
+    const count = state.biome === 4 ? 32 : state.biome === 3 ? 26 : 18;
     for (let i = 0; i < count; i += 1) {
-      const point = this.findOpenWaterInBand(scaledDepthPx(340 + i * 42), scaledDepthPx(1800));
+      const point = this.findOpenWaterInBand(scaledDepthPx(340 + i * 42), scaledDepthPx(2200));
       vents.push({
         x: point.x,
         y: point.y,
         radius: Phaser.Math.Between(34, 58),
         phase: Math.random() * Math.PI * 2,
-        heat: Phaser.Math.FloatBetween(0.7, state.biome === 3 ? 1.55 : 1.25),
+        heat: Phaser.Math.FloatBetween(0.7, state.biome >= 3 ? 1.55 : 1.25),
       });
     }
     return vents;
@@ -507,16 +564,38 @@ class DeepdiveScene extends Phaser.Scene {
   private carveDeepTunnelNetwork(center: number) {
     const startY = Math.floor(56 * deepScale);
     const endY = WORLD_H - 10;
-    const laneCount = state.biome === 3 ? 10 : state.biome === 2 ? 9 : 8;
-    const lanes: Array<{ points: Array<{ x: number; y: number }> }> = [];
+    const basinY = Math.floor(WORLD_H * 0.58);
+    const basinRy = state.biome >= 3 ? 24 : 20;
     const tunnelRadius = state.biome >= 2 ? 2 : 1;
+    const upperLanes = this.carveTunnelBand(startY, basinY - basinRy - 6, state.biome >= 3 ? 5 : 4, tunnelRadius, center, 0);
+    this.carveDarkBasin(center, basinY, state.biome >= 3 ? 34 : 30, basinRy);
+    const lowerLanes = this.carveTunnelBand(basinY + basinRy + 6, endY, state.biome === 4 ? 7 : state.biome === 3 ? 6 : 5, tunnelRadius, center, 100);
+
+    for (let i = 0; i < 5; i += 1) {
+      const upper = upperLanes[Math.max(0, upperLanes.length - 1)];
+      const lower = lowerLanes[0];
+      const from = this.pickLanePoint(upper.points, 300 + i * 13);
+      const basinX = Phaser.Math.Clamp(center + Math.floor((hash(i, 302, seed) - 0.5) * 48), 8, WORLD_W - 9);
+      this.carveWindingTunnel(from.x, from.y, basinX, basinY - basinRy + 4, tunnelRadius);
+      const to = this.pickLanePoint(lower.points, 420 + i * 17);
+      this.carveWindingTunnel(basinX, basinY + basinRy - 4, to.x, to.y, tunnelRadius);
+    }
+
+    if (state.biome === 4) {
+      this.carveRuinVaults(center, basinY);
+    }
+  }
+
+  private carveTunnelBand(startY: number, endY: number, laneCount: number, tunnelRadius: number, center: number, salt: number) {
+    const lanes: Array<{ points: Array<{ x: number; y: number }> }> = [];
+    if (endY <= startY) return lanes;
 
     for (let i = 0; i < laneCount; i += 1) {
       const y = Math.floor(Phaser.Math.Linear(startY, endY, (i + 0.5) / laneCount));
       const points: Array<{ x: number; y: number }> = [];
       for (let x = 5; x < WORLD_W - 5; x += 1) {
-        const wave = Math.sin(x * 0.16 + i * 1.7 + seed * 0.01) * 5;
-        const tunnelY = Math.floor(y + wave + Math.sin(x * 0.05 + seed) * 4);
+        const wave = Math.sin(x * 0.16 + i * 1.7 + seed * 0.01 + salt) * 5;
+        const tunnelY = Math.floor(y + wave + Math.sin(x * 0.05 + seed + salt) * 4);
         this.carveDisc(x, tunnelY, tunnelRadius);
         if (x % 4 === 0) points.push({ x, y: tunnelY });
       }
@@ -524,25 +603,61 @@ class DeepdiveScene extends Phaser.Scene {
     }
 
     for (let i = 0; i < lanes.length - 1; i += 1) {
-      const connectors = state.biome === 3 ? 6 : state.biome === 2 ? 5 : 4;
+      const connectors = state.biome === 4 ? 7 : state.biome === 3 ? 6 : state.biome === 2 ? 5 : 4;
       for (let c = 0; c < connectors; c += 1) {
-        const from = this.pickLanePoint(lanes[i].points, i * 17 + c * 5);
-        const targetX = from.x + Math.floor((hash(c, i, seed) - 0.5) * 30);
+        const from = this.pickLanePoint(lanes[i].points, salt + i * 17 + c * 5);
+        const targetX = from.x + Math.floor((hash(c + salt, i, seed) - 0.5) * 30);
         const to = this.nearestLanePoint(lanes[i + 1].points, targetX) ?? { x: center, y: lanes[i + 1].points[0]?.y ?? startY };
         this.carveWindingTunnel(from.x, from.y, to.x, to.y, tunnelRadius);
       }
     }
 
-    const branches = state.biome === 3 ? 32 : state.biome === 2 ? 24 : 18;
+    const branches = Math.max(8, laneCount * (state.biome === 4 ? 5 : state.biome >= 2 ? 4 : 3));
     for (let i = 0; i < branches; i += 1) {
-      const lane = lanes[Math.floor(hash(i, 91, seed) * lanes.length)];
-      const from = this.pickLanePoint(lane.points, i * 11 + 3);
+      const lane = lanes[Math.floor(hash(i + salt, 91, seed) * lanes.length)];
+      const from = this.pickLanePoint(lane.points, salt + i * 11 + 3);
       const length = Phaser.Math.Between(12, state.biome >= 2 ? 28 : 22);
-      const angle = Phaser.Math.FloatBetween(-0.85, 0.85) + (hash(i, 33, seed) > 0.5 ? 0 : Math.PI);
+      const angle = Phaser.Math.FloatBetween(-0.85, 0.85) + (hash(i + salt, 33, seed) > 0.5 ? 0 : Math.PI);
       const toX = Phaser.Math.Clamp(Math.floor(from.x + Math.cos(angle) * length), 4, WORLD_W - 5);
       const toY = Phaser.Math.Clamp(Math.floor(from.y + Math.sin(angle) * length * 0.6), startY, endY);
       this.carveWindingTunnel(from.x, from.y, toX, toY, tunnelRadius);
       this.carveDisc(toX, toY, state.biome >= 2 ? 4 : 3);
+    }
+
+    return lanes;
+  }
+
+  private carveDarkBasin(center: number, cy: number, rx: number, ry: number) {
+    for (let y = cy - ry; y <= cy + ry; y += 1) {
+      for (let x = center - rx; x <= center + rx; x += 1) {
+        const nx = (x - center) / rx;
+        const ny = (y - cy) / ry;
+        const ragged = 1 + Math.sin(x * 0.31 + seed) * 0.08 + Math.cos(y * 0.23 + seed) * 0.08;
+        if (nx * nx + ny * ny < ragged) this.setTile(x, y, 'water');
+      }
+    }
+    for (let i = 0; i < 10; i += 1) {
+      const angle = (i / 10) * Math.PI * 2;
+      const x = Math.floor(center + Math.cos(angle) * (rx + Phaser.Math.Between(-5, 7)));
+      const y = Math.floor(cy + Math.sin(angle) * (ry + Phaser.Math.Between(-4, 6)));
+      this.carveDisc(x, y, Phaser.Math.Between(3, 6));
+    }
+  }
+
+  private carveRuinVaults(center: number, basinY: number) {
+    const floors = [basinY - 16, basinY, basinY + 16, Math.floor(WORLD_H * 0.78), Math.floor(WORLD_H * 0.9)];
+    for (const y of floors) {
+      const halfWidth = Phaser.Math.Between(16, 28);
+      for (let x = center - halfWidth; x <= center + halfWidth; x += 1) {
+        this.setTile(x, y, 'water');
+        if (x % 7 !== 0) this.setTile(x, y + 1, 'water');
+      }
+      this.carveDisc(center - halfWidth, y, 4);
+      this.carveDisc(center + halfWidth, y, 4);
+    }
+    for (let i = 0; i < floors.length - 1; i += 1) {
+      const x = center + (i % 2 === 0 ? -18 : 18);
+      this.carveWindingTunnel(x, floors[i], -x + WORLD_W, floors[i + 1], 2);
     }
   }
 
@@ -786,10 +901,12 @@ class DeepdiveScene extends Phaser.Scene {
       state.status = `Cataloged ${target.species}. Research paid ${reward} credits.`;
       const apexSpecies = currentApexSpecies();
       if (target.species === apexSpecies && state.depth >= TARGET_DEPTH) {
-        state.won = true;
-        state.status = state.biome === 1
-          ? 'You scanned the deep signal and returned proof of the abyss.'
-          : 'The Brine Vent Shelf is charted. The barge has a route deeper still.';
+        if (state.biome === 4) {
+          state.won = true;
+          state.status = 'The ruin sentinel is cataloged. Humanity finally has proof of the drowned architects.';
+        } else {
+          state.status = `${biomeName()} is charted. The barge has a route deeper still.`;
+        }
       }
       renderHud();
     }
@@ -846,7 +963,7 @@ class DeepdiveScene extends Phaser.Scene {
       if (item.value > 0 && state.cargo.length < cargoCapacity()) {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y);
         if (distance < 24) {
-          state.cargo.push({ name: item.name, value: item.value });
+          state.cargo.push({ name: item.name, value: item.value, color: item.color });
           state.status = `Recovered loose ${item.name} worth ${item.value} credits.`;
           this.spawnFloatingText(`${item.name} +${item.value}c`, item.color);
           pickedUp = true;
@@ -940,8 +1057,8 @@ class DeepdiveScene extends Phaser.Scene {
     const toPlayerY = this.player.y - fish.y;
     const playerDistance = Math.hypot(toPlayerX, toPlayerY);
     const homeDistance = Phaser.Math.Distance.Between(fish.x, fish.y, fish.homeX, fish.homeY);
-    const detectionRange = fish.pattern === 'circle' ? 245 : 205;
-    const leashRange = fish.pattern === 'circle' ? 390 : 320;
+    const detectionRange = (fish.pattern === 'circle' ? 245 : 205) + fish.radius * 3 + state.biome * 8;
+    const leashRange = (fish.pattern === 'circle' ? 390 : 320) + fish.radius * 5;
     const chaseActive = fish.hostile && !fish.scanned && !this.isAtBoat() && playerDistance < detectionRange && homeDistance < leashRange;
     if (chaseActive) {
       fish.aggro = Math.max(fish.aggro, fish.pattern === 'circle' ? 2.6 : 2);
@@ -1018,7 +1135,7 @@ class DeepdiveScene extends Phaser.Scene {
     fish.bumpCooldown = 0.42;
     fish.scan = Math.max(0, fish.scan - 0.25);
     if (fish.hostile) {
-      const damage = fish.species === 'Abyss Warden' ? 12 : 6;
+      const damage = Math.round(4 + fish.radius * 0.35 + state.biome * 1.4 + (fish.pattern === 'circle' ? 3 : 0));
       state.hull -= Math.max(2, damage + impact * 0.018 - state.upgrades.suit);
       state.status = `${fish.species} slammed your helmet.`;
     } else {
@@ -1062,7 +1179,9 @@ class DeepdiveScene extends Phaser.Scene {
         ? 'Something huge is moving below. Scan it before your suit gives out.'
         : state.biome === 2
           ? 'A brine giant is circling the vents. Scan it to chart this biome.'
-          : 'A crowned predator is threading the anchorstone. Scan it to chart the trench.';
+          : state.biome === 3
+            ? 'A crowned predator is threading the anchorstone. Scan it to chart the trench.'
+            : 'Something engineered is patrolling the ruin vaults. Scan it before it finds you first.';
     }
     if (state.oxygen <= 0) {
       state.oxygen = 0;
@@ -1160,6 +1279,15 @@ class DeepdiveScene extends Phaser.Scene {
         if (fracture > 0) {
           this.terrain.lineStyle(1, 0xeef9f7, 0.2 + fracture * 0.35);
           this.terrain.lineBetween(x * TILE + 5, y * TILE + 6, x * TILE + 17, y * TILE + 18);
+        }
+        if (isArtifactTile(tile)) {
+          const pulse = 0.48 + Math.sin(performance.now() * 0.004 + x * 0.9 + y * 0.2) * 0.12;
+          this.terrain.lineStyle(1, 0xfff7df, pulse);
+          this.terrain.strokeCircle(x * TILE + 12, y * TILE + 12, 5);
+          this.terrain.lineBetween(x * TILE + 12, y * TILE + 5, x * TILE + 17, y * TILE + 12);
+          this.terrain.lineBetween(x * TILE + 17, y * TILE + 12, x * TILE + 12, y * TILE + 19);
+          this.terrain.lineBetween(x * TILE + 12, y * TILE + 19, x * TILE + 7, y * TILE + 12);
+          this.terrain.lineBetween(x * TILE + 7, y * TILE + 12, x * TILE + 12, y * TILE + 5);
         }
       }
     }
@@ -1345,6 +1473,9 @@ class DeepdiveScene extends Phaser.Scene {
       new Phaser.Math.Vector2(cx - normal.x * nearWidth, cy - normal.y * nearWidth),
     ];
 
+    this.darkness.fillStyle(0x000205, ambientDarknessOpacity(darkness));
+    this.darkness.fillRect(left, top, view.width, view.height);
+
     const occlusion = darknessOpacity(darkness);
     this.darkness.fillStyle(0x000205, occlusion);
     const stripHeight = 4;
@@ -1440,6 +1571,8 @@ function generateTile(x: number, y: number): Tile {
   if (y < 7) return 'water';
   if (x <= 1 || x >= WORLD_W - 2 || y >= WORLD_H - 2) return 'bedrock';
   const depth = y * TILE;
+  const depthMeters = Math.max(0, (y - 4) * 6);
+  const darkness = darknessForDepth(depthMeters, state.biome);
   const shallow = Phaser.Math.Clamp(1 - (y - 7) / (52 * deepScale), 0, 1);
   const cave =
     Math.sin(x * 0.31 + seed) * 0.72 +
@@ -1449,8 +1582,18 @@ function generateTile(x: number, y: number): Tile {
   const caveThreshold = Phaser.Math.Linear(0.26, 1.04, 1 - shallow);
   if (cave > caveThreshold && y > 8) return 'water';
   const r = hash(x * 11, y * 17, seed);
+  if (state.biome === 4) {
+    if (depth > scaledDepthPx(360) && hash(x * 5, y * 7, seed) > 0.94 && (x + y) % 5 !== 0) return 'anchorstone';
+    if (darkness > 0.88 && r > 0.9988 && hash(x * 41, y * 43, seed) > 0.72) return 'ruinCore';
+    if (darkness > 0.82 && r > 0.976) return 'abyssalCrown';
+    if (darkness > 0.84 && r > 0.965) return 'sunstone';
+    if (darkness > 0.72 && r > 0.94) return 'alienAlloy';
+    if (darkness > 0.64 && r > 0.9) return 'cobalt';
+    return depth > scaledDepthPx(260) || hash(y, x, seed) > 0.55 ? 'stone' : 'sand';
+  }
   if (state.biome === 3) {
     if (depth > scaledDepthPx(420) && hash(x * 3, y * 5, seed) > 0.93 && (x + y) % 4 !== 0) return 'anchorstone';
+    if (darkness > 0.84 && r > 0.9978 && hash(x * 29, y * 31, seed) > 0.64) return 'abyssalCrown';
     if (depth > scaledDepthPx(1350) && r > 0.94) return 'sunstone';
     if (depth > scaledDepthPx(780) && r > 0.895) return 'cobalt';
     if (depth > scaledDepthPx(1180) && r > 0.978) return 'relic';
@@ -1458,12 +1601,14 @@ function generateTile(x: number, y: number): Tile {
     return depth > scaledDepthPx(280) || hash(y, x, seed) > 0.58 ? 'stone' : 'sand';
   }
   if (state.biome === 2) {
+    if (darkness > 0.78 && r > 0.9984 && hash(x * 23, y * 19, seed) > 0.68) return 'precursorEngine';
     if (depth > scaledDepthPx(1250) && r > 0.955) return 'sunstone';
     if (depth > scaledDepthPx(620) && r > 0.915) return 'cobalt';
     if (depth > scaledDepthPx(1040) && r > 0.982) return 'relic';
     if (depth > scaledDepthPx(260) && r > 0.88) return 'quartz';
     return depth > scaledDepthPx(360) || hash(y, x, seed) > 0.66 ? 'stone' : 'sand';
   }
+  if (darkness > 0.72 && r > 0.9992 && hash(x * 17, y * 37, seed) > 0.72) return 'drownedIdol';
   if (depth > scaledDepthPx(1300) && r > 0.982) return 'relic';
   if (depth > scaledDepthPx(950) && r > 0.956) return 'ruby';
   if (depth > scaledDepthPx(460) && r > 0.925) return 'quartz';
@@ -1474,6 +1619,10 @@ function generateTile(x: number, y: number): Tile {
 function hash(x: number, y: number, s: number): number {
   const n = Math.sin(x * 127.1 + y * 311.7 + s * 0.013) * 43758.5453123;
   return n - Math.floor(n);
+}
+
+function isArtifactTile(tile: Tile) {
+  return tile === 'drownedIdol' || tile === 'precursorEngine' || tile === 'abyssalCrown' || tile === 'ruinCore';
 }
 
 function axis(negativeA: Phaser.Input.Keyboard.Key, negativeB: Phaser.Input.Keyboard.Key, positiveA: Phaser.Input.Keyboard.Key, positiveB: Phaser.Input.Keyboard.Key) {
@@ -1510,7 +1659,8 @@ function scanReward(target: ScanTarget) {
 function currentApexSpecies() {
   if (state.biome === 1) return 'Abyss Warden';
   if (state.biome === 2) return 'Brine Leviathan';
-  return 'Trench Crown';
+  if (state.biome === 3) return 'Trench Crown';
+  return 'Sentinel Leviathan';
 }
 
 function lifeCatalogTotal() {
@@ -1518,7 +1668,9 @@ function lifeCatalogTotal() {
 }
 
 function bargeUpgradeCost() {
-  return state.biome === 1 ? BARGE_UPGRADE_COST : 15000;
+  if (state.biome === 1) return BARGE_UPGRADE_COST;
+  if (state.biome === 2) return 15000;
+  return 45000;
 }
 
 function oxygenDrain() {
@@ -1538,13 +1690,22 @@ function lightBeamHalfWidth() {
 }
 
 function darknessAtDepth() {
-  if (state.biome === 1) return Phaser.Math.Clamp((state.depth - 260) / 1450, 0, 0.9);
-  if (state.biome === 2) return Phaser.Math.Clamp((state.depth - 150) / 980, 0, 1);
-  return Phaser.Math.Clamp((state.depth - 70) / 720, 0, 1);
+  return darknessForDepth(state.depth, state.biome);
+}
+
+function darknessForDepth(depth: number, biome: Biome) {
+  if (biome === 1) return Phaser.Math.Clamp((depth - 140) / 1180, 0, 0.9);
+  if (biome === 2) return Phaser.Math.Clamp((depth - 95) / 900, 0, 1);
+  if (biome === 3) return Phaser.Math.Clamp((depth - 45) / 680, 0, 1);
+  return Phaser.Math.Clamp((depth - 20) / 540, 0, 1);
+}
+
+function ambientDarknessOpacity(darkness: number) {
+  return Phaser.Math.Clamp(0.05 + darkness * 0.34, 0, 0.38);
 }
 
 function darknessOpacity(darkness: number) {
-  return Phaser.Math.Clamp(darkness * 1.12, 0, 1);
+  return Phaser.Math.Clamp(darkness * 0.95, 0, 1);
 }
 
 function upgradeCost(upgrade: Upgrade) {
@@ -1552,8 +1713,10 @@ function upgradeCost(upgrade: Upgrade) {
 }
 
 function upgradeMax(upgrade: Upgrade) {
+  if (state.biome === 4 && upgrade.biome === 1) return upgrade.max + 8;
   if (state.biome === 3 && upgrade.biome === 1) return upgrade.max + 6;
   if (state.biome >= 2 && upgrade.biome === 1) return upgrade.max + 3;
+  if (state.biome === 4 && upgrade.biome === 2) return upgrade.max + 3;
   return upgrade.max;
 }
 
@@ -1563,6 +1726,11 @@ function refillAtBoat(delta = 1) {
 }
 
 function depthColor(depth: number) {
+  if (state.biome === 4) {
+    if (depth < 440) return '#12242b';
+    if (depth < 1120) return '#101923';
+    return '#06070d';
+  }
   if (state.biome === 3) {
     if (depth < 440) return '#161d32';
     if (depth < 1120) return '#111424';
@@ -1596,6 +1764,7 @@ function restart(scene: DeepdiveScene) {
   state.atBoat = true;
   state.paused = false;
   state.status = 'A new trench map is ready. Dive again.';
+  state.started = true;
   for (const key of Object.keys(state.upgrades) as UpgradeId[]) state.upgrades[key] = 0;
   seed = Math.floor(Math.random() * 1_000_000);
   scene.scene.restart();
@@ -1610,6 +1779,30 @@ function renderHud() {
     app.innerHTML = `
       <main class="shell">
         <section id="game"></section>
+        <aside id="title-screen" class="title-screen">
+          <div class="title-mark">
+            <span>Deepwater salvage program</span>
+            <h1>Abyss Miner</h1>
+            <p>Mine the trench, catalog what moves in the dark, and decide what is worth carrying back before the sea closes around you.</p>
+          </div>
+          <div class="title-actions">
+            <button data-start-game>Begin Dive</button>
+          </div>
+          <div class="title-brief">
+            <article>
+              <strong>Descend</strong>
+              <span>The shallows open wide, then the stone begins to close.</span>
+            </article>
+            <article>
+              <strong>Recover</strong>
+              <span>Bright relics wait where the barge lights cannot reach.</span>
+            </article>
+            <article>
+              <strong>Survive</strong>
+              <span>Old mouths move through the dark below the claim.</span>
+            </article>
+          </div>
+        </aside>
         <aside class="hud">
           <header>
             <span>${biomeName()}</span>
@@ -1630,7 +1823,11 @@ function renderHud() {
   }
   const gauges = document.querySelector<HTMLDivElement>('#gauges');
   const bargeMenu = document.querySelector<HTMLDivElement>('#barge-menu');
-  if (!gauges || !bargeMenu) return;
+  const shell = document.querySelector<HTMLElement>('.shell');
+  const titleScreen = document.querySelector<HTMLElement>('#title-screen');
+  if (!gauges || !bargeMenu || !shell || !titleScreen) return;
+  shell.classList.toggle('is-title', !state.started);
+  titleScreen.classList.toggle('is-hidden', state.started);
   const cargoValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
   gauges.innerHTML = `
     <div class="readout">
@@ -1641,6 +1838,7 @@ function renderHud() {
     ${meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
     ${meter('Hull', state.hull, hullMax(), '#ff8a6b')}
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
+    ${cargoManifest()}
     <p class="status">${state.status}</p>
     <div class="utility-actions">
       <button data-pause>${state.paused ? 'Resume' : 'Pause'}</button>
@@ -1649,8 +1847,8 @@ function renderHud() {
     ${state.won || state.lost ? '<button data-restart>Restart run</button>' : ''}
   `;
   renderGameOver(app);
-  bargeMenu.classList.toggle('is-open', state.atBoat && !state.lost && !state.won);
-  bargeMenu.innerHTML = state.atBoat && !state.lost && !state.won
+  bargeMenu.classList.toggle('is-open', state.started && state.atBoat && !state.lost && !state.won);
+  bargeMenu.innerHTML = state.started && state.atBoat && !state.lost && !state.won
     ? `
       <div class="shop-title">
         <div>
@@ -1710,6 +1908,12 @@ function bindUiEvents(app: HTMLDivElement) {
       gameScene()?.buy(upgradeButton.dataset.upgrade as UpgradeId);
       return;
     }
+    const startButton = target.closest<HTMLButtonElement>('button[data-start-game]');
+    if (startButton && !startButton.disabled) {
+      event.preventDefault();
+      gameScene()?.startRun();
+      return;
+    }
     const restartButton = target.closest<HTMLButtonElement>('button[data-restart]');
     if (restartButton && !restartButton.disabled) {
       event.preventDefault();
@@ -1735,9 +1939,20 @@ function bindUiEvents(app: HTMLDivElement) {
     const travelButton = target.closest<HTMLButtonElement>('button[data-travel-biome]');
     if (travelButton && !travelButton.disabled) {
       event.preventDefault();
-      const nextName = state.biome === 1 ? 'Brine Vent Shelf' : 'Midnight Trench';
+      const nextName = nextBiomeName();
       const ready = window.confirm(`Retrofit the barge for ${bargeUpgradeCost().toLocaleString()} credits and travel to ${nextName}? You will leave the current trench and enter a more dangerous biome.`);
       if (ready) gameScene()?.travelToNextBiome();
+      return;
+    }
+    const discardButton = target.closest<HTMLButtonElement>('button[data-discard-cargo]');
+    if (discardButton && !discardButton.disabled) {
+      event.preventDefault();
+      const index = Number(discardButton.dataset.discardCargo);
+      const discarded = state.cargo[index];
+      if (!discarded) return;
+      state.cargo.splice(index, 1);
+      state.status = `Discarded ${discarded.name} to free a cargo slot.`;
+      renderHud();
     }
   });
 }
@@ -1747,19 +1962,21 @@ function availableUpgrades() {
 }
 
 function bargeTravelRow() {
-  if (state.biome >= 3) {
+  if (state.biome >= 4) {
     return `
       <article class="travel-card">
-        <strong>Midnight Trench</strong>
-        <span>Anchorstone strata are blocking wide cuts. Chart the deep life and survive the tight routes.</span>
+        <strong>Ancient Ruins</strong>
+        <span>The drowned architects left vaults below the trench. Catalog the sentinel and escape with proof.</span>
       </article>
     `;
   }
   const cost = bargeUpgradeCost();
-  const nextName = state.biome === 1 ? 'Brine Vent Shelf' : 'Midnight Trench';
+  const nextName = nextBiomeName();
   const description = state.biome === 1
     ? 'Unlocks advanced refits, hotter hazards, and richer minerals.'
-    : 'Adds hazardous flora, stronger vent fields, and anchorstone that cannot be mined.';
+    : state.biome === 2
+      ? 'Adds hazardous flora, stronger vent fields, and anchorstone that cannot be mined.'
+      : 'Opens ancient alien ruins, ruin alloys, and sentinel-class predators.';
   const disabled = state.credits < cost;
   return `
     <article class="travel-card">
@@ -1775,7 +1992,14 @@ function bargeTravelRow() {
 function biomeName() {
   if (state.biome === 1) return 'Deepwater Claim';
   if (state.biome === 2) return 'Brine Vent Shelf';
-  return 'Midnight Trench';
+  if (state.biome === 3) return 'Midnight Trench';
+  return 'Ancient Ruins';
+}
+
+function nextBiomeName() {
+  if (state.biome === 1) return 'Brine Vent Shelf';
+  if (state.biome === 2) return 'Midnight Trench';
+  return 'Ancient Ruins';
 }
 
 function meter(label: string, value: number, max: number, color: string, detail = `${Math.ceil(value)} / ${max}`) {
@@ -1785,6 +2009,33 @@ function meter(label: string, value: number, max: number, color: string, detail 
       <div><span>${label}</span><strong>${detail}</strong></div>
       <i><b style="width:${pct}%; background:${color}"></b></i>
     </div>
+  `;
+}
+
+function cargoManifest() {
+  const emptySlots = Math.max(0, cargoCapacity() - state.cargo.length);
+  const itemColor = (item: CargoItem) => Phaser.Display.Color.IntegerToColor(item.color).rgba;
+  const rows = state.cargo.map((item, index) => `
+    <article class="cargo-row">
+      <i style="background:${itemColor(item)}; color:${itemColor(item)}"></i>
+      <div>
+        <strong>${item.name}</strong>
+        <span>${item.value.toLocaleString()}c</span>
+      </div>
+      <button data-discard-cargo="${index}" aria-label="Discard ${item.name}">Discard</button>
+    </article>
+  `);
+  return `
+    <section class="cargo-manifest">
+      <div class="cargo-title">
+        <span>Cargo Manifest</span>
+        <strong>${state.cargo.length}/${cargoCapacity()}</strong>
+      </div>
+      <div class="cargo-list">
+        ${rows.length ? rows.join('') : '<p class="cargo-empty">No cargo loaded</p>'}
+        ${emptySlots > 0 ? `<p class="cargo-empty">${emptySlots} empty ${emptySlots === 1 ? 'slot' : 'slots'}</p>` : ''}
+      </div>
+    </section>
   `;
 }
 
