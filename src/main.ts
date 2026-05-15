@@ -21,6 +21,23 @@ type Tile =
 type UpgradeId = 'oxygen' | 'cargo' | 'laser' | 'lamp' | 'scanner' | 'suit' | 'speed' | 'thermal';
 type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
 type Biome = 1 | 2 | 3 | 4;
+type DiverAnimation =
+  | 'idle'
+  | 'walk'
+  | 'swim'
+  | 'boost'
+  | 'descend'
+  | 'ascend'
+  | 'hover'
+  | 'mine'
+  | 'recoil'
+  | 'damage'
+  | 'die'
+  | 'revive'
+  | 'up'
+  | 'down'
+  | 'left'
+  | 'right';
 
 interface TileDef {
   color: number;
@@ -60,6 +77,9 @@ interface Fish {
   pattern: FishPattern;
   bumpCooldown: number;
   aggro: number;
+  assetKey: string;
+  facingSign: 1 | -1;
+  sprite?: Phaser.GameObjects.Image;
 }
 
 interface Flora {
@@ -76,6 +96,8 @@ interface Flora {
   scanning: boolean;
   scanPulse: number;
   radius: number;
+  assetKey: string;
+  sprite?: Phaser.GameObjects.Image;
 }
 
 type ScanTarget = Fish | Flora;
@@ -137,6 +159,14 @@ interface FloatingText {
   vy: number;
 }
 
+interface SonarContact {
+  x: number;
+  y: number;
+  kind: 'fish' | 'flora';
+  hostile: boolean;
+  age: number;
+}
+
 const TILE = 24;
 const WORLD_W = 104;
 const WORLD_H = 420;
@@ -153,6 +183,31 @@ const PLAYER_PICKUP_RADIUS = 18;
 const PLAYER_FORWARD_REACH = 26;
 const PLAYER_DRAW_SCALE = 0.74;
 const BARGE_DRAW_SCALE = 0.78;
+const FUEL_REFILL_AMOUNT = 50;
+const FUEL_REFILL_COST = 35;
+const MINE_FUEL_COST = 0.18;
+const SONAR_FUEL_COST = 1.5;
+const SONAR_REVEAL_RADIUS_TILES = 16;
+const SONAR_ATTRACT_RADIUS = 390;
+const SONAR_COOLDOWN = 0.75;
+const diverFrameCounts: Record<DiverAnimation, number> = {
+  idle: 6,
+  walk: 7,
+  swim: 6,
+  boost: 4,
+  descend: 4,
+  ascend: 4,
+  hover: 4,
+  mine: 6,
+  recoil: 3,
+  damage: 3,
+  die: 7,
+  revive: 4,
+  up: 4,
+  down: 4,
+  left: 4,
+  right: 4,
+};
 
 const tiles: Record<Tile, TileDef> = {
   water: { color: 0x0b2b38, hp: 0, value: 0, name: 'Water', solid: false },
@@ -247,9 +302,12 @@ const state = {
   credits: 0,
   oxygen: 100,
   hull: 100,
+  fuel: 100,
   depth: 0,
   maxDepth: 0,
   cargo: [] as CargoItem[],
+  sonarRevealed: new Set<string>(),
+  sonarContacts: [] as SonarContact[],
   scannedSpecies: new Set<string>(),
   upgrades: {
     oxygen: 0,
@@ -267,25 +325,33 @@ const state = {
   won: false,
   lost: false,
   started: false,
+  oxygenWarnings: {
+    half: false,
+    quarter: false,
+  },
 };
 
 let uiEventsBound = false;
 
 class DeepdiveScene extends Phaser.Scene {
+  private parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
   private terrain!: Phaser.GameObjects.Graphics;
   private actors!: Phaser.GameObjects.Graphics;
   private darkness!: Phaser.GameObjects.Graphics;
   private lampGloom!: Phaser.GameObjects.Graphics;
   private overlay!: Phaser.GameObjects.Graphics;
+  private playerSprite!: Phaser.GameObjects.Image;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
   private world: Tile[][] = [];
   private damage: number[][] = [];
+  private tileSprites: Phaser.GameObjects.Image[] = [];
   private fish: Fish[] = [];
   private flora: Flora[] = [];
   private hazards: Hazard[] = [];
   private looseItems: LooseItem[] = [];
   private floatingTexts: FloatingText[] = [];
+  private sonarPings: Array<{ x: number; y: number; age: number; life: number }> = [];
   private terrainBoundsKey = '';
   private terrainDirty = true;
   private player = {
@@ -294,8 +360,10 @@ class DeepdiveScene extends Phaser.Scene {
     vx: 0,
     vy: 0,
     facing: new Phaser.Math.Vector2(0, 1),
+    facingSign: 1 as 1 | -1,
     mineCooldown: 0,
     scanCooldown: 0,
+    sonarCooldown: 0,
     scanTarget: null as ScanTarget | null,
   };
   private hudTimer = 0;
@@ -304,19 +372,30 @@ class DeepdiveScene extends Phaser.Scene {
     super('DeepdiveScene');
   }
 
+  preload() {
+    loadGeneratedAssets(this);
+  }
+
   create() {
     this.cameras.main.setBounds(0, 0, WORLD_W * TILE, WORLD_H * TILE);
     this.cameras.main.setRoundPixels(true);
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
-    this.terrain = this.add.graphics();
-    this.actors = this.add.graphics();
-    this.darkness = this.add.graphics();
-    this.lampGloom = this.add.graphics();
-    this.overlay = this.add.graphics();
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,Q,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.parallaxLayers = [0, 1, 2, 3].map((index) => this.add
+      .tileSprite(0, 0, 1, 1, `parallax-shallow-${index}`)
+      .setOrigin(0)
+      .setDepth(-12 + index)
+      .setScrollFactor(1));
+    this.terrain = this.add.graphics().setDepth(0);
+    this.playerSprite = this.add.image(this.player.x, this.player.y, 'diver-swim-0').setDepth(2).setOrigin(0.5);
+    this.actors = this.add.graphics().setDepth(3);
+    this.darkness = this.add.graphics().setDepth(5);
+    this.lampGloom = this.add.graphics().setDepth(6);
+    this.overlay = this.add.graphics().setDepth(7);
     this.generateWorld();
+    if (state.started) this.revealSonarAtPlayer(8);
     this.cameras.main.centerOn(this.player.x, this.player.y);
     renderHud();
   }
@@ -353,6 +432,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.updateHazards(delta);
     this.updateSystems(delta);
     this.updateFloatingTexts(delta);
+    this.updateSonarPings(delta);
     this.updateCameraZoom();
     this.cameras.main.centerOn(this.player.x, this.player.y);
     this.draw();
@@ -380,8 +460,21 @@ class DeepdiveScene extends Phaser.Scene {
   startRun() {
     state.started = true;
     state.status = 'Barge lights are green. Drop below and start the claim.';
+    resetOxygenWarnings();
     this.resetPlayerStart();
+    this.revealSonarAtPlayer(8);
     this.cameras.main.centerOn(this.player.x, this.player.y);
+    renderHud();
+  }
+
+  buyFuel(fullTank = false) {
+    if (!state.atBoat) return;
+    const missing = fuelMax() - state.fuel;
+    if (missing <= 0 || state.credits < fuelRefillCost(fullTank)) return;
+    const amount = fullTank ? missing : Math.min(FUEL_REFILL_AMOUNT, missing);
+    state.credits -= fuelRefillCost(fullTank);
+    state.fuel = Math.min(fuelMax(), state.fuel + amount);
+    state.status = `Loaded ${Math.round(amount)} fuel into the cutter reserves.`;
     renderHud();
   }
 
@@ -392,6 +485,9 @@ class DeepdiveScene extends Phaser.Scene {
     state.depth = 0;
     state.maxDepth = 0;
     state.cargo = [];
+    state.fuel = fuelMax();
+    state.sonarRevealed.clear();
+    resetOxygenWarnings();
     state.scannedSpecies.clear();
     state.atBoat = true;
     state.paused = false;
@@ -419,9 +515,12 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.vx = 0;
     this.player.vy = 0;
     this.player.facing.set(0, 1);
+    this.player.facingSign = 1;
     this.player.mineCooldown = 0;
     this.player.scanCooldown = 0;
+    this.player.sonarCooldown = 0;
     this.player.scanTarget = null;
+    this.sonarPings = [];
     this.hudTimer = 0;
     this.floatingTexts.forEach((entry) => entry.label.destroy());
     this.floatingTexts = [];
@@ -429,11 +528,20 @@ class DeepdiveScene extends Phaser.Scene {
     this.terrainDirty = true;
   }
 
+  private createEntitySprite(x: number, y: number, key: string) {
+    return this.add.image(x, y, key)
+      .setDepth(2)
+      .setOrigin(0.5)
+      .setVisible(false);
+  }
+
   private generateWorld() {
     this.world = [];
     this.damage = [];
     this.looseItems = [];
     this.flora = [];
+    state.sonarRevealed.clear();
+    state.sonarContacts = [];
     for (let y = 0; y < WORLD_H; y += 1) {
       const row: Tile[] = [];
       const damageRow: number[] = [];
@@ -481,6 +589,7 @@ class DeepdiveScene extends Phaser.Scene {
     for (let i = 0; i < species.count; i += 1) {
       const point = this.findOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY));
       const angle = Math.random() * Math.PI * 2;
+      const assetKey = fishAssetKey(species);
       school.push({
         kind: 'fish',
         species: species.species,
@@ -502,6 +611,9 @@ class DeepdiveScene extends Phaser.Scene {
         pattern: species.pattern,
         bumpCooldown: 0,
         aggro: 0,
+        assetKey,
+        facingSign: Math.cos(angle) < 0 ? -1 : 1,
+        sprite: this.createEntitySprite(point.x, point.y, assetKey),
       });
     }
     return school;
@@ -510,12 +622,13 @@ class DeepdiveScene extends Phaser.Scene {
   private makeFloraPatch(species: FloraSpecies): Flora[] {
     const patch: Flora[] = [];
     for (let i = 0; i < species.count; i += 1) {
-      const point = this.findOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY));
+      const point = this.findFloraAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY));
+      const assetKey = floraAssetKey(species);
       patch.push({
         kind: 'flora',
         species: species.species,
-        x: point.x + Phaser.Math.FloatBetween(-8, 8),
-        y: point.y + Phaser.Math.FloatBetween(-8, 8),
+        x: point.x + Phaser.Math.FloatBetween(-5, 5),
+        y: point.y,
         phase: Math.random() * Math.PI * 2,
         color: species.color,
         hazardous: species.hazardous,
@@ -525,9 +638,25 @@ class DeepdiveScene extends Phaser.Scene {
         scanning: false,
         scanPulse: 0,
         radius: scaledEntity(species.radius),
+        assetKey,
+        sprite: this.createEntitySprite(point.x, point.y, assetKey),
       });
     }
     return patch;
+  }
+
+  private findFloraAnchorInBand(minY: number, maxY: number) {
+    for (let attempt = 0; attempt < 180; attempt += 1) {
+      const tx = Phaser.Math.Between(4, WORLD_W - 5);
+      const ty = Math.floor(Phaser.Math.Between(minY, maxY) / TILE);
+      if (ty < 1 || ty >= WORLD_H - 2) continue;
+      if (this.getTile(tx, ty) !== 'water') continue;
+      if (!tiles[this.getTile(tx, ty + 1)].solid) continue;
+      if (this.getTile(tx, ty - 1) !== 'water') continue;
+      return { x: tx * TILE + TILE * 0.5, y: (ty + 1) * TILE + 2 };
+    }
+    const fallback = this.findOpenWaterInBand(minY, maxY);
+    return { x: fallback.x, y: fallback.y + TILE * 0.35 };
   }
 
   private findOpenWaterInBand(minY: number, maxY: number) {
@@ -747,8 +876,10 @@ class DeepdiveScene extends Phaser.Scene {
     }
     if (hasInput) {
       this.rotateFacingToward(input.angle(), delta, 6.2 + state.upgrades.speed * 0.22);
+      this.updatePlayerFacing(input.x);
     } else if (speed > 12) {
       this.rotateFacingToward(Math.atan2(this.player.vy, this.player.vx), delta, 2.8);
+      this.updatePlayerFacing(this.player.vx / Math.max(1, speed));
     }
 
     this.moveAxis('x', this.player.vx * delta);
@@ -756,12 +887,21 @@ class DeepdiveScene extends Phaser.Scene {
 
     this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
     this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
+    this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
+    if (Phaser.Input.Keyboard.JustDown(this.keys.Q)) {
+      this.sonarPing();
+    }
     const pointer = this.input.activePointer;
     if (pointer.isDown) this.mineAt(pointer.worldX, pointer.worldY);
     if (this.keys.SPACE.isDown) {
       this.mineAt(this.player.x + this.player.facing.x * PLAYER_FORWARD_REACH, this.player.y + this.player.facing.y * PLAYER_FORWARD_REACH);
     }
     this.scanNearbyLife(delta);
+  }
+
+  private updatePlayerFacing(horizontalIntent: number) {
+    if (horizontalIntent < -0.08) this.player.facingSign = -1;
+    if (horizontalIntent > 0.08) this.player.facingSign = 1;
   }
 
   private rotateFacingToward(targetAngle: number, delta: number, turnRate: number) {
@@ -797,17 +937,27 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private mineAt(worldX: number, worldY: number) {
-    if (this.player.mineCooldown > 0) return;
     const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, worldX, worldY);
     const range = 40 + state.upgrades.laser * 9;
     if (distance > range) return;
+    const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, worldX, worldY);
+    this.player.facing.set(Math.cos(angle), Math.sin(angle));
+    this.updatePlayerFacing(Math.cos(angle));
+    if (this.player.mineCooldown > 0) return;
     const tx = Math.floor(worldX / TILE);
     const ty = Math.floor(worldY / TILE);
     const targets = this.mineTargets(tx, ty);
     if (!targets.length) return;
+    const fuelCost = miningFuelCost(targets.length);
+    if (state.fuel < fuelCost) {
+      this.player.mineCooldown = Math.max(0.16, mineCooldown() * 0.65);
+      state.status = 'Fuel reserves are dry. Return to the barge to refuel the cutter.';
+      renderHud();
+      return;
+    }
 
     const power = 9 + state.upgrades.laser * 3.5;
-    let brokeTile = false;
+    state.fuel = Math.max(0, state.fuel - fuelCost);
     for (const target of targets) {
       const tile = this.getTile(target.x, target.y);
       const def = tiles[tile];
@@ -815,15 +965,12 @@ class DeepdiveScene extends Phaser.Scene {
       this.damage[target.y][target.x] += power;
       if (this.damage[target.y][target.x] >= def.hp) {
         this.breakTile(target.x, target.y, def);
-        brokeTile = true;
       }
     }
     this.terrainDirty = true;
     this.player.mineCooldown = mineCooldown();
     state.oxygen -= 0.11 + targets.length * 0.035;
-    if (brokeTile) {
-      renderHud();
-    }
+    renderHud();
   }
 
   private mineTargets(tx: number, ty: number) {
@@ -835,7 +982,7 @@ class DeepdiveScene extends Phaser.Scene {
         const distance = Math.abs(x - tx) + Math.abs(y - ty);
         if (distance > 1) continue;
         const tile = this.getTile(x, y);
-      if (tiles[tile].solid && tile !== 'bedrock' && tile !== 'anchorstone') {
+        if (tiles[tile].solid && tile !== 'bedrock' && tile !== 'anchorstone') {
           targets.push({ x, y, distance });
         }
       }
@@ -933,6 +1080,7 @@ class DeepdiveScene extends Phaser.Scene {
       this.steerFish(fish, delta);
       fish.x += fish.vx * delta;
       fish.y += fish.vy * delta;
+      updateFacingFromVelocity(fish);
       this.keepFishInWater(fish);
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance < fish.radius + PLAYER_CONTACT_RADIUS && fish.bumpCooldown <= 0 && !this.isAtBoat()) {
@@ -1027,6 +1175,207 @@ class DeepdiveScene extends Phaser.Scene {
       entry.label.destroy();
       return false;
     });
+  }
+
+  private updateSonarPings(delta: number) {
+    const hadPings = this.sonarPings.length > 0;
+    this.sonarPings = this.sonarPings.filter((ping) => {
+      ping.age += delta;
+      return ping.age < ping.life;
+    });
+    for (const contact of state.sonarContacts) {
+      contact.age += delta;
+    }
+    if (hadPings) {
+      this.drawSonarMap();
+    }
+    if (state.sonarContacts.some((contact) => contact.age > 14)) {
+      state.sonarContacts = state.sonarContacts.filter((contact) => contact.age <= 14);
+      this.drawSonarMap();
+    }
+  }
+
+  sonarPing() {
+    if (this.player.sonarCooldown > 0 || state.lost || state.won || !state.started) return;
+    if (state.fuel < SONAR_FUEL_COST) {
+      state.status = 'Not enough fuel for a sonar pulse.';
+      renderHud();
+      return;
+    }
+    state.fuel = Math.max(0, state.fuel - SONAR_FUEL_COST);
+    this.player.sonarCooldown = SONAR_COOLDOWN;
+    this.sonarPings.push({ x: this.player.x, y: this.player.y, age: 0, life: 0.9 });
+    this.revealSonarAtPlayer(SONAR_REVEAL_RADIUS_TILES);
+    this.captureSonarContacts();
+    let attracted = 0;
+    for (const fish of this.fish) {
+      if (!fish.hostile || fish.scanned) continue;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
+      if (distance > SONAR_ATTRACT_RADIUS) continue;
+      fish.aggro = Math.max(fish.aggro, 4.4);
+      fish.homeX = Phaser.Math.Linear(fish.homeX, this.player.x, 0.12);
+      fish.homeY = Phaser.Math.Linear(fish.homeY, this.player.y, 0.12);
+      attracted += 1;
+    }
+    this.drawSonarMap();
+    state.status = attracted > 0
+      ? `Sonar ping mapped nearby stone and drew ${attracted} hostile signal${attracted === 1 ? '' : 's'} closer.`
+      : 'Sonar ping mapped nearby stone. No hostile signals answered.';
+    renderHud();
+    this.drawSonarMap();
+  }
+
+  private captureSonarContacts() {
+    const contacts: SonarContact[] = [];
+    for (const fish of this.fish) {
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
+      if (distance > SONAR_ATTRACT_RADIUS) continue;
+      contacts.push({ x: fish.x, y: fish.y, kind: 'fish', hostile: fish.hostile && !fish.scanned, age: 0 });
+    }
+    for (const flora of this.flora) {
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y);
+      if (distance > SONAR_REVEAL_RADIUS_TILES * TILE) continue;
+      contacts.push({ x: flora.x, y: flora.y, kind: 'flora', hostile: flora.hazardous, age: 0 });
+    }
+    state.sonarContacts = contacts.slice(-48);
+  }
+
+  private revealSonarAtPlayer(radiusTiles: number) {
+    const cx = Math.floor(this.player.x / TILE);
+    const cy = Math.floor(this.player.y / TILE);
+    for (let y = cy - radiusTiles; y <= cy + radiusTiles; y += 1) {
+      for (let x = cx - radiusTiles; x <= cx + radiusTiles; x += 1) {
+        if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
+        if ((x - cx) ** 2 + (y - cy) ** 2 > radiusTiles ** 2) continue;
+        state.sonarRevealed.add(sonarKey(x, y));
+      }
+    }
+    this.drawSonarMap();
+  }
+
+  private drawSonarPings() {
+    for (const ping of this.sonarPings) {
+      const t = Phaser.Math.Clamp(ping.age / ping.life, 0, 1);
+      const alpha = 1 - t;
+      this.actors.lineStyle(2, 0x73fbd3, alpha * 0.72);
+      this.actors.strokeCircle(ping.x, ping.y, Phaser.Math.Linear(16, SONAR_REVEAL_RADIUS_TILES * TILE, t));
+      this.actors.lineStyle(1, 0x8ee7f4, alpha * 0.28);
+      this.actors.strokeCircle(ping.x, ping.y, Phaser.Math.Linear(8, SONAR_ATTRACT_RADIUS, t));
+    }
+  }
+
+  drawSonarMap() {
+    const canvas = document.querySelector<HTMLCanvasElement>('#sonar-map');
+    if (!canvas || !this.world.length) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const size = 224;
+    if (canvas.width !== size || canvas.height !== size) {
+      canvas.width = size;
+      canvas.height = size;
+    }
+    ctx.clearRect(0, 0, size, size);
+    ctx.fillStyle = '#01070d';
+    ctx.fillRect(0, 0, size, size);
+    const gradient = ctx.createRadialGradient(size / 2, size / 2, 8, size / 2, size / 2, size / 2);
+    gradient.addColorStop(0, 'rgba(15, 75, 94, 0.22)');
+    gradient.addColorStop(0.62, 'rgba(4, 28, 42, 0.12)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.64)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    const centerX = Math.floor(this.player.x / TILE);
+    const centerY = Math.floor(this.player.y / TILE);
+    const viewRadius = 26;
+    const cell = size / (viewRadius * 2 + 1);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+    ctx.clip();
+    for (let y = centerY - viewRadius; y <= centerY + viewRadius; y += 1) {
+      for (let x = centerX - viewRadius; x <= centerX + viewRadius; x += 1) {
+        if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
+        if (!state.sonarRevealed.has(sonarKey(x, y))) continue;
+        const tile = this.getTile(x, y);
+        const px = Math.floor((x - centerX + viewRadius) * cell);
+        const py = Math.floor((y - centerY + viewRadius) * cell);
+        const drawSize = Math.max(2, Math.ceil(cell) + 1);
+        const solid = tiles[tile].solid;
+        if (!solid) {
+          ctx.fillStyle = 'rgba(12, 88, 111, 0.42)';
+          ctx.fillRect(px, py, drawSize, drawSize);
+          continue;
+        }
+        const north = y <= 0 || !tiles[this.getTile(x, y - 1)].solid;
+        const south = y >= WORLD_H - 1 || !tiles[this.getTile(x, y + 1)].solid;
+        const west = x <= 0 || !tiles[this.getTile(x - 1, y)].solid;
+        const east = x >= WORLD_W - 1 || !tiles[this.getTile(x + 1, y)].solid;
+        const isEdge = north || south || west || east;
+        if (isEdge) {
+          ctx.fillStyle = sonarTileColor(tile, true);
+          ctx.fillRect(px, py, drawSize, drawSize);
+        } else if (tile === 'stone' || tile === 'sand' || tile === 'bedrock' || tile === 'anchorstone') {
+          ctx.fillStyle = sonarTileColor(tile, false);
+          ctx.fillRect(px, py, drawSize, drawSize);
+        } else if (tiles[tile].value > 0 || isArtifactTile(tile)) {
+          ctx.fillStyle = sonarTileColor(tile, false);
+          ctx.fillRect(px, py, drawSize, drawSize);
+        }
+      }
+    }
+    for (const ping of this.sonarPings) {
+      const t = Phaser.Math.Clamp(ping.age / ping.life, 0, 1);
+      const radius = Phaser.Math.Linear(8, (SONAR_REVEAL_RADIUS_TILES / viewRadius) * (size / 2), t);
+      ctx.strokeStyle = `rgba(115, 251, 211, ${0.72 * (1 - t)})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, radius, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    for (const contact of state.sonarContacts) {
+      const tx = Math.floor(contact.x / TILE);
+      const ty = Math.floor(contact.y / TILE);
+      if (tx < centerX - viewRadius || tx > centerX + viewRadius || ty < centerY - viewRadius || ty > centerY + viewRadius) continue;
+      const px = (tx - centerX + viewRadius + 0.5) * cell;
+      const py = (ty - centerY + viewRadius + 0.5) * cell;
+      const alpha = Phaser.Math.Clamp(1 - contact.age / 14, 0.22, 1);
+      ctx.fillStyle = contact.hostile
+        ? `rgba(255, 79, 100, ${alpha})`
+        : contact.kind === 'flora'
+          ? `rgba(115, 251, 211, ${alpha * 0.82})`
+          : `rgba(142, 231, 244, ${alpha})`;
+      ctx.beginPath();
+      ctx.arc(px, py, contact.hostile ? 4.7 : 3.4, 0, Math.PI * 2);
+      ctx.fill();
+      if (contact.hostile) {
+        ctx.strokeStyle = `rgba(255, 79, 100, ${alpha * 0.6})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(px, py, 7.4, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(115, 251, 211, 0.28)';
+    ctx.lineWidth = 1;
+    for (let i = 1; i < 4; i += 1) {
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, (size / 2) * (i / 4), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = 'rgba(142, 231, 244, 0.62)';
+    ctx.beginPath();
+    ctx.moveTo(size / 2, 0);
+    ctx.lineTo(size / 2, size);
+    ctx.moveTo(0, size / 2);
+    ctx.lineTo(size, size / 2);
+    ctx.stroke();
+    ctx.fillStyle = '#fff7df';
+    ctx.beginPath();
+    ctx.moveTo(size / 2, size / 2 - 6);
+    ctx.lineTo(size / 2 + 5, size / 2 + 5);
+    ctx.lineTo(size / 2 - 5, size / 2 + 5);
+    ctx.closePath();
+    ctx.fill();
   }
 
   private drawLooseItems(camera: Phaser.Cameras.Scene2D.Camera) {
@@ -1181,6 +1530,7 @@ class DeepdiveScene extends Phaser.Scene {
     } else {
       state.oxygen -= oxygenDrain() * delta;
     }
+    checkOxygenWarnings();
 
     const apexSpecies = currentApexSpecies();
     if (state.depth > 1520 && !state.scannedSpecies.has(apexSpecies)) {
@@ -1218,6 +1568,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.lampGloom.clear();
     this.overlay.clear();
     camera.setBackgroundColor(depthColor(state.depth));
+    this.drawParallax(camera);
     this.drawWorld(camera);
     this.drawBoat();
     this.drawLooseItems(camera);
@@ -1225,8 +1576,34 @@ class DeepdiveScene extends Phaser.Scene {
     this.drawFlora(camera);
     this.drawFish(camera);
     this.drawPlayer();
+    this.drawSonarPings();
     this.drawDarkness(camera);
     this.drawGameOver(camera);
+  }
+
+  private drawParallax(camera: Phaser.Cameras.Scene2D.Camera) {
+    const view = camera.worldView;
+    const prefix = state.biome === 1 ? 'parallax-shallow' : 'parallax-deep';
+    const speeds = state.biome === 1 ? [1, 0.8, 0.5, 0.16] : [0.76, 0.48, 0.28, 0.12];
+    const alphas = state.biome === 1 ? [0.72, 0.58, 0.42, 0.52] : [0.56, 0.48, 0.42, 0.5];
+    const padding = 24;
+    for (let i = 0; i < this.parallaxLayers.length; i += 1) {
+      const layer = this.parallaxLayers[i];
+      const key = `${prefix}-${i}`;
+      if (layer.texture.key !== key) layer.setTexture(key);
+      const source = layer.texture.getSourceImage();
+      const sourceWidth = Math.max(1, source.width);
+      const sourceHeight = Math.max(1, source.height);
+      const coverScale = Math.max((view.width + padding * 2) / sourceWidth, (view.height + padding * 2) / sourceHeight, 1);
+      layer
+        .setPosition(view.x - padding, view.y - padding)
+        .setSize(view.width + padding * 2, view.height + padding * 2)
+        .setAlpha(alphas[i]);
+      layer.tilePositionX = camera.scrollX * speeds[i];
+      layer.tilePositionY = camera.scrollY * (0.06 + i * 0.02);
+      layer.tileScaleX = coverScale;
+      layer.tileScaleY = coverScale;
+    }
   }
 
   private drawGameOver(camera: Phaser.Cameras.Scene2D.Camera) {
@@ -1258,6 +1635,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.terrainBoundsKey = boundsKey;
     this.terrain.clear();
 
+    let tileSpriteIndex = 0;
     for (let y = startY; y <= endY; y += 1) {
       for (let x = startX; x <= endX; x += 1) {
         const tile = this.getTile(x, y);
@@ -1270,14 +1648,19 @@ class DeepdiveScene extends Phaser.Scene {
         }
         const def = tiles[tile];
         const fracture = this.damage[y][x] / def.hp;
-        const color = Phaser.Display.Color.Interpolate.ColorWithColor(
-          Phaser.Display.Color.ValueToColor(def.color),
-          Phaser.Display.Color.ValueToColor(0x111822),
-          100,
-          Math.floor(fracture * 36),
-        );
-        this.terrain.fillStyle(Phaser.Display.Color.GetColor(color.r, color.g, color.b), 1);
-        this.terrain.fillRect(x * TILE, y * TILE, TILE, TILE);
+        const textureKey = tileTextureKey(tile, x, y);
+        const tileSprite = this.tileSprites[tileSpriteIndex] ?? this.add.image(0, 0, textureKey)
+          .setDepth(-1)
+          .setOrigin(0)
+          .setDisplaySize(TILE, TILE);
+        this.tileSprites[tileSpriteIndex] = tileSprite;
+        tileSprite
+          .setTexture(textureKey)
+          .setVisible(true)
+          .setAlpha(1)
+          .setPosition(x * TILE, y * TILE)
+          .setDisplaySize(TILE, TILE);
+        tileSpriteIndex += 1;
         this.terrain.lineStyle(tile === 'anchorstone' ? 2 : 1, tile === 'anchorstone' ? 0xb9c2d0 : 0x071016, tile === 'anchorstone' ? 0.5 : 0.35);
         this.terrain.strokeRect(x * TILE, y * TILE, TILE, TILE);
         if (tile === 'anchorstone') {
@@ -1299,6 +1682,9 @@ class DeepdiveScene extends Phaser.Scene {
           this.terrain.lineBetween(x * TILE + 7, y * TILE + 12, x * TILE + 12, y * TILE + 5);
         }
       }
+    }
+    for (let i = tileSpriteIndex; i < this.tileSprites.length; i += 1) {
+      this.tileSprites[i].setVisible(false);
     }
   }
 
@@ -1333,41 +1719,27 @@ class DeepdiveScene extends Phaser.Scene {
   private drawFish(camera: Phaser.Cameras.Scene2D.Camera) {
     for (const fish of this.fish) {
       const alpha = this.fishVisibilityAlpha(fish, camera);
-      if (alpha <= 0) continue;
+      if (alpha <= 0) {
+        fish.sprite?.setVisible(false);
+        continue;
+      }
       const angle = Math.atan2(fish.vy, fish.vx);
       const bodyAlpha = fish.scanned ? Math.max(alpha, 0.9) : alpha;
       const threatDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       const movingTowardPlayer = (fish.vx * (this.player.x - fish.x) + fish.vy * (this.player.y - fish.y)) > 0;
       const attacking = fish.hostile && !fish.scanned && fish.aggro > 0 && movingTowardPlayer && threatDistance < 220;
       const threat = attacking ? 1 - Phaser.Math.Clamp((threatDistance - 52) / 118, 0, 1) : 0;
-      this.actors.save();
-      this.actors.translateCanvas(fish.x, fish.y);
-      this.actors.rotateCanvas(angle);
-      this.actors.fillStyle(fish.color, bodyAlpha);
-      if (fish.hostile) {
-        this.actors.fillEllipse(0, 0, fish.radius * 2.7, fish.radius * 1.2);
-        this.actors.fillTriangle(-fish.radius * 1.2, 0, -fish.radius * 2.45, -fish.radius * 0.85, -fish.radius * 2.45, fish.radius * 0.85);
-        this.actors.fillTriangle(fish.radius * 0.4, -fish.radius * 0.45, -fish.radius * 0.2, -fish.radius * 1.35, -fish.radius * 0.9, -fish.radius * 0.34);
-        this.actors.fillTriangle(fish.radius * 0.4, fish.radius * 0.45, -fish.radius * 0.2, fish.radius * 1.35, -fish.radius * 0.9, fish.radius * 0.34);
-        this.actors.fillStyle(0xfff7df, bodyAlpha * 0.92);
-        this.actors.fillTriangle(fish.radius * 0.72, -scaledEntity(3), fish.radius * 1.08, -scaledEntity(6), fish.radius * 1.08, 0);
-      } else if (fish.pattern === 'sway') {
-        this.actors.fillEllipse(0, 0, fish.radius * 3.4, fish.radius * 0.92);
-        this.actors.fillStyle(0xeef9f7, bodyAlpha * 0.72);
-        this.actors.fillCircle(fish.radius * 0.7, -scaledEntity(2), scaledEntity(2.2));
-        this.actors.lineStyle(2, fish.color, bodyAlpha * 0.75);
-        this.actors.lineBetween(-fish.radius * 1.2, 0, -fish.radius * 2.2, Math.sin(fish.phase * 7) * scaledEntity(7));
-      } else if (fish.pattern === 'glide' || fish.pattern === 'circle') {
-        this.actors.fillTriangle(fish.radius * 1.5, 0, -fish.radius * 0.9, -fish.radius * 0.75, -fish.radius * 0.9, fish.radius * 0.75);
-        this.actors.fillStyle(0xeef9f7, bodyAlpha * 0.85);
-        this.actors.fillCircle(fish.radius * 0.42, -scaledEntity(2), scaledEntity(2.4));
-      } else {
-        this.actors.fillEllipse(0, 0, fish.radius * 2.5, fish.radius * 1.18);
-        this.actors.fillTriangle(-fish.radius * 1.1, 0, -fish.radius * 2.2, -fish.radius * 0.72, -fish.radius * 2.2, fish.radius * 0.72);
-        this.actors.fillStyle(0xeef9f7, bodyAlpha * 0.8);
-        this.actors.fillCircle(fish.radius * 0.56, -scaledEntity(2), scaledEntity(2.5));
-      }
-      this.actors.restore();
+      const desiredWidth = fish.radius * (fish.hostile ? 3.8 : fish.pattern === 'circle' || fish.pattern === 'glide' ? 3.4 : 3);
+      const pose = swimPose(angle, fish.facingSign);
+      const frame = animatedFrame(fish.phase, Math.hypot(fish.vx, fish.vy), fishFrameCount(fish.assetKey), 4.2);
+      fish.sprite
+        ?.setTexture(`${fish.assetKey}-${frame}`)
+        .setVisible(true)
+        .setAlpha(bodyAlpha)
+        .setPosition(fish.x, fish.y)
+        .setFlipX(pose.flipX)
+        .setRotation(pose.rotation);
+      fitImageWidth(fish.sprite, desiredWidth);
       if (attacking) {
         const markerAlpha = Math.max(0.35, threat) * alpha;
         const markerY = fish.y - fish.radius - scaledEntity(18) - Math.sin(fish.phase * 7) * scaledEntity(2);
@@ -1396,17 +1768,22 @@ class DeepdiveScene extends Phaser.Scene {
   private drawFlora(camera: Phaser.Cameras.Scene2D.Camera) {
     const view = camera.worldView;
     for (const flora of this.flora) {
-      if (flora.x < view.x - 60 || flora.x > view.right + 60 || flora.y < view.y - 60 || flora.y > view.bottom + 60) continue;
+      if (flora.x < view.x - 60 || flora.x > view.right + 60 || flora.y < view.y - 60 || flora.y > view.bottom + 60) {
+        flora.sprite?.setVisible(false);
+        continue;
+      }
       const alpha = state.depth < 180 || Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y) < lightRadius() + 120
         ? 0.82
         : flora.scanned ? 0.42 : 0.18;
       const sway = Math.sin(flora.phase * 2.1) * scaledEntity(4);
-      this.actors.lineStyle(2, flora.color, alpha);
-      this.actors.lineBetween(flora.x, flora.y + flora.radius, flora.x + sway, flora.y - flora.radius);
-      this.actors.lineBetween(flora.x - scaledEntity(4), flora.y + flora.radius * 0.35, flora.x - scaledEntity(9) + sway, flora.y - flora.radius * 0.45);
-      this.actors.lineBetween(flora.x + scaledEntity(4), flora.y + flora.radius * 0.2, flora.x + scaledEntity(11) + sway, flora.y - flora.radius * 0.55);
-      this.actors.fillStyle(flora.color, alpha * 0.9);
-      this.actors.fillCircle(flora.x + sway, flora.y - flora.radius, scaledEntity(flora.rare ? 4 : 3));
+      fitImageHeight(flora.sprite, flora.radius * (flora.rare ? 4.7 : 4));
+      flora.sprite
+        ?.setTexture(flora.assetKey)
+        .setVisible(true)
+        .setAlpha(alpha)
+        .setPosition(flora.x + sway, flora.y)
+        .setRotation(Math.sin(flora.phase * 1.4) * 0.035)
+        .setOrigin(0.5, 0.82);
       if (flora.hazardous) {
         this.actors.lineStyle(1, 0xff4f64, 0.35 + (flora.rare ? 0.25 : 0));
         this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(5) + Math.sin(flora.phase * 5) * scaledEntity(2));
@@ -1448,18 +1825,20 @@ class DeepdiveScene extends Phaser.Scene {
     const p = this.player;
     const angle = p.facing.angle();
     const s = PLAYER_DRAW_SCALE;
-    this.actors.save();
-    this.actors.translateCanvas(p.x, p.y);
-    this.actors.rotateCanvas(angle);
-    this.actors.fillStyle(0xf4c16d, 1);
-    this.actors.fillRoundedRect(-12 * s, -9 * s, 24 * s, 18 * s, 8 * s);
-    this.actors.fillStyle(0x97ecf0, 1);
-    this.actors.fillCircle(7 * s, -1 * s, 6 * s);
-    this.actors.fillStyle(0xeef9f7, 1);
-    this.actors.fillTriangle(13 * s, 0, (34 + state.upgrades.laser * 5) * s, -4 * s, (34 + state.upgrades.laser * 5) * s, 4 * s);
-    this.actors.restore();
-    this.actors.lineStyle(2, 0x9de2da, 0.38);
-    this.actors.strokeCircle(p.x, p.y, 18 * s);
+    const swimSpeed = Math.hypot(p.vx, p.vy);
+    const animation = diverAnimation(p.vx, p.vy, swimSpeed, p.mineCooldown, state.lost);
+    const pose = diverPose(animation, angle, p.facingSign);
+    const origin = diverOrigin(animation, p.facingSign);
+    const frame = diverFrame(animation, performance.now() * 0.001, swimSpeed, p.mineCooldown);
+    this.playerSprite
+      .setTexture(`diver-${animation}-${frame}`)
+      .setVisible(true)
+      .setPosition(p.x, p.y)
+      .setOrigin(origin.x, origin.y)
+      .setFlipX(pose.flipX)
+      .setRotation(pose.rotation)
+      .setAlpha(state.lost ? 0.45 : 1);
+    fitImageWidth(this.playerSprite, diverDisplayWidth(animation) * s);
   }
 
   private drawDarkness(camera: Phaser.Cameras.Scene2D.Camera) {
@@ -1637,6 +2016,244 @@ function scaledEntity(value: number) {
   return value * ENTITY_SCALE;
 }
 
+function loadGeneratedAssets(scene: Phaser.Scene) {
+  const assetPath = (name: string) => `/assets/generated/${name}.png`;
+  for (const [animation, frameCount] of Object.entries(diverFrameCounts)) {
+    for (let i = 0; i < frameCount; i += 1) {
+      scene.load.image(`diver-${animation}-${i}`, assetPath(`diver-${animation}-${i}`));
+    }
+  }
+  for (const base of ['fish-shallow-neutral', 'fish-shallow-predator', 'fish-mid-neutral', 'fish-mid-predator', 'fish-abyss-predator']) {
+    for (let i = 0; i < fishFrameCount(base); i += 1) scene.load.image(`${base}-${i}`, assetPath(`${base}-${i}`));
+  }
+  scene.load.image('flora-shallow-kelp', assetPath('flora-shallow-kelp'));
+  scene.load.image('flora-shallow-anemone', assetPath('flora-shallow-anemone'));
+  scene.load.image('flora-deep-tube', assetPath('flora-deep-tube'));
+  scene.load.image('flora-deep-coral', assetPath('flora-deep-coral'));
+  for (const key of parallaxTextureKeys()) scene.load.image(key, assetPath(key));
+  for (const key of uiTextureKeys()) scene.load.image(key, assetPath(key));
+  for (const key of terrainTextureKeys()) {
+    scene.load.image(key, assetPath(key));
+  }
+}
+
+function parallaxTextureKeys() {
+  return [
+    'parallax-shallow-0',
+    'parallax-shallow-1',
+    'parallax-shallow-2',
+    'parallax-shallow-3',
+    'parallax-deep-0',
+    'parallax-deep-1',
+    'parallax-deep-2',
+    'parallax-deep-3',
+  ];
+}
+
+function uiTextureKeys() {
+  return [
+    'ui-title-logo',
+    'ui-title-decor',
+    'ui-title-button',
+    'ui-title-divider',
+    'ui-panel-wide',
+    'ui-button-frame',
+    'ui-meter-blue',
+    'ui-meter-red',
+    'ui-slot-frame',
+    'ui-radar',
+  ];
+}
+
+function terrainTextureKeys() {
+  return [
+    'tile-sand-0',
+    'tile-sand-1',
+    'tile-sand-2',
+    'tile-stone-0',
+    'tile-stone-1',
+    'tile-stone-2',
+    'tile-deep-0',
+    'tile-deep-1',
+    'tile-deep-2',
+    'tile-abyss-0',
+    'tile-abyss-1',
+    'tile-abyss-2',
+    'tile-alloy-0',
+    'tile-alloy-1',
+    'tile-alloy-2',
+    'tile-copper',
+    'tile-quartz',
+    'tile-ruby',
+    'tile-cobalt',
+    'tile-gold',
+    'tile-relic',
+    'tile-idol',
+    'tile-precursor',
+    'tile-crown',
+    'tile-alien-alloy',
+    'tile-ruin-core',
+  ];
+}
+
+function tileTextureKey(tile: Tile, x: number, y: number) {
+  const variant = tileVariant(x, y);
+  if (tile === 'sand') return `tile-sand-${variant}`;
+  if (tile === 'stone') {
+    if (state.biome === 4 || y > WORLD_H * 0.76) return `tile-abyss-${variant}`;
+    if (state.biome >= 3 || y > WORLD_H * 0.52) return `tile-deep-${variant}`;
+    return `tile-stone-${variant}`;
+  }
+  if (tile === 'bedrock' || tile === 'anchorstone') return `tile-alloy-${variant}`;
+  if (tile === 'copper') return 'tile-copper';
+  if (tile === 'quartz') return 'tile-quartz';
+  if (tile === 'ruby') return 'tile-ruby';
+  if (tile === 'cobalt') return 'tile-cobalt';
+  if (tile === 'sunstone') return 'tile-gold';
+  if (tile === 'relic') return 'tile-relic';
+  if (tile === 'drownedIdol') return 'tile-idol';
+  if (tile === 'precursorEngine') return 'tile-precursor';
+  if (tile === 'abyssalCrown') return 'tile-crown';
+  if (tile === 'alienAlloy') return 'tile-alien-alloy';
+  if (tile === 'ruinCore') return 'tile-ruin-core';
+  return `tile-stone-${variant}`;
+}
+
+function tileVariant(x: number, y: number) {
+  return Math.floor(hash(x * 19, y * 23, seed) * 3) % 3;
+}
+
+function sonarKey(x: number, y: number) {
+  return `${x}:${y}`;
+}
+
+function sonarTileColor(tile: Tile, edge: boolean) {
+  if (tile === 'water') return 'rgba(12, 88, 111, 0.5)';
+  if (tile === 'sand') return edge ? 'rgba(213, 176, 103, 0.98)' : 'rgba(185, 148, 88, 0.34)';
+  if (tile === 'stone') return edge ? 'rgba(151, 172, 191, 0.98)' : 'rgba(92, 111, 128, 0.38)';
+  if (tile === 'bedrock' || tile === 'anchorstone') return edge ? 'rgba(203, 218, 232, 0.98)' : 'rgba(122, 143, 164, 0.42)';
+  if (isArtifactTile(tile) || tile === 'alienAlloy') return 'rgba(115, 251, 211, 0.95)';
+  if (tiles[tile].value > 0) return 'rgba(255, 209, 102, 0.95)';
+  return 'rgba(140, 180, 190, 0.8)';
+}
+
+function fishAssetKey(species: FishSpecies) {
+  if (!species.hostile) return state.biome === 1 ? 'fish-shallow-neutral' : 'fish-mid-neutral';
+  if (state.biome >= 3 || species.radius >= 24) return 'fish-abyss-predator';
+  if (state.biome === 2 || species.radius >= 18) return 'fish-mid-predator';
+  return 'fish-shallow-predator';
+}
+
+function floraAssetKey(species: FloraSpecies) {
+  if (state.biome === 1) return species.hazardous ? 'flora-shallow-anemone' : 'flora-shallow-kelp';
+  return species.hazardous || species.rare ? 'flora-deep-coral' : 'flora-deep-tube';
+}
+
+function fitImageWidth(image: Phaser.GameObjects.Image | undefined, width: number) {
+  if (!image || image.width <= 0) return;
+  image.setScale(width / image.width);
+}
+
+function fitImageHeight(image: Phaser.GameObjects.Image | undefined, height: number) {
+  if (!image || image.height <= 0) return;
+  image.setScale(height / image.height);
+}
+
+function updateFacingFromVelocity(entity: Fish) {
+  if (entity.vx < -2) entity.facingSign = -1;
+  if (entity.vx > 2) entity.facingSign = 1;
+}
+
+function animatedFrame(phase: number, speed: number, frames: number, fps = 4.5) {
+  const rate = Phaser.Math.Clamp(speed / 95, 0.55, 1.18);
+  return Math.floor((phase * rate * fps) % frames);
+}
+
+function diverAnimation(vx: number, vy: number, speed: number, mineCooldownRemaining: number, lost: boolean): DiverAnimation {
+  if (lost) return 'die';
+  if (mineCooldownRemaining > 0.04) return 'mine';
+  if (speed < 9) return 'idle';
+  return speed > swimTopSpeed() * 0.78 ? 'boost' : 'swim';
+}
+
+function diverFrame(animation: DiverAnimation, timeSeconds: number, speed: number, mineCooldownRemaining: number) {
+  const frameCount = diverFrameCounts[animation];
+  if (animation === 'die') {
+    return Math.min(frameCount - 1, Math.floor((timeSeconds * 4.5) % (frameCount + 3)));
+  }
+  if (animation === 'mine') {
+    const progress = 1 - Phaser.Math.Clamp(mineCooldownRemaining / Math.max(0.01, mineCooldown()), 0, 1);
+    return Math.min(frameCount - 1, Math.floor(progress * frameCount));
+  }
+  const baseFps =
+    animation === 'idle' ? 1.9 :
+      animation === 'hover' || animation === 'ascend' || animation === 'descend' ? 3.2 :
+        animation === 'boost' ? 5.6 :
+          4.25;
+  const rate = animation === 'idle'
+    ? 1
+    : Phaser.Math.Clamp(speed / 100, 0.76, animation === 'boost' ? 1.12 : 1.04);
+  return Math.floor(timeSeconds * baseFps * rate) % frameCount;
+}
+
+function diverPose(animation: DiverAnimation, angle: number, facingSign: 1 | -1) {
+  if (animation === 'swim' || animation === 'boost') return swimPose(angle, facingSign);
+  if (animation === 'mine' || animation === 'recoil' || animation === 'damage') {
+    return swimPose(angle, facingSign, 1.35);
+  }
+  return { flipX: false, rotation: 0 };
+}
+
+function diverDisplayWidth(animation: DiverAnimation) {
+  if (animation === 'swim') return 58;
+  if (animation === 'boost') return 62;
+  if (animation === 'mine') return 48;
+  if (animation === 'recoil' || animation === 'damage') return 42;
+  if (animation === 'die' || animation === 'revive') return 39;
+  if (animation === 'idle') return 40;
+  return 32;
+}
+
+function diverOrigin(animation: DiverAnimation, facingSign: 1 | -1) {
+  let x = 0.5;
+  let y = 0.55;
+  if (animation === 'swim') {
+    x = 45 / 104;
+    y = 38 / 82;
+  } else if (animation === 'boost') {
+    x = 48 / 112;
+    y = 39 / 86;
+  } else if (animation === 'mine') {
+    x = 44 / 94;
+    y = 40 / 76;
+  } else if (animation === 'idle') {
+    x = 33 / 66;
+    y = 44 / 80;
+  }
+  return {
+    x: facingSign < 0 && (animation === 'swim' || animation === 'boost') ? 1 - x : x,
+    y,
+  };
+}
+
+function fishFrameCount(assetKey: string) {
+  if (assetKey === 'fish-shallow-neutral') return 4;
+  if (assetKey === 'fish-shallow-predator') return 4;
+  if (assetKey === 'fish-mid-neutral') return 4;
+  if (assetKey === 'fish-mid-predator') return 4;
+  if (assetKey === 'fish-abyss-predator') return 4;
+  return 1;
+}
+
+function swimPose(angle: number, facingSign: 1 | -1, maxPitch = 0.72) {
+  const flipX = facingSign < 0;
+  const localPitch = Math.atan2(Math.sin(angle), Math.abs(Math.cos(angle)));
+  return {
+    flipX,
+    rotation: Phaser.Math.Clamp(localPitch * facingSign, -maxPitch, maxPitch),
+  };
+}
+
 function isArtifactTile(tile: Tile) {
   return tile === 'drownedIdol' || tile === 'precursorEngine' || tile === 'abyssalCrown' || tile === 'ruinCore';
 }
@@ -1651,6 +2268,20 @@ function oxygenMax() {
 
 function hullMax() {
   return 100 + state.upgrades.suit * 32;
+}
+
+function fuelMax() {
+  return 100;
+}
+
+function fuelRefillCost(fullTank: boolean) {
+  if (!fullTank) return FUEL_REFILL_COST;
+  const cells = Math.ceil(Math.max(0, fuelMax() - state.fuel) / FUEL_REFILL_AMOUNT);
+  return Math.max(0, cells * FUEL_REFILL_COST);
+}
+
+function miningFuelCost(targetCount: number) {
+  return MINE_FUEL_COST + targetCount * 0.07 + state.upgrades.laser * 0.01;
 }
 
 function cargoCapacity() {
@@ -1739,6 +2370,29 @@ function upgradeMax(upgrade: Upgrade) {
 function refillAtBoat(delta = 1) {
   state.oxygen = Math.min(oxygenMax(), state.oxygen + 90 * delta);
   state.hull = Math.min(hullMax(), state.hull + 75 * delta);
+  if (state.oxygen >= oxygenMax() * 0.96) resetOxygenWarnings();
+}
+
+function checkOxygenWarnings() {
+  if (!state.started || state.lost || state.won || state.atBoat) return;
+  const pct = state.oxygen / oxygenMax();
+  if (pct <= 0.25 && !state.oxygenWarnings.quarter) {
+    state.oxygenWarnings.quarter = true;
+    showFullscreenWarning('Oxygen critical', '25% reserve remaining');
+    state.status = 'Oxygen critical. Surface immediately or find the barge.';
+    renderHud();
+  } else if (pct <= 0.5 && !state.oxygenWarnings.half) {
+    state.oxygenWarnings.half = true;
+    showFullscreenWarning('Oxygen low', '50% reserve remaining');
+    state.status = 'Oxygen reserves at half. Plan your return route.';
+    renderHud();
+  }
+}
+
+function resetOxygenWarnings() {
+  state.oxygenWarnings.half = false;
+  state.oxygenWarnings.quarter = false;
+  clearFullscreenWarning();
 }
 
 function depthColor(depth: number) {
@@ -1771,9 +2425,13 @@ function restart(scene: DeepdiveScene) {
   state.credits = 0;
   state.oxygen = 100;
   state.hull = 100;
+  state.fuel = fuelMax();
   state.depth = 0;
   state.maxDepth = 0;
   state.cargo = [];
+  state.sonarRevealed.clear();
+  state.sonarContacts = [];
+  resetOxygenWarnings();
   state.scannedSpecies.clear();
   state.won = false;
   state.lost = false;
@@ -1797,13 +2455,14 @@ function renderHud() {
         <section id="game"></section>
         <aside id="title-screen" class="title-screen">
           <div class="title-mark">
+            <img class="title-logo" src="/assets/generated/ui-title-logo.png" alt="Abyss Miner">
             <span>Deepwater salvage program</span>
-            <h1>Abyss Miner</h1>
             <p>Mine the trench, catalog what moves in the dark, and decide what is worth carrying back before the sea closes around you.</p>
           </div>
           <div class="title-actions">
-            <button data-start-game>Begin Dive</button>
+            <button class="title-play" data-start-game aria-label="Play"></button>
           </div>
+          <img class="title-divider" src="/assets/generated/ui-title-divider.png" alt="">
           <div class="title-brief">
             <article>
               <strong>Descend</strong>
@@ -1832,6 +2491,7 @@ function renderHud() {
           <span>WASD / arrows move</span>
           <span>Mouse or Space cuts terrain</span>
           <span>Hold E to scan nearby fish</span>
+          <span>Q sends a sonar ping</span>
           <span>Dock at the barge to sell, refill, repair, and upgrade</span>
         </aside>
       </main>
@@ -1851,12 +2511,15 @@ function renderHud() {
       <div><strong>${state.depth} m</strong><span>Depth</span></div>
       <div><strong>${state.maxDepth} m</strong><span>Record</span></div>
     </div>
+    ${sonarPanel()}
     ${meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
     ${meter('Hull', state.hull, hullMax(), '#ff8a6b')}
+    ${meter('Fuel', state.fuel, fuelMax(), '#ffd166')}
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
     <p class="status">${state.status}</p>
     <div class="utility-actions">
+      <button data-sonar>Sonar ping</button>
       <button data-pause>${state.paused ? 'Resume' : 'Pause'}</button>
       <button data-gold>+1,000 credits</button>
     </div>
@@ -1878,12 +2541,14 @@ function renderHud() {
         <span>Cargo sold automatically</span>
         <strong>${state.credits} credits</strong>
       </div>
+      ${bargeFuelRow()}
       ${bargeTravelRow()}
       <div class="upgrade-list">
         ${availableUpgrades().map((upgrade) => upgradeRow(upgrade)).join('')}
       </div>
     `
     : '';
+  gameScene()?.drawSonarMap();
 }
 
 function renderGameOver(app: HTMLDivElement) {
@@ -1910,6 +2575,36 @@ function renderGameOver(app: HTMLDivElement) {
     </div>
     <button data-restart>Restart run</button>
   `;
+  gameScene()?.drawSonarMap();
+}
+
+let fullscreenWarningTimeout: number | undefined;
+
+function showFullscreenWarning(title: string, detail: string) {
+  const app = document.querySelector<HTMLDivElement>('#app');
+  if (!app) return;
+  let warning = app.querySelector<HTMLElement>('#fullscreen-warning');
+  if (!warning) {
+    warning = document.createElement('aside');
+    warning.id = 'fullscreen-warning';
+    warning.className = 'fullscreen-warning';
+    app.appendChild(warning);
+  }
+  warning.innerHTML = `
+    <span>${detail}</span>
+    <strong>${title}</strong>
+  `;
+  warning.classList.remove('is-fading');
+  window.clearTimeout(fullscreenWarningTimeout);
+  fullscreenWarningTimeout = window.setTimeout(() => {
+    warning?.classList.add('is-fading');
+  }, 2400);
+}
+
+function clearFullscreenWarning() {
+  window.clearTimeout(fullscreenWarningTimeout);
+  fullscreenWarningTimeout = undefined;
+  document.querySelector('#fullscreen-warning')?.remove();
 }
 
 function bindUiEvents(app: HTMLDivElement) {
@@ -1944,6 +2639,18 @@ function bindUiEvents(app: HTMLDivElement) {
       renderHud();
       return;
     }
+    const sonarButton = target.closest<HTMLButtonElement>('button[data-sonar]');
+    if (sonarButton && !sonarButton.disabled) {
+      event.preventDefault();
+      gameScene()?.sonarPing();
+      return;
+    }
+    const fuelButton = target.closest<HTMLButtonElement>('button[data-buy-fuel]');
+    if (fuelButton && !fuelButton.disabled) {
+      event.preventDefault();
+      gameScene()?.buyFuel(fuelButton.dataset.buyFuel === 'full');
+      return;
+    }
     const goldButton = target.closest<HTMLButtonElement>('button[data-gold]');
     if (goldButton) {
       event.preventDefault();
@@ -1975,6 +2682,39 @@ function bindUiEvents(app: HTMLDivElement) {
 
 function availableUpgrades() {
   return upgrades.filter((upgrade) => upgrade.biome <= state.biome);
+}
+
+function sonarPanel() {
+  return `
+    <section class="sonar-panel">
+      <div>
+        <span>Sonar map</span>
+        <strong>${state.sonarRevealed.size.toLocaleString()} cells</strong>
+      </div>
+      <canvas id="sonar-map" width="224" height="224" aria-label="Sonar minimap"></canvas>
+      <button data-sonar ${state.fuel < SONAR_FUEL_COST ? 'disabled' : ''}>Ping ${SONAR_FUEL_COST} fuel</button>
+    </section>
+  `;
+}
+
+function bargeFuelRow() {
+  const missing = fuelMax() - state.fuel;
+  const fuelCost = fuelRefillCost(false);
+  const fullCost = fuelRefillCost(true);
+  const refuelDisabled = missing <= 0 || state.credits < fuelCost;
+  const fullDisabled = missing <= 0 || state.credits < fullCost;
+  return `
+    <article class="fuel-card">
+      <div>
+        <strong>Cutter fuel</strong>
+        <span>Mining and sonar consume fuel. Barge pumps sell reserves in measured cells.</span>
+      </div>
+      <div class="fuel-card__actions">
+        <button data-buy-fuel="cell" ${refuelDisabled ? 'disabled' : ''}>+${FUEL_REFILL_AMOUNT} fuel ${fuelCost}c</button>
+        <button data-buy-fuel="full" ${fullDisabled ? 'disabled' : ''}>Fill tank ${fullCost}c</button>
+      </div>
+    </article>
+  `;
 }
 
 function bargeTravelRow() {
@@ -2020,10 +2760,11 @@ function nextBiomeName() {
 
 function meter(label: string, value: number, max: number, color: string, detail = `${Math.ceil(value)} / ${max}`) {
   const pct = Phaser.Math.Clamp((value / max) * 100, 0, 100);
+  const slug = label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   return `
-    <div class="meter-block">
+    <div class="meter-block meter-${slug}">
       <div><span>${label}</span><strong>${detail}</strong></div>
-      <i><b style="width:${pct}%; background:${color}"></b></i>
+      <i><b style="width:${pct}%; background:${color}; color:${color}"></b></i>
     </div>
   `;
 }
@@ -2073,12 +2814,13 @@ function upgradeRow(upgrade: Upgrade) {
 }
 
 function gameScene(): DeepdiveScene | null {
-  return game.scene.getScene('DeepdiveScene') as DeepdiveScene | null;
+  return game?.scene.getScene('DeepdiveScene') as DeepdiveScene | null ?? null;
 }
+
+let game: Phaser.Game | null = null;
 
 renderHud();
 
-let game: Phaser.Game;
 game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
