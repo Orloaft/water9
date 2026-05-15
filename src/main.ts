@@ -77,6 +77,7 @@ interface Fish {
   pattern: FishPattern;
   bumpCooldown: number;
   aggro: number;
+  stunned: number;
   assetKey: string;
   facingSign: 1 | -1;
   sprite?: Phaser.GameObjects.Image;
@@ -137,6 +138,25 @@ interface Hazard {
   radius: number;
   phase: number;
   heat: number;
+  sprite?: Phaser.GameObjects.Image;
+}
+
+type BobbitState = 'hidden' | 'emerging' | 'lunging' | 'latched' | 'cooldown';
+
+interface Bobbit {
+  x: number;
+  y: number;
+  homeX: number;
+  homeY: number;
+  latchX: number;
+  latchY: number;
+  facingSign: 1 | -1;
+  phase: number;
+  state: BobbitState;
+  timer: number;
+  escapeRemaining: number;
+  cooldown: number;
+  sprite?: Phaser.GameObjects.Image;
 }
 
 interface LooseItem {
@@ -162,7 +182,7 @@ interface FloatingText {
 interface SonarContact {
   x: number;
   y: number;
-  kind: 'fish' | 'flora';
+  kind: 'fish' | 'flora' | 'barge';
   hostile: boolean;
   age: number;
 }
@@ -190,6 +210,27 @@ const SONAR_FUEL_COST = 1.5;
 const SONAR_REVEAL_RADIUS_TILES = 16;
 const SONAR_ATTRACT_RADIUS = 390;
 const SONAR_COOLDOWN = 0.75;
+const STUN_GRENADE_COST = 850;
+const STUN_GRENADE_RADIUS = 310;
+const STUN_GRENADE_DURATION = 5;
+const BOBBIT_DETECT_RADIUS = 132;
+const BOBBIT_LATCH_RADIUS = 32;
+const BOBBIT_ESCAPE_SECONDS = 5;
+const FISH_BITE_SFX_GAP_MS = 320;
+const audioKeys = {
+  menu: 'audio-menu-loop',
+  ambient: 'audio-ambient-loop',
+  mining: 'audio-mining-loop',
+  oxygen: 'audio-out-of-oxygen',
+  sonar: 'audio-sonar-ping',
+} as const;
+const audioVolumes = {
+  menu: 0.42,
+  ambient: 0.34,
+  mining: 0.38,
+  oxygen: 0.62,
+  sonar: 0.56,
+} as const;
 const diverFrameCounts: Record<DiverAnimation, number> = {
   idle: 6,
   walk: 7,
@@ -303,6 +344,7 @@ const state = {
   oxygen: 100,
   hull: 100,
   fuel: 100,
+  stunGrenades: 0,
   depth: 0,
   maxDepth: 0,
   cargo: [] as CargoItem[],
@@ -340,6 +382,7 @@ class DeepdiveScene extends Phaser.Scene {
   private darkness!: Phaser.GameObjects.Graphics;
   private lampGloom!: Phaser.GameObjects.Graphics;
   private overlay!: Phaser.GameObjects.Graphics;
+  private bargeSprite!: Phaser.GameObjects.Image;
   private playerSprite!: Phaser.GameObjects.Image;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
@@ -349,9 +392,17 @@ class DeepdiveScene extends Phaser.Scene {
   private fish: Fish[] = [];
   private flora: Flora[] = [];
   private hazards: Hazard[] = [];
+  private bobbits: Bobbit[] = [];
   private looseItems: LooseItem[] = [];
   private floatingTexts: FloatingText[] = [];
   private sonarPings: Array<{ x: number; y: number; age: number; life: number }> = [];
+  private menuLoop?: Phaser.Sound.BaseSound;
+  private ambientLoop?: Phaser.Sound.BaseSound;
+  private miningLoop?: Phaser.Sound.BaseSound;
+  private oxygenLoop?: Phaser.Sound.BaseSound;
+  private creatureCallTimer = 0;
+  private drillingThisFrame = false;
+  private lastFishBiteSfxAt = -Infinity;
   private terrainBoundsKey = '';
   private terrainDirty = true;
   private player = {
@@ -379,16 +430,20 @@ class DeepdiveScene extends Phaser.Scene {
   create() {
     this.cameras.main.setBounds(0, 0, WORLD_W * TILE, WORLD_H * TILE);
     this.cameras.main.setRoundPixels(true);
+    this.tileSprites = [];
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,Q,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,G,Q,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
     this.parallaxLayers = [0, 1, 2, 3].map((index) => this.add
       .tileSprite(0, 0, 1, 1, `parallax-shallow-${index}`)
       .setOrigin(0)
       .setDepth(-12 + index)
       .setScrollFactor(1));
     this.terrain = this.add.graphics().setDepth(0);
+    this.bargeSprite = this.add.image(WORLD_W * TILE * 0.5, SURFACE_Y + 24, 'barge-side')
+      .setDepth(2.6)
+      .setOrigin(0.5, 1);
     this.playerSprite = this.add.image(this.player.x, this.player.y, 'diver-swim-0').setDepth(2).setOrigin(0.5);
     this.actors = this.add.graphics().setDepth(3);
     this.darkness = this.add.graphics().setDepth(5);
@@ -397,6 +452,8 @@ class DeepdiveScene extends Phaser.Scene {
     this.generateWorld();
     if (state.started) this.revealSonarAtPlayer(8);
     this.cameras.main.centerOn(this.player.x, this.player.y);
+    this.creatureCallTimer = Phaser.Math.Between(95, 175);
+    this.updateAudio(0);
     renderHud();
   }
 
@@ -410,6 +467,7 @@ class DeepdiveScene extends Phaser.Scene {
       this.updateFish(delta * 0.35);
       this.updateFlora(delta * 0.35);
       this.draw();
+      this.updateAudio(delta);
       return;
     }
     if (Phaser.Input.Keyboard.JustDown(this.keys.R)) {
@@ -418,24 +476,29 @@ class DeepdiveScene extends Phaser.Scene {
     }
     if (state.lost || state.won) {
       this.draw();
+      this.updateAudio(delta);
       return;
     }
     if (state.paused) {
       this.draw();
+      this.updateAudio(delta);
       return;
     }
 
+    this.drillingThisFrame = false;
     this.updatePlayer(delta);
     this.updateLooseItems(delta);
     this.updateFlora(delta);
     this.updateFish(delta);
     this.updateHazards(delta);
+    this.updateBobbits(delta);
     this.updateSystems(delta);
     this.updateFloatingTexts(delta);
     this.updateSonarPings(delta);
     this.updateCameraZoom();
     this.cameras.main.centerOn(this.player.x, this.player.y);
     this.draw();
+    this.updateAudio(delta);
     this.hudTimer += deltaMs;
     if (this.hudTimer > 90) {
       this.hudTimer = 0;
@@ -475,6 +538,14 @@ class DeepdiveScene extends Phaser.Scene {
     state.credits -= fuelRefillCost(fullTank);
     state.fuel = Math.min(fuelMax(), state.fuel + amount);
     state.status = `Loaded ${Math.round(amount)} fuel into the cutter reserves.`;
+    renderHud();
+  }
+
+  buyStunGrenade() {
+    if (!state.atBoat || state.credits < STUN_GRENADE_COST) return;
+    state.credits -= STUN_GRENADE_COST;
+    state.stunGrenades += 1;
+    state.status = `Loaded a stun grenade. ${state.stunGrenades} ready.`;
     renderHud();
   }
 
@@ -535,11 +606,22 @@ class DeepdiveScene extends Phaser.Scene {
       .setVisible(false);
   }
 
+  private tileSpriteAt(index: number, textureKey: string) {
+    const cached = this.tileSprites[index];
+    const tileSprite = cached?.scene ? cached : this.add.image(0, 0, textureKey)
+      .setDepth(-1)
+      .setOrigin(0)
+      .setDisplaySize(TILE, TILE);
+    this.tileSprites[index] = tileSprite;
+    return tileSprite;
+  }
+
   private generateWorld() {
     this.world = [];
     this.damage = [];
     this.looseItems = [];
     this.flora = [];
+    this.bobbits = [];
     state.sonarRevealed.clear();
     state.sonarContacts = [];
     for (let y = 0; y < WORLD_H; y += 1) {
@@ -566,22 +648,48 @@ class DeepdiveScene extends Phaser.Scene {
     this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
     this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
     this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
+    this.bobbits = state.biome >= 2 ? this.makeBobbits() : [];
   }
 
   private makeVentFields(): Hazard[] {
     const vents: Hazard[] = [];
     const count = state.biome === 4 ? 32 : state.biome === 3 ? 26 : 18;
     for (let i = 0; i < count; i += 1) {
-      const point = this.findOpenWaterInBand(scaledDepthPx(340 + i * 42), scaledDepthPx(2200));
+      const point = this.findRockTopAnchorInBand(scaledDepthPx(340 + i * 42), scaledDepthPx(2200));
       vents.push({
         x: point.x,
         y: point.y,
         radius: scaledEntity(Phaser.Math.Between(34, 58)),
         phase: Math.random() * Math.PI * 2,
         heat: Phaser.Math.FloatBetween(0.7, state.biome >= 3 ? 1.55 : 1.25),
+        sprite: this.createEntitySprite(point.x, point.y, 'vent-steam-0').setDepth(1.5).setOrigin(0.5, 1),
       });
     }
     return vents;
+  }
+
+  private makeBobbits(): Bobbit[] {
+    const bobbits: Bobbit[] = [];
+    const count = state.biome === 4 ? 16 : state.biome === 3 ? 12 : 8;
+    for (let i = 0; i < count; i += 1) {
+      const point = this.findRockTopAnchorInBand(scaledDepthPx(360 + i * 86), scaledDepthPx(2380));
+      bobbits.push({
+        x: point.x,
+        y: point.y + 2,
+        homeX: point.x,
+        homeY: point.y + 2,
+        latchX: point.x,
+        latchY: point.y + 2,
+        facingSign: 1,
+        phase: Math.random() * Math.PI * 2,
+        state: 'hidden',
+        timer: 0,
+        escapeRemaining: BOBBIT_ESCAPE_SECONDS,
+        cooldown: Phaser.Math.FloatBetween(0, 2.5),
+        sprite: this.createEntitySprite(point.x, point.y + 2, 'bobbit-0').setDepth(2.2).setOrigin(0.5, 1),
+      });
+    }
+    return bobbits;
   }
 
   private makeSchool(species: FishSpecies): Fish[] {
@@ -611,6 +719,7 @@ class DeepdiveScene extends Phaser.Scene {
         pattern: species.pattern,
         bumpCooldown: 0,
         aggro: 0,
+        stunned: 0,
         assetKey,
         facingSign: Math.cos(angle) < 0 ? -1 : 1,
         sprite: this.createEntitySprite(point.x, point.y, assetKey),
@@ -657,6 +766,19 @@ class DeepdiveScene extends Phaser.Scene {
     }
     const fallback = this.findOpenWaterInBand(minY, maxY);
     return { x: fallback.x, y: fallback.y + TILE * 0.35 };
+  }
+
+  private findRockTopAnchorInBand(minY: number, maxY: number) {
+    for (let attempt = 0; attempt < 220; attempt += 1) {
+      const tx = Phaser.Math.Between(4, WORLD_W - 5);
+      const ty = Math.floor(Phaser.Math.Between(minY, maxY) / TILE);
+      if (ty < 2 || ty >= WORLD_H - 3) continue;
+      if (this.getTile(tx, ty) !== 'water') continue;
+      if (this.getTile(tx, ty - 1) !== 'water') continue;
+      if (!tiles[this.getTile(tx, ty + 1)].solid) continue;
+      return { x: tx * TILE + TILE * 0.5, y: (ty + 1) * TILE + 2 };
+    }
+    return this.findFloraAnchorInBand(minY, maxY);
   }
 
   private findOpenWaterInBand(minY: number, maxY: number) {
@@ -861,6 +983,25 @@ class DeepdiveScene extends Phaser.Scene {
       input.normalize();
     }
 
+    const latchedBobbit = this.latchedBobbit();
+    if (latchedBobbit) {
+      this.player.x = latchedBobbit.latchX;
+      this.player.y = latchedBobbit.latchY;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      if (hasInput) {
+        this.rotateFacingToward(input.angle(), delta, 7.2);
+        this.updatePlayerFacing(input.x);
+      }
+      this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
+      this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
+      this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
+      if (Phaser.Input.Keyboard.JustDown(this.keys.G)) {
+        this.useStunGrenade();
+      }
+      return;
+    }
+
     const topSpeed = swimTopSpeed();
     const thrust = (this.isAtBoat() ? 620 : 320) + state.upgrades.speed * 42;
     this.player.vx += input.x * thrust * delta;
@@ -891,6 +1032,9 @@ class DeepdiveScene extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this.keys.Q)) {
       this.sonarPing();
     }
+    if (Phaser.Input.Keyboard.JustDown(this.keys.G)) {
+      this.useStunGrenade();
+    }
     const pointer = this.input.activePointer;
     if (pointer.isDown) this.mineAt(pointer.worldX, pointer.worldY);
     if (this.keys.SPACE.isDown) {
@@ -902,6 +1046,74 @@ class DeepdiveScene extends Phaser.Scene {
   private updatePlayerFacing(horizontalIntent: number) {
     if (horizontalIntent < -0.08) this.player.facingSign = -1;
     if (horizontalIntent > 0.08) this.player.facingSign = 1;
+  }
+
+  private latchedBobbit() {
+    return this.bobbits.find((bobbit) => bobbit.state === 'latched');
+  }
+
+  private updateAudio(delta: number) {
+    if (!this.sound) return;
+    if (!state.started) {
+      this.ensureLoop('menu');
+      this.stopLoop('ambient');
+      this.stopLoop('mining');
+      this.stopLoop('oxygen');
+      return;
+    }
+
+    this.stopLoop('menu');
+    this.ensureLoop('ambient');
+
+    if (state.lost || state.won || state.paused) {
+      this.stopLoop('mining');
+      this.stopLoop('oxygen');
+      return;
+    }
+
+    if (this.drillingThisFrame) this.ensureLoop('mining');
+    else this.stopLoop('mining');
+
+    const oxygenCritical = state.oxygen > 0 && state.oxygen / oxygenMax() <= 0.05;
+    if (oxygenCritical) this.ensureLoop('oxygen');
+    else this.stopLoop('oxygen');
+
+    this.creatureCallTimer -= delta;
+    if (this.creatureCallTimer <= 0) {
+      this.playDepthCall();
+      this.creatureCallTimer = Phaser.Math.Between(120, 240);
+    }
+  }
+
+  private ensureLoop(kind: 'menu' | 'ambient' | 'mining' | 'oxygen') {
+    const key = audioKeys[kind];
+    const current = this[`${kind}Loop` as const];
+    if (current) {
+      if (!current.isPlaying) current.play({ loop: true, volume: audioVolumes[kind] });
+      return;
+    }
+    this.sound.stopByKey(key);
+    const sound = this.sound.add(key);
+    sound.play({ loop: true, volume: audioVolumes[kind] });
+    this[`${kind}Loop` as const] = sound;
+  }
+
+  private stopLoop(kind: 'menu' | 'ambient' | 'mining' | 'oxygen') {
+    const loopKey = `${kind}Loop` as const;
+    const sound = this[loopKey];
+    if (sound?.isPlaying) sound.stop();
+    this[loopKey] = undefined;
+  }
+
+  private playDepthCall() {
+    if (state.atBoat || state.lost || state.won || state.paused) return;
+    let key = 'audio-whale';
+    if (state.biome >= 4 || state.depth >= 1450) key = 'audio-alien-growl';
+    else if (state.biome >= 2 || state.depth >= 650) key = 'audio-crab-growl';
+    this.sound.play(key, { volume: 0.58 });
+    if (Math.random() < 0.42) {
+      this.sound.play(Math.random() < 0.5 ? 'audio-water' : 'audio-cavern', { volume: 0.18 });
+    }
   }
 
   private rotateFacingToward(targetAngle: number, delta: number, turnRate: number) {
@@ -943,11 +1155,12 @@ class DeepdiveScene extends Phaser.Scene {
     const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, worldX, worldY);
     this.player.facing.set(Math.cos(angle), Math.sin(angle));
     this.updatePlayerFacing(Math.cos(angle));
-    if (this.player.mineCooldown > 0) return;
     const tx = Math.floor(worldX / TILE);
     const ty = Math.floor(worldY / TILE);
     const targets = this.mineTargets(tx, ty);
     if (!targets.length) return;
+    if (state.fuel > 0) this.drillingThisFrame = true;
+    if (this.player.mineCooldown > 0) return;
     const fuelCost = miningFuelCost(targets.length);
     if (state.fuel < fuelCost) {
       this.player.mineCooldown = Math.max(0.16, mineCooldown() * 0.65);
@@ -1072,16 +1285,24 @@ class DeepdiveScene extends Phaser.Scene {
     for (const fish of this.fish) {
       fish.phase += delta;
       fish.bumpCooldown = Math.max(0, fish.bumpCooldown - delta);
+      fish.stunned = Math.max(0, fish.stunned - delta);
       fish.scanPulse = Math.max(0, fish.scanPulse - delta * 1.35);
       if (!fish.scanned && !fish.scanning) {
         fish.scan = Math.max(0, fish.scan - delta * 0.9);
       }
       fish.scanning = false;
-      this.steerFish(fish, delta);
+      if (fish.stunned > 0) {
+        fish.aggro = 0;
+        fish.vx *= Math.exp(-4.6 * delta);
+        fish.vy *= Math.exp(-4.6 * delta);
+      } else {
+        this.steerFish(fish, delta);
+      }
       fish.x += fish.vx * delta;
       fish.y += fish.vy * delta;
       updateFacingFromVelocity(fish);
       this.keepFishInWater(fish);
+      if (fish.stunned > 0) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance < fish.radius + PLAYER_CONTACT_RADIUS && fish.bumpCooldown <= 0 && !this.isAtBoat()) {
         this.bumpFish(fish, distance);
@@ -1204,6 +1425,7 @@ class DeepdiveScene extends Phaser.Scene {
     }
     state.fuel = Math.max(0, state.fuel - SONAR_FUEL_COST);
     this.player.sonarCooldown = SONAR_COOLDOWN;
+    this.sound.play(audioKeys.sonar, { volume: audioVolumes.sonar });
     this.sonarPings.push({ x: this.player.x, y: this.player.y, age: 0, life: 0.9 });
     this.revealSonarAtPlayer(SONAR_REVEAL_RADIUS_TILES);
     this.captureSonarContacts();
@@ -1225,8 +1447,40 @@ class DeepdiveScene extends Phaser.Scene {
     this.drawSonarMap();
   }
 
+  useStunGrenade() {
+    if (state.stunGrenades <= 0 || state.lost || state.won || !state.started || state.paused) {
+      if (state.stunGrenades <= 0) {
+        state.status = 'No stun grenades loaded. Buy more at the barge.';
+        renderHud();
+      }
+      return;
+    }
+    state.stunGrenades -= 1;
+    let stunned = 0;
+    for (const fish of this.fish) {
+      if (!fish.hostile || fish.scanned) continue;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
+      if (distance > STUN_GRENADE_RADIUS) continue;
+      fish.stunned = STUN_GRENADE_DURATION;
+      fish.aggro = 0;
+      fish.vx *= 0.12;
+      fish.vy *= 0.12;
+      stunned += 1;
+    }
+    state.status = stunned > 0
+      ? `Stun grenade fired. ${stunned} predator${stunned === 1 ? '' : 's'} stunned for ${STUN_GRENADE_DURATION} seconds.`
+      : 'Stun grenade fired. No predators were close enough to catch the pulse.';
+    this.spawnFloatingText(stunned > 0 ? `Stunned x${stunned}` : 'Stun pulse', 0x8ee7f4);
+    renderHud();
+  }
+
   private captureSonarContacts() {
     const contacts: SonarContact[] = [];
+    const bargeX = WORLD_W * TILE * 0.5;
+    const bargeY = SURFACE_Y + 4;
+    if (Phaser.Math.Distance.Between(this.player.x, this.player.y, bargeX, bargeY) <= SONAR_REVEAL_RADIUS_TILES * TILE) {
+      contacts.push({ x: bargeX, y: bargeY, kind: 'barge', hostile: false, age: 0 });
+    }
     for (const fish of this.fish) {
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance > SONAR_ATTRACT_RADIUS) continue;
@@ -1338,6 +1592,21 @@ class DeepdiveScene extends Phaser.Scene {
       const px = (tx - centerX + viewRadius + 0.5) * cell;
       const py = (ty - centerY + viewRadius + 0.5) * cell;
       const alpha = Phaser.Math.Clamp(1 - contact.age / 14, 0.22, 1);
+      if (contact.kind === 'barge') {
+        const width = Math.max(22, cell * 10);
+        const height = Math.max(5, cell * 2.2);
+        ctx.fillStyle = `rgba(242, 211, 155, ${alpha * 0.9})`;
+        ctx.fillRect(px - width * 0.5, py - height * 0.5, width, height);
+        ctx.strokeStyle = `rgba(142, 231, 244, ${alpha * 0.72})`;
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(px - width * 0.5, py - height * 0.5, width, height);
+        ctx.beginPath();
+        ctx.moveTo(px - width * 0.18, py - height * 0.5);
+        ctx.lineTo(px, py - height * 1.9);
+        ctx.lineTo(px + width * 0.18, py - height * 0.5);
+        ctx.stroke();
+        continue;
+      }
       ctx.fillStyle = contact.hostile
         ? `rgba(255, 79, 100, ${alpha})`
         : contact.kind === 'flora'
@@ -1398,16 +1667,133 @@ class DeepdiveScene extends Phaser.Scene {
       hazard.phase += delta;
       const active = Math.sin(hazard.phase * 1.8) > -0.18;
       if (!active) continue;
-      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, hazard.x, hazard.y);
-      if (distance > hazard.radius) continue;
-      const heatFactor = 1 - distance / hazard.radius;
+      const plumeX = hazard.x;
+      const plumeY = hazard.y - hazard.radius * 1.35;
+      const plumeRadius = hazard.radius * 1.45;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, plumeX, plumeY);
+      if (distance > plumeRadius) continue;
+      const heatFactor = 1 - distance / plumeRadius;
       const mitigation = 1 - state.upgrades.thermal * 0.17;
       state.hull -= 9.5 * hazard.heat * heatFactor * Math.max(0.25, mitigation) * delta;
       const push = 35 * heatFactor * delta;
-      this.player.vx += ((this.player.x - hazard.x) / Math.max(1, distance)) * push;
-      this.player.vy += ((this.player.y - hazard.y) / Math.max(1, distance)) * push;
+      this.player.vx += ((this.player.x - plumeX) / Math.max(1, distance)) * push;
+      this.player.vy += ((this.player.y - plumeY) / Math.max(1, distance)) * push;
       state.status = 'Thermal vent plume is cooking the suit.';
     }
+  }
+
+  private updateBobbits(delta: number) {
+    if (!this.bobbits.length) return;
+    const inputX = axis(this.cursors.left, this.keys.A, this.cursors.right, this.keys.D);
+    const inputY = axis(this.cursors.up, this.keys.W, this.cursors.down, this.keys.S);
+    const inputStrength = Math.hypot(inputX, inputY);
+    let latchedBobbitActive = this.bobbits.some((bobbit) => bobbit.state === 'latched');
+    for (const bobbit of this.bobbits) {
+      bobbit.phase += delta;
+      bobbit.cooldown = Math.max(0, bobbit.cooldown - delta);
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, bobbit.x, bobbit.y);
+
+      if (bobbit.state === 'hidden') {
+        if (!latchedBobbitActive && !this.isAtBoat() && bobbit.cooldown <= 0 && distance < BOBBIT_DETECT_RADIUS) {
+          bobbit.state = 'emerging';
+          bobbit.timer = 0.45;
+          state.status = 'Something is moving under the sediment.';
+        }
+        continue;
+      }
+
+      if (bobbit.state === 'emerging') {
+        if (latchedBobbitActive) {
+          this.resetBobbit(bobbit, 4);
+          continue;
+        }
+        bobbit.timer -= delta;
+        if (distance > BOBBIT_DETECT_RADIUS * 1.35) {
+          bobbit.state = 'hidden';
+          bobbit.cooldown = 2.5;
+          continue;
+        }
+        if (bobbit.timer <= 0) {
+          bobbit.state = 'lunging';
+          bobbit.timer = 0.55;
+        }
+        continue;
+      }
+
+      if (bobbit.state === 'lunging') {
+        if (latchedBobbitActive) {
+          this.resetBobbit(bobbit, 4);
+          continue;
+        }
+        bobbit.timer -= delta;
+        const angle = Phaser.Math.Angle.Between(bobbit.x, bobbit.y, this.player.x, this.player.y);
+        bobbit.x += Math.cos(angle) * 120 * delta;
+        bobbit.y += Math.sin(angle) * 120 * delta;
+        if (distance < BOBBIT_LATCH_RADIUS) {
+          bobbit.state = 'latched';
+          bobbit.escapeRemaining = BOBBIT_ESCAPE_SECONDS;
+          bobbit.facingSign = this.player.x < bobbit.x ? -1 : 1;
+          bobbit.latchX = this.player.x;
+          bobbit.latchY = this.player.y;
+          this.player.x = bobbit.latchX;
+          this.player.y = bobbit.latchY;
+          this.player.vx = 0;
+          this.player.vy = 0;
+          latchedBobbitActive = true;
+          this.spawnFloatingText('Bobbit latched', 0xff8a6b);
+          state.status = 'Bobbitworm pinned you. Thrash the movement keys to shake it loose.';
+          continue;
+        }
+        if (bobbit.timer <= 0) {
+          this.resetBobbit(bobbit, 5.5);
+        }
+        continue;
+      }
+
+      if (bobbit.state === 'latched') {
+        const struggle = inputStrength > 0.65 ? 1 : 0;
+        bobbit.escapeRemaining -= delta * struggle;
+        this.player.x = bobbit.latchX;
+        this.player.y = bobbit.latchY;
+        this.player.vx = 0;
+        this.player.vy = 0;
+        bobbit.x = bobbit.latchX - bobbit.facingSign * scaledEntity(10);
+        bobbit.y = bobbit.latchY + scaledEntity(12);
+        state.hull -= (2.2 + state.biome * 0.42) * delta;
+        state.oxygen -= (4.8 + state.biome * 0.65) * delta;
+        if (bobbit.escapeRemaining <= 0 || this.isAtBoat()) {
+          this.spawnFloatingText('Shaken loose', 0x8ee7f4);
+          this.resetBobbit(bobbit, 8);
+        } else {
+          state.status = struggle > 0
+            ? `Bobbitworm pinning you. Keep thrashing: ${Math.ceil(bobbit.escapeRemaining)}s.`
+            : `Bobbitworm pinning you. Move to wriggle free: ${Math.ceil(bobbit.escapeRemaining)}s.`;
+        }
+        continue;
+      }
+
+      if (bobbit.state === 'cooldown') {
+        bobbit.timer -= delta;
+        bobbit.x = Phaser.Math.Linear(bobbit.x, bobbit.homeX, Math.min(1, delta * 3));
+        bobbit.y = Phaser.Math.Linear(bobbit.y, bobbit.homeY, Math.min(1, delta * 3));
+        if (bobbit.timer <= 0) {
+          bobbit.state = 'hidden';
+          bobbit.cooldown = 1.5;
+        }
+      }
+    }
+  }
+
+  private resetBobbit(bobbit: Bobbit, cooldown: number) {
+    bobbit.state = 'cooldown';
+    bobbit.timer = cooldown;
+    bobbit.cooldown = cooldown;
+    bobbit.x = bobbit.homeX;
+    bobbit.y = bobbit.homeY;
+    bobbit.latchX = bobbit.homeX;
+    bobbit.latchY = bobbit.homeY;
+    bobbit.facingSign = 1;
+    bobbit.escapeRemaining = BOBBIT_ESCAPE_SECONDS;
   }
 
   private steerFish(fish: Fish, delta: number) {
@@ -1490,16 +1876,33 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.vy += ny * (fish.hostile ? 120 : 70);
     fish.vx -= nx * 140;
     fish.vy -= ny * 140;
-    fish.bumpCooldown = 0.42;
+    fish.bumpCooldown = fish.hostile ? predatorBiteCooldown(fish) : 0.42;
     fish.scan = Math.max(0, fish.scan - 0.25);
     if (fish.hostile) {
       const damage = Math.round(4 + fish.radius * 0.35 + state.biome * 1.4 + (fish.pattern === 'circle' ? 3 : 0));
       state.hull -= Math.max(2, damage + impact * 0.018 - state.upgrades.suit);
+      this.playFishBite(damage);
       state.status = `${fish.species} slammed your helmet.`;
     } else {
       state.status = `${fish.species} scattered from the collision.`;
     }
     renderHud();
+  }
+
+  private playFishBite(damage: number) {
+    const now = this.time.now;
+    if (now - this.lastFishBiteSfxAt < FISH_BITE_SFX_GAP_MS) return;
+    this.lastFishBiteSfxAt = now;
+    const key = damage <= 10
+      ? 'audio-fish-bite-weak'
+      : damage <= 14
+        ? 'audio-fish-bite-strong'
+        : 'audio-fish-bite-heavy';
+    const volume = damage <= 10 ? 0.3 : damage <= 14 ? 0.37 : 0.45;
+    this.sound.play(key, {
+      volume,
+      detune: Phaser.Math.Between(-35, 25),
+    });
   }
 
   private nearestLife(range: number): ScanTarget | null {
@@ -1573,6 +1976,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.drawBoat();
     this.drawLooseItems(camera);
     this.drawHazards();
+    this.drawBobbits(camera);
     this.drawFlora(camera);
     this.drawFish(camera);
     this.drawPlayer();
@@ -1583,9 +1987,9 @@ class DeepdiveScene extends Phaser.Scene {
 
   private drawParallax(camera: Phaser.Cameras.Scene2D.Camera) {
     const view = camera.worldView;
-    const prefix = state.biome === 1 ? 'parallax-shallow' : 'parallax-deep';
-    const speeds = state.biome === 1 ? [1, 0.8, 0.5, 0.16] : [0.76, 0.48, 0.28, 0.12];
-    const alphas = state.biome === 1 ? [0.72, 0.58, 0.42, 0.52] : [0.56, 0.48, 0.42, 0.5];
+    const prefix = parallaxPrefix();
+    const speeds = parallaxSpeeds();
+    const alphas = parallaxAlphas();
     const padding = 24;
     for (let i = 0; i < this.parallaxLayers.length; i += 1) {
       const layer = this.parallaxLayers[i];
@@ -1649,11 +2053,7 @@ class DeepdiveScene extends Phaser.Scene {
         const def = tiles[tile];
         const fracture = this.damage[y][x] / def.hp;
         const textureKey = tileTextureKey(tile, x, y);
-        const tileSprite = this.tileSprites[tileSpriteIndex] ?? this.add.image(0, 0, textureKey)
-          .setDepth(-1)
-          .setOrigin(0)
-          .setDisplaySize(TILE, TILE);
-        this.tileSprites[tileSpriteIndex] = tileSprite;
+        const tileSprite = this.tileSpriteAt(tileSpriteIndex, textureKey);
         tileSprite
           .setTexture(textureKey)
           .setVisible(true)
@@ -1691,27 +2091,63 @@ class DeepdiveScene extends Phaser.Scene {
   private drawBoat() {
     const x = WORLD_W * TILE * 0.5;
     const s = BARGE_DRAW_SCALE;
-    this.actors.fillStyle(0xd9824b, 1);
-    this.actors.fillRoundedRect(x - 150 * s, 26, 300 * s, 34 * s, 7 * s);
-    this.actors.fillStyle(0xf2d39b, 1);
-    this.actors.fillTriangle(x - 34 * s, 26, x + 38 * s, 26, x - 10 * s, 0);
-    this.actors.lineStyle(2, 0xb8edf0, 0.65);
-    this.actors.lineBetween(x, 26 + 34 * s, x, SURFACE_Y + 18 * s);
+    this.bargeSprite
+      .setVisible(true)
+      .setPosition(x, SURFACE_Y + 30 * s)
+      .setDisplaySize(330 * s, 178 * s);
+    this.actors.fillStyle(0x55d7e6, state.atBoat ? 0.14 : 0.06);
+    this.actors.fillEllipse(x, SURFACE_Y + 15 * s, 118 * s, 16 * s);
+    this.actors.lineStyle(1, 0xb8edf0, state.atBoat ? 0.62 : 0.28);
+    this.actors.lineBetween(x - 16 * s, SURFACE_Y + 2 * s, x + 16 * s, SURFACE_Y + 2 * s);
+    this.actors.lineBetween(x, SURFACE_Y + 2 * s, x, SURFACE_Y + 24 * s);
   }
 
   private drawHazards() {
     const s = ENTITY_SCALE;
     for (const hazard of this.hazards) {
       const pulse = (Math.sin(hazard.phase * 1.8) + 1) * 0.5;
-      this.actors.fillStyle(0xff6f3c, 0.3 + pulse * 0.24);
-      this.actors.fillEllipse(hazard.x, hazard.y + 10 * s, hazard.radius * 0.95, 14 * s);
-      this.actors.lineStyle(2, 0xffd166, 0.12 + pulse * 0.34);
-      this.actors.lineBetween(hazard.x - 9 * s, hazard.y + 4 * s, hazard.x - 18 * s, hazard.y - hazard.radius * (0.45 + pulse * 0.32));
-      this.actors.lineBetween(hazard.x + 2 * s, hazard.y + 2 * s, hazard.x + 5 * s, hazard.y - hazard.radius * (0.58 + pulse * 0.28));
-      this.actors.lineBetween(hazard.x + 13 * s, hazard.y + 6 * s, hazard.x + 24 * s, hazard.y - hazard.radius * (0.38 + pulse * 0.3));
+      const frame = Math.floor((hazard.phase * 7) % 4);
+      hazard.sprite
+        ?.setTexture(`vent-steam-${frame}`)
+        .setVisible(true)
+        .setAlpha(0.62 + pulse * 0.25)
+        .setPosition(hazard.x, hazard.y + 4 * s);
+      fitImageHeight(hazard.sprite, hazard.radius * 3.2);
       if (pulse > 0.45) {
-        this.actors.lineStyle(1, 0xff8a5c, pulse * 0.38);
-        this.actors.strokeCircle(hazard.x, hazard.y, hazard.radius * (0.55 + pulse * 0.45));
+        this.actors.lineStyle(1, 0xff8a5c, pulse * 0.32);
+        this.actors.strokeEllipse(hazard.x, hazard.y + 4 * s, hazard.radius * 1.25, hazard.radius * 0.34);
+      }
+    }
+  }
+
+  private drawBobbits(camera: Phaser.Cameras.Scene2D.Camera) {
+    const view = camera.worldView;
+    for (const bobbit of this.bobbits) {
+      if (bobbit.x < view.x - 100 || bobbit.x > view.right + 100 || bobbit.y < view.y - 120 || bobbit.y > view.bottom + 120) {
+        bobbit.sprite?.setVisible(false);
+        continue;
+      }
+      const frame =
+        bobbit.state === 'hidden' ? 0 :
+          bobbit.state === 'emerging' ? 1 :
+            bobbit.state === 'latched' || bobbit.state === 'lunging' ? 3 :
+              0;
+      const displayWidth = bobbit.state === 'hidden' || bobbit.state === 'cooldown'
+        ? scaledEntity(42)
+        : bobbit.state === 'emerging'
+          ? scaledEntity(50)
+          : scaledEntity(70);
+      bobbit.sprite
+        ?.setTexture(`bobbit-${frame}`)
+        .setVisible(true)
+        .setAlpha(bobbit.state === 'cooldown' ? 0.45 : 0.95)
+        .setPosition(bobbit.x, bobbit.y)
+        .setFlipX(bobbit.facingSign < 0);
+      fitImageWidth(bobbit.sprite, displayWidth);
+      if (bobbit.state === 'latched') {
+        const progress = Phaser.Math.Clamp(bobbit.escapeRemaining / BOBBIT_ESCAPE_SECONDS, 0, 1);
+        this.actors.lineStyle(2, 0xff8a6b, 0.72);
+        this.actors.strokeCircle(this.player.x, this.player.y, scaledEntity(26 + progress * 14));
       }
     }
   }
@@ -1731,15 +2167,21 @@ class DeepdiveScene extends Phaser.Scene {
       const threat = attacking ? 1 - Phaser.Math.Clamp((threatDistance - 52) / 118, 0, 1) : 0;
       const desiredWidth = fish.radius * (fish.hostile ? 3.8 : fish.pattern === 'circle' || fish.pattern === 'glide' ? 3.4 : 3);
       const pose = swimPose(angle, fish.facingSign);
-      const frame = animatedFrame(fish.phase, Math.hypot(fish.vx, fish.vy), fishFrameCount(fish.assetKey), 4.2);
+      const frameSpeed = fish.stunned > 0 ? 8 : Math.hypot(fish.vx, fish.vy);
+      const frame = animatedFrame(fish.phase, frameSpeed, fishFrameCount(fish.assetKey), fish.hostile ? 3.3 : 4.2);
       fish.sprite
         ?.setTexture(`${fish.assetKey}-${frame}`)
         .setVisible(true)
-        .setAlpha(bodyAlpha)
+        .setAlpha(fish.stunned > 0 ? bodyAlpha * 0.72 : bodyAlpha)
         .setPosition(fish.x, fish.y)
         .setFlipX(pose.flipX)
         .setRotation(pose.rotation);
       fitImageWidth(fish.sprite, desiredWidth);
+      if (fish.stunned > 0) {
+        const pulse = 0.5 + Math.sin(fish.phase * 9) * 0.18;
+        this.actors.lineStyle(2, 0x8ee7f4, bodyAlpha * pulse);
+        this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(7));
+      }
       if (attacking) {
         const markerAlpha = Math.max(0.35, threat) * alpha;
         const markerY = fish.y - fish.radius - scaledEntity(18) - Math.sin(fish.phase * 7) * scaledEntity(2);
@@ -2018,6 +2460,7 @@ function scaledEntity(value: number) {
 
 function loadGeneratedAssets(scene: Phaser.Scene) {
   const assetPath = (name: string) => `/assets/generated/${name}.png`;
+  const audioPath = (name: string) => `/assets/audio/${name}`;
   for (const [animation, frameCount] of Object.entries(diverFrameCounts)) {
     for (let i = 0; i < frameCount; i += 1) {
       scene.load.image(`diver-${animation}-${i}`, assetPath(`diver-${animation}-${i}`));
@@ -2030,11 +2473,28 @@ function loadGeneratedAssets(scene: Phaser.Scene) {
   scene.load.image('flora-shallow-anemone', assetPath('flora-shallow-anemone'));
   scene.load.image('flora-deep-tube', assetPath('flora-deep-tube'));
   scene.load.image('flora-deep-coral', assetPath('flora-deep-coral'));
+  scene.load.image('barge-side', assetPath('barge-side'));
+  scene.load.image('vent-base', assetPath('vent-base'));
+  for (let i = 0; i < 4; i += 1) scene.load.image(`vent-steam-${i}`, assetPath(`vent-steam-${i}`));
+  for (let i = 0; i < 4; i += 1) scene.load.image(`bobbit-${i}`, assetPath(`bobbit-${i}`));
   for (const key of parallaxTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of uiTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of terrainTextureKeys()) {
     scene.load.image(key, assetPath(key));
   }
+  scene.load.audio(audioKeys.menu, audioPath('menuloop.wav'));
+  scene.load.audio(audioKeys.ambient, audioPath('ambienceloop.mp3'));
+  scene.load.audio(audioKeys.mining, audioPath('mining.mp3'));
+  scene.load.audio(audioKeys.oxygen, audioPath('outofoxygen.mp3'));
+  scene.load.audio(audioKeys.sonar, audioPath('sonarping.mp3'));
+  scene.load.audio('audio-fish-bite-weak', audioPath('fishbite1.mp3'));
+  scene.load.audio('audio-fish-bite-strong', audioPath('fishbite2.mp3'));
+  scene.load.audio('audio-fish-bite-heavy', audioPath('fishbite3.mp3'));
+  scene.load.audio('audio-whale', audioPath('whale.mp3'));
+  scene.load.audio('audio-crab-growl', audioPath('crabmonstergrowl.mp3'));
+  scene.load.audio('audio-alien-growl', audioPath('aliengrowl.mp3'));
+  scene.load.audio('audio-water', audioPath('mavopix-underwater-159894.mp3'));
+  scene.load.audio('audio-cavern', audioPath('mavopix-underwater-cavern-159985.mp3'));
 }
 
 function parallaxTextureKeys() {
@@ -2043,11 +2503,33 @@ function parallaxTextureKeys() {
     'parallax-shallow-1',
     'parallax-shallow-2',
     'parallax-shallow-3',
+    'parallax-brine-0',
+    'parallax-brine-1',
+    'parallax-brine-2',
+    'parallax-brine-3',
     'parallax-deep-0',
     'parallax-deep-1',
     'parallax-deep-2',
     'parallax-deep-3',
   ];
+}
+
+function parallaxPrefix() {
+  if (state.biome === 1) return 'parallax-shallow';
+  if (state.biome === 2) return 'parallax-brine';
+  return 'parallax-deep';
+}
+
+function parallaxSpeeds() {
+  if (state.biome === 1) return [1, 0.8, 0.5, 0.16];
+  if (state.biome === 2) return [1, 0.8, 0.5, 0.16];
+  return [0.76, 0.48, 0.28, 0.12];
+}
+
+function parallaxAlphas() {
+  if (state.biome === 1) return [0.72, 0.58, 0.42, 0.52];
+  if (state.biome === 2) return [0.82, 0.68, 0.54, 0.46];
+  return [0.56, 0.48, 0.42, 0.5];
 }
 
 function uiTextureKeys() {
@@ -2162,6 +2644,11 @@ function fitImageHeight(image: Phaser.GameObjects.Image | undefined, height: num
 function updateFacingFromVelocity(entity: Fish) {
   if (entity.vx < -2) entity.facingSign = -1;
   if (entity.vx > 2) entity.facingSign = 1;
+}
+
+function predatorBiteCooldown(fish: Fish) {
+  const strength = fish.radius + (fish.pattern === 'circle' ? scaledEntity(7) : 0) + state.biome * 1.7;
+  return Phaser.Math.Clamp(1.62 - strength * 0.018, 1.05, 1.48);
 }
 
 function animatedFrame(phase: number, speed: number, frames: number, fps = 4.5) {
@@ -2378,12 +2865,12 @@ function checkOxygenWarnings() {
   const pct = state.oxygen / oxygenMax();
   if (pct <= 0.25 && !state.oxygenWarnings.quarter) {
     state.oxygenWarnings.quarter = true;
-    showFullscreenWarning('Oxygen critical', '25% reserve remaining');
+    showFullscreenWarning('Oxygen critical', '25% reserve remaining', 'critical');
     state.status = 'Oxygen critical. Surface immediately or find the barge.';
     renderHud();
   } else if (pct <= 0.5 && !state.oxygenWarnings.half) {
     state.oxygenWarnings.half = true;
-    showFullscreenWarning('Oxygen low', '50% reserve remaining');
+    showFullscreenWarning('Oxygen low', '50% reserve remaining', 'low');
     state.status = 'Oxygen reserves at half. Plan your return route.';
     renderHud();
   }
@@ -2426,6 +2913,7 @@ function restart(scene: DeepdiveScene) {
   state.oxygen = 100;
   state.hull = 100;
   state.fuel = fuelMax();
+  state.stunGrenades = 0;
   state.depth = 0;
   state.maxDepth = 0;
   state.cargo = [];
@@ -2492,6 +2980,7 @@ function renderHud() {
           <span>Mouse or Space cuts terrain</span>
           <span>Hold E to scan nearby fish</span>
           <span>Q sends a sonar ping</span>
+          <span>G fires a stun grenade</span>
           <span>Dock at the barge to sell, refill, repair, and upgrade</span>
         </aside>
       </main>
@@ -2515,11 +3004,13 @@ function renderHud() {
     ${meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
     ${meter('Hull', state.hull, hullMax(), '#ff8a6b')}
     ${meter('Fuel', state.fuel, fuelMax(), '#ffd166')}
+    <div class="ordnance-chip"><strong>${state.stunGrenades}</strong><span>Stun grenades</span></div>
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
     <p class="status">${state.status}</p>
     <div class="utility-actions">
       <button data-sonar>Sonar ping</button>
+      <button data-stun ${state.stunGrenades <= 0 ? 'disabled' : ''}>Stun</button>
       <button data-pause>${state.paused ? 'Resume' : 'Pause'}</button>
       <button data-gold>+1,000 credits</button>
     </div>
@@ -2542,6 +3033,7 @@ function renderHud() {
         <strong>${state.credits} credits</strong>
       </div>
       ${bargeFuelRow()}
+      ${bargeStunRow()}
       ${bargeTravelRow()}
       <div class="upgrade-list">
         ${availableUpgrades().map((upgrade) => upgradeRow(upgrade)).join('')}
@@ -2580,16 +3072,16 @@ function renderGameOver(app: HTMLDivElement) {
 
 let fullscreenWarningTimeout: number | undefined;
 
-function showFullscreenWarning(title: string, detail: string) {
+function showFullscreenWarning(title: string, detail: string, severity: 'low' | 'critical') {
   const app = document.querySelector<HTMLDivElement>('#app');
   if (!app) return;
   let warning = app.querySelector<HTMLElement>('#fullscreen-warning');
   if (!warning) {
     warning = document.createElement('aside');
     warning.id = 'fullscreen-warning';
-    warning.className = 'fullscreen-warning';
     app.appendChild(warning);
   }
+  warning.className = `fullscreen-warning fullscreen-warning--${severity}`;
   warning.innerHTML = `
     <span>${detail}</span>
     <strong>${title}</strong>
@@ -2598,7 +3090,7 @@ function showFullscreenWarning(title: string, detail: string) {
   window.clearTimeout(fullscreenWarningTimeout);
   fullscreenWarningTimeout = window.setTimeout(() => {
     warning?.classList.add('is-fading');
-  }, 2400);
+  }, severity === 'critical' ? 4200 : 2600);
 }
 
 function clearFullscreenWarning() {
@@ -2645,10 +3137,22 @@ function bindUiEvents(app: HTMLDivElement) {
       gameScene()?.sonarPing();
       return;
     }
+    const stunButton = target.closest<HTMLButtonElement>('button[data-stun]');
+    if (stunButton && !stunButton.disabled) {
+      event.preventDefault();
+      gameScene()?.useStunGrenade();
+      return;
+    }
     const fuelButton = target.closest<HTMLButtonElement>('button[data-buy-fuel]');
     if (fuelButton && !fuelButton.disabled) {
       event.preventDefault();
       gameScene()?.buyFuel(fuelButton.dataset.buyFuel === 'full');
+      return;
+    }
+    const stunBuyButton = target.closest<HTMLButtonElement>('button[data-buy-stun]');
+    if (stunBuyButton && !stunBuyButton.disabled) {
+      event.preventDefault();
+      gameScene()?.buyStunGrenade();
       return;
     }
     const goldButton = target.closest<HTMLButtonElement>('button[data-gold]');
@@ -2712,6 +3216,22 @@ function bargeFuelRow() {
       <div class="fuel-card__actions">
         <button data-buy-fuel="cell" ${refuelDisabled ? 'disabled' : ''}>+${FUEL_REFILL_AMOUNT} fuel ${fuelCost}c</button>
         <button data-buy-fuel="full" ${fullDisabled ? 'disabled' : ''}>Fill tank ${fullCost}c</button>
+      </div>
+    </article>
+  `;
+}
+
+function bargeStunRow() {
+  const disabled = state.credits < STUN_GRENADE_COST;
+  return `
+    <article class="fuel-card ordnance-card">
+      <div>
+        <strong>Stun grenades</strong>
+        <span>Emergency pulse charges. Press G to stun nearby unscanned predators for ${STUN_GRENADE_DURATION} seconds.</span>
+      </div>
+      <div class="fuel-card__actions">
+        <button data-buy-stun ${disabled ? 'disabled' : ''}>Buy 1 ${STUN_GRENADE_COST}c</button>
+        <span class="ordnance-count">${state.stunGrenades} ready</span>
       </div>
     </article>
   `;
