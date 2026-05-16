@@ -21,6 +21,9 @@ type Tile =
 type UpgradeId = 'oxygen' | 'cargo' | 'laser' | 'lamp' | 'scanner' | 'suit' | 'speed' | 'thermal';
 type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
 type Biome = 1 | 2 | 3 | 4;
+type BargeTab = 'services' | 'upgrades';
+type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+type TitlePanel = 'main' | 'options' | 'controls';
 type DiverAnimation =
   | 'idle'
   | 'walk'
@@ -45,6 +48,16 @@ interface TileDef {
   value: number;
   name: string;
   solid: boolean;
+}
+
+interface VeinRule {
+  tile: Tile;
+  minDepth: number;
+  chance: number;
+  minDarkness?: number;
+  minSize: number;
+  maxSize: number;
+  salt: number;
 }
 
 interface Upgrade {
@@ -113,6 +126,7 @@ interface FishSpecies {
   pattern: FishPattern;
   radius: number;
   speed: [number, number];
+  assetKey?: string;
 }
 
 interface FloraSpecies {
@@ -179,6 +193,18 @@ interface FloatingText {
   vy: number;
 }
 
+interface ControlState {
+  move: Phaser.Math.Vector2;
+  hasMove: boolean;
+  mineHeld: boolean;
+  scanHeld: boolean;
+  sonarPressed: boolean;
+  stunPressed: boolean;
+  pausePressed: boolean;
+  logbookPressed: boolean;
+  confirmPressed: boolean;
+}
+
 interface SonarContact {
   x: number;
   y: number;
@@ -217,6 +243,7 @@ const BOBBIT_DETECT_RADIUS = 132;
 const BOBBIT_LATCH_RADIUS = 32;
 const BOBBIT_ESCAPE_SECONDS = 5;
 const FISH_BITE_SFX_GAP_MS = 320;
+const BASE_OXYGEN = 150;
 const audioKeys = {
   menu: 'audio-menu-loop',
   ambient: 'audio-ambient-loop',
@@ -225,7 +252,7 @@ const audioKeys = {
   sonar: 'audio-sonar-ping',
 } as const;
 const audioVolumes = {
-  menu: 0.42,
+  menuTitle: 0.21,
   ambient: 0.34,
   mining: 0.38,
   oxygen: 0.62,
@@ -282,36 +309,50 @@ const upgrades: Upgrade[] = [
 
 const biomeFish: Record<Biome, FishSpecies[]> = {
   1: [
-  { species: 'Lantern Fry', count: 18, minY: 160, maxY: 470, color: 0x8ddcf0, hostile: false, pattern: 'school', radius: 9, speed: [28, 52] },
-  { species: 'Ribbon Eel', count: 10, minY: 320, maxY: 760, color: 0xf2b66d, hostile: false, pattern: 'sway', radius: 11, speed: [22, 38] },
-  { species: 'Glass Ray', count: 8, minY: 640, maxY: 1160, color: 0xd8f7ff, hostile: false, pattern: 'glide', radius: 15, speed: [18, 32] },
-  { species: 'Needlejaw', count: 9, minY: 520, maxY: 1320, color: 0xff6f7f, hostile: true, pattern: 'stalk', radius: 13, speed: [34, 62] },
-  { species: 'Gulper Maw', count: 5, minY: 1560, maxY: 2240, color: 0xff8a5c, hostile: true, pattern: 'stalk', radius: 18, speed: [30, 54] },
-  { species: 'Abyss Warden', count: 4, minY: 1220, maxY: 1900, color: 0xb9f27c, hostile: true, pattern: 'circle', radius: 20, speed: [16, 29] },
+    { species: 'Lantern Fry', count: 22, minY: 100, maxY: 480, color: 0x8ddcf0, hostile: false, pattern: 'school', radius: 8, speed: [34, 58], assetKey: 'fish-shallow-neutral' },
+    { species: 'Snapping Shrimp', count: 18, minY: 120, maxY: 520, color: 0xffb36b, hostile: false, pattern: 'school', radius: 7, speed: [30, 54], assetKey: 'fauna-shallow-snap-shrimp' },
+    { species: 'Glass Ray', count: 10, minY: 260, maxY: 880, color: 0xd8f7ff, hostile: false, pattern: 'glide', radius: 15, speed: [18, 32], assetKey: 'fish-mid-neutral' },
+    { species: 'Comb Jelly', count: 12, minY: 180, maxY: 740, color: 0x94e8e3, hostile: false, pattern: 'sway', radius: 11, speed: [14, 26], assetKey: 'fauna-shallow-comb-jelly' },
+    { species: 'Reef Squid', count: 11, minY: 360, maxY: 960, color: 0xf2b66d, hostile: false, pattern: 'glide', radius: 10, speed: [26, 44], assetKey: 'fauna-shallow-squid' },
+    { species: 'Nautilus', count: 7, minY: 560, maxY: 1280, color: 0xd8c49a, hostile: false, pattern: 'circle', radius: 15, speed: [12, 24], assetKey: 'fauna-shallow-nautilus' },
+    { species: 'Moon Jelly', count: 9, minY: 660, maxY: 1500, color: 0xb8f7ff, hostile: false, pattern: 'sway', radius: 13, speed: [10, 20], assetKey: 'fauna-shallow-jellyfish' },
+    { species: 'Mantis Shrimp', count: 7, minY: 760, maxY: 1520, color: 0xff6f3c, hostile: true, pattern: 'stalk', radius: 12, speed: [34, 62], assetKey: 'fauna-shallow-mantis-shrimp' },
+    { species: 'Blue-ring Octopus', count: 5, minY: 980, maxY: 1860, color: 0xffd166, hostile: true, pattern: 'circle', radius: 14, speed: [18, 34], assetKey: 'fauna-shallow-blue-ring-octopus' },
+    { species: 'Tidepool Octopus', count: 6, minY: 1220, maxY: 2180, color: 0xc78065, hostile: false, pattern: 'sway', radius: 17, speed: [14, 28], assetKey: 'fauna-shallow-octopus' },
   ],
   2: [
-    { species: 'Ash Minnow', count: 20, minY: 160, maxY: 560, color: 0xffc857, hostile: false, pattern: 'school', radius: 8, speed: [34, 58] },
-    { species: 'Smoke Ribbon', count: 12, minY: 320, maxY: 880, color: 0xa9b8c9, hostile: false, pattern: 'sway', radius: 12, speed: [24, 42] },
-    { species: 'Cinder Ray', count: 8, minY: 660, maxY: 1260, color: 0xff8a5c, hostile: false, pattern: 'glide', radius: 16, speed: [22, 36] },
-    { species: 'Vent Snapper', count: 11, minY: 520, maxY: 1480, color: 0xff4f64, hostile: true, pattern: 'stalk', radius: 14, speed: [40, 70] },
-    { species: 'Ashen Devourer', count: 6, minY: 1500, maxY: 2360, color: 0xff6f3c, hostile: true, pattern: 'stalk', radius: 19, speed: [42, 76] },
-    { species: 'Brine Leviathan', count: 3, minY: 1320, maxY: 2100, color: 0xd06bff, hostile: true, pattern: 'circle', radius: 23, speed: [18, 32] },
+    { species: 'Ash Minnow', count: 20, minY: 150, maxY: 640, color: 0xffc857, hostile: false, pattern: 'school', radius: 8, speed: [36, 62], assetKey: 'fish-mid-neutral' },
+    { species: 'Deep Sea Shrimp', count: 18, minY: 160, maxY: 620, color: 0xff8a5c, hostile: false, pattern: 'school', radius: 8, speed: [32, 56], assetKey: 'fauna-deep-deep-shrimp' },
+    { species: 'Hatchetfish', count: 16, minY: 300, maxY: 900, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [34, 58], assetKey: 'fish-mid-neutral' },
+    { species: 'Barreleye', count: 10, minY: 520, maxY: 1160, color: 0x7bd88f, hostile: false, pattern: 'circle', radius: 10, speed: [18, 32], assetKey: 'fauna-deep-barreleye' },
+    { species: 'Glass Squid', count: 9, minY: 640, maxY: 1400, color: 0x94e8e3, hostile: false, pattern: 'glide', radius: 13, speed: [28, 46], assetKey: 'fauna-shallow-squid' },
+    { species: 'Vampire Squid', count: 8, minY: 860, maxY: 1680, color: 0xff6f7f, hostile: true, pattern: 'stalk', radius: 14, speed: [34, 60], assetKey: 'fish-mid-predator' },
+    { species: 'Lanternfish', count: 13, minY: 980, maxY: 1900, color: 0xffd166, hostile: false, pattern: 'glide', radius: 10, speed: [30, 52], assetKey: 'fauna-deep-lanternfish' },
+    { species: 'Gulper Eel', count: 6, minY: 1320, maxY: 2260, color: 0xd06bff, hostile: true, pattern: 'stalk', radius: 20, speed: [38, 68], assetKey: 'fauna-deep-gulper-eel' },
+    { species: 'Tripodfish', count: 5, minY: 1500, maxY: 2380, color: 0xd8c49a, hostile: false, pattern: 'sway', radius: 18, speed: [10, 22], assetKey: 'fauna-deep-deep-jelly' },
+    { species: 'Sea Spider', count: 6, minY: 1260, maxY: 2180, color: 0xffc857, hostile: true, pattern: 'circle', radius: 15, speed: [18, 34], assetKey: 'fish-mid-predator' },
   ],
   3: [
-    { species: 'Mirror Fry', count: 18, minY: 180, maxY: 620, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [42, 72] },
-    { species: 'Ink Ribbon', count: 12, minY: 360, maxY: 980, color: 0x8f8cff, hostile: false, pattern: 'sway', radius: 12, speed: [28, 46] },
-    { species: 'Void Manta', count: 8, minY: 680, maxY: 1380, color: 0xbdb2ff, hostile: false, pattern: 'glide', radius: 17, speed: [26, 44] },
-    { species: 'Shardjaw', count: 12, minY: 560, maxY: 1640, color: 0xff4f90, hostile: true, pattern: 'stalk', radius: 15, speed: [48, 82] },
-    { species: 'Blind Cathedral', count: 5, minY: 1580, maxY: 2440, color: 0x9a8cff, hostile: true, pattern: 'circle', radius: 27, speed: [20, 36] },
-    { species: 'Silt Reaper', count: 6, minY: 1820, maxY: 2480, color: 0xff5d8f, hostile: true, pattern: 'stalk', radius: 18, speed: [54, 92] },
-    { species: 'Trench Crown', count: 3, minY: 1380, maxY: 2200, color: 0xffd166, hostile: true, pattern: 'circle', radius: 25, speed: [22, 38] },
+    { species: 'Mirror Fry', count: 18, minY: 160, maxY: 640, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [42, 72], assetKey: 'fish-mid-neutral' },
+    { species: 'Hadopelagic Shrimp', count: 15, minY: 180, maxY: 760, color: 0xff8a5c, hostile: false, pattern: 'school', radius: 8, speed: [40, 70], assetKey: 'fauna-deep-deep-shrimp' },
+    { species: 'Abyssal Jelly', count: 12, minY: 360, maxY: 1040, color: 0xb8f7ff, hostile: false, pattern: 'sway', radius: 14, speed: [12, 24], assetKey: 'fauna-abyss-abyss-jelly' },
+    { species: 'Bigfin Squid', count: 8, minY: 620, maxY: 1420, color: 0xff8cb3, hostile: false, pattern: 'glide', radius: 18, speed: [20, 36], assetKey: 'fauna-shallow-squid' },
+    { species: 'Abyssal Viperfish', count: 10, minY: 660, maxY: 1720, color: 0xff4f90, hostile: true, pattern: 'stalk', radius: 14, speed: [48, 82], assetKey: 'fish-abyss-predator' },
+    { species: 'Lantern Swarm', count: 6, minY: 920, maxY: 1900, color: 0xb9a7a0, hostile: false, pattern: 'sway', radius: 22, speed: [10, 22], assetKey: 'fauna-abyss-hatchet-school' },
+    { species: 'Goblin Shark', count: 5, minY: 1240, maxY: 2280, color: 0xff7a8f, hostile: true, pattern: 'stalk', radius: 23, speed: [42, 76], assetKey: 'fish-abyss-predator' },
+    { species: 'Frilled Shark', count: 5, minY: 1500, maxY: 2460, color: 0xa9b8c9, hostile: true, pattern: 'glide', radius: 24, speed: [34, 62], assetKey: 'fish-abyss-predator' },
+    { species: 'Black Swallower', count: 4, minY: 1700, maxY: 2580, color: 0x8f8cff, hostile: true, pattern: 'stalk', radius: 27, speed: [34, 66], assetKey: 'fauna-abyss-black-swallower' },
   ],
   4: [
-    { species: 'Static Fry', count: 18, minY: 180, maxY: 760, color: 0x73fbd3, hostile: false, pattern: 'school', radius: 8, speed: [44, 76] },
-    { species: 'Glyph Ray', count: 10, minY: 520, maxY: 1260, color: 0xb8f7ff, hostile: false, pattern: 'glide', radius: 18, speed: [28, 48] },
-    { species: 'Ruin Eel', count: 13, minY: 700, maxY: 1720, color: 0xffd166, hostile: true, pattern: 'stalk', radius: 15, speed: [52, 88] },
-    { species: 'Vault Maw', count: 8, minY: 1480, maxY: 2440, color: 0xf48cff, hostile: true, pattern: 'stalk', radius: 22, speed: [46, 82] },
-    { species: 'Sentinel Leviathan', count: 4, minY: 1720, maxY: 2580, color: 0xffffff, hostile: true, pattern: 'circle', radius: 30, speed: [24, 42] },
+    { species: 'Static Fry', count: 20, minY: 160, maxY: 720, color: 0x73fbd3, hostile: false, pattern: 'school', radius: 8, speed: [44, 76], assetKey: 'fish-mid-neutral' },
+    { species: 'Abyssal Hatchet School', count: 18, minY: 180, maxY: 760, color: 0x73fbd3, hostile: false, pattern: 'sway', radius: 18, speed: [10, 18], assetKey: 'fauna-abyss-hatchet-school' },
+    { species: 'Abyss Vampire Squid', count: 10, minY: 380, maxY: 1160, color: 0xff6f7f, hostile: false, pattern: 'glide', radius: 14, speed: [24, 42], assetKey: 'fauna-shallow-octopus' },
+    { species: 'Hadopelagic Microfish', count: 8, minY: 520, maxY: 1440, color: 0xb9a7a0, hostile: false, pattern: 'sway', radius: 24, speed: [10, 20], assetKey: 'fauna-abyss-hatchet-school' },
+    { species: 'Anglerfish', count: 12, minY: 640, maxY: 1740, color: 0xffd166, hostile: true, pattern: 'stalk', radius: 16, speed: [42, 74], assetKey: 'fish-abyss-predator' },
+    { species: 'Viperfish', count: 10, minY: 840, maxY: 1980, color: 0xb8f7ff, hostile: true, pattern: 'stalk', radius: 15, speed: [52, 88], assetKey: 'fish-abyss-predator' },
+    { species: 'Goblin Shark', count: 6, minY: 1240, maxY: 2360, color: 0xff7a8f, hostile: true, pattern: 'glide', radius: 24, speed: [44, 78], assetKey: 'fish-abyss-predator' },
+    { species: 'Black Swallower', count: 5, minY: 1540, maxY: 2600, color: 0x8f8cff, hostile: true, pattern: 'stalk', radius: 30, speed: [38, 70], assetKey: 'fauna-abyss-black-swallower' },
+    { species: 'Abyssal Medusa', count: 8, minY: 1640, maxY: 2680, color: 0xb8f7ff, hostile: false, pattern: 'circle', radius: 16, speed: [10, 22], assetKey: 'fauna-abyss-abyss-jelly' },
   ],
 };
 
@@ -341,7 +382,7 @@ const biomeFlora: Record<Biome, FloraSpecies[]> = {
 const state = {
   biome: 1 as Biome,
   credits: 0,
-  oxygen: 100,
+  oxygen: BASE_OXYGEN,
   hull: 100,
   fuel: 100,
   stunGrenades: 0,
@@ -363,7 +404,16 @@ const state = {
   } satisfies Record<UpgradeId, number>,
   status: 'Launch from the boat, mine minerals, scan fish, then surface to upgrade.',
   atBoat: true,
+  docked: true,
   paused: false,
+  logbookOpen: false,
+  bargeTab: 'services' as BargeTab,
+  titlePanel: 'main' as TitlePanel,
+  musicEnabled: true,
+  musicVolume: 1,
+  sfxVolume: 1,
+  unhardcore: false,
+  achievements: new Set<string>(),
   won: false,
   lost: false,
   started: false,
@@ -374,6 +424,7 @@ const state = {
 };
 
 let uiEventsBound = false;
+let uiFocusKey = '';
 
 class DeepdiveScene extends Phaser.Scene {
   private parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
@@ -405,6 +456,8 @@ class DeepdiveScene extends Phaser.Scene {
   private lastFishBiteSfxAt = -Infinity;
   private terrainBoundsKey = '';
   private terrainDirty = true;
+  private gamepadButtonsDown = new Set<number>();
+  private menuNavCooldown = 0;
   private player = {
     x: WORLD_W * TILE * 0.5,
     y: SURFACE_Y - 10,
@@ -434,7 +487,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,G,Q,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,G,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
     this.parallaxLayers = [0, 1, 2, 3].map((index) => this.add
       .tileSprite(0, 0, 1, 1, `parallax-shallow-${index}`)
       .setOrigin(0)
@@ -459,8 +512,14 @@ class DeepdiveScene extends Phaser.Scene {
 
   update(_: number, deltaMs: number) {
     const delta = deltaMs / 1000;
+    const controls = this.readControls();
+    if (state.started && state.docked && !state.logbookOpen && !state.paused && !state.lost && !state.won && Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) {
+      this.diveFromBarge();
+      return;
+    }
+    if (this.updateMenuNavigation(delta, controls)) return;
     if (!state.started) {
-      if (Phaser.Input.Keyboard.JustDown(this.keys.SPACE) || Phaser.Input.Keyboard.JustDown(this.keys.ENTER)) {
+      if (controls.confirmPressed) {
         this.startRun();
         return;
       }
@@ -474,7 +533,16 @@ class DeepdiveScene extends Phaser.Scene {
       restart(this);
       return;
     }
+    if (controls.logbookPressed) {
+      toggleLogbook();
+    }
+    if (controls.pausePressed) {
+      state.paused = !state.paused;
+      if (state.paused) state.logbookOpen = false;
+      renderHud();
+    }
     if (state.lost || state.won) {
+      if (controls.confirmPressed) restart(this);
       this.draw();
       this.updateAudio(delta);
       return;
@@ -484,14 +552,31 @@ class DeepdiveScene extends Phaser.Scene {
       this.updateAudio(delta);
       return;
     }
+    if (state.docked) {
+      this.updateDockedAtBarge(delta, controls);
+      this.updateFish(delta * 0.35);
+      this.updateFlora(delta * 0.35);
+      this.updateFloatingTexts(delta);
+      this.updateSystems(delta);
+      this.updateCameraZoom();
+      this.cameras.main.centerOn(this.player.x, this.player.y);
+      this.draw();
+      this.updateAudio(delta);
+      this.hudTimer += deltaMs;
+      if (this.hudTimer > 90) {
+        this.hudTimer = 0;
+        renderHud();
+      }
+      return;
+    }
 
     this.drillingThisFrame = false;
-    this.updatePlayer(delta);
+    this.updatePlayer(delta, controls);
     this.updateLooseItems(delta);
     this.updateFlora(delta);
     this.updateFish(delta);
     this.updateHazards(delta);
-    this.updateBobbits(delta);
+    this.updateBobbits(delta, controls);
     this.updateSystems(delta);
     this.updateFloatingTexts(delta);
     this.updateSonarPings(delta);
@@ -522,11 +607,28 @@ class DeepdiveScene extends Phaser.Scene {
 
   startRun() {
     state.started = true;
-    state.status = 'Barge lights are green. Drop below and start the claim.';
+    state.docked = true;
+    state.atBoat = true;
+    state.status = 'Barge lights are green. Choose Dive when you are ready to leave the deck.';
     resetOxygenWarnings();
     this.resetPlayerStart();
     this.revealSonarAtPlayer(8);
     this.cameras.main.centerOn(this.player.x, this.player.y);
+    renderHud();
+  }
+
+  diveFromBarge() {
+    if (!state.started || !state.atBoat || state.lost || state.won) return;
+    state.docked = false;
+    state.paused = false;
+    this.player.x = WORLD_W * TILE * 0.5;
+    this.player.y = SURFACE_Y + 54;
+    this.player.vx = 0;
+    this.player.vy = 22;
+    this.player.facing.set(0, 1);
+    this.player.facingSign = 1;
+    state.status = 'Dive started. The barge winch releases you into the claim.';
+    this.revealSonarAtPlayer(8);
     renderHud();
   }
 
@@ -561,7 +663,10 @@ class DeepdiveScene extends Phaser.Scene {
     resetOxygenWarnings();
     state.scannedSpecies.clear();
     state.atBoat = true;
+    state.docked = true;
     state.paused = false;
+    state.logbookOpen = false;
+    state.bargeTab = 'services';
     const nextBiome = (state.biome + 1) as Biome;
     state.biome = nextBiome;
     state.status = `Barge retrofitted. Welcome to ${biomeName()}.`;
@@ -591,6 +696,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.scanCooldown = 0;
     this.player.sonarCooldown = 0;
     this.player.scanTarget = null;
+    state.docked = true;
     this.sonarPings = [];
     this.hudTimer = 0;
     this.floatingTexts.forEach((entry) => entry.label.destroy());
@@ -644,6 +750,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.carveStarterCaverns(center);
     this.carveDeepTunnelNetwork(center);
     this.carveAnchorstoneStrata();
+    this.populateOreVeins();
 
     this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
     this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
@@ -666,6 +773,56 @@ class DeepdiveScene extends Phaser.Scene {
       });
     }
     return vents;
+  }
+
+  private populateOreVeins() {
+    const rules = veinRulesForBiome();
+    for (let y = 8; y < WORLD_H - 2; y += 1) {
+      for (let x = 2; x < WORLD_W - 2; x += 1) {
+        if (!this.canHostOre(x, y)) continue;
+        const rule = veinRuleAt(x, y, rules);
+        if (!rule) continue;
+        this.growOreVein(x, y, rule);
+      }
+    }
+  }
+
+  private growOreVein(startX: number, startY: number, rule: VeinRule) {
+    const span = rule.maxSize - rule.minSize + 1;
+    const targetSize = rule.minSize + Math.floor(hash(startX * 53, startY * 59, seed) * span);
+    const frontier = [{ x: startX, y: startY }];
+    let placed = 0;
+
+    while (frontier.length > 0 && placed < targetSize) {
+      const index = Math.floor(hash(startX + placed * 17, startY + frontier.length * 23, seed) * frontier.length) % frontier.length;
+      const current = frontier.splice(index, 1)[0];
+      if (!this.canHostOre(current.x, current.y)) continue;
+
+      this.world[current.y][current.x] = rule.tile;
+      this.damage[current.y][current.x] = 0;
+      placed += 1;
+
+      const neighbors = [
+        { x: current.x + 1, y: current.y },
+        { x: current.x - 1, y: current.y },
+        { x: current.x, y: current.y + 1 },
+        { x: current.x, y: current.y - 1 },
+      ];
+      if (hash(current.x * 31, current.y * 37, seed) > 0.62) {
+        neighbors.push({ x: current.x + 1, y: current.y + (hash(current.x, current.y, seed) > 0.5 ? 1 : -1) });
+      }
+
+      for (const neighbor of neighbors) {
+        if (!this.canHostOre(neighbor.x, neighbor.y)) continue;
+        if (hash(neighbor.x * 41 + placed, neighbor.y * 43 + targetSize, seed) < 0.22) continue;
+        frontier.push(neighbor);
+      }
+    }
+  }
+
+  private canHostOre(x: number, y: number) {
+    const tile = this.getTile(x, y);
+    return tile === 'stone' || tile === 'sand';
   }
 
   private makeBobbits(): Bobbit[] {
@@ -973,12 +1130,101 @@ class DeepdiveScene extends Phaser.Scene {
     }
   }
 
-  private updatePlayer(delta: number) {
-    const input = new Phaser.Math.Vector2(
-      axis(this.cursors.left, this.keys.A, this.cursors.right, this.keys.D),
-      axis(this.cursors.up, this.keys.W, this.cursors.down, this.keys.S),
+  private readControls(): ControlState {
+    const phaserPad = this.input.gamepad?.getPad(0) as {
+      axes?: Array<{ getValue?: () => number; value?: number } | number>;
+      buttons?: Array<{ pressed?: boolean; value?: number } | number>;
+    } | undefined;
+    const gamepad = navigator.getGamepads?.().find((pad): pad is Gamepad => Boolean(pad?.connected));
+    const pressed = new Set<number>();
+    const buttonCount = Math.max(phaserPad?.buttons?.length ?? 0, gamepad?.buttons.length ?? 0);
+    for (let index = 0; index < buttonCount; index += 1) {
+      const phaserButton = phaserPad?.buttons?.[index];
+      const phaserValue = typeof phaserButton === 'number' ? phaserButton : phaserButton?.value ?? (phaserButton?.pressed ? 1 : 0);
+      const rawButton = gamepad?.buttons[index];
+      if ((phaserButton && phaserValue > 0.5) || rawButton?.pressed || (rawButton?.value ?? 0) > 0.5) pressed.add(index);
+    }
+    const padJustPressed = (index: number) => pressed.has(index) && !this.gamepadButtonsDown.has(index);
+    const axisValue = (index: number) => {
+      const phaserAxis = phaserPad?.axes?.[index];
+      const phaserValue = typeof phaserAxis === 'number' ? phaserAxis : phaserAxis?.getValue?.() ?? phaserAxis?.value;
+      const value = phaserValue ?? gamepad?.axes[index] ?? 0;
+      return Math.abs(value) > 0.18 ? value : 0;
+    };
+    const padX = axisValue(0) + (pressed.has(15) ? 1 : 0) - (pressed.has(14) ? 1 : 0);
+    const padY = axisValue(1) + (pressed.has(13) ? 1 : 0) - (pressed.has(12) ? 1 : 0);
+    const move = new Phaser.Math.Vector2(
+      axis(this.cursors.left, this.keys.A, this.cursors.right, this.keys.D) + Phaser.Math.Clamp(padX, -1, 1),
+      axis(this.cursors.up, this.keys.W, this.cursors.down, this.keys.S) + Phaser.Math.Clamp(padY, -1, 1),
     );
-    const hasInput = input.lengthSq() > 0;
+    if (move.lengthSq() > 1) move.normalize();
+
+    const controls = {
+      move,
+      hasMove: move.lengthSq() > 0,
+      mineHeld: this.keys.SPACE.isDown || pressed.has(0) || pressed.has(7),
+      scanHeld: this.keys.E.isDown || pressed.has(2),
+      sonarPressed: Phaser.Input.Keyboard.JustDown(this.keys.Q) || padJustPressed(4),
+      stunPressed: Phaser.Input.Keyboard.JustDown(this.keys.G) || padJustPressed(5),
+      pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.ESC) || Phaser.Input.Keyboard.JustDown(this.keys.P) || padJustPressed(9),
+      logbookPressed: Phaser.Input.Keyboard.JustDown(this.keys.L) || padJustPressed(3),
+      confirmPressed: Phaser.Input.Keyboard.JustDown(this.keys.SPACE) || Phaser.Input.Keyboard.JustDown(this.keys.ENTER) || padJustPressed(0),
+    };
+    this.gamepadButtonsDown = pressed;
+    return controls;
+  }
+
+  private updateMenuNavigation(delta: number, controls: ControlState) {
+    this.menuNavCooldown = Math.max(0, this.menuNavCooldown - delta);
+    const buttons = activeMenuButtons();
+    if (!buttons.length) {
+      clearControllerFocus();
+      return false;
+    }
+
+    let active = document.activeElement instanceof HTMLButtonElement && buttons.includes(document.activeElement)
+      ? document.activeElement
+      : null;
+    if (!active) {
+      active = focusMenuButton(buttons, uiFocusKey) ?? buttons[0];
+      focusUiButton(active);
+      uiFocusKey = menuButtonKey(active);
+    }
+
+    if (controls.hasMove && this.menuNavCooldown <= 0) {
+      const next = nextMenuButton(buttons, active, controls.move);
+      if (next && next !== active) {
+        focusUiButton(next);
+        uiFocusKey = menuButtonKey(next);
+        this.menuNavCooldown = 0.18;
+      }
+    }
+
+    if (controls.confirmPressed) {
+      active.click();
+      return true;
+    }
+    return false;
+  }
+
+  private updateDockedAtBarge(delta: number, controls: ControlState) {
+    this.drillingThisFrame = false;
+    this.player.x = WORLD_W * TILE * 0.5;
+    this.player.y = SURFACE_Y - 10;
+    this.player.vx = 0;
+    this.player.vy = 0;
+    this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
+    this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
+    this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
+    if (controls.confirmPressed && !state.logbookOpen) this.diveFromBarge();
+  }
+
+  private updatePlayer(delta: number, controls: ControlState) {
+    const input = new Phaser.Math.Vector2(
+      controls.move.x,
+      controls.move.y,
+    );
+    const hasInput = controls.hasMove;
     if (hasInput) {
       input.normalize();
     }
@@ -996,14 +1242,14 @@ class DeepdiveScene extends Phaser.Scene {
       this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
       this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
       this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
-      if (Phaser.Input.Keyboard.JustDown(this.keys.G)) {
+      if (controls.stunPressed) {
         this.useStunGrenade();
       }
       return;
     }
 
     const topSpeed = swimTopSpeed();
-    const thrust = (this.isAtBoat() ? 620 : 320) + state.upgrades.speed * 42;
+    const thrust = (this.isAtBoat() ? 620 : 300) + swimUpgradeBonus() * 34;
     this.player.vx += input.x * thrust * delta;
     this.player.vy += input.y * thrust * delta;
     const drag = input.lengthSq() > 0 ? 1.45 : 2.65;
@@ -1016,7 +1262,7 @@ class DeepdiveScene extends Phaser.Scene {
       this.player.vy = (this.player.vy / speed) * topSpeed;
     }
     if (hasInput) {
-      this.rotateFacingToward(input.angle(), delta, 6.2 + state.upgrades.speed * 0.22);
+      this.rotateFacingToward(input.angle(), delta, 6.2 + swimUpgradeBonus() * 0.18);
       this.updatePlayerFacing(input.x);
     } else if (speed > 12) {
       this.rotateFacingToward(Math.atan2(this.player.vy, this.player.vx), delta, 2.8);
@@ -1029,18 +1275,18 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
     this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
     this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
-    if (Phaser.Input.Keyboard.JustDown(this.keys.Q)) {
+    if (controls.sonarPressed) {
       this.sonarPing();
     }
-    if (Phaser.Input.Keyboard.JustDown(this.keys.G)) {
+    if (controls.stunPressed) {
       this.useStunGrenade();
     }
     const pointer = this.input.activePointer;
     if (pointer.isDown) this.mineAt(pointer.worldX, pointer.worldY);
-    if (this.keys.SPACE.isDown) {
+    if (controls.mineHeld) {
       this.mineAt(this.player.x + this.player.facing.x * PLAYER_FORWARD_REACH, this.player.y + this.player.facing.y * PLAYER_FORWARD_REACH);
     }
-    this.scanNearbyLife(delta);
+    this.scanNearbyLife(delta, controls.scanHeld);
   }
 
   private updatePlayerFacing(horizontalIntent: number) {
@@ -1055,7 +1301,8 @@ class DeepdiveScene extends Phaser.Scene {
   private updateAudio(delta: number) {
     if (!this.sound) return;
     if (!state.started) {
-      this.ensureLoop('menu');
+      if (state.musicEnabled && state.musicVolume > 0) this.ensureLoop('menu');
+      else this.stopLoop('menu');
       this.stopLoop('ambient');
       this.stopLoop('mining');
       this.stopLoop('oxygen');
@@ -1063,7 +1310,8 @@ class DeepdiveScene extends Phaser.Scene {
     }
 
     this.stopLoop('menu');
-    this.ensureLoop('ambient');
+    if (state.musicEnabled && state.musicVolume > 0) this.ensureLoop('ambient');
+    else this.stopLoop('ambient');
 
     if (state.lost || state.won || state.paused) {
       this.stopLoop('mining');
@@ -1071,11 +1319,11 @@ class DeepdiveScene extends Phaser.Scene {
       return;
     }
 
-    if (this.drillingThisFrame) this.ensureLoop('mining');
+    if (this.drillingThisFrame && state.sfxVolume > 0) this.ensureLoop('mining');
     else this.stopLoop('mining');
 
     const oxygenCritical = state.oxygen > 0 && state.oxygen / oxygenMax() <= 0.05;
-    if (oxygenCritical) this.ensureLoop('oxygen');
+    if (oxygenCritical && state.sfxVolume > 0) this.ensureLoop('oxygen');
     else this.stopLoop('oxygen');
 
     this.creatureCallTimer -= delta;
@@ -1088,14 +1336,32 @@ class DeepdiveScene extends Phaser.Scene {
   private ensureLoop(kind: 'menu' | 'ambient' | 'mining' | 'oxygen') {
     const key = audioKeys[kind];
     const current = this[`${kind}Loop` as const];
+    const volume = this.loopVolume(kind);
     if (current) {
-      if (!current.isPlaying) current.play({ loop: true, volume: audioVolumes[kind] });
+      if (!current.isPlaying) current.play({ loop: true, volume });
+      this.setLoopVolume(current, volume);
       return;
     }
     this.sound.stopByKey(key);
     const sound = this.sound.add(key);
-    sound.play({ loop: true, volume: audioVolumes[kind] });
+    sound.play({ loop: true, volume });
     this[`${kind}Loop` as const] = sound;
+  }
+
+  private loopVolume(kind: 'menu' | 'ambient' | 'mining' | 'oxygen') {
+    if (kind === 'menu') return state.musicEnabled ? audioVolumes.menuTitle * state.musicVolume : 0;
+    if (kind === 'ambient') return state.musicEnabled ? audioVolumes.ambient * state.musicVolume : 0;
+    if (kind === 'mining' || kind === 'oxygen') return audioVolumes[kind] * state.sfxVolume;
+    return audioVolumes[kind];
+  }
+
+  private setLoopVolume(sound: Phaser.Sound.BaseSound, volume: number) {
+    const adjustable = sound as Phaser.Sound.BaseSound & {
+      setVolume?: (value: number) => Phaser.Sound.BaseSound;
+      volume?: number;
+    };
+    if (adjustable.setVolume) adjustable.setVolume(volume);
+    else adjustable.volume = volume;
   }
 
   private stopLoop(kind: 'menu' | 'ambient' | 'mining' | 'oxygen') {
@@ -1110,10 +1376,18 @@ class DeepdiveScene extends Phaser.Scene {
     let key = 'audio-whale';
     if (state.biome >= 4 || state.depth >= 1450) key = 'audio-alien-growl';
     else if (state.biome >= 2 || state.depth >= 650) key = 'audio-crab-growl';
-    this.sound.play(key, { volume: 0.58 });
+    this.playSfx(key, 0.58);
     if (Math.random() < 0.42) {
-      this.sound.play(Math.random() < 0.5 ? 'audio-water' : 'audio-cavern', { volume: 0.18 });
+      this.playSfx(Math.random() < 0.5 ? 'audio-water' : 'audio-cavern', 0.18);
     }
+  }
+
+  private playSfx(key: string, volume: number, config: Phaser.Types.Sound.SoundConfig = {}) {
+    if (state.sfxVolume <= 0) return;
+    this.sound.play(key, {
+      ...config,
+      volume: volume * state.sfxVolume,
+    });
   }
 
   private rotateFacingToward(targetAngle: number, delta: number, turnRate: number) {
@@ -1150,7 +1424,7 @@ class DeepdiveScene extends Phaser.Scene {
 
   private mineAt(worldX: number, worldY: number) {
     const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, worldX, worldY);
-    const range = 40 + state.upgrades.laser * 9;
+    const range = 40 + miningUpgradeBonus() * 6;
     if (distance > range) return;
     const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, worldX, worldY);
     this.player.facing.set(Math.cos(angle), Math.sin(angle));
@@ -1169,7 +1443,7 @@ class DeepdiveScene extends Phaser.Scene {
       return;
     }
 
-    const power = 9 + state.upgrades.laser * 3.5;
+    const power = 8.8 + miningUpgradeBonus() * 2.35;
     state.fuel = Math.max(0, state.fuel - fuelCost);
     for (const target of targets) {
       const tile = this.getTile(target.x, target.y);
@@ -1187,8 +1461,8 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private mineTargets(tx: number, ty: number) {
-    const maxBlocks = 1 + Math.floor(state.upgrades.laser / 2);
-    const radius = state.upgrades.laser >= 3 ? 1 : 0;
+    const maxBlocks = state.upgrades.laser >= 10 ? 4 : state.upgrades.laser >= 6 ? 3 : state.upgrades.laser >= 3 ? 2 : 1;
+    const radius = maxBlocks > 1 ? 1 : 0;
     const targets: Array<{ x: number; y: number; distance: number }> = [];
     for (let y = ty - radius; y <= ty + radius; y += 1) {
       for (let x = tx - radius; x <= tx + radius; x += 1) {
@@ -1242,10 +1516,10 @@ class DeepdiveScene extends Phaser.Scene {
     }
   }
 
-  private scanNearbyLife(delta: number) {
+  private scanNearbyLife(delta: number, scanningHeld: boolean) {
     const range = 64 + state.upgrades.scanner * 18;
     const target = this.nearestLife(range);
-    if (!this.keys.E.isDown || !target) {
+    if (!scanningHeld || !target) {
       this.player.scanTarget = null;
       return;
     }
@@ -1265,9 +1539,10 @@ class DeepdiveScene extends Phaser.Scene {
     if (!state.scannedSpecies.has(target.species)) {
       state.scannedSpecies.add(target.species);
       const reward = scanReward(target);
+      const rarity = scannableRarity(target);
       state.credits += reward;
-      this.spawnFloatingText(`Scanned ${target.species} +${reward}c`, 0xb9f27c);
-      state.status = `Cataloged ${target.species}. Research paid ${reward} credits.`;
+      this.spawnFloatingText(`${target.species} scanned +${reward}c`, rarityColor(rarity));
+      state.status = `Cataloged ${target.species} (${rarityLabel(rarity)}). Research paid ${reward} credits.`;
       const apexSpecies = currentApexSpecies();
       if (target.species === apexSpecies && state.depth >= TARGET_DEPTH) {
         if (state.biome === 4) {
@@ -1425,7 +1700,7 @@ class DeepdiveScene extends Phaser.Scene {
     }
     state.fuel = Math.max(0, state.fuel - SONAR_FUEL_COST);
     this.player.sonarCooldown = SONAR_COOLDOWN;
-    this.sound.play(audioKeys.sonar, { volume: audioVolumes.sonar });
+    this.playSfx(audioKeys.sonar, audioVolumes.sonar);
     this.sonarPings.push({ x: this.player.x, y: this.player.y, age: 0, life: 0.9 });
     this.revealSonarAtPlayer(SONAR_REVEAL_RADIUS_TILES);
     this.captureSonarContacts();
@@ -1682,11 +1957,9 @@ class DeepdiveScene extends Phaser.Scene {
     }
   }
 
-  private updateBobbits(delta: number) {
+  private updateBobbits(delta: number, controls: ControlState) {
     if (!this.bobbits.length) return;
-    const inputX = axis(this.cursors.left, this.keys.A, this.cursors.right, this.keys.D);
-    const inputY = axis(this.cursors.up, this.keys.W, this.cursors.down, this.keys.S);
-    const inputStrength = Math.hypot(inputX, inputY);
+    const inputStrength = controls.move.length();
     let latchedBobbitActive = this.bobbits.some((bobbit) => bobbit.state === 'latched');
     for (const bobbit of this.bobbits) {
       bobbit.phase += delta;
@@ -1898,9 +2171,8 @@ class DeepdiveScene extends Phaser.Scene {
       : damage <= 14
         ? 'audio-fish-bite-strong'
         : 'audio-fish-bite-heavy';
-    const volume = damage <= 10 ? 0.3 : damage <= 14 ? 0.37 : 0.45;
-    this.sound.play(key, {
-      volume,
+    const volume = damage <= 10 ? 0.16 : damage <= 14 ? 0.2 : 0.24;
+    this.playSfx(key, volume, {
       detune: Phaser.Math.Between(-35, 25),
     });
   }
@@ -1921,8 +2193,17 @@ class DeepdiveScene extends Phaser.Scene {
   private updateSystems(delta: number) {
     state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
     state.maxDepth = Math.max(state.maxDepth, state.depth);
-    state.atBoat = this.isAtBoat();
+    const wasAtBoat = state.atBoat;
+    state.atBoat = state.docked || this.isAtBoat();
     if (state.atBoat) {
+      if (!wasAtBoat && state.started) {
+        state.docked = true;
+        this.player.x = WORLD_W * TILE * 0.5;
+        this.player.y = SURFACE_Y - 10;
+        this.player.vx = 0;
+        this.player.vy = 0;
+        state.status = 'Docked at the barge. Refit, review the logbook, then press Dive.';
+      }
       const sale = state.cargo.reduce((sum, item) => sum + item.value, 0);
       if (sale > 0) {
         state.credits += sale;
@@ -1950,10 +2231,39 @@ class DeepdiveScene extends Phaser.Scene {
       state.hull -= 16 * delta;
     }
     if (state.hull <= 0) {
+      if (state.unhardcore) {
+        this.respawnAtBarge();
+        return;
+      }
       state.hull = 0;
       state.lost = true;
       state.status = `Helmet breached at ${state.maxDepth} m. Press R to restart.`;
     }
+  }
+
+  private respawnAtBarge() {
+    const sale = state.cargo.reduce((sum, item) => sum + item.value, 0);
+    if (sale > 0) {
+      state.credits += sale;
+      state.cargo = [];
+    }
+    state.hull = hullMax();
+    state.oxygen = oxygenMax();
+    state.fuel = Math.max(state.fuel, Math.min(fuelMax(), FUEL_REFILL_AMOUNT));
+    state.atBoat = true;
+    state.docked = true;
+    state.paused = false;
+    state.lost = false;
+    this.player.x = WORLD_W * TILE * 0.5;
+    this.player.y = SURFACE_Y - 10;
+    this.player.vx = 0;
+    this.player.vy = 0;
+    resetOxygenWarnings();
+    state.status = sale > 0
+      ? `Unhardcore recovery. Cargo banked for ${sale} credits.`
+      : 'Unhardcore recovery. The barge winch dragged you back breathing.';
+    unlockAchievement('weak...', 'Respawn at the barge with Unhardcore enabled.');
+    renderHud();
   }
 
   private isAtBoat(): boolean {
@@ -2215,8 +2525,8 @@ class DeepdiveScene extends Phaser.Scene {
         continue;
       }
       const alpha = state.depth < 180 || Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y) < lightRadius() + 120
-        ? 0.82
-        : flora.scanned ? 0.42 : 0.18;
+        ? 0.98
+        : flora.scanned ? 0.72 : 0.42;
       const sway = Math.sin(flora.phase * 2.1) * scaledEntity(4);
       fitImageHeight(flora.sprite, flora.radius * (flora.rare ? 4.7 : 4));
       flora.sprite
@@ -2251,16 +2561,16 @@ class DeepdiveScene extends Phaser.Scene {
       fish.x < view.right + margin &&
       fish.y > view.y - margin &&
       fish.y < view.bottom + margin;
-    if (!onCamera) return fish.scanned ? 0.24 : 0;
-    if (state.depth < 180) return fish.scanned ? 0.95 : 0.78;
+    if (!onCamera) return fish.scanned ? 0.34 : 0;
+    if (state.depth < 180) return fish.scanned ? 1 : 0.96;
 
     const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
     const fullyVisibleAt = lightRadius() * 0.92;
     const goneAt = lightRadius() + 210;
-    if (distance <= fullyVisibleAt) return fish.scanned ? 0.95 : 0.74;
-    if (fish.scanned) return 0.42;
+    if (distance <= fullyVisibleAt) return fish.scanned ? 1 : 0.94;
+    if (fish.scanned) return 0.7;
     const fade = 1 - Phaser.Math.Clamp((distance - fullyVisibleAt) / (goneAt - fullyVisibleAt), 0, 1);
-    return fade * 0.58;
+    return fade * 0.84;
   }
 
   private drawPlayer() {
@@ -2404,8 +2714,6 @@ function generateTile(x: number, y: number): Tile {
   if (y < 7) return 'water';
   if (x <= 1 || x >= WORLD_W - 2 || y >= WORLD_H - 2) return 'bedrock';
   const depth = y * TILE;
-  const depthMeters = Math.max(0, (y - 4) * 6);
-  const darkness = darknessForDepth(depthMeters, state.biome);
   const shallow = Phaser.Math.Clamp(1 - (y - 7) / (52 * deepScale), 0, 1);
   const cave =
     Math.sin(x * 0.31 + seed) * 0.72 +
@@ -2414,39 +2722,68 @@ function generateTile(x: number, y: number): Tile {
     (hash(x, y, seed) - 0.5) * 1.35;
   const caveThreshold = Phaser.Math.Linear(0.26, 1.04, 1 - shallow);
   if (cave > caveThreshold && y > 8) return 'water';
-  const r = hash(x * 11, y * 17, seed);
   if (state.biome === 4) {
     if (depth > scaledDepthPx(360) && hash(x * 5, y * 7, seed) > 0.94 && (x + y) % 5 !== 0) return 'anchorstone';
-    if (darkness > 0.88 && r > 0.9988 && hash(x * 41, y * 43, seed) > 0.72) return 'ruinCore';
-    if (darkness > 0.82 && r > 0.976) return 'abyssalCrown';
-    if (darkness > 0.84 && r > 0.965) return 'sunstone';
-    if (darkness > 0.72 && r > 0.94) return 'alienAlloy';
-    if (darkness > 0.64 && r > 0.9) return 'cobalt';
     return depth > scaledDepthPx(260) || hash(y, x, seed) > 0.55 ? 'stone' : 'sand';
   }
   if (state.biome === 3) {
     if (depth > scaledDepthPx(420) && hash(x * 3, y * 5, seed) > 0.93 && (x + y) % 4 !== 0) return 'anchorstone';
-    if (darkness > 0.84 && r > 0.9978 && hash(x * 29, y * 31, seed) > 0.64) return 'abyssalCrown';
-    if (depth > scaledDepthPx(1350) && r > 0.94) return 'sunstone';
-    if (depth > scaledDepthPx(780) && r > 0.895) return 'cobalt';
-    if (depth > scaledDepthPx(1180) && r > 0.978) return 'relic';
-    if (depth > scaledDepthPx(300) && r > 0.86) return 'ruby';
     return depth > scaledDepthPx(280) || hash(y, x, seed) > 0.58 ? 'stone' : 'sand';
   }
   if (state.biome === 2) {
-    if (darkness > 0.78 && r > 0.9984 && hash(x * 23, y * 19, seed) > 0.68) return 'precursorEngine';
-    if (depth > scaledDepthPx(1250) && r > 0.955) return 'sunstone';
-    if (depth > scaledDepthPx(620) && r > 0.915) return 'cobalt';
-    if (depth > scaledDepthPx(1040) && r > 0.982) return 'relic';
-    if (depth > scaledDepthPx(260) && r > 0.88) return 'quartz';
     return depth > scaledDepthPx(360) || hash(y, x, seed) > 0.66 ? 'stone' : 'sand';
   }
-  if (darkness > 0.72 && r > 0.9992 && hash(x * 17, y * 37, seed) > 0.72) return 'drownedIdol';
-  if (depth > scaledDepthPx(1300) && r > 0.982) return 'relic';
-  if (depth > scaledDepthPx(950) && r > 0.956) return 'ruby';
-  if (depth > scaledDepthPx(460) && r > 0.925) return 'quartz';
-  if (depth > scaledDepthPx(180) && r > 0.89) return 'copper';
   return depth > scaledDepthPx(520) || hash(y, x, seed) > 0.74 ? 'stone' : 'sand';
+}
+
+function veinRuleAt(x: number, y: number, rules: VeinRule[]) {
+  const depth = y * TILE;
+  const depthMeters = Math.max(0, (y - 4) * 6);
+  const darkness = darknessForDepth(depthMeters, state.biome);
+  for (const rule of rules) {
+    if (depth < scaledDepthPx(rule.minDepth)) continue;
+    if (rule.minDarkness !== undefined && darkness < rule.minDarkness) continue;
+    const r = hash(x * rule.salt + 11, y * (rule.salt + 6) + 17, seed);
+    if (r > 1 - rule.chance) return rule;
+  }
+  return null;
+}
+
+function veinRulesForBiome(): VeinRule[] {
+  if (state.biome === 4) {
+    return [
+      { tile: 'ruinCore', minDepth: 1560, minDarkness: 0.88, chance: 0.0009, minSize: 1, maxSize: 2, salt: 97 },
+      { tile: 'abyssalCrown', minDepth: 1180, minDarkness: 0.82, chance: 0.0035, minSize: 2, maxSize: 4, salt: 89 },
+      { tile: 'sunstone', minDepth: 960, minDarkness: 0.78, chance: 0.007, minSize: 3, maxSize: 6, salt: 83 },
+      { tile: 'alienAlloy', minDepth: 540, minDarkness: 0.62, chance: 0.010, minSize: 4, maxSize: 9, salt: 79 },
+      { tile: 'cobalt', minDepth: 340, chance: 0.009, minSize: 4, maxSize: 8, salt: 73 },
+    ];
+  }
+  if (state.biome === 3) {
+    return [
+      { tile: 'abyssalCrown', minDepth: 1440, minDarkness: 0.84, chance: 0.0012, minSize: 1, maxSize: 2, salt: 71 },
+      { tile: 'relic', minDepth: 1120, chance: 0.003, minSize: 2, maxSize: 4, salt: 67 },
+      { tile: 'sunstone', minDepth: 1260, chance: 0.006, minSize: 3, maxSize: 6, salt: 61 },
+      { tile: 'cobalt', minDepth: 760, chance: 0.009, minSize: 4, maxSize: 8, salt: 59 },
+      { tile: 'ruby', minDepth: 300, chance: 0.008, minSize: 5, maxSize: 9, salt: 53 },
+    ];
+  }
+  if (state.biome === 2) {
+    return [
+      { tile: 'precursorEngine', minDepth: 1320, minDarkness: 0.78, chance: 0.0009, minSize: 1, maxSize: 2, salt: 47 },
+      { tile: 'relic', minDepth: 1040, chance: 0.0028, minSize: 2, maxSize: 4, salt: 43 },
+      { tile: 'sunstone', minDepth: 1220, chance: 0.004, minSize: 3, maxSize: 5, salt: 41 },
+      { tile: 'cobalt', minDepth: 620, chance: 0.008, minSize: 4, maxSize: 8, salt: 37 },
+      { tile: 'quartz', minDepth: 260, chance: 0.009, minSize: 5, maxSize: 10, salt: 31 },
+    ];
+  }
+  return [
+    { tile: 'drownedIdol', minDepth: 1420, minDarkness: 0.72, chance: 0.0006, minSize: 1, maxSize: 2, salt: 29 },
+    { tile: 'relic', minDepth: 1240, chance: 0.0022, minSize: 2, maxSize: 4, salt: 23 },
+    { tile: 'ruby', minDepth: 900, chance: 0.0045, minSize: 3, maxSize: 6, salt: 19 },
+    { tile: 'quartz', minDepth: 460, chance: 0.0065, minSize: 4, maxSize: 8, salt: 17 },
+    { tile: 'copper', minDepth: 180, chance: 0.008, minSize: 5, maxSize: 10, salt: 13 },
+  ];
 }
 
 function hash(x: number, y: number, s: number): number {
@@ -2458,6 +2795,37 @@ function scaledEntity(value: number) {
   return value * ENTITY_SCALE;
 }
 
+const faunaFrameCounts: Record<string, number> = {
+  'fauna-shallow-snap-shrimp': 4,
+  'fauna-shallow-mantis-shrimp': 4,
+  'fauna-shallow-nautilus': 4,
+  'fauna-shallow-squid': 4,
+  'fauna-shallow-octopus': 4,
+  'fauna-shallow-blue-ring-octopus': 4,
+  'fauna-shallow-jellyfish': 3,
+  'fauna-shallow-comb-jelly': 4,
+  'fauna-deep-deep-shrimp': 4,
+  'fauna-deep-vampire-squid': 4,
+  'fauna-deep-glass-squid': 4,
+  'fauna-deep-hatchetfish': 3,
+  'fauna-deep-barreleye': 3,
+  'fauna-deep-gulper-eel': 3,
+  'fauna-deep-lanternfish': 3,
+  'fauna-deep-tripodfish': 3,
+  'fauna-deep-deep-jelly': 4,
+  'fauna-deep-sea-spider': 4,
+  'fauna-abyss-giant-isopod': 3,
+  'fauna-abyss-abyss-vampire-squid': 4,
+  'fauna-abyss-bigfin-squid': 3,
+  'fauna-abyss-anglerfish': 3,
+  'fauna-abyss-viperfish': 3,
+  'fauna-abyss-goblin-shark': 2,
+  'fauna-abyss-frilled-shark': 2,
+  'fauna-abyss-hatchet-school': 2,
+  'fauna-abyss-black-swallower': 3,
+  'fauna-abyss-abyss-jelly': 4,
+};
+
 function loadGeneratedAssets(scene: Phaser.Scene) {
   const assetPath = (name: string) => `/assets/generated/${name}.png`;
   const audioPath = (name: string) => `/assets/audio/${name}`;
@@ -2468,6 +2836,9 @@ function loadGeneratedAssets(scene: Phaser.Scene) {
   }
   for (const base of ['fish-shallow-neutral', 'fish-shallow-predator', 'fish-mid-neutral', 'fish-mid-predator', 'fish-abyss-predator']) {
     for (let i = 0; i < fishFrameCount(base); i += 1) scene.load.image(`${base}-${i}`, assetPath(`${base}-${i}`));
+  }
+  for (const [base, frameCount] of Object.entries(faunaFrameCounts)) {
+    for (let i = 0; i < frameCount; i += 1) scene.load.image(`${base}-${i}`, assetPath(`${base}-${i}`));
   }
   scene.load.image('flora-shallow-kelp', assetPath('flora-shallow-kelp'));
   scene.load.image('flora-shallow-anemone', assetPath('flora-shallow-anemone'));
@@ -2482,7 +2853,7 @@ function loadGeneratedAssets(scene: Phaser.Scene) {
   for (const key of terrainTextureKeys()) {
     scene.load.image(key, assetPath(key));
   }
-  scene.load.audio(audioKeys.menu, audioPath('menuloop.wav'));
+  scene.load.audio(audioKeys.menu, audioPath('menuloop.mp3'));
   scene.load.audio(audioKeys.ambient, audioPath('ambienceloop.mp3'));
   scene.load.audio(audioKeys.mining, audioPath('mining.mp3'));
   scene.load.audio(audioKeys.oxygen, audioPath('outofoxygen.mp3'));
@@ -2582,9 +2953,7 @@ function tileTextureKey(tile: Tile, x: number, y: number) {
   const variant = tileVariant(x, y);
   if (tile === 'sand') return `tile-sand-${variant}`;
   if (tile === 'stone') {
-    if (state.biome === 4 || y > WORLD_H * 0.76) return `tile-abyss-${variant}`;
-    if (state.biome >= 3 || y > WORLD_H * 0.52) return `tile-deep-${variant}`;
-    return `tile-stone-${variant}`;
+    return hostRockTextureKey(x, y);
   }
   if (tile === 'bedrock' || tile === 'anchorstone') return `tile-alloy-${variant}`;
   if (tile === 'copper') return 'tile-copper';
@@ -2598,6 +2967,13 @@ function tileTextureKey(tile: Tile, x: number, y: number) {
   if (tile === 'abyssalCrown') return 'tile-crown';
   if (tile === 'alienAlloy') return 'tile-alien-alloy';
   if (tile === 'ruinCore') return 'tile-ruin-core';
+  return `tile-stone-${variant}`;
+}
+
+function hostRockTextureKey(x: number, y: number) {
+  const variant = tileVariant(x, y);
+  if (state.biome === 4 || y > WORLD_H * 0.76) return `tile-abyss-${variant}`;
+  if (state.biome >= 3 || y > WORLD_H * 0.52) return `tile-deep-${variant}`;
   return `tile-stone-${variant}`;
 }
 
@@ -2620,6 +2996,7 @@ function sonarTileColor(tile: Tile, edge: boolean) {
 }
 
 function fishAssetKey(species: FishSpecies) {
+  if (species.assetKey) return species.assetKey;
   if (!species.hostile) return state.biome === 1 ? 'fish-shallow-neutral' : 'fish-mid-neutral';
   if (state.biome >= 3 || species.radius >= 24) return 'fish-abyss-predator';
   if (state.biome === 2 || species.radius >= 18) return 'fish-mid-predator';
@@ -2724,6 +3101,7 @@ function diverOrigin(animation: DiverAnimation, facingSign: 1 | -1) {
 }
 
 function fishFrameCount(assetKey: string) {
+  if (faunaFrameCounts[assetKey]) return faunaFrameCounts[assetKey];
   if (assetKey === 'fish-shallow-neutral') return 4;
   if (assetKey === 'fish-shallow-predator') return 4;
   if (assetKey === 'fish-mid-neutral') return 4;
@@ -2750,7 +3128,7 @@ function axis(negativeA: Phaser.Input.Keyboard.Key, negativeB: Phaser.Input.Keyb
 }
 
 function oxygenMax() {
-  return 100 + state.upgrades.oxygen * 48;
+  return BASE_OXYGEN + state.upgrades.oxygen * 48;
 }
 
 function hullMax() {
@@ -2768,33 +3146,111 @@ function fuelRefillCost(fullTank: boolean) {
 }
 
 function miningFuelCost(targetCount: number) {
-  return MINE_FUEL_COST + targetCount * 0.07 + state.upgrades.laser * 0.01;
+  return MINE_FUEL_COST + targetCount * 0.07 + miningUpgradeBonus() * 0.015;
 }
 
 function cargoCapacity() {
   return 6 + state.upgrades.cargo * 4;
 }
 
+function upgradeDiminishing(level: number) {
+  return Math.sqrt(Math.max(0, level));
+}
+
+function swimUpgradeBonus() {
+  return upgradeDiminishing(state.upgrades.speed);
+}
+
+function miningUpgradeBonus() {
+  return upgradeDiminishing(state.upgrades.laser);
+}
+
 function swimTopSpeed() {
-  return 112 + state.upgrades.speed * 18;
+  return 106 + swimUpgradeBonus() * 20;
 }
 
 function mineCooldown() {
-  return Math.max(0.16, 0.38 * Math.pow(0.92, state.upgrades.laser));
+  return Math.max(0.24, 0.48 - miningUpgradeBonus() * 0.055);
 }
 
 function scanReward(target: ScanTarget) {
-  const base = target.kind === 'fish'
-    ? 30 + (target.hostile ? 28 : 0)
-    : 24 + (target.hazardous ? 34 : 0) + (target.rare ? 26 : 0);
-  return base + state.upgrades.scanner * 18;
+  const rarity = scannableRarity(target);
+  const base = scanRarityCredits(rarity);
+  const dangerBonus = target.kind === 'fish'
+    ? target.hostile ? 180 : 0
+    : target.hazardous ? 220 : 0;
+  const scannerBonus = 1 + state.upgrades.scanner * 0.16;
+  return Math.round((base + dangerBonus) * scannerBonus);
+}
+
+function scanRarityCredits(rarity: ScanRarity) {
+  if (rarity === 'legendary') return 3600;
+  if (rarity === 'epic') return 2100;
+  if (rarity === 'rare') return 1150;
+  if (rarity === 'uncommon') return 620;
+  return 320;
+}
+
+function rarityLabel(rarity: ScanRarity) {
+  return rarity[0].toUpperCase() + rarity.slice(1);
+}
+
+function rarityColor(rarity: ScanRarity) {
+  if (rarity === 'legendary') return 0xffd166;
+  if (rarity === 'epic') return 0xd06bff;
+  if (rarity === 'rare') return 0x8ee7f4;
+  if (rarity === 'uncommon') return 0x7bd88f;
+  return 0xa9b8c9;
+}
+
+function scannableRarity(target: ScanTarget) {
+  return target.kind === 'fish'
+    ? fishRarity(fishSpeciesByName(target.species))
+    : floraRarity(floraSpeciesByName(target.species));
+}
+
+function fishRarity(species?: FishSpecies): ScanRarity {
+  if (!species) return 'common';
+  if (species.count <= 4 || species.radius >= 29) return 'legendary';
+  if (species.count <= 5 || species.radius >= 24 || species.minY >= 1500) return 'epic';
+  if (species.count <= 7 || species.hostile || species.minY >= 980) return 'rare';
+  if (species.count <= 10 || species.minY >= 520) return 'uncommon';
+  return 'common';
+}
+
+function floraRarity(species?: FloraSpecies): ScanRarity {
+  if (!species) return 'common';
+  if (species.rare && species.hazardous) return 'epic';
+  if (species.rare || species.count <= 5) return 'rare';
+  if (species.hazardous || species.count <= 10 || species.minY >= 760) return 'uncommon';
+  return 'common';
+}
+
+function fishSpeciesByName(name: string) {
+  const current = biomeFish[state.biome].find((species) => species.species === name);
+  if (current) return current;
+  for (const entries of Object.values(biomeFish)) {
+    const match = entries.find((species) => species.species === name);
+    if (match) return match;
+  }
+  return undefined;
+}
+
+function floraSpeciesByName(name: string) {
+  const current = biomeFlora[state.biome].find((species) => species.species === name);
+  if (current) return current;
+  for (const entries of Object.values(biomeFlora)) {
+    const match = entries.find((species) => species.species === name);
+    if (match) return match;
+  }
+  return undefined;
 }
 
 function currentApexSpecies() {
-  if (state.biome === 1) return 'Abyss Warden';
-  if (state.biome === 2) return 'Brine Leviathan';
-  if (state.biome === 3) return 'Trench Crown';
-  return 'Sentinel Leviathan';
+  if (state.biome === 1) return 'Blue-ring Octopus';
+  if (state.biome === 2) return 'Gulper Eel';
+  if (state.biome === 3) return 'Black Swallower';
+  return 'Black Swallower';
 }
 
 function lifeCatalogTotal() {
@@ -2910,7 +3366,7 @@ function scaledDepthPx(value: number) {
 function restart(scene: DeepdiveScene) {
   state.biome = 1;
   state.credits = 0;
-  state.oxygen = 100;
+  state.oxygen = BASE_OXYGEN;
   state.hull = 100;
   state.fuel = fuelMax();
   state.stunGrenades = 0;
@@ -2924,7 +3380,10 @@ function restart(scene: DeepdiveScene) {
   state.won = false;
   state.lost = false;
   state.atBoat = true;
+  state.docked = true;
   state.paused = false;
+  state.logbookOpen = false;
+  state.bargeTab = 'services';
   state.status = 'A new trench map is ready. Dive again.';
   state.started = true;
   for (const key of Object.keys(state.upgrades) as UpgradeId[]) state.upgrades[key] = 0;
@@ -2941,58 +3400,29 @@ function renderHud() {
     app.innerHTML = `
       <main class="shell">
         <section id="game"></section>
-        <aside id="title-screen" class="title-screen">
-          <div class="title-mark">
-            <img class="title-logo" src="/assets/generated/ui-title-logo.png" alt="Abyss Miner">
-            <span>Deepwater salvage program</span>
-            <p>Mine the trench, catalog what moves in the dark, and decide what is worth carrying back before the sea closes around you.</p>
-          </div>
-          <div class="title-actions">
-            <button class="title-play" data-start-game aria-label="Play"></button>
-          </div>
-          <img class="title-divider" src="/assets/generated/ui-title-divider.png" alt="">
-          <div class="title-brief">
-            <article>
-              <strong>Descend</strong>
-              <span>The shallows open wide, then the stone begins to close.</span>
-            </article>
-            <article>
-              <strong>Recover</strong>
-              <span>Bright relics wait where the barge lights cannot reach.</span>
-            </article>
-            <article>
-              <strong>Survive</strong>
-              <span>Old mouths move through the dark below the claim.</span>
-            </article>
-          </div>
-        </aside>
+        <aside id="title-screen" class="title-screen"></aside>
         <aside class="hud">
-          <header>
-            <span>${biomeName()}</span>
-            <h1>Abyss miner</h1>
-          </header>
           <div id="gauges"></div>
         </aside>
         <aside id="barge-menu" class="barge-menu"></aside>
-        <aside class="controls">
-          <strong>Controls</strong>
-          <span>WASD / arrows move</span>
-          <span>Mouse or Space cuts terrain</span>
-          <span>Hold E to scan nearby fish</span>
-          <span>Q sends a sonar ping</span>
-          <span>G fires a stun grenade</span>
-          <span>Dock at the barge to sell, refill, repair, and upgrade</span>
-        </aside>
+        <aside id="logbook" class="logbook"></aside>
+        <aside id="pause-menu" class="pause-menu"></aside>
       </main>
     `;
   }
   const gauges = document.querySelector<HTMLDivElement>('#gauges');
   const bargeMenu = document.querySelector<HTMLDivElement>('#barge-menu');
+  const logbook = document.querySelector<HTMLDivElement>('#logbook');
+  const pauseMenu = document.querySelector<HTMLDivElement>('#pause-menu');
   const shell = document.querySelector<HTMLElement>('.shell');
   const titleScreen = document.querySelector<HTMLElement>('#title-screen');
-  if (!gauges || !bargeMenu || !shell || !titleScreen) return;
+  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !shell || !titleScreen) return;
+  const logbookScrollTop = logbook.querySelector<HTMLDivElement>('.logbook__list')?.scrollTop ?? 0;
   shell.classList.toggle('is-title', !state.started);
   titleScreen.classList.toggle('is-hidden', state.started);
+  titleScreen.classList.toggle('is-options', state.titlePanel === 'options');
+  titleScreen.classList.toggle('is-controls', state.titlePanel === 'controls');
+  setStableHtml(titleScreen, state.started ? '' : titlePanel());
   const cargoValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
   gauges.innerHTML = `
     <div class="readout">
@@ -3008,38 +3438,17 @@ function renderHud() {
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
     <p class="status">${state.status}</p>
-    <div class="utility-actions">
-      <button data-sonar>Sonar ping</button>
-      <button data-stun ${state.stunGrenades <= 0 ? 'disabled' : ''}>Stun</button>
-      <button data-pause>${state.paused ? 'Resume' : 'Pause'}</button>
-      <button data-gold>+1,000 credits</button>
-    </div>
-    ${state.won || state.lost ? '<button data-restart>Restart run</button>' : ''}
   `;
   renderGameOver(app);
-  bargeMenu.classList.toggle('is-open', state.started && state.atBoat && !state.lost && !state.won);
-  bargeMenu.innerHTML = state.started && state.atBoat && !state.lost && !state.won
-    ? `
-      <div class="shop-title">
-        <div>
-          <span>Barge Dock</span>
-          <strong>Refit and resupply</strong>
-        </div>
-        <span>${state.scannedSpecies.size}/${lifeCatalogTotal()} scans</span>
-      </div>
-      <div class="dock-summary">
-        <span>O2 and hull refilling</span>
-        <span>Cargo sold automatically</span>
-        <strong>${state.credits} credits</strong>
-      </div>
-      ${bargeFuelRow()}
-      ${bargeStunRow()}
-      ${bargeTravelRow()}
-      <div class="upgrade-list">
-        ${availableUpgrades().map((upgrade) => upgradeRow(upgrade)).join('')}
-      </div>
-    `
-    : '';
+  const bargeOpen = state.started && state.atBoat && !state.lost && !state.won;
+  bargeMenu.classList.toggle('is-open', bargeOpen);
+  setStableHtml(bargeMenu, bargeOpen ? bargeMenuPanel() : '');
+  logbook.classList.toggle('is-open', state.logbookOpen && state.started);
+  setStableHtml(logbook, state.logbookOpen && state.started ? logbookPanel() : '');
+  const logbookList = logbook.querySelector<HTMLDivElement>('.logbook__list');
+  if (logbookList) logbookList.scrollTop = logbookScrollTop;
+  pauseMenu.classList.toggle('is-open', state.paused && state.started && !state.lost && !state.won);
+  setStableHtml(pauseMenu, state.paused && state.started && !state.lost && !state.won ? pauseMenuPanel() : '');
   gameScene()?.drawSonarMap();
 }
 
@@ -3068,6 +3477,85 @@ function renderGameOver(app: HTMLDivElement) {
     <button data-restart>Restart run</button>
   `;
   gameScene()?.drawSonarMap();
+}
+
+function setStableHtml(element: HTMLElement, html: string) {
+  if (element.innerHTML !== html) element.innerHTML = html;
+}
+
+function titlePanel() {
+  const logo = `
+    <div class="title-mark">
+      <img class="title-logo" src="/assets/generated/ui-title-logo.png" alt="Abyss Miner">
+    </div>
+  `;
+  if (state.titlePanel === 'options') {
+    return `
+      ${logo}
+      <div class="title-subpanel">
+        <div class="setting-row">
+          <strong>Background music</strong>
+          <button data-toggle-music data-focus-key="title-music">${state.musicEnabled ? 'On' : 'Off'}</button>
+        </div>
+        ${volumeRow('Music volume', 'music', state.musicVolume)}
+        ${volumeRow('SFX volume', 'sfx', state.sfxVolume)}
+        <div class="setting-row">
+          <strong>Unhardcore</strong>
+          <button data-toggle-unhardcore data-focus-key="title-unhardcore">${state.unhardcore ? 'On' : 'Off'}</button>
+        </div>
+      </div>
+      <div class="title-actions">
+        <button class="title-button" data-title-panel="main" data-focus-key="title-back">Back</button>
+      </div>
+    `;
+  }
+  if (state.titlePanel === 'controls') {
+    return `
+      ${logo}
+      <div class="title-subpanel title-controls">
+        <div><strong>Move</strong><span>WASD / arrows / left stick</span></div>
+        <div><strong>Dive / mine</strong><span>Space / A / right trigger</span></div>
+        <div><strong>Scan</strong><span>Hold E / X</span></div>
+        <div><strong>Sonar</strong><span>Q / left bumper</span></div>
+        <div><strong>Stun</strong><span>G / right bumper</span></div>
+        <div><strong>Logbook</strong><span>L / Y</span></div>
+        <div><strong>Pause</strong><span>Esc, P / Start</span></div>
+      </div>
+      <div class="title-actions">
+        <button class="title-button" data-title-panel="main" data-focus-key="title-back">Back</button>
+      </div>
+    `;
+  }
+  return `
+    ${logo}
+    <div class="title-actions title-actions--main">
+      <button class="title-button title-play" data-start-game data-focus-key="title-play">Play</button>
+      <button class="title-button" data-title-panel="options" data-focus-key="title-options">Options</button>
+      <button class="title-button" data-title-panel="controls" data-focus-key="title-controls">Controls</button>
+    </div>
+  `;
+}
+
+function volumeRow(label: string, kind: 'music' | 'sfx', value: number) {
+  return `
+    <div class="setting-row">
+      <strong>${label}</strong>
+      <div class="volume-control">
+        <button data-audio-adjust="${kind}" data-delta="-0.1" data-focus-key="title-${kind}-down">-</button>
+        <span>${Math.round(value * 100)}%</span>
+        <button data-audio-adjust="${kind}" data-delta="0.1" data-focus-key="title-${kind}-up">+</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleLogbook() {
+  const opening = !state.logbookOpen;
+  state.logbookOpen = opening;
+  if (opening) {
+    state.paused = false;
+  }
+  renderHud();
 }
 
 let fullscreenWarningTimeout: number | undefined;
@@ -3099,6 +3587,39 @@ function clearFullscreenWarning() {
   document.querySelector('#fullscreen-warning')?.remove();
 }
 
+let achievementTimeout: number | undefined;
+let achievementRemoveTimeout: number | undefined;
+
+function unlockAchievement(title: string, detail: string) {
+  if (state.achievements.has(title)) return;
+  state.achievements.add(title);
+  showAchievement(title, detail);
+}
+
+function showAchievement(title: string, detail: string) {
+  const app = document.querySelector<HTMLDivElement>('#app');
+  if (!app) return;
+  let toast = app.querySelector<HTMLElement>('#achievement-toast');
+  if (!toast) {
+    toast = document.createElement('aside');
+    toast.id = 'achievement-toast';
+    toast.className = 'achievement-toast';
+    app.appendChild(toast);
+  }
+  toast.innerHTML = `
+    <span>Achievement unlocked</span>
+    <strong>${title}</strong>
+    <p>${detail}</p>
+  `;
+  toast.classList.remove('is-fading');
+  window.clearTimeout(achievementTimeout);
+  window.clearTimeout(achievementRemoveTimeout);
+  achievementTimeout = window.setTimeout(() => {
+    toast?.classList.add('is-fading');
+    achievementRemoveTimeout = window.setTimeout(() => toast?.remove(), 700);
+  }, 10000);
+}
+
 function bindUiEvents(app: HTMLDivElement) {
   if (uiEventsBound) return;
   uiEventsBound = true;
@@ -3117,6 +3638,42 @@ function bindUiEvents(app: HTMLDivElement) {
       gameScene()?.startRun();
       return;
     }
+    const titlePanelButton = target.closest<HTMLButtonElement>('button[data-title-panel]');
+    if (titlePanelButton && !titlePanelButton.disabled) {
+      event.preventDefault();
+      state.titlePanel = titlePanelButton.dataset.titlePanel as TitlePanel;
+      renderHud();
+      return;
+    }
+    const musicButton = target.closest<HTMLButtonElement>('button[data-toggle-music]');
+    if (musicButton) {
+      event.preventDefault();
+      state.musicEnabled = !state.musicEnabled;
+      renderHud();
+      return;
+    }
+    const volumeButton = target.closest<HTMLButtonElement>('button[data-audio-adjust]');
+    if (volumeButton) {
+      event.preventDefault();
+      const key = volumeButton.dataset.audioAdjust === 'music' ? 'musicVolume' : 'sfxVolume';
+      const delta = Number(volumeButton.dataset.delta) || 0;
+      state[key] = Phaser.Math.Clamp(Math.round((state[key] + delta) * 10) / 10, 0, 1);
+      renderHud();
+      return;
+    }
+    const unhardcoreButton = target.closest<HTMLButtonElement>('button[data-toggle-unhardcore]');
+    if (unhardcoreButton) {
+      event.preventDefault();
+      state.unhardcore = !state.unhardcore;
+      renderHud();
+      return;
+    }
+    const diveButton = target.closest<HTMLButtonElement>('button[data-dive-from-barge]');
+    if (diveButton && !diveButton.disabled) {
+      event.preventDefault();
+      gameScene()?.diveFromBarge();
+      return;
+    }
     const restartButton = target.closest<HTMLButtonElement>('button[data-restart]');
     if (restartButton && !restartButton.disabled) {
       event.preventDefault();
@@ -3128,6 +3685,20 @@ function bindUiEvents(app: HTMLDivElement) {
     if (pauseButton) {
       event.preventDefault();
       state.paused = !state.paused;
+      if (state.paused) state.logbookOpen = false;
+      renderHud();
+      return;
+    }
+    const logbookButton = target.closest<HTMLButtonElement>('button[data-logbook]');
+    if (logbookButton) {
+      event.preventDefault();
+      toggleLogbook();
+      return;
+    }
+    const bargeTabButton = target.closest<HTMLButtonElement>('button[data-barge-tab]');
+    if (bargeTabButton) {
+      event.preventDefault();
+      state.bargeTab = bargeTabButton.dataset.bargeTab as BargeTab;
       renderHud();
       return;
     }
@@ -3184,8 +3755,113 @@ function bindUiEvents(app: HTMLDivElement) {
   });
 }
 
+function activeMenuButtons() {
+  const scopes = [
+    '#title-screen:not(.is-hidden)',
+    '.pause-menu.is-open',
+    '.logbook.is-open',
+    '.barge-menu.is-open',
+  ];
+  for (const scope of scopes) {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(`${scope} button:not(:disabled)`))
+      .filter((button) => button.offsetParent !== null);
+    if (buttons.length) return buttons;
+  }
+  return [];
+}
+
+function focusUiButton(button: HTMLButtonElement) {
+  clearControllerFocus();
+  button.classList.add('is-controller-focus');
+  button.focus({ preventScroll: true });
+}
+
+function clearControllerFocus() {
+  document.querySelectorAll<HTMLButtonElement>('button.is-controller-focus').forEach((button) => {
+    button.classList.remove('is-controller-focus');
+  });
+}
+
+function focusMenuButton(buttons: HTMLButtonElement[], key: string) {
+  return buttons.find((button) => menuButtonKey(button) === key) ?? null;
+}
+
+function nextMenuButton(buttons: HTMLButtonElement[], active: HTMLButtonElement, move: Phaser.Math.Vector2) {
+  if (Math.abs(move.x) < 0.25 && Math.abs(move.y) < 0.25) return active;
+  const activeRect = active.getBoundingClientRect();
+  const ax = activeRect.left + activeRect.width * 0.5;
+  const ay = activeRect.top + activeRect.height * 0.5;
+  const horizontal = Math.abs(move.x) > Math.abs(move.y);
+  const dirX = horizontal ? Math.sign(move.x) : 0;
+  const dirY = horizontal ? 0 : Math.sign(move.y);
+  let best = active;
+  let bestScore = Infinity;
+
+  for (const button of buttons) {
+    if (button === active) continue;
+    const rect = button.getBoundingClientRect();
+    const bx = rect.left + rect.width * 0.5;
+    const by = rect.top + rect.height * 0.5;
+    const dx = bx - ax;
+    const dy = by - ay;
+    if (dirX && Math.sign(dx) !== dirX) continue;
+    if (dirY && Math.sign(dy) !== dirY) continue;
+    const primary = dirX ? Math.abs(dx) : Math.abs(dy);
+    const secondary = dirX ? Math.abs(dy) : Math.abs(dx);
+    const score = primary + secondary * 2.2;
+    if (score < bestScore) {
+      best = button;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
+function menuButtonKey(button: HTMLButtonElement) {
+  return button.dataset.focusKey ??
+    button.dataset.titlePanel ??
+    button.dataset.audioAdjust ??
+    button.dataset.bargeTab ??
+    button.dataset.upgrade ??
+    button.dataset.buyFuel ??
+    button.dataset.discardCargo ??
+    button.textContent?.trim() ??
+    '';
+}
+
 function availableUpgrades() {
   return upgrades.filter((upgrade) => upgrade.biome <= state.biome);
+}
+
+function bargeMenuPanel() {
+  return `
+    <div class="barge-tabs">
+      <button class="${state.bargeTab === 'services' ? 'is-active' : ''}" data-barge-tab="services" data-focus-key="barge-services">Barge</button>
+      <button class="${state.bargeTab === 'upgrades' ? 'is-active' : ''}" data-barge-tab="upgrades" data-focus-key="barge-upgrades">Upgrades</button>
+      <button class="dive-button" data-dive-from-barge data-focus-key="barge-dive">Dive</button>
+    </div>
+    <div class="shop-title">
+      <div>
+        <span>Barge Dock</span>
+        <strong>${state.bargeTab === 'upgrades' ? 'Upgrade console' : 'Refit and resupply'}</strong>
+      </div>
+      <span>${state.scannedSpecies.size}/${lifeCatalogTotal()} scans</span>
+    </div>
+    ${state.bargeTab === 'upgrades' ? upgradeTabPanel() : bargeServicesPanel()}
+  `;
+}
+
+function bargeServicesPanel() {
+  return `
+    <div class="dock-summary">
+      <span>O2 and hull refilling</span>
+      <span>Cargo sold automatically</span>
+      <strong>${state.credits} credits</strong>
+    </div>
+    ${bargeFuelRow()}
+    ${bargeStunRow()}
+    ${bargeTravelRow()}
+  `;
 }
 
 function sonarPanel() {
@@ -3199,6 +3875,162 @@ function sonarPanel() {
       <button data-sonar ${state.fuel < SONAR_FUEL_COST ? 'disabled' : ''}>Ping ${SONAR_FUEL_COST} fuel</button>
     </section>
   `;
+}
+
+function logbookPanel() {
+  const entries = [
+    ...biomeFish[state.biome].map((species) => ({
+      species: species.species,
+      kind: species.hostile ? 'Predatory fauna' : 'Neutral fauna',
+      rarity: fishRarity(species),
+      scanned: state.scannedSpecies.has(species.species),
+      imageKey: `${fishAssetKey(species)}-0`,
+      info: fishLogbookInfo(species),
+    })),
+    ...biomeFlora[state.biome].map((species) => ({
+      species: species.species,
+      kind: species.hazardous ? 'Hazardous flora' : 'Flora',
+      rarity: floraRarity(species),
+      scanned: state.scannedSpecies.has(species.species),
+      imageKey: floraAssetKey(species),
+      info: floraLogbookInfo(species),
+    })),
+  ].sort((a, b) => rarityRank(b.rarity) - rarityRank(a.rarity) || a.species.localeCompare(b.species));
+
+  return `
+    <div class="logbook__header">
+      <div>
+        <span>Current biome logbook</span>
+        <strong>${biomeName()}</strong>
+      </div>
+      <button data-logbook aria-label="Close logbook">Close</button>
+    </div>
+    <div class="logbook__summary">
+      <strong>${state.scannedSpecies.size}/${lifeCatalogTotal()}</strong>
+      <span>cataloged lifeforms</span>
+    </div>
+    <div class="logbook__list">
+      ${entries.map((entry) => `
+        <article class="logbook-entry ${entry.scanned ? 'is-scanned' : ''}">
+          <div class="logbook-entry__portrait">
+            ${entry.scanned ? `<img src="/assets/generated/${entry.imageKey}.png" alt="">` : '<span>?</span>'}
+          </div>
+          <div>
+            <strong>${entry.scanned ? entry.species : 'Unknown lifeform'}</strong>
+            <span>${entry.kind}</span>
+          </div>
+          <i class="rarity rarity-${entry.rarity}">${rarityLabel(entry.rarity)}</i>
+          <p>${entry.scanned ? entry.info : 'Scan this signal to reveal field notes and habits.'}</p>
+        </article>
+      `).join('')}
+    </div>
+  `;
+}
+
+function pauseMenuPanel() {
+  return `
+    <div class="pause-menu__header">
+      <span>Dive paused</span>
+      <strong>${biomeName()}</strong>
+    </div>
+    <div class="pause-actions">
+      <button data-pause>Resume</button>
+      <button data-logbook>${state.logbookOpen ? 'Close logbook' : 'Open logbook'}</button>
+      <button data-restart>Restart run</button>
+    </div>
+    <section class="pause-controls">
+      <h2>Keyboard and mouse</h2>
+      <dl>
+        <div><dt>Move</dt><dd>WASD / arrow keys</dd></div>
+        <div><dt>Mine</dt><dd>Mouse button or Space</dd></div>
+        <div><dt>Scan</dt><dd>Hold E</dd></div>
+        <div><dt>Sonar</dt><dd>Q</dd></div>
+        <div><dt>Stun</dt><dd>G</dd></div>
+        <div><dt>Logbook</dt><dd>L</dd></div>
+        <div><dt>Pause</dt><dd>Esc / P</dd></div>
+      </dl>
+    </section>
+    <section class="pause-controls">
+      <h2>Controller</h2>
+      <dl>
+        <div><dt>Move</dt><dd>Left stick / D-pad</dd></div>
+        <div><dt>Dive / Mine</dt><dd>A / right trigger</dd></div>
+        <div><dt>Scan</dt><dd>Hold X</dd></div>
+        <div><dt>Sonar</dt><dd>Left bumper</dd></div>
+        <div><dt>Stun</dt><dd>Right bumper</dd></div>
+        <div><dt>Logbook</dt><dd>Y</dd></div>
+        <div><dt>Pause</dt><dd>Start</dd></div>
+      </dl>
+    </section>
+  `;
+}
+
+function rarityRank(rarity: ScanRarity) {
+  if (rarity === 'legendary') return 5;
+  if (rarity === 'epic') return 4;
+  if (rarity === 'rare') return 3;
+  if (rarity === 'uncommon') return 2;
+  return 1;
+}
+
+function fishLogbookInfo(species: FishSpecies) {
+  const temperament = species.hostile
+    ? 'Will pursue diver noise and light when unscanned.'
+    : 'Generally non-aggressive unless startled by close contact.';
+  const depth = `${species.minY}-${species.maxY} m survey band`;
+  const motion = species.pattern === 'school'
+    ? 'travels in loose schools'
+    : species.pattern === 'stalk'
+      ? 'uses short pursuit bursts'
+      : species.pattern === 'circle'
+        ? 'patrols in looping territory'
+        : species.pattern === 'glide'
+          ? 'glides through open water'
+          : 'drifts with slow current changes';
+  return `${depth}. ${temperament} It ${motion}. ${lifeformQuote(species.species, species.hostile ? 'predator' : 'fauna')}`;
+}
+
+function floraLogbookInfo(species: FloraSpecies) {
+  const danger = species.hazardous
+    ? 'Contact can damage the suit; approach from a stable hover.'
+    : 'Safe to study at close range once anchored in the lamp cone.';
+  return `${species.minY}-${species.maxY} m growth band. ${danger} ${lifeformQuote(species.species, species.hazardous ? 'hazard' : 'flora')}`;
+}
+
+function lifeformQuote(species: string, kind: 'fauna' | 'predator' | 'flora' | 'hazard') {
+  const speakers = ['Dr. Sato', 'Deckhand Mina', 'Chief Alvarez', 'Archivist Noor', 'Pilot Keene', 'Dr. Vale'];
+  const lines = {
+    fauna: [
+      'It ignores the diver until the lamp gets impolite.',
+      'Pretty from a distance, twitchy up close.',
+      'The ocean keeps a calmer rhythm around these.',
+    ],
+    predator: [
+      'If it turns with you, it has already chosen a side.',
+      'Watch the pauses. The strike comes after the stillness.',
+      'Every old helmet dent has a story like this.',
+    ],
+    flora: [
+      'Good shelter for small life, and a fine warning that rock is near.',
+      'It grows where the current slows down enough to whisper.',
+      'Mark these on the chart. They make the dark feel less empty.',
+    ],
+    hazard: [
+      'Beautiful things down here keep their knives hidden.',
+      'Give it a meter more than pride suggests.',
+      'The suit sensors hate this one before the diver does.',
+    ],
+  } satisfies Record<'fauna' | 'predator' | 'flora' | 'hazard', string[]>;
+  const lineList = lines[kind];
+  const line = lineList[stringIndex(`${species}-${kind}`, lineList.length)];
+  const speaker = speakers[stringIndex(`${kind}-${species}`, speakers.length)];
+  return `"${line}" - ${speaker}`;
+}
+
+function stringIndex(value: string, modulo: number) {
+  let total = 0;
+  for (let i = 0; i < value.length; i += 1) total = (total * 31 + value.charCodeAt(i)) >>> 0;
+  return total % modulo;
 }
 
 function bargeFuelRow() {
@@ -3265,8 +4097,64 @@ function bargeTravelRow() {
   `;
 }
 
+function upgradeTabPanel() {
+  return `
+    <section class="upgrade-console is-open">
+      <div class="upgrade-console__header">
+        <div>
+          <span>Upgrade Console</span>
+          <strong>Diver refits</strong>
+        </div>
+        <strong>${state.credits.toLocaleString()}c</strong>
+      </div>
+      <div class="upgrade-grid">
+        ${availableUpgrades().map((upgrade) => upgradeCard(upgrade)).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function upgradeCard(upgrade: Upgrade) {
+  const level = state.upgrades[upgrade.id];
+  const max = upgradeMax(upgrade);
+  const maxed = level >= max;
+  const cost = upgradeCost(upgrade);
+  const locked = upgrade.biome > state.biome;
+  const disabled = locked || maxed || state.credits < cost;
+  return `
+    <article class="upgrade-card ${maxed ? 'is-maxed' : ''} ${locked ? 'is-locked' : ''}">
+      <div class="upgrade-card__image">
+        <img src="/assets/generated/${upgradeIconKey(upgrade.id)}.png" alt="">
+      </div>
+      <div class="upgrade-card__body">
+        <strong>${upgrade.name}</strong>
+        <span>Biome ${upgrade.biome}</span>
+        <div class="upgrade-level" aria-label="${upgrade.name} level ${level} of ${max}">
+          ${Array.from({ length: max }, (_, index) => `<i class="${index < level ? 'is-filled' : ''}"></i>`).join('')}
+          <em>${level}/${max}</em>
+        </div>
+        <p>${upgrade.text}</p>
+      </div>
+      <button data-upgrade="${upgrade.id}" data-focus-key="upgrade-${upgrade.id}" ${disabled ? 'disabled' : ''}>
+        ${locked ? 'Locked' : maxed ? 'Max' : `${cost.toLocaleString()}c`}
+      </button>
+    </article>
+  `;
+}
+
+function upgradeIconKey(id: UpgradeId) {
+  if (id === 'oxygen') return 'upgrade-icon-oxygen';
+  if (id === 'cargo') return 'upgrade-icon-cargo';
+  if (id === 'laser') return 'upgrade-icon-laser';
+  if (id === 'lamp') return 'upgrade-icon-lamp';
+  if (id === 'scanner') return 'upgrade-icon-scanner';
+  if (id === 'suit') return 'upgrade-icon-suit';
+  if (id === 'speed') return 'upgrade-icon-speed';
+  return 'upgrade-icon-thermal';
+}
+
 function biomeName() {
-  if (state.biome === 1) return 'Deepwater Claim';
+  if (state.biome === 1) return 'The Shallows';
   if (state.biome === 2) return 'Brine Vent Shelf';
   if (state.biome === 3) return 'Midnight Trench';
   return 'Ancient Ruins';
@@ -3353,6 +4241,9 @@ game = new Phaser.Game({
   render: {
     antialias: false,
     pixelArt: true,
+  },
+  input: {
+    gamepad: true,
   },
   scene: DeepdiveScene,
 });
