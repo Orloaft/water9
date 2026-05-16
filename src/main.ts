@@ -213,6 +213,7 @@ interface ControlState {
   mineHeld: boolean;
   scanHeld: boolean;
   boardHeld: boolean;
+  scoutPressed: boolean;
   sonarPressed: boolean;
   stunPressed: boolean;
   pausePressed: boolean;
@@ -290,6 +291,18 @@ const PLAYER_PICKUP_RADIUS = 18;
 const PLAYER_FORWARD_REACH = 26;
 const PLAYER_DRAW_SCALE = 0.74;
 const BARGE_DRAW_SCALE = 0.78;
+const BARGE_DOCK_Y = 64;
+const BARGE_PLATFORM_GRID_W = 25;
+const BARGE_PLATFORM_GRID_H = 3;
+const BARGE_PLATFORM_ENTRANCE_LEFT = 11;
+const BARGE_PLATFORM_ENTRANCE_RIGHT = 13;
+const BARGE_PLATFORM_ENTRANCE_TOP = 2;
+const BARGE_PLATFORM_WIDTH = BARGE_PLATFORM_GRID_W * TILE;
+const BARGE_PLATFORM_HEIGHT = BARGE_PLATFORM_GRID_H * TILE;
+const BARGE_ENTRY_Y = BARGE_PLATFORM_HEIGHT - 8;
+const BARGE_ENTRY_HALF_WIDTH = ((BARGE_PLATFORM_ENTRANCE_RIGHT - BARGE_PLATFORM_ENTRANCE_LEFT + 1) * TILE) / 2 + 8;
+const BARGE_DOCKING_ZONE_Y = BARGE_PLATFORM_HEIGHT;
+const BARGE_DOCKING_HALF_WIDTH = BARGE_ENTRY_HALF_WIDTH + 8;
 const FUEL_REFILL_AMOUNT = 50;
 const FUEL_REFILL_COST = 35;
 const MINE_FUEL_COST = 0.18;
@@ -326,14 +339,14 @@ const audioVolumes = {
   sonar: 0.56,
 } as const;
 const diverFrameCounts: Record<DiverAnimation, number> = {
-  idle: 6,
+  idle: 11,
   walk: 7,
-  swim: 6,
-  boost: 4,
+  swim: 7,
+  boost: 5,
   descend: 4,
   ascend: 4,
   hover: 4,
-  mine: 6,
+  mine: 8,
   recoil: 3,
   damage: 3,
   die: 7,
@@ -432,11 +445,11 @@ const biomeFish: Record<Biome, FishSpecies[]> = {
     { species: 'Hatchetfish', count: 16, minY: 300, maxY: 900, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [34, 58], assetKey: 'fish-mid-neutral' },
     { species: 'Barreleye', count: 10, minY: 520, maxY: 1160, color: 0x7bd88f, hostile: false, pattern: 'circle', radius: 10, speed: [18, 32], assetKey: 'fauna-deep-barreleye' },
     { species: 'Glass Squid', count: 9, minY: 640, maxY: 1400, color: 0x94e8e3, hostile: false, pattern: 'glide', radius: 13, speed: [28, 46], assetKey: 'fauna-shallow-squid' },
-    { species: 'Vampire Squid', count: 8, minY: 860, maxY: 1680, color: 0xff6f7f, hostile: true, pattern: 'stalk', radius: 14, speed: [34, 60], assetKey: 'fish-mid-predator' },
+    { species: 'Vampire Squid', count: 8, minY: 860, maxY: 1680, color: 0xff6f7f, hostile: true, pattern: 'stalk', radius: 14, speed: [34, 60], assetKey: 'fauna-deep-vampire-squid' },
     { species: 'Lanternfish', count: 13, minY: 980, maxY: 1900, color: 0xffd166, hostile: false, pattern: 'glide', radius: 10, speed: [30, 52], assetKey: 'fauna-deep-lanternfish' },
     { species: 'Gulper Eel', count: 6, minY: 1320, maxY: 2260, color: 0xd06bff, hostile: true, pattern: 'stalk', radius: 20, speed: [38, 68], assetKey: 'fauna-deep-gulper-eel' },
     { species: 'Tripodfish', count: 5, minY: 1500, maxY: 2380, color: 0xd8c49a, hostile: false, pattern: 'sway', radius: 18, speed: [10, 22], assetKey: 'fauna-deep-deep-jelly' },
-    { species: 'Sea Spider', count: 6, minY: 1260, maxY: 2180, color: 0xffc857, hostile: true, pattern: 'circle', radius: 15, speed: [18, 34], assetKey: 'fish-mid-predator' },
+    { species: 'Sea Spider', count: 6, minY: 1260, maxY: 2180, color: 0xffc857, hostile: true, pattern: 'circle', radius: 15, speed: [18, 34], assetKey: 'fauna-deep-sea-spider' },
   ],
   3: [
     { species: 'Mirror Fry', count: 18, minY: 160, maxY: 640, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [42, 72], assetKey: 'fish-mid-neutral' },
@@ -527,6 +540,7 @@ const state = {
   } as Record<SubTier, boolean>,
   selectedSubTier: null as SubTier | null,
   activeSub: null as SubVehicle | null,
+  carrierSub: null as SubVehicle | null,
   pilotingSub: false,
   auxSubActive: false,
   won: false,
@@ -551,6 +565,7 @@ class DeepdiveScene extends Phaser.Scene {
   private bargeSprite!: Phaser.GameObjects.Image;
   private playerSprite!: Phaser.GameObjects.Image;
   private subSprite?: Phaser.GameObjects.Image;
+  private cutterBeamSprite?: Phaser.GameObjects.Image;
   private auxSub?: AuxSub;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
@@ -577,7 +592,7 @@ class DeepdiveScene extends Phaser.Scene {
   private menuNavCooldown = 0;
   private player = {
     x: WORLD_W * TILE * 0.5,
-    y: SURFACE_Y - 10,
+    y: BARGE_DOCK_Y,
     vx: 0,
     vy: 0,
     facing: new Phaser.Math.Vector2(0, 1),
@@ -604,18 +619,19 @@ class DeepdiveScene extends Phaser.Scene {
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,H,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
     this.parallaxLayers = [0, 1, 2, 3].map((index) => this.add
       .tileSprite(0, 0, 1, 1, `parallax-shallow-${index}`)
       .setOrigin(0)
       .setDepth(-12 + index)
       .setScrollFactor(1));
     this.terrain = this.add.graphics().setDepth(0);
-    this.bargeSprite = this.add.image(WORLD_W * TILE * 0.5, SURFACE_Y + 24, 'barge-side')
+    this.bargeSprite = this.add.image(WORLD_W * TILE * 0.5, SURFACE_Y + 24, 'barge-platform')
       .setDepth(2.6)
-      .setOrigin(0.5, 1);
+      .setOrigin(0.5, 0);
     this.playerSprite = this.add.image(this.player.x, this.player.y, 'diver-swim-0').setDepth(2).setOrigin(0.5);
     this.subSprite = this.add.image(this.player.x, this.player.y, 'sub-tier1').setDepth(2.25).setOrigin(0.5).setVisible(false);
+    this.cutterBeamSprite = this.add.image(this.player.x, this.player.y, 'sub-cutter-beam-0').setDepth(3.25).setOrigin(0, 0.5).setVisible(false);
     this.auxSub = {
       x: this.player.x - 36,
       y: this.player.y + 18,
@@ -637,9 +653,10 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   update(_: number, deltaMs: number) {
+    updateFpsTracker(deltaMs);
     const delta = deltaMs / 1000;
     const controls = this.readControls();
-    if (state.started && state.docked && !state.logbookOpen && !state.paused && !state.lost && !state.won && Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) {
+    if (canDiveFromBargeShortcut() && Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) {
       this.diveFromBarge();
       return;
     }
@@ -649,9 +666,6 @@ class DeepdiveScene extends Phaser.Scene {
         this.startRun();
         return;
       }
-      this.updateFish(delta * 0.35);
-      this.updateFlora(delta * 0.35);
-      this.draw();
       this.updateAudio(delta);
       return;
     }
@@ -748,6 +762,7 @@ class DeepdiveScene extends Phaser.Scene {
   diveFromBarge() {
     if (!state.started || !state.atBoat || state.lost || state.won) return;
     state.docked = false;
+    state.atBoat = false;
     state.paused = false;
     this.player.x = WORLD_W * TILE * 0.5;
     this.player.y = SURFACE_Y + 54;
@@ -776,7 +791,7 @@ class DeepdiveScene extends Phaser.Scene {
     state.credits -= def.cost;
     state.subOwned[tier] = true;
     state.selectedSubTier = tier;
-    state.activeSub = createSubVehicle(tier, WORLD_W * TILE * 0.5, SURFACE_Y - 10);
+    state.activeSub = createSubVehicle(tier, WORLD_W * TILE * 0.5, BARGE_DOCK_Y);
     state.status = `${def.name} purchased and craned into the barge bay.`;
     this.syncSubToPlayer();
     renderHud();
@@ -820,6 +835,45 @@ class DeepdiveScene extends Phaser.Scene {
     renderHud();
   }
 
+  canUseSubHatch() {
+    const sub = state.activeSub;
+    if (!sub || state.docked || state.lost || state.won) return false;
+    if (state.carrierSub && state.pilotingSub && sub.tier === 1) return this.canReturnScoutToCarrier(sub);
+    if (state.pilotingSub) return true;
+    return Phaser.Math.Distance.Between(this.player.x, this.player.y, sub.x, sub.y) < scaledEntity(70);
+  }
+
+  activateSubHatch() {
+    const sub = state.activeSub;
+    if (!sub || !this.canUseSubHatch()) {
+      state.status = state.carrierSub ? 'Bring the scout close to the Leviathan hatch.' : 'Move close to the sub hatch to enter.';
+      renderHud();
+      return;
+    }
+    sub.boardProgress = 0;
+    if (this.canReturnScoutToCarrier(sub)) {
+      this.completeScoutReturn(sub);
+      return;
+    }
+    this.completeSubHatch(sub);
+  }
+
+  deployScoutFromCarrier() {
+    const host = state.activeSub;
+    if (!host || !state.pilotingSub || host.tier < 3 || state.carrierSub) return;
+    const scout = createSubVehicle(1, host.x - host.facingSign * scaledEntity(68), host.y + scaledEntity(4));
+    scout.facingSign = host.facingSign;
+    scout.vx = host.vx * 0.4;
+    scout.vy = host.vy * 0.4;
+    state.carrierSub = host;
+    state.activeSub = scout;
+    state.pilotingSub = true;
+    state.auxSubActive = true;
+    this.syncSubToPlayer();
+    state.status = 'Seeker deployed. Pilot it back to the Leviathan hatch and hold F to return.';
+    renderHud();
+  }
+
   private deploySelectedSub() {
     if (!state.selectedSubTier || !state.subOwned[state.selectedSubTier]) {
       state.pilotingSub = false;
@@ -836,8 +890,9 @@ class DeepdiveScene extends Phaser.Scene {
     sub.facingSign = 1;
     sub.boardProgress = 0;
     state.activeSub = sub;
+    state.carrierSub = null;
     state.pilotingSub = true;
-    if (tier === 3) state.auxSubActive = true;
+    state.auxSubActive = false;
     this.syncSubToPlayer();
     return sub;
   }
@@ -883,6 +938,15 @@ class DeepdiveScene extends Phaser.Scene {
         piloting: state.pilotingSub,
       }
       : null;
+    const carrierSub = state.carrierSub
+      ? {
+        tier: state.carrierSub.tier,
+        name: subDef(state.carrierSub.tier).name,
+        hull: Math.round(state.carrierSub.hull),
+        oxygen: Math.round(state.carrierSub.oxygen),
+        fuel: Math.round(state.carrierSub.fuel),
+      }
+      : null;
     return {
       seed,
       state: {
@@ -906,6 +970,7 @@ class DeepdiveScene extends Phaser.Scene {
         subOwned: { ...state.subOwned },
         selectedSubTier: state.selectedSubTier,
         activeSub,
+        carrierSub,
       },
       player: {
         x: Math.round(this.player.x),
@@ -936,6 +1001,7 @@ class DeepdiveScene extends Phaser.Scene {
       state.sonarRevealed.clear();
       state.sonarContacts = [];
       state.scannedSpecies.clear();
+      state.carrierSub = null;
       state.atBoat = true;
       state.docked = true;
       state.paused = false;
@@ -967,6 +1033,12 @@ class DeepdiveScene extends Phaser.Scene {
         state.activeSub.oxygen = def.oxygen;
         state.activeSub.fuel = def.fuel;
       }
+      if (state.carrierSub) {
+        const def = subDef(state.carrierSub.tier);
+        state.carrierSub.hull = def.hull;
+        state.carrierSub.oxygen = def.oxygen;
+        state.carrierSub.fuel = def.fuel;
+      }
     } else if (command === 'teleportDepth') {
       const depth = Phaser.Math.Clamp(Number(value) || 0, 0, WORLD_H * TILE - SURFACE_Y - TILE);
       this.player.x = WORLD_W * TILE * 0.5;
@@ -981,6 +1053,12 @@ class DeepdiveScene extends Phaser.Scene {
         state.activeSub.y = this.player.y;
         state.activeSub.vx = 0;
         state.activeSub.vy = 0;
+      }
+      if (state.carrierSub) {
+        state.carrierSub.x = this.player.x;
+        state.carrierSub.y = this.player.y;
+        state.carrierSub.vx = 0;
+        state.carrierSub.vy = 0;
       }
     } else if (command === 'setOxygen') {
       state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());
@@ -1007,6 +1085,7 @@ class DeepdiveScene extends Phaser.Scene {
     state.paused = false;
     state.logbookOpen = false;
     state.bargeTab = 'services';
+    state.carrierSub = null;
     const nextBiome = (state.biome + 1) as Biome;
     state.biome = nextBiome;
     state.status = `Barge retrofitted. Welcome to ${biomeName()}.`;
@@ -1027,7 +1106,7 @@ class DeepdiveScene extends Phaser.Scene {
 
   private resetPlayerStart() {
     this.player.x = WORLD_W * TILE * 0.5;
-    this.player.y = SURFACE_Y - 10;
+    this.player.y = BARGE_DOCK_Y;
     this.player.vx = 0;
     this.player.vy = 0;
     this.player.facing.set(0, 1);
@@ -1055,7 +1134,7 @@ class DeepdiveScene extends Phaser.Scene {
   private tileSpriteAt(index: number, textureKey: string) {
     const cached = this.tileSprites[index];
     const tileSprite = cached?.scene ? cached : this.add.image(0, 0, textureKey)
-      .setDepth(-1)
+      .setDepth(0.6)
       .setOrigin(0)
       .setDisplaySize(TILE, TILE);
     this.tileSprites[index] = tileSprite;
@@ -1505,6 +1584,7 @@ class DeepdiveScene extends Phaser.Scene {
       mineHeld: this.keys.SPACE.isDown || pressed.has(0) || pressed.has(7),
       scanHeld: this.keys.E.isDown || pressed.has(2),
       boardHeld: this.keys.F.isDown || pressed.has(1),
+      scoutPressed: Phaser.Input.Keyboard.JustDown(this.keys.H) || padJustPressed(8),
       sonarPressed: Phaser.Input.Keyboard.JustDown(this.keys.Q) || padJustPressed(4),
       stunPressed: Phaser.Input.Keyboard.JustDown(this.keys.G) || padJustPressed(5),
       pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.ESC) || Phaser.Input.Keyboard.JustDown(this.keys.P) || padJustPressed(9),
@@ -1519,7 +1599,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.menuNavCooldown = Math.max(0, this.menuNavCooldown - delta);
     const buttons = activeMenuButtons();
     if (!buttons.length) {
-      clearControllerFocus();
+      clearControllerFocus(true);
       return false;
     }
 
@@ -1551,7 +1631,7 @@ class DeepdiveScene extends Phaser.Scene {
   private updateDockedAtBarge(delta: number, controls: ControlState) {
     this.drillingThisFrame = false;
     this.player.x = WORLD_W * TILE * 0.5;
-    this.player.y = SURFACE_Y - 10;
+    this.player.y = BARGE_DOCK_Y;
     this.player.vx = 0;
     this.player.vy = 0;
     this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
@@ -1676,10 +1756,11 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
     sub.fuel = Math.max(0, sub.fuel - (hasInput ? 0.16 : 0.035) * delta);
 
+    if (controls.scoutPressed && sub.tier >= 3) this.deployScoutFromCarrier();
     if (controls.sonarPressed) this.sonarPing();
     if (controls.stunPressed && sub.tier >= 3) this.fireSubWeapon();
     if (controls.mineHeld) {
-      this.mineAt(this.player.x + this.player.facing.x * (PLAYER_FORWARD_REACH + 16), this.player.y + this.player.facing.y * (PLAYER_FORWARD_REACH + 16));
+      this.mineFromSub(sub);
     }
     this.scanNearbyLife(delta, controls.scanHeld);
   }
@@ -1693,31 +1774,67 @@ class DeepdiveScene extends Phaser.Scene {
     const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, sub.x, sub.y);
     const canBoard = state.pilotingSub || distance < scaledEntity(62);
     if (controls.boardHeld && canBoard) {
+      if (this.canReturnScoutToCarrier(sub)) {
+        sub.boardProgress = Math.min(SUB_BOARD_SECONDS, sub.boardProgress + delta);
+        state.status = `Docking scout: ${Math.ceil(SUB_BOARD_SECONDS - sub.boardProgress)}s.`;
+        if (sub.boardProgress >= SUB_BOARD_SECONDS) this.completeScoutReturn(sub);
+        return;
+      }
+      if (state.carrierSub && state.pilotingSub && sub.tier === 1) {
+        state.status = 'Return to the Leviathan hatch to exit the scout.';
+        sub.boardProgress = 0;
+        return;
+      }
       sub.boardProgress = Math.min(SUB_BOARD_SECONDS, sub.boardProgress + delta);
       state.status = `${state.pilotingSub ? 'Disembarking' : 'Boarding'} ${subDef(sub.tier).name}: ${Math.ceil(SUB_BOARD_SECONDS - sub.boardProgress)}s.`;
       if (sub.boardProgress >= SUB_BOARD_SECONDS) {
-        state.pilotingSub = !state.pilotingSub;
-        sub.boardProgress = 0;
-        if (state.pilotingSub) {
-          this.syncSubToPlayer();
-          state.status = `Inside ${subDef(sub.tier).name}. Hold F to disembark.`;
-        } else {
-          this.player.x = sub.x - sub.facingSign * scaledEntity(34);
-          this.player.y = sub.y + scaledEntity(4);
-          this.player.vx = 0;
-          this.player.vy = 0;
-          state.status = `Exited ${subDef(sub.tier).name}. Hold F near the hatch to re-enter.`;
-        }
-        renderHud();
+        this.completeSubHatch(sub);
       }
     } else {
       sub.boardProgress = Math.max(0, sub.boardProgress - delta * 1.8);
     }
   }
 
+  private canReturnScoutToCarrier(sub: SubVehicle) {
+    const carrier = state.carrierSub;
+    if (!carrier || !state.pilotingSub || sub.tier !== 1) return false;
+    return Phaser.Math.Distance.Between(sub.x, sub.y, carrier.x, carrier.y) < scaledEntity(92);
+  }
+
+  private completeScoutReturn(scout: SubVehicle) {
+    const carrier = state.carrierSub;
+    if (!carrier) return;
+    carrier.vx = scout.vx * 0.12;
+    carrier.vy = scout.vy * 0.12;
+    carrier.facingSign = scout.facingSign;
+    state.activeSub = carrier;
+    state.carrierSub = null;
+    state.pilotingSub = true;
+    state.auxSubActive = false;
+    this.syncSubToPlayer();
+    state.status = 'Scout recovered. Back inside the Leviathan.';
+    renderHud();
+  }
+
+  private completeSubHatch(sub: SubVehicle) {
+    state.pilotingSub = !state.pilotingSub;
+    sub.boardProgress = 0;
+    if (state.pilotingSub) {
+      this.syncSubToPlayer();
+      state.status = `Inside ${subDef(sub.tier).name}. Hold F or use Hatch to disembark.`;
+    } else {
+      this.player.x = sub.x - sub.facingSign * scaledEntity(34);
+      this.player.y = sub.y + scaledEntity(4);
+      this.player.vx = 0;
+      this.player.vy = 0;
+      state.status = `Exited ${subDef(sub.tier).name}. Hold F or use Hatch near the sub to re-enter.`;
+    }
+    renderHud();
+  }
+
   private updateAuxSub(delta: number) {
     const host = state.activeSub;
-    if (!this.auxSub || !host || !state.auxSubActive || host.tier < 3 || state.docked || state.lost) {
+    if (!this.auxSub || !host || !state.auxSubActive || host.tier < 3 || state.docked || state.lost || state.carrierSub) {
       this.auxSub?.sprite?.setVisible(false);
       return;
     }
@@ -1921,11 +2038,18 @@ class DeepdiveScene extends Phaser.Scene {
     const sub = state.activeSub;
     if (!sub) return;
     const def = subDef(sub.tier);
-    state.subOwned[sub.tier] = false;
-    if (state.selectedSubTier === sub.tier) state.selectedSubTier = null;
-    state.activeSub = null;
+    const wasScout = Boolean(state.carrierSub && sub.tier === 1);
+    if (!wasScout) {
+      state.subOwned[sub.tier] = false;
+      if (state.selectedSubTier === sub.tier) state.selectedSubTier = null;
+    }
+    state.activeSub = wasScout ? state.carrierSub : null;
+    if (wasScout) state.carrierSub = null;
     state.pilotingSub = false;
     state.auxSubActive = false;
+    if (wasScout) {
+      state.status = 'Auxiliary Seeker hull failed. The Leviathan is still waiting nearby.';
+    }
     this.player.x = sub.x;
     this.player.y = sub.y;
     this.player.vx = sub.vx * 0.2;
@@ -1933,19 +2057,86 @@ class DeepdiveScene extends Phaser.Scene {
     this.subSprite?.setVisible(false);
     this.auxSub?.sprite?.setVisible(false);
     this.spawnFloatingText(`${def.name} lost`, 0xff6f7f);
-    state.status = `${def.name} hull failed. Emergency hatch blew and the sub is gone.`;
+    if (!wasScout) state.status = `${def.name} hull failed. Emergency hatch blew and the sub is gone.`;
     renderHud();
   }
 
   private collides(x: number, y: number): boolean {
-    const r = PLAYER_COLLISION_RADIUS;
-    const points = [
-      [x - r, y - r],
-      [x + r, y - r],
-      [x - r, y + r],
-      [x + r, y + r],
-    ];
-    return points.some(([px, py]) => tiles[this.tileAtWorld(px, py)].solid);
+    const points = this.collisionSamplePoints(x, y);
+    return points.some(([px, py]) => bargeSolidAtWorld(px, py) || tiles[this.tileAtWorld(px, py)].solid);
+  }
+
+  private collisionSamplePoints(x: number, y: number) {
+    const sub = state.pilotingSub ? state.activeSub : null;
+    if (!sub) {
+      const r = PLAYER_COLLISION_RADIUS;
+      return [
+        [x - r, y - r],
+        [x + r, y - r],
+        [x - r, y + r],
+        [x + r, y + r],
+      ];
+    }
+    const { halfW, halfH } = subCollisionHalfExtents(sub);
+    const points: Array<[number, number]> = [];
+    const step = TILE * 0.32;
+    for (let ox = -halfW; ox <= halfW + 0.01; ox += step) {
+      points.push([x + ox, y - halfH], [x + ox, y + halfH]);
+    }
+    for (let oy = -halfH; oy <= halfH + 0.01; oy += step) {
+      points.push([x - halfW, y + oy], [x + halfW, y + oy]);
+    }
+    points.push(
+      [x - halfW, y - halfH],
+      [x + halfW, y - halfH],
+      [x - halfW, y + halfH],
+      [x + halfW, y + halfH],
+      [x, y - halfH * 0.58],
+      [x, y + halfH * 0.58],
+    );
+    return points;
+  }
+
+  private mineFromSub(sub: SubVehicle) {
+    if (sub.tier < 2) {
+      this.mineAt(this.player.x, this.player.y);
+      return;
+    }
+    const dir = this.player.facing.clone();
+    if (dir.lengthSq() <= 0.001) dir.set(sub.facingSign, 0);
+    dir.normalize();
+    const target = this.findSubMiningTarget(sub, dir);
+    const reach = subMiningRange(sub);
+    const fallbackX = this.player.x + dir.x * reach;
+    const fallbackY = this.player.y + dir.y * reach;
+    this.mineAt(target ? target.x * TILE + TILE * 0.5 : fallbackX, target ? target.y * TILE + TILE * 0.5 : fallbackY);
+  }
+
+  private findSubMiningTarget(sub: SubVehicle, dir: Phaser.Math.Vector2) {
+    const { halfW, halfH } = subCollisionHalfExtents(sub);
+    const noseReach = subDirectionalReach(sub, dir);
+    const lateral = new Phaser.Math.Vector2(-dir.y, dir.x);
+    const beamHalfWidth = Math.max(scaledEntity(8), Math.min(halfW, halfH) * 0.36);
+    const maxDistance = noseReach + 48 + miningUpgradeBonus() * 5;
+    const seen = new Set<string>();
+    let nearest: { x: number; y: number; distance: number } | null = null;
+    for (let distance = Math.max(0, noseReach - TILE * 0.45); distance <= maxDistance; distance += TILE * 0.24) {
+      for (const side of [-1, 0, 1]) {
+        const px = this.player.x + dir.x * distance + lateral.x * beamHalfWidth * side;
+        const py = this.player.y + dir.y * distance + lateral.y * beamHalfWidth * side;
+        const x = Math.floor(px / TILE);
+        const y = Math.floor(py / TILE);
+        const key = `${x},${y}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const tile = this.getTile(x, y);
+        if (!tiles[tile].solid || tile === 'bedrock' || tile === 'anchorstone') continue;
+        const candidate = { x, y, distance };
+        if (!nearest || candidate.distance < nearest.distance) nearest = candidate;
+      }
+      if (nearest) return nearest;
+    }
+    return nearest;
   }
 
   private mineAt(worldX: number, worldY: number) {
@@ -1955,7 +2146,7 @@ class DeepdiveScene extends Phaser.Scene {
       return;
     }
     const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, worldX, worldY);
-    const range = 40 + miningUpgradeBonus() * 6;
+    const range = sub ? subMiningRange(sub) : 40 + miningUpgradeBonus() * 6;
     if (distance > range) return;
     const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, worldX, worldY);
     this.player.facing.set(Math.cos(angle), Math.sin(angle));
@@ -2000,10 +2191,11 @@ class DeepdiveScene extends Phaser.Scene {
     const targets: Array<{ x: number; y: number; distance: number }> = [];
     for (let y = ty - radius; y <= ty + radius; y += 1) {
       for (let x = tx - radius; x <= tx + radius; x += 1) {
-        const distance = Math.abs(x - tx) + Math.abs(y - ty);
-        if (distance > 1) continue;
+        const gridDistance = Math.abs(x - tx) + Math.abs(y - ty);
+        if (gridDistance > 1) continue;
         const tile = this.getTile(x, y);
         if (tiles[tile].solid && tile !== 'bedrock' && tile !== 'anchorstone') {
+          const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, x * TILE + TILE * 0.5, y * TILE + TILE * 0.5);
           targets.push({ x, y, distance });
         }
       }
@@ -2146,7 +2338,7 @@ class DeepdiveScene extends Phaser.Scene {
       item.vx *= 1 - Math.min(0.9, delta * 2.8);
       item.vy *= 1 - Math.min(0.9, delta * 2.8);
       if (Number.isFinite(item.life)) item.life -= delta;
-      const subCanPickup = !state.pilotingSub || !state.activeSub || state.activeSub.tier >= 2;
+      const subCanPickup = !state.pilotingSub || !state.activeSub || state.activeSub.tier === 1;
       if (subCanPickup && item.value > 0 && state.cargo.length < cargoCapacity()) {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y);
         if (distance < Math.max(PLAYER_PICKUP_RADIUS, item.radius + PLAYER_COLLISION_RADIUS + 7)) {
@@ -2289,7 +2481,7 @@ class DeepdiveScene extends Phaser.Scene {
   private captureSonarContacts() {
     const contacts: SonarContact[] = [];
     const bargeX = WORLD_W * TILE * 0.5;
-    const bargeY = SURFACE_Y + 4;
+    const bargeY = BARGE_DOCK_Y;
     if (Phaser.Math.Distance.Between(this.player.x, this.player.y, bargeX, bargeY) <= SONAR_REVEAL_RADIUS_TILES * TILE) {
       contacts.push({ x: bargeX, y: bargeY, kind: 'barge', hostile: false, age: 0 });
     }
@@ -2735,7 +2927,7 @@ class DeepdiveScene extends Phaser.Scene {
       if (!wasAtBoat && state.started) {
         state.docked = true;
         this.player.x = WORLD_W * TILE * 0.5;
-        this.player.y = SURFACE_Y - 10;
+        this.player.y = BARGE_DOCK_Y;
         this.player.vx = 0;
         this.player.vy = 0;
         if (state.activeSub && state.pilotingSub) {
@@ -2802,7 +2994,7 @@ class DeepdiveScene extends Phaser.Scene {
     state.paused = false;
     state.lost = false;
     this.player.x = WORLD_W * TILE * 0.5;
-    this.player.y = SURFACE_Y - 10;
+    this.player.y = BARGE_DOCK_Y;
     this.player.vx = 0;
     this.player.vy = 0;
     resetOxygenWarnings();
@@ -2814,11 +3006,11 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private isAtBoat(): boolean {
-    return this.player.y < SURFACE_Y + 10 && Math.abs(this.player.x - WORLD_W * TILE * 0.5) < 150 * BARGE_DRAW_SCALE + 55;
+    return this.player.y < BARGE_ENTRY_Y && Math.abs(this.player.x - WORLD_W * TILE * 0.5) < BARGE_ENTRY_HALF_WIDTH;
   }
 
   private isInDockingZone(): boolean {
-    return this.player.y < SURFACE_Y + 38 && Math.abs(this.player.x - WORLD_W * TILE * 0.5) < 150 * BARGE_DRAW_SCALE + 75;
+    return this.player.y < BARGE_DOCKING_ZONE_Y && Math.abs(this.player.x - WORLD_W * TILE * 0.5) < BARGE_DOCKING_HALF_WIDTH;
   }
 
   private draw() {
@@ -2853,7 +3045,7 @@ class DeepdiveScene extends Phaser.Scene {
       const layer = this.parallaxLayers[i];
       const key = `${prefix}-${i}`;
       if (layer.texture.key !== key) layer.setTexture(key);
-      const source = layer.texture.getSourceImage();
+      const source = this.textures.get(key).getSourceImage();
       const sourceWidth = Math.max(1, source.width);
       const sourceHeight = Math.max(1, source.height);
       const coverScale = Math.max((view.width + padding * 2) / sourceWidth, (view.height + padding * 2) / sourceHeight, 1);
@@ -2951,13 +3143,14 @@ class DeepdiveScene extends Phaser.Scene {
     const s = BARGE_DRAW_SCALE;
     this.bargeSprite
       .setVisible(true)
-      .setPosition(x, SURFACE_Y + 30 * s)
-      .setDisplaySize(330 * s, 178 * s);
+      .setAlpha(1)
+      .setPosition(x, 0)
+      .setDisplaySize(BARGE_PLATFORM_WIDTH, BARGE_PLATFORM_HEIGHT);
     this.actors.fillStyle(0x55d7e6, state.atBoat ? 0.14 : 0.06);
-    this.actors.fillEllipse(x, SURFACE_Y + 15 * s, 118 * s, 16 * s);
+    this.actors.fillEllipse(x, SURFACE_Y + 8 * s, 150 * s, 18 * s);
     this.actors.lineStyle(1, 0xb8edf0, state.atBoat ? 0.62 : 0.28);
-    this.actors.lineBetween(x - 16 * s, SURFACE_Y + 2 * s, x + 16 * s, SURFACE_Y + 2 * s);
-    this.actors.lineBetween(x, SURFACE_Y + 2 * s, x, SURFACE_Y + 24 * s);
+    this.actors.lineBetween(x - 28 * s, BARGE_DOCK_Y, x + 28 * s, BARGE_DOCK_Y);
+    this.actors.lineBetween(x, BARGE_DOCK_Y, x, BARGE_DOCKING_ZONE_Y);
   }
 
   private drawHazards() {
@@ -3150,7 +3343,21 @@ class DeepdiveScene extends Phaser.Scene {
     if (!sub || state.lost) {
       this.subSprite?.setVisible(false);
       this.auxSub?.sprite?.setVisible(false);
+      this.cutterBeamSprite?.setVisible(false);
       return;
+    }
+    const carrier = state.carrierSub;
+    if (carrier && this.auxSub?.sprite) {
+      this.auxSub.sprite
+        .setTexture(`sub-tier${carrier.tier}`)
+        .setVisible(true)
+        .setPosition(carrier.x, carrier.y)
+        .setFlipX(carrier.facingSign < 0)
+        .setRotation(Phaser.Math.Clamp(carrier.vy / Math.max(1, subDef(carrier.tier).speed), -0.28, 0.28) * (carrier.facingSign < 0 ? -1 : 1))
+        .setAlpha(0.92);
+      fitImageWidth(this.auxSub.sprite, scaledEntity(118));
+    } else {
+      this.auxSub?.sprite?.setVisible(false);
     }
     const def = subDef(sub.tier);
     const speed = Math.hypot(sub.vx, sub.vy);
@@ -3173,17 +3380,22 @@ class DeepdiveScene extends Phaser.Scene {
       this.actors.fillStyle(0x49d8ff, 0.18);
       this.actors.fillEllipse(sub.x - sub.facingSign * scaledEntity(42), sub.y + scaledEntity(8), scaledEntity(28), scaledEntity(10));
     }
-    const aux = this.auxSub;
-    if (aux && state.auxSubActive && sub.tier >= 3 && !state.docked) {
-      aux.sprite
-        ?.setTexture('sub-tier1')
+    if (state.pilotingSub && sub.tier >= 2 && this.drillingThisFrame) {
+      const frame = Math.floor(performance.now() * 0.018) % 4;
+      const reach = scaledEntity(112);
+      const offset = scaledEntity(sub.tier === 3 ? 44 : 36);
+      this.cutterBeamSprite
+        ?.setTexture(`sub-cutter-beam-${frame}`)
         .setVisible(true)
-        .setPosition(aux.x, aux.y)
-        .setFlipX(sub.facingSign < 0)
-        .setAlpha(0.88);
-      fitImageWidth(aux.sprite, scaledEntity(50));
+        .setPosition(sub.x + this.player.facing.x * offset, sub.y + this.player.facing.y * offset)
+        .setRotation(this.player.facing.angle())
+        .setAlpha(0.86);
+      if (this.cutterBeamSprite) {
+        this.cutterBeamSprite.displayWidth = reach;
+        this.cutterBeamSprite.displayHeight = scaledEntity(18);
+      }
     } else {
-      aux?.sprite?.setVisible(false);
+      this.cutterBeamSprite?.setVisible(false);
     }
   }
 
@@ -3506,21 +3718,11 @@ const faunaFrameCounts: Record<string, number> = {
   'fauna-shallow-comb-jelly': 4,
   'fauna-deep-deep-shrimp': 4,
   'fauna-deep-vampire-squid': 4,
-  'fauna-deep-glass-squid': 4,
-  'fauna-deep-hatchetfish': 3,
   'fauna-deep-barreleye': 3,
   'fauna-deep-gulper-eel': 3,
   'fauna-deep-lanternfish': 3,
-  'fauna-deep-tripodfish': 3,
   'fauna-deep-deep-jelly': 4,
-  'fauna-deep-sea-spider': 4,
-  'fauna-abyss-giant-isopod': 3,
-  'fauna-abyss-abyss-vampire-squid': 4,
-  'fauna-abyss-bigfin-squid': 3,
-  'fauna-abyss-anglerfish': 3,
-  'fauna-abyss-viperfish': 3,
-  'fauna-abyss-goblin-shark': 2,
-  'fauna-abyss-frilled-shark': 2,
+  'fauna-deep-sea-spider': 2,
   'fauna-abyss-hatchet-school': 2,
   'fauna-abyss-black-swallower': 3,
   'fauna-abyss-abyss-jelly': 4,
@@ -3534,6 +3736,7 @@ function loadGeneratedAssets(scene: Phaser.Scene) {
       scene.load.image(`diver-${animation}-${i}`, assetPath(`diver-${animation}-${i}`));
     }
   }
+  for (let i = 0; i < 4; i += 1) scene.load.image(`sub-cutter-beam-${i}`, assetPath(`sub-cutter-beam-${i}`));
   for (const base of ['fish-shallow-neutral', 'fish-shallow-predator', 'fish-mid-neutral', 'fish-mid-predator', 'fish-abyss-predator']) {
     for (let i = 0; i < fishFrameCount(base); i += 1) scene.load.image(`${base}-${i}`, assetPath(`${base}-${i}`));
   }
@@ -3545,6 +3748,7 @@ function loadGeneratedAssets(scene: Phaser.Scene) {
   scene.load.image('flora-deep-tube', assetPath('flora-deep-tube'));
   scene.load.image('flora-deep-coral', assetPath('flora-deep-coral'));
   scene.load.image('barge-side', assetPath('barge-side'));
+  scene.load.image('barge-platform', assetPath('barge-platform'));
   scene.load.image('vent-base', assetPath('vent-base'));
   for (let i = 0; i < 4; i += 1) scene.load.image(`vent-steam-${i}`, assetPath(`vent-steam-${i}`));
   for (let i = 0; i < 4; i += 1) scene.load.image(`bobbit-${i}`, assetPath(`bobbit-${i}`));
@@ -3623,7 +3827,13 @@ function uiTextureKeys() {
 }
 
 function terrainTextureKeys() {
+  const biomeTerrainKeys = biomeTerrainPrefixes().flatMap((prefix) =>
+    ['sand', 'stone', 'deep', 'abyss', 'alloy'].flatMap((role) =>
+      Array.from({ length: 5 }, (_, index) => `tile-${prefix}-${role}-${index}`),
+    ),
+  );
   return [
+    ...biomeTerrainKeys,
     'tile-sand-0',
     'tile-sand-1',
     'tile-sand-2',
@@ -3654,12 +3864,12 @@ function terrainTextureKeys() {
 }
 
 function tileTextureKey(tile: Tile, x: number, y: number) {
-  const variant = tileVariant(x, y);
-  if (tile === 'sand') return `tile-sand-${variant}`;
+  const variant = terrainTileVariant(x, y);
+  if (tile === 'sand') return biomeTerrainTextureKey('sand', variant);
   if (tile === 'stone') {
     return hostRockTextureKey(x, y);
   }
-  if (tile === 'bedrock' || tile === 'anchorstone') return `tile-alloy-${variant}`;
+  if (tile === 'bedrock' || tile === 'anchorstone') return biomeTerrainTextureKey('alloy', variant);
   if (tile === 'copper') return 'tile-copper';
   if (tile === 'quartz') return 'tile-quartz';
   if (tile === 'ruby') return 'tile-ruby';
@@ -3671,14 +3881,33 @@ function tileTextureKey(tile: Tile, x: number, y: number) {
   if (tile === 'abyssalCrown') return 'tile-crown';
   if (tile === 'alienAlloy') return 'tile-alien-alloy';
   if (tile === 'ruinCore') return 'tile-ruin-core';
-  return `tile-stone-${variant}`;
+  return biomeTerrainTextureKey('stone', variant);
 }
 
 function hostRockTextureKey(x: number, y: number) {
-  const variant = tileVariant(x, y);
-  if (state.biome === 4 || y > WORLD_H * 0.76) return `tile-abyss-${variant}`;
-  if (state.biome >= 3 || y > WORLD_H * 0.52) return `tile-deep-${variant}`;
-  return `tile-stone-${variant}`;
+  const variant = terrainTileVariant(x, y);
+  if (y > WORLD_H * 0.76) return biomeTerrainTextureKey('abyss', variant);
+  if (state.biome >= 3 || y > WORLD_H * 0.52) return biomeTerrainTextureKey('deep', variant);
+  return biomeTerrainTextureKey('stone', variant);
+}
+
+function biomeTerrainTextureKey(role: 'sand' | 'stone' | 'deep' | 'abyss' | 'alloy', variant: number) {
+  return `tile-${biomeTerrainPrefix()}-${role}-${variant}`;
+}
+
+function biomeTerrainPrefix() {
+  if (state.biome === 1) return 'reef';
+  if (state.biome === 2) return 'thermal';
+  if (state.biome === 3) return 'abyssal';
+  return 'ruin';
+}
+
+function biomeTerrainPrefixes() {
+  return ['reef', 'thermal', 'abyssal', 'ruin'];
+}
+
+function terrainTileVariant(x: number, y: number) {
+  return Math.floor(hash(x * 19, y * 23, seed) * 5) % 5;
 }
 
 function tileVariant(x: number, y: number) {
@@ -3983,6 +4212,53 @@ function createSubVehicle(tier: SubTier, x: number, y: number): SubVehicle {
   };
 }
 
+function subMiningRange(sub: SubVehicle) {
+  const { halfW, halfH } = subCollisionHalfExtents(sub);
+  return Math.hypot(halfW, halfH) + 50 + miningUpgradeBonus() * 5;
+}
+
+function subCollisionHalfExtents(sub: SubVehicle) {
+  const width = sub.tier === 3 ? 118 : sub.tier === 2 ? 92 : 72;
+  return {
+    halfW: scaledEntity(width * 0.52),
+    halfH: scaledEntity(sub.tier === 3 ? 41 : sub.tier === 2 ? 35 : 30),
+  };
+}
+
+function subDirectionalReach(sub: SubVehicle, dir: Phaser.Math.Vector2) {
+  const { halfW, halfH } = subCollisionHalfExtents(sub);
+  return Math.abs(dir.x) * halfW + Math.abs(dir.y) * halfH;
+}
+
+function bargeSolidAtWorld(worldX: number, worldY: number) {
+  if (worldY < 0 || worldY >= BARGE_PLATFORM_HEIGHT) return false;
+  const left = WORLD_W * TILE * 0.5 - BARGE_PLATFORM_WIDTH * 0.5;
+  const gridX = Math.floor((worldX - left) / TILE);
+  const gridY = Math.floor(worldY / TILE);
+  if (gridX < 0 || gridX >= BARGE_PLATFORM_GRID_W || gridY < 0 || gridY >= BARGE_PLATFORM_GRID_H) return false;
+  return bargeSolidCell(gridX, gridY);
+}
+
+function bargeSolidCell(gridX: number, gridY: number) {
+  const inBay =
+    gridX >= BARGE_PLATFORM_ENTRANCE_LEFT &&
+    gridX <= BARGE_PLATFORM_ENTRANCE_RIGHT &&
+    gridY >= BARGE_PLATFORM_ENTRANCE_TOP;
+  if (inBay) return false;
+  const topMass = gridY <= 1;
+  const frameSide =
+    (gridX === BARGE_PLATFORM_ENTRANCE_LEFT - 1 || gridX === BARGE_PLATFORM_ENTRANCE_RIGHT + 1) &&
+    gridY >= BARGE_PLATFORM_ENTRANCE_TOP;
+  const sideMass = gridY >= BARGE_PLATFORM_ENTRANCE_TOP && (gridX <= 5 || gridX >= BARGE_PLATFORM_GRID_W - 6);
+  const shoulderMass =
+    gridY === BARGE_PLATFORM_ENTRANCE_TOP &&
+    (gridX <= BARGE_PLATFORM_ENTRANCE_LEFT - 2 || gridX >= BARGE_PLATFORM_ENTRANCE_RIGHT + 2);
+  const lowerShoulderMass =
+    gridY > BARGE_PLATFORM_ENTRANCE_TOP &&
+    (gridX <= BARGE_PLATFORM_ENTRANCE_LEFT - 4 || gridX >= BARGE_PLATFORM_ENTRANCE_RIGHT + 4);
+  return topMass || frameSide || sideMass || shoulderMass || lowerShoulderMass;
+}
+
 function subRepairCost() {
   const sub = state.activeSub;
   if (!sub) return 0;
@@ -3996,7 +4272,7 @@ function bargeUpgradeCost() {
 }
 
 function oxygenDrain() {
-  return 4.2 + Math.max(0, state.depth - 500) / 520;
+  return (4.2 + Math.max(0, state.depth - 500) / 520) * 0.5;
 }
 
 function lightRadius() {
@@ -4118,6 +4394,7 @@ function restart(scene: DeepdiveScene) {
   state.bargeTab = 'services';
   state.selectedSubTier = null;
   state.activeSub = null;
+  state.carrierSub = null;
   state.pilotingSub = false;
   state.auxSubActive = false;
   for (const tier of [1, 2, 3] as SubTier[]) state.subOwned[tier] = false;
@@ -4137,6 +4414,7 @@ function renderHud() {
     app.innerHTML = `
       <main class="shell">
         <section id="game"></section>
+        <aside id="fps-tracker" class="fps-tracker">FPS --</aside>
         <aside id="title-screen" class="title-screen"></aside>
         <aside class="hud">
           <div id="gauges"></div>
@@ -4173,6 +4451,7 @@ function renderHud() {
     ${sub ? meter('Sub hull', sub.hull, subDef(sub.tier).hull, '#ff8a6b') : meter('Hull', state.hull, hullMax(), '#ff8a6b')}
     ${sub ? meter('Sub fuel', sub.fuel, subDef(sub.tier).fuel, '#ffd166') : meter('Fuel', state.fuel, fuelMax(), '#ffd166')}
     <div class="ordnance-chip"><strong>${state.stunGrenades}</strong><span>Stun grenades</span></div>
+    ${subHatchControl()}
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
     <p class="status">${state.status}</p>
@@ -4187,7 +4466,25 @@ function renderHud() {
   if (logbookList) logbookList.scrollTop = logbookScrollTop;
   pauseMenu.classList.toggle('is-open', state.paused && state.started && !state.lost && !state.won);
   setStableHtml(pauseMenu, state.paused && state.started && !state.lost && !state.won ? pauseMenuPanel() : '');
+  restoreControllerFocus();
   gameScene()?.drawSonarMap();
+}
+
+let fpsSampleFrames = 0;
+let fpsTrackerTimer = 0;
+
+function updateFpsTracker(deltaMs: number) {
+  if (!Number.isFinite(deltaMs) || deltaMs <= 0) return;
+  fpsSampleFrames += 1;
+  fpsTrackerTimer += deltaMs;
+  if (fpsTrackerTimer < 1000) return;
+  const fps = Math.round(Math.min(60, (fpsSampleFrames * 1000) / fpsTrackerTimer));
+  fpsSampleFrames = 0;
+  fpsTrackerTimer = 0;
+  const tracker = document.querySelector<HTMLElement>('#fps-tracker');
+  if (!tracker) return;
+  if (tracker.textContent !== `FPS ${fps}`) tracker.textContent = `FPS ${fps}`;
+  tracker.classList.toggle('is-low', fps < 45);
 }
 
 function renderGameOver(app: HTMLDivElement) {
@@ -4224,7 +4521,7 @@ function setStableHtml(element: HTMLElement, html: string) {
 function titlePanel() {
   const logo = `
     <div class="title-mark">
-      <img class="title-logo" src="/assets/generated/ui-title-logo.png" alt="Abyss Miner">
+      <img class="title-logo" src="/assets/generated/water-9-title.svg" alt="Water 9">
     </div>
   `;
   if (state.titlePanel === 'options') {
@@ -4325,6 +4622,10 @@ function clearFullscreenWarning() {
   document.querySelector('#fullscreen-warning')?.remove();
 }
 
+function canDiveFromBargeShortcut() {
+  return state.started && state.docked && state.atBoat && !state.logbookOpen && !state.paused && !state.lost && !state.won;
+}
+
 let achievementTimeout: number | undefined;
 let achievementRemoveTimeout: number | undefined;
 
@@ -4361,6 +4662,12 @@ function showAchievement(title: string, detail: string) {
 function bindUiEvents(app: HTMLDivElement) {
   if (uiEventsBound) return;
   uiEventsBound = true;
+  window.addEventListener('keydown', (event) => {
+    if (event.code !== 'Space' || event.repeat || !canDiveFromBargeShortcut()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    gameScene()?.diveFromBarge();
+  }, true);
   app.addEventListener('pointerdown', (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
@@ -4464,6 +4771,18 @@ function bindUiEvents(app: HTMLDivElement) {
       gameScene()?.repairSubHull();
       return;
     }
+    const subHatchButton = target.closest<HTMLButtonElement>('button[data-sub-hatch]');
+    if (subHatchButton && !subHatchButton.disabled) {
+      event.preventDefault();
+      gameScene()?.activateSubHatch();
+      return;
+    }
+    const deployScoutButton = target.closest<HTMLButtonElement>('button[data-deploy-scout]');
+    if (deployScoutButton && !deployScoutButton.disabled) {
+      event.preventDefault();
+      gameScene()?.deployScoutFromCarrier();
+      return;
+    }
     const sonarButton = target.closest<HTMLButtonElement>('button[data-sonar]');
     if (sonarButton && !sonarButton.disabled) {
       event.preventDefault();
@@ -4533,15 +4852,33 @@ function activeMenuButtons() {
 }
 
 function focusUiButton(button: HTMLButtonElement) {
+  uiFocusKey = menuButtonKey(button);
+  if (button.classList.contains('is-controller-focus') && document.activeElement === button) return;
   clearControllerFocus();
   button.classList.add('is-controller-focus');
-  button.focus({ preventScroll: true });
+  if (document.activeElement !== button) button.focus({ preventScroll: true });
 }
 
-function clearControllerFocus() {
+function clearControllerFocus(resetKey = false) {
   document.querySelectorAll<HTMLButtonElement>('button.is-controller-focus').forEach((button) => {
     button.classList.remove('is-controller-focus');
   });
+  if (resetKey) uiFocusKey = '';
+}
+
+function restoreControllerFocus() {
+  if (!uiFocusKey) return;
+  const buttons = activeMenuButtons();
+  const button = focusMenuButton(buttons, uiFocusKey);
+  if (!button) {
+    clearControllerFocus(true);
+    return;
+  }
+  document.querySelectorAll<HTMLButtonElement>('button.is-controller-focus').forEach((focused) => {
+    if (focused !== button) focused.classList.remove('is-controller-focus');
+  });
+  button.classList.add('is-controller-focus');
+  if (document.activeElement !== button) button.focus({ preventScroll: true });
 }
 
 function focusMenuButton(buttons: HTMLButtonElement[], key: string) {
@@ -4587,6 +4924,8 @@ function menuButtonKey(button: HTMLButtonElement) {
     button.dataset.upgrade ??
     button.dataset.buySub ??
     button.dataset.buyFuel ??
+    (button.dataset.subHatch !== undefined ? 'sub-hatch' : undefined) ??
+    (button.dataset.deployScout !== undefined ? 'deploy-scout' : undefined) ??
     button.dataset.discardCargo ??
     button.textContent?.trim() ??
     '';
@@ -4638,6 +4977,22 @@ function sonarPanel() {
       <canvas id="sonar-map" width="224" height="224" aria-label="Sonar minimap"></canvas>
       <button data-sonar ${state.fuel < SONAR_FUEL_COST ? 'disabled' : ''}>Ping ${SONAR_FUEL_COST} fuel</button>
     </section>
+  `;
+}
+
+function subHatchControl() {
+  if (!state.activeSub || state.docked || state.lost || state.won) return '';
+  const scene = gameScene();
+  const disabled = scene?.canUseSubHatch() ? '' : 'disabled';
+  const label = state.carrierSub ? 'Return scout' : state.pilotingSub ? 'Exit sub' : 'Enter sub';
+  const scoutButton = state.pilotingSub && state.activeSub.tier === 3 && !state.carrierSub
+    ? '<button class="sub-hatch-chip sub-hatch-chip--scout" data-deploy-scout data-focus-key="deploy-scout">Deploy scout</button>'
+    : '';
+  return `
+    <div class="sub-action-stack">
+      <button class="sub-hatch-chip" data-sub-hatch data-focus-key="sub-hatch" ${disabled}>${label}</button>
+      ${scoutButton}
+    </div>
   `;
 }
 
@@ -4700,6 +5055,7 @@ function pauseMenuPanel() {
     <div class="pause-actions">
       <button data-pause>Resume</button>
       <button data-logbook>${state.logbookOpen ? 'Close logbook' : 'Open logbook'}</button>
+      <button data-gold data-focus-key="pause-gold">+1k credits</button>
       <button data-restart>Restart run</button>
     </div>
     <section class="pause-controls">
@@ -4709,6 +5065,7 @@ function pauseMenuPanel() {
         <div><dt>Mine</dt><dd>Mouse button or Space</dd></div>
         <div><dt>Scan</dt><dd>Hold E</dd></div>
         <div><dt>Sub hatch</dt><dd>Hold F</dd></div>
+        <div><dt>Deploy scout</dt><dd>H</dd></div>
         <div><dt>Sonar</dt><dd>Q</dd></div>
         <div><dt>Stun / sub weapon</dt><dd>G</dd></div>
         <div><dt>Logbook</dt><dd>L</dd></div>
@@ -4722,6 +5079,7 @@ function pauseMenuPanel() {
         <div><dt>Dive / Mine</dt><dd>A / right trigger</dd></div>
         <div><dt>Scan</dt><dd>Hold X</dd></div>
         <div><dt>Sub hatch</dt><dd>Hold B</dd></div>
+        <div><dt>Deploy scout</dt><dd>Back / Select</dd></div>
         <div><dt>Sonar</dt><dd>Left bumper</dd></div>
         <div><dt>Stun / sub weapon</dt><dd>Right bumper</dd></div>
         <div><dt>Logbook</dt><dd>Y</dd></div>
