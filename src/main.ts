@@ -21,9 +21,10 @@ type Tile =
 type UpgradeId = 'oxygen' | 'cargo' | 'laser' | 'lamp' | 'scanner' | 'suit' | 'speed' | 'thermal';
 type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
 type Biome = 1 | 2 | 3 | 4;
-type BargeTab = 'services' | 'upgrades';
+type BargeTab = 'services' | 'upgrades' | 'subs';
 type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 type TitlePanel = 'main' | 'options' | 'controls';
+type SubTier = 1 | 2 | 3;
 type DiverAnimation =
   | 'idle'
   | 'walk'
@@ -198,6 +199,7 @@ interface ControlState {
   hasMove: boolean;
   mineHeld: boolean;
   scanHeld: boolean;
+  boardHeld: boolean;
   sonarPressed: boolean;
   stunPressed: boolean;
   pausePressed: boolean;
@@ -211,6 +213,42 @@ interface SonarContact {
   kind: 'fish' | 'flora' | 'barge';
   hostile: boolean;
   age: number;
+}
+
+interface SubDef {
+  tier: SubTier;
+  name: string;
+  cost: number;
+  hull: number;
+  oxygen: number;
+  fuel: number;
+  cargo: number;
+  speed: number;
+  text: string;
+  features: string[];
+}
+
+interface SubVehicle {
+  tier: SubTier;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  facingSign: 1 | -1;
+  hull: number;
+  oxygen: number;
+  fuel: number;
+  boardProgress: number;
+  weaponCooldown: number;
+}
+
+interface AuxSub {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  phase: number;
+  sprite?: Phaser.GameObjects.Image;
 }
 
 const TILE = 24;
@@ -244,6 +282,12 @@ const BOBBIT_LATCH_RADIUS = 32;
 const BOBBIT_ESCAPE_SECONDS = 5;
 const FISH_BITE_SFX_GAP_MS = 320;
 const BASE_OXYGEN = 150;
+const SUB_BOARD_SECONDS = 1.25;
+const SUB_FUEL_CELL = 90;
+const SUB_FUEL_COST = 380;
+const SUB_OXYGEN_CELL = 120;
+const SUB_OXYGEN_COST = 420;
+const SUB_REPAIR_COST_PER_POINT = 6;
 const audioKeys = {
   menu: 'audio-menu-loop',
   ambient: 'audio-ambient-loop',
@@ -305,6 +349,45 @@ const upgrades: Upgrade[] = [
   { id: 'suit', name: 'Pressure Suit', baseCost: 100, max: 4, biome: 1, text: 'More hull and less crash damage.' },
   { id: 'speed', name: 'Diver Jets', baseCost: 85, max: 5, biome: 1, text: 'Increase swim speed and handling.' },
   { id: 'thermal', name: 'Thermal Plating', baseCost: 720, max: 4, biome: 2, text: 'Reduces heat damage from vent fields.' },
+];
+
+const subDefs: SubDef[] = [
+  {
+    tier: 1,
+    name: 'Seeker',
+    cost: 18000,
+    hull: 360,
+    oxygen: 320,
+    fuel: 220,
+    cargo: 0,
+    speed: 168,
+    text: 'A compact scout pod. It carries oxygen and armor, moves quickly, and keeps the scanner stable.',
+    features: ['Scanner suite', 'High mobility', 'No mining arm'],
+  },
+  {
+    tier: 2,
+    name: 'Marlin',
+    cost: 62000,
+    hull: 680,
+    oxygen: 470,
+    fuel: 340,
+    cargo: 14,
+    speed: 150,
+    text: 'A working sub with a drill, grabber, reinforced hull, and serious cargo reserves.',
+    features: ['Mining drill', 'Ore pickup', 'Harpoon mount'],
+  },
+  {
+    tier: 3,
+    name: 'Leviathan',
+    cost: 145000,
+    hull: 1200,
+    oxygen: 720,
+    fuel: 520,
+    cargo: 28,
+    speed: 124,
+    text: 'A heavy command sub with weapons, huge endurance, and a bay for a Seeker auxiliary.',
+    features: ['Predator weapon', 'Auxiliary Seeker', 'Deep storage'],
+  },
 ];
 
 const biomeFish: Record<Biome, FishSpecies[]> = {
@@ -414,6 +497,15 @@ const state = {
   sfxVolume: 1,
   unhardcore: false,
   achievements: new Set<string>(),
+  subOwned: {
+    1: false,
+    2: false,
+    3: false,
+  } as Record<SubTier, boolean>,
+  selectedSubTier: null as SubTier | null,
+  activeSub: null as SubVehicle | null,
+  pilotingSub: false,
+  auxSubActive: false,
   won: false,
   lost: false,
   started: false,
@@ -435,6 +527,8 @@ class DeepdiveScene extends Phaser.Scene {
   private overlay!: Phaser.GameObjects.Graphics;
   private bargeSprite!: Phaser.GameObjects.Image;
   private playerSprite!: Phaser.GameObjects.Image;
+  private subSprite?: Phaser.GameObjects.Image;
+  private auxSub?: AuxSub;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
   private world: Tile[][] = [];
@@ -487,7 +581,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,G,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
     this.parallaxLayers = [0, 1, 2, 3].map((index) => this.add
       .tileSprite(0, 0, 1, 1, `parallax-shallow-${index}`)
       .setOrigin(0)
@@ -498,6 +592,15 @@ class DeepdiveScene extends Phaser.Scene {
       .setDepth(2.6)
       .setOrigin(0.5, 1);
     this.playerSprite = this.add.image(this.player.x, this.player.y, 'diver-swim-0').setDepth(2).setOrigin(0.5);
+    this.subSprite = this.add.image(this.player.x, this.player.y, 'sub-tier1').setDepth(2.25).setOrigin(0.5).setVisible(false);
+    this.auxSub = {
+      x: this.player.x - 36,
+      y: this.player.y + 18,
+      vx: 0,
+      vy: 0,
+      phase: 0,
+      sprite: this.add.image(this.player.x, this.player.y, 'sub-tier1').setDepth(2.15).setOrigin(0.5).setVisible(false),
+    };
     this.actors = this.add.graphics().setDepth(3);
     this.darkness = this.add.graphics().setDepth(5);
     this.lampGloom = this.add.graphics().setDepth(6);
@@ -556,6 +659,7 @@ class DeepdiveScene extends Phaser.Scene {
       this.updateDockedAtBarge(delta, controls);
       this.updateFish(delta * 0.35);
       this.updateFlora(delta * 0.35);
+      this.updateAuxSub(delta * 0.35);
       this.updateFloatingTexts(delta);
       this.updateSystems(delta);
       this.updateCameraZoom();
@@ -575,6 +679,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.updateLooseItems(delta);
     this.updateFlora(delta);
     this.updateFish(delta);
+    this.updateAuxSub(delta);
     this.updateHazards(delta);
     this.updateBobbits(delta, controls);
     this.updateSystems(delta);
@@ -627,9 +732,101 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.vy = 22;
     this.player.facing.set(0, 1);
     this.player.facingSign = 1;
-    state.status = 'Dive started. The barge winch releases you into the claim.';
+    const sub = this.deploySelectedSub();
+    state.status = sub
+      ? `${subDef(sub.tier).name} released from the barge cradle. Hold F to disembark.`
+      : 'Dive started. The barge winch releases you into the claim.';
     this.revealSonarAtPlayer(8);
     renderHud();
+  }
+
+  buySub(tier: SubTier) {
+    if (!state.atBoat) return;
+    const def = subDef(tier);
+    if (state.subOwned[tier]) {
+      state.selectedSubTier = tier;
+      state.status = `${def.name} selected for the next dive.`;
+      renderHud();
+      return;
+    }
+    if (state.credits < def.cost) return;
+    state.credits -= def.cost;
+    state.subOwned[tier] = true;
+    state.selectedSubTier = tier;
+    state.activeSub = createSubVehicle(tier, WORLD_W * TILE * 0.5, SURFACE_Y - 10);
+    state.status = `${def.name} purchased and craned into the barge bay.`;
+    this.syncSubToPlayer();
+    renderHud();
+  }
+
+  buySubFuel() {
+    const sub = state.activeSub;
+    if (!state.atBoat || !sub) return;
+    const max = subDef(sub.tier).fuel;
+    const missing = max - sub.fuel;
+    if (missing <= 0 || state.credits < SUB_FUEL_COST) return;
+    const amount = Math.min(SUB_FUEL_CELL, missing);
+    state.credits -= SUB_FUEL_COST;
+    sub.fuel = Math.min(max, sub.fuel + amount);
+    state.status = `Loaded ${Math.round(amount)} sub fuel.`;
+    renderHud();
+  }
+
+  buySubOxygen() {
+    const sub = state.activeSub;
+    if (!state.atBoat || !sub) return;
+    const max = subDef(sub.tier).oxygen;
+    const missing = max - sub.oxygen;
+    if (missing <= 0 || state.credits < SUB_OXYGEN_COST) return;
+    const amount = Math.min(SUB_OXYGEN_CELL, missing);
+    state.credits -= SUB_OXYGEN_COST;
+    sub.oxygen = Math.min(max, sub.oxygen + amount);
+    state.status = `Loaded ${Math.round(amount)} sub oxygen.`;
+    renderHud();
+  }
+
+  repairSubHull() {
+    const sub = state.activeSub;
+    if (!state.atBoat || !sub) return;
+    const missing = subDef(sub.tier).hull - sub.hull;
+    const cost = subRepairCost();
+    if (missing <= 0 || state.credits < cost) return;
+    state.credits -= cost;
+    sub.hull = subDef(sub.tier).hull;
+    state.status = `${subDef(sub.tier).name} hull fully repaired.`;
+    renderHud();
+  }
+
+  private deploySelectedSub() {
+    if (!state.selectedSubTier || !state.subOwned[state.selectedSubTier]) {
+      state.pilotingSub = false;
+      return null;
+    }
+    const tier = state.selectedSubTier;
+    const sub = state.activeSub?.tier === tier
+      ? state.activeSub
+      : createSubVehicle(tier, this.player.x, this.player.y);
+    sub.x = this.player.x;
+    sub.y = this.player.y;
+    sub.vx = 0;
+    sub.vy = this.player.vy;
+    sub.facingSign = 1;
+    sub.boardProgress = 0;
+    state.activeSub = sub;
+    state.pilotingSub = true;
+    if (tier === 3) state.auxSubActive = true;
+    this.syncSubToPlayer();
+    return sub;
+  }
+
+  private syncSubToPlayer() {
+    const sub = state.activeSub;
+    if (!sub) return;
+    this.player.x = sub.x;
+    this.player.y = sub.y;
+    this.player.vx = sub.vx;
+    this.player.vy = sub.vy;
+    this.player.facingSign = sub.facingSign;
   }
 
   buyFuel(fullTank = false) {
@@ -1164,6 +1361,7 @@ class DeepdiveScene extends Phaser.Scene {
       hasMove: move.lengthSq() > 0,
       mineHeld: this.keys.SPACE.isDown || pressed.has(0) || pressed.has(7),
       scanHeld: this.keys.E.isDown || pressed.has(2),
+      boardHeld: this.keys.F.isDown || pressed.has(1),
       sonarPressed: Phaser.Input.Keyboard.JustDown(this.keys.Q) || padJustPressed(4),
       stunPressed: Phaser.Input.Keyboard.JustDown(this.keys.G) || padJustPressed(5),
       pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.ESC) || Phaser.Input.Keyboard.JustDown(this.keys.P) || padJustPressed(9),
@@ -1220,6 +1418,14 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private updatePlayer(delta: number, controls: ControlState) {
+    if (state.activeSub) {
+      this.updateSubBoarding(delta, controls);
+      if (state.pilotingSub) {
+        this.updateSubPilot(delta, controls);
+        return;
+      }
+    }
+
     const input = new Phaser.Math.Vector2(
       controls.move.x,
       controls.move.y,
@@ -1287,6 +1493,150 @@ class DeepdiveScene extends Phaser.Scene {
       this.mineAt(this.player.x + this.player.facing.x * PLAYER_FORWARD_REACH, this.player.y + this.player.facing.y * PLAYER_FORWARD_REACH);
     }
     this.scanNearbyLife(delta, controls.scanHeld);
+  }
+
+  private updateSubPilot(delta: number, controls: ControlState) {
+    const sub = state.activeSub;
+    if (!sub) return;
+    const def = subDef(sub.tier);
+    const input = controls.move.clone();
+    if (input.lengthSq() > 1) input.normalize();
+    const hasInput = input.lengthSq() > 0;
+    const thrust = def.speed * 5.2;
+    sub.vx += input.x * thrust * delta;
+    sub.vy += input.y * thrust * delta;
+    const drag = hasInput ? 1.2 : 2.25;
+    sub.vx *= Math.exp(-drag * delta);
+    sub.vy *= Math.exp(-drag * delta);
+    const speed = Math.hypot(sub.vx, sub.vy);
+    if (speed > def.speed) {
+      sub.vx = (sub.vx / speed) * def.speed;
+      sub.vy = (sub.vy / speed) * def.speed;
+    }
+    if (hasInput) {
+      sub.facingSign = input.x < -0.08 ? -1 : input.x > 0.08 ? 1 : sub.facingSign;
+      this.player.facingSign = sub.facingSign;
+      this.rotateFacingToward(input.angle(), delta, 4.6);
+    }
+    this.player.vx = sub.vx;
+    this.player.vy = sub.vy;
+    this.moveAxis('x', sub.vx * delta);
+    this.moveAxis('y', sub.vy * delta);
+    sub.x = this.player.x;
+    sub.y = this.player.y;
+    sub.vx = this.player.vx;
+    sub.vy = this.player.vy;
+    sub.facingSign = this.player.facingSign;
+    sub.weaponCooldown = Math.max(0, sub.weaponCooldown - delta);
+    this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
+    this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
+    this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
+    sub.fuel = Math.max(0, sub.fuel - (hasInput ? 0.16 : 0.035) * delta);
+
+    if (controls.sonarPressed) this.sonarPing();
+    if (controls.stunPressed && sub.tier >= 3) this.fireSubWeapon();
+    if (controls.mineHeld) {
+      this.mineAt(this.player.x + this.player.facing.x * (PLAYER_FORWARD_REACH + 16), this.player.y + this.player.facing.y * (PLAYER_FORWARD_REACH + 16));
+    }
+    this.scanNearbyLife(delta, controls.scanHeld);
+  }
+
+  private updateSubBoarding(delta: number, controls: ControlState) {
+    const sub = state.activeSub;
+    if (!sub || state.atBoat) {
+      if (sub) sub.boardProgress = 0;
+      return;
+    }
+    const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, sub.x, sub.y);
+    const canBoard = state.pilotingSub || distance < scaledEntity(62);
+    if (controls.boardHeld && canBoard) {
+      sub.boardProgress = Math.min(SUB_BOARD_SECONDS, sub.boardProgress + delta);
+      state.status = `${state.pilotingSub ? 'Disembarking' : 'Boarding'} ${subDef(sub.tier).name}: ${Math.ceil(SUB_BOARD_SECONDS - sub.boardProgress)}s.`;
+      if (sub.boardProgress >= SUB_BOARD_SECONDS) {
+        state.pilotingSub = !state.pilotingSub;
+        sub.boardProgress = 0;
+        if (state.pilotingSub) {
+          this.syncSubToPlayer();
+          state.status = `Inside ${subDef(sub.tier).name}. Hold F to disembark.`;
+        } else {
+          this.player.x = sub.x - sub.facingSign * scaledEntity(34);
+          this.player.y = sub.y + scaledEntity(4);
+          this.player.vx = 0;
+          this.player.vy = 0;
+          state.status = `Exited ${subDef(sub.tier).name}. Hold F near the hatch to re-enter.`;
+        }
+        renderHud();
+      }
+    } else {
+      sub.boardProgress = Math.max(0, sub.boardProgress - delta * 1.8);
+    }
+  }
+
+  private updateAuxSub(delta: number) {
+    const host = state.activeSub;
+    if (!this.auxSub || !host || !state.auxSubActive || host.tier < 3 || state.docked || state.lost) {
+      this.auxSub?.sprite?.setVisible(false);
+      return;
+    }
+    const aux = this.auxSub;
+    aux.phase += delta;
+    const targetX = host.x - host.facingSign * scaledEntity(70);
+    const targetY = host.y + Math.sin(aux.phase * 1.8) * scaledEntity(12);
+    aux.vx += (targetX - aux.x) * delta * 2.2;
+    aux.vy += (targetY - aux.y) * delta * 2.2;
+    aux.vx *= Math.exp(-3.1 * delta);
+    aux.vy *= Math.exp(-3.1 * delta);
+    aux.x += aux.vx * delta;
+    aux.y += aux.vy * delta;
+    const target = this.nearestUnscannedLife(aux.x, aux.y, scaledEntity(82));
+    if (target) {
+      target.scan = Math.min(1, target.scan + delta * 0.32);
+      target.scanning = true;
+      if (target.scan >= 1 && !target.scanned) {
+        target.scanned = true;
+        target.scanPulse = 1;
+        state.scannedSpecies.add(target.species);
+        state.credits += Math.round(scanReward(target) * 0.45);
+        this.spawnFloatingText(`Aux scanned ${target.species}`, 0x73fbd3);
+      }
+    }
+  }
+
+  private nearestUnscannedLife(x: number, y: number, range: number): ScanTarget | null {
+    let nearest: ScanTarget | null = null;
+    let nearestDistance = range;
+    for (const life of [...this.fish, ...this.flora]) {
+      if (life.scanned) continue;
+      const distance = Phaser.Math.Distance.Between(x, y, life.x, life.y);
+      if (distance < nearestDistance) {
+        nearest = life;
+        nearestDistance = distance;
+      }
+    }
+    return nearest;
+  }
+
+  private fireSubWeapon() {
+    const sub = state.activeSub;
+    if (!sub || sub.tier < 3 || sub.weaponCooldown > 0 || sub.fuel < 4) return;
+    sub.weaponCooldown = 1.2;
+    sub.fuel = Math.max(0, sub.fuel - 4);
+    let hits = 0;
+    for (const fish of this.fish) {
+      if (!fish.hostile || fish.scanned) continue;
+      const distance = Phaser.Math.Distance.Between(sub.x, sub.y, fish.x, fish.y);
+      if (distance > scaledEntity(230)) continue;
+      const facing = sub.facingSign;
+      if ((fish.x - sub.x) * facing < -scaledEntity(20)) continue;
+      hits += 1;
+      fish.stunned = Math.max(fish.stunned, 4.2);
+      fish.aggro = 0;
+      fish.vx += facing * scaledEntity(180);
+      fish.vy += Phaser.Math.FloatBetween(-80, 80);
+    }
+    this.actors.lineStyle(3, 0x8ee7f4, 0.85);
+    this.actors.lineBetween(sub.x, sub.y, sub.x + sub.facingSign * scaledEntity(230), sub.y);
+    this.spawnFloatingText(hits ? `Harpoon stun x${hits}` : 'Harpoon fired', 0x8ee7f4);
   }
 
   private updatePlayerFacing(horizontalIntent: number) {
@@ -1402,13 +1752,46 @@ class DeepdiveScene extends Phaser.Scene {
     if (this.collides(this.player.x, this.player.y)) {
       this.player[axisName] = previous;
       if (Math.abs(amount) > 1.8 && !this.isInDockingZone()) {
-        state.hull -= Math.max(0, Math.abs(amount) - 1.8) * 0.5;
+        this.applyHullDamage(Math.max(0, Math.abs(amount) - 1.8) * 0.5, 'Hull scraped against rock.');
       }
       if (axisName === 'x') this.player.vx *= this.isInDockingZone() ? 0.08 : -0.16;
       if (axisName === 'y') this.player.vy *= this.isInDockingZone() ? 0.08 : -0.16;
     }
     this.player.x = Phaser.Math.Clamp(this.player.x, 20, WORLD_W * TILE - 20);
     this.player.y = Phaser.Math.Clamp(this.player.y, 20, WORLD_H * TILE - 20);
+  }
+
+  private applyHullDamage(amount: number, status?: string) {
+    if (amount <= 0) return;
+    const sub = state.pilotingSub ? state.activeSub : null;
+    if (sub) {
+      sub.hull -= amount;
+      if (status) state.status = status.replace('Hull', `${subDef(sub.tier).name}`);
+      if (sub.hull <= 0) this.destroyActiveSub();
+      return;
+    }
+    state.hull -= amount;
+    if (status) state.status = status;
+  }
+
+  private destroyActiveSub() {
+    const sub = state.activeSub;
+    if (!sub) return;
+    const def = subDef(sub.tier);
+    state.subOwned[sub.tier] = false;
+    if (state.selectedSubTier === sub.tier) state.selectedSubTier = null;
+    state.activeSub = null;
+    state.pilotingSub = false;
+    state.auxSubActive = false;
+    this.player.x = sub.x;
+    this.player.y = sub.y;
+    this.player.vx = sub.vx * 0.2;
+    this.player.vy = sub.vy * 0.2;
+    this.subSprite?.setVisible(false);
+    this.auxSub?.sprite?.setVisible(false);
+    this.spawnFloatingText(`${def.name} lost`, 0xff6f7f);
+    state.status = `${def.name} hull failed. Emergency hatch blew and the sub is gone.`;
+    renderHud();
   }
 
   private collides(x: number, y: number): boolean {
@@ -1423,6 +1806,11 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private mineAt(worldX: number, worldY: number) {
+    const sub = state.pilotingSub ? state.activeSub : null;
+    if (sub && sub.tier < 2) {
+      state.status = `${subDef(sub.tier).name} carries scanners only. Buy a Marlin or Leviathan to mine from a sub.`;
+      return;
+    }
     const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, worldX, worldY);
     const range = 40 + miningUpgradeBonus() * 6;
     if (distance > range) return;
@@ -1433,18 +1821,20 @@ class DeepdiveScene extends Phaser.Scene {
     const ty = Math.floor(worldY / TILE);
     const targets = this.mineTargets(tx, ty);
     if (!targets.length) return;
-    if (state.fuel > 0) this.drillingThisFrame = true;
+    const fuelReserve = sub ? sub.fuel : state.fuel;
+    if (fuelReserve > 0) this.drillingThisFrame = true;
     if (this.player.mineCooldown > 0) return;
     const fuelCost = miningFuelCost(targets.length);
-    if (state.fuel < fuelCost) {
+    if (fuelReserve < fuelCost) {
       this.player.mineCooldown = Math.max(0.16, mineCooldown() * 0.65);
-      state.status = 'Fuel reserves are dry. Return to the barge to refuel the cutter.';
+      state.status = sub ? 'Sub fuel reserves are dry. Return to the barge to refuel.' : 'Fuel reserves are dry. Return to the barge to refuel the cutter.';
       renderHud();
       return;
     }
 
     const power = 8.8 + miningUpgradeBonus() * 2.35;
-    state.fuel = Math.max(0, state.fuel - fuelCost);
+    if (sub) sub.fuel = Math.max(0, sub.fuel - fuelCost);
+    else state.fuel = Math.max(0, state.fuel - fuelCost);
     for (const target of targets) {
       const tile = this.getTile(target.x, target.y);
       const def = tiles[tile];
@@ -1456,7 +1846,8 @@ class DeepdiveScene extends Phaser.Scene {
     }
     this.terrainDirty = true;
     this.player.mineCooldown = mineCooldown();
-    state.oxygen -= 0.11 + targets.length * 0.035;
+    if (sub) sub.oxygen = Math.max(0, sub.oxygen - (0.08 + targets.length * 0.02));
+    else state.oxygen -= 0.11 + targets.length * 0.035;
     renderHud();
   }
 
@@ -1596,10 +1987,9 @@ class DeepdiveScene extends Phaser.Scene {
       if (flora.hazardous && !this.isAtBoat()) {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y);
         if (distance < flora.radius + PLAYER_CONTACT_RADIUS + 4) {
-          state.hull -= (flora.rare ? 7 : 3.5) * delta;
+          this.applyHullDamage((flora.rare ? 7 : 3.5) * delta, `${flora.species} stings through the suit.`);
           this.player.vx += ((this.player.x - flora.x) / Math.max(1, distance)) * 24 * delta;
           this.player.vy += ((this.player.y - flora.y) / Math.max(1, distance)) * 24 * delta;
-          state.status = `${flora.species} stings through the suit.`;
         }
       }
     }
@@ -1613,7 +2003,8 @@ class DeepdiveScene extends Phaser.Scene {
       item.vx *= 1 - Math.min(0.9, delta * 2.8);
       item.vy *= 1 - Math.min(0.9, delta * 2.8);
       if (Number.isFinite(item.life)) item.life -= delta;
-      if (item.value > 0 && state.cargo.length < cargoCapacity()) {
+      const subCanPickup = !state.pilotingSub || !state.activeSub || state.activeSub.tier >= 2;
+      if (subCanPickup && item.value > 0 && state.cargo.length < cargoCapacity()) {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y);
         if (distance < Math.max(PLAYER_PICKUP_RADIUS, item.radius + PLAYER_COLLISION_RADIUS + 7)) {
           state.cargo.push({ name: item.name, value: item.value, color: item.color });
@@ -1693,12 +2084,15 @@ class DeepdiveScene extends Phaser.Scene {
 
   sonarPing() {
     if (this.player.sonarCooldown > 0 || state.lost || state.won || !state.started) return;
-    if (state.fuel < SONAR_FUEL_COST) {
+    const sub = state.pilotingSub ? state.activeSub : null;
+    const fuelReserve = sub ? sub.fuel : state.fuel;
+    if (fuelReserve < SONAR_FUEL_COST) {
       state.status = 'Not enough fuel for a sonar pulse.';
       renderHud();
       return;
     }
-    state.fuel = Math.max(0, state.fuel - SONAR_FUEL_COST);
+    if (sub) sub.fuel = Math.max(0, sub.fuel - SONAR_FUEL_COST);
+    else state.fuel = Math.max(0, state.fuel - SONAR_FUEL_COST);
     this.player.sonarCooldown = SONAR_COOLDOWN;
     this.playSfx(audioKeys.sonar, audioVolumes.sonar);
     this.sonarPings.push({ x: this.player.x, y: this.player.y, age: 0, life: 0.9 });
@@ -1949,16 +2343,16 @@ class DeepdiveScene extends Phaser.Scene {
       if (distance > plumeRadius) continue;
       const heatFactor = 1 - distance / plumeRadius;
       const mitigation = 1 - state.upgrades.thermal * 0.17;
-      state.hull -= 9.5 * hazard.heat * heatFactor * Math.max(0.25, mitigation) * delta;
+      this.applyHullDamage(9.5 * hazard.heat * heatFactor * Math.max(0.25, mitigation) * delta, 'Thermal vent plume is cooking the suit.');
       const push = 35 * heatFactor * delta;
       this.player.vx += ((this.player.x - plumeX) / Math.max(1, distance)) * push;
       this.player.vy += ((this.player.y - plumeY) / Math.max(1, distance)) * push;
-      state.status = 'Thermal vent plume is cooking the suit.';
     }
   }
 
   private updateBobbits(delta: number, controls: ControlState) {
     if (!this.bobbits.length) return;
+    if (state.pilotingSub) return;
     const inputStrength = controls.move.length();
     let latchedBobbitActive = this.bobbits.some((bobbit) => bobbit.state === 'latched');
     for (const bobbit of this.bobbits) {
@@ -2032,7 +2426,7 @@ class DeepdiveScene extends Phaser.Scene {
         this.player.vy = 0;
         bobbit.x = bobbit.latchX - bobbit.facingSign * scaledEntity(10);
         bobbit.y = bobbit.latchY + scaledEntity(12);
-        state.hull -= (2.2 + state.biome * 0.42) * delta;
+        this.applyHullDamage((2.2 + state.biome * 0.42) * delta, 'Bobbitworm is chewing through the suit.');
         state.oxygen -= (4.8 + state.biome * 0.65) * delta;
         if (bobbit.escapeRemaining <= 0 || this.isAtBoat()) {
           this.spawnFloatingText('Shaken loose', 0x8ee7f4);
@@ -2153,9 +2547,8 @@ class DeepdiveScene extends Phaser.Scene {
     fish.scan = Math.max(0, fish.scan - 0.25);
     if (fish.hostile) {
       const damage = Math.round(4 + fish.radius * 0.35 + state.biome * 1.4 + (fish.pattern === 'circle' ? 3 : 0));
-      state.hull -= Math.max(2, damage + impact * 0.018 - state.upgrades.suit);
+      this.applyHullDamage(Math.max(2, damage + impact * 0.018 - state.upgrades.suit), `${fish.species} slammed your helmet.`);
       this.playFishBite(damage);
-      state.status = `${fish.species} slammed your helmet.`;
     } else {
       state.status = `${fish.species} scattered from the collision.`;
     }
@@ -2202,6 +2595,12 @@ class DeepdiveScene extends Phaser.Scene {
         this.player.y = SURFACE_Y - 10;
         this.player.vx = 0;
         this.player.vy = 0;
+        if (state.activeSub && state.pilotingSub) {
+          state.activeSub.x = this.player.x;
+          state.activeSub.y = this.player.y;
+          state.activeSub.vx = 0;
+          state.activeSub.vy = 0;
+        }
         state.status = 'Docked at the barge. Refit, review the logbook, then press Dive.';
       }
       const sale = state.cargo.reduce((sum, item) => sum + item.value, 0);
@@ -2212,7 +2611,12 @@ class DeepdiveScene extends Phaser.Scene {
       }
       refillAtBoat(delta);
     } else {
-      state.oxygen -= oxygenDrain() * delta;
+      if (state.pilotingSub && state.activeSub) {
+        state.activeSub.oxygen = Math.max(0, state.activeSub.oxygen - oxygenDrain() * 0.55 * delta);
+        if (state.activeSub.oxygen <= 0) state.oxygen -= oxygenDrain() * 0.8 * delta;
+      } else {
+        state.oxygen -= oxygenDrain() * delta;
+      }
     }
     checkOxygenWarnings();
 
@@ -2228,7 +2632,7 @@ class DeepdiveScene extends Phaser.Scene {
     }
     if (state.oxygen <= 0) {
       state.oxygen = 0;
-      state.hull -= 16 * delta;
+      this.applyHullDamage(16 * delta, 'Oxygen starvation is damaging the suit.');
     }
     if (state.hull <= 0) {
       if (state.unhardcore) {
@@ -2289,6 +2693,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.drawBobbits(camera);
     this.drawFlora(camera);
     this.drawFish(camera);
+    this.drawSub();
     this.drawPlayer();
     this.drawSonarPings();
     this.drawDarkness(camera);
@@ -2574,6 +2979,10 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private drawPlayer() {
+    if (state.pilotingSub && state.activeSub) {
+      this.playerSprite.setVisible(false);
+      return;
+    }
     const p = this.player;
     const angle = p.facing.angle();
     const s = PLAYER_DRAW_SCALE;
@@ -2591,6 +3000,48 @@ class DeepdiveScene extends Phaser.Scene {
       .setRotation(pose.rotation)
       .setAlpha(state.lost ? 0.45 : 1);
     fitImageWidth(this.playerSprite, diverDisplayWidth(animation) * s);
+  }
+
+  private drawSub() {
+    const sub = state.activeSub;
+    if (!sub || state.lost) {
+      this.subSprite?.setVisible(false);
+      this.auxSub?.sprite?.setVisible(false);
+      return;
+    }
+    const def = subDef(sub.tier);
+    const speed = Math.hypot(sub.vx, sub.vy);
+    this.subSprite
+      ?.setTexture(`sub-tier${sub.tier}`)
+      .setVisible(true)
+      .setPosition(sub.x, sub.y)
+      .setFlipX(sub.facingSign < 0)
+      .setRotation(Phaser.Math.Clamp(sub.vy / Math.max(1, def.speed), -0.38, 0.38) * (sub.facingSign < 0 ? -1 : 1))
+      .setAlpha(sub.hull <= def.hull * 0.18 ? 0.72 + Math.sin(performance.now() * 0.018) * 0.16 : 1);
+    fitImageWidth(this.subSprite, scaledEntity(sub.tier === 3 ? 118 : sub.tier === 2 ? 92 : 72));
+    if (sub.boardProgress > 0) {
+      const progress = sub.boardProgress / SUB_BOARD_SECONDS;
+      this.actors.lineStyle(3, 0x73fbd3, 0.88);
+      this.actors.beginPath();
+      this.actors.arc(sub.x, sub.y - scaledEntity(34), scaledEntity(18), -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * progress);
+      this.actors.strokePath();
+    }
+    if (speed > 14) {
+      this.actors.fillStyle(0x49d8ff, 0.18);
+      this.actors.fillEllipse(sub.x - sub.facingSign * scaledEntity(42), sub.y + scaledEntity(8), scaledEntity(28), scaledEntity(10));
+    }
+    const aux = this.auxSub;
+    if (aux && state.auxSubActive && sub.tier >= 3 && !state.docked) {
+      aux.sprite
+        ?.setTexture('sub-tier1')
+        .setVisible(true)
+        .setPosition(aux.x, aux.y)
+        .setFlipX(sub.facingSign < 0)
+        .setAlpha(0.88);
+      fitImageWidth(aux.sprite, scaledEntity(50));
+    } else {
+      aux?.sprite?.setVisible(false);
+    }
   }
 
   private drawDarkness(camera: Phaser.Cameras.Scene2D.Camera) {
@@ -2915,6 +3366,10 @@ function uiTextureKeys() {
     'ui-meter-red',
     'ui-slot-frame',
     'ui-radar',
+    'sub-tier1',
+    'sub-tier2',
+    'sub-tier3',
+    'sub-shop-panel',
   ];
 }
 
@@ -3150,7 +3605,8 @@ function miningFuelCost(targetCount: number) {
 }
 
 function cargoCapacity() {
-  return 6 + state.upgrades.cargo * 4;
+  const subCargo = state.activeSub && state.activeSub.tier >= 2 ? subDef(state.activeSub.tier).cargo : 0;
+  return 6 + state.upgrades.cargo * 4 + subCargo;
 }
 
 function upgradeDiminishing(level: number) {
@@ -3255,6 +3711,33 @@ function currentApexSpecies() {
 
 function lifeCatalogTotal() {
   return biomeFish[state.biome].length + biomeFlora[state.biome].length;
+}
+
+function subDef(tier: SubTier) {
+  return subDefs.find((def) => def.tier === tier) ?? subDefs[0];
+}
+
+function createSubVehicle(tier: SubTier, x: number, y: number): SubVehicle {
+  const def = subDef(tier);
+  return {
+    tier,
+    x,
+    y,
+    vx: 0,
+    vy: 0,
+    facingSign: 1,
+    hull: def.hull,
+    oxygen: def.oxygen,
+    fuel: def.fuel,
+    boardProgress: 0,
+    weaponCooldown: 0,
+  };
+}
+
+function subRepairCost() {
+  const sub = state.activeSub;
+  if (!sub) return 0;
+  return Math.ceil(Math.max(0, subDef(sub.tier).hull - sub.hull) * SUB_REPAIR_COST_PER_POINT);
 }
 
 function bargeUpgradeCost() {
@@ -3384,6 +3867,11 @@ function restart(scene: DeepdiveScene) {
   state.paused = false;
   state.logbookOpen = false;
   state.bargeTab = 'services';
+  state.selectedSubTier = null;
+  state.activeSub = null;
+  state.pilotingSub = false;
+  state.auxSubActive = false;
+  for (const tier of [1, 2, 3] as SubTier[]) state.subOwned[tier] = false;
   state.status = 'A new trench map is ready. Dive again.';
   state.started = true;
   for (const key of Object.keys(state.upgrades) as UpgradeId[]) state.upgrades[key] = 0;
@@ -3424,6 +3912,7 @@ function renderHud() {
   titleScreen.classList.toggle('is-controls', state.titlePanel === 'controls');
   setStableHtml(titleScreen, state.started ? '' : titlePanel());
   const cargoValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
+  const sub = state.pilotingSub ? state.activeSub : null;
   gauges.innerHTML = `
     <div class="readout">
       <div><strong>${state.credits}</strong><span>Credits</span></div>
@@ -3431,9 +3920,9 @@ function renderHud() {
       <div><strong>${state.maxDepth} m</strong><span>Record</span></div>
     </div>
     ${sonarPanel()}
-    ${meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
-    ${meter('Hull', state.hull, hullMax(), '#ff8a6b')}
-    ${meter('Fuel', state.fuel, fuelMax(), '#ffd166')}
+    ${sub ? meter('Sub O2', sub.oxygen, subDef(sub.tier).oxygen, '#8ee7f4') : meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
+    ${sub ? meter('Sub hull', sub.hull, subDef(sub.tier).hull, '#ff8a6b') : meter('Hull', state.hull, hullMax(), '#ff8a6b')}
+    ${sub ? meter('Sub fuel', sub.fuel, subDef(sub.tier).fuel, '#ffd166') : meter('Fuel', state.fuel, fuelMax(), '#ffd166')}
     <div class="ordnance-chip"><strong>${state.stunGrenades}</strong><span>Stun grenades</span></div>
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
@@ -3702,6 +4191,30 @@ function bindUiEvents(app: HTMLDivElement) {
       renderHud();
       return;
     }
+    const subBuyButton = target.closest<HTMLButtonElement>('button[data-buy-sub]');
+    if (subBuyButton && !subBuyButton.disabled) {
+      event.preventDefault();
+      gameScene()?.buySub(Number(subBuyButton.dataset.buySub) as SubTier);
+      return;
+    }
+    const subFuelButton = target.closest<HTMLButtonElement>('button[data-buy-sub-fuel]');
+    if (subFuelButton && !subFuelButton.disabled) {
+      event.preventDefault();
+      gameScene()?.buySubFuel();
+      return;
+    }
+    const subOxygenButton = target.closest<HTMLButtonElement>('button[data-buy-sub-oxygen]');
+    if (subOxygenButton && !subOxygenButton.disabled) {
+      event.preventDefault();
+      gameScene()?.buySubOxygen();
+      return;
+    }
+    const subRepairButton = target.closest<HTMLButtonElement>('button[data-repair-sub]');
+    if (subRepairButton && !subRepairButton.disabled) {
+      event.preventDefault();
+      gameScene()?.repairSubHull();
+      return;
+    }
     const sonarButton = target.closest<HTMLButtonElement>('button[data-sonar]');
     if (sonarButton && !sonarButton.disabled) {
       event.preventDefault();
@@ -3823,6 +4336,7 @@ function menuButtonKey(button: HTMLButtonElement) {
     button.dataset.audioAdjust ??
     button.dataset.bargeTab ??
     button.dataset.upgrade ??
+    button.dataset.buySub ??
     button.dataset.buyFuel ??
     button.dataset.discardCargo ??
     button.textContent?.trim() ??
@@ -3838,16 +4352,17 @@ function bargeMenuPanel() {
     <div class="barge-tabs">
       <button class="${state.bargeTab === 'services' ? 'is-active' : ''}" data-barge-tab="services" data-focus-key="barge-services">Barge</button>
       <button class="${state.bargeTab === 'upgrades' ? 'is-active' : ''}" data-barge-tab="upgrades" data-focus-key="barge-upgrades">Upgrades</button>
+      <button class="${state.bargeTab === 'subs' ? 'is-active' : ''}" data-barge-tab="subs" data-focus-key="barge-subs">Subs</button>
       <button class="dive-button" data-dive-from-barge data-focus-key="barge-dive">Dive</button>
     </div>
     <div class="shop-title">
       <div>
         <span>Barge Dock</span>
-        <strong>${state.bargeTab === 'upgrades' ? 'Upgrade console' : 'Refit and resupply'}</strong>
+        <strong>${state.bargeTab === 'upgrades' ? 'Upgrade console' : state.bargeTab === 'subs' ? 'Submersible bay' : 'Refit and resupply'}</strong>
       </div>
       <span>${state.scannedSpecies.size}/${lifeCatalogTotal()} scans</span>
     </div>
-    ${state.bargeTab === 'upgrades' ? upgradeTabPanel() : bargeServicesPanel()}
+    ${state.bargeTab === 'upgrades' ? upgradeTabPanel() : state.bargeTab === 'subs' ? subShopPanel() : bargeServicesPanel()}
   `;
 }
 
@@ -3944,8 +4459,9 @@ function pauseMenuPanel() {
         <div><dt>Move</dt><dd>WASD / arrow keys</dd></div>
         <div><dt>Mine</dt><dd>Mouse button or Space</dd></div>
         <div><dt>Scan</dt><dd>Hold E</dd></div>
+        <div><dt>Sub hatch</dt><dd>Hold F</dd></div>
         <div><dt>Sonar</dt><dd>Q</dd></div>
-        <div><dt>Stun</dt><dd>G</dd></div>
+        <div><dt>Stun / sub weapon</dt><dd>G</dd></div>
         <div><dt>Logbook</dt><dd>L</dd></div>
         <div><dt>Pause</dt><dd>Esc / P</dd></div>
       </dl>
@@ -3956,8 +4472,9 @@ function pauseMenuPanel() {
         <div><dt>Move</dt><dd>Left stick / D-pad</dd></div>
         <div><dt>Dive / Mine</dt><dd>A / right trigger</dd></div>
         <div><dt>Scan</dt><dd>Hold X</dd></div>
+        <div><dt>Sub hatch</dt><dd>Hold B</dd></div>
         <div><dt>Sonar</dt><dd>Left bumper</dd></div>
-        <div><dt>Stun</dt><dd>Right bumper</dd></div>
+        <div><dt>Stun / sub weapon</dt><dd>Right bumper</dd></div>
         <div><dt>Logbook</dt><dd>Y</dd></div>
         <div><dt>Pause</dt><dd>Start</dd></div>
       </dl>
@@ -4151,6 +4668,67 @@ function upgradeIconKey(id: UpgradeId) {
   if (id === 'suit') return 'upgrade-icon-suit';
   if (id === 'speed') return 'upgrade-icon-speed';
   return 'upgrade-icon-thermal';
+}
+
+function subShopPanel() {
+  const active = state.activeSub;
+  return `
+    <section class="sub-shop">
+      <div class="sub-shop__header">
+        <div>
+          <span>Submersibles</span>
+          <strong>${active ? `${subDef(active.tier).name} bay status` : 'No active vehicle'}</strong>
+        </div>
+        <strong>${state.credits.toLocaleString()}c</strong>
+      </div>
+      <div class="sub-grid">
+        ${subDefs.map((def) => subCard(def)).join('')}
+      </div>
+      ${active ? subServicePanel(active) : '<p class="sub-shop__empty">Buy a submersible to unlock sub oxygen, fuel, hull repair, and launch services.</p>'}
+    </section>
+  `;
+}
+
+function subCard(def: SubDef) {
+  const owned = state.subOwned[def.tier];
+  const selected = state.selectedSubTier === def.tier;
+  const affordable = state.credits >= def.cost;
+  const buttonText = owned ? selected ? 'Selected' : 'Select' : `${def.cost.toLocaleString()}c`;
+  return `
+    <article class="sub-card ${selected ? 'is-selected' : ''}">
+      <img src="/assets/generated/sub-tier${def.tier}.png" alt="">
+      <div>
+        <span>Tier ${def.tier}</span>
+        <strong>${def.name}</strong>
+        <p>${def.text}</p>
+      </div>
+      <dl>
+        <div><dt>Hull</dt><dd>${def.hull}</dd></div>
+        <div><dt>O2</dt><dd>${def.oxygen}</dd></div>
+        <div><dt>Fuel</dt><dd>${def.fuel}</dd></div>
+        <div><dt>Cargo</dt><dd>${def.cargo}</dd></div>
+      </dl>
+      <small>${def.features.join(' / ')}</small>
+      <button data-buy-sub="${def.tier}" data-focus-key="sub-${def.tier}" ${!owned && !affordable ? 'disabled' : ''}>${buttonText}</button>
+    </article>
+  `;
+}
+
+function subServicePanel(sub: SubVehicle) {
+  const def = subDef(sub.tier);
+  const repairCost = subRepairCost();
+  return `
+    <div class="sub-service">
+      ${meter(`${def.name} hull`, sub.hull, def.hull, '#ff8a6b')}
+      ${meter(`${def.name} O2`, sub.oxygen, def.oxygen, '#8ee7f4')}
+      ${meter(`${def.name} fuel`, sub.fuel, def.fuel, '#ffd166')}
+      <div class="sub-service__actions">
+        <button data-buy-sub-oxygen ${sub.oxygen >= def.oxygen || state.credits < SUB_OXYGEN_COST ? 'disabled' : ''}>O2 tank ${SUB_OXYGEN_COST}c</button>
+        <button data-buy-sub-fuel ${sub.fuel >= def.fuel || state.credits < SUB_FUEL_COST ? 'disabled' : ''}>Fuel cell ${SUB_FUEL_COST}c</button>
+        <button data-repair-sub ${repairCost <= 0 || state.credits < repairCost ? 'disabled' : ''}>Repair ${repairCost.toLocaleString()}c</button>
+      </div>
+    </div>
+  `;
 }
 
 function biomeName() {
