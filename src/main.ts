@@ -25,6 +25,19 @@ type BargeTab = 'services' | 'upgrades' | 'subs';
 type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 type TitlePanel = 'main' | 'options' | 'controls';
 type SubTier = 1 | 2 | 3;
+type PlaytestCommand =
+  | 'start'
+  | 'dive'
+  | 'dock'
+  | 'setBiome'
+  | 'grantCredits'
+  | 'setCredits'
+  | 'maxUpgrades'
+  | 'buySub'
+  | 'refill'
+  | 'teleportDepth'
+  | 'setOxygen'
+  | 'setHull';
 type DiverAnimation =
   | 'idle'
   | 'walk'
@@ -249,6 +262,16 @@ interface AuxSub {
   vy: number;
   phase: number;
   sprite?: Phaser.GameObjects.Image;
+}
+
+declare global {
+  interface Window {
+    __AQUA_PLAYTEST__?: {
+      snapshot: () => unknown;
+      command: (command: PlaytestCommand, value?: unknown) => unknown;
+      grantCredits: (amount: number) => unknown;
+    };
+  }
 }
 
 const TILE = 24;
@@ -846,6 +869,126 @@ class DeepdiveScene extends Phaser.Scene {
     state.stunGrenades += 1;
     state.status = `Loaded a stun grenade. ${state.stunGrenades} ready.`;
     renderHud();
+  }
+
+  playtestSnapshot() {
+    const activeSub = state.activeSub
+      ? {
+        tier: state.activeSub.tier,
+        name: subDef(state.activeSub.tier).name,
+        hull: Math.round(state.activeSub.hull),
+        oxygen: Math.round(state.activeSub.oxygen),
+        fuel: Math.round(state.activeSub.fuel),
+        cargoBonus: subDef(state.activeSub.tier).cargo,
+        piloting: state.pilotingSub,
+      }
+      : null;
+    return {
+      seed,
+      state: {
+        biome: state.biome,
+        biomeName: biomeName(),
+        credits: state.credits,
+        depth: state.depth,
+        maxDepth: state.maxDepth,
+        oxygen: Math.round(state.oxygen),
+        oxygenMax: oxygenMax(),
+        hull: Math.round(state.hull),
+        fuel: Math.round(state.fuel),
+        fuelMax: fuelMax(),
+        cargo: state.cargo.length,
+        cargoCapacity: cargoCapacity(),
+        atBoat: state.atBoat,
+        docked: state.docked,
+        lost: state.lost,
+        won: state.won,
+        upgrades: { ...state.upgrades },
+        subOwned: { ...state.subOwned },
+        selectedSubTier: state.selectedSubTier,
+        activeSub,
+      },
+      player: {
+        x: Math.round(this.player.x),
+        y: Math.round(this.player.y),
+        vx: Math.round(this.player.vx),
+        vy: Math.round(this.player.vy),
+      },
+      world: this.playtestWorldSurvey(),
+    };
+  }
+
+  playtestCommand(command: PlaytestCommand, value?: unknown) {
+    if (command === 'start') {
+      if (!state.started) this.startRun();
+    } else if (command === 'dive') {
+      this.diveFromBarge();
+    } else if (command === 'dock') {
+      state.docked = true;
+      state.atBoat = true;
+      this.resetPlayerStart();
+      refillAtBoat();
+    } else if (command === 'setBiome') {
+      const biome = Phaser.Math.Clamp(Number(value) || 1, 1, 4) as Biome;
+      state.biome = biome;
+      state.depth = 0;
+      state.maxDepth = 0;
+      state.cargo = [];
+      state.sonarRevealed.clear();
+      state.sonarContacts = [];
+      state.scannedSpecies.clear();
+      state.atBoat = true;
+      state.docked = true;
+      state.paused = false;
+      state.lost = false;
+      state.won = false;
+      state.started = true;
+      state.bargeTab = 'services';
+      seed = Math.floor(Math.random() * 1_000_000);
+      this.scene.restart();
+      renderHud();
+      return { restarting: true, biome };
+    } else if (command === 'grantCredits') {
+      state.credits += Math.max(0, Math.floor(Number(value) || 0));
+    } else if (command === 'setCredits') {
+      state.credits = Math.max(0, Math.floor(Number(value) || 0));
+    } else if (command === 'maxUpgrades') {
+      for (const upgrade of availableUpgrades()) state.upgrades[upgrade.id] = upgradeMax(upgrade);
+      state.oxygen = oxygenMax();
+      state.fuel = fuelMax();
+    } else if (command === 'buySub') {
+      this.buySub(Phaser.Math.Clamp(Number(value) || 1, 1, 3) as SubTier);
+    } else if (command === 'refill') {
+      state.oxygen = oxygenMax();
+      state.hull = 100 + state.upgrades.suit * 25;
+      state.fuel = fuelMax();
+      if (state.activeSub) {
+        const def = subDef(state.activeSub.tier);
+        state.activeSub.hull = def.hull;
+        state.activeSub.oxygen = def.oxygen;
+        state.activeSub.fuel = def.fuel;
+      }
+    } else if (command === 'teleportDepth') {
+      const depth = Phaser.Math.Clamp(Number(value) || 0, 0, WORLD_H * TILE - SURFACE_Y - TILE);
+      this.player.x = WORLD_W * TILE * 0.5;
+      this.player.y = SURFACE_Y + depth;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      state.docked = false;
+      state.atBoat = false;
+      state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+      if (state.activeSub && state.pilotingSub) {
+        state.activeSub.x = this.player.x;
+        state.activeSub.y = this.player.y;
+        state.activeSub.vx = 0;
+        state.activeSub.vy = 0;
+      }
+    } else if (command === 'setOxygen') {
+      state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());
+    } else if (command === 'setHull') {
+      state.hull = Phaser.Math.Clamp(Number(value) || 0, 0, 100 + state.upgrades.suit * 25);
+    }
+    renderHud();
+    return this.playtestSnapshot();
   }
 
   travelToNextBiome() {
@@ -3159,6 +3302,112 @@ class DeepdiveScene extends Phaser.Scene {
     this.world[y][x] = tile;
     this.terrainDirty = true;
   }
+
+  private playtestWorldSurvey() {
+    if (this.world.length < WORLD_H || !this.world[0]) {
+      return {
+        ready: false,
+        width: WORLD_W,
+        height: WORLD_H,
+        bands: [],
+        reachable: { cells: 0, waterCoverage: 0, deepestTileY: 0, deepestMeters: 0 },
+        entities: { fish: 0, hostileFish: 0, flora: 0, hazardousFlora: 0, vents: 0, bobbits: 0 },
+      };
+    }
+    const bandDefs = [
+      { name: 'starter', from: 0, to: 0.18 },
+      { name: 'upper tunnels', from: 0.18, to: 0.45 },
+      { name: 'dark basin', from: 0.45, to: 0.68 },
+      { name: 'lower tunnels', from: 0.68, to: 0.88 },
+      { name: 'floor', from: 0.88, to: 1 },
+    ];
+    const bands = bandDefs.map((band) => {
+      const startY = Math.floor(WORLD_H * band.from);
+      const endY = Math.max(startY + 1, Math.floor(WORLD_H * band.to));
+      const counts: Partial<Record<Tile, number>> = {};
+      let cells = 0;
+      let water = 0;
+      let mineable = 0;
+      let oreBlocks = 0;
+      let oreValue = 0;
+      let unmineable = 0;
+      for (let y = startY; y < Math.min(WORLD_H, endY); y += 1) {
+        for (let x = 0; x < WORLD_W; x += 1) {
+          const tile = this.world[y][x];
+          counts[tile] = (counts[tile] ?? 0) + 1;
+          cells += 1;
+          if (!tiles[tile].solid) water += 1;
+          if (tiles[tile].solid && Number.isFinite(tiles[tile].hp)) mineable += 1;
+          if (tiles[tile].value > 0) {
+            oreBlocks += 1;
+            oreValue += tiles[tile].value;
+          }
+          if (tile === 'anchorstone' || tile === 'bedrock') unmineable += 1;
+        }
+      }
+      return {
+        name: band.name,
+        depthMeters: [
+          Math.round(Math.max(0, (startY - 4) * 6)),
+          Math.round(Math.max(0, (endY - 4) * 6)),
+        ],
+        waterRatio: roundMetric(water / cells),
+        mineableRatio: roundMetric(mineable / cells),
+        oreBlocks,
+        oreValue,
+        unmineableRatio: roundMetric(unmineable / cells),
+        counts,
+      };
+    });
+    return {
+      width: WORLD_W,
+      height: WORLD_H,
+      bands,
+      reachable: this.playtestReachableWater(),
+      entities: {
+        fish: this.fish.length,
+        hostileFish: this.fish.filter((fish) => fish.hostile).length,
+        flora: this.flora.length,
+        hazardousFlora: this.flora.filter((flora) => flora.hazardous).length,
+        vents: this.hazards.length,
+        bobbits: this.bobbits.length,
+      },
+    };
+  }
+
+  private playtestReachableWater() {
+    const visited = new Set<string>();
+    const queue: Array<{ x: number; y: number }> = [];
+    const center = Math.floor(WORLD_W / 2);
+    for (let x = center - 5; x <= center + 5; x += 1) {
+      if (!tiles[this.getTile(x, 4)].solid) queue.push({ x, y: 4 });
+    }
+    let deepestY = 0;
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      const key = `${current.x},${current.y}`;
+      if (visited.has(key)) continue;
+      visited.add(key);
+      deepestY = Math.max(deepestY, current.y);
+      for (const next of [
+        { x: current.x + 1, y: current.y },
+        { x: current.x - 1, y: current.y },
+        { x: current.x, y: current.y + 1 },
+        { x: current.x, y: current.y - 1 },
+      ]) {
+        if (next.x < 0 || next.x >= WORLD_W || next.y < 0 || next.y >= WORLD_H) continue;
+        if (visited.has(`${next.x},${next.y}`)) continue;
+        if (tiles[this.getTile(next.x, next.y)].solid) continue;
+        queue.push(next);
+      }
+    }
+    return {
+      cells: visited.size,
+      waterCoverage: roundMetric(visited.size / (WORLD_W * WORLD_H)),
+      deepestTileY: deepestY,
+      deepestMeters: Math.round(Math.max(0, (deepestY - 4) * 6)),
+    };
+  }
 }
 
 function generateTile(x: number, y: number): Tile {
@@ -4550,6 +4799,10 @@ function stringIndex(value: string, modulo: number) {
   return total % modulo;
 }
 
+function roundMetric(value: number) {
+  return Math.round(value * 1000) / 1000;
+}
+
 function bargeFuelRow() {
   const missing = fuelMax() - state.fuel;
   const fuelCost = fuelRefillCost(false);
@@ -4803,12 +5056,24 @@ function gameScene(): DeepdiveScene | null {
   return game?.scene.getScene('DeepdiveScene') as DeepdiveScene | null ?? null;
 }
 
+function installPlaytestApi() {
+  const isDev = (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV;
+  if (!isDev) return;
+  window.__AQUA_PLAYTEST__ = {
+    snapshot: () => gameScene()?.playtestSnapshot() ?? null,
+    command: (command, value) => gameScene()?.playtestCommand(command, value) ?? null,
+    grantCredits: (amount) => gameScene()?.playtestCommand('grantCredits', amount) ?? null,
+  };
+}
+
 let game: Phaser.Game | null = null;
 
 renderHud();
 
+const forceCanvasRenderer = new URLSearchParams(window.location.search).has('playtest');
+
 game = new Phaser.Game({
-  type: Phaser.AUTO,
+  type: forceCanvasRenderer ? Phaser.CANVAS : Phaser.AUTO,
   parent: 'game',
   backgroundColor: '#0b3741',
   scale: {
@@ -4825,3 +5090,5 @@ game = new Phaser.Game({
   },
   scene: DeepdiveScene,
 });
+
+installPlaytestApi();
