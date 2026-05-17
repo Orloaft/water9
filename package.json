@@ -6,7 +6,9 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "playtest": "node tools/playtest.mjs"
+    "playtest": "node tools/playtest.mjs",
+    "assets:magenta": "python3 tools/prepare_magenta_assets.py",
+    "assets:strip-matte": "python3 tools/strip_sprite_matte.py"
   },
   "keywords": [],
   "author": "",

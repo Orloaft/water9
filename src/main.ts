@@ -21,10 +21,17 @@ type Tile =
 type UpgradeId = 'oxygen' | 'cargo' | 'laser' | 'lamp' | 'scanner' | 'suit' | 'speed' | 'thermal';
 type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
 type Biome = 1 | 2 | 3 | 4;
-type BargeTab = 'services' | 'upgrades' | 'subs';
+type BargeTab = 'services' | 'items' | 'upgrades' | 'subs';
 type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 type TitlePanel = 'main' | 'options' | 'controls';
 type SubTier = 1 | 2 | 3;
+type InventoryItemId =
+  | Tile
+  | 'stun-grenade'
+  | 'dynamite'
+  | 'flare';
+type InventoryItemKind = 'ore' | 'artifact' | 'consumable' | 'rubble';
+type ThrownUtility = 'dynamite' | 'flare';
 type PlaytestCommand =
   | 'start'
   | 'dive'
@@ -155,9 +162,12 @@ interface FloraSpecies {
 }
 
 interface CargoItem {
+  id: InventoryItemId;
   name: string;
   value: number;
   color: number;
+  kind: InventoryItemKind;
+  icon: string;
 }
 
 interface Hazard {
@@ -188,6 +198,7 @@ interface Bobbit {
 }
 
 interface LooseItem {
+  id: InventoryItemId;
   name: string;
   value: number;
   x: number;
@@ -197,6 +208,11 @@ interface LooseItem {
   color: number;
   radius: number;
   life: number;
+  kind: InventoryItemKind;
+  icon: string;
+  utility?: ThrownUtility;
+  landed?: boolean;
+  fuse?: number;
 }
 
 interface FloatingText {
@@ -207,6 +223,13 @@ interface FloatingText {
   vy: number;
 }
 
+interface Flare {
+  x: number;
+  y: number;
+  age: number;
+  life: number;
+}
+
 interface ControlState {
   move: Phaser.Math.Vector2;
   hasMove: boolean;
@@ -215,7 +238,7 @@ interface ControlState {
   boardHeld: boolean;
   scoutPressed: boolean;
   sonarPressed: boolean;
-  stunPressed: boolean;
+  useItemPressed: boolean;
   pausePressed: boolean;
   logbookPressed: boolean;
   confirmPressed: boolean;
@@ -227,6 +250,22 @@ interface SonarContact {
   kind: 'fish' | 'flora' | 'barge';
   hostile: boolean;
   age: number;
+}
+
+interface ShopItem {
+  id: 'stun-grenade' | 'dynamite' | 'flare';
+  name: string;
+  cost: number;
+  icon: string;
+  color: number;
+  text: string;
+}
+
+interface RadioMessage {
+  speaker: string;
+  role: string;
+  text: string;
+  from?: 'npc' | 'player';
 }
 
 interface SubDef {
@@ -313,6 +352,15 @@ const SONAR_COOLDOWN = 0.75;
 const STUN_GRENADE_COST = 850;
 const STUN_GRENADE_RADIUS = 310;
 const STUN_GRENADE_DURATION = 5;
+const DYNAMITE_COST = 200;
+const DYNAMITE_RADIUS_TILES = 2;
+const DYNAMITE_LAND_FUSE = 0.42;
+const FLARE_COST = 50;
+const FLARE_DURATION = 36;
+const FLARE_LIGHT_RADIUS = 112;
+const THROWN_ITEM_GRAVITY = 132;
+const THROWN_ITEM_SPEED = 92;
+const THROWN_ITEM_MAX_FALL_SPEED = 130;
 const BOBBIT_DETECT_RADIUS = 132;
 const BOBBIT_LATCH_RADIUS = 32;
 const BOBBIT_ESCAPE_SECONDS = 5;
@@ -426,11 +474,38 @@ const subDefs: SubDef[] = [
   },
 ];
 
+const shopItems: ShopItem[] = [
+  {
+    id: 'stun-grenade',
+    name: 'Stun Grenade',
+    cost: STUN_GRENADE_COST,
+    icon: 'item-icon-stun',
+    color: 0x8ee7f4,
+    text: `Disorients nearby predators for ${STUN_GRENADE_DURATION} seconds.`,
+  },
+  {
+    id: 'dynamite',
+    name: 'Dynamite',
+    cost: DYNAMITE_COST,
+    icon: 'item-icon-dynamite',
+    color: 0xff6f3c,
+    text: 'Blasts a compact pocket through mineable stone and ore.',
+  },
+  {
+    id: 'flare',
+    name: 'Flare',
+    cost: FLARE_COST,
+    icon: 'item-icon-flare',
+    color: 0xff8a5c,
+    text: 'Throws a short-lived light source into the dark.',
+  },
+];
+
 const biomeFish: Record<Biome, FishSpecies[]> = {
   1: [
-    { species: 'Lantern Fry', count: 22, minY: 100, maxY: 480, color: 0x8ddcf0, hostile: false, pattern: 'school', radius: 8, speed: [34, 58], assetKey: 'fish-shallow-neutral' },
+    { species: 'Lantern Fry', count: 22, minY: 100, maxY: 480, color: 0x8ddcf0, hostile: false, pattern: 'school', radius: 8, speed: [34, 58], assetKey: 'fauna-shallow-lantern-fry' },
     { species: 'Snapping Shrimp', count: 18, minY: 120, maxY: 520, color: 0xffb36b, hostile: false, pattern: 'school', radius: 7, speed: [30, 54], assetKey: 'fauna-shallow-snap-shrimp' },
-    { species: 'Glass Ray', count: 10, minY: 260, maxY: 880, color: 0xd8f7ff, hostile: false, pattern: 'glide', radius: 15, speed: [18, 32], assetKey: 'fish-mid-neutral' },
+    { species: 'Glass Ray', count: 10, minY: 260, maxY: 880, color: 0xd8f7ff, hostile: false, pattern: 'glide', radius: 15, speed: [18, 32], assetKey: 'fauna-shallow-glass-ray' },
     { species: 'Comb Jelly', count: 12, minY: 180, maxY: 740, color: 0x94e8e3, hostile: false, pattern: 'sway', radius: 11, speed: [14, 26], assetKey: 'fauna-shallow-comb-jelly' },
     { species: 'Reef Squid', count: 11, minY: 360, maxY: 960, color: 0xf2b66d, hostile: false, pattern: 'glide', radius: 10, speed: [26, 44], assetKey: 'fauna-shallow-squid' },
     { species: 'Nautilus', count: 7, minY: 560, maxY: 1280, color: 0xd8c49a, hostile: false, pattern: 'circle', radius: 15, speed: [12, 24], assetKey: 'fauna-shallow-nautilus' },
@@ -440,38 +515,38 @@ const biomeFish: Record<Biome, FishSpecies[]> = {
     { species: 'Tidepool Octopus', count: 6, minY: 1220, maxY: 2180, color: 0xc78065, hostile: false, pattern: 'sway', radius: 17, speed: [14, 28], assetKey: 'fauna-shallow-octopus' },
   ],
   2: [
-    { species: 'Ash Minnow', count: 20, minY: 150, maxY: 640, color: 0xffc857, hostile: false, pattern: 'school', radius: 8, speed: [36, 62], assetKey: 'fish-mid-neutral' },
+    { species: 'Ash Minnow', count: 20, minY: 150, maxY: 640, color: 0xffc857, hostile: false, pattern: 'school', radius: 8, speed: [36, 62], assetKey: 'fauna-deep-ash-minnow' },
     { species: 'Deep Sea Shrimp', count: 18, minY: 160, maxY: 620, color: 0xff8a5c, hostile: false, pattern: 'school', radius: 8, speed: [32, 56], assetKey: 'fauna-deep-deep-shrimp' },
-    { species: 'Hatchetfish', count: 16, minY: 300, maxY: 900, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [34, 58], assetKey: 'fish-mid-neutral' },
+    { species: 'Hatchetfish', count: 16, minY: 300, maxY: 900, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [34, 58], assetKey: 'fauna-deep-hatchetfish' },
     { species: 'Barreleye', count: 10, minY: 520, maxY: 1160, color: 0x7bd88f, hostile: false, pattern: 'circle', radius: 10, speed: [18, 32], assetKey: 'fauna-deep-barreleye' },
-    { species: 'Glass Squid', count: 9, minY: 640, maxY: 1400, color: 0x94e8e3, hostile: false, pattern: 'glide', radius: 13, speed: [28, 46], assetKey: 'fauna-shallow-squid' },
+    { species: 'Glass Squid', count: 9, minY: 640, maxY: 1400, color: 0x94e8e3, hostile: false, pattern: 'glide', radius: 13, speed: [28, 46], assetKey: 'fauna-deep-glass-squid' },
     { species: 'Vampire Squid', count: 8, minY: 860, maxY: 1680, color: 0xff6f7f, hostile: true, pattern: 'stalk', radius: 14, speed: [34, 60], assetKey: 'fauna-deep-vampire-squid' },
     { species: 'Lanternfish', count: 13, minY: 980, maxY: 1900, color: 0xffd166, hostile: false, pattern: 'glide', radius: 10, speed: [30, 52], assetKey: 'fauna-deep-lanternfish' },
     { species: 'Gulper Eel', count: 6, minY: 1320, maxY: 2260, color: 0xd06bff, hostile: true, pattern: 'stalk', radius: 20, speed: [38, 68], assetKey: 'fauna-deep-gulper-eel' },
-    { species: 'Tripodfish', count: 5, minY: 1500, maxY: 2380, color: 0xd8c49a, hostile: false, pattern: 'sway', radius: 18, speed: [10, 22], assetKey: 'fauna-deep-deep-jelly' },
+    { species: 'Tripodfish', count: 5, minY: 1500, maxY: 2380, color: 0xd8c49a, hostile: false, pattern: 'sway', radius: 18, speed: [10, 22], assetKey: 'fauna-deep-tripodfish' },
     { species: 'Sea Spider', count: 6, minY: 1260, maxY: 2180, color: 0xffc857, hostile: true, pattern: 'circle', radius: 15, speed: [18, 34], assetKey: 'fauna-deep-sea-spider' },
   ],
   3: [
-    { species: 'Mirror Fry', count: 18, minY: 160, maxY: 640, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [42, 72], assetKey: 'fish-mid-neutral' },
-    { species: 'Hadopelagic Shrimp', count: 15, minY: 180, maxY: 760, color: 0xff8a5c, hostile: false, pattern: 'school', radius: 8, speed: [40, 70], assetKey: 'fauna-deep-deep-shrimp' },
+    { species: 'Mirror Fry', count: 18, minY: 160, maxY: 640, color: 0xb8f7ff, hostile: false, pattern: 'school', radius: 8, speed: [42, 72], assetKey: 'fauna-abyss-mirror-fry' },
+    { species: 'Hadopelagic Shrimp', count: 15, minY: 180, maxY: 760, color: 0xff8a5c, hostile: false, pattern: 'school', radius: 8, speed: [40, 70], assetKey: 'fauna-abyss-hadal-shrimp' },
     { species: 'Abyssal Jelly', count: 12, minY: 360, maxY: 1040, color: 0xb8f7ff, hostile: false, pattern: 'sway', radius: 14, speed: [12, 24], assetKey: 'fauna-abyss-abyss-jelly' },
-    { species: 'Bigfin Squid', count: 8, minY: 620, maxY: 1420, color: 0xff8cb3, hostile: false, pattern: 'glide', radius: 18, speed: [20, 36], assetKey: 'fauna-shallow-squid' },
-    { species: 'Abyssal Viperfish', count: 10, minY: 660, maxY: 1720, color: 0xff4f90, hostile: true, pattern: 'stalk', radius: 14, speed: [48, 82], assetKey: 'fish-abyss-predator' },
-    { species: 'Lantern Swarm', count: 6, minY: 920, maxY: 1900, color: 0xb9a7a0, hostile: false, pattern: 'sway', radius: 22, speed: [10, 22], assetKey: 'fauna-abyss-hatchet-school' },
-    { species: 'Goblin Shark', count: 5, minY: 1240, maxY: 2280, color: 0xff7a8f, hostile: true, pattern: 'stalk', radius: 23, speed: [42, 76], assetKey: 'fish-abyss-predator' },
-    { species: 'Frilled Shark', count: 5, minY: 1500, maxY: 2460, color: 0xa9b8c9, hostile: true, pattern: 'glide', radius: 24, speed: [34, 62], assetKey: 'fish-abyss-predator' },
+    { species: 'Bigfin Squid', count: 8, minY: 620, maxY: 1420, color: 0xff8cb3, hostile: false, pattern: 'glide', radius: 18, speed: [20, 36], assetKey: 'fauna-abyss-bigfin-squid' },
+    { species: 'Abyssal Viperfish', count: 10, minY: 660, maxY: 1720, color: 0xff4f90, hostile: true, pattern: 'stalk', radius: 14, speed: [48, 82], assetKey: 'fauna-abyss-viperfish' },
+    { species: 'Lantern Swarm', count: 6, minY: 920, maxY: 1900, color: 0xb9a7a0, hostile: false, pattern: 'sway', radius: 22, speed: [10, 22], assetKey: 'fauna-abyss-lantern-swarm' },
+    { species: 'Goblin Shark', count: 5, minY: 1240, maxY: 2280, color: 0xff7a8f, hostile: true, pattern: 'stalk', radius: 23, speed: [42, 76], assetKey: 'fauna-abyss-goblin-shark' },
+    { species: 'Frilled Shark', count: 5, minY: 1500, maxY: 2460, color: 0xa9b8c9, hostile: true, pattern: 'glide', radius: 24, speed: [34, 62], assetKey: 'fauna-abyss-frilled-shark' },
     { species: 'Black Swallower', count: 4, minY: 1700, maxY: 2580, color: 0x8f8cff, hostile: true, pattern: 'stalk', radius: 27, speed: [34, 66], assetKey: 'fauna-abyss-black-swallower' },
   ],
   4: [
-    { species: 'Static Fry', count: 20, minY: 160, maxY: 720, color: 0x73fbd3, hostile: false, pattern: 'school', radius: 8, speed: [44, 76], assetKey: 'fish-mid-neutral' },
+    { species: 'Static Fry', count: 20, minY: 160, maxY: 720, color: 0x73fbd3, hostile: false, pattern: 'school', radius: 8, speed: [44, 76], assetKey: 'fauna-abyss-static-fry' },
     { species: 'Abyssal Hatchet School', count: 18, minY: 180, maxY: 760, color: 0x73fbd3, hostile: false, pattern: 'sway', radius: 18, speed: [10, 18], assetKey: 'fauna-abyss-hatchet-school' },
-    { species: 'Abyss Vampire Squid', count: 10, minY: 380, maxY: 1160, color: 0xff6f7f, hostile: false, pattern: 'glide', radius: 14, speed: [24, 42], assetKey: 'fauna-shallow-octopus' },
-    { species: 'Hadopelagic Microfish', count: 8, minY: 520, maxY: 1440, color: 0xb9a7a0, hostile: false, pattern: 'sway', radius: 24, speed: [10, 20], assetKey: 'fauna-abyss-hatchet-school' },
-    { species: 'Anglerfish', count: 12, minY: 640, maxY: 1740, color: 0xffd166, hostile: true, pattern: 'stalk', radius: 16, speed: [42, 74], assetKey: 'fish-abyss-predator' },
-    { species: 'Viperfish', count: 10, minY: 840, maxY: 1980, color: 0xb8f7ff, hostile: true, pattern: 'stalk', radius: 15, speed: [52, 88], assetKey: 'fish-abyss-predator' },
-    { species: 'Goblin Shark', count: 6, minY: 1240, maxY: 2360, color: 0xff7a8f, hostile: true, pattern: 'glide', radius: 24, speed: [44, 78], assetKey: 'fish-abyss-predator' },
+    { species: 'Abyss Vampire Squid', count: 10, minY: 380, maxY: 1160, color: 0xff6f7f, hostile: false, pattern: 'glide', radius: 14, speed: [24, 42], assetKey: 'fauna-abyss-vampire-squid' },
+    { species: 'Hadopelagic Microfish', count: 8, minY: 520, maxY: 1440, color: 0xb9a7a0, hostile: false, pattern: 'sway', radius: 24, speed: [10, 20], assetKey: 'fauna-abyss-microfish' },
+    { species: 'Anglerfish', count: 12, minY: 640, maxY: 1740, color: 0xffd166, hostile: true, pattern: 'stalk', radius: 16, speed: [42, 74], assetKey: 'fauna-abyss-anglerfish' },
+    { species: 'Viperfish', count: 10, minY: 840, maxY: 1980, color: 0xb8f7ff, hostile: true, pattern: 'stalk', radius: 15, speed: [52, 88], assetKey: 'fauna-abyss-snipe-eel' },
+    { species: 'Goblin Shark', count: 6, minY: 1240, maxY: 2360, color: 0xff7a8f, hostile: true, pattern: 'glide', radius: 24, speed: [44, 78], assetKey: 'fauna-abyss-goblin-shark' },
     { species: 'Black Swallower', count: 5, minY: 1540, maxY: 2600, color: 0x8f8cff, hostile: true, pattern: 'stalk', radius: 30, speed: [38, 70], assetKey: 'fauna-abyss-black-swallower' },
-    { species: 'Abyssal Medusa', count: 8, minY: 1640, maxY: 2680, color: 0xb8f7ff, hostile: false, pattern: 'circle', radius: 16, speed: [10, 22], assetKey: 'fauna-abyss-abyss-jelly' },
+    { species: 'Abyssal Medusa', count: 8, minY: 1640, maxY: 2680, color: 0xb8f7ff, hostile: false, pattern: 'circle', radius: 16, speed: [10, 22], assetKey: 'fauna-abyss-medusa' },
   ],
 };
 
@@ -504,10 +579,10 @@ const state = {
   oxygen: BASE_OXYGEN,
   hull: 100,
   fuel: 100,
-  stunGrenades: 0,
   depth: 0,
   maxDepth: 0,
   cargo: [] as CargoItem[],
+  selectedCargoIndex: 0,
   sonarRevealed: new Set<string>(),
   sonarContacts: [] as SonarContact[],
   scannedSpecies: new Set<string>(),
@@ -526,8 +601,12 @@ const state = {
   docked: true,
   paused: false,
   logbookOpen: false,
+  cargoOpen: false,
   bargeTab: 'services' as BargeTab,
   titlePanel: 'main' as TitlePanel,
+  radioMessages: [] as RadioMessage[],
+  radioIndex: 0,
+  radioOpen: false,
   musicEnabled: true,
   musicVolume: 1,
   sfxVolume: 1,
@@ -578,6 +657,7 @@ class DeepdiveScene extends Phaser.Scene {
   private bobbits: Bobbit[] = [];
   private looseItems: LooseItem[] = [];
   private floatingTexts: FloatingText[] = [];
+  private flares: Flare[] = [];
   private sonarPings: Array<{ x: number; y: number; age: number; life: number }> = [];
   private menuLoop?: Phaser.Sound.BaseSound;
   private ambientLoop?: Phaser.Sound.BaseSound;
@@ -661,6 +741,11 @@ class DeepdiveScene extends Phaser.Scene {
       return;
     }
     if (this.updateMenuNavigation(delta, controls)) return;
+    if (state.radioOpen && state.started && !state.lost && !state.won) {
+      this.draw();
+      this.updateAudio(delta);
+      return;
+    }
     if (!state.started) {
       if (controls.confirmPressed) {
         this.startRun();
@@ -679,6 +764,7 @@ class DeepdiveScene extends Phaser.Scene {
     if (controls.pausePressed) {
       state.paused = !state.paused;
       if (state.paused) state.logbookOpen = false;
+      if (state.paused) state.cargoOpen = false;
       renderHud();
     }
     if (state.lost || state.won) {
@@ -698,6 +784,7 @@ class DeepdiveScene extends Phaser.Scene {
       this.updateFlora(delta * 0.35);
       this.updateAuxSub(delta * 0.35);
       this.updateFloatingTexts(delta);
+      this.updateFlares(delta);
       this.updateSystems(delta);
       this.updateCameraZoom();
       this.cameras.main.centerOn(this.player.x, this.player.y);
@@ -721,6 +808,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.updateBobbits(delta, controls);
     this.updateSystems(delta);
     this.updateFloatingTexts(delta);
+    this.updateFlares(delta);
     this.updateSonarPings(delta);
     this.updateCameraZoom();
     this.cameras.main.centerOn(this.player.x, this.player.y);
@@ -752,6 +840,9 @@ class DeepdiveScene extends Phaser.Scene {
     state.docked = true;
     state.atBoat = true;
     state.status = 'Barge lights are green. Choose Dive when you are ready to leave the deck.';
+    state.radioMessages = openingRadioMessages();
+    state.radioIndex = 0;
+    state.radioOpen = true;
     resetOxygenWarnings();
     this.resetPlayerStart();
     this.revealSonarAtPlayer(8);
@@ -764,6 +855,7 @@ class DeepdiveScene extends Phaser.Scene {
     state.docked = false;
     state.atBoat = false;
     state.paused = false;
+    state.cargoOpen = false;
     this.player.x = WORLD_W * TILE * 0.5;
     this.player.y = SURFACE_Y + 54;
     this.player.vx = 0;
@@ -918,11 +1010,19 @@ class DeepdiveScene extends Phaser.Scene {
     renderHud();
   }
 
-  buyStunGrenade() {
-    if (!state.atBoat || state.credits < STUN_GRENADE_COST) return;
-    state.credits -= STUN_GRENADE_COST;
-    state.stunGrenades += 1;
-    state.status = `Loaded a stun grenade. ${state.stunGrenades} ready.`;
+  buyShopItem(id: ShopItem['id']) {
+    if (!state.atBoat) return;
+    const item = shopItem(id);
+    if (state.credits < item.cost) return;
+    if (state.cargo.length >= cargoCapacity()) {
+      state.status = `Cargo grid is full. Drop or sell something before buying ${item.name}.`;
+      renderHud();
+      return;
+    }
+    state.credits -= item.cost;
+    state.cargo.push(createConsumableItem(item));
+    state.selectedCargoIndex = state.cargo.length - 1;
+    state.status = `${item.name} loaded into cargo slot ${state.selectedCargoIndex + 1}.`;
     renderHud();
   }
 
@@ -998,6 +1098,7 @@ class DeepdiveScene extends Phaser.Scene {
       state.depth = 0;
       state.maxDepth = 0;
       state.cargo = [];
+      state.selectedCargoIndex = 0;
       state.sonarRevealed.clear();
       state.sonarContacts = [];
       state.scannedSpecies.clear();
@@ -1005,6 +1106,7 @@ class DeepdiveScene extends Phaser.Scene {
       state.atBoat = true;
       state.docked = true;
       state.paused = false;
+      state.cargoOpen = false;
       state.lost = false;
       state.won = false;
       state.started = true;
@@ -1076,6 +1178,7 @@ class DeepdiveScene extends Phaser.Scene {
     state.depth = 0;
     state.maxDepth = 0;
     state.cargo = [];
+    state.selectedCargoIndex = 0;
     state.fuel = fuelMax();
     state.sonarRevealed.clear();
     resetOxygenWarnings();
@@ -1084,6 +1187,7 @@ class DeepdiveScene extends Phaser.Scene {
     state.docked = true;
     state.paused = false;
     state.logbookOpen = false;
+    state.cargoOpen = false;
     state.bargeTab = 'services';
     state.carrierSub = null;
     const nextBiome = (state.biome + 1) as Biome;
@@ -1572,21 +1676,22 @@ class DeepdiveScene extends Phaser.Scene {
     };
     const padX = axisValue(0) + (pressed.has(15) ? 1 : 0) - (pressed.has(14) ? 1 : 0);
     const padY = axisValue(1) + (pressed.has(13) ? 1 : 0) - (pressed.has(12) ? 1 : 0);
+    const cargoSelecting = state.cargoOpen && !state.paused && !state.logbookOpen && !state.radioOpen && state.started && !state.atBoat;
     const move = new Phaser.Math.Vector2(
-      axis(this.cursors.left, this.keys.A, this.cursors.right, this.keys.D) + Phaser.Math.Clamp(padX, -1, 1),
-      axis(this.cursors.up, this.keys.W, this.cursors.down, this.keys.S) + Phaser.Math.Clamp(padY, -1, 1),
+      cargoSelecting ? 0 : axis(this.cursors.left, this.keys.A, this.cursors.right, this.keys.D) + Phaser.Math.Clamp(padX, -1, 1),
+      cargoSelecting ? 0 : axis(this.cursors.up, this.keys.W, this.cursors.down, this.keys.S) + Phaser.Math.Clamp(padY, -1, 1),
     );
     if (move.lengthSq() > 1) move.normalize();
 
     const controls = {
       move,
       hasMove: move.lengthSq() > 0,
-      mineHeld: this.keys.SPACE.isDown || pressed.has(0) || pressed.has(7),
+      mineHeld: !cargoSelecting && (this.keys.SPACE.isDown || pressed.has(0) || pressed.has(7)),
       scanHeld: this.keys.E.isDown || pressed.has(2),
       boardHeld: this.keys.F.isDown || pressed.has(1),
       scoutPressed: Phaser.Input.Keyboard.JustDown(this.keys.H) || padJustPressed(8),
       sonarPressed: Phaser.Input.Keyboard.JustDown(this.keys.Q) || padJustPressed(4),
-      stunPressed: Phaser.Input.Keyboard.JustDown(this.keys.G) || padJustPressed(5),
+      useItemPressed: Phaser.Input.Keyboard.JustDown(this.keys.G) || padJustPressed(5),
       pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.ESC) || Phaser.Input.Keyboard.JustDown(this.keys.P) || padJustPressed(9),
       logbookPressed: Phaser.Input.Keyboard.JustDown(this.keys.L) || padJustPressed(3),
       confirmPressed: Phaser.Input.Keyboard.JustDown(this.keys.SPACE) || Phaser.Input.Keyboard.JustDown(this.keys.ENTER) || padJustPressed(0),
@@ -1622,7 +1727,12 @@ class DeepdiveScene extends Phaser.Scene {
     }
 
     if (controls.confirmPressed) {
-      active.click();
+      if (state.radioOpen && state.started && !state.lost && !state.won) {
+        advanceRadioDialogue();
+        renderHud();
+        return true;
+      }
+      activateMenuButton(active);
       return true;
     }
     return false;
@@ -1637,7 +1747,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
     this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
     this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
-    if (controls.confirmPressed && !state.logbookOpen) this.diveFromBarge();
+    if (controls.confirmPressed && !state.logbookOpen && !state.radioOpen) this.diveFromBarge();
   }
 
   private updatePlayer(delta: number, controls: ControlState) {
@@ -1671,8 +1781,8 @@ class DeepdiveScene extends Phaser.Scene {
       this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
       this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
       this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
-      if (controls.stunPressed) {
-        this.useStunGrenade();
+      if (controls.useItemPressed) {
+        this.useSelectedItem();
       }
       return;
     }
@@ -1707,8 +1817,8 @@ class DeepdiveScene extends Phaser.Scene {
     if (controls.sonarPressed) {
       this.sonarPing();
     }
-    if (controls.stunPressed) {
-      this.useStunGrenade();
+    if (controls.useItemPressed) {
+      this.useSelectedItem();
     }
     const pointer = this.input.activePointer;
     if (pointer.isDown) this.mineAt(pointer.worldX, pointer.worldY);
@@ -1758,7 +1868,9 @@ class DeepdiveScene extends Phaser.Scene {
 
     if (controls.scoutPressed && sub.tier >= 3) this.deployScoutFromCarrier();
     if (controls.sonarPressed) this.sonarPing();
-    if (controls.stunPressed && sub.tier >= 3) this.fireSubWeapon();
+    if (controls.useItemPressed) {
+      if (!this.useSelectedItem() && sub.tier >= 3) this.fireSubWeapon();
+    }
     if (controls.mineHeld) {
       this.mineFromSub(sub);
     }
@@ -2175,7 +2287,7 @@ class DeepdiveScene extends Phaser.Scene {
       if (!def.solid || tile === 'bedrock' || tile === 'anchorstone') continue;
       this.damage[target.y][target.x] += power;
       if (this.damage[target.y][target.x] >= def.hp) {
-        this.breakTile(target.x, target.y, def);
+        this.breakTile(target.x, target.y, tile, def);
       }
     }
     this.terrainDirty = true;
@@ -2205,12 +2317,12 @@ class DeepdiveScene extends Phaser.Scene {
       .slice(0, maxBlocks);
   }
 
-  private breakTile(tx: number, ty: number, def: TileDef) {
+  private breakTile(tx: number, ty: number, tile: Tile, def: TileDef) {
     const x = tx * TILE + TILE * 0.5;
     const y = ty * TILE + TILE * 0.5;
     this.setTile(tx, ty, 'water');
     this.damage[ty][tx] = 0;
-    this.spawnLoose(def, x, y);
+    this.spawnLoose(tile, def, x, y);
     if (def.value > 0) {
       state.status = state.cargo.length < cargoCapacity()
         ? `${def.name} broke loose. Swim near it to collect.`
@@ -2220,12 +2332,13 @@ class DeepdiveScene extends Phaser.Scene {
     }
   }
 
-  private spawnLoose(def: TileDef, x: number, y: number) {
+  private spawnLoose(tile: Tile, def: TileDef, x: number, y: number) {
     const pieces = def.value > 0 ? 1 : 3;
     for (let i = 0; i < pieces; i += 1) {
       const angle = Math.random() * Math.PI * 2;
       const speed = Phaser.Math.FloatBetween(10, 42);
       this.looseItems.push({
+        id: def.value > 0 && i === 0 ? tile : 'stone',
         name: def.name,
         value: def.value > 0 && i === 0 ? def.value : 0,
         x: x + Phaser.Math.FloatBetween(-4, 4),
@@ -2235,6 +2348,8 @@ class DeepdiveScene extends Phaser.Scene {
         color: def.color,
         radius: def.value > 0 ? scaledEntity(5) : Phaser.Math.FloatBetween(scaledEntity(2), scaledEntity(3.5)),
         life: def.value > 0 ? Infinity : Phaser.Math.FloatBetween(4, 8),
+        kind: def.value > 0 && i === 0 ? cargoKindForTile(tile) : 'rubble',
+        icon: def.value > 0 && i === 0 ? cargoIconForTile(tile) : 'item-icon-stone',
       });
     }
     if (this.looseItems.length > 220) {
@@ -2333,6 +2448,9 @@ class DeepdiveScene extends Phaser.Scene {
   private updateLooseItems(delta: number) {
     let pickedUp = false;
     this.looseItems = this.looseItems.filter((item) => {
+      if (item.utility) {
+        return this.updateThrownUtility(item, delta);
+      }
       item.x += item.vx * delta;
       item.y += item.vy * delta;
       item.vx *= 1 - Math.min(0.9, delta * 2.8);
@@ -2342,7 +2460,15 @@ class DeepdiveScene extends Phaser.Scene {
       if (subCanPickup && item.value > 0 && state.cargo.length < cargoCapacity()) {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y);
         if (distance < Math.max(PLAYER_PICKUP_RADIUS, item.radius + PLAYER_COLLISION_RADIUS + 7)) {
-          state.cargo.push({ name: item.name, value: item.value, color: item.color });
+          state.cargo.push({
+            id: item.id,
+            name: item.name,
+            value: item.value,
+            color: item.color,
+            kind: item.kind,
+            icon: item.icon,
+          });
+          state.selectedCargoIndex = state.cargo.length - 1;
           state.status = `Recovered loose ${item.name} worth ${item.value} credits.`;
           this.spawnFloatingText(`${item.name} +${item.value}c`, item.color);
           pickedUp = true;
@@ -2352,6 +2478,81 @@ class DeepdiveScene extends Phaser.Scene {
       return item.life > 0;
     });
     if (pickedUp) renderHud();
+  }
+
+  private updateThrownUtility(item: LooseItem, delta: number) {
+    if (Number.isFinite(item.life)) item.life -= delta;
+
+    if (!item.landed) {
+      item.vy = Math.min(THROWN_ITEM_MAX_FALL_SPEED, item.vy + THROWN_ITEM_GRAVITY * delta);
+      item.vx *= Math.exp(-0.72 * delta);
+
+      const nextX = item.x + item.vx * delta;
+      if (this.thrownItemCollides(nextX, item.y, item.radius)) {
+        item.vx *= -0.16;
+      } else {
+        item.x = nextX;
+      }
+
+      const nextY = item.y + item.vy * delta;
+      if (this.thrownItemCollides(item.x, nextY, item.radius)) {
+        if (item.vy >= 0) {
+          item.y = this.thrownItemLandingY(item.x, item.y, nextY, item.radius);
+          item.vy = 0;
+          item.vx *= 0.18;
+          item.landed = true;
+          if (item.utility === 'flare') {
+            this.deployFlare(item.x, item.y);
+            return false;
+          }
+        } else {
+          item.vy *= -0.12;
+        }
+      } else {
+        item.y = nextY;
+      }
+    }
+
+    if (item.utility === 'dynamite' && item.landed) {
+      item.fuse = Math.max(0, (item.fuse ?? DYNAMITE_LAND_FUSE) - delta);
+      item.radius = scaledEntity(4.6 + Math.sin(this.time.now * 0.035) * 0.7);
+      if (item.fuse <= 0) {
+        this.detonateDynamite(item.x, item.y);
+        return false;
+      }
+    }
+
+    if (item.life <= 0) {
+      if (item.utility === 'dynamite') {
+        this.detonateDynamite(item.x, item.y);
+      }
+      return false;
+    }
+    return true;
+  }
+
+  private thrownItemCollides(x: number, y: number, radius: number) {
+    const points: Array<[number, number]> = [
+      [x, y + radius],
+      [x - radius * 0.72, y + radius * 0.55],
+      [x + radius * 0.72, y + radius * 0.55],
+      [x - radius * 0.55, y],
+      [x + radius * 0.55, y],
+    ];
+    return points.some(([px, py]) => bargeSolidAtWorld(px, py) || tiles[this.tileAtWorld(px, py)].solid);
+  }
+
+  private thrownItemLandingY(x: number, previousY: number, nextY: number, radius: number) {
+    const bottomY = nextY + radius;
+    if (bargeSolidAtWorld(x, bottomY)) {
+      const gridY = Math.floor(bottomY / TILE);
+      return gridY * TILE - radius - 0.5;
+    }
+    const tileY = Math.floor(bottomY / TILE);
+    if (tileY >= 0 && tileY < WORLD_H) {
+      return tileY * TILE - radius - 0.5;
+    }
+    return Math.min(previousY, WORLD_H * TILE - radius - 0.5);
   }
 
   private spawnFloatingText(message: string, color: number) {
@@ -2417,6 +2618,13 @@ class DeepdiveScene extends Phaser.Scene {
     }
   }
 
+  private updateFlares(delta: number) {
+    this.flares = this.flares.filter((flare) => {
+      flare.age += delta;
+      return flare.age < flare.life;
+    });
+  }
+
   sonarPing() {
     if (this.player.sonarCooldown > 0 || state.lost || state.won || !state.started) return;
     const sub = state.pilotingSub ? state.activeSub : null;
@@ -2451,15 +2659,29 @@ class DeepdiveScene extends Phaser.Scene {
     this.drawSonarMap();
   }
 
-  useStunGrenade() {
-    if (state.stunGrenades <= 0 || state.lost || state.won || !state.started || state.paused) {
-      if (state.stunGrenades <= 0) {
-        state.status = 'No stun grenades loaded. Buy more at the barge.';
-        renderHud();
-      }
-      return;
+  useSelectedItem() {
+    if (state.lost || state.won || !state.started || state.paused || state.docked) return false;
+    clampSelectedCargoIndex();
+    const item = state.cargo[state.selectedCargoIndex];
+    if (!item) {
+      state.status = 'No cargo slot selected. Buy supplies or recover ore first.';
+      renderHud();
+      return false;
     }
-    state.stunGrenades -= 1;
+    if (item.kind !== 'consumable') {
+      this.dropCargoItem(state.selectedCargoIndex);
+      return true;
+    }
+    state.cargo.splice(state.selectedCargoIndex, 1);
+    clampSelectedCargoIndex();
+    if (item.id === 'stun-grenade') this.triggerStunPulse();
+    else if (item.id === 'dynamite') this.throwUtilityItem(item, 'dynamite');
+    else if (item.id === 'flare') this.throwUtilityItem(item, 'flare');
+    renderHud();
+    return true;
+  }
+
+  private triggerStunPulse() {
     let stunned = 0;
     for (const fish of this.fish) {
       if (!fish.hostile || fish.scanned) continue;
@@ -2475,7 +2697,83 @@ class DeepdiveScene extends Phaser.Scene {
       ? `Stun grenade fired. ${stunned} predator${stunned === 1 ? '' : 's'} stunned for ${STUN_GRENADE_DURATION} seconds.`
       : 'Stun grenade fired. No predators were close enough to catch the pulse.';
     this.spawnFloatingText(stunned > 0 ? `Stunned x${stunned}` : 'Stun pulse', 0x8ee7f4);
+  }
+
+  private throwUtilityItem(item: CargoItem, utility: ThrownUtility) {
+    const facing = this.player.facing.lengthSq() > 0 ? this.player.facing.clone().normalize() : new Phaser.Math.Vector2(this.player.facingSign, 0);
+    const sideways = new Phaser.Math.Vector2(-facing.y, facing.x);
+    const x = this.player.x + facing.x * (PLAYER_FORWARD_REACH + 14);
+    const y = this.player.y + facing.y * (PLAYER_FORWARD_REACH + 14);
+    this.looseItems.push({
+      ...item,
+      x,
+      y,
+      vx: this.player.vx * 0.18 + facing.x * THROWN_ITEM_SPEED + sideways.x * Phaser.Math.FloatBetween(-8, 8),
+      vy: this.player.vy * 0.18 + facing.y * (THROWN_ITEM_SPEED * 0.55) - 18,
+      radius: utility === 'dynamite' ? scaledEntity(4.6) : scaledEntity(4),
+      life: utility === 'dynamite' ? 90 : 120,
+      utility,
+      landed: false,
+      fuse: utility === 'dynamite' ? DYNAMITE_LAND_FUSE : 0,
+    });
+    state.status = utility === 'dynamite'
+      ? 'Dynamite thrown. It will sink and detonate when it catches on terrain.'
+      : 'Flare thrown. It will sink and ignite where it lands.';
+    this.spawnFloatingText(utility === 'dynamite' ? 'Dynamite thrown' : 'Flare thrown', item.color);
+  }
+
+  private detonateDynamite(centerX: number, centerY: number) {
+    const tx = Math.floor(centerX / TILE);
+    const ty = Math.floor(centerY / TILE);
+    let broken = 0;
+    for (let y = ty - DYNAMITE_RADIUS_TILES; y <= ty + DYNAMITE_RADIUS_TILES; y += 1) {
+      for (let x = tx - DYNAMITE_RADIUS_TILES; x <= tx + DYNAMITE_RADIUS_TILES; x += 1) {
+        const distance = Math.hypot(x - tx, y - ty);
+        if (distance > DYNAMITE_RADIUS_TILES + 0.15) continue;
+        const tile = this.getTile(x, y);
+        const def = tiles[tile];
+        if (!def.solid || tile === 'bedrock' || tile === 'anchorstone') continue;
+        this.breakTile(x, y, tile, def);
+        broken += 1;
+      }
+    }
+    this.terrainDirty = true;
+    this.overlay.fillStyle(0xff6f3c, 0.32);
+    this.overlay.fillCircle(centerX, centerY, TILE * (DYNAMITE_RADIUS_TILES + 0.55));
+    state.status = broken > 0
+      ? `Dynamite blast opened ${broken} block${broken === 1 ? '' : 's'}.`
+      : 'Dynamite detonated, but the rock here would not give.';
+    this.spawnFloatingText(broken > 0 ? `Blast x${broken}` : 'Dynamite', 0xff8a5c);
     renderHud();
+  }
+
+  private deployFlare(x: number, y: number) {
+    this.flares.push({ x, y, age: 0, life: FLARE_DURATION });
+    if (this.flares.length > 8) this.flares.shift();
+    this.revealSonarAtWorld(x, y, 7);
+    state.status = 'Flare burning. Nearby water is lit for a short while.';
+    this.spawnFloatingText('Flare deployed', 0xff8a5c);
+    renderHud();
+  }
+
+  private dropCargoItem(index: number) {
+    const item = state.cargo[index];
+    if (!item) return;
+    state.cargo.splice(index, 1);
+    clampSelectedCargoIndex();
+    const angle = this.player.facing.angle();
+    const speed = 34;
+    this.looseItems.push({
+      ...item,
+      x: this.player.x + Math.cos(angle) * 22,
+      y: this.player.y + Math.sin(angle) * 22,
+      vx: this.player.vx * 0.12 + Math.cos(angle) * speed,
+      vy: this.player.vy * 0.12 + Math.sin(angle) * speed,
+      radius: item.value > 0 ? scaledEntity(5) : scaledEntity(4),
+      life: item.value > 0 ? Infinity : 40,
+    });
+    state.status = `${item.name} dropped from cargo.`;
+    this.spawnFloatingText(`Dropped ${item.name}`, item.color);
   }
 
   private captureSonarContacts() {
@@ -2499,8 +2797,12 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private revealSonarAtPlayer(radiusTiles: number) {
-    const cx = Math.floor(this.player.x / TILE);
-    const cy = Math.floor(this.player.y / TILE);
+    this.revealSonarAtWorld(this.player.x, this.player.y, radiusTiles);
+  }
+
+  private revealSonarAtWorld(worldX: number, worldY: number, radiusTiles: number) {
+    const cx = Math.floor(worldX / TILE);
+    const cy = Math.floor(worldY / TILE);
     for (let y = cy - radiusTiles; y <= cy + radiusTiles; y += 1) {
       for (let x = cx - radiusTiles; x <= cx + radiusTiles; x += 1) {
         if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
@@ -2519,6 +2821,22 @@ class DeepdiveScene extends Phaser.Scene {
       this.actors.strokeCircle(ping.x, ping.y, Phaser.Math.Linear(16, SONAR_REVEAL_RADIUS_TILES * TILE, t));
       this.actors.lineStyle(1, 0x8ee7f4, alpha * 0.28);
       this.actors.strokeCircle(ping.x, ping.y, Phaser.Math.Linear(8, SONAR_ATTRACT_RADIUS, t));
+    }
+  }
+
+  private drawFlares(camera: Phaser.Cameras.Scene2D.Camera) {
+    const view = camera.worldView;
+    for (const flare of this.flares) {
+      if (flare.x < view.x - FLARE_LIGHT_RADIUS || flare.x > view.right + FLARE_LIGHT_RADIUS || flare.y < view.y - FLARE_LIGHT_RADIUS || flare.y > view.bottom + FLARE_LIGHT_RADIUS) continue;
+      const t = Phaser.Math.Clamp(flare.age / flare.life, 0, 1);
+      const alpha = (1 - Phaser.Math.SmoothStep(t, 0.72, 1)) * 0.9;
+      const pulse = 1 + Math.sin(flare.age * 11) * 0.05;
+      this.actors.fillStyle(0xff8a5c, alpha * 0.18);
+      this.actors.fillCircle(flare.x, flare.y, FLARE_LIGHT_RADIUS * pulse);
+      this.actors.fillStyle(0xffd166, alpha * 0.72);
+      this.actors.fillCircle(flare.x, flare.y, 4);
+      this.actors.lineStyle(1, 0xffd166, alpha * 0.48);
+      this.actors.strokeCircle(flare.x, flare.y, 8 + Math.sin(flare.age * 8) * 2);
     }
   }
 
@@ -2655,6 +2973,22 @@ class DeepdiveScene extends Phaser.Scene {
     const view = camera.worldView;
     for (const item of this.looseItems) {
       if (item.x < view.x - 40 || item.x > view.right + 40 || item.y < view.y - 40 || item.y > view.bottom + 40) continue;
+      if (item.utility) {
+        const flash = item.utility === 'dynamite' && item.landed ? 0.65 + Math.sin(this.time.now * 0.045) * 0.25 : 0.9;
+        if (item.utility === 'flare' && !item.landed) {
+          this.actors.fillStyle(0xff8a5c, 0.1);
+          this.actors.fillCircle(item.x, item.y, FLARE_LIGHT_RADIUS * 0.62);
+        }
+        this.actors.fillStyle(item.color, flash);
+        this.actors.fillCircle(item.x, item.y, item.radius + (item.landed ? 0.8 : 0));
+        this.actors.lineStyle(1, item.utility === 'flare' ? 0xffd166 : 0xfff7df, 0.62);
+        this.actors.strokeCircle(item.x, item.y, item.radius + 2);
+        if (item.utility === 'flare') {
+          this.actors.lineStyle(1, 0xffd166, 0.22);
+          this.actors.strokeCircle(item.x, item.y, item.radius + 6 + Math.sin(this.time.now * 0.012) * 1.5);
+        }
+        continue;
+      }
       const alpha = item.value > 0 ? 0.95 : Phaser.Math.Clamp(item.life / 4, 0, 0.46);
       this.actors.fillStyle(item.color, alpha);
       this.actors.fillCircle(item.x, item.y, item.radius);
@@ -2938,11 +3272,12 @@ class DeepdiveScene extends Phaser.Scene {
         }
         state.status = 'Docked at the barge. Refit, review the logbook, then press Dive.';
       }
-      const sale = state.cargo.reduce((sum, item) => sum + item.value, 0);
+      const sale = cargoSaleValue();
       if (sale > 0) {
         state.credits += sale;
         state.status = `Sold cargo for ${sale} credits.`;
-        state.cargo = [];
+        state.cargo = state.cargo.filter((item) => item.value <= 0);
+        clampSelectedCargoIndex();
       }
       refillAtBoat(delta);
     } else {
@@ -2981,10 +3316,11 @@ class DeepdiveScene extends Phaser.Scene {
   }
 
   private respawnAtBarge() {
-    const sale = state.cargo.reduce((sum, item) => sum + item.value, 0);
+    const sale = cargoSaleValue();
     if (sale > 0) {
       state.credits += sale;
-      state.cargo = [];
+      state.cargo = state.cargo.filter((item) => item.value <= 0);
+      clampSelectedCargoIndex();
     }
     state.hull = hullMax();
     state.oxygen = oxygenMax();
@@ -2992,6 +3328,7 @@ class DeepdiveScene extends Phaser.Scene {
     state.atBoat = true;
     state.docked = true;
     state.paused = false;
+    state.cargoOpen = false;
     state.lost = false;
     this.player.x = WORLD_W * TILE * 0.5;
     this.player.y = BARGE_DOCK_Y;
@@ -3030,6 +3367,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.drawFish(camera);
     this.drawSub();
     this.drawPlayer();
+    this.drawFlares(camera);
     this.drawSonarPings();
     this.drawDarkness(camera);
     this.drawGameOver(camera);
@@ -3468,6 +3806,30 @@ class DeepdiveScene extends Phaser.Scene {
       });
     }
 
+    for (const flare of this.flares) {
+      const flareDy = sampleY - flare.y;
+      const t = Phaser.Math.Clamp(flare.age / flare.life, 0, 1);
+      const radius = FLARE_LIGHT_RADIUS * (1 - Phaser.Math.SmoothStep(t, 0.72, 1));
+      if (radius <= 8 || Math.abs(flareDy) >= radius) continue;
+      const halfWidth = Math.sqrt(radius * radius - flareDy * flareDy);
+      intervals.push({
+        left: Phaser.Math.Clamp(flare.x - halfWidth, left, right),
+        right: Phaser.Math.Clamp(flare.x + halfWidth, left, right),
+      });
+    }
+
+    for (const item of this.looseItems) {
+      if (item.utility !== 'flare' || item.landed) continue;
+      const flareDy = sampleY - item.y;
+      const radius = FLARE_LIGHT_RADIUS * 0.62;
+      if (Math.abs(flareDy) >= radius) continue;
+      const halfWidth = Math.sqrt(radius * radius - flareDy * flareDy);
+      intervals.push({
+        left: Phaser.Math.Clamp(item.x - halfWidth, left, right),
+        right: Phaser.Math.Clamp(item.x + halfWidth, left, right),
+      });
+    }
+
     const intersections: number[] = [];
     for (let i = 0; i < beam.length; i += 1) {
       const a = beam[i];
@@ -3707,25 +4069,93 @@ function scaledEntity(value: number) {
   return value * ENTITY_SCALE;
 }
 
+function shopItem(id: ShopItem['id']) {
+  return shopItems.find((item) => item.id === id)!;
+}
+
+function createConsumableItem(item: ShopItem): CargoItem {
+  return {
+    id: item.id,
+    name: item.name,
+    value: 0,
+    color: item.color,
+    kind: 'consumable',
+    icon: item.icon,
+  };
+}
+
+function cargoKindForTile(tile: Tile): InventoryItemKind {
+  const value = tiles[tile].value;
+  if (value <= 0) return 'rubble';
+  if (value >= 1000 || tile === 'relic' || tile === 'drownedIdol' || tile === 'precursorEngine' || tile === 'abyssalCrown' || tile === 'ruinCore') {
+    return 'artifact';
+  }
+  return 'ore';
+}
+
+function cargoIconForTile(tile: Tile) {
+  if (tile === 'copper' || tile === 'sunstone') return 'item-icon-copper';
+  if (tile === 'quartz') return 'item-icon-quartz';
+  if (tile === 'ruby') return 'item-icon-ruby';
+  if (tile === 'cobalt') return 'item-icon-cobalt';
+  if (tile === 'relic') return 'item-icon-relic';
+  if (tile === 'drownedIdol' || tile === 'abyssalCrown' || tile === 'precursorEngine') return 'item-icon-idol';
+  if (tile === 'alienAlloy') return 'item-icon-alloy';
+  if (tile === 'ruinCore') return 'item-icon-core';
+  return 'item-icon-stone';
+}
+
+function cargoSaleValue() {
+  return state.cargo.reduce((sum, item) => sum + Math.max(0, item.value), 0);
+}
+
+function clampSelectedCargoIndex() {
+  const capacity = cargoCapacity();
+  if (capacity <= 0) {
+    state.selectedCargoIndex = 0;
+    return;
+  }
+  state.selectedCargoIndex = Phaser.Math.Clamp(Math.floor(state.selectedCargoIndex) || 0, 0, capacity - 1);
+}
+
 const faunaFrameCounts: Record<string, number> = {
+  'fauna-shallow-lantern-fry': 4,
   'fauna-shallow-snap-shrimp': 4,
-  'fauna-shallow-mantis-shrimp': 4,
-  'fauna-shallow-nautilus': 4,
-  'fauna-shallow-squid': 4,
-  'fauna-shallow-octopus': 4,
-  'fauna-shallow-blue-ring-octopus': 4,
-  'fauna-shallow-jellyfish': 3,
+  'fauna-shallow-glass-ray': 4,
   'fauna-shallow-comb-jelly': 4,
-  'fauna-deep-deep-shrimp': 4,
-  'fauna-deep-vampire-squid': 4,
+  'fauna-shallow-squid': 4,
+  'fauna-shallow-nautilus': 4,
+  'fauna-shallow-jellyfish': 4,
+  'fauna-shallow-mantis-shrimp': 5,
+  'fauna-shallow-blue-ring-octopus': 4,
+  'fauna-shallow-octopus': 4,
+  'fauna-deep-ash-minnow': 4,
+  'fauna-deep-deep-shrimp': 5,
+  'fauna-deep-hatchetfish': 4,
   'fauna-deep-barreleye': 3,
+  'fauna-deep-glass-squid': 4,
+  'fauna-deep-vampire-squid': 4,
+  'fauna-deep-lanternfish': 4,
   'fauna-deep-gulper-eel': 3,
-  'fauna-deep-lanternfish': 3,
-  'fauna-deep-deep-jelly': 4,
-  'fauna-deep-sea-spider': 2,
-  'fauna-abyss-hatchet-school': 2,
-  'fauna-abyss-black-swallower': 3,
+  'fauna-deep-tripodfish': 3,
+  'fauna-deep-sea-spider': 4,
+  'fauna-abyss-mirror-fry': 3,
+  'fauna-abyss-hadal-shrimp': 4,
   'fauna-abyss-abyss-jelly': 4,
+  'fauna-abyss-bigfin-squid': 3,
+  'fauna-abyss-viperfish': 3,
+  'fauna-abyss-hatchet-school': 2,
+  'fauna-abyss-lantern-swarm': 2,
+  'fauna-abyss-goblin-shark': 3,
+  'fauna-abyss-frilled-shark': 3,
+  'fauna-abyss-black-swallower': 3,
+  'fauna-abyss-static-fry': 4,
+  'fauna-abyss-vampire-squid': 4,
+  'fauna-abyss-microfish': 3,
+  'fauna-abyss-anglerfish': 3,
+  'fauna-abyss-snipe-eel': 3,
+  'fauna-abyss-medusa': 3,
+  'fauna-deep-deep-jelly': 4,
 };
 
 function loadGeneratedAssets(scene: Phaser.Scene) {
@@ -4377,10 +4807,10 @@ function restart(scene: DeepdiveScene) {
   state.oxygen = BASE_OXYGEN;
   state.hull = 100;
   state.fuel = fuelMax();
-  state.stunGrenades = 0;
   state.depth = 0;
   state.maxDepth = 0;
   state.cargo = [];
+  state.selectedCargoIndex = 0;
   state.sonarRevealed.clear();
   state.sonarContacts = [];
   resetOxygenWarnings();
@@ -4391,7 +4821,11 @@ function restart(scene: DeepdiveScene) {
   state.docked = true;
   state.paused = false;
   state.logbookOpen = false;
+  state.cargoOpen = false;
   state.bargeTab = 'services';
+  state.radioMessages = [];
+  state.radioIndex = 0;
+  state.radioOpen = false;
   state.selectedSubTier = null;
   state.activeSub = null;
   state.carrierSub = null;
@@ -4422,6 +4856,7 @@ function renderHud() {
         <aside id="barge-menu" class="barge-menu"></aside>
         <aside id="logbook" class="logbook"></aside>
         <aside id="pause-menu" class="pause-menu"></aside>
+        <aside id="radio-dialogue" class="radio-dialogue"></aside>
       </main>
     `;
   }
@@ -4429,11 +4864,17 @@ function renderHud() {
   const bargeMenu = document.querySelector<HTMLDivElement>('#barge-menu');
   const logbook = document.querySelector<HTMLDivElement>('#logbook');
   const pauseMenu = document.querySelector<HTMLDivElement>('#pause-menu');
+  const radioDialogue = document.querySelector<HTMLDivElement>('#radio-dialogue');
   const shell = document.querySelector<HTMLElement>('.shell');
   const titleScreen = document.querySelector<HTMLElement>('#title-screen');
-  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !shell || !titleScreen) return;
+  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !radioDialogue || !shell || !titleScreen) return;
   const logbookScrollTop = logbook.querySelector<HTMLDivElement>('.logbook__list')?.scrollTop ?? 0;
+  const radioActive = state.radioOpen && state.started && !state.lost && !state.won;
+  if (!canOpenCargoOverlay()) state.cargoOpen = false;
+  const cargoActive = state.cargoOpen && canOpenCargoOverlay();
   shell.classList.toggle('is-title', !state.started);
+  shell.classList.toggle('is-radio-modal', radioActive);
+  shell.classList.toggle('is-cargo-open', cargoActive);
   titleScreen.classList.toggle('is-hidden', state.started);
   titleScreen.classList.toggle('is-options', state.titlePanel === 'options');
   titleScreen.classList.toggle('is-controls', state.titlePanel === 'controls');
@@ -4450,22 +4891,24 @@ function renderHud() {
     ${sub ? meter('Sub O2', sub.oxygen, subDef(sub.tier).oxygen, '#8ee7f4') : meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
     ${sub ? meter('Sub hull', sub.hull, subDef(sub.tier).hull, '#ff8a6b') : meter('Hull', state.hull, hullMax(), '#ff8a6b')}
     ${sub ? meter('Sub fuel', sub.fuel, subDef(sub.tier).fuel, '#ffd166') : meter('Fuel', state.fuel, fuelMax(), '#ffd166')}
-    <div class="ordnance-chip"><strong>${state.stunGrenades}</strong><span>Stun grenades</span></div>
+    ${selectedItemChip()}
     ${subHatchControl()}
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
     <p class="status">${state.status}</p>
   `;
   renderGameOver(app);
-  const bargeOpen = state.started && state.atBoat && !state.lost && !state.won;
+  const bargeOpen = state.started && state.atBoat && !radioActive && !state.lost && !state.won;
   bargeMenu.classList.toggle('is-open', bargeOpen);
   setStableHtml(bargeMenu, bargeOpen ? bargeMenuPanel() : '');
-  logbook.classList.toggle('is-open', state.logbookOpen && state.started);
-  setStableHtml(logbook, state.logbookOpen && state.started ? logbookPanel() : '');
+  logbook.classList.toggle('is-open', state.logbookOpen && state.started && !radioActive);
+  setStableHtml(logbook, state.logbookOpen && state.started && !radioActive ? logbookPanel() : '');
   const logbookList = logbook.querySelector<HTMLDivElement>('.logbook__list');
   if (logbookList) logbookList.scrollTop = logbookScrollTop;
-  pauseMenu.classList.toggle('is-open', state.paused && state.started && !state.lost && !state.won);
-  setStableHtml(pauseMenu, state.paused && state.started && !state.lost && !state.won ? pauseMenuPanel() : '');
+  pauseMenu.classList.toggle('is-open', state.paused && state.started && !radioActive && !state.lost && !state.won);
+  setStableHtml(pauseMenu, state.paused && state.started && !radioActive && !state.lost && !state.won ? pauseMenuPanel() : '');
+  radioDialogue.classList.toggle('is-open', radioActive);
+  setStableHtml(radioDialogue, radioActive ? radioDialoguePanel() : '');
   restoreControllerFocus();
   gameScene()?.drawSonarMap();
 }
@@ -4552,7 +4995,7 @@ function titlePanel() {
         <div><strong>Dive / mine</strong><span>Space / A / right trigger</span></div>
         <div><strong>Scan</strong><span>Hold E / X</span></div>
         <div><strong>Sonar</strong><span>Q / left bumper</span></div>
-        <div><strong>Stun</strong><span>G / right bumper</span></div>
+        <div><strong>Use item</strong><span>G / right bumper</span></div>
         <div><strong>Logbook</strong><span>L / Y</span></div>
         <div><strong>Pause</strong><span>Esc, P / Start</span></div>
       </div>
@@ -4569,6 +5012,73 @@ function titlePanel() {
       <button class="title-button" data-title-panel="controls" data-focus-key="title-controls">Controls</button>
     </div>
   `;
+}
+
+function openingRadioMessages(): RadioMessage[] {
+  return [
+    {
+      speaker: 'Dr. Vale',
+      role: 'Geology channel',
+      text: 'Barge receiver is live. Bring up any ore, alloy, or strange mineral you cut free and my lab will buy it by weight.',
+      from: 'npc',
+    },
+    {
+      speaker: 'You',
+      role: 'Diver channel',
+      text: 'Copy that. If it shines, crumbles, or hums in a way I do not like, it goes in the cargo grid.',
+      from: 'player',
+    },
+    {
+      speaker: 'Dr. Sato',
+      role: 'Marine biology channel',
+      text: 'I am paying for detailed scans of local fauna and flora. Hold the scanner steady until the catalog confirms the lifeform.',
+      from: 'npc',
+    },
+    {
+      speaker: 'You',
+      role: 'Diver channel',
+      text: 'Understood. I will scan before I poke anything with teeth, tendrils, or suspicious confidence.',
+      from: 'player',
+    },
+    {
+      speaker: 'Dr. Vale',
+      role: 'Barge uplink',
+      text: 'Good. Barge shop is unlocked, oxygen is nominal, and the first trench is yours. Dive when ready.',
+      from: 'npc',
+    },
+  ];
+}
+
+function radioDialoguePanel() {
+  const message = state.radioMessages[state.radioIndex];
+  if (!message) return '';
+  const final = state.radioIndex >= state.radioMessages.length - 1;
+  const from = message.from ?? 'npc';
+  const portrait = from === 'player'
+    ? '<img src="/assets/generated/diver-idle-0.png" alt="">'
+    : '<img src="/assets/generated/dialogue-radio-portrait.png" alt="">';
+  return `
+    <div class="radio-dialogue__panel radio-dialogue__panel--${from}">
+      <div class="radio-dialogue__portrait">
+        ${portrait}
+      </div>
+      <div class="radio-dialogue__body">
+        <span>${message.role}</span>
+        <strong>${message.speaker}</strong>
+        <p>${message.text}</p>
+      </div>
+      <button data-radio-next data-focus-key="radio-next">${final ? 'Resume' : 'Continue'}</button>
+    </div>
+  `;
+}
+
+function advanceRadioDialogue() {
+  if (!state.radioOpen) return;
+  state.radioIndex += 1;
+  if (state.radioIndex >= state.radioMessages.length) {
+    state.radioOpen = false;
+    state.radioIndex = 0;
+  }
 }
 
 function volumeRow(label: string, kind: 'music' | 'sfx', value: number) {
@@ -4589,6 +5099,7 @@ function toggleLogbook() {
   state.logbookOpen = opening;
   if (opening) {
     state.paused = false;
+    state.cargoOpen = false;
   }
   renderHud();
 }
@@ -4623,7 +5134,28 @@ function clearFullscreenWarning() {
 }
 
 function canDiveFromBargeShortcut() {
-  return state.started && state.docked && state.atBoat && !state.logbookOpen && !state.paused && !state.lost && !state.won;
+  return state.started && state.docked && state.atBoat && !state.radioOpen && !state.logbookOpen && !state.paused && !state.lost && !state.won;
+}
+
+function canOpenCargoOverlay() {
+  return state.started && !state.atBoat && !state.docked && !state.radioOpen && !state.logbookOpen && !state.paused && !state.lost && !state.won;
+}
+
+function setCargoOverlay(open: boolean) {
+  const nextOpen = open && canOpenCargoOverlay();
+  if (state.cargoOpen === nextOpen) return;
+  state.cargoOpen = nextOpen;
+  renderHud();
+}
+
+function moveCargoSelection(delta: number) {
+  if (!state.cargoOpen || !canOpenCargoOverlay()) return;
+  const capacity = cargoCapacity();
+  if (capacity <= 0) return;
+  const next = Phaser.Math.Wrap(state.selectedCargoIndex + delta, 0, capacity);
+  if (next === state.selectedCargoIndex) return;
+  state.selectedCargoIndex = next;
+  renderHud();
 }
 
 let achievementTimeout: number | undefined;
@@ -4663,14 +5195,76 @@ function bindUiEvents(app: HTMLDivElement) {
   if (uiEventsBound) return;
   uiEventsBound = true;
   window.addEventListener('keydown', (event) => {
+    if (event.code !== 'Tab') return;
+    const buttons = activeMenuButtons();
+    event.preventDefault();
+    event.stopPropagation();
+    if (!buttons.length) {
+      setCargoOverlay(true);
+      return;
+    }
+    focusAdjacentMenuButton(event.shiftKey ? -1 : 1, buttons);
+  }, true);
+  window.addEventListener('keyup', (event) => {
+    if (event.code !== 'Tab') return;
+    if (!state.cargoOpen) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setCargoOverlay(false);
+  }, true);
+  window.addEventListener('keydown', (event) => {
+    if (!state.cargoOpen || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(event.code)) return;
+    let delta = 0;
+    if (event.code === 'ArrowLeft' || event.code === 'KeyA') delta = -1;
+    else if (event.code === 'ArrowRight' || event.code === 'KeyD') delta = 1;
+    else if (event.code === 'ArrowUp' || event.code === 'KeyW') delta = -6;
+    else if (event.code === 'ArrowDown' || event.code === 'KeyS') delta = 6;
+    else return;
+    event.preventDefault();
+    event.stopPropagation();
+    moveCargoSelection(delta);
+  }, true);
+  window.addEventListener('keydown', (event) => {
+    if ((event.code !== 'Enter' && event.code !== 'Space') || event.repeat) return;
+    const buttons = activeMenuButtons();
+    if (!buttons.length) return;
+    const active = document.activeElement instanceof HTMLButtonElement && buttons.includes(document.activeElement)
+      ? document.activeElement
+      : focusMenuButton(buttons, uiFocusKey);
+    if (!active) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (state.radioOpen && state.started && !state.lost && !state.won) {
+      advanceRadioDialogue();
+      renderHud();
+      return;
+    }
+    activateMenuButton(active);
+  }, true);
+  window.addEventListener('keydown', (event) => {
     if (event.code !== 'Space' || event.repeat || !canDiveFromBargeShortcut()) return;
     event.preventDefault();
     event.stopPropagation();
     gameScene()?.diveFromBarge();
   }, true);
+  window.addEventListener('keydown', (event) => {
+    if (event.code !== 'KeyG' || event.repeat || state.docked || state.paused || state.logbookOpen || state.radioOpen || !state.started || state.lost || state.won) return;
+    event.preventDefault();
+    event.stopPropagation();
+    gameScene()?.useSelectedItem();
+  }, true);
   app.addEventListener('pointerdown', (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
+    if (state.radioOpen && state.started && !state.lost && !state.won) {
+      const radioHit = target.closest<HTMLElement>('#radio-dialogue.is-open');
+      if (radioHit) {
+        event.preventDefault();
+        advanceRadioDialogue();
+        renderHud();
+      }
+      return;
+    }
     const upgradeButton = target.closest<HTMLButtonElement>('button[data-upgrade]');
     if (upgradeButton && !upgradeButton.disabled) {
       event.preventDefault();
@@ -4747,6 +5341,12 @@ function bindUiEvents(app: HTMLDivElement) {
       renderHud();
       return;
     }
+    const buyItemButton = target.closest<HTMLButtonElement>('button[data-buy-item]');
+    if (buyItemButton && !buyItemButton.disabled) {
+      event.preventDefault();
+      gameScene()?.buyShopItem(buyItemButton.dataset.buyItem as ShopItem['id']);
+      return;
+    }
     const subBuyButton = target.closest<HTMLButtonElement>('button[data-buy-sub]');
     if (subBuyButton && !subBuyButton.disabled) {
       event.preventDefault();
@@ -4792,19 +5392,13 @@ function bindUiEvents(app: HTMLDivElement) {
     const stunButton = target.closest<HTMLButtonElement>('button[data-stun]');
     if (stunButton && !stunButton.disabled) {
       event.preventDefault();
-      gameScene()?.useStunGrenade();
+      gameScene()?.useSelectedItem();
       return;
     }
     const fuelButton = target.closest<HTMLButtonElement>('button[data-buy-fuel]');
     if (fuelButton && !fuelButton.disabled) {
       event.preventDefault();
       gameScene()?.buyFuel(fuelButton.dataset.buyFuel === 'full');
-      return;
-    }
-    const stunBuyButton = target.closest<HTMLButtonElement>('button[data-buy-stun]');
-    if (stunBuyButton && !stunBuyButton.disabled) {
-      event.preventDefault();
-      gameScene()?.buyStunGrenade();
       return;
     }
     const goldButton = target.closest<HTMLButtonElement>('button[data-gold]');
@@ -4827,21 +5421,50 @@ function bindUiEvents(app: HTMLDivElement) {
     if (discardButton && !discardButton.disabled) {
       event.preventDefault();
       const index = Number(discardButton.dataset.discardCargo);
-      const discarded = state.cargo[index];
-      if (!discarded) return;
-      state.cargo.splice(index, 1);
-      state.status = `Discarded ${discarded.name} to free a cargo slot.`;
+      state.selectedCargoIndex = index;
+      gameScene()?.useSelectedItem();
+      return;
+    }
+    const selectCargoButton = target.closest<HTMLButtonElement>('button[data-select-cargo]');
+    if (selectCargoButton && !selectCargoButton.disabled) {
+      event.preventDefault();
+      state.selectedCargoIndex = Number(selectCargoButton.dataset.selectCargo) || 0;
+      clampSelectedCargoIndex();
+      renderHud();
+      return;
+    }
+    const useCargoButton = target.closest<HTMLButtonElement>('button[data-use-selected-item]');
+    if (useCargoButton && !useCargoButton.disabled) {
+      event.preventDefault();
+      gameScene()?.useSelectedItem();
+      return;
+    }
+    const radioButton = target.closest<HTMLButtonElement>('button[data-radio-next]');
+    if (radioButton) {
+      event.preventDefault();
+      advanceRadioDialogue();
       renderHud();
     }
+  });
+  app.addEventListener('focusin', (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLButtonElement)) return;
+    const buttons = activeMenuButtons();
+    if (!buttons.includes(target)) return;
+    clearControllerFocus();
+    target.classList.add('is-controller-focus');
+    uiFocusKey = menuButtonKey(target);
   });
 }
 
 function activeMenuButtons() {
   const scopes = [
     '#title-screen:not(.is-hidden)',
+    '.radio-dialogue.is-open',
     '.pause-menu.is-open',
     '.logbook.is-open',
     '.barge-menu.is-open',
+    '.game-over',
   ];
   for (const scope of scopes) {
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(`${scope} button:not(:disabled)`))
@@ -4857,6 +5480,25 @@ function focusUiButton(button: HTMLButtonElement) {
   clearControllerFocus();
   button.classList.add('is-controller-focus');
   if (document.activeElement !== button) button.focus({ preventScroll: true });
+}
+
+function focusAdjacentMenuButton(direction: 1 | -1, buttons = activeMenuButtons()) {
+  if (!buttons.length) return;
+  const active = document.activeElement instanceof HTMLButtonElement && buttons.includes(document.activeElement)
+    ? document.activeElement
+    : focusMenuButton(buttons, uiFocusKey);
+  const currentIndex = active ? buttons.indexOf(active) : direction > 0 ? -1 : 0;
+  const nextIndex = (currentIndex + direction + buttons.length) % buttons.length;
+  focusUiButton(buttons[nextIndex]);
+}
+
+function activateMenuButton(button: HTMLButtonElement) {
+  button.dispatchEvent(new PointerEvent('pointerdown', {
+    bubbles: true,
+    cancelable: true,
+    pointerId: 1,
+    pointerType: 'mouse',
+  }));
 }
 
 function clearControllerFocus(resetKey = false) {
@@ -4923,9 +5565,13 @@ function menuButtonKey(button: HTMLButtonElement) {
     button.dataset.bargeTab ??
     button.dataset.upgrade ??
     button.dataset.buySub ??
+    button.dataset.buyItem ??
     button.dataset.buyFuel ??
+    button.dataset.selectCargo ??
     (button.dataset.subHatch !== undefined ? 'sub-hatch' : undefined) ??
     (button.dataset.deployScout !== undefined ? 'deploy-scout' : undefined) ??
+    (button.dataset.useSelectedItem !== undefined ? 'use-selected-item' : undefined) ??
+    (button.dataset.radioNext !== undefined ? 'radio-next' : undefined) ??
     button.dataset.discardCargo ??
     button.textContent?.trim() ??
     '';
@@ -4939,6 +5585,7 @@ function bargeMenuPanel() {
   return `
     <div class="barge-tabs">
       <button class="${state.bargeTab === 'services' ? 'is-active' : ''}" data-barge-tab="services" data-focus-key="barge-services">Barge</button>
+      <button class="${state.bargeTab === 'items' ? 'is-active' : ''}" data-barge-tab="items" data-focus-key="barge-items">Items</button>
       <button class="${state.bargeTab === 'upgrades' ? 'is-active' : ''}" data-barge-tab="upgrades" data-focus-key="barge-upgrades">Upgrades</button>
       <button class="${state.bargeTab === 'subs' ? 'is-active' : ''}" data-barge-tab="subs" data-focus-key="barge-subs">Subs</button>
       <button class="dive-button" data-dive-from-barge data-focus-key="barge-dive">Dive</button>
@@ -4946,11 +5593,11 @@ function bargeMenuPanel() {
     <div class="shop-title">
       <div>
         <span>Barge Dock</span>
-        <strong>${state.bargeTab === 'upgrades' ? 'Upgrade console' : state.bargeTab === 'subs' ? 'Submersible bay' : 'Refit and resupply'}</strong>
+        <strong>${state.bargeTab === 'upgrades' ? 'Upgrade console' : state.bargeTab === 'subs' ? 'Submersible bay' : state.bargeTab === 'items' ? 'Consumables market' : 'Refit and resupply'}</strong>
       </div>
       <span>${state.scannedSpecies.size}/${lifeCatalogTotal()} scans</span>
     </div>
-    ${state.bargeTab === 'upgrades' ? upgradeTabPanel() : state.bargeTab === 'subs' ? subShopPanel() : bargeServicesPanel()}
+    ${state.bargeTab === 'upgrades' ? upgradeTabPanel() : state.bargeTab === 'subs' ? subShopPanel() : state.bargeTab === 'items' ? itemShopPanel() : bargeServicesPanel()}
   `;
 }
 
@@ -4962,8 +5609,42 @@ function bargeServicesPanel() {
       <strong>${state.credits} credits</strong>
     </div>
     ${bargeFuelRow()}
-    ${bargeStunRow()}
     ${bargeTravelRow()}
+  `;
+}
+
+function itemShopPanel() {
+  return `
+    <section class="item-shop">
+      <div class="item-shop__header">
+        <div>
+          <span>Consumables</span>
+          <strong>${state.cargo.length}/${cargoCapacity()} cargo slots used</strong>
+        </div>
+        <strong>${state.credits.toLocaleString()}c</strong>
+      </div>
+      <div class="item-shop__grid">
+        ${shopItems.map((item) => itemShopCard(item)).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function itemShopCard(item: ShopItem) {
+  const disabled = state.credits < item.cost || state.cargo.length >= cargoCapacity();
+  const owned = state.cargo.filter((cargo) => cargo.id === item.id).length;
+  return `
+    <article class="item-shop-card">
+      <div class="item-shop-card__icon">
+        <img src="/assets/generated/${item.icon}.png" alt="">
+      </div>
+      <div>
+        <strong>${item.name}</strong>
+        <span>${item.text}</span>
+      </div>
+      <small>${owned} loaded</small>
+      <button data-buy-item="${item.id}" data-focus-key="buy-${item.id}" ${disabled ? 'disabled' : ''}>${item.cost.toLocaleString()}c</button>
+    </article>
   `;
 }
 
@@ -5067,7 +5748,7 @@ function pauseMenuPanel() {
         <div><dt>Sub hatch</dt><dd>Hold F</dd></div>
         <div><dt>Deploy scout</dt><dd>H</dd></div>
         <div><dt>Sonar</dt><dd>Q</dd></div>
-        <div><dt>Stun / sub weapon</dt><dd>G</dd></div>
+        <div><dt>Use item / sub weapon</dt><dd>G</dd></div>
         <div><dt>Logbook</dt><dd>L</dd></div>
         <div><dt>Pause</dt><dd>Esc / P</dd></div>
       </dl>
@@ -5081,7 +5762,7 @@ function pauseMenuPanel() {
         <div><dt>Sub hatch</dt><dd>Hold B</dd></div>
         <div><dt>Deploy scout</dt><dd>Back / Select</dd></div>
         <div><dt>Sonar</dt><dd>Left bumper</dd></div>
-        <div><dt>Stun / sub weapon</dt><dd>Right bumper</dd></div>
+        <div><dt>Use item / sub weapon</dt><dd>Right bumper</dd></div>
         <div><dt>Logbook</dt><dd>Y</dd></div>
         <div><dt>Pause</dt><dd>Start</dd></div>
       </dl>
@@ -5176,22 +5857,6 @@ function bargeFuelRow() {
       <div class="fuel-card__actions">
         <button data-buy-fuel="cell" ${refuelDisabled ? 'disabled' : ''}>+${FUEL_REFILL_AMOUNT} fuel ${fuelCost}c</button>
         <button data-buy-fuel="full" ${fullDisabled ? 'disabled' : ''}>Fill tank ${fullCost}c</button>
-      </div>
-    </article>
-  `;
-}
-
-function bargeStunRow() {
-  const disabled = state.credits < STUN_GRENADE_COST;
-  return `
-    <article class="fuel-card ordnance-card">
-      <div>
-        <strong>Stun grenades</strong>
-        <span>Emergency pulse charges. Press G to stun nearby unscanned predators for ${STUN_GRENADE_DURATION} seconds.</span>
-      </div>
-      <div class="fuel-card__actions">
-        <button data-buy-stun ${disabled ? 'disabled' : ''}>Buy 1 ${STUN_GRENADE_COST}c</button>
-        <span class="ordnance-count">${state.stunGrenades} ready</span>
       </div>
     </article>
   `;
@@ -5366,30 +6031,67 @@ function meter(label: string, value: number, max: number, color: string, detail 
   `;
 }
 
+function selectedItemChip() {
+  clampSelectedCargoIndex();
+  const item = state.cargo[state.selectedCargoIndex];
+  const disabled = !item || state.docked;
+  return `
+    <div class="selected-item-chip">
+      <div class="selected-item-chip__icon">
+        ${item ? `<img src="/assets/generated/${item.icon}.png" alt="">` : '<span></span>'}
+      </div>
+      <div>
+        <span>Selected item</span>
+        <strong>${item ? item.name : 'Empty slot'}</strong>
+      </div>
+      <button data-use-selected-item data-focus-key="use-selected-item" ${disabled ? 'disabled' : ''}>${item ? selectedItemActionLabel(item) : 'Use'}</button>
+    </div>
+  `;
+}
+
+function selectedItemActionLabel(item: CargoItem) {
+  if (item.kind === 'consumable') return 'Use';
+  return 'Drop';
+}
+
 function cargoManifest() {
   const emptySlots = Math.max(0, cargoCapacity() - state.cargo.length);
-  const itemColor = (item: CargoItem) => Phaser.Display.Color.IntegerToColor(item.color).rgba;
-  const rows = state.cargo.map((item, index) => `
-    <article class="cargo-row">
-      <i style="background:${itemColor(item)}; color:${itemColor(item)}"></i>
-      <div>
-        <strong>${item.name}</strong>
-        <span>${item.value.toLocaleString()}c</span>
-      </div>
-      <button data-discard-cargo="${index}" aria-label="Discard ${item.name}">Discard</button>
-    </article>
-  `);
+  clampSelectedCargoIndex();
+  const slots = Array.from({ length: cargoCapacity() }, (_, index) => inventorySlot(index)).join('');
   return `
-    <section class="cargo-manifest">
+    <section class="cargo-manifest ${state.cargoOpen ? 'is-open' : 'is-collapsed'}" aria-hidden="${state.cargoOpen ? 'false' : 'true'}">
       <div class="cargo-title">
-        <span>Cargo Manifest</span>
+        <span>Cargo Grid</span>
         <strong>${state.cargo.length}/${cargoCapacity()}</strong>
       </div>
-      <div class="cargo-list">
-        ${rows.length ? rows.join('') : '<p class="cargo-empty">No cargo loaded</p>'}
-        ${emptySlots > 0 ? `<p class="cargo-empty">${emptySlots} empty ${emptySlots === 1 ? 'slot' : 'slots'}</p>` : ''}
+      <div class="cargo-grid" style="--cargo-rows:${Math.ceil(cargoCapacity() / 6)}">
+        ${slots}
+      </div>
+      <div class="cargo-detail">
+        ${cargoDetail()}
+        <span>${emptySlots} empty ${emptySlots === 1 ? 'slot' : 'slots'}</span>
       </div>
     </section>
+  `;
+}
+
+function inventorySlot(index: number) {
+  const item = state.cargo[index];
+  const selected = index === state.selectedCargoIndex;
+  return `
+    <button class="cargo-slot ${selected ? 'is-selected' : ''} ${item ? '' : 'is-empty'}" data-select-cargo="${index}" data-focus-key="cargo-${index}" aria-label="${item ? `${item.name}, slot ${index + 1}` : `Empty cargo slot ${index + 1}`}">
+      ${item ? `<img src="/assets/generated/${item.icon}.png" alt="">${item.value > 0 ? `<b>${item.value.toLocaleString()}c</b>` : ''}` : ''}
+    </button>
+  `;
+}
+
+function cargoDetail() {
+  const item = state.cargo[state.selectedCargoIndex];
+  if (!item) return '<strong>Empty slot</strong>';
+  const kind = item.kind === 'consumable' ? 'Consumable' : item.kind === 'artifact' ? 'Artifact' : item.kind === 'ore' ? 'Ore' : 'Rubble';
+  return `
+    <strong>${item.name}</strong>
+    <em>${kind}${item.value > 0 ? ` / ${item.value.toLocaleString()}c` : ''}</em>
   `;
 }
 
