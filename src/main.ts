@@ -21,16 +21,22 @@ type Tile =
 type UpgradeId = 'oxygen' | 'cargo' | 'laser' | 'lamp' | 'scanner' | 'suit' | 'speed' | 'thermal';
 type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
 type Biome = 1 | 2 | 3 | 4;
-type BargeTab = 'services' | 'items' | 'upgrades' | 'subs';
+type BargeTab = 'services' | 'items' | 'upgrades' | 'subs' | 'quests';
 type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 type TitlePanel = 'main' | 'options' | 'controls';
 type SubTier = 1 | 2 | 3;
+type QuestKind = 'depth' | 'scan' | 'ore' | 'nest';
 type InventoryItemId =
   | Tile
   | 'stun-grenade'
   | 'dynamite'
-  | 'flare';
-type InventoryItemKind = 'ore' | 'artifact' | 'consumable' | 'rubble';
+  | 'flare'
+  | 'oxygen-tank'
+  | 'fuel-tank'
+  | 'first-aid-kit'
+  | 'antivenom'
+  | 'injector-knife';
+type InventoryItemKind = 'ore' | 'artifact' | 'consumable' | 'tool' | 'rubble';
 type ThrownUtility = 'dynamite' | 'flare';
 type PlaytestCommand =
   | 'start'
@@ -112,6 +118,10 @@ interface Fish {
   bumpCooldown: number;
   aggro: number;
   stunned: number;
+  hp: number;
+  maxHp: number;
+  dead: boolean;
+  hurtFlash: number;
   assetKey: string;
   facingSign: 1 | -1;
   sprite?: Phaser.GameObjects.Image;
@@ -130,6 +140,10 @@ interface Flora {
   scan: number;
   scanning: boolean;
   scanPulse: number;
+  hp: number;
+  maxHp: number;
+  dead: boolean;
+  hurtFlash: number;
   radius: number;
   assetKey: string;
   sprite?: Phaser.GameObjects.Image;
@@ -197,6 +211,47 @@ interface Bobbit {
   sprite?: Phaser.GameObjects.Image;
 }
 
+type SpecialRoomKind = 'biolume' | 'nest';
+type NestEggState = 'dormant' | 'hatching' | 'hatched' | 'destroyed';
+
+interface SpecialRoom {
+  id: string;
+  kind: SpecialRoomKind;
+  x: number;
+  y: number;
+  rx: number;
+  ry: number;
+  rewardClaimed: boolean;
+  failed?: boolean;
+}
+
+interface NestEgg {
+  roomId: string;
+  x: number;
+  y: number;
+  radius: number;
+  state: NestEggState;
+  hatch: number;
+  hp: number;
+  phase: number;
+  sprite?: Phaser.GameObjects.Image;
+}
+
+interface Larva {
+  roomId: string;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  phase: number;
+  latched: boolean;
+  latchCooldown: number;
+  latchSlot: number;
+  life: number;
+  sprite?: Phaser.GameObjects.Image;
+}
+
 interface LooseItem {
   id: InventoryItemId;
   name: string;
@@ -253,12 +308,13 @@ interface SonarContact {
 }
 
 interface ShopItem {
-  id: 'stun-grenade' | 'dynamite' | 'flare';
+  id: 'stun-grenade' | 'dynamite' | 'flare' | 'oxygen-tank' | 'fuel-tank' | 'first-aid-kit' | 'antivenom' | 'injector-knife';
   name: string;
   cost: number;
   icon: string;
   color: number;
   text: string;
+  kind?: InventoryItemKind;
 }
 
 interface RadioMessage {
@@ -266,6 +322,22 @@ interface RadioMessage {
   role: string;
   text: string;
   from?: 'npc' | 'player';
+}
+
+interface Quest {
+  id: string;
+  kind: QuestKind;
+  title: string;
+  client: string;
+  text: string;
+  reward: number;
+  target: number;
+  progress: number;
+  startValue: number;
+  accepted: boolean;
+  completed: boolean;
+  claimed: boolean;
+  rare?: boolean;
 }
 
 interface SubDef {
@@ -358,6 +430,33 @@ const DYNAMITE_LAND_FUSE = 0.42;
 const FLARE_COST = 50;
 const FLARE_DURATION = 36;
 const FLARE_LIGHT_RADIUS = 112;
+const OXYGEN_TANK_COST = 900;
+const OXYGEN_TANK_REFILL = 100;
+const FUEL_TANK_COST = 700;
+const FUEL_TANK_REFILL = 50;
+const FIRST_AID_COST = 760;
+const FIRST_AID_REPAIR = 42;
+const ANTIVENOM_COST = 980;
+const INJECTOR_KNIFE_COST = 1600;
+const INJECTOR_KNIFE_RANGE = 42;
+const INJECTOR_KNIFE_DAMAGE = 13;
+const BLEED_RECENT_WINDOW = 9;
+const BLEED_TRIGGER_BITES = 3;
+const BLEED_DURATION = 18;
+const BLEED_HULL_DRAIN = 0.72;
+const LIFE_CUTTER_FUEL_COST = 1.15;
+const LIFE_CUTTER_DAMAGE = 18;
+const DYNAMITE_LIFE_DAMAGE = 85;
+const VENOM_HULL_DRAIN = 2.1;
+const VENOM_TICK_SECONDS = 3.6;
+const BIOLUME_CAVERN_CHANCE = 0.05;
+const NEST_CHAMBER_CHANCE = 0.05;
+const OASIS_OXYGEN_REFILL = 32;
+const EGG_HATCH_SECONDS = 1.25;
+const EGG_DETECTION_RADIUS = 68;
+const EGG_CUTTER_FUEL_COST = 2.6;
+const EGG_HP = 8;
+const NEST_CLEAR_REWARD = 3800;
 const THROWN_ITEM_GRAVITY = 132;
 const THROWN_ITEM_SPEED = 92;
 const THROWN_ITEM_MAX_FALL_SPEED = 130;
@@ -499,6 +598,47 @@ const shopItems: ShopItem[] = [
     color: 0xff8a5c,
     text: 'Throws a short-lived light source into the dark.',
   },
+  {
+    id: 'oxygen-tank',
+    name: 'Oxygen Tank',
+    cost: OXYGEN_TANK_COST,
+    icon: 'item-icon-oxygen-tank',
+    color: 0x8ee7f4,
+    text: `Emergency reserve that restores ${OXYGEN_TANK_REFILL} oxygen during a dive.`,
+  },
+  {
+    id: 'fuel-tank',
+    name: 'Fuel Tank',
+    cost: FUEL_TANK_COST,
+    icon: 'item-icon-fuel-tank',
+    color: 0xffd166,
+    text: `Portable cutter fuel that restores ${FUEL_TANK_REFILL} fuel during a dive.`,
+  },
+  {
+    id: 'first-aid-kit',
+    name: 'First Aid Kit',
+    cost: FIRST_AID_COST,
+    icon: 'item-icon-first-aid',
+    color: 0xff6f7f,
+    text: `Patches ${FIRST_AID_REPAIR} hull integrity and seals active bleeding.`,
+  },
+  {
+    id: 'antivenom',
+    name: 'Antivenom',
+    cost: ANTIVENOM_COST,
+    icon: 'item-icon-antivenom',
+    color: 0x7bd88f,
+    text: 'Purges venom from suit seals before it can drain you dry.',
+  },
+  {
+    id: 'injector-knife',
+    name: 'Injector Knife',
+    cost: INJECTOR_KNIFE_COST,
+    icon: 'item-icon-stun',
+    color: 0xd06bff,
+    kind: 'tool',
+    text: 'Reusable close-quarters blade. Stab a nearby predator for modest damage.',
+  },
 ];
 
 const biomeFish: Record<Biome, FishSpecies[]> = {
@@ -581,6 +721,7 @@ const state = {
   fuel: 100,
   depth: 0,
   maxDepth: 0,
+  oreSoldCredits: 0,
   cargo: [] as CargoItem[],
   selectedCargoIndex: 0,
   sonarRevealed: new Set<string>(),
@@ -603,6 +744,8 @@ const state = {
   logbookOpen: false,
   cargoOpen: false,
   bargeTab: 'services' as BargeTab,
+  questBoard: [] as Quest[],
+  activeQuestId: '',
   titlePanel: 'main' as TitlePanel,
   radioMessages: [] as RadioMessage[],
   radioIndex: 0,
@@ -628,6 +771,19 @@ const state = {
   oxygenWarnings: {
     half: false,
     quarter: false,
+  },
+  venom: {
+    active: false,
+    source: '',
+    tick: 0,
+  },
+  bleed: {
+    active: false,
+    source: '',
+    duration: 0,
+    stacks: 0,
+    recentBites: 0,
+    recentTimer: 0,
   },
 };
 
@@ -655,6 +811,9 @@ class DeepdiveScene extends Phaser.Scene {
   private flora: Flora[] = [];
   private hazards: Hazard[] = [];
   private bobbits: Bobbit[] = [];
+  private specialRooms: SpecialRoom[] = [];
+  private nestEggs: NestEgg[] = [];
+  private larvae: Larva[] = [];
   private looseItems: LooseItem[] = [];
   private floatingTexts: FloatingText[] = [];
   private flares: Flare[] = [];
@@ -786,6 +945,7 @@ class DeepdiveScene extends Phaser.Scene {
       this.updateFloatingTexts(delta);
       this.updateFlares(delta);
       this.updateSystems(delta);
+      this.updateQuestProgress();
       this.updateCameraZoom();
       this.cameras.main.centerOn(this.player.x, this.player.y);
       this.draw();
@@ -803,10 +963,14 @@ class DeepdiveScene extends Phaser.Scene {
     this.updateLooseItems(delta);
     this.updateFlora(delta);
     this.updateFish(delta);
+    this.updateSpecialRooms(delta);
+    this.updateNestEggs(delta);
+    this.updateLarvae(delta, controls);
     this.updateAuxSub(delta);
     this.updateHazards(delta);
     this.updateBobbits(delta, controls);
     this.updateSystems(delta);
+    this.updateQuestProgress();
     this.updateFloatingTexts(delta);
     this.updateFlares(delta);
     this.updateSonarPings(delta);
@@ -1014,6 +1178,11 @@ class DeepdiveScene extends Phaser.Scene {
     if (!state.atBoat) return;
     const item = shopItem(id);
     if (state.credits < item.cost) return;
+    if (item.kind === 'tool' && state.cargo.some((cargo) => cargo.id === id)) {
+      state.status = `${item.name} is already loaded.`;
+      renderHud();
+      return;
+    }
     if (state.cargo.length >= cargoCapacity()) {
       state.status = `Cargo grid is full. Drop or sell something before buying ${item.name}.`;
       renderHud();
@@ -1024,6 +1193,40 @@ class DeepdiveScene extends Phaser.Scene {
     state.selectedCargoIndex = state.cargo.length - 1;
     state.status = `${item.name} loaded into cargo slot ${state.selectedCargoIndex + 1}.`;
     renderHud();
+  }
+
+  acceptQuest(id: string) {
+    if (!state.atBoat) return;
+    const quest = state.questBoard.find((entry) => entry.id === id);
+    if (!quest || quest.claimed) return;
+    const active = activeQuest();
+    if (active && active.id !== quest.id && !active.claimed) {
+      state.status = `Finish or claim ${active.title} before taking another contract.`;
+      renderHud();
+      return;
+    }
+    quest.accepted = true;
+    quest.completed = false;
+    quest.progress = 0;
+    quest.startValue = questProgressSource(quest);
+    state.activeQuestId = quest.id;
+    state.status = quest.kind === 'nest'
+      ? `${quest.client} issued a nest locator. The sonar will point toward the nearest predator nest while this contract is active.`
+      : `${quest.title} accepted.`;
+    renderHud();
+    this.drawSonarMap();
+  }
+
+  claimQuest(id: string) {
+    if (!state.atBoat) return;
+    const quest = state.questBoard.find((entry) => entry.id === id);
+    if (!quest || !quest.completed || quest.claimed) return;
+    quest.claimed = true;
+    state.credits += quest.reward;
+    if (state.activeQuestId === quest.id) state.activeQuestId = '';
+    state.status = `${quest.title} complete. ${quest.reward.toLocaleString()} credits transferred.`;
+    renderHud();
+    this.drawSonarMap();
   }
 
   playtestSnapshot() {
@@ -1066,6 +1269,10 @@ class DeepdiveScene extends Phaser.Scene {
         docked: state.docked,
         lost: state.lost,
         won: state.won,
+        venom: { ...state.venom },
+        bleed: { ...state.bleed },
+        activeQuestId: state.activeQuestId,
+        questBoard: state.questBoard.map((quest) => ({ ...quest })),
         upgrades: { ...state.upgrades },
         subOwned: { ...state.subOwned },
         selectedSubTier: state.selectedSubTier,
@@ -1091,12 +1298,15 @@ class DeepdiveScene extends Phaser.Scene {
       state.docked = true;
       state.atBoat = true;
       this.resetPlayerStart();
+      clearVenom();
+      clearBleed();
       refillAtBoat();
     } else if (command === 'setBiome') {
       const biome = Phaser.Math.Clamp(Number(value) || 1, 1, 4) as Biome;
       state.biome = biome;
       state.depth = 0;
       state.maxDepth = 0;
+      state.oreSoldCredits = 0;
       state.cargo = [];
       state.selectedCargoIndex = 0;
       state.sonarRevealed.clear();
@@ -1109,8 +1319,11 @@ class DeepdiveScene extends Phaser.Scene {
       state.cargoOpen = false;
       state.lost = false;
       state.won = false;
+      clearVenom();
+      clearBleed();
       state.started = true;
       state.bargeTab = 'services';
+      state.activeQuestId = '';
       seed = Math.floor(Math.random() * 1_000_000);
       this.scene.restart();
       renderHud();
@@ -1129,6 +1342,8 @@ class DeepdiveScene extends Phaser.Scene {
       state.oxygen = oxygenMax();
       state.hull = 100 + state.upgrades.suit * 25;
       state.fuel = fuelMax();
+      clearVenom();
+      clearBleed();
       if (state.activeSub) {
         const def = subDef(state.activeSub.tier);
         state.activeSub.hull = def.hull;
@@ -1177,11 +1392,14 @@ class DeepdiveScene extends Phaser.Scene {
     state.credits -= cost;
     state.depth = 0;
     state.maxDepth = 0;
+    state.oreSoldCredits = 0;
     state.cargo = [];
     state.selectedCargoIndex = 0;
     state.fuel = fuelMax();
     state.sonarRevealed.clear();
     resetOxygenWarnings();
+    clearVenom();
+    clearBleed();
     state.scannedSpecies.clear();
     state.atBoat = true;
     state.docked = true;
@@ -1189,6 +1407,7 @@ class DeepdiveScene extends Phaser.Scene {
     state.logbookOpen = false;
     state.cargoOpen = false;
     state.bargeTab = 'services';
+    state.activeQuestId = '';
     state.carrierSub = null;
     const nextBiome = (state.biome + 1) as Biome;
     state.biome = nextBiome;
@@ -1251,6 +1470,9 @@ class DeepdiveScene extends Phaser.Scene {
     this.looseItems = [];
     this.flora = [];
     this.bobbits = [];
+    this.specialRooms = [];
+    this.nestEggs = [];
+    this.larvae = [];
     state.sonarRevealed.clear();
     state.sonarContacts = [];
     for (let y = 0; y < WORLD_H; y += 1) {
@@ -1273,10 +1495,14 @@ class DeepdiveScene extends Phaser.Scene {
     this.carveStarterCaverns(center);
     this.carveDeepTunnelNetwork(center);
     this.carveAnchorstoneStrata();
+    this.injectSpecialRooms(center);
     this.populateOreVeins();
 
     this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
     this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
+    this.populateSpecialRooms();
+    state.questBoard = generateQuestBoard(this.specialRooms.some((room) => room.kind === 'nest'));
+      state.activeQuestId = '';
     this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
     this.bobbits = state.biome >= 2 ? this.makeBobbits() : [];
   }
@@ -1296,6 +1522,198 @@ class DeepdiveScene extends Phaser.Scene {
       });
     }
     return vents;
+  }
+
+  private injectSpecialRooms(center: number) {
+    const bioCenter = this.pickBiolumeCavernCenter(center);
+    this.injectBiolumeCavern(bioCenter.x, bioCenter.y);
+
+    const nestCenter = this.pickNestDeadEnd();
+    this.injectPredatorNest(nestCenter.x, nestCenter.y);
+  }
+
+  private pickBiolumeCavernCenter(center: number) {
+    const candidates = 16;
+    for (let i = 0; i < candidates; i += 1) {
+      const y = Math.floor(Phaser.Math.Linear(WORLD_H * 0.48, WORLD_H * 0.88, (i + 0.5) / candidates));
+      const x = Phaser.Math.Clamp(center + Math.floor((hash(i, 713, seed) - 0.5) * 72), 18, WORLD_W - 19);
+      if (hash(x, y, seed + 9081) > BIOLUME_CAVERN_CHANCE) continue;
+      if (this.denseSolidRatio(x, y, 18, 12) < 0.58) continue;
+      return { x, y };
+    }
+    return {
+      x: Phaser.Math.Clamp(center + Math.floor((hash(31, state.biome, seed) - 0.5) * 54), 18, WORLD_W - 19),
+      y: Math.floor(WORLD_H * (0.58 + hash(41, state.biome, seed) * 0.22)),
+    };
+  }
+
+  private pickNestDeadEnd() {
+    const candidates: Array<{ x: number; y: number; score: number }> = [];
+    for (let y = Math.floor(WORLD_H * 0.52); y < WORLD_H - 14; y += 1) {
+      for (let x = 6; x < WORLD_W - 6; x += 1) {
+        if (this.getTile(x, y) !== 'water') continue;
+        if (this.specialRooms.some((room) => Math.hypot(room.x / TILE - x, room.y / TILE - y) < 26)) continue;
+        const neighbors = this.cardinalWaterNeighbors(x, y);
+        if (neighbors > 1) continue;
+        const solidRatio = this.denseSolidRatio(x, y, 8, 6);
+        if (solidRatio < 0.48) continue;
+        candidates.push({ x, y, score: y + solidRatio * 20 + hash(x, y, seed) * 12 });
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    for (let i = 0; i < Math.min(18, candidates.length); i += 1) {
+      const candidate = candidates[i];
+      if (hash(candidate.x, candidate.y, seed + 11003) <= NEST_CHAMBER_CHANCE || i === 0) {
+        return candidate;
+      }
+    }
+    const bio = this.specialRooms.find((room) => room.kind === 'biolume');
+    const side = (bio?.x ?? WORLD_W * TILE * 0.5) < WORLD_W * TILE * 0.5 ? 1 : -1;
+    return {
+      x: Phaser.Math.Clamp(Math.floor(WORLD_W * (0.5 + side * 0.28 + (hash(77, state.biome, seed) - 0.5) * 0.12)), 12, WORLD_W - 13),
+      y: Math.floor(WORLD_H * (0.68 + hash(83, state.biome, seed) * 0.18)),
+    };
+  }
+
+  private denseSolidRatio(cx: number, cy: number, rx: number, ry: number) {
+    let solid = 0;
+    let cells = 0;
+    for (let y = cy - ry; y <= cy + ry; y += 1) {
+      for (let x = cx - rx; x <= cx + rx; x += 1) {
+        if (x < 2 || x >= WORLD_W - 2 || y < 8 || y >= WORLD_H - 2) continue;
+        cells += 1;
+        if (tiles[this.getTile(x, y)].solid) solid += 1;
+      }
+    }
+    return cells > 0 ? solid / cells : 0;
+  }
+
+  private cardinalWaterNeighbors(x: number, y: number) {
+    return [
+      this.getTile(x + 1, y),
+      this.getTile(x - 1, y),
+      this.getTile(x, y + 1),
+      this.getTile(x, y - 1),
+    ].filter((tile) => tile === 'water').length;
+  }
+
+  private injectBiolumeCavern(cx: number, cy: number) {
+    const rx = state.biome >= 3 ? 18 : 15;
+    const ry = state.biome >= 3 ? 12 : 10;
+    const open = this.cellularRoomMask(cx, cy, rx, ry, 0.54, 4);
+    for (const cell of open) this.setTile(cell.x, cell.y, 'water');
+    this.openRoomMouths(cx, cy, rx, ry, 2);
+    this.connectRoomToNearestWater(cx, cy, rx, ry);
+    const room: SpecialRoom = {
+      id: `bio-${this.specialRooms.length}`,
+      kind: 'biolume',
+      x: cx * TILE + TILE * 0.5,
+      y: cy * TILE + TILE * 0.5,
+      rx: rx * TILE,
+      ry: ry * TILE,
+      rewardClaimed: false,
+    };
+    this.specialRooms.push(room);
+    this.seedBiolumeResources(cx, cy, rx, ry);
+  }
+
+  private injectPredatorNest(cx: number, cy: number) {
+    const rx = 10;
+    const ry = 7;
+    const chamberX = Phaser.Math.Clamp(cx + (cx < WORLD_W / 2 ? -4 : 4), 12, WORLD_W - 13);
+    const chamberY = Phaser.Math.Clamp(cy + 2, Math.floor(WORLD_H * 0.52), WORLD_H - 12);
+    const open = this.cellularRoomMask(chamberX, chamberY, rx, ry, 0.48, 3);
+    for (const cell of open) this.setTile(cell.x, cell.y, 'water');
+    this.carveWindingTunnel(cx, cy, chamberX, chamberY, 2);
+    const room: SpecialRoom = {
+      id: `nest-${this.specialRooms.length}`,
+      kind: 'nest',
+      x: chamberX * TILE + TILE * 0.5,
+      y: chamberY * TILE + TILE * 0.5,
+      rx: rx * TILE,
+      ry: ry * TILE,
+      rewardClaimed: false,
+    };
+    this.specialRooms.push(room);
+  }
+
+  private cellularRoomMask(cx: number, cy: number, rx: number, ry: number, fillThreshold: number, iterations: number) {
+    const width = rx * 2 + 1;
+    const height = ry * 2 + 1;
+    let cells = Array.from({ length: height }, (_, yy) =>
+      Array.from({ length: width }, (_, xx) => {
+        const gx = cx - rx + xx;
+        const gy = cy - ry + yy;
+        const nx = (gx - cx) / rx;
+        const ny = (gy - cy) / ry;
+        const ellipse = nx * nx + ny * ny;
+        if (ellipse > 1.14) return false;
+        return ellipse < 0.62 || hash(gx * 7, gy * 11, seed) > fillThreshold;
+      }),
+    );
+    for (let i = 0; i < iterations; i += 1) {
+      cells = cells.map((row, yy) => row.map((cell, xx) => {
+        let neighbors = 0;
+        for (let oy = -1; oy <= 1; oy += 1) {
+          for (let ox = -1; ox <= 1; ox += 1) {
+            if (ox === 0 && oy === 0) continue;
+            if (cells[yy + oy]?.[xx + ox]) neighbors += 1;
+          }
+        }
+        return neighbors >= 4 || (cell && neighbors >= 3);
+      }));
+    }
+    const open: Array<{ x: number; y: number }> = [];
+    for (let yy = 0; yy < height; yy += 1) {
+      for (let xx = 0; xx < width; xx += 1) {
+        if (!cells[yy][xx]) continue;
+        const x = cx - rx + xx;
+        const y = cy - ry + yy;
+        if (x > 2 && x < WORLD_W - 3 && y > 8 && y < WORLD_H - 2) open.push({ x, y });
+      }
+    }
+    return open;
+  }
+
+  private openRoomMouths(cx: number, cy: number, rx: number, ry: number, radius: number) {
+    this.carveDisc(cx - rx, cy, radius);
+    this.carveDisc(cx + rx, cy + Math.floor(Math.sin(seed) * 3), radius);
+    this.carveDisc(cx, cy - ry, Math.max(1, radius - 1));
+    this.carveDisc(cx, cy + ry, Math.max(1, radius - 1));
+  }
+
+  private connectRoomToNearestWater(cx: number, cy: number, rx: number, ry: number) {
+    let best: { x: number; y: number; distance: number } | null = null;
+    const radius = Math.max(rx, ry) + 38;
+    for (let y = Math.max(8, cy - radius); y <= Math.min(WORLD_H - 3, cy + radius); y += 1) {
+      for (let x = Math.max(3, cx - radius); x <= Math.min(WORLD_W - 4, cx + radius); x += 1) {
+        if (this.getTile(x, y) !== 'water') continue;
+        const insideRoom = Math.abs((x - cx) / rx) < 1.05 && Math.abs((y - cy) / ry) < 1.05;
+        if (insideRoom) continue;
+        const distance = Math.hypot(x - cx, y - cy);
+        if (!best || distance < best.distance) best = { x, y, distance };
+      }
+    }
+    if (best) this.carveWindingTunnel(cx, cy, best.x, best.y, 2);
+  }
+
+  private seedBiolumeResources(cx: number, cy: number, rx: number, ry: number) {
+    const rareTiles: Tile[] = state.biome >= 4
+      ? ['alienAlloy', 'ruinCore', 'sunstone']
+      : state.biome >= 3
+        ? ['sunstone', 'cobalt', 'ruby']
+        : ['quartz', 'ruby', 'cobalt'];
+    let placed = 0;
+    for (let i = 0; i < 42 && placed < 14; i += 1) {
+      const angle = hash(i, cy, seed) * Math.PI * 2;
+      const r = 0.72 + hash(cx, i, seed) * 0.28;
+      const x = Math.floor(cx + Math.cos(angle) * rx * r);
+      const y = Math.floor(cy + Math.sin(angle) * ry * r);
+      const tile = this.getTile(x, y);
+      if (tile !== 'stone' && tile !== 'sand' && tile !== 'anchorstone') continue;
+      this.setTile(x, y, rareTiles[placed % rareTiles.length]);
+      placed += 1;
+    }
   }
 
   private populateOreVeins() {
@@ -1400,6 +1818,10 @@ class DeepdiveScene extends Phaser.Scene {
         bumpCooldown: 0,
         aggro: 0,
         stunned: 0,
+        hp: fishMaxHp(species),
+        maxHp: fishMaxHp(species),
+        dead: false,
+        hurtFlash: 0,
         assetKey,
         facingSign: Math.cos(angle) < 0 ? -1 : 1,
         sprite: this.createEntitySprite(point.x, point.y, assetKey),
@@ -1426,12 +1848,187 @@ class DeepdiveScene extends Phaser.Scene {
         scan: 0,
         scanning: false,
         scanPulse: 0,
+        hp: floraMaxHp(species),
+        maxHp: floraMaxHp(species),
+        dead: false,
+        hurtFlash: 0,
         radius: scaledEntity(species.radius),
         assetKey,
         sprite: this.createEntitySprite(point.x, point.y, assetKey),
       });
     }
     return patch;
+  }
+
+  private populateSpecialRooms() {
+    for (const room of this.specialRooms) {
+      if (room.kind === 'biolume') this.populateBiolumeRoom(room);
+      if (room.kind === 'nest') this.populateNestRoom(room);
+    }
+  }
+
+  private populateBiolumeRoom(room: SpecialRoom) {
+    const count = state.biome >= 3 ? 18 : 12;
+    for (let i = 0; i < count; i += 1) {
+      const anchor = this.findRoomFloorAnchor(room, i);
+      const oxygen = i % 3 !== 2;
+      const assetKey = oxygen
+        ? (i % 2 === 0 ? 'flora-oxygen-kelp' : 'flora-oxygen-bulb')
+        : 'flora-biolume-tall';
+      this.flora.push({
+        kind: 'flora',
+        species: oxygen ? 'Oxygen Bloom' : 'Lumen Fern',
+        x: anchor.x + Phaser.Math.FloatBetween(-4, 4),
+        y: anchor.y,
+        phase: Math.random() * Math.PI * 2,
+        color: oxygen ? 0x8ee7f4 : 0xb9f27c,
+        hazardous: false,
+        rare: true,
+        scanned: false,
+        scan: 0,
+        scanning: false,
+        scanPulse: 0,
+        hp: floraMaxHp({ species: oxygen ? 'Oxygen Bloom' : 'Lumen Fern', count, minY: 0, maxY: 0, color: oxygen ? 0x8ee7f4 : 0xb9f27c, hazardous: false, rare: true, radius: oxygen ? 15 : 13 }),
+        maxHp: floraMaxHp({ species: oxygen ? 'Oxygen Bloom' : 'Lumen Fern', count, minY: 0, maxY: 0, color: oxygen ? 0x8ee7f4 : 0xb9f27c, hazardous: false, rare: true, radius: oxygen ? 15 : 13 }),
+        dead: false,
+        hurtFlash: 0,
+        radius: scaledEntity(oxygen ? 15 : 13),
+        assetKey,
+        sprite: this.createEntitySprite(anchor.x, anchor.y, assetKey).setDepth(2.05),
+      });
+    }
+    for (let i = 0; i < 6; i += 1) {
+      const anchor = this.findRoomFloorAnchor(room, i + 120);
+      const assetKey = i % 3 === 2 ? 'biolume-crystal' : `biolume-rock-${i % 2}`;
+      this.flora.push({
+        kind: 'flora',
+        species: 'Lumen Nodule',
+        x: anchor.x + Phaser.Math.FloatBetween(-5, 5),
+        y: anchor.y,
+        phase: Math.random() * Math.PI * 2,
+        color: 0x73fbd3,
+        hazardous: false,
+        rare: true,
+        scanned: false,
+        scan: 0,
+        scanning: false,
+        scanPulse: 0,
+        hp: floraMaxHp({ species: 'Lumen Nodule', count: 6, minY: 0, maxY: 0, color: 0x73fbd3, hazardous: false, rare: true, radius: 11 }),
+        maxHp: floraMaxHp({ species: 'Lumen Nodule', count: 6, minY: 0, maxY: 0, color: 0x73fbd3, hazardous: false, rare: true, radius: 11 }),
+        dead: false,
+        hurtFlash: 0,
+        radius: scaledEntity(11),
+        assetKey,
+        sprite: this.createEntitySprite(anchor.x, anchor.y, assetKey).setDepth(2.02),
+      });
+    }
+  }
+
+  private populateNestRoom(room: SpecialRoom) {
+    const adultCount = state.biome >= 3 ? 2 : 1;
+    for (let i = 0; i < adultCount; i += 1) {
+      const angle = (i / Math.max(1, adultCount)) * Math.PI * 2 + hash(i, 991, seed);
+      const species: FishSpecies = {
+        species: i === 0 ? 'Abyssal Thresher' : 'Mantle Crawler',
+        count: 1,
+        minY: 0,
+        maxY: 0,
+        color: i === 0 ? 0xff4f64 : 0xd06bff,
+        hostile: true,
+        pattern: i === 0 ? 'stalk' : 'circle',
+        radius: state.biome >= 3 ? 24 : 20,
+        speed: state.biome >= 3 ? [44, 78] : [36, 66],
+        assetKey: i === 0 ? 'fauna-abyss-viperfish' : 'fish-abyss-predator',
+      };
+      const assetKey = fishAssetKey(species);
+      const x = room.x + Math.cos(angle) * room.rx * 0.42;
+      const y = room.y + Math.sin(angle) * room.ry * 0.35;
+      this.fish.push({
+        kind: 'fish',
+        species: species.species,
+        x,
+        y,
+        vx: Math.cos(angle) * species.speed[0],
+        vy: Math.sin(angle) * species.speed[0],
+        homeX: x,
+        homeY: y,
+        speed: Phaser.Math.FloatBetween(species.speed[0], species.speed[1]),
+        phase: Math.random() * Math.PI * 2,
+        color: species.color,
+        hostile: true,
+        scanned: false,
+        scan: 0,
+        scanning: false,
+        scanPulse: 0,
+        radius: scaledEntity(species.radius),
+        pattern: species.pattern,
+        bumpCooldown: 0,
+        aggro: 2.5,
+        stunned: 0,
+        hp: fishMaxHp(species) * 1.25,
+        maxHp: fishMaxHp(species) * 1.25,
+        dead: false,
+        hurtFlash: 0,
+        assetKey,
+        facingSign: Math.cos(angle) < 0 ? -1 : 1,
+        sprite: this.createEntitySprite(x, y, assetKey).setDepth(2.15),
+      });
+    }
+
+    const eggs = Phaser.Math.Between(5, 8);
+    for (let i = 0; i < eggs; i += 1) {
+      const anchor = this.findRoomFloorAnchor(room, i + 50);
+      this.nestEggs.push({
+        roomId: room.id,
+        x: anchor.x + Phaser.Math.FloatBetween(-6, 6),
+        y: anchor.y - scaledEntity(5),
+        radius: scaledEntity(14),
+        state: 'dormant',
+        hatch: 0,
+        hp: EGG_HP,
+        phase: Math.random() * Math.PI * 2,
+        sprite: this.createEntitySprite(anchor.x, anchor.y, 'nest-egg-0').setDepth(2.05).setOrigin(0.5, 0.82),
+      });
+    }
+  }
+
+  private findRoomFloorAnchor(room: SpecialRoom, salt: number) {
+    const cx = Math.floor(room.x / TILE);
+    const cy = Math.floor(room.y / TILE);
+    const rx = Math.max(4, Math.floor(room.rx / TILE));
+    const ry = Math.max(3, Math.floor(room.ry / TILE));
+    const candidates: Array<{ x: number; y: number; score: number }> = [];
+    for (let y = Math.max(8, cy - ry); y <= Math.min(WORLD_H - 3, cy + ry); y += 1) {
+      for (let x = Math.max(3, cx - rx); x <= Math.min(WORLD_W - 4, cx + rx); x += 1) {
+        if (this.getTile(x, y) !== 'water') continue;
+        if (!tiles[this.getTile(x, y + 1)].solid) continue;
+        const nx = (x - cx) / Math.max(1, rx);
+        const ny = (y - cy) / Math.max(1, ry);
+        if (nx * nx + ny * ny > 1.08) continue;
+        const lowerRoomBias = Phaser.Math.Clamp((ny + 0.25) * 0.5, 0, 1);
+        candidates.push({ x, y, score: hash(x + salt * 17, y + salt * 31, seed) + lowerRoomBias });
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    if (candidates.length) {
+      const pick = candidates[salt % candidates.length];
+      return { x: pick.x * TILE + TILE * 0.5, y: (pick.y + 1) * TILE + 2 };
+    }
+    for (let attempt = 0; attempt < 120; attempt += 1) {
+      const x = Phaser.Math.Clamp(cx + Math.floor((hash(salt + attempt, cx, seed) - 0.5) * rx * 1.6), 3, WORLD_W - 4);
+      const y = Phaser.Math.Clamp(cy + Math.floor((0.1 + hash(cy, salt + attempt, seed) * 0.82) * ry), 8, WORLD_H - 3);
+      if (this.getTile(x, y) !== 'water' || this.getTile(x, y - 1) !== 'water') continue;
+      this.setTile(x, y + 1, 'stone');
+      if (hash(x, y, seed) > 0.35) this.setTile(x - 1, y + 1, 'stone');
+      if (hash(y, x, seed) > 0.35) this.setTile(x + 1, y + 1, 'stone');
+      this.setTile(x, y, 'water');
+      return { x: x * TILE + TILE * 0.5, y: (y + 1) * TILE + 2 };
+    }
+    const x = Phaser.Math.Clamp(cx, 3, WORLD_W - 4);
+    const y = Phaser.Math.Clamp(cy + Math.floor(ry * 0.45), 8, WORLD_H - 3);
+    this.setTile(x, y, 'water');
+    this.setTile(x, y + 1, 'stone');
+    return { x: x * TILE + TILE * 0.5, y: (y + 1) * TILE + 2 };
   }
 
   private findFloraAnchorInBand(minY: number, maxY: number) {
@@ -1800,6 +2397,12 @@ class DeepdiveScene extends Phaser.Scene {
       this.player.vx = (this.player.vx / speed) * topSpeed;
       this.player.vy = (this.player.vy / speed) * topSpeed;
     }
+    const latchedLarvae = this.larvae.filter((larva) => larva.latched).length;
+    if (latchedLarvae > 0) {
+      const drag = Math.max(0.66, 1 - latchedLarvae * 0.08);
+      this.player.vx *= drag;
+      this.player.vy *= drag;
+    }
     if (hasInput) {
       this.rotateFacingToward(input.angle(), delta, 6.2 + swimUpgradeBonus() * 0.18);
       this.updatePlayerFacing(input.x);
@@ -1995,7 +2598,8 @@ class DeepdiveScene extends Phaser.Scene {
     sub.fuel = Math.max(0, sub.fuel - 4);
     let hits = 0;
     for (const fish of this.fish) {
-      if (!fish.hostile || fish.scanned) continue;
+      if (fish.dead) continue;
+      if (!fish.hostile) continue;
       const distance = Phaser.Math.Distance.Between(sub.x, sub.y, fish.x, fish.y);
       if (distance > scaledEntity(230)) continue;
       const facing = sub.facingSign;
@@ -2263,6 +2867,8 @@ class DeepdiveScene extends Phaser.Scene {
     const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, worldX, worldY);
     this.player.facing.set(Math.cos(angle), Math.sin(angle));
     this.updatePlayerFacing(Math.cos(angle));
+    if (this.cutNestTarget(worldX, worldY, sub)) return;
+    if (this.cutLifeTarget(worldX, worldY, sub)) return;
     const tx = Math.floor(worldX / TILE);
     const ty = Math.floor(worldY / TILE);
     const targets = this.mineTargets(tx, ty);
@@ -2295,6 +2901,133 @@ class DeepdiveScene extends Phaser.Scene {
     if (sub) sub.oxygen = Math.max(0, sub.oxygen - (0.08 + targets.length * 0.02));
     else state.oxygen -= 0.11 + targets.length * 0.035;
     renderHud();
+  }
+
+  private cutNestTarget(worldX: number, worldY: number, sub: SubVehicle | null) {
+    const target = this.nearestNestCutTarget(worldX, worldY);
+    if (!target) return false;
+    const fuelReserve = sub ? sub.fuel : state.fuel;
+    if (fuelReserve > 0) this.drillingThisFrame = true;
+    if (this.player.mineCooldown > 0) return true;
+    if (fuelReserve < EGG_CUTTER_FUEL_COST) {
+      this.player.mineCooldown = Math.max(0.14, mineCooldown() * 0.55);
+      state.status = 'Not enough fuel to cut nest matter. Back out or switch supplies fast.';
+      renderHud();
+      return true;
+    }
+    if (sub) sub.fuel = Math.max(0, sub.fuel - EGG_CUTTER_FUEL_COST);
+    else state.fuel = Math.max(0, state.fuel - EGG_CUTTER_FUEL_COST);
+    this.player.mineCooldown = mineCooldown() * 0.72;
+
+    if ('hp' in target) {
+      target.hp -= 8.5 + miningUpgradeBonus() * 1.4;
+      target.state = target.state === 'dormant' ? 'hatching' : target.state;
+      target.hatch = Math.min(target.hatch, EGG_HATCH_SECONDS * 0.72);
+      if (target.hp <= 0) {
+        target.state = 'destroyed';
+        target.sprite?.setVisible(false);
+        this.spawnFloatingText('Egg destroyed', 0xffd166);
+        state.status = 'Nest egg destroyed before the swarm could break free.';
+      } else {
+        state.status = 'Nest egg shell is cracking under the cutter.';
+      }
+    } else {
+      this.larvae = this.larvae.filter((larva) => larva !== target);
+      target.sprite?.setVisible(false);
+      this.spawnFloatingText('Larva killed', 0xffd166);
+      state.status = 'Larva burned off the suit.';
+    }
+    this.checkNestRewards();
+    renderHud();
+    return true;
+  }
+
+  private cutLifeTarget(worldX: number, worldY: number, sub: SubVehicle | null) {
+    const target = this.nearestLifeDamageTarget(worldX, worldY, scaledEntity(20));
+    if (!target) return false;
+    const fuelReserve = sub ? sub.fuel : state.fuel;
+    if (fuelReserve > 0) this.drillingThisFrame = true;
+    if (this.player.mineCooldown > 0) return true;
+    if (fuelReserve < LIFE_CUTTER_FUEL_COST) {
+      this.player.mineCooldown = Math.max(0.14, mineCooldown() * 0.55);
+      state.status = 'Not enough fuel to keep the cutter hot.';
+      renderHud();
+      return true;
+    }
+    if (sub) sub.fuel = Math.max(0, sub.fuel - LIFE_CUTTER_FUEL_COST);
+    else state.fuel = Math.max(0, state.fuel - LIFE_CUTTER_FUEL_COST);
+    this.player.mineCooldown = mineCooldown() * 0.58;
+    this.damageLifeTarget(target, LIFE_CUTTER_DAMAGE + miningUpgradeBonus() * 2.8, 'Cutter');
+    renderHud();
+    return true;
+  }
+
+  private nearestLifeDamageTarget(worldX: number, worldY: number, extraRange: number): ScanTarget | null {
+    let nearest: { target: ScanTarget; distance: number } | null = null;
+    for (const fish of this.fish) {
+      if (fish.dead) continue;
+      const distance = Phaser.Math.Distance.Between(worldX, worldY, fish.x, fish.y);
+      if (distance > fish.radius + extraRange) continue;
+      if (!nearest || distance < nearest.distance) nearest = { target: fish, distance };
+    }
+    for (const flora of this.flora) {
+      if (flora.dead) continue;
+      const distance = Phaser.Math.Distance.Between(worldX, worldY, flora.x, flora.y);
+      if (distance > flora.radius + extraRange) continue;
+      if (!nearest || distance < nearest.distance) nearest = { target: flora, distance };
+    }
+    return nearest?.target ?? null;
+  }
+
+  private damageLifeTarget(target: ScanTarget, amount: number, source: string) {
+    if (target.dead || amount <= 0) return false;
+    target.hp = Math.max(0, target.hp - amount);
+    target.hurtFlash = 1;
+    if (target.kind === 'fish') {
+      target.aggro = target.hostile ? Math.max(target.aggro, 3.2) : target.aggro;
+      target.vx += Phaser.Math.FloatBetween(-18, 18);
+      target.vy += Phaser.Math.FloatBetween(-18, 18);
+    }
+    if (target.hp > 0) {
+      state.status = `${source} hit ${target.species}.`;
+      return true;
+    }
+    target.dead = true;
+    target.scanning = false;
+    target.scan = 0;
+    target.sprite?.setVisible(false);
+    state.status = `${target.species} killed by ${source.toLowerCase()}.`;
+    this.spawnFloatingText(`${target.species} killed`, 0xffd166);
+    return true;
+  }
+
+  private damageLifeInRadius(centerX: number, centerY: number, radius: number, amount: number, source: string) {
+    let hits = 0;
+    for (const target of [...this.fish, ...this.flora]) {
+      if (target.dead) continue;
+      const distance = Phaser.Math.Distance.Between(centerX, centerY, target.x, target.y);
+      if (distance > radius + target.radius) continue;
+      const falloff = Phaser.Math.Clamp(1 - distance / Math.max(1, radius + target.radius), 0.28, 1);
+      this.damageLifeTarget(target, amount * falloff, source);
+      hits += 1;
+    }
+    return hits;
+  }
+
+  private nearestNestCutTarget(worldX: number, worldY: number): NestEgg | Larva | null {
+    let nearest: { target: NestEgg | Larva; distance: number } | null = null;
+    for (const egg of this.nestEggs) {
+      if (egg.state === 'destroyed' || egg.state === 'hatched') continue;
+      const distance = Phaser.Math.Distance.Between(worldX, worldY, egg.x, egg.y);
+      if (distance > egg.radius + scaledEntity(18)) continue;
+      if (!nearest || distance < nearest.distance) nearest = { target: egg, distance };
+    }
+    for (const larva of this.larvae) {
+      const distance = Phaser.Math.Distance.Between(worldX, worldY, larva.x, larva.y);
+      if (distance > larva.radius + scaledEntity(18)) continue;
+      if (!nearest || distance < nearest.distance) nearest = { target: larva, distance };
+    }
+    return nearest?.target ?? null;
   }
 
   private mineTargets(tx: number, ty: number) {
@@ -2403,6 +3136,11 @@ class DeepdiveScene extends Phaser.Scene {
       fish.bumpCooldown = Math.max(0, fish.bumpCooldown - delta);
       fish.stunned = Math.max(0, fish.stunned - delta);
       fish.scanPulse = Math.max(0, fish.scanPulse - delta * 1.35);
+      fish.hurtFlash = Math.max(0, fish.hurtFlash - delta * 4.2);
+      if (fish.dead) {
+        fish.sprite?.setVisible(false);
+        continue;
+      }
       if (!fish.scanned && !fish.scanning) {
         fish.scan = Math.max(0, fish.scan - delta * 0.9);
       }
@@ -2430,6 +3168,11 @@ class DeepdiveScene extends Phaser.Scene {
     for (const flora of this.flora) {
       flora.phase += delta;
       flora.scanPulse = Math.max(0, flora.scanPulse - delta * 1.35);
+      flora.hurtFlash = Math.max(0, flora.hurtFlash - delta * 4.2);
+      if (flora.dead) {
+        flora.sprite?.setVisible(false);
+        continue;
+      }
       if (!flora.scanned && !flora.scanning) {
         flora.scan = Math.max(0, flora.scan - delta * 0.9);
       }
@@ -2442,6 +3185,148 @@ class DeepdiveScene extends Phaser.Scene {
           this.player.vy += ((this.player.y - flora.y) / Math.max(1, distance)) * 24 * delta;
         }
       }
+    }
+  }
+
+  private updateSpecialRooms(delta: number) {
+    const oasis = this.specialRooms.find((room) => room.kind === 'biolume' && pointInRoom(this.player.x, this.player.y, room, 0.92));
+    if (!oasis || state.atBoat || state.lost || state.won) return;
+    const sub = state.pilotingSub ? state.activeSub : null;
+    if (sub) {
+      const max = subDef(sub.tier).oxygen;
+      sub.oxygen = Math.min(max, sub.oxygen + OASIS_OXYGEN_REFILL * 0.72 * delta);
+    } else {
+      state.oxygen = Math.min(oxygenMax(), state.oxygen + OASIS_OXYGEN_REFILL * delta);
+    }
+    resetOxygenWarnings();
+    if (this.hudTimer > 45) {
+      state.status = 'Oxygen oasis. Native bioluminescence is holding the dark back and refilling your reserves.';
+    }
+  }
+
+  private updateNestEggs(delta: number) {
+    for (const egg of this.nestEggs) {
+      if (egg.state === 'destroyed') {
+        egg.sprite?.setVisible(false);
+        continue;
+      }
+      egg.phase += delta;
+      if (egg.state === 'dormant') {
+        const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, egg.x, egg.y);
+        if (!state.atBoat && distance < EGG_DETECTION_RADIUS) {
+          egg.state = 'hatching';
+          egg.hatch = 0;
+          state.status = 'Nest eggs are waking. Cut them fast or the larvae will swarm.';
+          this.spawnFloatingText('Egg waking', 0xff4f64);
+        }
+      } else if (egg.state === 'hatching') {
+        egg.hatch += delta;
+        if (egg.hatch >= EGG_HATCH_SECONDS) this.hatchEgg(egg);
+      }
+    }
+    this.checkNestRewards();
+  }
+
+  private hatchEgg(egg: NestEgg) {
+    if (egg.state === 'hatched' || egg.state === 'destroyed') return;
+    egg.state = 'hatched';
+    egg.hatch = EGG_HATCH_SECONDS;
+    const count = Phaser.Math.Between(2, 3);
+    for (let i = 0; i < count; i += 1) {
+      const angle = (i / count) * Math.PI * 2 + Phaser.Math.FloatBetween(-0.3, 0.3);
+      this.larvae.push({
+        roomId: egg.roomId,
+        x: egg.x + Math.cos(angle) * scaledEntity(12),
+        y: egg.y + Math.sin(angle) * scaledEntity(8),
+        vx: Math.cos(angle) * scaledEntity(68),
+        vy: Math.sin(angle) * scaledEntity(68),
+        radius: scaledEntity(4.2),
+        phase: Math.random() * Math.PI * 2,
+        latched: false,
+        latchCooldown: 0.65,
+        latchSlot: i,
+        life: 3.4,
+        sprite: this.createEntitySprite(egg.x, egg.y, 'nest-larva-0').setDepth(2.45),
+      });
+    }
+    state.status = `Egg hatched. ${count} larvae are in the water.`;
+    this.spawnFloatingText(`Larvae x${count}`, 0xff4f64);
+  }
+
+  private updateLarvae(delta: number, controls: ControlState) {
+    const latchedCount = this.larvae.filter((larva) => larva.latched).length;
+    this.larvae = this.larvae.filter((larva) => {
+      larva.phase += delta;
+      larva.latchCooldown = Math.max(0, larva.latchCooldown - delta);
+      if (larva.latched) {
+        if (state.atBoat) {
+          this.failNestBounty(larva.roomId);
+          larva.sprite?.setVisible(false);
+          return false;
+        }
+        const slot = larva.latchSlot % 5;
+        const angle = slot * 1.26 + larva.phase * 0.8;
+        larva.x = this.player.x + Math.cos(angle) * scaledEntity(13);
+        larva.y = this.player.y + Math.sin(angle) * scaledEntity(10);
+        const struggle = controls.hasMove ? controls.move.length() : 0;
+        larva.life -= delta * (0.34 + struggle * 1.85);
+        this.applyHullDamage(0.08 * delta, 'Larvae are fouling the suit joints.');
+        if (larva.life <= 0) {
+          larva.latched = false;
+          larva.latchCooldown = 2.8;
+          larva.life = 3.4;
+          const away = new Phaser.Math.Vector2(larva.x - this.player.x, larva.y - this.player.y).normalize();
+          larva.vx = away.x * scaledEntity(115) + Phaser.Math.FloatBetween(-18, 18);
+          larva.vy = away.y * scaledEntity(115) + Phaser.Math.FloatBetween(-18, 18);
+          state.status = 'Larva shaken loose. Burn it before it latches again.';
+          this.spawnFloatingText('Larva loose', 0xffd166);
+        }
+        return true;
+      }
+      const dx = this.player.x - larva.x;
+      const dy = this.player.y - larva.y;
+      const distance = Math.max(1, Math.hypot(dx, dy));
+      const chase = distance < scaledEntity(170) && larva.latchCooldown <= 0;
+      if (chase && !state.atBoat) {
+        larva.vx += (dx / distance) * scaledEntity(92) * delta;
+        larva.vy += (dy / distance) * scaledEntity(92) * delta;
+      }
+      larva.vx *= Math.exp(-1.55 * delta);
+      larva.vy *= Math.exp(-1.55 * delta);
+      larva.x += larva.vx * delta;
+      larva.y += larva.vy * delta;
+      if (!state.atBoat && larva.latchCooldown <= 0 && latchedCount < 3 && distance < PLAYER_CONTACT_RADIUS + larva.radius) {
+        larva.latched = true;
+        larva.life = 2.8 + latchedCount * 0.45;
+        state.status = `Larvae latched: ${latchedCount + 1}. Thrust is getting sluggish.`;
+      }
+      return true;
+    });
+    this.checkNestRewards();
+  }
+
+  private failNestBounty(roomId: string) {
+    const room = this.specialRooms.find((candidate) => candidate.id === roomId);
+    if (!room || room.failed || room.rewardClaimed) return;
+    room.failed = true;
+    state.status = 'Nest swarm reached the barge. Corporate hazard bounty voided.';
+  }
+
+  private checkNestRewards() {
+    for (const room of this.specialRooms) {
+      if (room.kind !== 'nest' || room.rewardClaimed || room.failed) continue;
+      const eggs = this.nestEggs.filter((egg) => egg.roomId === room.id);
+      if (!eggs.length) continue;
+      const activeEggs = eggs.some((egg) => egg.state === 'dormant' || egg.state === 'hatching');
+      const activeLarvae = this.larvae.some((larva) => larva.roomId === room.id);
+      if (activeEggs || activeLarvae) continue;
+      room.rewardClaimed = true;
+      const reward = Math.round(NEST_CLEAR_REWARD * (state.biome >= 3 ? 1.35 : 1));
+      state.credits += reward;
+      state.status = `Nest cleared. Corporate hazard bounty paid ${reward.toLocaleString()} credits.`;
+      this.spawnFloatingText(`Nest cleared +${reward}c`, 0xffd166);
+      this.completeNestQuest(room);
+      renderHud();
     }
   }
 
@@ -2643,7 +3528,7 @@ class DeepdiveScene extends Phaser.Scene {
     this.captureSonarContacts();
     let attracted = 0;
     for (const fish of this.fish) {
-      if (!fish.hostile || fish.scanned) continue;
+      if (!fish.hostile) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance > SONAR_ATTRACT_RADIUS) continue;
       fish.aggro = Math.max(fish.aggro, 4.4);
@@ -2668,11 +3553,22 @@ class DeepdiveScene extends Phaser.Scene {
       renderHud();
       return false;
     }
+    if (item.kind === 'tool') {
+      if (item.id === 'injector-knife') return this.useInjectorKnife();
+      state.status = `${item.name} is not ready to use.`;
+      renderHud();
+      return false;
+    }
     if (item.kind !== 'consumable') {
       this.dropCargoItem(state.selectedCargoIndex);
       return true;
     }
+    if (item.id === 'oxygen-tank' && !this.consumeOxygenTank()) return false;
+    if (item.id === 'fuel-tank' && !this.consumeFuelTank()) return false;
+    if (item.id === 'first-aid-kit' && !this.consumeFirstAidKit()) return false;
+    if (item.id === 'antivenom' && !this.consumeAntivenom()) return false;
     state.cargo.splice(state.selectedCargoIndex, 1);
+    state.selectedCargoIndex = Math.min(state.selectedCargoIndex, Math.max(0, state.cargo.length - 1));
     clampSelectedCargoIndex();
     if (item.id === 'stun-grenade') this.triggerStunPulse();
     else if (item.id === 'dynamite') this.throwUtilityItem(item, 'dynamite');
@@ -2681,10 +3577,133 @@ class DeepdiveScene extends Phaser.Scene {
     return true;
   }
 
+  private consumeOxygenTank() {
+    const sub = state.pilotingSub ? state.activeSub : null;
+    const max = sub ? subDef(sub.tier).oxygen : oxygenMax();
+    const current = sub ? sub.oxygen : state.oxygen;
+    const missing = max - current;
+    if (missing <= 0) {
+      state.status = sub ? `${subDef(sub.tier).name} oxygen is already full.` : 'Suit oxygen is already full.';
+      renderHud();
+      return false;
+    }
+    const amount = Math.min(OXYGEN_TANK_REFILL, missing);
+    if (sub) sub.oxygen = Math.min(max, sub.oxygen + amount);
+    else state.oxygen = Math.min(max, state.oxygen + amount);
+    resetOxygenWarnings();
+    state.status = `Emergency oxygen tank used. Restored ${Math.round(amount)} O2.`;
+    this.spawnFloatingText(`O2 +${Math.round(amount)}`, 0x8ee7f4);
+    return true;
+  }
+
+  private consumeFuelTank() {
+    const sub = state.pilotingSub ? state.activeSub : null;
+    const max = sub ? subDef(sub.tier).fuel : fuelMax();
+    const current = sub ? sub.fuel : state.fuel;
+    const missing = max - current;
+    if (missing <= 0) {
+      state.status = sub ? `${subDef(sub.tier).name} fuel is already full.` : 'Cutter fuel is already full.';
+      renderHud();
+      return false;
+    }
+    const amount = Math.min(FUEL_TANK_REFILL, missing);
+    if (sub) sub.fuel = Math.min(max, sub.fuel + amount);
+    else state.fuel = Math.min(max, state.fuel + amount);
+    state.status = `Portable fuel tank used. Restored ${Math.round(amount)} fuel.`;
+    this.spawnFloatingText(`Fuel +${Math.round(amount)}`, 0xffd166);
+    return true;
+  }
+
+  private consumeFirstAidKit() {
+    const sub = state.pilotingSub ? state.activeSub : null;
+    const max = sub ? subDef(sub.tier).hull : hullMax();
+    const current = sub ? sub.hull : state.hull;
+    const missing = max - current;
+    const bleeding = state.bleed.active || state.bleed.recentBites > 0;
+    if (missing <= 0 && !bleeding) {
+      state.status = sub ? `${subDef(sub.tier).name} hull is already stable.` : 'Suit integrity is already stable.';
+      renderHud();
+      return false;
+    }
+    const repaired = Math.min(FIRST_AID_REPAIR, Math.max(0, missing));
+    if (sub) sub.hull = Math.min(max, sub.hull + repaired);
+    else state.hull = Math.min(max, state.hull + repaired);
+    if (bleeding) clearBleed();
+    state.status = bleeding
+      ? `First aid sealed the bleed${repaired > 0 ? ` and restored ${Math.round(repaired)} hull` : ''}.`
+      : `First aid restored ${Math.round(repaired)} hull.`;
+    this.spawnFloatingText(bleeding ? 'Bleed sealed' : `Hull +${Math.round(repaired)}`, 0xff6f7f);
+    return true;
+  }
+
+  private consumeAntivenom() {
+    if (!state.venom.active) {
+      state.status = 'No venom detected in suit seals.';
+      renderHud();
+      return false;
+    }
+    const source = state.venom.source;
+    clearVenom();
+    state.status = `Antivenom purged ${source} toxin from the suit.`;
+    this.spawnFloatingText('Venom purged', 0x7bd88f);
+    return true;
+  }
+
+  private useInjectorKnife() {
+    const larva = this.nearestKnifeLarva();
+    if (larva) {
+      this.larvae = this.larvae.filter((candidate) => candidate !== larva);
+      larva.sprite?.setVisible(false);
+      state.status = larva.latched ? 'Injector knife cut the larva free.' : 'Injector knife pinned a hatchling.';
+      this.spawnFloatingText('Larva cut', 0xd06bff);
+      this.checkNestRewards();
+      renderHud();
+      return true;
+    }
+    const target = this.nearestKnifeTarget();
+    if (!target) {
+      state.status = 'Injector knife swiped through open water. Get closer to a predator.';
+      this.spawnFloatingText('Miss', 0xa9b8c9);
+      renderHud();
+      return false;
+    }
+    const damage = INJECTOR_KNIFE_DAMAGE + state.upgrades.suit * 0.8;
+    this.damageLifeTarget(target, damage, 'Injector knife');
+    target.stunned = Math.max(target.stunned, 0.45);
+    target.aggro = Math.max(target.aggro, 2.4);
+    const distance = Math.max(1, Phaser.Math.Distance.Between(this.player.x, this.player.y, target.x, target.y));
+    target.vx += ((target.x - this.player.x) / distance) * 84;
+    target.vy += ((target.y - this.player.y) / distance) * 84;
+    this.spawnFloatingText('Stab', 0xd06bff);
+    renderHud();
+    return true;
+  }
+
+  private nearestKnifeLarva() {
+    let nearest: { larva: Larva; distance: number } | null = null;
+    for (const larva of this.larvae) {
+      const distance = larva.latched ? 0 : Phaser.Math.Distance.Between(this.player.x, this.player.y, larva.x, larva.y);
+      if (!larva.latched && distance > INJECTOR_KNIFE_RANGE + larva.radius) continue;
+      if (!nearest || distance < nearest.distance) nearest = { larva, distance };
+    }
+    return nearest?.larva ?? null;
+  }
+
+  private nearestKnifeTarget() {
+    let nearest: { fish: Fish; distance: number } | null = null;
+    for (const fish of this.fish) {
+      if (!fish.hostile || fish.dead) continue;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
+      if (distance > INJECTOR_KNIFE_RANGE + fish.radius) continue;
+      if (!nearest || distance < nearest.distance) nearest = { fish, distance };
+    }
+    return nearest?.fish ?? null;
+  }
+
   private triggerStunPulse() {
     let stunned = 0;
     for (const fish of this.fish) {
-      if (!fish.hostile || fish.scanned) continue;
+      if (!fish.hostile) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance > STUN_GRENADE_RADIUS) continue;
       fish.stunned = STUN_GRENADE_DURATION;
@@ -2737,12 +3756,15 @@ class DeepdiveScene extends Phaser.Scene {
         broken += 1;
       }
     }
+    const lifeHits = this.damageLifeInRadius(centerX, centerY, TILE * (DYNAMITE_RADIUS_TILES + 1.2), DYNAMITE_LIFE_DAMAGE, 'Dynamite');
     this.terrainDirty = true;
     this.overlay.fillStyle(0xff6f3c, 0.32);
     this.overlay.fillCircle(centerX, centerY, TILE * (DYNAMITE_RADIUS_TILES + 0.55));
     state.status = broken > 0
-      ? `Dynamite blast opened ${broken} block${broken === 1 ? '' : 's'}.`
-      : 'Dynamite detonated, but the rock here would not give.';
+      ? `Dynamite blast opened ${broken} block${broken === 1 ? '' : 's'}${lifeHits > 0 ? ` and hit ${lifeHits} lifeform${lifeHits === 1 ? '' : 's'}` : ''}.`
+      : lifeHits > 0
+        ? `Dynamite shockwave hit ${lifeHits} lifeform${lifeHits === 1 ? '' : 's'}.`
+        : 'Dynamite detonated, but the rock here would not give.';
     this.spawnFloatingText(broken > 0 ? `Blast x${broken}` : 'Dynamite', 0xff8a5c);
     renderHud();
   }
@@ -2784,11 +3806,13 @@ class DeepdiveScene extends Phaser.Scene {
       contacts.push({ x: bargeX, y: bargeY, kind: 'barge', hostile: false, age: 0 });
     }
     for (const fish of this.fish) {
+      if (fish.dead) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance > SONAR_ATTRACT_RADIUS) continue;
-      contacts.push({ x: fish.x, y: fish.y, kind: 'fish', hostile: fish.hostile && !fish.scanned, age: 0 });
+      contacts.push({ x: fish.x, y: fish.y, kind: 'fish', hostile: fish.hostile, age: 0 });
     }
     for (const flora of this.flora) {
+      if (flora.dead) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y);
       if (distance > SONAR_REVEAL_RADIUS_TILES * TILE) continue;
       contacts.push({ x: flora.x, y: flora.y, kind: 'flora', hostile: flora.hazardous, age: 0 });
@@ -2944,6 +3968,40 @@ class DeepdiveScene extends Phaser.Scene {
         ctx.arc(px, py, 7.4, 0, Math.PI * 2);
         ctx.stroke();
       }
+    }
+    const nestRoom = this.hasActiveNestLocator() ? this.nearestOpenNestRoom() : null;
+    if (nestRoom) {
+      const dx = nestRoom.x - this.player.x;
+      const dy = nestRoom.y - this.player.y;
+      const distance = Math.max(1, Math.hypot(dx, dy));
+      const angle = Math.atan2(dy, dx);
+      const rawX = size / 2 + (dx / TILE) * cell;
+      const rawY = size / 2 + (dy / TILE) * cell;
+      const edgeRadius = size * 0.42;
+      const markerX = Phaser.Math.Clamp(rawX, size / 2 - edgeRadius, size / 2 + edgeRadius);
+      const markerY = Phaser.Math.Clamp(rawY, size / 2 - edgeRadius, size / 2 + edgeRadius);
+      const onMap = Math.abs(dx / TILE) <= viewRadius && Math.abs(dy / TILE) <= viewRadius;
+      const px = onMap ? rawX : size / 2 + Math.cos(angle) * edgeRadius;
+      const py = onMap ? rawY : size / 2 + Math.sin(angle) * edgeRadius;
+      ctx.save();
+      ctx.translate(onMap ? markerX : px, onMap ? markerY : py);
+      ctx.rotate(angle);
+      ctx.fillStyle = 'rgba(255, 209, 102, 0.94)';
+      ctx.strokeStyle = 'rgba(255, 79, 100, 0.72)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(12, 0);
+      ctx.lineTo(-7, -7);
+      ctx.lineTo(-4, 0);
+      ctx.lineTo(-7, 7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = 'rgba(255, 209, 102, 0.82)';
+      ctx.font = '700 9px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${Math.round(distance / 6)}m`, size / 2, size - 12);
     }
     ctx.restore();
     ctx.strokeStyle = 'rgba(115, 251, 211, 0.28)';
@@ -3139,7 +4197,7 @@ class DeepdiveScene extends Phaser.Scene {
     const homeDistance = Phaser.Math.Distance.Between(fish.x, fish.y, fish.homeX, fish.homeY);
     const detectionRange = (fish.pattern === 'circle' ? 245 : 205) + fish.radius * 3 + state.biome * 8;
     const leashRange = (fish.pattern === 'circle' ? 390 : 320) + fish.radius * 5;
-    const chaseActive = fish.hostile && !fish.scanned && !this.isAtBoat() && playerDistance < detectionRange && homeDistance < leashRange;
+    const chaseActive = fish.hostile && !this.isAtBoat() && playerDistance < detectionRange && homeDistance < leashRange;
     if (chaseActive) {
       fish.aggro = Math.max(fish.aggro, fish.pattern === 'circle' ? 2.6 : 2);
     } else {
@@ -3149,7 +4207,7 @@ class DeepdiveScene extends Phaser.Scene {
     let targetX = fish.homeX;
     let targetY = fish.homeY;
 
-    if (fish.aggro > 0 && fish.hostile && !fish.scanned) {
+    if (fish.aggro > 0 && fish.hostile) {
       const lead = Phaser.Math.Clamp(playerDistance / 230, 0.12, 0.75);
       const flank = Math.sin(fish.phase * 5.2) * (fish.pattern === 'circle' ? 28 : 18);
       targetX = this.player.x + this.player.vx * lead - (toPlayerY / Math.max(1, playerDistance)) * flank;
@@ -3179,7 +4237,7 @@ class DeepdiveScene extends Phaser.Scene {
     const dx = targetX - fish.x;
     const dy = targetY - fish.y;
     const len = Math.max(1, Math.hypot(dx, dy));
-    const pursuit = fish.aggro > 0 && fish.hostile && !fish.scanned;
+    const pursuit = fish.aggro > 0 && fish.hostile;
     const desiredSpeed = fish.speed * (pursuit ? (fish.pattern === 'circle' ? 1.42 : 1.58) : 1);
     const steering = pursuit ? 4.4 : 2.6;
     fish.vx += (dx / len) * desiredSpeed * delta * steering;
@@ -3217,11 +4275,36 @@ class DeepdiveScene extends Phaser.Scene {
     if (fish.hostile) {
       const damage = Math.round(4 + fish.radius * 0.35 + state.biome * 1.4 + (fish.pattern === 'circle' ? 3 : 0));
       this.applyHullDamage(Math.max(2, damage + impact * 0.018 - state.upgrades.suit), `${fish.species} slammed your helmet.`);
+      if (venomousFish(fish)) this.applyVenom(fish);
+      this.registerPredatorBite(fish);
       this.playFishBite(damage);
     } else {
       state.status = `${fish.species} scattered from the collision.`;
     }
     renderHud();
+  }
+
+  private applyVenom(fish: Fish) {
+    if (state.venom.active) return;
+    state.venom.active = true;
+    state.venom.source = fish.species;
+    state.venom.tick = 0;
+    state.status = `${fish.species} venom entered the suit seals. Return to the barge to purge it.`;
+    this.spawnFloatingText('Venom', 0xb9f27c);
+  }
+
+  private registerPredatorBite(fish: Fish) {
+    if (state.bleed.recentTimer <= 0) state.bleed.recentBites = 0;
+    state.bleed.recentBites += 1;
+    state.bleed.recentTimer = BLEED_RECENT_WINDOW;
+    if (state.bleed.recentBites < BLEED_TRIGGER_BITES) return;
+    state.bleed.active = true;
+    state.bleed.source = fish.species;
+    state.bleed.duration = BLEED_DURATION;
+    state.bleed.stacks = Phaser.Math.Clamp(state.bleed.stacks + 1, 1, 3);
+    state.bleed.recentBites = 0;
+    state.status = `${fish.species} opened a suit bleed. Patch up or let it clot.`;
+    this.spawnFloatingText('Bleeding', 0xff6f7f);
   }
 
   private playFishBite(damage: number) {
@@ -3243,6 +4326,7 @@ class DeepdiveScene extends Phaser.Scene {
     let nearest: ScanTarget | null = null;
     let nearestDistance = range;
     for (const life of [...this.fish, ...this.flora]) {
+      if (life.dead) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, life.x, life.y);
       if (distance < nearestDistance) {
         nearest = life;
@@ -3252,12 +4336,63 @@ class DeepdiveScene extends Phaser.Scene {
     return nearest;
   }
 
+  private updateQuestProgress() {
+    const quest = activeQuest();
+    if (!quest || quest.completed || quest.claimed) return;
+    quest.progress = Phaser.Math.Clamp(questProgressSource(quest) - quest.startValue, 0, quest.target);
+    if (quest.progress < quest.target || quest.kind === 'nest') {
+      if (quest.kind === 'nest' && this.hasActiveNestLocator()) this.drawSonarMap();
+      return;
+    }
+    this.completeQuest(quest, `${quest.title} complete. Return to the barge to collect ${quest.reward.toLocaleString()} credits.`);
+  }
+
+  private completeQuest(quest: Quest, status: string) {
+    if (quest.completed || quest.claimed) return;
+    quest.completed = true;
+    quest.progress = quest.target;
+    state.status = status;
+    this.spawnFloatingText('Quest complete', 0xffd166);
+    renderHud();
+    this.drawSonarMap();
+  }
+
+  private completeNestQuest(room: SpecialRoom) {
+    const quest = activeQuest();
+    if (!quest || quest.kind !== 'nest' || quest.completed || quest.claimed) return;
+    quest.progress = 1;
+    this.completeQuest(quest, `Nest extermination confirmed near ${Math.round(room.y / 6)} m. Return to the barge for contract payout.`);
+  }
+
+  private hasActiveNestLocator() {
+    const quest = activeQuest();
+    return Boolean(quest && quest.kind === 'nest' && quest.accepted && !quest.completed && !quest.claimed);
+  }
+
+  private nearestOpenNestRoom() {
+    let nearest: { room: SpecialRoom; distance: number } | null = null;
+    for (const room of this.specialRooms) {
+      if (room.kind !== 'nest' || room.rewardClaimed || room.failed) continue;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, room.x, room.y);
+      if (!nearest || distance < nearest.distance) nearest = { room, distance };
+    }
+    return nearest?.room ?? null;
+  }
+
   private updateSystems(delta: number) {
     state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
     state.maxDepth = Math.max(state.maxDepth, state.depth);
     const wasAtBoat = state.atBoat;
     state.atBoat = state.docked || this.isAtBoat();
     if (state.atBoat) {
+      if (state.venom.active) {
+        clearVenom();
+        state.status = 'Barge medics purged the venom from your suit seals.';
+      }
+      if (state.bleed.active || state.bleed.recentBites > 0) {
+        clearBleed();
+        state.status = 'Barge medics sealed the suit bleed.';
+      }
       if (!wasAtBoat && state.started) {
         state.docked = true;
         this.player.x = WORLD_W * TILE * 0.5;
@@ -3275,6 +4410,7 @@ class DeepdiveScene extends Phaser.Scene {
       const sale = cargoSaleValue();
       if (sale > 0) {
         state.credits += sale;
+        state.oreSoldCredits += sale;
         state.status = `Sold cargo for ${sale} credits.`;
         state.cargo = state.cargo.filter((item) => item.value <= 0);
         clampSelectedCargoIndex();
@@ -3286,6 +4422,27 @@ class DeepdiveScene extends Phaser.Scene {
         if (state.activeSub.oxygen <= 0) state.oxygen -= oxygenDrain() * 0.8 * delta;
       } else {
         state.oxygen -= oxygenDrain() * delta;
+      }
+      if (state.venom.active) {
+        state.venom.tick += delta;
+        this.applyHullDamage(VENOM_HULL_DRAIN * delta, `${state.venom.source} venom is draining suit integrity.`);
+        if (state.venom.tick >= VENOM_TICK_SECONDS) {
+          state.venom.tick = 0;
+          this.spawnFloatingText('Venom damage', 0xb9f27c);
+        }
+      }
+      if (state.bleed.recentTimer > 0) {
+        state.bleed.recentTimer = Math.max(0, state.bleed.recentTimer - delta);
+        if (state.bleed.recentTimer <= 0) state.bleed.recentBites = 0;
+      }
+      if (state.bleed.active) {
+        state.bleed.duration = Math.max(0, state.bleed.duration - delta);
+        this.applyHullDamage(BLEED_HULL_DRAIN * Math.max(1, state.bleed.stacks) * delta, `${state.bleed.source} bite wound is bleeding.`);
+        if (state.bleed.duration <= 0) {
+          clearBleed();
+          state.status = 'Suit bleed clotted. Hull loss stabilized.';
+          this.spawnFloatingText('Bleed clotted', 0xffd166);
+        }
       }
     }
     checkOxygenWarnings();
@@ -3311,7 +4468,12 @@ class DeepdiveScene extends Phaser.Scene {
       }
       state.hull = 0;
       state.lost = true;
+      state.paused = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.radioOpen = false;
       state.status = `Helmet breached at ${state.maxDepth} m. Press R to restart.`;
+      renderHud();
     }
   }
 
@@ -3319,6 +4481,7 @@ class DeepdiveScene extends Phaser.Scene {
     const sale = cargoSaleValue();
     if (sale > 0) {
       state.credits += sale;
+      state.oreSoldCredits += sale;
       state.cargo = state.cargo.filter((item) => item.value <= 0);
       clampSelectedCargoIndex();
     }
@@ -3335,6 +4498,8 @@ class DeepdiveScene extends Phaser.Scene {
     this.player.vx = 0;
     this.player.vy = 0;
     resetOxygenWarnings();
+    clearVenom();
+    clearBleed();
     state.status = sale > 0
       ? `Unhardcore recovery. Cargo banked for ${sale} credits.`
       : 'Unhardcore recovery. The barge winch dragged you back breathing.';
@@ -3359,10 +4524,13 @@ class DeepdiveScene extends Phaser.Scene {
     camera.setBackgroundColor(depthColor(state.depth));
     this.drawParallax(camera);
     this.drawWorld(camera);
+    this.drawSpecialRooms(camera);
     this.drawBoat();
     this.drawLooseItems(camera);
     this.drawHazards();
     this.drawBobbits(camera);
+    this.drawNestEggs(camera);
+    this.drawLarvae(camera);
     this.drawFlora(camera);
     this.drawFish(camera);
     this.drawSub();
@@ -3491,6 +4659,32 @@ class DeepdiveScene extends Phaser.Scene {
     this.actors.lineBetween(x, BARGE_DOCK_Y, x, BARGE_DOCKING_ZONE_Y);
   }
 
+  private drawSpecialRooms(camera: Phaser.Cameras.Scene2D.Camera) {
+    const view = camera.worldView;
+    for (const room of this.specialRooms) {
+      if (room.x + room.rx < view.x || room.x - room.rx > view.right || room.y + room.ry < view.y || room.y - room.ry > view.bottom) continue;
+      if (room.kind === 'biolume') {
+        const pulse = 0.58 + Math.sin(performance.now() * 0.0024 + room.x * 0.01) * 0.12;
+        this.actors.fillStyle(0x1bcbd8, 0.07 * pulse);
+        this.actors.fillEllipse(room.x, room.y, room.rx * 1.82, room.ry * 1.72);
+        this.actors.lineStyle(2, 0x73fbd3, 0.18 * pulse);
+        this.actors.strokeEllipse(room.x, room.y, room.rx * 1.62, room.ry * 1.45);
+        for (let i = 0; i < 9; i += 1) {
+          const angle = (i / 9) * Math.PI * 2 + performance.now() * 0.0004;
+          const x = room.x + Math.cos(angle) * room.rx * (0.26 + (i % 3) * 0.18);
+          const y = room.y + Math.sin(angle) * room.ry * (0.28 + (i % 2) * 0.18);
+          this.actors.fillStyle(i % 2 === 0 ? 0x73fbd3 : 0xf48cff, 0.22);
+          this.actors.fillCircle(x, y, scaledEntity(3 + (i % 3)));
+        }
+      } else {
+        this.actors.fillStyle(0x2a0710, 0.12);
+        this.actors.fillEllipse(room.x, room.y, room.rx * 1.45, room.ry * 1.2);
+        this.actors.lineStyle(1, 0xff4f64, room.rewardClaimed ? 0.12 : 0.28);
+        this.actors.strokeEllipse(room.x, room.y, room.rx * 1.36, room.ry * 1.08);
+      }
+    }
+  }
+
   private drawHazards() {
     const s = ENTITY_SCALE;
     for (const hazard of this.hazards) {
@@ -3505,6 +4699,60 @@ class DeepdiveScene extends Phaser.Scene {
       if (pulse > 0.45) {
         this.actors.lineStyle(1, 0xff8a5c, pulse * 0.32);
         this.actors.strokeEllipse(hazard.x, hazard.y + 4 * s, hazard.radius * 1.25, hazard.radius * 0.34);
+      }
+    }
+  }
+
+  private drawNestEggs(camera: Phaser.Cameras.Scene2D.Camera) {
+    const view = camera.worldView;
+    for (const egg of this.nestEggs) {
+      if (egg.state === 'destroyed') {
+        egg.sprite?.setVisible(false);
+        continue;
+      }
+      if (egg.x < view.x - 80 || egg.x > view.right + 80 || egg.y < view.y - 80 || egg.y > view.bottom + 80) {
+        egg.sprite?.setVisible(false);
+        continue;
+      }
+      const frame = egg.state === 'hatched'
+        ? 'nest-egg-hatched'
+        : egg.state === 'hatching'
+          ? 'nest-egg-hatching'
+          : `nest-egg-${Math.floor(egg.phase * 1.4) % 4}`;
+      const shake = egg.state === 'hatching' ? Math.sin(egg.phase * 42) * scaledEntity(2) : 0;
+      const flash = egg.state === 'hatching' ? 0.72 + Math.sin(egg.phase * 24) * 0.24 : 0.92;
+      egg.sprite
+        ?.setTexture(frame)
+        .setVisible(true)
+        .setAlpha(flash)
+        .setPosition(egg.x + shake, egg.y)
+        .setRotation(egg.state === 'hatching' ? Math.sin(egg.phase * 38) * 0.08 : 0);
+      fitImageWidth(egg.sprite, egg.radius * 4.2);
+      if (egg.state === 'hatching') {
+        this.actors.lineStyle(2, 0xff4f64, 0.68);
+        this.actors.strokeCircle(egg.x, egg.y - scaledEntity(4), egg.radius + scaledEntity(7 + Math.sin(egg.phase * 18) * 3));
+      }
+    }
+  }
+
+  private drawLarvae(camera: Phaser.Cameras.Scene2D.Camera) {
+    const view = camera.worldView;
+    for (const larva of this.larvae) {
+      if (larva.x < view.x - 60 || larva.x > view.right + 60 || larva.y < view.y - 60 || larva.y > view.bottom + 60) {
+        larva.sprite?.setVisible(false);
+        continue;
+      }
+      const frame = Math.floor(larva.phase * 9) % 3;
+      larva.sprite
+        ?.setTexture(`nest-larva-${frame}`)
+        .setVisible(true)
+        .setAlpha(larva.latched ? 1 : 0.88)
+        .setPosition(larva.x, larva.y)
+        .setRotation(Math.atan2(larva.vy, larva.vx));
+      fitImageWidth(larva.sprite, larva.radius * (larva.latched ? 7.2 : 6));
+      if (larva.latched) {
+        this.actors.lineStyle(1, 0xff4f64, 0.45);
+        this.actors.strokeCircle(larva.x, larva.y, larva.radius + scaledEntity(4));
       }
     }
   }
@@ -3543,6 +4791,10 @@ class DeepdiveScene extends Phaser.Scene {
 
   private drawFish(camera: Phaser.Cameras.Scene2D.Camera) {
     for (const fish of this.fish) {
+      if (fish.dead) {
+        fish.sprite?.setVisible(false);
+        continue;
+      }
       const alpha = this.fishVisibilityAlpha(fish, camera);
       if (alpha <= 0) {
         fish.sprite?.setVisible(false);
@@ -3552,7 +4804,7 @@ class DeepdiveScene extends Phaser.Scene {
       const bodyAlpha = fish.scanned ? Math.max(alpha, 0.9) : alpha;
       const threatDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       const movingTowardPlayer = (fish.vx * (this.player.x - fish.x) + fish.vy * (this.player.y - fish.y)) > 0;
-      const attacking = fish.hostile && !fish.scanned && fish.aggro > 0 && movingTowardPlayer && threatDistance < 220;
+      const attacking = fish.hostile && fish.aggro > 0 && movingTowardPlayer && threatDistance < 220;
       const threat = attacking ? 1 - Phaser.Math.Clamp((threatDistance - 52) / 118, 0, 1) : 0;
       const desiredWidth = fish.radius * (fish.hostile ? 3.8 : fish.pattern === 'circle' || fish.pattern === 'glide' ? 3.4 : 3);
       const pose = swimPose(angle, fish.facingSign);
@@ -3566,6 +4818,10 @@ class DeepdiveScene extends Phaser.Scene {
         .setFlipX(pose.flipX)
         .setRotation(pose.rotation);
       fitImageWidth(fish.sprite, desiredWidth);
+      if (fish.hurtFlash > 0) {
+        this.actors.lineStyle(2, 0xfff7df, fish.hurtFlash * bodyAlpha);
+        this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(5));
+      }
       if (fish.stunned > 0) {
         const pulse = 0.5 + Math.sin(fish.phase * 9) * 0.18;
         this.actors.lineStyle(2, 0x8ee7f4, bodyAlpha * pulse);
@@ -3599,6 +4855,10 @@ class DeepdiveScene extends Phaser.Scene {
   private drawFlora(camera: Phaser.Cameras.Scene2D.Camera) {
     const view = camera.worldView;
     for (const flora of this.flora) {
+      if (flora.dead) {
+        flora.sprite?.setVisible(false);
+        continue;
+      }
       if (flora.x < view.x - 60 || flora.x > view.right + 60 || flora.y < view.y - 60 || flora.y > view.bottom + 60) {
         flora.sprite?.setVisible(false);
         continue;
@@ -3615,6 +4875,10 @@ class DeepdiveScene extends Phaser.Scene {
         .setPosition(flora.x + sway, flora.y)
         .setRotation(Math.sin(flora.phase * 1.4) * 0.035)
         .setOrigin(0.5, 0.82);
+      if (flora.hurtFlash > 0) {
+        this.actors.lineStyle(2, 0xfff7df, flora.hurtFlash * alpha);
+        this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(5));
+      }
       if (flora.hazardous) {
         this.actors.lineStyle(1, 0xff4f64, 0.35 + (flora.rare ? 0.25 : 0));
         this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(5) + Math.sin(flora.phase * 5) * scaledEntity(2));
@@ -3830,6 +5094,17 @@ class DeepdiveScene extends Phaser.Scene {
       });
     }
 
+    for (const room of this.specialRooms) {
+      if (room.kind !== 'biolume') continue;
+      const dy = (sampleY - room.y) / room.ry;
+      if (Math.abs(dy) >= 1) continue;
+      const halfWidth = room.rx * Math.sqrt(1 - dy * dy) * 1.04;
+      intervals.push({
+        left: Phaser.Math.Clamp(room.x - halfWidth, left, right),
+        right: Phaser.Math.Clamp(room.x + halfWidth, left, right),
+      });
+    }
+
     const intersections: number[] = [];
     for (let i = 0; i < beam.length; i += 1) {
       const a = beam[i];
@@ -3885,7 +5160,7 @@ class DeepdiveScene extends Phaser.Scene {
         height: WORLD_H,
         bands: [],
         reachable: { cells: 0, waterCoverage: 0, deepestTileY: 0, deepestMeters: 0 },
-        entities: { fish: 0, hostileFish: 0, flora: 0, hazardousFlora: 0, vents: 0, bobbits: 0 },
+        entities: { fish: 0, hostileFish: 0, flora: 0, hazardousFlora: 0, vents: 0, bobbits: 0, rooms: 0, eggs: 0, larvae: 0 },
       };
     }
     const bandDefs = [
@@ -3933,6 +5208,13 @@ class DeepdiveScene extends Phaser.Scene {
         counts,
       };
     });
+    const oasisSpecies = new Set(['Oxygen Bloom', 'Lumen Fern', 'Lumen Nodule']);
+    const floatingOasisProps = this.flora.filter((flora) => {
+      if (!oasisSpecies.has(flora.species)) return false;
+      const tx = Math.floor(flora.x / TILE);
+      const ty = Math.floor(flora.y / TILE);
+      return !tiles[this.getTile(tx, ty)].solid && !tiles[this.getTile(tx, ty + 1)].solid;
+    }).length;
     return {
       width: WORLD_W,
       height: WORLD_H,
@@ -3945,6 +5227,12 @@ class DeepdiveScene extends Phaser.Scene {
         hazardousFlora: this.flora.filter((flora) => flora.hazardous).length,
         vents: this.hazards.length,
         bobbits: this.bobbits.length,
+        rooms: this.specialRooms.length,
+        biolumeRooms: this.specialRooms.filter((room) => room.kind === 'biolume').length,
+        nestRooms: this.specialRooms.filter((room) => room.kind === 'nest').length,
+        floatingOasisProps,
+        eggs: this.nestEggs.filter((egg) => egg.state !== 'destroyed').length,
+        larvae: this.larvae.length,
       },
     };
   }
@@ -4069,8 +5357,114 @@ function scaledEntity(value: number) {
   return value * ENTITY_SCALE;
 }
 
+function pointInRoom(x: number, y: number, room: SpecialRoom, scale = 1) {
+  const nx = (x - room.x) / (room.rx * scale);
+  const ny = (y - room.y) / (room.ry * scale);
+  return nx * nx + ny * ny <= 1;
+}
+
+function venomousFish(fish: Fish) {
+  return fish.species === 'Blue-ring Octopus';
+}
+
+function clearVenom() {
+  state.venom.active = false;
+  state.venom.source = '';
+  state.venom.tick = 0;
+}
+
+function clearBleed() {
+  state.bleed.active = false;
+  state.bleed.source = '';
+  state.bleed.duration = 0;
+  state.bleed.stacks = 0;
+  state.bleed.recentBites = 0;
+  state.bleed.recentTimer = 0;
+}
+
 function shopItem(id: ShopItem['id']) {
   return shopItems.find((item) => item.id === id)!;
+}
+
+function activeQuest() {
+  return state.questBoard.find((quest) => quest.id === state.activeQuestId && quest.accepted && !quest.claimed) ?? null;
+}
+
+function questProgressSource(quest: Quest) {
+  if (quest.kind === 'depth') return state.maxDepth;
+  if (quest.kind === 'scan') return state.scannedSpecies.size;
+  if (quest.kind === 'ore') return state.oreSoldCredits;
+  if (quest.kind === 'nest') return quest.progress;
+  return 0;
+}
+
+function generateQuestBoard(hasNest: boolean): Quest[] {
+  const biome = state.biome;
+  const depthTarget = Math.round(Phaser.Math.Linear(360, 1380, biome / 4) + hash(3, biome, seed) * 220);
+  const scanTarget = 2 + biome + Math.floor(hash(5, biome, seed) * 3);
+  const oreTarget = Math.round((620 + biome * 520 + hash(7, biome, seed) * 380) / 50) * 50;
+  const quests: Quest[] = [
+    {
+      id: `depth-${seed}-${biome}`,
+      kind: 'depth',
+      title: 'Pressure Line Survey',
+      client: 'Barge Cartography',
+      text: `Reach ${depthTarget} m and transmit a pressure profile from this trench.`,
+      reward: 520 + biome * 420,
+      target: depthTarget,
+      progress: 0,
+      startValue: 0,
+      accepted: false,
+      completed: false,
+      claimed: false,
+    },
+    {
+      id: `scan-${seed}-${biome}`,
+      kind: 'scan',
+      title: 'Live Catalog Sweep',
+      client: 'Marine Biology Desk',
+      text: `Scan ${scanTarget} new lifeform${scanTarget === 1 ? '' : 's'} before leaving the claim.`,
+      reward: 640 + biome * 460,
+      target: scanTarget,
+      progress: 0,
+      startValue: 0,
+      accepted: false,
+      completed: false,
+      claimed: false,
+    },
+    {
+      id: `ore-${seed}-${biome}`,
+      kind: 'ore',
+      title: 'Ore Purchase Order',
+      client: 'Geology Buyer',
+      text: `Sell ${oreTarget.toLocaleString()} credits of recovered ore to satisfy an urgent assay order.`,
+      reward: 780 + biome * 520,
+      target: oreTarget,
+      progress: 0,
+      startValue: 0,
+      accepted: false,
+      completed: false,
+      claimed: false,
+    },
+  ];
+  if (hasNest && hash(11, biome, seed) < 0.46 + biome * 0.08) {
+    quests.push({
+      id: `nest-${seed}-${biome}`,
+      kind: 'nest',
+      title: 'Rare: Nest Extermination',
+      client: 'Corporate Hazard Office',
+      text: 'Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.',
+      reward: 2400 + biome * 1350,
+      target: 1,
+      progress: 0,
+      startValue: 0,
+      accepted: false,
+      completed: false,
+      claimed: false,
+      rare: true,
+    });
+  }
+  return quests.sort((a, b) => hash(a.id.length, b.id.length, seed) - 0.5);
 }
 
 function createConsumableItem(item: ShopItem): CargoItem {
@@ -4079,7 +5473,7 @@ function createConsumableItem(item: ShopItem): CargoItem {
     name: item.name,
     value: 0,
     color: item.color,
-    kind: 'consumable',
+    kind: item.kind ?? 'consumable',
     icon: item.icon,
   };
 }
@@ -4177,6 +5571,16 @@ function loadGeneratedAssets(scene: Phaser.Scene) {
   scene.load.image('flora-shallow-anemone', assetPath('flora-shallow-anemone'));
   scene.load.image('flora-deep-tube', assetPath('flora-deep-tube'));
   scene.load.image('flora-deep-coral', assetPath('flora-deep-coral'));
+  scene.load.image('flora-oxygen-kelp', assetPath('flora-oxygen-kelp'));
+  scene.load.image('flora-oxygen-bulb', assetPath('flora-oxygen-bulb'));
+  scene.load.image('flora-biolume-tall', assetPath('flora-biolume-tall'));
+  scene.load.image('biolume-rock-0', assetPath('biolume-rock-0'));
+  scene.load.image('biolume-rock-1', assetPath('biolume-rock-1'));
+  scene.load.image('biolume-crystal', assetPath('biolume-crystal'));
+  for (let i = 0; i < 4; i += 1) scene.load.image(`nest-egg-${i}`, assetPath(`nest-egg-${i}`));
+  scene.load.image('nest-egg-hatching', assetPath('nest-egg-hatching'));
+  scene.load.image('nest-egg-hatched', assetPath('nest-egg-hatched'));
+  for (let i = 0; i < 3; i += 1) scene.load.image(`nest-larva-${i}`, assetPath(`nest-larva-${i}`));
   scene.load.image('barge-side', assetPath('barge-side'));
   scene.load.image('barge-platform', assetPath('barge-platform'));
   scene.load.image('vent-base', assetPath('vent-base'));
@@ -4590,6 +5994,14 @@ function floraRarity(species?: FloraSpecies): ScanRarity {
   return 'common';
 }
 
+function fishMaxHp(species: FishSpecies) {
+  return Math.round(18 + species.radius * (species.hostile ? 2.45 : 1.25) + state.biome * (species.hostile ? 6 : 2.5));
+}
+
+function floraMaxHp(species: FloraSpecies) {
+  return Math.round(12 + species.radius * (species.hazardous ? 2.1 : 1.25) + (species.rare ? 18 : 0));
+}
+
 function fishSpeciesByName(name: string) {
   const current = biomeFish[state.biome].find((species) => species.species === name);
   if (current) return current;
@@ -4809,11 +6221,14 @@ function restart(scene: DeepdiveScene) {
   state.fuel = fuelMax();
   state.depth = 0;
   state.maxDepth = 0;
+  state.oreSoldCredits = 0;
   state.cargo = [];
   state.selectedCargoIndex = 0;
   state.sonarRevealed.clear();
   state.sonarContacts = [];
   resetOxygenWarnings();
+  clearVenom();
+  clearBleed();
   state.scannedSpecies.clear();
   state.won = false;
   state.lost = false;
@@ -4823,6 +6238,8 @@ function restart(scene: DeepdiveScene) {
   state.logbookOpen = false;
   state.cargoOpen = false;
   state.bargeTab = 'services';
+  state.questBoard = [];
+  state.activeQuestId = '';
   state.radioMessages = [];
   state.radioIndex = 0;
   state.radioOpen = false;
@@ -4881,6 +6298,11 @@ function renderHud() {
   setStableHtml(titleScreen, state.started ? '' : titlePanel());
   const cargoValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
   const sub = state.pilotingSub ? state.activeSub : null;
+  const statusFlags = [
+    state.venom.active ? `VENOMED: ${state.venom.source} toxin is draining hull integrity.` : '',
+    state.bleed.active ? `BLEEDING x${state.bleed.stacks}: suit integrity is leaking for ${Math.ceil(state.bleed.duration)}s.` : '',
+  ].filter(Boolean);
+  const statusText = statusFlags.length ? `${statusFlags.join(' ')} ${state.status}` : state.status;
   gauges.innerHTML = `
     <div class="readout">
       <div><strong>${state.credits}</strong><span>Credits</span></div>
@@ -4895,7 +6317,7 @@ function renderHud() {
     ${subHatchControl()}
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
-    <p class="status">${state.status}</p>
+    <p class="status ${state.venom.active || state.bleed.active ? 'is-venomed' : ''}">${statusText}</p>
   `;
   renderGameOver(app);
   const bargeOpen = state.started && state.atBoat && !radioActive && !state.lost && !state.won;
@@ -5256,6 +6678,9 @@ function bindUiEvents(app: HTMLDivElement) {
   app.addEventListener('pointerdown', (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
+    if (target.closest('.hud, .barge-menu, .logbook, .pause-menu, .radio-dialogue, .title-screen, .game-over')) {
+      event.stopPropagation();
+    }
     if (state.radioOpen && state.started && !state.lost && !state.won) {
       const radioHit = target.closest<HTMLElement>('#radio-dialogue.is-open');
       if (radioHit) {
@@ -5345,6 +6770,18 @@ function bindUiEvents(app: HTMLDivElement) {
     if (buyItemButton && !buyItemButton.disabled) {
       event.preventDefault();
       gameScene()?.buyShopItem(buyItemButton.dataset.buyItem as ShopItem['id']);
+      return;
+    }
+    const acceptQuestButton = target.closest<HTMLButtonElement>('button[data-accept-quest]');
+    if (acceptQuestButton && !acceptQuestButton.disabled) {
+      event.preventDefault();
+      gameScene()?.acceptQuest(acceptQuestButton.dataset.acceptQuest ?? '');
+      return;
+    }
+    const claimQuestButton = target.closest<HTMLButtonElement>('button[data-claim-quest]');
+    if (claimQuestButton && !claimQuestButton.disabled) {
+      event.preventDefault();
+      gameScene()?.claimQuest(claimQuestButton.dataset.claimQuest ?? '');
       return;
     }
     const subBuyButton = target.closest<HTMLButtonElement>('button[data-buy-sub]');
@@ -5566,6 +7003,8 @@ function menuButtonKey(button: HTMLButtonElement) {
     button.dataset.upgrade ??
     button.dataset.buySub ??
     button.dataset.buyItem ??
+    button.dataset.acceptQuest ??
+    button.dataset.claimQuest ??
     button.dataset.buyFuel ??
     button.dataset.selectCargo ??
     (button.dataset.subHatch !== undefined ? 'sub-hatch' : undefined) ??
@@ -5588,16 +7027,17 @@ function bargeMenuPanel() {
       <button class="${state.bargeTab === 'items' ? 'is-active' : ''}" data-barge-tab="items" data-focus-key="barge-items">Items</button>
       <button class="${state.bargeTab === 'upgrades' ? 'is-active' : ''}" data-barge-tab="upgrades" data-focus-key="barge-upgrades">Upgrades</button>
       <button class="${state.bargeTab === 'subs' ? 'is-active' : ''}" data-barge-tab="subs" data-focus-key="barge-subs">Subs</button>
+      <button class="${state.bargeTab === 'quests' ? 'is-active' : ''}" data-barge-tab="quests" data-focus-key="barge-quests">Quests</button>
       <button class="dive-button" data-dive-from-barge data-focus-key="barge-dive">Dive</button>
     </div>
     <div class="shop-title">
       <div>
         <span>Barge Dock</span>
-        <strong>${state.bargeTab === 'upgrades' ? 'Upgrade console' : state.bargeTab === 'subs' ? 'Submersible bay' : state.bargeTab === 'items' ? 'Consumables market' : 'Refit and resupply'}</strong>
+        <strong>${state.bargeTab === 'upgrades' ? 'Upgrade console' : state.bargeTab === 'subs' ? 'Submersible bay' : state.bargeTab === 'items' ? 'Consumables market' : state.bargeTab === 'quests' ? 'Contract board' : 'Refit and resupply'}</strong>
       </div>
       <span>${state.scannedSpecies.size}/${lifeCatalogTotal()} scans</span>
     </div>
-    ${state.bargeTab === 'upgrades' ? upgradeTabPanel() : state.bargeTab === 'subs' ? subShopPanel() : state.bargeTab === 'items' ? itemShopPanel() : bargeServicesPanel()}
+    ${state.bargeTab === 'upgrades' ? upgradeTabPanel() : state.bargeTab === 'subs' ? subShopPanel() : state.bargeTab === 'items' ? itemShopPanel() : state.bargeTab === 'quests' ? questTabPanel() : bargeServicesPanel()}
   `;
 }
 
@@ -5631,8 +7071,8 @@ function itemShopPanel() {
 }
 
 function itemShopCard(item: ShopItem) {
-  const disabled = state.credits < item.cost || state.cargo.length >= cargoCapacity();
   const owned = state.cargo.filter((cargo) => cargo.id === item.id).length;
+  const disabled = state.credits < item.cost || state.cargo.length >= cargoCapacity() || (item.kind === 'tool' && owned > 0);
   return `
     <article class="item-shop-card">
       <div class="item-shop-card__icon">
@@ -5643,7 +7083,59 @@ function itemShopCard(item: ShopItem) {
         <span>${item.text}</span>
       </div>
       <small>${owned} loaded</small>
-      <button data-buy-item="${item.id}" data-focus-key="buy-${item.id}" ${disabled ? 'disabled' : ''}>${item.cost.toLocaleString()}c</button>
+      <button data-buy-item="${item.id}" data-focus-key="buy-${item.id}" ${disabled ? 'disabled' : ''}>${item.kind === 'tool' && owned > 0 ? 'Loaded' : `${item.cost.toLocaleString()}c`}</button>
+    </article>
+  `;
+}
+
+function questTabPanel() {
+  const active = activeQuest();
+  return `
+    <section class="quest-board">
+      <div class="quest-board__header">
+        <div>
+          <span>Available contracts</span>
+          <strong>${active ? active.title : 'No active contract'}</strong>
+        </div>
+        <span>${state.questBoard.filter((quest) => quest.claimed).length}/${state.questBoard.length} paid</span>
+      </div>
+      <div class="quest-list">
+        ${state.questBoard.map((quest) => questCard(quest, active)).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function questCard(quest: Quest, active: Quest | null) {
+  const isActive = active?.id === quest.id;
+  const progress = Math.min(quest.target, quest.progress);
+  const progressLabel = quest.kind === 'nest'
+    ? quest.completed ? 'Nest cleared' : quest.accepted ? 'Locator active' : 'Not accepted'
+    : `${Math.floor(progress).toLocaleString()}/${quest.target.toLocaleString()}`;
+  const percent = quest.target > 0 ? Phaser.Math.Clamp(progress / quest.target, 0, 1) : 0;
+  const canAccept = !quest.accepted && !quest.claimed && !active;
+  const canClaim = quest.completed && !quest.claimed;
+  return `
+    <article class="quest-card ${quest.rare ? 'is-rare' : ''} ${isActive ? 'is-active' : ''}">
+      <div class="quest-card__top">
+        <div>
+          <span>${quest.rare ? 'Rare contract' : quest.client}</span>
+          <strong>${quest.title}</strong>
+        </div>
+        <em>${quest.reward.toLocaleString()}c</em>
+      </div>
+      <p>${quest.text}</p>
+      <div class="quest-progress" aria-label="${progressLabel}">
+        <i style="width: ${Math.round(percent * 100)}%"></i>
+      </div>
+      <div class="quest-card__actions">
+        <span>${progressLabel}</span>
+        ${quest.claimed
+          ? '<button disabled>Paid</button>'
+          : canClaim
+            ? `<button data-claim-quest="${quest.id}" data-focus-key="claim-${quest.id}">Claim</button>`
+            : `<button data-accept-quest="${quest.id}" data-focus-key="quest-${quest.id}" ${canAccept ? '' : 'disabled'}>${quest.accepted ? 'Active' : 'Accept'}</button>`}
+      </div>
     </article>
   `;
 }
@@ -5780,7 +7272,7 @@ function rarityRank(rarity: ScanRarity) {
 
 function fishLogbookInfo(species: FishSpecies) {
   const temperament = species.hostile
-    ? 'Will pursue diver noise and light when unscanned.'
+    ? 'Will pursue diver noise, light, and close movement even after cataloging.'
     : 'Generally non-aggressive unless startled by close contact.';
   const depth = `${species.minY}-${species.maxY} m survey band`;
   const motion = species.pattern === 'school'
