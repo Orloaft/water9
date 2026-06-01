@@ -6,6 +6,7 @@ import { state,ui } from './state';
 import { rng } from './rng';
 import { activeQuest,ambientDarknessOpacity,animatedFrame,axis,bargeSolidAtWorld,bargeUpgradeCost,cargoCapacity,cargoIconForTile,cargoKindForTile,cargoSaleValue,checkOxygenWarnings,clampSelectedCargoIndex,clearBleed,clearVenom,createConsumableItem,createSubVehicle,currentApexSpecies,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishAssetKey,fishFrameCount,fishMaxHp,fitImageHeight,fitImageWidth,floraAssetKey,floraMaxHp,fuelMax,fuelRefillCost,generateQuestBoard,generateTile,hash,hullMax,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,loadGeneratedAssets,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenDrain,oxygenMax,parallaxAlphas,parallaxPrefix,parallaxSpeeds,pointInRoom,predatorBiteCooldown,questProgressSource,rarityColor,rarityLabel,refillAtBoat,resetOxygenWarnings,restart,scaledDepthPx,scaledEntity,scannableRarity,scanReward,shopItem,sonarKey,sonarTileColor,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange,subRepairCost,swimPose,swimTopSpeed,swimUpgradeBonus,tileTextureKey,updateFacingFromVelocity,upgradeCost,upgradeMax,veinRuleAt,veinRulesForBiome,venomousFish } from './helpers';
 import { activateMenuButton,activeMenuButtons,advanceRadioDialogue,availableUpgrades,biomeName,canDiveFromBargeShortcut,clearControllerFocus,focusMenuButton,focusUiButton,menuButtonKey,nextMenuButton,openingRadioMessages,renderHud,roundMetric,toggleLogbook,unlockAchievement,updateFpsTracker } from './hud';
+import * as sonarNs from './scene-sonar';
 import * as economyNs from './scene-economy';
 import * as playtestNs from './scene-playtest';
 import * as subNs from './scene-sub';
@@ -503,79 +504,6 @@ export class DeepdiveScene extends Phaser.Scene {
     return points;
   }
 
-  sonarPing() {
-    if (this.player.sonarCooldown > 0 || state.lost || state.won || !state.started) return;
-    const sub = state.pilotingSub ? state.activeSub : null;
-    const fuelReserve = sub ? sub.fuel : state.fuel;
-    if (fuelReserve < SONAR_FUEL_COST) {
-      state.status = 'Not enough fuel for a sonar pulse.';
-      renderHud();
-      return;
-    }
-    if (sub) sub.fuel = Math.max(0, sub.fuel - SONAR_FUEL_COST);
-    else state.fuel = Math.max(0, state.fuel - SONAR_FUEL_COST);
-    this.player.sonarCooldown = SONAR_COOLDOWN;
-    this.playSfx(audioKeys.sonar, audioVolumes.sonar);
-    this.sonarPings.push({ x: this.player.x, y: this.player.y, age: 0, life: 0.9 });
-    this.revealSonarAtPlayer(SONAR_REVEAL_RADIUS_TILES);
-    this.captureSonarContacts();
-    let attracted = 0;
-    for (const fish of this.fish) {
-      if (!fish.hostile) continue;
-      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
-      if (distance > SONAR_ATTRACT_RADIUS) continue;
-      fish.aggro = Math.max(fish.aggro, 4.4);
-      fish.homeX = Phaser.Math.Linear(fish.homeX, this.player.x, 0.12);
-      fish.homeY = Phaser.Math.Linear(fish.homeY, this.player.y, 0.12);
-      attracted += 1;
-    }
-    this.drawSonarMap();
-    state.status = attracted > 0
-      ? `Sonar ping mapped nearby stone and drew ${attracted} hostile signal${attracted === 1 ? '' : 's'} closer.`
-      : 'Sonar ping mapped nearby stone. No hostile signals answered.';
-    renderHud();
-    this.drawSonarMap();
-  }
-
-  captureSonarContacts() {
-    const contacts: SonarContact[] = [];
-    const bargeX = WORLD_W * TILE * 0.5;
-    const bargeY = BARGE_DOCK_Y;
-    if (Phaser.Math.Distance.Between(this.player.x, this.player.y, bargeX, bargeY) <= SONAR_REVEAL_RADIUS_TILES * TILE) {
-      contacts.push({ x: bargeX, y: bargeY, kind: 'barge', hostile: false, age: 0 });
-    }
-    for (const fish of this.fish) {
-      if (fish.dead) continue;
-      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
-      if (distance > SONAR_ATTRACT_RADIUS) continue;
-      contacts.push({ x: fish.x, y: fish.y, kind: 'fish', hostile: fish.hostile, age: 0 });
-    }
-    for (const flora of this.flora) {
-      if (flora.dead) continue;
-      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y);
-      if (distance > SONAR_REVEAL_RADIUS_TILES * TILE) continue;
-      contacts.push({ x: flora.x, y: flora.y, kind: 'flora', hostile: flora.hazardous, age: 0 });
-    }
-    state.sonarContacts = contacts.slice(-48);
-  }
-
-  revealSonarAtPlayer(radiusTiles: number) {
-    this.revealSonarAtWorld(this.player.x, this.player.y, radiusTiles);
-  }
-
-  revealSonarAtWorld(worldX: number, worldY: number, radiusTiles: number) {
-    const cx = Math.floor(worldX / TILE);
-    const cy = Math.floor(worldY / TILE);
-    for (let y = cy - radiusTiles; y <= cy + radiusTiles; y += 1) {
-      for (let x = cx - radiusTiles; x <= cx + radiusTiles; x += 1) {
-        if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
-        if ((x - cx) ** 2 + (y - cy) ** 2 > radiusTiles ** 2) continue;
-        state.sonarRevealed.add(sonarKey(x, y));
-      }
-    }
-    this.drawSonarMap();
-  }
-
   updateSystems(delta: number) {
     state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
     state.maxDepth = Math.max(state.maxDepth, state.depth);
@@ -911,4 +839,12 @@ export interface DeepdiveScene {
   completeNestQuest: OmitThisParameter<typeof economyNs.completeNestQuest>;
   hasActiveNestLocator: OmitThisParameter<typeof economyNs.hasActiveNestLocator>;
   nearestOpenNestRoom: OmitThisParameter<typeof economyNs.nearestOpenNestRoom>;
+}
+
+Object.assign(DeepdiveScene.prototype, sonarNs);
+export interface DeepdiveScene {
+  sonarPing: OmitThisParameter<typeof sonarNs.sonarPing>;
+  captureSonarContacts: OmitThisParameter<typeof sonarNs.captureSonarContacts>;
+  revealSonarAtPlayer: OmitThisParameter<typeof sonarNs.revealSonarAtPlayer>;
+  revealSonarAtWorld: OmitThisParameter<typeof sonarNs.revealSonarAtWorld>;
 }
