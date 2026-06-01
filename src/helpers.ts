@@ -287,6 +287,25 @@ export const faunaFrameCounts: Record<string, number> = {
   'fauna-deep-deep-jelly': 4,
 };
 
+export interface SpriteManifest {
+  frameWidth: number;
+  frameHeight: number;
+  frameCount: number;
+  anchor: { x: number; y: number };
+  animations: Record<string, { frames: number[]; frameRate: number; loop: boolean }>;
+}
+
+// Populated at load time from Asset Forge `*.frames.json` manifests.
+export const spriteManifests: Record<string, SpriteManifest> = {};
+
+const SPRITESHEET_BASES = [
+  'fish-shallow-neutral',
+  'fish-shallow-predator',
+  'fish-mid-neutral',
+  'fish-mid-predator',
+  'fish-abyss-predator',
+];
+
 export function loadGeneratedAssets(scene: Phaser.Scene) {
   const assetPath = (name: string) => `/assets/generated/${name}.png`;
   const audioPath = (name: string) => `/assets/audio/${name}`;
@@ -296,8 +315,19 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
     }
   }
   for (let i = 0; i < 4; i += 1) scene.load.image(`sub-cutter-beam-${i}`, assetPath(`sub-cutter-beam-${i}`));
-  for (const base of ['fish-shallow-neutral', 'fish-shallow-predator', 'fish-mid-neutral', 'fish-mid-predator', 'fish-abyss-predator']) {
-    for (let i = 0; i < fishFrameCount(base); i += 1) scene.load.image(`${base}-${i}`, assetPath(`${base}-${i}`));
+  // Asset Forge spritesheets: load the manifest, then the packed sheet using
+  // the frame size it declares (Phaser processes the chained load in the same run).
+  for (const base of SPRITESHEET_BASES) {
+    const manifestKey = `${base}__manifest`;
+    scene.load.json(manifestKey, `/assets/generated/${base}.frames.json`);
+    scene.load.once(`filecomplete-json-${manifestKey}`, () => {
+      const manifest = scene.cache.json.get(manifestKey) as SpriteManifest;
+      spriteManifests[base] = manifest;
+      scene.load.spritesheet(base, assetPath(base), {
+        frameWidth: manifest.frameWidth,
+        frameHeight: manifest.frameHeight,
+      });
+    });
   }
   for (const [base, frameCount] of Object.entries(faunaFrameCounts)) {
     for (let i = 0; i < frameCount; i += 1) scene.load.image(`${base}-${i}`, assetPath(`${base}-${i}`));
@@ -603,12 +633,9 @@ export function diverOrigin(animation: DiverAnimation, facingSign: 1 | -1) {
 }
 
 export function fishFrameCount(assetKey: string) {
+  const manifest = spriteManifests[assetKey];
+  if (manifest) return manifest.frameCount;
   if (faunaFrameCounts[assetKey]) return faunaFrameCounts[assetKey];
-  if (assetKey === 'fish-shallow-neutral') return 4;
-  if (assetKey === 'fish-shallow-predator') return 4;
-  if (assetKey === 'fish-mid-neutral') return 4;
-  if (assetKey === 'fish-mid-predator') return 4;
-  if (assetKey === 'fish-abyss-predator') return 4;
   return 1;
 }
 

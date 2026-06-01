@@ -4,7 +4,7 @@ import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGH
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,subDef,swimPose,tileTextureKey } from './helpers';
+import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,tileTextureKey } from './helpers';
 import type { DeepdiveScene } from './scene';
 
 export function draw(this: DeepdiveScene, ) {
@@ -302,9 +302,12 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
       const pose = swimPose(angle, fish.facingSign);
       const frameSpeed = fish.stunned > 0 ? 8 : Math.hypot(fish.vx, fish.vy);
       const frame = animatedFrame(fish.phase, frameSpeed, fishFrameCount(fish.assetKey), fish.hostile ? 3.3 : 4.2);
+      if (fish.sprite) {
+        if (spriteManifests[fish.assetKey]) fish.sprite.setTexture(fish.assetKey).setFrame(frame);
+        else fish.sprite.setTexture(`${fish.assetKey}-${frame}`);
+      }
       fish.sprite
-        ?.setTexture(`${fish.assetKey}-${frame}`)
-        .setVisible(true)
+        ?.setVisible(true)
         .setAlpha(fish.stunned > 0 ? bodyAlpha * 0.72 : bodyAlpha)
         .setPosition(fish.x, fish.y)
         .setFlipX(pose.flipX)
