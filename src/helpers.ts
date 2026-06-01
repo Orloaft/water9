@@ -247,45 +247,12 @@ export function clampSelectedCargoIndex() {
   state.selectedCargoIndex = Phaser.Math.Clamp(Math.floor(state.selectedCargoIndex) || 0, 0, capacity - 1);
 }
 
-export const faunaFrameCounts: Record<string, number> = {
-  'fauna-shallow-lantern-fry': 4,
-  'fauna-shallow-snap-shrimp': 4,
-  'fauna-shallow-glass-ray': 4,
-  'fauna-shallow-comb-jelly': 4,
-  'fauna-shallow-squid': 4,
-  'fauna-shallow-nautilus': 4,
-  'fauna-shallow-jellyfish': 4,
-  'fauna-shallow-mantis-shrimp': 5,
-  'fauna-shallow-blue-ring-octopus': 4,
-  'fauna-shallow-octopus': 4,
-  'fauna-deep-ash-minnow': 4,
-  'fauna-deep-deep-shrimp': 5,
-  'fauna-deep-hatchetfish': 4,
-  'fauna-deep-barreleye': 3,
-  'fauna-deep-glass-squid': 4,
-  'fauna-deep-vampire-squid': 4,
-  'fauna-deep-lanternfish': 4,
-  'fauna-deep-gulper-eel': 3,
-  'fauna-deep-tripodfish': 3,
-  'fauna-deep-sea-spider': 4,
-  'fauna-abyss-mirror-fry': 3,
-  'fauna-abyss-hadal-shrimp': 4,
-  'fauna-abyss-abyss-jelly': 4,
-  'fauna-abyss-bigfin-squid': 3,
-  'fauna-abyss-viperfish': 3,
-  'fauna-abyss-hatchet-school': 2,
-  'fauna-abyss-lantern-swarm': 2,
-  'fauna-abyss-goblin-shark': 3,
-  'fauna-abyss-frilled-shark': 3,
-  'fauna-abyss-black-swallower': 3,
-  'fauna-abyss-static-fry': 4,
-  'fauna-abyss-vampire-squid': 4,
-  'fauna-abyss-microfish': 3,
-  'fauna-abyss-anglerfish': 3,
-  'fauna-abyss-snipe-eel': 3,
-  'fauna-abyss-medusa': 3,
-  'fauna-deep-deep-jelly': 4,
-};
+// Fauna that still ship as loose per-frame PNGs. All current fauna have been
+// migrated to Asset Forge spritesheets (see SPRITESHEET_BASES), so this is
+// empty; add a base here only when introducing fauna whose frames aren't packed
+// yet — fishFrameCount falls back to this and loadGeneratedAssets loads the
+// loose `<base>-<i>.png` frames for anything listed.
+export const faunaFrameCounts: Record<string, number> = {};
 
 export interface SpriteManifest {
   frameWidth: number;
@@ -299,11 +266,52 @@ export interface SpriteManifest {
 export const spriteManifests: Record<string, SpriteManifest> = {};
 
 const SPRITESHEET_BASES = [
+  // Generic depth-band fish
   'fish-shallow-neutral',
   'fish-shallow-predator',
   'fish-mid-neutral',
   'fish-mid-predator',
   'fish-abyss-predator',
+  // Shallows fauna
+  'fauna-shallow-lantern-fry',
+  'fauna-shallow-snap-shrimp',
+  'fauna-shallow-glass-ray',
+  'fauna-shallow-comb-jelly',
+  'fauna-shallow-squid',
+  'fauna-shallow-nautilus',
+  'fauna-shallow-jellyfish',
+  'fauna-shallow-mantis-shrimp',
+  'fauna-shallow-blue-ring-octopus',
+  'fauna-shallow-octopus',
+  // Deep fauna
+  'fauna-deep-ash-minnow',
+  'fauna-deep-deep-shrimp',
+  'fauna-deep-hatchetfish',
+  'fauna-deep-barreleye',
+  'fauna-deep-glass-squid',
+  'fauna-deep-vampire-squid',
+  'fauna-deep-lanternfish',
+  'fauna-deep-gulper-eel',
+  'fauna-deep-tripodfish',
+  'fauna-deep-sea-spider',
+  'fauna-deep-deep-jelly',
+  // Abyss fauna
+  'fauna-abyss-mirror-fry',
+  'fauna-abyss-hadal-shrimp',
+  'fauna-abyss-abyss-jelly',
+  'fauna-abyss-bigfin-squid',
+  'fauna-abyss-viperfish',
+  'fauna-abyss-hatchet-school',
+  'fauna-abyss-lantern-swarm',
+  'fauna-abyss-goblin-shark',
+  'fauna-abyss-frilled-shark',
+  'fauna-abyss-black-swallower',
+  'fauna-abyss-static-fry',
+  'fauna-abyss-vampire-squid',
+  'fauna-abyss-microfish',
+  'fauna-abyss-anglerfish',
+  'fauna-abyss-snipe-eel',
+  'fauna-abyss-medusa',
 ];
 
 export function loadGeneratedAssets(scene: Phaser.Scene) {
