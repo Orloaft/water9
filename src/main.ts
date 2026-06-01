@@ -4,86 +4,12 @@ import type { AuxSub,BargeTab,Biome,Bobbit,BobbitState,CargoItem,ControlState,Di
 
 import { TILE,WORLD_W,WORLD_H,SURFACE_Y,TARGET_DEPTH,BARGE_UPGRADE_COST,deepScale,ENTITY_SCALE,CAMERA_ZOOM_MULTIPLIER,PLAYER_COLLISION_RADIUS,PLAYER_CONTACT_RADIUS,PLAYER_PICKUP_RADIUS,PLAYER_FORWARD_REACH,PLAYER_DRAW_SCALE,BARGE_DRAW_SCALE,BARGE_DOCK_Y,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_WIDTH,BARGE_PLATFORM_HEIGHT,BARGE_ENTRY_Y,BARGE_ENTRY_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BARGE_DOCKING_HALF_WIDTH,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MINE_FUEL_COST,SONAR_FUEL_COST,SONAR_REVEAL_RADIUS_TILES,SONAR_ATTRACT_RADIUS,SONAR_COOLDOWN,STUN_GRENADE_COST,STUN_GRENADE_RADIUS,STUN_GRENADE_DURATION,DYNAMITE_COST,DYNAMITE_RADIUS_TILES,DYNAMITE_LAND_FUSE,FLARE_COST,FLARE_DURATION,FLARE_LIGHT_RADIUS,OXYGEN_TANK_COST,OXYGEN_TANK_REFILL,FUEL_TANK_COST,FUEL_TANK_REFILL,FIRST_AID_COST,FIRST_AID_REPAIR,ANTIVENOM_COST,INJECTOR_KNIFE_COST,INJECTOR_KNIFE_RANGE,INJECTOR_KNIFE_DAMAGE,BLEED_RECENT_WINDOW,BLEED_TRIGGER_BITES,BLEED_DURATION,BLEED_HULL_DRAIN,LIFE_CUTTER_FUEL_COST,LIFE_CUTTER_DAMAGE,DYNAMITE_LIFE_DAMAGE,VENOM_HULL_DRAIN,VENOM_TICK_SECONDS,BIOLUME_CAVERN_CHANCE,NEST_CHAMBER_CHANCE,OASIS_OXYGEN_REFILL,EGG_HATCH_SECONDS,EGG_DETECTION_RADIUS,EGG_CUTTER_FUEL_COST,EGG_HP,NEST_CLEAR_REWARD,THROWN_ITEM_GRAVITY,THROWN_ITEM_SPEED,THROWN_ITEM_MAX_FALL_SPEED,BOBBIT_DETECT_RADIUS,BOBBIT_LATCH_RADIUS,BOBBIT_ESCAPE_SECONDS,FISH_BITE_SFX_GAP_MS,BASE_OXYGEN,SUB_BOARD_SECONDS,SUB_FUEL_CELL,SUB_FUEL_COST,SUB_OXYGEN_CELL,SUB_OXYGEN_COST,SUB_REPAIR_COST_PER_POINT,audioKeys,audioVolumes,diverFrameCounts } from './constants';
 import { tiles,upgrades,subDefs,shopItems,biomeFish,biomeFlora } from './content';
+import { state, ui } from './state';
 
 let seed = Math.floor(Math.random() * 1_000_000);
 
 
-const state = {
-  biome: 1 as Biome,
-  credits: 0,
-  oxygen: BASE_OXYGEN,
-  hull: 100,
-  fuel: 100,
-  depth: 0,
-  maxDepth: 0,
-  oreSoldCredits: 0,
-  cargo: [] as CargoItem[],
-  selectedCargoIndex: 0,
-  sonarRevealed: new Set<string>(),
-  sonarContacts: [] as SonarContact[],
-  scannedSpecies: new Set<string>(),
-  upgrades: {
-    oxygen: 0,
-    cargo: 0,
-    laser: 0,
-    lamp: 0,
-    scanner: 0,
-    suit: 0,
-    speed: 0,
-    thermal: 0,
-  } satisfies Record<UpgradeId, number>,
-  status: 'Launch from the boat, mine minerals, scan fish, then surface to upgrade.',
-  atBoat: true,
-  docked: true,
-  paused: false,
-  logbookOpen: false,
-  cargoOpen: false,
-  bargeTab: 'services' as BargeTab,
-  questBoard: [] as Quest[],
-  activeQuestId: '',
-  titlePanel: 'main' as TitlePanel,
-  radioMessages: [] as RadioMessage[],
-  radioIndex: 0,
-  radioOpen: false,
-  musicEnabled: true,
-  musicVolume: 1,
-  sfxVolume: 1,
-  unhardcore: false,
-  achievements: new Set<string>(),
-  subOwned: {
-    1: false,
-    2: false,
-    3: false,
-  } as Record<SubTier, boolean>,
-  selectedSubTier: null as SubTier | null,
-  activeSub: null as SubVehicle | null,
-  carrierSub: null as SubVehicle | null,
-  pilotingSub: false,
-  auxSubActive: false,
-  won: false,
-  lost: false,
-  started: false,
-  oxygenWarnings: {
-    half: false,
-    quarter: false,
-  },
-  venom: {
-    active: false,
-    source: '',
-    tick: 0,
-  },
-  bleed: {
-    active: false,
-    source: '',
-    duration: 0,
-    stacks: 0,
-    recentBites: 0,
-    recentTimer: 0,
-  },
-};
 
-let uiEventsBound = false;
-let uiFocusKey = '';
 
 class DeepdiveScene extends Phaser.Scene {
   private parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
@@ -1604,16 +1530,16 @@ class DeepdiveScene extends Phaser.Scene {
       ? document.activeElement
       : null;
     if (!active) {
-      active = focusMenuButton(buttons, uiFocusKey) ?? buttons[0];
+      active = focusMenuButton(buttons, ui.focusKey) ?? buttons[0];
       focusUiButton(active);
-      uiFocusKey = menuButtonKey(active);
+      ui.focusKey = menuButtonKey(active);
     }
 
     if (controls.hasMove && this.menuNavCooldown <= 0) {
       const next = nextMenuButton(buttons, active, controls.move);
       if (next && next !== active) {
         focusUiButton(next);
-        uiFocusKey = menuButtonKey(next);
+        ui.focusKey = menuButtonKey(next);
         this.menuNavCooldown = 0.18;
       }
     }
@@ -5909,8 +5835,8 @@ function showAchievement(title: string, detail: string) {
 }
 
 function bindUiEvents(app: HTMLDivElement) {
-  if (uiEventsBound) return;
-  uiEventsBound = true;
+  if (ui.eventsBound) return;
+  ui.eventsBound = true;
   window.addEventListener('keydown', (event) => {
     if (event.code !== 'Tab') return;
     const buttons = activeMenuButtons();
@@ -5947,7 +5873,7 @@ function bindUiEvents(app: HTMLDivElement) {
     if (!buttons.length) return;
     const active = document.activeElement instanceof HTMLButtonElement && buttons.includes(document.activeElement)
       ? document.activeElement
-      : focusMenuButton(buttons, uiFocusKey);
+      : focusMenuButton(buttons, ui.focusKey);
     if (!active) return;
     event.preventDefault();
     event.stopPropagation();
@@ -6185,7 +6111,7 @@ function bindUiEvents(app: HTMLDivElement) {
     if (!buttons.includes(target)) return;
     clearControllerFocus();
     target.classList.add('is-controller-focus');
-    uiFocusKey = menuButtonKey(target);
+    ui.focusKey = menuButtonKey(target);
   });
 }
 
@@ -6207,7 +6133,7 @@ function activeMenuButtons() {
 }
 
 function focusUiButton(button: HTMLButtonElement) {
-  uiFocusKey = menuButtonKey(button);
+  ui.focusKey = menuButtonKey(button);
   if (button.classList.contains('is-controller-focus') && document.activeElement === button) return;
   clearControllerFocus();
   button.classList.add('is-controller-focus');
@@ -6218,7 +6144,7 @@ function focusAdjacentMenuButton(direction: 1 | -1, buttons = activeMenuButtons(
   if (!buttons.length) return;
   const active = document.activeElement instanceof HTMLButtonElement && buttons.includes(document.activeElement)
     ? document.activeElement
-    : focusMenuButton(buttons, uiFocusKey);
+    : focusMenuButton(buttons, ui.focusKey);
   const currentIndex = active ? buttons.indexOf(active) : direction > 0 ? -1 : 0;
   const nextIndex = (currentIndex + direction + buttons.length) % buttons.length;
   focusUiButton(buttons[nextIndex]);
@@ -6237,13 +6163,13 @@ function clearControllerFocus(resetKey = false) {
   document.querySelectorAll<HTMLButtonElement>('button.is-controller-focus').forEach((button) => {
     button.classList.remove('is-controller-focus');
   });
-  if (resetKey) uiFocusKey = '';
+  if (resetKey) ui.focusKey = '';
 }
 
 function restoreControllerFocus() {
-  if (!uiFocusKey) return;
+  if (!ui.focusKey) return;
   const buttons = activeMenuButtons();
-  const button = focusMenuButton(buttons, uiFocusKey);
+  const button = focusMenuButton(buttons, ui.focusKey);
   if (!button) {
     clearControllerFocus(true);
     return;
