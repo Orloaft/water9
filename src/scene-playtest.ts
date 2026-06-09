@@ -87,6 +87,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           phase: roundMetric(creature.phase),
           posePitch: roundMetric(creature.posePitch),
           attackBlend: roundMetric(creature.attackBlend),
+          swimEffort: roundMetric(creature.swimEffort),
           hp: Math.round(creature.hp),
           state: creature.state,
           scanned: creature.scanned,
@@ -144,7 +145,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
   }
 
 export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, value?: unknown) {
-    if (command !== 'reviewArticulated') {
+    if (command !== 'reviewArticulated' && command !== 'advanceArticulatedReview') {
       this.articulatedCreatures.forEach((creature) => {
         creature.reviewFrozen = false;
       });
@@ -255,6 +256,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
       if (creature) {
         const facing = mode.includes('left') ? -1 : 1;
+        const pitched = mode.includes('rise') || mode.includes('dive');
         const reviewX = WORLD_W * TILE * 0.5 + facing * 140;
         const reviewY = SURFACE_Y + 220;
         const playerGap = 130;
@@ -276,11 +278,12 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         creature.y = reviewY;
         creature.homeX = reviewX;
         creature.homeY = reviewY;
-        creature.vx = 0;
-        creature.vy = 0;
+        creature.vx = pitched ? facing * 48 : 0;
+        creature.vy = mode.includes('rise') ? -42 : mode.includes('dive') ? 42 : 0;
         creature.facingSign = facing;
         creature.aggro = 0;
         creature.phase = mode.includes('lunge') ? 0.5 : 1.1;
+        creature.swimEffort = 1;
         creature.state = mode.includes('lunge') ? 'lunge' : 'recover';
         creature.stateTimer = 999;
         creature.grabTimer = 0;
@@ -298,6 +301,16 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         this.updateArticulatedParts(creature, 0);
         this.cameras.main.centerOn(reviewX, reviewY);
+      }
+    } else if (command === 'advanceArticulatedReview') {
+      const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string; seconds?: number; phaseRate?: number } : {};
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && candidate.reviewFrozen && (!payload.creatureId || candidate.id === payload.creatureId));
+      if (creature) {
+        const seconds = Phaser.Math.Clamp(Number(payload.seconds) || 0.16, 0, 2);
+        const phaseRate = Phaser.Math.Clamp(Number(payload.phaseRate) || 1.35, 0.1, 4);
+        creature.phase += seconds * phaseRate;
+        creature.swimEffort = Phaser.Math.Clamp(creature.swimEffort || 1, 0.22, 1.28);
+        this.updateArticulatedParts(creature, 0);
       }
     } else if (command === 'damageArticulatedPart') {
       const payload = (value ?? {}) as { creatureId?: string; partId?: string; amount?: number; source?: string };

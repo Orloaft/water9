@@ -51,6 +51,7 @@ export type PlaytestCommand =
   | 'teleportDepth'
   | 'teleportToArticulated'
   | 'reviewArticulated'
+  | 'advanceArticulatedReview'
   | 'damageArticulatedPart'
   | 'collideArticulated'
   | 'setOxygen'
@@ -254,6 +255,7 @@ export interface ArticulatedCreature {
   phase: number;
   posePitch: number;
   attackBlend: number;
+  swimEffort: number;
   color: number;
   hostile: boolean;
   scanned: boolean;

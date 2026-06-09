@@ -8,6 +8,14 @@ const articulatedManifest = JSON.parse(await readFile(new URL('../public/assets/
 const articulatedCreatureIds = process.env.PLAYTEST_ARTICULATED_ID
   ? [process.env.PLAYTEST_ARTICULATED_ID]
   : (articulatedManifest.creatures ?? []).map((creature) => creature.id);
+const spineManifestsByCreature = new Map(
+  (articulatedManifest.creatures ?? []).map((creature) => [
+    creature.id,
+    (creature.parts ?? [])
+      .filter((part) => ['root', 'body', 'tail'].includes(part.motion?.kind))
+      .sort((a, b) => b.offset[0] - a.offset[0]),
+  ]),
+);
 const expectedJointsByCreature = new Map(
   (articulatedManifest.creatures ?? []).map((creature) => [
     creature.id,
@@ -95,6 +103,58 @@ function partMap(creature) {
   return new Map((creature?.parts ?? []).map((part) => [part.id, part]));
 }
 
+function roundMetric(value) {
+  return Number.isFinite(value) ? Number(value.toFixed(3)) : value;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function spineMetricsForCreature(creature) {
+  if (!creature?.id) return null;
+  const manifests = spineManifestsByCreature.get(creature.id) ?? [];
+  const parts = partMap(creature);
+  const facing = creature.facingSign < 0 ? -1 : 1;
+  const nodes = manifests
+    .map((manifest) => {
+      const part = parts.get(manifest.id);
+      return part ? { id: manifest.id, x: part.x, y: part.y, rotation: part.rotation } : null;
+    })
+    .filter(Boolean);
+  if (nodes.length < 2) return { count: nodes.length, ids: nodes.map((node) => node.id), maxKinkRad: 0, maxStep: 0, maxJump: 0, orderErrors: 0 };
+  let maxStep = 0;
+  let maxKink = 0;
+  let orderErrors = 0;
+  for (let i = 0; i < nodes.length - 1; i += 1) {
+    const current = nodes[i];
+    const next = nodes[i + 1];
+    const step = Math.hypot(next.x - current.x, next.y - current.y);
+    maxStep = Math.max(maxStep, step);
+    if (current.x * facing + 0.75 < next.x * facing) orderErrors += 1;
+  }
+  for (let i = 1; i < nodes.length - 1; i += 1) {
+    const previous = nodes[i - 1];
+    const current = nodes[i];
+    const next = nodes[i + 1];
+    const ax = current.x - previous.x;
+    const ay = current.y - previous.y;
+    const bx = next.x - current.x;
+    const by = next.y - current.y;
+    const al = Math.max(0.001, Math.hypot(ax, ay));
+    const bl = Math.max(0.001, Math.hypot(bx, by));
+    const dot = clamp((ax * bx + ay * by) / (al * bl), -1, 1);
+    maxKink = Math.max(maxKink, Math.acos(dot));
+  }
+  return {
+    count: nodes.length,
+    ids: nodes.map((node) => node.id),
+    maxKinkRad: roundMetric(maxKink),
+    maxStep: roundMetric(maxStep),
+    orderErrors,
+  };
+}
+
 function reviewSummary(mode, snap, creatureId = null) {
   const creature = articulatedSubject(snap, creatureId);
   return {
@@ -105,6 +165,10 @@ function reviewSummary(mode, snap, creatureId = null) {
     facingSign: creature?.facingSign ?? null,
     vx: creature?.vx ?? null,
     vy: creature?.vy ?? null,
+    phase: creature?.phase ?? null,
+    posePitch: creature?.posePitch ?? null,
+    swimEffort: creature?.swimEffort ?? null,
+    spineMetrics: spineMetricsForCreature(creature),
     jointSummary: creature?.jointSummary ?? null,
     biteAnchor: creature?.biteAnchor ?? null,
     joints: creature?.joints ?? [],
@@ -139,6 +203,8 @@ function verifyArticulatedReview(reviews) {
   const right = reviews.find((review) => review.mode === 'right');
   const left = reviews.find((review) => review.mode === 'left');
   const lunge = reviews.find((review) => review.mode === 'lunge');
+  const rise = reviews.find((review) => review.mode === 'rise');
+  const dive = reviews.find((review) => review.mode === 'dive');
   if (right && left) {
     const rightParts = partMap(right);
     const leftParts = partMap(left);
@@ -186,6 +252,61 @@ function verifyArticulatedReview(reviews) {
     }
   }
 
+  if (rise && (rise.posePitch ?? 0) >= -0.2) failures.push(`${rise.id} rise review posePitch ${rise.posePitch} is not angled upward`);
+  if (dive && (dive.posePitch ?? 0) <= 0.2) failures.push(`${dive.id} dive review posePitch ${dive.posePitch} is not angled downward`);
+
+  return failures;
+}
+
+function verifyArticulatedMotion(samples) {
+  const failures = [];
+  if (samples.length < 5) {
+    failures.push('articulated motion review: expected at least 5 samples');
+    return failures;
+  }
+  const id = samples[0]?.id ?? 'unknown';
+  const bodyOffsets = [];
+  const tailRotations = [];
+  const phases = [];
+  const previousParts = new Map();
+  let maxJump = 0;
+  for (const sample of samples) {
+    if (!sample.jointSummary) {
+      failures.push(`${id} motion review: missing joint summary`);
+      continue;
+    }
+    if (sample.jointSummary.missing !== 0) failures.push(`${id} motion review ${sample.mode}: missing ${sample.jointSummary.missing} joints`);
+    if (sample.jointSummary.maxError > 0.75) failures.push(`${id} motion review ${sample.mode}: joint error ${sample.jointSummary.maxError}px exceeds 0.75px`);
+    if (sample.jointSummary.maxStress > 0.08) failures.push(`${id} motion review ${sample.mode}: joint stress ${sample.jointSummary.maxStress} exceeds 0.08`);
+    if (!sample.spineMetrics || sample.spineMetrics.count < 3) {
+      failures.push(`${id} motion review ${sample.mode}: missing spine metrics`);
+    } else {
+      if (sample.spineMetrics.orderErrors > 0) failures.push(`${id} motion review ${sample.mode}: spine order inverted ${sample.spineMetrics.orderErrors} times`);
+      if (sample.spineMetrics.maxKinkRad > 1.35) failures.push(`${id} motion review ${sample.mode}: spine kink ${sample.spineMetrics.maxKinkRad}rad exceeds 1.35rad`);
+    }
+    const parts = partMap(sample);
+    const body = parts.get('body-1') ?? parts.get('body');
+    const tail = parts.get('tail');
+    if (body && tail) {
+      bodyOffsets.push((tail.y ?? 0) - (body.y ?? 0));
+      tailRotations.push(tail.rotation ?? 0);
+    }
+    for (const [partId, part] of parts) {
+      if (!['head', 'body-1', 'body-2', 'body-3', 'tail'].includes(partId)) continue;
+      const previous = previousParts.get(partId);
+      if (previous) maxJump = Math.max(maxJump, Math.hypot((part.x ?? 0) - previous.x, (part.y ?? 0) - previous.y));
+      previousParts.set(partId, { x: part.x ?? 0, y: part.y ?? 0 });
+    }
+    if (typeof sample.phase === 'number') phases.push(sample.phase);
+  }
+  const phaseSpan = phases.length ? Math.max(...phases) - Math.min(...phases) : 0;
+  const offsetSpan = bodyOffsets.length ? Math.max(...bodyOffsets) - Math.min(...bodyOffsets) : 0;
+  const rotationSpan = tailRotations.length ? Math.max(...tailRotations) - Math.min(...tailRotations) : 0;
+  if (phaseSpan < 0.4) failures.push(`${id} motion review phase advanced only ${phaseSpan.toFixed(3)}rad`);
+  if (offsetSpan < 1.2 && rotationSpan < 0.025) {
+    failures.push(`${id} motion review tail motion too small: y span ${offsetSpan.toFixed(3)}px, rotation span ${rotationSpan.toFixed(3)}rad`);
+  }
+  if (maxJump > 46) failures.push(`${id} motion review part jump ${maxJump.toFixed(3)}px exceeds 46px`);
   return failures;
 }
 
@@ -238,12 +359,14 @@ try {
   const articulatedReview = [];
   const articulatedCollision = [];
   const articulatedDamage = [];
+  const articulatedMotion = [];
   const articulatedFailures = [];
   const articulatedCollisionFailures = [];
   const articulatedDamageFailures = [];
+  const articulatedMotionFailures = [];
   for (const creatureId of articulatedCreatureIds) {
     const creatureReview = [];
-    for (const mode of ['right', 'left', 'lunge']) {
+    for (const mode of ['right', 'left', 'rise', 'dive', 'lunge']) {
       await command('reviewArticulated', { mode, creatureId });
       await page.waitForTimeout(120);
       const summary = reviewSummary(mode, await snapshot(), creatureId);
@@ -251,6 +374,15 @@ try {
       articulatedReview.push(summary);
     }
     articulatedFailures.push(...verifyArticulatedReview(creatureReview));
+    await command('reviewArticulated', { mode: 'right', creatureId });
+    const creatureMotion = [];
+    for (let step = 0; step < 6; step += 1) {
+      const snap = await command('advanceArticulatedReview', { creatureId, seconds: 0.18, phaseRate: 1.55 });
+      const summary = reviewSummary(`motion-${step}`, snap, creatureId);
+      creatureMotion.push(summary);
+      articulatedMotion.push(summary);
+    }
+    articulatedMotionFailures.push(...verifyArticulatedMotion(creatureMotion));
     await command('reviewArticulated', { mode: 'right', creatureId });
     const collision = reviewSummary(
       'head-terrain',
@@ -292,6 +424,8 @@ try {
     articulatedCollisionFailures,
     articulatedDamage,
     articulatedDamageFailures,
+    articulatedMotion,
+    articulatedMotionFailures,
     subSmoke: {
       depth: subSmoke.state.depth,
       hull: subSmoke.state.activeSub?.hull ?? null,
@@ -315,12 +449,13 @@ try {
     bobbits: biome.bobbits,
   })));
   const placeholderFailures = report.articulatedPlaceholders.map((key) => `placeholder articulated texture was generated: ${key}`);
-  if (runtimeErrors.length || placeholderFailures.length || articulatedFailures.length || articulatedCollisionFailures.length || articulatedDamageFailures.length) {
+  if (runtimeErrors.length || placeholderFailures.length || articulatedFailures.length || articulatedCollisionFailures.length || articulatedDamageFailures.length || articulatedMotionFailures.length) {
     for (const error of runtimeErrors) console.error('Runtime error:', error);
     for (const failure of placeholderFailures) console.error('Articulated asset failure:', failure);
     for (const failure of articulatedFailures) console.error('Articulated review failure:', failure);
     for (const failure of articulatedCollisionFailures) console.error('Articulated collision failure:', failure);
     for (const failure of articulatedDamageFailures) console.error('Articulated damage failure:', failure);
+    for (const failure of articulatedMotionFailures) console.error('Articulated motion failure:', failure);
     process.exitCode = 1;
   }
 } finally {

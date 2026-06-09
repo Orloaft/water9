@@ -53,6 +53,10 @@ function smoothAngle(current: number, target: number, amount: number) {
   return current + Phaser.Math.Angle.Wrap(target - current) * amount;
 }
 
+function spineLagIndexFor(manifest: ArticulatedPartManifest) {
+  return Math.max(0, -manifest.offset[0]) / 48;
+}
+
 function canDetachPart(manifest: ArticulatedPartManifest) {
   return manifest.motion.kind === 'fin' || manifest.motion.kind === 'tail' || manifest.motion.kind === 'jaw';
 }
@@ -226,7 +230,11 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
       refreshJointStress(creature);
       continue;
     }
-    creature.phase += delta;
+    const swimSpeed = Math.hypot(creature.vx, creature.vy);
+    const phaseRate = creature.stunned > 0
+      ? 0.25
+      : Phaser.Math.Clamp(0.55 + swimSpeed / Math.max(1, creature.speed) * 1.15 + (creature.state === 'lunge' ? 0.28 : 0), 0.45, 2.25);
+    creature.phase += delta * phaseRate;
     creature.bumpCooldown = Math.max(0, creature.bumpCooldown - delta);
     creature.stunned = Math.max(0, creature.stunned - delta);
     creature.scanPulse = Math.max(0, creature.scanPulse - delta * 1.2);
@@ -254,8 +262,9 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     if (creature.vx < -2) creature.facingSign = -1;
     if (creature.vx > 2) creature.facingSign = 1;
     updateDetachedArticulatedParts(this, creature, delta);
-    this.keepArticulatedCreatureInWater(creature);
     this.updateArticulatedParts(creature, delta);
+    this.keepArticulatedCreatureInWater(creature);
+    this.updateArticulatedParts(creature, 0, { preserveSmoothedPose: true });
     refreshJointStress(creature);
     this.resolveArticulatedGrab(creature, delta, controls);
 
@@ -397,32 +406,47 @@ export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: Ar
   creature.homeY = Phaser.Math.Linear(creature.homeY, creature.y, 0.08);
 }
 
-export function updateArticulatedParts(this: DeepdiveScene, creature: ArticulatedCreature, delta: number) {
+export function updateArticulatedParts(this: DeepdiveScene, creature: ArticulatedCreature, delta: number, options: { preserveSmoothedPose?: boolean } = {}) {
   const speed = Math.hypot(creature.vx, creature.vy);
   const facing = facingFor(creature);
   const targetPitch = speed > 3
     ? Phaser.Math.Clamp(Math.atan2(creature.vy, Math.max(1, Math.abs(creature.vx))), -0.62, 0.62)
     : 0;
   const targetAttackBlend = creature.state === 'lunge' || creature.state === 'grab' ? 1 : 0;
-  if (delta > 0 && !creature.reviewFrozen) {
+  const targetSwimEffort = Phaser.Math.Clamp(
+    0.22 + speed / Math.max(1, creature.speed * 1.15) + (creature.state === 'lunge' ? 0.22 : 0),
+    0.22,
+    creature.state === 'lunge' || creature.state === 'grab' ? 1.28 : 1.05,
+  );
+  if (options.preserveSmoothedPose) {
+    creature.swimEffort = Phaser.Math.Clamp(creature.swimEffort || targetSwimEffort, 0.22, creature.state === 'lunge' || creature.state === 'grab' ? 1.28 : 1.05);
+  } else if (delta > 0 && !creature.reviewFrozen) {
     creature.posePitch = smoothAngle(creature.posePitch, targetPitch, 1 - Math.exp(-9 * delta));
     creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, targetAttackBlend, 1 - Math.exp(-12 * delta));
+    creature.swimEffort = Phaser.Math.Linear(creature.swimEffort, targetSwimEffort, 1 - Math.exp(-7.5 * delta));
   } else {
     creature.posePitch = targetPitch;
     creature.attackBlend = targetAttackBlend;
+    if (!creature.reviewFrozen) creature.swimEffort = targetSwimEffort;
   }
   const swimPitch = creature.posePitch;
+  const swimEffort = creature.swimEffort;
   const forward = new Phaser.Math.Vector2(facing * Math.cos(swimPitch), Math.sin(swimPitch));
   const normal = new Phaser.Math.Vector2(-facing * Math.sin(swimPitch), Math.cos(swimPitch));
   const lungeOpen = creature.attackBlend;
   const partById = new Map(creature.parts.map((part) => [part.id, part]));
-  const indexById = new Map(creature.parts.map((part, index) => [part.id, index]));
   const placed = new Set<string>();
   const placing = new Set<string>();
 
-  const motionRotation = (manifest: ReturnType<typeof partManifest>, index: number, parent?: ArticulatedPartState) => {
+  const waveFor = (manifest: ReturnType<typeof partManifest>) => {
     const motion = manifest.motion;
-    const wave = Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * index) * (motion.amplitude ?? 0) * PART_WORLD_SCALE;
+    const motionEffort = motion.kind === 'body' || motion.kind === 'tail' || motion.kind === 'fin' ? swimEffort : 1;
+    return Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * spineLagIndexFor(manifest)) * (motion.amplitude ?? 0) * motionEffort * PART_WORLD_SCALE;
+  };
+
+  const motionRotation = (manifest: ReturnType<typeof partManifest>, parent?: ArticulatedPartState) => {
+    const motion = manifest.motion;
+    const wave = waveFor(manifest);
     const rootRotation = facing * swimPitch;
     const parentRotation = parent?.rotation ?? rootRotation;
     const rotationOffset = facing * (manifest.rotationOffset ?? 0);
@@ -444,11 +468,11 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     return rootRotation + rotationOffset;
   };
 
-  const placeOffsetPart = (part: ArticulatedPartState, manifest: ReturnType<typeof partManifest>, index: number) => {
+  const placeOffsetPart = (part: ArticulatedPartState, manifest: ReturnType<typeof partManifest>) => {
     const motion = manifest.motion;
     const localX = manifest.offset[0] * PART_WORLD_SCALE;
     const localY = manifest.offset[1] * PART_WORLD_SCALE;
-    const wave = Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * index) * (motion.amplitude ?? 0) * PART_WORLD_SCALE;
+    const wave = waveFor(manifest);
     const bodyWave = motion.kind === 'body' || motion.kind === 'tail' ? wave : 0;
     const finWave = motion.kind === 'fin' ? wave : 0;
     const jawOpen = motion.kind === 'jaw' ? (Math.sin(creature.phase * 8) * 0.16 + lungeOpen * 0.42) * Math.sign(localY || 1) : 0;
@@ -457,7 +481,7 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     part.rotation = facing * (swimPitch + bodyWave * 0.012 + finWave * 0.018 + jawOpen);
   };
 
-  const placePart = (part: ArticulatedPartState, index: number): void => {
+  const placePart = (part: ArticulatedPartState): void => {
     if (placed.has(part.id)) return;
     if (part.detached) {
       placed.add(part.id);
@@ -466,29 +490,29 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const manifest = partManifest(creature, part);
     const parent = manifest.parentId ? partById.get(manifest.parentId) : undefined;
     if (placing.has(part.id)) {
-      placeOffsetPart(part, manifest, index);
+      placeOffsetPart(part, manifest);
       placed.add(part.id);
       return;
     }
     placing.add(part.id);
     if (parent) {
-      placePart(parent, indexById.get(parent.id) ?? index);
+      placePart(parent);
       const parentManifest = partManifest(creature, parent);
-      part.rotation = motionRotation(manifest, index, parent);
+      part.rotation = motionRotation(manifest, parent);
       const parentAnchor = anchorWorldFor(parent, parentManifest, facing, anchorFor(parentManifest, manifest.parentAnchor));
       const restOffset = manifest.restOffset ? localVectorOffsetFor(facing, parent.rotation, manifest.restOffset) : new Phaser.Math.Vector2();
       const childAnchorOffset = anchoredOffsetFor(manifest, facing, part.rotation, anchorFor(manifest, manifest.anchor));
       part.x = parentAnchor.x + restOffset.x - childAnchorOffset.x;
       part.y = parentAnchor.y + restOffset.y - childAnchorOffset.y;
     } else {
-      placeOffsetPart(part, manifest, index);
+      placeOffsetPart(part, manifest);
     }
     placing.delete(part.id);
     placed.add(part.id);
   };
 
-  creature.parts.forEach((part, index) => {
-    placePart(part, index);
+  creature.parts.forEach((part) => {
+    placePart(part);
   });
 
   creature.socketOverlays.forEach((overlay) => {

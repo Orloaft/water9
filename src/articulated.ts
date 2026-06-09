@@ -322,6 +322,7 @@ export function createArticulatedCreature(
     phase,
     posePitch: 0,
     attackBlend: 0,
+    swimEffort: 0.35,
     color: manifest.color,
     hostile: true,
     scanned: false,
