@@ -53,6 +53,49 @@ function canDetachPart(manifest: ArticulatedPartManifest) {
   return manifest.motion.kind === 'fin' || manifest.motion.kind === 'tail' || manifest.motion.kind === 'jaw';
 }
 
+function solidAt(scene: DeepdiveScene, x: number, y: number) {
+  const tx = Math.floor(x / TILE);
+  const ty = Math.floor(y / TILE);
+  if (tx < 1 || tx >= WORLD_W - 1 || ty < 7 || ty >= WORLD_H - 2) return true;
+  return tiles[scene.getTile(tx, ty)].solid;
+}
+
+function terrainContactForPart(scene: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, manifest: ArticulatedPartManifest) {
+  const radius = Math.max(8, manifest.hitRadius * PART_WORLD_SCALE * 0.78);
+  const samples = [
+    { x: part.x, y: part.y, nx: 0, ny: 0 },
+    { x: part.x - radius, y: part.y, nx: 1, ny: 0 },
+    { x: part.x + radius, y: part.y, nx: -1, ny: 0 },
+    { x: part.x, y: part.y - radius, nx: 0, ny: 1 },
+    { x: part.x, y: part.y + radius, nx: 0, ny: -1 },
+  ];
+  let count = 0;
+  let nx = 0;
+  let ny = 0;
+  for (const sample of samples) {
+    if (!solidAt(scene, sample.x, sample.y)) continue;
+    count += 1;
+    if (sample.nx || sample.ny) {
+      nx += sample.nx;
+      ny += sample.ny;
+    } else {
+      const awayX = part.x - creature.x;
+      const awayY = part.y - creature.y;
+      const len = Math.max(1, Math.hypot(awayX, awayY));
+      nx += awayX / len;
+      ny += awayY / len;
+    }
+  }
+  const len = Math.hypot(nx, ny);
+  if (count <= 0 || len <= 0) return null;
+  return {
+    count,
+    nx: nx / len,
+    ny: ny / len,
+    part,
+  };
+}
+
 export function articulatedPartAnchorWorld(creature: ArticulatedCreature, partId: string, anchorName: string) {
   const part = creature.parts.find((candidate) => candidate.id === partId);
   const manifest = manifestById(creature, partId);
@@ -98,7 +141,7 @@ function refreshJointStress(creature: ArticulatedCreature) {
   }
 }
 
-function updateDetachedArticulatedParts(creature: ArticulatedCreature, delta: number) {
+function updateDetachedArticulatedParts(scene: DeepdiveScene, creature: ArticulatedCreature, delta: number) {
   for (const part of creature.parts) {
     if (!part.detached) continue;
     part.x += part.detachVx * delta;
@@ -108,6 +151,20 @@ function updateDetachedArticulatedParts(creature: ArticulatedCreature, delta: nu
     part.detachVy *= Math.exp(-0.34 * delta);
     part.rotation += part.detachAngularVelocity * delta;
     part.detachAngularVelocity *= Math.exp(-0.28 * delta);
+    const manifest = partManifest(creature, part);
+    const contact = terrainContactForPart(scene, creature, part, manifest);
+    part.terrainContact = contact ? Math.min(1, contact.count / 3) : 0;
+    part.terrainNormalX = contact?.nx ?? 0;
+    part.terrainNormalY = contact?.ny ?? 0;
+    if (!contact) continue;
+    part.x += contact.nx * (4 + contact.count * 1.8);
+    part.y += contact.ny * (4 + contact.count * 1.8);
+    const into = part.detachVx * contact.nx + part.detachVy * contact.ny;
+    if (into < 0) {
+      part.detachVx -= into * contact.nx * 1.55;
+      part.detachVy -= into * contact.ny * 1.55;
+      part.detachAngularVelocity += Phaser.Math.Clamp((part.detachVx * contact.ny - part.detachVy * contact.nx) * 0.008, -0.45, 0.45);
+    }
   }
 }
 
@@ -160,7 +217,7 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
       creature.parts.forEach((part) => {
         part.hurtFlash = 0;
       });
-      updateDetachedArticulatedParts(creature, delta);
+      updateDetachedArticulatedParts(this, creature, delta);
       this.updateArticulatedParts(creature, delta);
       refreshJointStress(creature);
       continue;
@@ -192,7 +249,7 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     creature.y += creature.vy * delta;
     if (creature.vx < -2) creature.facingSign = -1;
     if (creature.vx > 2) creature.facingSign = 1;
-    updateDetachedArticulatedParts(creature, delta);
+    updateDetachedArticulatedParts(this, creature, delta);
     this.keepArticulatedCreatureInWater(creature);
     this.updateArticulatedParts(creature, delta);
     refreshJointStress(creature);
@@ -290,29 +347,48 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
 }
 
 export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: ArticulatedCreature) {
-  const samples: [number, number][] = [[creature.x, creature.y]];
+  const contacts: ReturnType<typeof terrainContactForPart>[] = [];
   for (const part of creature.parts) {
-    if (part.hp <= 0 || part.detached) continue;
+    if (part.detached) continue;
+    part.terrainContact = 0;
+    part.terrainNormalX = 0;
+    part.terrainNormalY = 0;
+    if (part.hp <= 0) continue;
     const manifest = partManifest(creature, part);
-    const radius = Math.max(8, manifest.hitRadius * PART_WORLD_SCALE * 0.78);
-    samples.push(
-      [part.x, part.y],
-      [part.x - radius, part.y],
-      [part.x + radius, part.y],
-      [part.x, part.y - radius],
-      [part.x, part.y + radius],
-    );
+    const contact = terrainContactForPart(this, creature, part, manifest);
+    if (!contact) continue;
+    part.terrainContact = Math.min(1, contact.count / 3);
+    part.terrainNormalX = contact.nx;
+    part.terrainNormalY = contact.ny;
+    contacts.push(contact);
   }
-  const collided = samples.some(([x, y]) => {
-    const tx = Math.floor(x / TILE);
-    const ty = Math.floor(y / TILE);
-    return tx < 1 || tx >= WORLD_W - 1 || ty < 7 || ty >= WORLD_H - 2 || tiles[this.getTile(tx, ty)].solid;
-  });
-  if (!collided) return;
-  creature.x -= creature.vx * 0.13;
-  creature.y -= creature.vy * 0.13;
-  creature.vx *= -0.45;
-  creature.vy *= -0.45;
+  if (!contacts.length) return;
+  let nx = 0;
+  let ny = 0;
+  let strongest = 0;
+  for (const contact of contacts) {
+    if (!contact) continue;
+    const weight = 1 + contact.count * 0.35;
+    nx += contact.nx * weight;
+    ny += contact.ny * weight;
+    strongest = Math.max(strongest, contact.count);
+  }
+  const len = Math.max(1, Math.hypot(nx, ny));
+  nx /= len;
+  ny /= len;
+  const push = 3.5 + strongest * 1.6;
+  creature.x += nx * push;
+  creature.y += ny * push;
+  const into = creature.vx * nx + creature.vy * ny;
+  if (into < 0) {
+    creature.vx -= into * nx * 1.65;
+    creature.vy -= into * ny * 1.65;
+  } else {
+    creature.vx += nx * 12;
+    creature.vy += ny * 12;
+  }
+  creature.vx *= 0.82;
+  creature.vy *= 0.82;
   creature.homeX = Phaser.Math.Linear(creature.homeX, creature.x, 0.08);
   creature.homeY = Phaser.Math.Linear(creature.homeY, creature.y, 0.08);
 }

@@ -109,6 +109,9 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
             detachVx: roundMetric(part.detachVx),
             detachVy: roundMetric(part.detachVy),
             detachAngularVelocity: roundMetric(part.detachAngularVelocity),
+            terrainContact: roundMetric(part.terrainContact),
+            terrainNormalX: roundMetric(part.terrainNormalX),
+            terrainNormalY: roundMetric(part.terrainNormalY),
             sprite: part.sprite
               ? {
                 visible: part.sprite.visible,
@@ -285,6 +288,20 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       if (creature && part) {
         const amount = Number(payload.amount) || part.maxHp + 5;
         this.damageArticulatedPart(creature, part, amount, payload.source ?? 'Playtest');
+        this.updateArticulatedParts(creature, 0);
+      }
+    } else if (command === 'collideArticulated') {
+      const payload = (value ?? {}) as { partId?: string };
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead);
+      const part = creature?.parts.find((candidate) => candidate.id === (payload.partId ?? 'head'));
+      if (creature && part) {
+        creature.reviewFrozen = false;
+        creature.vx = 90;
+        creature.vy = 0;
+        const tx = Phaser.Math.Clamp(Math.floor((part.x + TILE * 0.9) / TILE), 1, WORLD_W - 2);
+        const ty = Phaser.Math.Clamp(Math.floor(part.y / TILE), 7, WORLD_H - 2);
+        this.setTile(tx, ty, 'stone');
+        this.keepArticulatedCreatureInWater(creature);
         this.updateArticulatedParts(creature, 0);
       }
     } else if (command === 'setOxygen') {

@@ -84,6 +84,8 @@ function reviewSummary(mode, snap) {
     mode,
     state: creature?.state ?? null,
     facingSign: creature?.facingSign ?? null,
+    vx: creature?.vx ?? null,
+    vy: creature?.vy ?? null,
     jointSummary: creature?.jointSummary ?? null,
     biteAnchor: creature?.biteAnchor ?? null,
     joints: creature?.joints ?? [],
@@ -175,6 +177,19 @@ function verifyArticulatedDamage(review) {
   return failures;
 }
 
+function verifyArticulatedCollision(review) {
+  const failures = [];
+  const head = partMap(review).get('head');
+  if (!head) failures.push('collision review: missing head part');
+  else {
+    if ((head.terrainContact ?? 0) <= 0) failures.push('collision review: head did not report terrain contact');
+    if ((head.terrainNormalX ?? 0) >= -0.5) failures.push(`collision review: expected head normal to push left, got ${head.terrainNormalX}`);
+  }
+  if ((review.vx ?? 0) >= 80) failures.push(`collision review: creature vx ${review.vx} did not respond to terrain`);
+  if (review.jointSummary?.maxError > 0.75) failures.push(`collision review: seam error ${review.jointSummary.maxError}px after terrain response`);
+  return failures;
+}
+
 try {
   await page.goto(targetUrl, { waitUntil: 'networkidle' });
   await waitForPlaytestApi();
@@ -199,6 +214,9 @@ try {
   }
   const articulatedFailures = verifyArticulatedReview(articulatedReview);
   await command('reviewArticulated', 'right');
+  const articulatedCollision = reviewSummary('head-terrain', await command('collideArticulated', { partId: 'head' }));
+  const articulatedCollisionFailures = verifyArticulatedCollision(articulatedCollision);
+  await command('reviewArticulated', 'right');
   const articulatedDamage = reviewSummary('jaw-detached', await command('damageArticulatedPart', { partId: 'jaw', source: 'Playtest' }));
   const articulatedDamageFailures = verifyArticulatedDamage(articulatedDamage);
 
@@ -220,6 +238,8 @@ try {
     runtimeErrors,
     articulatedReview,
     articulatedFailures,
+    articulatedCollision,
+    articulatedCollisionFailures,
     articulatedDamage,
     articulatedDamageFailures,
     subSmoke: {
@@ -244,9 +264,10 @@ try {
     vents: biome.vents,
     bobbits: biome.bobbits,
   })));
-  if (runtimeErrors.length || articulatedFailures.length || articulatedDamageFailures.length) {
+  if (runtimeErrors.length || articulatedFailures.length || articulatedCollisionFailures.length || articulatedDamageFailures.length) {
     for (const error of runtimeErrors) console.error('Runtime error:', error);
     for (const failure of articulatedFailures) console.error('Articulated review failure:', failure);
+    for (const failure of articulatedCollisionFailures) console.error('Articulated collision failure:', failure);
     for (const failure of articulatedDamageFailures) console.error('Articulated damage failure:', failure);
     process.exitCode = 1;
   }
