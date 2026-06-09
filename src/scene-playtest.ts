@@ -104,6 +104,12 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
             partId: node.partId,
             offset: roundMetric(node.offset),
             bend: roundMetric(node.bend),
+            x: roundMetric(node.x),
+            y: roundMetric(node.y),
+            vx: roundMetric(node.vx),
+            vy: roundMetric(node.vy),
+            constraintError: roundMetric(node.constraintError),
+            initialized: node.initialized,
           })),
           parts: creature.parts.map((part) => ({
             id: part.id,

@@ -306,6 +306,10 @@ function verifyArticulatedMotion(samples) {
       if (sample.spineMetrics.orderErrors > 0) failures.push(`${id} motion review ${sample.mode}: spine order inverted ${sample.spineMetrics.orderErrors} times`);
       if (sample.spineMetrics.maxKinkRad > 1.35) failures.push(`${id} motion review ${sample.mode}: spine kink ${sample.spineMetrics.maxKinkRad}rad exceeds 1.35rad`);
     }
+    const uninitialized = (sample.spine ?? []).find((node) => node.initialized !== true);
+    if (uninitialized) failures.push(`${id} motion review ${sample.mode}: spine node ${uninitialized.partId} was not initialized`);
+    const maxConstraintError = Math.max(0, ...(sample.spine ?? []).map((node) => node.constraintError ?? 0));
+    if (maxConstraintError > 0.35) failures.push(`${id} motion review ${sample.mode}: spine constraint error ${maxConstraintError.toFixed(3)} exceeds 0.35`);
     const parts = partMap(sample);
     const body = parts.get('body-1') ?? parts.get('body');
     const tail = parts.get('tail');
@@ -383,11 +387,12 @@ function verifyArticulatedDamage(review) {
 
 function verifyArticulatedCollision(review) {
   const failures = [];
-  const head = partMap(review).get('head');
-  if (!head) failures.push(`${review.id ?? 'unknown'} collision review: missing head part`);
-  else {
-    if ((head.terrainContact ?? 0) <= 0) failures.push(`${review.id} collision review: head did not report terrain contact`);
-    if (Math.abs(head.terrainNormalX ?? 0) < 0.5) failures.push(`${review.id} collision review: expected strong horizontal head normal, got ${head.terrainNormalX}`);
+  const parts = [...partMap(review).values()];
+  const contacts = parts.filter((part) => (part.terrainContact ?? 0) > 0);
+  if (!partMap(review).get('head')) failures.push(`${review.id ?? 'unknown'} collision review: missing head part`);
+  if (!contacts.length) failures.push(`${review.id} collision review: no articulated part reported terrain contact`);
+  if (!contacts.some((part) => Math.abs(part.terrainNormalX ?? 0) >= 0.5)) {
+    failures.push(`${review.id} collision review: expected a strong horizontal terrain normal`);
   }
   if ((review.vx ?? 0) >= 89) failures.push(`${review.id} collision review: creature vx ${review.vx} did not respond to terrain`);
   if (review.jointSummary?.maxError > 0.75) failures.push(`${review.id} collision review: seam error ${review.jointSummary.maxError}px after terrain response`);

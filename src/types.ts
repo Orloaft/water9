@@ -248,6 +248,12 @@ export interface ArticulatedSpineNodeState {
   partId: string;
   offset: number;
   bend: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  constraintError: number;
+  initialized: boolean;
 }
 
 export interface ArticulatedCreature {

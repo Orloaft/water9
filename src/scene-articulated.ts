@@ -60,7 +60,7 @@ function spineLagIndexFor(manifest: ArticulatedPartManifest) {
 function spineNodeFor(creature: ArticulatedCreature, manifest: ArticulatedPartManifest) {
   let node = creature.spine.find((candidate) => candidate.partId === manifest.id);
   if (!node) {
-    node = { partId: manifest.id, offset: 0, bend: 0 };
+    node = { partId: manifest.id, offset: 0, bend: 0, x: creature.x, y: creature.y, vx: 0, vy: 0, constraintError: 0, initialized: false };
     creature.spine.push(node);
   }
   return node;
@@ -456,6 +456,7 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   const placed = new Set<string>();
   const placing = new Set<string>();
   const spineMotionCache = new Map<string, { offset: number; bend: number }>();
+  const dynamicSpine = delta > 0 && !creature.reviewFrozen && !options.preserveSmoothedPose;
 
   const targetWaveFor = (manifest: ReturnType<typeof partManifest>) => {
     const motion = manifest.motion;
@@ -468,26 +469,100 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     return swimWave + pitchWake + lungeWake;
   };
 
+  const spineManifests = creature.manifest.parts
+    .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
+    .sort((a, b) => b.offset[0] - a.offset[0]);
+
+  const prepareSpineDynamics = () => {
+    const targets = spineManifests.map((manifest) => {
+      const localX = manifest.offset[0] * PART_WORLD_SCALE;
+      const localY = manifest.offset[1] * PART_WORLD_SCALE;
+      const lagIndex = spineLagIndexFor(manifest);
+      const baseX = creature.x + forward.x * localX + normal.x * localY;
+      const baseY = creature.y + forward.y * localX + normal.y * localY;
+      const targetOffset = targetWaveFor(manifest);
+      const targetX = baseX + normal.x * targetOffset;
+      const targetY = baseY + normal.y * targetOffset;
+      const targetBend = targetOffset * 0.012 + -swimPitch * Phaser.Math.Clamp(lagIndex * 0.09, 0, 0.24);
+      const node = spineNodeFor(creature, manifest);
+      return { manifest, node, lagIndex, baseX, baseY, targetX, targetY, targetOffset, targetBend };
+    });
+
+    for (const target of targets) {
+      const { node, lagIndex, targetX, targetY, targetOffset, targetBend } = target;
+      node.constraintError = 0;
+      if (!node.initialized || creature.reviewFrozen || (delta <= 0 && !options.preserveSmoothedPose)) {
+        node.x = targetX;
+        node.y = targetY;
+        node.vx = 0;
+        node.vy = 0;
+        node.offset = targetOffset;
+        node.bend = targetBend;
+        node.initialized = true;
+        continue;
+      }
+      if (dynamicSpine) {
+        const spring = 58 / (1 + lagIndex * 0.28);
+        node.vx += (targetX - node.x) * spring * delta;
+        node.vy += (targetY - node.y) * spring * delta;
+        const damping = Math.exp(-(8.2 / (1 + lagIndex * 0.2)) * delta);
+        node.vx *= damping;
+        node.vy *= damping;
+        node.x += node.vx * delta;
+        node.y += node.vy * delta;
+      }
+    }
+
+    if (dynamicSpine) {
+      for (let iteration = 0; iteration < 3; iteration += 1) {
+        for (let i = 1; i < targets.length; i += 1) {
+          const parent = targets[i - 1];
+          const child = targets[i];
+          const restDistance = Math.max(10, Math.hypot(child.targetX - parent.targetX, child.targetY - parent.targetY));
+          const dx = child.node.x - parent.node.x;
+          const dy = child.node.y - parent.node.y;
+          const distance = Math.max(0.001, Math.hypot(dx, dy));
+          const correction = (distance - restDistance) / distance;
+          const parentWeight = parent.manifest.parentId ? 0.28 : 0;
+          const childWeight = 1 - parentWeight;
+          if (parentWeight > 0) {
+            parent.node.x += dx * correction * parentWeight;
+            parent.node.y += dy * correction * parentWeight;
+          }
+          child.node.x -= dx * correction * childWeight;
+          child.node.y -= dy * correction * childWeight;
+          const error = Math.abs(distance - restDistance) / restDistance;
+          parent.node.constraintError = Math.max(parent.node.constraintError, error);
+          child.node.constraintError = Math.max(child.node.constraintError, error);
+        }
+      }
+    }
+
+    const forwardAngle = Math.atan2(forward.y, forward.x);
+    targets.forEach((target, index) => {
+      const { manifest, node, baseX, baseY, targetBend } = target;
+      const offset = (node.x - baseX) * normal.x + (node.y - baseY) * normal.y;
+      const maxOffset = Math.max(8, Math.min(24, manifest.hitRadius * PART_WORLD_SCALE * 0.92));
+      node.offset = Phaser.Math.Clamp(offset, -maxOffset, maxOffset);
+      const neighbor = targets[index - 1] ?? targets[index + 1];
+      if (dynamicSpine && neighbor) {
+        const dx = targets[index - 1] ? node.x - neighbor.node.x : neighbor.node.x - node.x;
+        const dy = targets[index - 1] ? node.y - neighbor.node.y : neighbor.node.y - node.y;
+        const tangentBend = Phaser.Math.Angle.Wrap(Math.atan2(dy, dx) - forwardAngle) * facing;
+        node.bend = Phaser.Math.Clamp(tangentBend * 0.55 + node.offset * 0.005, -0.42, 0.42);
+      } else {
+        node.bend = targetBend;
+      }
+      spineMotionCache.set(manifest.id, { offset: node.offset, bend: node.bend });
+    });
+  };
+
+  prepareSpineDynamics();
+
   const spineMotionFor = (manifest: ReturnType<typeof partManifest>) => {
     const motion = manifest.motion;
     if (motion.kind !== 'body' && motion.kind !== 'tail') return { offset: 0, bend: 0 };
-    const cached = spineMotionCache.get(manifest.id);
-    if (cached) return cached;
-    const lagIndex = spineLagIndexFor(manifest);
-    const targetOffset = targetWaveFor(manifest);
-    const targetBend = targetOffset * 0.012 + -swimPitch * Phaser.Math.Clamp(lagIndex * 0.09, 0, 0.24);
-    const node = spineNodeFor(creature, manifest);
-    if (creature.reviewFrozen || (delta <= 0 && !options.preserveSmoothedPose)) {
-      node.offset = targetOffset;
-      node.bend = targetBend;
-    } else if (delta > 0 && !creature.reviewFrozen && !options.preserveSmoothedPose) {
-      const follow = 1 - Math.exp(-(8.8 / (1 + lagIndex * 0.42)) * delta);
-      node.offset = Phaser.Math.Linear(node.offset, targetOffset, follow);
-      node.bend = smoothAngle(node.bend, targetBend, follow);
-    }
-    const resolved = { offset: node.offset, bend: node.bend };
-    spineMotionCache.set(manifest.id, resolved);
-    return resolved;
+    return spineMotionCache.get(manifest.id) ?? { offset: 0, bend: 0 };
   };
 
   const motionRotation = (manifest: ReturnType<typeof partManifest>, parent?: ArticulatedPartState) => {
