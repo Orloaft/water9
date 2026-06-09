@@ -343,6 +343,9 @@ export function createArticulatedCreature(
     grabTimer: 0,
     grabCooldown: 0,
     manifest,
+    spine: manifest.parts
+      .filter((part) => part.motion.kind === 'body' || part.motion.kind === 'tail')
+      .map((part) => ({ partId: part.id, offset: 0, bend: 0 })),
     parts: manifest.parts.map<ArticulatedPartState>((part) => ({
       id: part.id,
       hp: Math.max(1, manifest.hp * part.hpMultiplier),

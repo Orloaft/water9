@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
 import type { Biome,PlaytestCommand,SubTier,Tile } from './types';
-import { SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { ENTITY_SCALE,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
 import { cargoCapacity,clearBleed,clearVenom,fuelMax,oxygenMax,refillAtBoat,restart,subDef,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
-import { articulatedPlaceholderTextureKeys } from './articulated';
+import { articulatedPlaceholderTextureKeys,partManifest } from './articulated';
 import type { DeepdiveScene } from './scene';
 
 export function playtestSnapshot(this: DeepdiveScene, ) {
@@ -100,6 +100,11 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           },
           biteAnchor: biteAnchor ? { x: roundMetric(biteAnchor.x), y: roundMetric(biteAnchor.y) } : null,
           joints,
+          spine: creature.spine.map((node) => ({
+            partId: node.partId,
+            offset: roundMetric(node.offset),
+            bend: roundMetric(node.bend),
+          })),
           parts: creature.parts.map((part) => ({
             id: part.id,
             x: roundMetric(part.x),
@@ -250,6 +255,71 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         this.revealSonarAtWorld(creature.x, creature.y, 12);
       }
+    } else if (command === 'liveArticulatedReview') {
+      const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string; mode?: string } : {};
+      const mode = String(payload.mode ?? 'turn');
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
+      if (creature) {
+        const facing = mode.includes('left') ? -1 : 1;
+        const reviewX = WORLD_W * TILE * 0.5;
+        const reviewY = SURFACE_Y + 330;
+        for (let ty = Math.max(7, Math.floor((reviewY - 280) / TILE)); ty <= Math.min(WORLD_H - 2, Math.ceil((reviewY + 280) / TILE)); ty += 1) {
+          for (let tx = Math.max(1, Math.floor((reviewX - 680) / TILE)); tx <= Math.min(WORLD_W - 2, Math.ceil((reviewX + 680) / TILE)); tx += 1) {
+            this.setTile(tx, ty, 'water');
+          }
+        }
+        this.articulatedCreatures.forEach((candidate) => {
+          candidate.reviewFrozen = false;
+        });
+        this.player.x = reviewX + facing * 260;
+        this.player.y = reviewY + (mode.includes('dive') ? 132 : -118);
+        this.player.vx = 0;
+        this.player.vy = 0;
+        this.player.facing.set(-facing, 0);
+        this.player.facingSign = facing < 0 ? 1 : -1;
+        creature.x = reviewX - facing * 130;
+        creature.y = reviewY + 48;
+        creature.homeX = creature.x;
+        creature.homeY = creature.y;
+        creature.vx = facing * creature.speed * 0.92;
+        creature.vy = mode.includes('dive') ? creature.speed * 0.55 : -creature.speed * 0.48;
+        creature.facingSign = facing;
+        creature.aggro = 4.8;
+        creature.phase = 0.4;
+        creature.swimEffort = 0.85;
+        creature.posePitch = 0;
+        creature.attackBlend = mode.includes('lunge') ? 0.5 : 0;
+        creature.state = mode.includes('lunge') ? 'lunge' : 'stalk';
+        creature.stateTimer = mode.includes('lunge') ? 0.8 : 2.5;
+        creature.grabTimer = 0;
+        creature.grabCooldown = 999;
+        creature.bumpCooldown = 999;
+        creature.stunned = 0;
+        creature.parts.forEach((part) => {
+          part.hp = Math.max(1, part.hp);
+          part.hurtFlash = 0;
+          part.detached = false;
+          part.detachVx = 0;
+          part.detachVy = 0;
+          part.detachAngularVelocity = 0;
+        });
+        creature.spine.forEach((node) => {
+          node.offset = 0;
+          node.bend = 0;
+        });
+        state.started = true;
+        state.docked = false;
+        state.atBoat = false;
+        state.paused = false;
+        state.radioOpen = false;
+        state.logbookOpen = false;
+        state.cargoOpen = false;
+        state.lost = false;
+        state.won = false;
+        state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+        this.updateArticulatedParts(creature, 0);
+        this.cameras.main.centerOn(reviewX, reviewY);
+      }
     } else if (command === 'reviewArticulated') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string; mode?: string } : {};
       const mode = typeof value === 'string' ? value : String(payload.mode ?? 'right');
@@ -329,9 +399,14 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         creature.reviewFrozen = false;
         creature.vx = 90;
         creature.vy = 0;
-        const tx = Phaser.Math.Clamp(Math.floor((part.x + TILE * 0.9) / TILE), 1, WORLD_W - 2);
+        this.updateArticulatedParts(creature, 0);
+        const radius = Math.max(8, partManifest(creature, part).hitRadius * ENTITY_SCALE * 0.78);
+        const targetColumn = Phaser.Math.Clamp(Math.floor(part.x / TILE) + 1, 1, WORLD_W - 2);
+        creature.x += targetColumn * TILE - radius * 0.55 - part.x;
+        this.updateArticulatedParts(creature, 0);
+        const tx = Phaser.Math.Clamp(Math.floor((part.x + radius) / TILE), 1, WORLD_W - 2);
         const ty = Phaser.Math.Clamp(Math.floor(part.y / TILE), 7, WORLD_H - 2);
-        this.setTile(tx, ty, 'stone');
+        for (let oy = -1; oy <= 1; oy += 1) this.setTile(tx, Phaser.Math.Clamp(ty + oy, 7, WORLD_H - 2), 'stone');
         this.keepArticulatedCreatureInWater(creature);
         this.updateArticulatedParts(creature, 0);
       }

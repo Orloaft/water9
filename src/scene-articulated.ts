@@ -57,6 +57,24 @@ function spineLagIndexFor(manifest: ArticulatedPartManifest) {
   return Math.max(0, -manifest.offset[0]) / 48;
 }
 
+function spineNodeFor(creature: ArticulatedCreature, manifest: ArticulatedPartManifest) {
+  let node = creature.spine.find((candidate) => candidate.partId === manifest.id);
+  if (!node) {
+    node = { partId: manifest.id, offset: 0, bend: 0 };
+    creature.spine.push(node);
+  }
+  return node;
+}
+
+function restOffsetFor(creature: ArticulatedCreature, manifest: ArticulatedPartManifest, facing: number, rotation: number) {
+  if (!manifest.restOffset) return new Phaser.Math.Vector2();
+  const node = manifest.motion.kind === 'body' || manifest.motion.kind === 'tail'
+    ? creature.spine.find((candidate) => candidate.partId === manifest.id)
+    : undefined;
+  const restY = manifest.restOffset[1] + (node ? node.offset * 0.28 / PART_WORLD_SCALE : 0);
+  return localVectorOffsetFor(facing, rotation, [manifest.restOffset[0], restY]);
+}
+
 function canDetachPart(manifest: ArticulatedPartManifest) {
   return manifest.motion.kind === 'fin' || manifest.motion.kind === 'tail' || manifest.motion.kind === 'jaw';
 }
@@ -127,7 +145,7 @@ export function articulatedJointMetrics(creature: ArticulatedCreature) {
       }
       const parentAnchor = anchorWorldFor(parent, parentManifest, facing, anchorFor(parentManifest, manifest.parentAnchor));
       const childAnchor = anchorWorldFor(child, manifest, facing, anchorFor(manifest, manifest.anchor));
-      const restOffset = manifest.restOffset ? localVectorOffsetFor(facing, parent.rotation, manifest.restOffset) : new Phaser.Math.Vector2();
+      const restOffset = restOffsetFor(creature, manifest, facing, parent.rotation);
       const expectedX = parentAnchor.x + restOffset.x;
       const expectedY = parentAnchor.y + restOffset.y;
       const error = Phaser.Math.Distance.Between(expectedX, expectedY, childAnchor.x, childAnchor.y);
@@ -437,16 +455,45 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   const partById = new Map(creature.parts.map((part) => [part.id, part]));
   const placed = new Set<string>();
   const placing = new Set<string>();
+  const spineMotionCache = new Map<string, { offset: number; bend: number }>();
 
-  const waveFor = (manifest: ReturnType<typeof partManifest>) => {
+  const targetWaveFor = (manifest: ReturnType<typeof partManifest>) => {
     const motion = manifest.motion;
     const motionEffort = motion.kind === 'body' || motion.kind === 'tail' || motion.kind === 'fin' ? swimEffort : 1;
-    return Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * spineLagIndexFor(manifest)) * (motion.amplitude ?? 0) * motionEffort * PART_WORLD_SCALE;
+    const lagIndex = spineLagIndexFor(manifest);
+    const swimWave = Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * lagIndex) * (motion.amplitude ?? 0) * motionEffort * PART_WORLD_SCALE;
+    if (motion.kind !== 'body' && motion.kind !== 'tail') return swimWave;
+    const pitchWake = -swimPitch * Phaser.Math.Clamp(lagIndex, 0, 3.2) * 7.2 * swimEffort;
+    const lungeWake = lungeOpen * Math.sin(creature.phase * 2.1 - lagIndex * 0.82) * 4.8 * swimEffort;
+    return swimWave + pitchWake + lungeWake;
+  };
+
+  const spineMotionFor = (manifest: ReturnType<typeof partManifest>) => {
+    const motion = manifest.motion;
+    if (motion.kind !== 'body' && motion.kind !== 'tail') return { offset: 0, bend: 0 };
+    const cached = spineMotionCache.get(manifest.id);
+    if (cached) return cached;
+    const lagIndex = spineLagIndexFor(manifest);
+    const targetOffset = targetWaveFor(manifest);
+    const targetBend = targetOffset * 0.012 + -swimPitch * Phaser.Math.Clamp(lagIndex * 0.09, 0, 0.24);
+    const node = spineNodeFor(creature, manifest);
+    if (creature.reviewFrozen || (delta <= 0 && !options.preserveSmoothedPose)) {
+      node.offset = targetOffset;
+      node.bend = targetBend;
+    } else if (delta > 0 && !creature.reviewFrozen && !options.preserveSmoothedPose) {
+      const follow = 1 - Math.exp(-(8.8 / (1 + lagIndex * 0.42)) * delta);
+      node.offset = Phaser.Math.Linear(node.offset, targetOffset, follow);
+      node.bend = smoothAngle(node.bend, targetBend, follow);
+    }
+    const resolved = { offset: node.offset, bend: node.bend };
+    spineMotionCache.set(manifest.id, resolved);
+    return resolved;
   };
 
   const motionRotation = (manifest: ReturnType<typeof partManifest>, parent?: ArticulatedPartState) => {
     const motion = manifest.motion;
-    const wave = waveFor(manifest);
+    const spineMotion = spineMotionFor(manifest);
+    const wave = motion.kind === 'body' || motion.kind === 'tail' ? spineMotion.offset : targetWaveFor(manifest);
     const rootRotation = facing * swimPitch;
     const parentRotation = parent?.rotation ?? rootRotation;
     const rotationOffset = facing * (manifest.rotationOffset ?? 0);
@@ -457,7 +504,7 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
       return parentRotation + rotationOffset + facing * wave * 0.018;
     }
     if (motion.kind === 'body' || motion.kind === 'tail') {
-      const localBend = facing * wave * 0.012;
+      const localBend = facing * spineMotion.bend;
       return parent
         ? parentRotation * 0.9 + rootRotation * 0.1 + localBend + rotationOffset
         : rootRotation + localBend + rotationOffset;
@@ -472,7 +519,8 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const motion = manifest.motion;
     const localX = manifest.offset[0] * PART_WORLD_SCALE;
     const localY = manifest.offset[1] * PART_WORLD_SCALE;
-    const wave = waveFor(manifest);
+    const spineMotion = spineMotionFor(manifest);
+    const wave = motion.kind === 'body' || motion.kind === 'tail' ? spineMotion.offset : targetWaveFor(manifest);
     const bodyWave = motion.kind === 'body' || motion.kind === 'tail' ? wave : 0;
     const finWave = motion.kind === 'fin' ? wave : 0;
     const jawOpen = motion.kind === 'jaw' ? (Math.sin(creature.phase * 8) * 0.16 + lungeOpen * 0.42) * Math.sign(localY || 1) : 0;
@@ -500,7 +548,13 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
       const parentManifest = partManifest(creature, parent);
       part.rotation = motionRotation(manifest, parent);
       const parentAnchor = anchorWorldFor(parent, parentManifest, facing, anchorFor(parentManifest, manifest.parentAnchor));
-      const restOffset = manifest.restOffset ? localVectorOffsetFor(facing, parent.rotation, manifest.restOffset) : new Phaser.Math.Vector2();
+      const spineMotion = spineMotionFor(manifest);
+      if (manifest.motion.kind === 'body' || manifest.motion.kind === 'tail') {
+        const node = spineNodeFor(creature, manifest);
+        node.offset = spineMotion.offset;
+        node.bend = spineMotion.bend;
+      }
+      const restOffset = restOffsetFor(creature, manifest, facing, parent.rotation);
       const childAnchorOffset = anchoredOffsetFor(manifest, facing, part.rotation, anchorFor(manifest, manifest.anchor));
       part.x = parentAnchor.x + restOffset.x - childAnchorOffset.x;
       part.y = parentAnchor.y + restOffset.y - childAnchorOffset.y;

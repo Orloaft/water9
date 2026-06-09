@@ -50,6 +50,7 @@ export type PlaytestCommand =
   | 'refill'
   | 'teleportDepth'
   | 'teleportToArticulated'
+  | 'liveArticulatedReview'
   | 'reviewArticulated'
   | 'advanceArticulatedReview'
   | 'damageArticulatedPart'
@@ -241,6 +242,12 @@ export interface ArticulatedSocketOverlayState {
   sprite?: Phaser.GameObjects.Image;
 }
 
+export interface ArticulatedSpineNodeState {
+  partId: string;
+  offset: number;
+  bend: number;
+}
+
 export interface ArticulatedCreature {
   kind: 'articulated';
   id: string;
@@ -278,6 +285,7 @@ export interface ArticulatedCreature {
   reviewFrozen?: boolean;
   manifest: ArticulatedCreatureManifest;
   parts: ArticulatedPartState[];
+  spine: ArticulatedSpineNodeState[];
   socketOverlays: ArticulatedSocketOverlayState[];
 }
 

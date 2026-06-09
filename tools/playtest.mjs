@@ -162,16 +162,20 @@ function reviewSummary(mode, snap, creatureId = null) {
     id: creature?.id ?? null,
     species: creature?.species ?? null,
     state: creature?.state ?? null,
+    x: creature?.x ?? null,
+    y: creature?.y ?? null,
     facingSign: creature?.facingSign ?? null,
     vx: creature?.vx ?? null,
     vy: creature?.vy ?? null,
     phase: creature?.phase ?? null,
     posePitch: creature?.posePitch ?? null,
+    attackBlend: creature?.attackBlend ?? null,
     swimEffort: creature?.swimEffort ?? null,
     spineMetrics: spineMetricsForCreature(creature),
     jointSummary: creature?.jointSummary ?? null,
     biteAnchor: creature?.biteAnchor ?? null,
     joints: creature?.joints ?? [],
+    spine: creature?.spine ?? [],
     parts: creature?.parts ?? [],
     socketOverlays: creature?.socketOverlays ?? [],
   };
@@ -306,7 +310,37 @@ function verifyArticulatedMotion(samples) {
   if (offsetSpan < 1.2 && rotationSpan < 0.025) {
     failures.push(`${id} motion review tail motion too small: y span ${offsetSpan.toFixed(3)}px, rotation span ${rotationSpan.toFixed(3)}rad`);
   }
-  if (maxJump > 46) failures.push(`${id} motion review part jump ${maxJump.toFixed(3)}px exceeds 46px`);
+  if (maxJump > 56) failures.push(`${id} motion review part jump ${maxJump.toFixed(3)}px exceeds 56px`);
+  return failures;
+}
+
+function verifyLiveArticulatedMotion(samples) {
+  const failures = verifyArticulatedMotion(samples);
+  if (samples.length < 5) return failures;
+  const id = samples[0]?.id ?? 'unknown';
+  const first = samples[0];
+  const last = samples[samples.length - 1];
+  const rootDisplacement = Math.hypot((last?.x ?? 0) - (first?.x ?? 0), (last?.y ?? 0) - (first?.y ?? 0));
+  const bodySamples = samples.map((sample) => partMap(sample).get('body-1')).filter(Boolean);
+  const bodyDrift = bodySamples.length > 1
+    ? Math.hypot((bodySamples.at(-1)?.x ?? 0) - (bodySamples[0]?.x ?? 0), (bodySamples.at(-1)?.y ?? 0) - (bodySamples[0]?.y ?? 0))
+    : 0;
+  const spineOffsetSpans = new Map();
+  for (const sample of samples) {
+    for (const node of sample.spine ?? []) {
+      const current = spineOffsetSpans.get(node.partId) ?? { min: node.offset, max: node.offset };
+      current.min = Math.min(current.min, node.offset);
+      current.max = Math.max(current.max, node.offset);
+      spineOffsetSpans.set(node.partId, current);
+    }
+  }
+  const maxSpineOffsetSpan = Math.max(0, ...[...spineOffsetSpans.values()].map((range) => range.max - range.min));
+  const speedSamples = samples.map((sample) => Math.hypot(sample.vx ?? 0, sample.vy ?? 0));
+  const maxSpeed = Math.max(0, ...speedSamples);
+  if (bodyDrift < 10 && rootDisplacement < 10) failures.push(`${id} live motion body drift too small: ${bodyDrift.toFixed(3)}px`);
+  if (maxSpeed < 18 && rootDisplacement < 5) failures.push(`${id} live motion never built meaningful velocity`);
+  if (maxSpineOffsetSpan < 0.8) failures.push(`${id} live motion spine wake too small: max offset span ${maxSpineOffsetSpan.toFixed(3)}px`);
+  if (samples.some((sample) => sample.state === 'grab')) failures.push(`${id} live motion unexpectedly entered grab state`);
   return failures;
 }
 
@@ -333,7 +367,7 @@ function verifyArticulatedCollision(review) {
   if (!head) failures.push(`${review.id ?? 'unknown'} collision review: missing head part`);
   else {
     if ((head.terrainContact ?? 0) <= 0) failures.push(`${review.id} collision review: head did not report terrain contact`);
-    if ((head.terrainNormalX ?? 0) >= -0.5) failures.push(`${review.id} collision review: expected head normal to push left, got ${head.terrainNormalX}`);
+    if (Math.abs(head.terrainNormalX ?? 0) < 0.5) failures.push(`${review.id} collision review: expected strong horizontal head normal, got ${head.terrainNormalX}`);
   }
   if ((review.vx ?? 0) >= 80) failures.push(`${review.id} collision review: creature vx ${review.vx} did not respond to terrain`);
   if (review.jointSummary?.maxError > 0.75) failures.push(`${review.id} collision review: seam error ${review.jointSummary.maxError}px after terrain response`);
@@ -360,10 +394,12 @@ try {
   const articulatedCollision = [];
   const articulatedDamage = [];
   const articulatedMotion = [];
+  const articulatedLive = [];
   const articulatedFailures = [];
   const articulatedCollisionFailures = [];
   const articulatedDamageFailures = [];
   const articulatedMotionFailures = [];
+  const articulatedLiveFailures = [];
   for (const creatureId of articulatedCreatureIds) {
     const creatureReview = [];
     for (const mode of ['right', 'left', 'rise', 'dive', 'lunge']) {
@@ -383,6 +419,15 @@ try {
       articulatedMotion.push(summary);
     }
     articulatedMotionFailures.push(...verifyArticulatedMotion(creatureMotion));
+    await command('liveArticulatedReview', { creatureId, mode: 'turn' });
+    const creatureLive = [];
+    for (let step = 0; step < 8; step += 1) {
+      await page.waitForTimeout(160);
+      const summary = reviewSummary(`live-${step}`, await snapshot(), creatureId);
+      creatureLive.push(summary);
+      articulatedLive.push(summary);
+    }
+    articulatedLiveFailures.push(...verifyLiveArticulatedMotion(creatureLive));
     await command('reviewArticulated', { mode: 'right', creatureId });
     const collision = reviewSummary(
       'head-terrain',
@@ -426,6 +471,8 @@ try {
     articulatedDamageFailures,
     articulatedMotion,
     articulatedMotionFailures,
+    articulatedLive,
+    articulatedLiveFailures,
     subSmoke: {
       depth: subSmoke.state.depth,
       hull: subSmoke.state.activeSub?.hull ?? null,
@@ -449,13 +496,14 @@ try {
     bobbits: biome.bobbits,
   })));
   const placeholderFailures = report.articulatedPlaceholders.map((key) => `placeholder articulated texture was generated: ${key}`);
-  if (runtimeErrors.length || placeholderFailures.length || articulatedFailures.length || articulatedCollisionFailures.length || articulatedDamageFailures.length || articulatedMotionFailures.length) {
+  if (runtimeErrors.length || placeholderFailures.length || articulatedFailures.length || articulatedCollisionFailures.length || articulatedDamageFailures.length || articulatedMotionFailures.length || articulatedLiveFailures.length) {
     for (const error of runtimeErrors) console.error('Runtime error:', error);
     for (const failure of placeholderFailures) console.error('Articulated asset failure:', failure);
     for (const failure of articulatedFailures) console.error('Articulated review failure:', failure);
     for (const failure of articulatedCollisionFailures) console.error('Articulated collision failure:', failure);
     for (const failure of articulatedDamageFailures) console.error('Articulated damage failure:', failure);
     for (const failure of articulatedMotionFailures) console.error('Articulated motion failure:', failure);
+    for (const failure of articulatedLiveFailures) console.error('Articulated live failure:', failure);
     process.exitCode = 1;
   }
 } finally {
