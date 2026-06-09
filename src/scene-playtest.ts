@@ -85,6 +85,11 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
   }
 
 export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, value?: unknown) {
+    if (command !== 'reviewArticulated') {
+      this.articulatedCreatures.forEach((creature) => {
+        creature.reviewFrozen = false;
+      });
+    }
     if (command === 'start') {
       if (!state.started) this.startRun();
     } else if (command === 'dive') {
@@ -191,7 +196,16 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         const facing = mode.includes('left') ? -1 : 1;
         const reviewX = WORLD_W * TILE * 0.5 + facing * 140;
         const reviewY = SURFACE_Y + 220;
-        this.player.x = reviewX - facing * 170;
+        const playerGap = 130;
+        for (let ty = Math.max(7, Math.floor((reviewY - 230) / TILE)); ty <= Math.min(WORLD_H - 2, Math.ceil((reviewY + 230) / TILE)); ty += 1) {
+          for (let tx = Math.max(1, Math.floor((reviewX - 560) / TILE)); tx <= Math.min(WORLD_W - 2, Math.ceil((reviewX + 560) / TILE)); tx += 1) {
+            this.setTile(tx, ty, 'water');
+          }
+        }
+        this.articulatedCreatures.forEach((candidate) => {
+          candidate.reviewFrozen = candidate === creature;
+        });
+        this.player.x = reviewX - facing * playerGap;
         this.player.y = reviewY;
         this.player.vx = 0;
         this.player.vy = 0;
@@ -205,6 +219,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         creature.vy = 0;
         creature.facingSign = facing;
         creature.aggro = 0;
+        creature.phase = mode.includes('lunge') ? 0.5 : 1.1;
         creature.state = mode.includes('lunge') ? 'lunge' : 'recover';
         creature.stateTimer = 999;
         creature.grabTimer = 0;
@@ -217,7 +232,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.atBoat = false;
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         this.updateArticulatedParts(creature, 0);
-        this.cameras.main.centerOn(this.player.x + facing * 120, this.player.y);
+        this.cameras.main.centerOn(reviewX, reviewY);
       }
     } else if (command === 'setOxygen') {
       state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());

@@ -163,6 +163,13 @@ export interface ArticulatedPartManifest {
   id: string;
   textureKey: string;
   texture: string;
+  parentId?: string;
+  parentAnchor?: string;
+  anchor?: string;
+  anchors?: Record<string, [number, number]>;
+  restOffset?: [number, number];
+  inheritRotation?: boolean;
+  rotationOffset?: number;
   offset: [number, number];
   origin: [number, number];
   size: [number, number];
@@ -232,6 +239,7 @@ export interface ArticulatedCreature {
   stateTimer: number;
   grabTimer: number;
   grabCooldown: number;
+  reviewFrozen?: boolean;
   manifest: ArticulatedCreatureManifest;
   parts: ArticulatedPartState[];
 }

@@ -20,6 +20,14 @@
           "id": "tail",
           "textureKey": "fauna-abyssal-serpent-mantle-horror-tail",
           "texture": "fauna-abyssal-serpent-mantle-horror-tail.png",
+          "parentId": "body-3",
+          "parentAnchor": "back",
+          "anchor": "front",
+          "anchors": {
+            "front": [42, 0],
+            "tip": [-52, 4]
+          },
+          "restOffset": [12.6, 4],
           "offset": [-138, 4],
           "origin": [0.78, 0.5],
           "size": [112, 72],
@@ -33,6 +41,14 @@
           "id": "body-3",
           "textureKey": "fauna-abyssal-serpent-mantle-horror-body-3",
           "texture": "fauna-abyssal-serpent-mantle-horror-body-3.png",
+          "parentId": "body-2",
+          "parentAnchor": "back",
+          "anchor": "front",
+          "anchors": {
+            "front": [44, 0],
+            "back": [-44, 0]
+          },
+          "restOffset": [51, 0],
           "offset": [-96, 0],
           "origin": [0.5, 0.5],
           "size": [112, 66],
@@ -46,6 +62,14 @@
           "id": "body-2",
           "textureKey": "fauna-abyssal-serpent-mantle-horror-body-2",
           "texture": "fauna-abyssal-serpent-mantle-horror-body-2.png",
+          "parentId": "body-1",
+          "parentAnchor": "back",
+          "anchor": "front",
+          "anchors": {
+            "front": [48, 0],
+            "back": [-48, 0]
+          },
+          "restOffset": [57, 0],
           "offset": [-55, 0],
           "origin": [0.5, 0.5],
           "size": [124, 76],
@@ -59,6 +83,13 @@
           "id": "fin-back",
           "textureKey": "fauna-abyssal-serpent-mantle-horror-fin-back",
           "texture": "fauna-abyssal-serpent-mantle-horror-fin-back.png",
+          "parentId": "body-1",
+          "parentAnchor": "dorsalFin",
+          "anchor": "root",
+          "anchors": {
+            "root": [0, 26]
+          },
+          "restOffset": [4.9, -10.1],
           "offset": [-22, -42],
           "origin": [0.44, 0.86],
           "size": [82, 78],
@@ -72,6 +103,12 @@
           "id": "body-1",
           "textureKey": "fauna-abyssal-serpent-mantle-horror-body-1",
           "texture": "fauna-abyssal-serpent-mantle-horror-body-1.png",
+          "anchors": {
+            "front": [52, 0],
+            "back": [-50, 0],
+            "dorsalFin": [-8, -34],
+            "ventralFin": [0, 34]
+          },
           "offset": [-14, 0],
           "origin": [0.5, 0.5],
           "size": [130, 82],
@@ -85,6 +122,14 @@
           "id": "jaw",
           "textureKey": "fauna-abyssal-serpent-mantle-horror-jaw",
           "texture": "fauna-abyssal-serpent-mantle-horror-jaw.png",
+          "parentId": "head",
+          "parentAnchor": "lowerJaw",
+          "anchor": "hinge",
+          "anchors": {
+            "hinge": [-34, -10],
+            "bite": [42, 14]
+          },
+          "restOffset": [-31.8, 6.1],
           "offset": [65, 20],
           "origin": [0.16, 0.24],
           "size": [100, 62],
@@ -98,6 +143,14 @@
           "id": "head",
           "textureKey": "fauna-abyssal-serpent-mantle-horror-head",
           "texture": "fauna-abyssal-serpent-mantle-horror-head.png",
+          "parentId": "body-1",
+          "parentAnchor": "front",
+          "anchor": "neck",
+          "anchors": {
+            "neck": [-52, 0],
+            "lowerJaw": [42, 20]
+          },
+          "restOffset": [-35.2, 0],
           "offset": [52, 0],
           "origin": [0.48, 0.5],
           "size": [140, 88],
@@ -111,6 +164,13 @@
           "id": "fin-front",
           "textureKey": "fauna-abyssal-serpent-mantle-horror-fin-front",
           "texture": "fauna-abyssal-serpent-mantle-horror-fin-front.png",
+          "parentId": "body-1",
+          "parentAnchor": "ventralFin",
+          "anchor": "root",
+          "anchors": {
+            "root": [-20, -26]
+          },
+          "restOffset": [2.9, 0.2],
           "offset": [-8, 34],
           "origin": [0.32, 0.18],
           "size": [94, 82],

@@ -32,6 +32,20 @@ export function populateArticulatedCreatures(this: DeepdiveScene) {
 
 export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, controls?: ControlState) {
   for (const creature of this.articulatedCreatures) {
+    if (creature.dead) {
+      creature.parts.forEach((part) => part.sprite?.setVisible(false));
+      continue;
+    }
+    if (creature.reviewFrozen) {
+      creature.bumpCooldown = 0;
+      creature.scanPulse = 0;
+      creature.hurtFlash = 0;
+      creature.parts.forEach((part) => {
+        part.hurtFlash = 0;
+      });
+      this.updateArticulatedParts(creature, delta);
+      continue;
+    }
     creature.phase += delta;
     creature.bumpCooldown = Math.max(0, creature.bumpCooldown - delta);
     creature.stunned = Math.max(0, creature.stunned - delta);
@@ -41,11 +55,6 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     creature.parts.forEach((part) => {
       part.hurtFlash = Math.max(0, part.hurtFlash - delta * 4.2);
     });
-
-    if (creature.dead) {
-      creature.parts.forEach((part) => part.sprite?.setVisible(false));
-      continue;
-    }
 
     if (!creature.scanned && !creature.scanning) {
       creature.scan = Math.max(0, creature.scan - delta * 0.55);
@@ -178,8 +187,51 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   const forward = new Phaser.Math.Vector2(facing * Math.cos(swimPitch), Math.sin(swimPitch));
   const normal = new Phaser.Math.Vector2(-facing * Math.sin(swimPitch), Math.cos(swimPitch));
   const lungeOpen = creature.state === 'lunge' || creature.state === 'grab' ? 1 : 0;
-  creature.parts.forEach((part, index) => {
-    const manifest = partManifest(creature, part);
+  const partById = new Map(creature.parts.map((part) => [part.id, part]));
+  const indexById = new Map(creature.parts.map((part, index) => [part.id, index]));
+  const placed = new Set<string>();
+  const placing = new Set<string>();
+
+  const localVectorOffset = (rotation: number, local: [number, number]) => {
+    const localX = local[0] * PART_WORLD_SCALE * facing;
+    const localY = local[1] * PART_WORLD_SCALE;
+    const cos = Math.cos(rotation);
+    const sin = Math.sin(rotation);
+    return new Phaser.Math.Vector2(localX * cos - localY * sin, localX * sin + localY * cos);
+  };
+
+  const anchoredOffset = (manifest: ReturnType<typeof partManifest>, rotation: number, local: [number, number]) => {
+    const originX = (manifest.origin[0] - 0.5) * manifest.size[0];
+    const originY = (manifest.origin[1] - 0.5) * manifest.size[1];
+    return localVectorOffset(rotation, [local[0] - originX, local[1] - originY]);
+  };
+
+  const anchorWorld = (part: ArticulatedPartState, manifest: ReturnType<typeof partManifest>, local: [number, number]) => {
+    const offset = anchoredOffset(manifest, part.rotation, local);
+    return new Phaser.Math.Vector2(part.x + offset.x, part.y + offset.y);
+  };
+
+  const anchorFor = (manifest: ReturnType<typeof partManifest>, name: string | undefined) => (
+    name && manifest.anchors?.[name] ? manifest.anchors[name] : ([0, 0] as [number, number])
+  );
+
+  const motionRotation = (manifest: ReturnType<typeof partManifest>, index: number, parent?: ArticulatedPartState) => {
+    const motion = manifest.motion;
+    const wave = Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * index) * (motion.amplitude ?? 0) * PART_WORLD_SCALE;
+    const parentRotation = parent?.rotation ?? 0;
+    if (motion.kind === 'jaw') {
+      return parentRotation + facing * ((Math.sin(creature.phase * 8) * 0.16 + lungeOpen * 0.42) * Math.sign(manifest.offset[1] || 1));
+    }
+    if (motion.kind === 'fin') {
+      return parentRotation + facing * wave * 0.018;
+    }
+    if (motion.kind === 'body' || motion.kind === 'tail') {
+      return facing * (swimPitch + wave * 0.012);
+    }
+    return facing * swimPitch;
+  };
+
+  const placeOffsetPart = (part: ArticulatedPartState, manifest: ReturnType<typeof partManifest>, index: number) => {
     const motion = manifest.motion;
     const localX = manifest.offset[0] * PART_WORLD_SCALE;
     const localY = manifest.offset[1] * PART_WORLD_SCALE;
@@ -190,6 +242,36 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     part.x = creature.x + forward.x * localX + normal.x * (localY + bodyWave);
     part.y = creature.y + forward.y * localX + normal.y * (localY + bodyWave);
     part.rotation = facing * (swimPitch + bodyWave * 0.012 + finWave * 0.018 + jawOpen);
+  };
+
+  const placePart = (part: ArticulatedPartState, index: number): void => {
+    if (placed.has(part.id)) return;
+    const manifest = partManifest(creature, part);
+    const parent = manifest.parentId ? partById.get(manifest.parentId) : undefined;
+    if (placing.has(part.id)) {
+      placeOffsetPart(part, manifest, index);
+      placed.add(part.id);
+      return;
+    }
+    placing.add(part.id);
+    if (parent) {
+      placePart(parent, indexById.get(parent.id) ?? index);
+      const parentManifest = partManifest(creature, parent);
+      part.rotation = motionRotation(manifest, index, parent);
+      const parentAnchor = anchorWorld(parent, parentManifest, anchorFor(parentManifest, manifest.parentAnchor));
+      const restOffset = manifest.restOffset ? localVectorOffset(parent.rotation, manifest.restOffset) : new Phaser.Math.Vector2();
+      const childAnchorOffset = anchoredOffset(manifest, part.rotation, anchorFor(manifest, manifest.anchor));
+      part.x = parentAnchor.x + restOffset.x - childAnchorOffset.x;
+      part.y = parentAnchor.y + restOffset.y - childAnchorOffset.y;
+    } else {
+      placeOffsetPart(part, manifest, index);
+    }
+    placing.delete(part.id);
+    placed.add(part.id);
+  };
+
+  creature.parts.forEach((part, index) => {
+    placePart(part, index);
   });
 }
 
@@ -348,11 +430,11 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       this.actors.strokeCircle(creature.x, creature.y, creature.radius + 12);
     }
     if (attacking) {
-      const markerY = creature.y - creature.radius - 24 - Math.sin(creature.phase * 8) * 2;
-      this.actors.fillStyle(0xff4f64, alpha * 0.86);
-      this.actors.fillTriangle(creature.x, markerY, creature.x - 9, markerY - 16, creature.x + 9, markerY - 16);
-      this.actors.lineStyle(2, 0xff4f64, alpha * 0.5);
-      this.actors.strokeCircle(creature.x, creature.y, creature.radius + 18 + Math.sin(creature.phase * 8) * 4);
+      const head = creature.parts.find((part) => part.id === 'head') ?? creature.parts[0];
+      const markerX = head?.x ?? creature.x;
+      const markerY = (head?.y ?? creature.y) - 62 * PART_WORLD_SCALE - Math.sin(creature.phase * 8) * 2;
+      this.actors.fillStyle(0xff4f64, alpha * 0.68);
+      this.actors.fillTriangle(markerX, markerY, markerX - 8, markerY - 14, markerX + 8, markerY - 14);
     }
     if (creature.scan > 0 && !creature.scanned) {
       this.actors.lineStyle(3, 0xb9f27c, 0.35 + creature.scan * 0.5);
