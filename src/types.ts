@@ -50,6 +50,7 @@ export type PlaytestCommand =
   | 'refill'
   | 'teleportDepth'
   | 'teleportToArticulated'
+  | 'reviewArticulated'
   | 'setOxygen'
   | 'setHull';
 export type DiverAnimation =

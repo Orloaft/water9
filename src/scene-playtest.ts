@@ -184,6 +184,41 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         this.revealSonarAtWorld(creature.x, creature.y, 12);
       }
+    } else if (command === 'reviewArticulated') {
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead);
+      if (creature) {
+        const mode = String(value);
+        const facing = mode.includes('left') ? -1 : 1;
+        const reviewX = WORLD_W * TILE * 0.5 + facing * 140;
+        const reviewY = SURFACE_Y + 220;
+        this.player.x = reviewX - facing * 170;
+        this.player.y = reviewY;
+        this.player.vx = 0;
+        this.player.vy = 0;
+        this.player.facing.set(facing, 0);
+        this.player.facingSign = facing;
+        creature.x = reviewX;
+        creature.y = reviewY;
+        creature.homeX = reviewX;
+        creature.homeY = reviewY;
+        creature.vx = 0;
+        creature.vy = 0;
+        creature.facingSign = facing;
+        creature.aggro = 0;
+        creature.state = mode.includes('lunge') ? 'lunge' : 'recover';
+        creature.stateTimer = 999;
+        creature.grabTimer = 0;
+        creature.grabCooldown = 999;
+        creature.parts.forEach((part) => {
+          part.hp = Math.max(1, part.hp);
+          part.hurtFlash = 0;
+        });
+        state.docked = false;
+        state.atBoat = false;
+        state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+        this.updateArticulatedParts(creature, 0);
+        this.cameras.main.centerOn(this.player.x + facing * 120, this.player.y);
+      }
     } else if (command === 'setOxygen') {
       state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());
     } else if (command === 'setHull') {
