@@ -26,6 +26,7 @@ ALPHA_THRESHOLD = 16
 MIN_OVERLAP_PIXELS = 48
 MIN_SOCKET_CHILD_PIXELS = 24
 MIN_SOCKET_PARENT_PIXELS = 32
+MAX_SOCKET_PARENT_COLOR_DISTANCE = 135
 DEFAULT_PHASE_SAMPLES = 8
 POSES = (
     ("right", 1, 0.0, 0.0),
@@ -50,6 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-overlap", type=int, default=MIN_OVERLAP_PIXELS)
     parser.add_argument("--min-socket-child-overlap", type=int, default=MIN_SOCKET_CHILD_PIXELS)
     parser.add_argument("--min-socket-parent-overlap", type=int, default=MIN_SOCKET_PARENT_PIXELS)
+    parser.add_argument("--max-socket-parent-color-distance", type=float, default=MAX_SOCKET_PARENT_COLOR_DISTANCE)
     parser.add_argument("--phase-samples", type=int, default=DEFAULT_PHASE_SAMPLES)
     return parser.parse_args()
 
@@ -208,12 +210,50 @@ def alpha_points(part: dict[str, Any], image: Image.Image, placement: Placement,
     return points
 
 
+def color_points(part: dict[str, Any], image: Image.Image, placement: Placement, facing: int) -> dict[tuple[int, int], tuple[int, int, int]]:
+    pixels = image.load()
+    width, height = image.size
+    origin_x, origin_y = part["origin"]
+    cos_r = math.cos(placement.rotation)
+    sin_r = math.sin(placement.rotation)
+    points: dict[tuple[int, int], tuple[int, int, int]] = {}
+    for py in range(height):
+        for px in range(width):
+            r, g, b, alpha = pixels[px, py]
+            if alpha <= ALPHA_THRESHOLD:
+                continue
+            local_x = facing * (px - origin_x * width) * PART_WORLD_SCALE
+            local_y = (py - origin_y * height) * PART_WORLD_SCALE
+            world_x = placement.x + local_x * cos_r - local_y * sin_r
+            world_y = placement.y + local_x * sin_r + local_y * cos_r
+            points[(round(world_x), round(world_y))] = (r, g, b)
+    return points
+
+
+def mean_color_distance(
+    left: dict[tuple[int, int], tuple[int, int, int]],
+    right: dict[tuple[int, int], tuple[int, int, int]],
+    shared_points: set[tuple[int, int]],
+) -> float:
+    if not shared_points:
+        return 0
+    return sum(
+        math.sqrt(
+            (left[point][0] - right[point][0]) ** 2
+            + (left[point][1] - right[point][1]) ** 2
+            + (left[point][2] - right[point][2]) ** 2
+        )
+        for point in shared_points
+    ) / len(shared_points)
+
+
 def validate_creature(
     creature: dict[str, Any],
     asset_dir: Path,
     min_overlap: int,
     min_socket_child_overlap: int,
     min_socket_parent_overlap: int,
+    max_socket_parent_color_distance: float,
     phases: list[float],
 ) -> tuple[list[str], int]:
     failures: list[str] = []
@@ -233,10 +273,11 @@ def validate_creature(
             checked_poses += 1
             pose_name = f"{mode_name}@{phase:.2f}"
             placements = place_parts(creature, facing, pitch, phase, attack_blend)
-            masks = {
-                part["id"]: alpha_points(part, images[part["id"]], placements[part["id"]], facing)
+            maps = {
+                part["id"]: color_points(part, images[part["id"]], placements[part["id"]], facing)
                 for part in creature["parts"]
             }
+            masks = {part_id: set(points) for part_id, points in maps.items()}
             for part in creature["parts"]:
                 parent_id = part.get("parentId")
                 if not parent_id:
@@ -255,9 +296,11 @@ def validate_creature(
                 if not parent or not child:
                     continue
                 overlay_placement = place_socket_overlay(overlay, placements[parent["id"]], facing)
-                overlay_mask = alpha_points(overlay, overlay_images[overlay["id"]], overlay_placement, facing)
+                overlay_map = color_points(overlay, overlay_images[overlay["id"]], overlay_placement, facing)
+                overlay_mask = set(overlay_map)
                 child_overlap = len(overlay_mask & masks[child["id"]])
-                parent_overlap = len(overlay_mask & masks[parent["id"]])
+                parent_shared = overlay_mask & masks[parent["id"]]
+                parent_overlap = len(parent_shared)
                 if child_overlap < min_socket_child_overlap:
                     failures.append(
                         f"{creature['id']} {pose_name} socket {overlay['id']} covers child {child['id']} by "
@@ -268,6 +311,13 @@ def validate_creature(
                         f"{creature['id']} {pose_name} socket {overlay['id']} aligns to parent {parent['id']} by "
                         f"{parent_overlap}px below {min_socket_parent_overlap}px"
                     )
+                elif max_socket_parent_color_distance >= 0:
+                    color_distance = mean_color_distance(overlay_map, maps[parent["id"]], parent_shared)
+                    if color_distance > max_socket_parent_color_distance:
+                        failures.append(
+                            f"{creature['id']} {pose_name} socket {overlay['id']} parent color distance "
+                            f"{color_distance:.1f} exceeds {max_socket_parent_color_distance:.1f}"
+                        )
 
     return failures, checked_poses
 
@@ -285,6 +335,7 @@ def main() -> int:
             args.min_overlap,
             args.min_socket_child_overlap,
             args.min_socket_parent_overlap,
+            args.max_socket_parent_color_distance,
             phases,
         )
         failures.extend(creature_failures)
