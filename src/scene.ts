@@ -746,6 +746,8 @@ export interface DeepdiveScene {
   steerArticulatedCreature: OmitThisParameter<typeof articulatedNs.steerArticulatedCreature>;
   keepArticulatedCreatureInWater: OmitThisParameter<typeof articulatedNs.keepArticulatedCreatureInWater>;
   updateArticulatedParts: OmitThisParameter<typeof articulatedNs.updateArticulatedParts>;
+  articulatedPartAnchorWorld: OmitThisParameter<typeof articulatedNs.articulatedPartAnchorWorld>;
+  articulatedJointMetrics: OmitThisParameter<typeof articulatedNs.articulatedJointMetrics>;
   resolveArticulatedGrab: OmitThisParameter<typeof articulatedNs.resolveArticulatedGrab>;
   bumpArticulatedCreature: OmitThisParameter<typeof articulatedNs.bumpArticulatedCreature>;
   closestArticulatedPartTo: OmitThisParameter<typeof articulatedNs.closestArticulatedPartTo>;

@@ -64,22 +64,57 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         vx: Math.round(this.player.vx),
         vy: Math.round(this.player.vy),
       },
-      articulatedCreatures: this.articulatedCreatures.map((creature) => ({
-        id: creature.id,
-        species: creature.species,
-        x: Math.round(creature.x),
-        y: Math.round(creature.y),
-        hp: Math.round(creature.hp),
-        state: creature.state,
-        scanned: creature.scanned,
-        dead: creature.dead,
-        parts: creature.parts.map((part) => ({
-          id: part.id,
-          x: Math.round(part.x),
-          y: Math.round(part.y),
-          hp: Math.round(part.hp),
-        })),
-      })),
+      articulatedCreatures: this.articulatedCreatures.map((creature) => {
+        const joints = this.articulatedJointMetrics(creature).map((joint) => ({
+          partId: joint.partId,
+          parentId: joint.parentId,
+          error: roundMetric(joint.error),
+          stress: roundMetric(joint.stress),
+        }));
+        const maxJointError = joints.reduce((max, joint) => Math.max(max, joint.error), 0);
+        const maxJointStress = joints.reduce((max, joint) => Math.max(max, joint.stress), 0);
+        const biteAnchor = this.articulatedPartAnchorWorld(creature, 'jaw', 'bite');
+        return {
+          id: creature.id,
+          species: creature.species,
+          x: roundMetric(creature.x),
+          y: roundMetric(creature.y),
+          vx: roundMetric(creature.vx),
+          vy: roundMetric(creature.vy),
+          facingSign: creature.facingSign,
+          phase: roundMetric(creature.phase),
+          posePitch: roundMetric(creature.posePitch),
+          attackBlend: roundMetric(creature.attackBlend),
+          hp: Math.round(creature.hp),
+          state: creature.state,
+          scanned: creature.scanned,
+          dead: creature.dead,
+          jointSummary: {
+            count: joints.length,
+            missing: joints.filter((joint) => !Number.isFinite(joint.error)).length,
+            maxError: roundMetric(maxJointError),
+            maxStress: roundMetric(maxJointStress),
+          },
+          biteAnchor: biteAnchor ? { x: roundMetric(biteAnchor.x), y: roundMetric(biteAnchor.y) } : null,
+          joints,
+          parts: creature.parts.map((part) => ({
+            id: part.id,
+            x: roundMetric(part.x),
+            y: roundMetric(part.y),
+            rotation: roundMetric(part.rotation),
+            hp: Math.round(part.hp),
+            jointStress: roundMetric(part.jointStress),
+            sprite: part.sprite
+              ? {
+                visible: part.sprite.visible,
+                scaleX: roundMetric(part.sprite.scaleX),
+                scaleY: roundMetric(part.sprite.scaleY),
+                depth: roundMetric(part.sprite.depth),
+              }
+              : null,
+          })),
+        };
+      }),
       world: this.playtestWorldSurvey(),
     };
   }

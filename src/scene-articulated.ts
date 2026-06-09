@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature, ArticulatedPartState, ControlState } from './types';
+import type { ArticulatedCreature, ArticulatedPartManifest, ArticulatedPartState, ControlState } from './types';
 import { ENTITY_SCALE,PLAYER_CONTACT_RADIUS,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles } from './content';
 import { state } from './state';
@@ -13,6 +13,82 @@ const SERPENT_DETECTION_RANGE = 430;
 const SERPENT_LEASH_RANGE = 720;
 const SERPENT_GRAB_SECONDS = 1.18;
 const SERPENT_GRAB_COOLDOWN = 5.5;
+
+function facingFor(creature: ArticulatedCreature) {
+  return creature.facingSign < 0 ? -1 : 1;
+}
+
+function manifestById(creature: ArticulatedCreature, id: string) {
+  return creature.manifest.parts.find((candidate) => candidate.id === id);
+}
+
+function anchorFor(manifest: ArticulatedPartManifest, name: string | undefined) {
+  return name && manifest.anchors?.[name] ? manifest.anchors[name] : ([0, 0] as [number, number]);
+}
+
+function localVectorOffsetFor(facing: number, rotation: number, local: [number, number]) {
+  const localX = local[0] * PART_WORLD_SCALE * facing;
+  const localY = local[1] * PART_WORLD_SCALE;
+  const cos = Math.cos(rotation);
+  const sin = Math.sin(rotation);
+  return new Phaser.Math.Vector2(localX * cos - localY * sin, localX * sin + localY * cos);
+}
+
+function anchoredOffsetFor(manifest: ArticulatedPartManifest, facing: number, rotation: number, local: [number, number]) {
+  const originX = (manifest.origin[0] - 0.5) * manifest.size[0];
+  const originY = (manifest.origin[1] - 0.5) * manifest.size[1];
+  return localVectorOffsetFor(facing, rotation, [local[0] - originX, local[1] - originY]);
+}
+
+function anchorWorldFor(part: ArticulatedPartState, manifest: ArticulatedPartManifest, facing: number, local: [number, number]) {
+  const offset = anchoredOffsetFor(manifest, facing, part.rotation, local);
+  return new Phaser.Math.Vector2(part.x + offset.x, part.y + offset.y);
+}
+
+function smoothAngle(current: number, target: number, amount: number) {
+  return current + Phaser.Math.Angle.Wrap(target - current) * amount;
+}
+
+export function articulatedPartAnchorWorld(creature: ArticulatedCreature, partId: string, anchorName: string) {
+  const part = creature.parts.find((candidate) => candidate.id === partId);
+  const manifest = manifestById(creature, partId);
+  if (!part || !manifest) return null;
+  return anchorWorldFor(part, manifest, facingFor(creature), anchorFor(manifest, anchorName));
+}
+
+export function articulatedJointMetrics(creature: ArticulatedCreature) {
+  const facing = facingFor(creature);
+  return creature.manifest.parts
+    .filter((manifest) => Boolean(manifest.parentId))
+    .map((manifest) => {
+      const parent = manifest.parentId ? creature.parts.find((part) => part.id === manifest.parentId) : undefined;
+      const child = creature.parts.find((part) => part.id === manifest.id);
+      const parentManifest = manifest.parentId ? manifestById(creature, manifest.parentId) : undefined;
+      if (!parent || !child || !parentManifest) {
+        return { partId: manifest.id, parentId: manifest.parentId ?? '', error: Number.POSITIVE_INFINITY, stress: 1 };
+      }
+      const parentAnchor = anchorWorldFor(parent, parentManifest, facing, anchorFor(parentManifest, manifest.parentAnchor));
+      const childAnchor = anchorWorldFor(child, manifest, facing, anchorFor(manifest, manifest.anchor));
+      const restOffset = manifest.restOffset ? localVectorOffsetFor(facing, parent.rotation, manifest.restOffset) : new Phaser.Math.Vector2();
+      const expectedX = parentAnchor.x + restOffset.x;
+      const expectedY = parentAnchor.y + restOffset.y;
+      const error = Phaser.Math.Distance.Between(expectedX, expectedY, childAnchor.x, childAnchor.y);
+      return {
+        partId: manifest.id,
+        parentId: manifest.parentId ?? '',
+        error,
+        stress: Phaser.Math.Clamp(error / Math.max(1, manifest.hitRadius * PART_WORLD_SCALE), 0, 1),
+      };
+    });
+}
+
+function refreshJointStress(creature: ArticulatedCreature) {
+  const metrics = articulatedJointMetrics(creature);
+  for (const part of creature.parts) {
+    const metric = metrics.find((candidate) => candidate.partId === part.id);
+    part.jointStress = metric?.stress ?? 0;
+  }
+}
 
 export function populateArticulatedCreatures(this: DeepdiveScene) {
   this.articulatedCreatures = [];
@@ -44,6 +120,7 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
         part.hurtFlash = 0;
       });
       this.updateArticulatedParts(creature, delta);
+      refreshJointStress(creature);
       continue;
     }
     creature.phase += delta;
@@ -75,9 +152,17 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     if (creature.vx > 2) creature.facingSign = 1;
     this.keepArticulatedCreatureInWater(creature);
     this.updateArticulatedParts(creature, delta);
+    refreshJointStress(creature);
     this.resolveArticulatedGrab(creature, delta, controls);
 
     if (creature.stunned > 0 || this.isAtBoat()) continue;
+    const jaw = creature.parts.find((part) => part.id === 'jaw');
+    const biteAnchor = this.articulatedPartAnchorWorld(creature, 'jaw', 'bite');
+    const biteDistance = biteAnchor ? Phaser.Math.Distance.Between(this.player.x, this.player.y, biteAnchor.x, biteAnchor.y) : Number.POSITIVE_INFINITY;
+    if ((creature.state === 'lunge' || creature.state === 'grab') && jaw && biteDistance < PLAYER_CONTACT_RADIUS + 22 && creature.bumpCooldown <= 0) {
+      this.bumpArticulatedCreature(creature, jaw, biteDistance);
+      continue;
+    }
     const hit = this.closestArticulatedPartTo(creature, this.player.x, this.player.y);
     if (hit && hit.distance < partManifest(creature, hit.part).hitRadius * PART_WORLD_SCALE + PLAYER_CONTACT_RADIUS && creature.bumpCooldown <= 0) {
       this.bumpArticulatedCreature(creature, hit.part, hit.distance);
@@ -160,10 +245,19 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
 }
 
 export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: ArticulatedCreature) {
-  const samples = [
-    [creature.x, creature.y],
-    ...creature.parts.filter((_, index) => index % 2 === 0).map((part) => [part.x, part.y] as [number, number]),
-  ];
+  const samples: [number, number][] = [[creature.x, creature.y]];
+  for (const part of creature.parts) {
+    if (part.hp <= 0) continue;
+    const manifest = partManifest(creature, part);
+    const radius = Math.max(8, manifest.hitRadius * PART_WORLD_SCALE * 0.78);
+    samples.push(
+      [part.x, part.y],
+      [part.x - radius, part.y],
+      [part.x + radius, part.y],
+      [part.x, part.y - radius],
+      [part.x, part.y + radius],
+    );
+  }
   const collided = samples.some(([x, y]) => {
     const tx = Math.floor(x / TILE);
     const ty = Math.floor(y / TILE);
@@ -178,57 +272,51 @@ export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: Ar
   creature.homeY = Phaser.Math.Linear(creature.homeY, creature.y, 0.08);
 }
 
-export function updateArticulatedParts(this: DeepdiveScene, creature: ArticulatedCreature, _delta: number) {
+export function updateArticulatedParts(this: DeepdiveScene, creature: ArticulatedCreature, delta: number) {
   const speed = Math.hypot(creature.vx, creature.vy);
-  const facing = creature.facingSign < 0 ? -1 : 1;
-  const swimPitch = speed > 3
+  const facing = facingFor(creature);
+  const targetPitch = speed > 3
     ? Phaser.Math.Clamp(Math.atan2(creature.vy, Math.max(1, Math.abs(creature.vx))), -0.62, 0.62)
     : 0;
+  const targetAttackBlend = creature.state === 'lunge' || creature.state === 'grab' ? 1 : 0;
+  if (delta > 0 && !creature.reviewFrozen) {
+    creature.posePitch = smoothAngle(creature.posePitch, targetPitch, 1 - Math.exp(-9 * delta));
+    creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, targetAttackBlend, 1 - Math.exp(-12 * delta));
+  } else {
+    creature.posePitch = targetPitch;
+    creature.attackBlend = targetAttackBlend;
+  }
+  const swimPitch = creature.posePitch;
   const forward = new Phaser.Math.Vector2(facing * Math.cos(swimPitch), Math.sin(swimPitch));
   const normal = new Phaser.Math.Vector2(-facing * Math.sin(swimPitch), Math.cos(swimPitch));
-  const lungeOpen = creature.state === 'lunge' || creature.state === 'grab' ? 1 : 0;
+  const lungeOpen = creature.attackBlend;
   const partById = new Map(creature.parts.map((part) => [part.id, part]));
   const indexById = new Map(creature.parts.map((part, index) => [part.id, index]));
   const placed = new Set<string>();
   const placing = new Set<string>();
 
-  const localVectorOffset = (rotation: number, local: [number, number]) => {
-    const localX = local[0] * PART_WORLD_SCALE * facing;
-    const localY = local[1] * PART_WORLD_SCALE;
-    const cos = Math.cos(rotation);
-    const sin = Math.sin(rotation);
-    return new Phaser.Math.Vector2(localX * cos - localY * sin, localX * sin + localY * cos);
-  };
-
-  const anchoredOffset = (manifest: ReturnType<typeof partManifest>, rotation: number, local: [number, number]) => {
-    const originX = (manifest.origin[0] - 0.5) * manifest.size[0];
-    const originY = (manifest.origin[1] - 0.5) * manifest.size[1];
-    return localVectorOffset(rotation, [local[0] - originX, local[1] - originY]);
-  };
-
-  const anchorWorld = (part: ArticulatedPartState, manifest: ReturnType<typeof partManifest>, local: [number, number]) => {
-    const offset = anchoredOffset(manifest, part.rotation, local);
-    return new Phaser.Math.Vector2(part.x + offset.x, part.y + offset.y);
-  };
-
-  const anchorFor = (manifest: ReturnType<typeof partManifest>, name: string | undefined) => (
-    name && manifest.anchors?.[name] ? manifest.anchors[name] : ([0, 0] as [number, number])
-  );
-
   const motionRotation = (manifest: ReturnType<typeof partManifest>, index: number, parent?: ArticulatedPartState) => {
     const motion = manifest.motion;
     const wave = Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * index) * (motion.amplitude ?? 0) * PART_WORLD_SCALE;
-    const parentRotation = parent?.rotation ?? 0;
+    const rootRotation = facing * swimPitch;
+    const parentRotation = parent?.rotation ?? rootRotation;
+    const rotationOffset = facing * (manifest.rotationOffset ?? 0);
     if (motion.kind === 'jaw') {
-      return parentRotation + facing * ((Math.sin(creature.phase * 8) * 0.16 + lungeOpen * 0.42) * Math.sign(manifest.offset[1] || 1));
+      return parentRotation + rotationOffset + facing * ((Math.sin(creature.phase * 8) * 0.08 + lungeOpen * 0.44) * Math.sign(manifest.offset[1] || 1));
     }
     if (motion.kind === 'fin') {
-      return parentRotation + facing * wave * 0.018;
+      return parentRotation + rotationOffset + facing * wave * 0.018;
     }
     if (motion.kind === 'body' || motion.kind === 'tail') {
-      return facing * (swimPitch + wave * 0.012);
+      const localBend = facing * wave * 0.012;
+      return parent
+        ? parentRotation * 0.9 + rootRotation * 0.1 + localBend + rotationOffset
+        : rootRotation + localBend + rotationOffset;
     }
-    return facing * swimPitch;
+    if (parent && manifest.inheritRotation !== false) {
+      return parentRotation * 0.88 + rootRotation * 0.12 + rotationOffset;
+    }
+    return rootRotation + rotationOffset;
   };
 
   const placeOffsetPart = (part: ArticulatedPartState, manifest: ReturnType<typeof partManifest>, index: number) => {
@@ -258,9 +346,9 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
       placePart(parent, indexById.get(parent.id) ?? index);
       const parentManifest = partManifest(creature, parent);
       part.rotation = motionRotation(manifest, index, parent);
-      const parentAnchor = anchorWorld(parent, parentManifest, anchorFor(parentManifest, manifest.parentAnchor));
-      const restOffset = manifest.restOffset ? localVectorOffset(parent.rotation, manifest.restOffset) : new Phaser.Math.Vector2();
-      const childAnchorOffset = anchoredOffset(manifest, part.rotation, anchorFor(manifest, manifest.anchor));
+      const parentAnchor = anchorWorldFor(parent, parentManifest, facing, anchorFor(parentManifest, manifest.parentAnchor));
+      const restOffset = manifest.restOffset ? localVectorOffsetFor(facing, parent.rotation, manifest.restOffset) : new Phaser.Math.Vector2();
+      const childAnchorOffset = anchoredOffsetFor(manifest, facing, part.rotation, anchorFor(manifest, manifest.anchor));
       part.x = parentAnchor.x + restOffset.x - childAnchorOffset.x;
       part.y = parentAnchor.y + restOffset.y - childAnchorOffset.y;
     } else {
@@ -280,8 +368,11 @@ export function resolveArticulatedGrab(this: DeepdiveScene, creature: Articulate
   creature.grabTimer = Math.max(0, creature.grabTimer - delta);
   const struggle = controls?.hasMove ? controls.move.length() : 0;
   const target = state.pilotingSub && state.activeSub ? state.activeSub : this.player;
-  const dx = creature.x - target.x;
-  const dy = creature.y - target.y;
+  const biteAnchor = this.articulatedPartAnchorWorld(creature, 'jaw', 'bite');
+  const pullX = biteAnchor?.x ?? creature.x;
+  const pullY = biteAnchor?.y ?? creature.y;
+  const dx = pullX - target.x;
+  const dy = pullY - target.y;
   const distance = Math.max(1, Math.hypot(dx, dy));
   target.vx += (dx / distance) * (58 - struggle * 16) * delta;
   target.vy += (dy / distance) * (58 - struggle * 16) * delta;
@@ -296,8 +387,12 @@ export function resolveArticulatedGrab(this: DeepdiveScene, creature: Articulate
 }
 
 export function bumpArticulatedCreature(this: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, distance: number) {
-  const nx = distance > 0 ? (this.player.x - part.x) / distance : 1;
-  const ny = distance > 0 ? (this.player.y - part.y) / distance : 0;
+  const biteAnchor = part.id === 'jaw' ? this.articulatedPartAnchorWorld(creature, 'jaw', 'bite') : null;
+  const contactX = biteAnchor?.x ?? part.x;
+  const contactY = biteAnchor?.y ?? part.y;
+  const contactDistance = Math.max(1, Phaser.Math.Distance.Between(this.player.x, this.player.y, contactX, contactY), distance);
+  const nx = (this.player.x - contactX) / contactDistance;
+  const ny = (this.player.y - contactY) / contactDistance;
   const impact = Math.hypot(this.player.vx, this.player.vy);
   const strike = creature.state === 'lunge' ? 1.45 : creature.state === 'grab' ? 1.2 : 1;
   const damage = Math.round((12 + state.biome * 2.6 + creature.radius * 0.18 + impact * 0.012) * strike);
@@ -411,6 +506,11 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
     for (const part of creature.parts) {
       const manifest = partManifest(creature, part);
       const damageAlpha = part.hp <= 0 ? 0.26 : 1;
+      const dynamicDepth =
+        2.1 +
+        manifest.depth +
+        (part.id === 'jaw' ? creature.attackBlend * 0.035 : 0) +
+        (part.id === 'fin-front' ? 0.018 : part.id === 'fin-back' ? -0.012 : 0);
       part.sprite
         ?.setTexture(manifest.textureKey)
         .setVisible(true)
@@ -418,7 +518,8 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         .setOrigin(manifest.origin[0], manifest.origin[1])
         .setRotation(part.rotation)
         .setAlpha((creature.stunned > 0 ? alpha * 0.68 : alpha) * damageAlpha)
-        .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE, manifest.size[1] * PART_WORLD_SCALE);
+        .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE, manifest.size[1] * PART_WORLD_SCALE)
+        .setDepth(dynamicDepth);
       if (part.sprite) part.sprite.scaleX = Math.abs(part.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
       if (part.hurtFlash > 0) {
         this.actors.lineStyle(2, 0xfff7df, part.hurtFlash * alpha);

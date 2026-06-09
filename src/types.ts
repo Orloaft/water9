@@ -202,6 +202,7 @@ export interface ArticulatedPartState {
   hp: number;
   maxHp: number;
   hurtFlash: number;
+  jointStress: number;
   x: number;
   y: number;
   rotation: number;
@@ -220,6 +221,8 @@ export interface ArticulatedCreature {
   homeY: number;
   speed: number;
   phase: number;
+  posePitch: number;
+  attackBlend: number;
   color: number;
   hostile: boolean;
   scanned: boolean;
