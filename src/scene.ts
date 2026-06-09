@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { AuxSub,Biome,Bobbit,CargoItem,ControlState,Fish,FishSpecies,Flare,FloatingText,Flora,FloraSpecies,Hazard,Larva,LooseItem,NestEgg,PlaytestCommand,Quest,ScanTarget,ShopItem,SonarContact,SpecialRoom,SubTier,SubVehicle,ThrownUtility,Tile,TileDef,UpgradeId,VeinRule } from './types';
+import type { ArticulatedCreature,AuxSub,Biome,Bobbit,CargoItem,ControlState,Fish,FishSpecies,Flare,FloatingText,Flora,FloraSpecies,Hazard,Larva,LooseItem,NestEgg,PlaytestCommand,Quest,ScanTarget,ShopItem,SonarContact,SpecialRoom,SubTier,SubVehicle,ThrownUtility,Tile,TileDef,UpgradeId,VeinRule } from './types';
 import { audioKeys,audioVolumes,BARGE_DOCKING_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_ENTRY_HALF_WIDTH,BARGE_ENTRY_Y,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BIOLUME_CAVERN_CHANCE,BLEED_DURATION,BLEED_HULL_DRAIN,BLEED_RECENT_WINDOW,BLEED_TRIGGER_BITES,BOBBIT_DETECT_RADIUS,BOBBIT_ESCAPE_SECONDS,BOBBIT_LATCH_RADIUS,CAMERA_ZOOM_MULTIPLIER,deepScale,DYNAMITE_LAND_FUSE,DYNAMITE_LIFE_DAMAGE,DYNAMITE_RADIUS_TILES,EGG_CUTTER_FUEL_COST,EGG_DETECTION_RADIUS,EGG_HATCH_SECONDS,EGG_HP,ENTITY_SCALE,FIRST_AID_REPAIR,FISH_BITE_SFX_GAP_MS,FLARE_DURATION,FLARE_LIGHT_RADIUS,FUEL_REFILL_AMOUNT,FUEL_TANK_REFILL,INJECTOR_KNIFE_DAMAGE,INJECTOR_KNIFE_RANGE,LIFE_CUTTER_DAMAGE,LIFE_CUTTER_FUEL_COST,NEST_CHAMBER_CHANCE,NEST_CLEAR_REWARD,OASIS_OXYGEN_REFILL,OXYGEN_TANK_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_CONTACT_RADIUS,PLAYER_DRAW_SCALE,PLAYER_FORWARD_REACH,PLAYER_PICKUP_RADIUS,SONAR_ATTRACT_RADIUS,SONAR_COOLDOWN,SONAR_FUEL_COST,SONAR_REVEAL_RADIUS_TILES,STUN_GRENADE_DURATION,STUN_GRENADE_RADIUS,SUB_BOARD_SECONDS,SUB_FUEL_CELL,SUB_FUEL_COST,SUB_OXYGEN_CELL,SUB_OXYGEN_COST,SURFACE_Y,TARGET_DEPTH,THROWN_ITEM_GRAVITY,THROWN_ITEM_MAX_FALL_SPEED,THROWN_ITEM_SPEED,TILE,VENOM_HULL_DRAIN,VENOM_TICK_SECONDS,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state,ui } from './state';
@@ -15,6 +15,8 @@ import * as combatNs from './scene-combat';
 import * as renderingNs from './scene-rendering';
 import * as worldgenNs from './scene-worldgen';
 import * as audioNs from './scene-audio';
+import * as articulatedNs from './scene-articulated';
+import { ensureArticulatedTextures } from './articulated';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
@@ -34,6 +36,7 @@ export class DeepdiveScene extends Phaser.Scene {
   damage: number[][] = [];
   tileSprites: Phaser.GameObjects.Image[] = [];
   fish: Fish[] = [];
+  articulatedCreatures: ArticulatedCreature[] = [];
   flora: Flora[] = [];
   hazards: Hazard[] = [];
   bobbits: Bobbit[] = [];
@@ -109,6 +112,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.darkness = this.add.graphics().setDepth(5);
     this.lampGloom = this.add.graphics().setDepth(6);
     this.overlay = this.add.graphics().setDepth(7);
+    ensureArticulatedTextures(this);
     this.generateWorld();
     if (state.started) this.revealSonarAtPlayer(8);
     this.cameras.main.centerOn(this.player.x, this.player.y);
@@ -166,6 +170,7 @@ export class DeepdiveScene extends Phaser.Scene {
     if (state.docked) {
       this.updateDockedAtBarge(delta, controls);
       this.updateFish(delta * 0.35);
+      this.updateArticulatedCreatures(delta * 0.25);
       this.updateFlora(delta * 0.35);
       this.updateAuxSub(delta * 0.35);
       this.updateFloatingTexts(delta);
@@ -189,6 +194,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.updateLooseItems(delta);
     this.updateFlora(delta);
     this.updateFish(delta);
+    this.updateArticulatedCreatures(delta, controls);
     this.updateSpecialRooms(delta);
     this.updateNestEggs(delta);
     this.updateLarvae(delta, controls);
@@ -731,6 +737,25 @@ export interface DeepdiveScene {
   drawFlares: OmitThisParameter<typeof renderingNs.drawFlares>;
   drawSonarMap: OmitThisParameter<typeof renderingNs.drawSonarMap>;
   drawLooseItems: OmitThisParameter<typeof renderingNs.drawLooseItems>;
+}
+
+Object.assign(DeepdiveScene.prototype, articulatedNs);
+export interface DeepdiveScene {
+  populateArticulatedCreatures: OmitThisParameter<typeof articulatedNs.populateArticulatedCreatures>;
+  updateArticulatedCreatures: OmitThisParameter<typeof articulatedNs.updateArticulatedCreatures>;
+  steerArticulatedCreature: OmitThisParameter<typeof articulatedNs.steerArticulatedCreature>;
+  keepArticulatedCreatureInWater: OmitThisParameter<typeof articulatedNs.keepArticulatedCreatureInWater>;
+  updateArticulatedParts: OmitThisParameter<typeof articulatedNs.updateArticulatedParts>;
+  resolveArticulatedGrab: OmitThisParameter<typeof articulatedNs.resolveArticulatedGrab>;
+  bumpArticulatedCreature: OmitThisParameter<typeof articulatedNs.bumpArticulatedCreature>;
+  closestArticulatedPartTo: OmitThisParameter<typeof articulatedNs.closestArticulatedPartTo>;
+  nearestArticulatedDamageTarget: OmitThisParameter<typeof articulatedNs.nearestArticulatedDamageTarget>;
+  nearestKnifeArticulatedTarget: OmitThisParameter<typeof articulatedNs.nearestKnifeArticulatedTarget>;
+  damageArticulatedPart: OmitThisParameter<typeof articulatedNs.damageArticulatedPart>;
+  damageArticulatedInRadius: OmitThisParameter<typeof articulatedNs.damageArticulatedInRadius>;
+  articulatedMobilityScale: OmitThisParameter<typeof articulatedNs.articulatedMobilityScale>;
+  drawArticulatedCreatures: OmitThisParameter<typeof articulatedNs.drawArticulatedCreatures>;
+  articulatedVisibilityAlpha: OmitThisParameter<typeof articulatedNs.articulatedVisibilityAlpha>;
 }
 
 Object.assign(DeepdiveScene.prototype, combatNs);

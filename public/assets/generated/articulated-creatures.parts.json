@@ -1,0 +1,126 @@
+{
+  "schema": "asset-forge/sprite-parts@1",
+  "creatures": [
+    {
+      "id": "abyssal-serpent",
+      "species": "Abyssal Serpent",
+      "minBiome": 3,
+      "color": 13659135,
+      "rarity": "legendary",
+      "radius": 34,
+      "hp": 260,
+      "speed": [34, 64],
+      "spawn": {
+        "minDepth": 1320,
+        "maxDepth": 2600,
+        "count": 1
+      },
+      "parts": [
+        {
+          "id": "tail",
+          "textureKey": "fauna-abyssal-serpent-mantle-horror-tail",
+          "texture": "fauna-abyssal-serpent-mantle-horror-tail.svg",
+          "offset": [-100, 0],
+          "origin": [0.78, 0.5],
+          "size": [66, 34],
+          "depth": 0,
+          "hitRadius": 16,
+          "hpMultiplier": 0.7,
+          "damageMultiplier": 0.72,
+          "motion": { "kind": "tail", "amplitude": 18, "frequency": 2.8, "phase": 1.4, "lag": 1.6 }
+        },
+        {
+          "id": "body-3",
+          "textureKey": "fauna-abyssal-serpent-mantle-horror-body-segment",
+          "texture": "fauna-abyssal-serpent-mantle-horror-body-segment.svg",
+          "offset": [-72, 0],
+          "origin": [0.5, 0.5],
+          "size": [78, 42],
+          "depth": 0.01,
+          "hitRadius": 20,
+          "hpMultiplier": 0.95,
+          "damageMultiplier": 0.9,
+          "motion": { "kind": "body", "amplitude": 13, "frequency": 2.3, "phase": 1.0, "lag": 1.1 }
+        },
+        {
+          "id": "body-2",
+          "textureKey": "fauna-abyssal-serpent-mantle-horror-body-segment",
+          "texture": "fauna-abyssal-serpent-mantle-horror-body-segment.svg",
+          "offset": [-42, 0],
+          "origin": [0.5, 0.5],
+          "size": [82, 46],
+          "depth": 0.02,
+          "hitRadius": 23,
+          "hpMultiplier": 1,
+          "damageMultiplier": 1,
+          "motion": { "kind": "body", "amplitude": 9, "frequency": 2.2, "phase": 0.6, "lag": 0.7 }
+        },
+        {
+          "id": "fin-back",
+          "textureKey": "fauna-abyssal-serpent-mantle-horror-fin",
+          "texture": "fauna-abyssal-serpent-mantle-horror-fin.svg",
+          "offset": [-20, -18],
+          "origin": [0.26, 0.72],
+          "size": [42, 38],
+          "depth": 0.04,
+          "hitRadius": 11,
+          "hpMultiplier": 0.45,
+          "damageMultiplier": 0.62,
+          "motion": { "kind": "fin", "amplitude": 12, "frequency": 3.5, "phase": 1.8 }
+        },
+        {
+          "id": "body-1",
+          "textureKey": "fauna-abyssal-serpent-mantle-horror-body-segment",
+          "texture": "fauna-abyssal-serpent-mantle-horror-body-segment.svg",
+          "offset": [-10, 0],
+          "origin": [0.5, 0.5],
+          "size": [88, 48],
+          "depth": 0.05,
+          "hitRadius": 25,
+          "hpMultiplier": 1.08,
+          "damageMultiplier": 1.05,
+          "motion": { "kind": "body", "amplitude": 5, "frequency": 2, "phase": 0.2, "lag": 0.2 }
+        },
+        {
+          "id": "jaw",
+          "textureKey": "fauna-abyssal-serpent-mantle-horror-jaw",
+          "texture": "fauna-abyssal-serpent-mantle-horror-jaw.svg",
+          "offset": [42, 10],
+          "origin": [0.16, 0.18],
+          "size": [50, 28],
+          "depth": 0.09,
+          "hitRadius": 13,
+          "hpMultiplier": 0.55,
+          "damageMultiplier": 1.35,
+          "motion": { "kind": "jaw", "amplitude": 21, "frequency": 3.2, "phase": 0 }
+        },
+        {
+          "id": "head",
+          "textureKey": "fauna-abyssal-serpent-mantle-horror-head",
+          "texture": "fauna-abyssal-serpent-mantle-horror-head.svg",
+          "offset": [42, 0],
+          "origin": [0.48, 0.5],
+          "size": [76, 44],
+          "depth": 0.1,
+          "hitRadius": 25,
+          "hpMultiplier": 1.2,
+          "damageMultiplier": 1.25,
+          "motion": { "kind": "root", "amplitude": 3, "frequency": 1.4, "phase": 0 }
+        },
+        {
+          "id": "fin-front",
+          "textureKey": "fauna-abyssal-serpent-mantle-horror-fin",
+          "texture": "fauna-abyssal-serpent-mantle-horror-fin.svg",
+          "offset": [6, 20],
+          "origin": [0.26, 0.28],
+          "size": [44, 38],
+          "depth": 0.12,
+          "hitRadius": 11,
+          "hpMultiplier": 0.45,
+          "damageMultiplier": 0.62,
+          "motion": { "kind": "fin", "amplitude": 14, "frequency": 3.5, "phase": 0.3 }
+        }
+      ]
+    }
+  ]
+}

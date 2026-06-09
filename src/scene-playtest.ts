@@ -64,6 +64,22 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         vx: Math.round(this.player.vx),
         vy: Math.round(this.player.vy),
       },
+      articulatedCreatures: this.articulatedCreatures.map((creature) => ({
+        id: creature.id,
+        species: creature.species,
+        x: Math.round(creature.x),
+        y: Math.round(creature.y),
+        hp: Math.round(creature.hp),
+        state: creature.state,
+        scanned: creature.scanned,
+        dead: creature.dead,
+        parts: creature.parts.map((part) => ({
+          id: part.id,
+          x: Math.round(part.x),
+          y: Math.round(part.y),
+          hp: Math.round(part.hp),
+        })),
+      })),
       world: this.playtestWorldSurvey(),
     };
   }
@@ -156,6 +172,18 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.carrierSub.vx = 0;
         state.carrierSub.vy = 0;
       }
+    } else if (command === 'teleportToArticulated') {
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead);
+      if (creature) {
+        this.player.x = Phaser.Math.Clamp(creature.x - 120, 20, WORLD_W * TILE - 20);
+        this.player.y = Phaser.Math.Clamp(creature.y, 20, WORLD_H * TILE - 20);
+        this.player.vx = 0;
+        this.player.vy = 0;
+        state.docked = false;
+        state.atBoat = false;
+        state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+        this.revealSonarAtWorld(creature.x, creature.y, 12);
+      }
     } else if (command === 'setOxygen') {
       state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());
     } else if (command === 'setHull') {
@@ -173,7 +201,7 @@ export function playtestWorldSurvey(this: DeepdiveScene, ) {
         height: WORLD_H,
         bands: [],
         reachable: { cells: 0, waterCoverage: 0, deepestTileY: 0, deepestMeters: 0 },
-        entities: { fish: 0, hostileFish: 0, flora: 0, hazardousFlora: 0, vents: 0, bobbits: 0, rooms: 0, eggs: 0, larvae: 0 },
+        entities: { fish: 0, hostileFish: 0, articulated: 0, flora: 0, hazardousFlora: 0, vents: 0, bobbits: 0, rooms: 0, eggs: 0, larvae: 0 },
       };
     }
     const bandDefs = [
@@ -236,6 +264,7 @@ export function playtestWorldSurvey(this: DeepdiveScene, ) {
       entities: {
         fish: this.fish.length,
         hostileFish: this.fish.filter((fish) => fish.hostile).length,
+        articulated: this.articulatedCreatures.length,
         flora: this.flora.length,
         hazardousFlora: this.flora.filter((flora) => flora.hazardous).length,
         vents: this.hazards.length,

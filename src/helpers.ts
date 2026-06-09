@@ -4,6 +4,7 @@ import { audioKeys,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BA
 import { biomeFish,biomeFlora,shopItems,subDefs,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
+import { articulatedCreatureDefs, loadArticulatedAssets } from './articulated';
 import { clearFullscreenWarning,meter,renderHud,showFullscreenWarning } from './hud';
 import type { DeepdiveScene } from './scene';
 
@@ -317,6 +318,7 @@ const SPRITESHEET_BASES = [
 export function loadGeneratedAssets(scene: Phaser.Scene) {
   const assetPath = (name: string) => `/assets/generated/${name}.png`;
   const audioPath = (name: string) => `/assets/audio/${name}`;
+  loadArticulatedAssets(scene);
   for (const [animation, frameCount] of Object.entries(diverFrameCounts)) {
     for (let i = 0; i < frameCount; i += 1) {
       scene.load.image(`diver-${animation}-${i}`, assetPath(`diver-${animation}-${i}`));
@@ -714,9 +716,11 @@ export function mineCooldown() {
 export function scanReward(target: ScanTarget) {
   const rarity = scannableRarity(target);
   const base = scanRarityCredits(rarity);
-  const dangerBonus = target.kind === 'fish'
-    ? target.hostile ? 180 : 0
-    : target.hazardous ? 220 : 0;
+  const dangerBonus = target.kind === 'articulated'
+    ? 720
+    : target.kind === 'fish'
+      ? target.hostile ? 180 : 0
+      : target.hazardous ? 220 : 0;
   const scannerBonus = 1 + state.upgrades.scanner * 0.16;
   return Math.round((base + dangerBonus) * scannerBonus);
 }
@@ -742,6 +746,7 @@ export function rarityColor(rarity: ScanRarity) {
 }
 
 export function scannableRarity(target: ScanTarget) {
+  if (target.kind === 'articulated') return target.manifest.rarity;
   return target.kind === 'fish'
     ? fishRarity(fishSpeciesByName(target.species))
     : floraRarity(floraSpeciesByName(target.species));
@@ -795,12 +800,12 @@ export function floraSpeciesByName(name: string) {
 export function currentApexSpecies() {
   if (state.biome === 1) return 'Blue-ring Octopus';
   if (state.biome === 2) return 'Gulper Eel';
-  if (state.biome === 3) return 'Black Swallower';
-  return 'Black Swallower';
+  return 'Abyssal Serpent';
 }
 
 export function lifeCatalogTotal() {
-  return biomeFish[state.biome].length + biomeFlora[state.biome].length;
+  const articulatedCount = articulatedCreatureDefs().filter((manifest) => state.biome >= manifest.minBiome).length;
+  return biomeFish[state.biome].length + biomeFlora[state.biome].length + articulatedCount;
 }
 
 export function subDef(tier: SubTier) {
@@ -1026,4 +1031,3 @@ export function restart(scene: DeepdiveScene) {
   scene.scene.restart();
   renderHud();
 }
-

@@ -11,6 +11,7 @@ export function generateWorld(this: DeepdiveScene, ) {
     this.world = [];
     this.damage = [];
     this.looseItems = [];
+    this.articulatedCreatures = [];
     this.flora = [];
     this.bobbits = [];
     this.specialRooms = [];
@@ -44,6 +45,7 @@ export function generateWorld(this: DeepdiveScene, ) {
     this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
     this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
     this.populateSpecialRooms();
+    this.populateArticulatedCreatures();
     state.questBoard = generateQuestBoard(this.specialRooms.some((room) => room.kind === 'nest'));
       state.activeQuestId = '';
     this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
@@ -792,4 +794,3 @@ export function carveDisc(this: DeepdiveScene, cx: number, cy: number, radius: n
       }
     }
   }
-

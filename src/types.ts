@@ -22,6 +22,7 @@ export type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
 export type Biome = 1 | 2 | 3 | 4;
 export type BargeTab = 'services' | 'items' | 'upgrades' | 'subs' | 'quests';
 export type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+export type ArticulatedCreatureState = 'patrol' | 'stalk' | 'lunge' | 'grab' | 'recover';
 export type TitlePanel = 'main' | 'options' | 'controls';
 export type SubTier = 1 | 2 | 3;
 export type QuestKind = 'depth' | 'scan' | 'ore' | 'nest';
@@ -48,6 +49,7 @@ export type PlaytestCommand =
   | 'buySub'
   | 'refill'
   | 'teleportDepth'
+  | 'teleportToArticulated'
   | 'setOxygen'
   | 'setHull';
 export type DiverAnimation =
@@ -148,7 +150,92 @@ export interface Flora {
   sprite?: Phaser.GameObjects.Image;
 }
 
-export type ScanTarget = Fish | Flora;
+export interface ArticulatedMotionManifest {
+  kind: 'root' | 'body' | 'tail' | 'fin' | 'jaw';
+  amplitude?: number;
+  frequency?: number;
+  phase?: number;
+  lag?: number;
+}
+
+export interface ArticulatedPartManifest {
+  id: string;
+  textureKey: string;
+  texture: string;
+  offset: [number, number];
+  origin: [number, number];
+  size: [number, number];
+  depth: number;
+  hitRadius: number;
+  hpMultiplier: number;
+  damageMultiplier: number;
+  motion: ArticulatedMotionManifest;
+}
+
+export interface ArticulatedCreatureManifest {
+  id: string;
+  species: string;
+  minBiome: Biome;
+  color: number;
+  rarity: ScanRarity;
+  radius: number;
+  hp: number;
+  speed: [number, number];
+  spawn: {
+    minDepth: number;
+    maxDepth: number;
+    count: number;
+  };
+  parts: ArticulatedPartManifest[];
+}
+
+export interface ArticulatedPartState {
+  id: string;
+  hp: number;
+  maxHp: number;
+  hurtFlash: number;
+  x: number;
+  y: number;
+  rotation: number;
+  sprite?: Phaser.GameObjects.Image;
+}
+
+export interface ArticulatedCreature {
+  kind: 'articulated';
+  id: string;
+  species: string;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  homeX: number;
+  homeY: number;
+  speed: number;
+  phase: number;
+  color: number;
+  hostile: boolean;
+  scanned: boolean;
+  scan: number;
+  scanning: boolean;
+  scanPulse: number;
+  radius: number;
+  aggro: number;
+  bumpCooldown: number;
+  stunned: number;
+  hp: number;
+  maxHp: number;
+  dead: boolean;
+  hurtFlash: number;
+  facingSign: 1 | -1;
+  state: ArticulatedCreatureState;
+  stateTimer: number;
+  grabTimer: number;
+  grabCooldown: number;
+  manifest: ArticulatedCreatureManifest;
+  parts: ArticulatedPartState[];
+}
+
+export type ScanTarget = Fish | Flora | ArticulatedCreature;
 
 export interface FishSpecies {
   species: string;
@@ -301,7 +388,7 @@ export interface ControlState {
 export interface SonarContact {
   x: number;
   y: number;
-  kind: 'fish' | 'flora' | 'barge';
+  kind: 'fish' | 'flora' | 'predator' | 'barge';
   hostile: boolean;
   age: number;
 }
@@ -384,4 +471,3 @@ declare global {
     };
   }
 }
-

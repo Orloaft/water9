@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { CargoItem,Fish,Flare,Larva,NestEgg,ScanTarget,SubVehicle,ThrownUtility,Tile,TileDef } from './types';
+import type { ArticulatedCreature,CargoItem,Fish,Flare,Larva,NestEgg,ScanTarget,SubVehicle,ThrownUtility,Tile,TileDef } from './types';
 import { DYNAMITE_LAND_FUSE,DYNAMITE_LIFE_DAMAGE,DYNAMITE_RADIUS_TILES,EGG_CUTTER_FUEL_COST,EGG_HATCH_SECONDS,FIRST_AID_REPAIR,FLARE_DURATION,FUEL_TANK_REFILL,INJECTOR_KNIFE_DAMAGE,INJECTOR_KNIFE_RANGE,LIFE_CUTTER_DAMAGE,LIFE_CUTTER_FUEL_COST,OXYGEN_TANK_REFILL,PLAYER_FORWARD_REACH,STUN_GRENADE_DURATION,STUN_GRENADE_RADIUS,THROWN_ITEM_SPEED,TILE } from './constants';
 import { tiles,upgrades } from './content';
 import { state } from './state';
@@ -138,6 +138,29 @@ export function cutNestTarget(this: DeepdiveScene, worldX: number, worldY: numbe
   }
 
 export function cutLifeTarget(this: DeepdiveScene, worldX: number, worldY: number, sub: SubVehicle | null) {
+    const articulatedTarget = this.nearestArticulatedDamageTarget(worldX, worldY, scaledEntity(26));
+    if (articulatedTarget) {
+      const fuelReserve = sub ? sub.fuel : state.fuel;
+      if (fuelReserve > 0) this.drillingThisFrame = true;
+      if (this.player.mineCooldown > 0) return true;
+      if (fuelReserve < LIFE_CUTTER_FUEL_COST) {
+        this.player.mineCooldown = Math.max(0.14, mineCooldown() * 0.55);
+        state.status = 'Not enough fuel to keep the cutter hot.';
+        renderHud();
+        return true;
+      }
+      if (sub) sub.fuel = Math.max(0, sub.fuel - LIFE_CUTTER_FUEL_COST);
+      else state.fuel = Math.max(0, state.fuel - LIFE_CUTTER_FUEL_COST);
+      this.player.mineCooldown = mineCooldown() * 0.58;
+      this.damageArticulatedPart(
+        articulatedTarget.creature,
+        articulatedTarget.part,
+        LIFE_CUTTER_DAMAGE + miningUpgradeBonus() * 2.8,
+        'Cutter',
+      );
+      renderHud();
+      return true;
+    }
     const target = this.nearestLifeDamageTarget(worldX, worldY, scaledEntity(20));
     if (!target) return false;
     const fuelReserve = sub ? sub.fuel : state.fuel;
@@ -175,6 +198,11 @@ export function nearestLifeDamageTarget(this: DeepdiveScene, worldX: number, wor
   }
 
 export function damageLifeTarget(this: DeepdiveScene, target: ScanTarget, amount: number, source: string) {
+    if (target.kind === 'articulated') {
+      const hit = this.closestArticulatedPartTo(target, this.player.x, this.player.y);
+      if (!hit) return false;
+      return this.damageArticulatedPart(target, hit.part, amount, source);
+    }
     if (target.dead || amount <= 0) return false;
     target.hp = Math.max(0, target.hp - amount);
     target.hurtFlash = 1;
@@ -206,6 +234,7 @@ export function damageLifeInRadius(this: DeepdiveScene, centerX: number, centerY
       this.damageLifeTarget(target, amount * falloff, source);
       hits += 1;
     }
+    hits += this.damageArticulatedInRadius(centerX, centerY, radius, amount, source);
     return hits;
   }
 
@@ -334,6 +363,16 @@ export function triggerStunPulse(this: DeepdiveScene, ) {
       fish.vy *= 0.12;
       stunned += 1;
     }
+    for (const creature of this.articulatedCreatures) {
+      if (creature.dead) continue;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y);
+      if (distance > STUN_GRENADE_RADIUS + creature.radius) continue;
+      creature.stunned = STUN_GRENADE_DURATION * 0.72;
+      creature.aggro = 0;
+      creature.vx *= 0.18;
+      creature.vy *= 0.18;
+      stunned += 1;
+    }
     state.status = stunned > 0
       ? `Stun grenade fired. ${stunned} predator${stunned === 1 ? '' : 's'} stunned for ${STUN_GRENADE_DURATION} seconds.`
       : 'Stun grenade fired. No predators were close enough to catch the pulse.';
@@ -404,14 +443,18 @@ export function nearestKnifeLarva(this: DeepdiveScene, ) {
   }
 
 export function nearestKnifeTarget(this: DeepdiveScene, ) {
-    let nearest: { fish: Fish; distance: number } | null = null;
+    let nearest: { target: Fish | ArticulatedCreature; distance: number } | null = null;
     for (const fish of this.fish) {
       if (!fish.hostile || fish.dead) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance > INJECTOR_KNIFE_RANGE + fish.radius) continue;
-      if (!nearest || distance < nearest.distance) nearest = { fish, distance };
+      if (!nearest || distance < nearest.distance) nearest = { target: fish, distance };
     }
-    return nearest?.fish ?? null;
+    const articulated = this.nearestKnifeArticulatedTarget();
+    if (articulated && (!nearest || articulated.distance < nearest.distance)) {
+      nearest = { target: articulated.creature, distance: articulated.distance };
+    }
+    return nearest?.target ?? null;
   }
 
 export function consumeOxygenTank(this: DeepdiveScene, ) {
@@ -598,8 +641,19 @@ export function fireSubWeapon(this: DeepdiveScene, ) {
       fish.vx += facing * scaledEntity(180);
       fish.vy += Phaser.Math.FloatBetween(-80, 80);
     }
+    for (const creature of this.articulatedCreatures) {
+      if (creature.dead) continue;
+      const distance = Phaser.Math.Distance.Between(sub.x, sub.y, creature.x, creature.y);
+      if (distance > scaledEntity(260) + creature.radius) continue;
+      const facing = sub.facingSign;
+      if ((creature.x - sub.x) * facing < -scaledEntity(20)) continue;
+      hits += 1;
+      creature.stunned = Math.max(creature.stunned, 3.2);
+      creature.aggro = 0;
+      creature.vx += facing * scaledEntity(150);
+      creature.vy += Phaser.Math.FloatBetween(-70, 70);
+    }
     this.actors.lineStyle(3, 0x8ee7f4, 0.85);
     this.actors.lineBetween(sub.x, sub.y, sub.x + sub.facingSign * scaledEntity(230), sub.y);
     this.spawnFloatingText(hits ? `Harpoon stun x${hits}` : 'Harpoon fired', 0x8ee7f4);
   }
-

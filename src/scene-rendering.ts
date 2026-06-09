@@ -25,6 +25,7 @@ export function draw(this: DeepdiveScene, ) {
     this.drawLarvae(camera);
     this.drawFlora(camera);
     this.drawFish(camera);
+    this.drawArticulatedCreatures(camera);
     this.drawSub();
     this.drawPlayer();
     this.drawFlares(camera);
@@ -754,14 +755,20 @@ export function drawSonarMap(this: DeepdiveScene, ) {
           ? `rgba(115, 251, 211, ${alpha * 0.82})`
           : `rgba(142, 231, 244, ${alpha})`;
       ctx.beginPath();
-      ctx.arc(px, py, contact.hostile ? 4.7 : 3.4, 0, Math.PI * 2);
+      ctx.arc(px, py, contact.kind === 'predator' ? 6.8 : contact.hostile ? 4.7 : 3.4, 0, Math.PI * 2);
       ctx.fill();
       if (contact.hostile) {
         ctx.strokeStyle = `rgba(255, 79, 100, ${alpha * 0.6})`;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(px, py, 7.4, 0, Math.PI * 2);
+        ctx.arc(px, py, contact.kind === 'predator' ? 11.5 : 7.4, 0, Math.PI * 2);
         ctx.stroke();
+        if (contact.kind === 'predator') {
+          ctx.strokeStyle = `rgba(255, 209, 102, ${alpha * 0.52})`;
+          ctx.beginPath();
+          ctx.arc(px, py, 15.5, 0, Math.PI * 2);
+          ctx.stroke();
+        }
       }
     }
     const nestRoom = this.hasActiveNestLocator() ? this.nearestOpenNestRoom() : null;
@@ -851,4 +858,3 @@ export function drawLooseItems(this: DeepdiveScene, camera: Phaser.Cameras.Scene
       }
     }
   }
-

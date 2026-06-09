@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { Bobbit,ControlState,Fish,Larva,LooseItem,NestEgg,ScanTarget } from './types';
+import type { ArticulatedCreature,Bobbit,ControlState,Fish,Larva,LooseItem,NestEgg,ScanTarget } from './types';
 import { BLEED_DURATION,BLEED_RECENT_WINDOW,BLEED_TRIGGER_BITES,BOBBIT_DETECT_RADIUS,BOBBIT_ESCAPE_SECONDS,BOBBIT_LATCH_RADIUS,DYNAMITE_LAND_FUSE,EGG_DETECTION_RADIUS,EGG_HATCH_SECONDS,FISH_BITE_SFX_GAP_MS,NEST_CLEAR_REWARD,OASIS_OXYGEN_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_CONTACT_RADIUS,PLAYER_PICKUP_RADIUS,TARGET_DEPTH,THROWN_ITEM_GRAVITY,THROWN_ITEM_MAX_FALL_SPEED,TILE,WORLD_H } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
@@ -168,7 +168,7 @@ export function applyVenom(this: DeepdiveScene, fish: Fish) {
     this.spawnFloatingText('Venom', 0xb9f27c);
   }
 
-export function registerPredatorBite(this: DeepdiveScene, fish: Fish) {
+export function registerPredatorBite(this: DeepdiveScene, fish: Fish | ArticulatedCreature) {
     if (state.bleed.recentTimer <= 0) state.bleed.recentBites = 0;
     state.bleed.recentBites += 1;
     state.bleed.recentTimer = BLEED_RECENT_WINDOW;
@@ -666,6 +666,8 @@ export function scanNearbyLife(this: DeepdiveScene, delta: number, scanningHeld:
     if (target.kind === 'fish') {
       target.vx += (target.x - this.player.x) * delta * 0.22;
       target.vy += (target.y - this.player.y) * delta * 0.22;
+    } else if (target.kind === 'articulated') {
+      target.aggro = Math.max(target.aggro, 1.8);
     }
     if (target.scan < 1) return;
 
@@ -695,9 +697,10 @@ export function scanNearbyLife(this: DeepdiveScene, delta: number, scanningHeld:
 export function nearestLife(this: DeepdiveScene, range: number): ScanTarget | null {
     let nearest: ScanTarget | null = null;
     let nearestDistance = range;
-    for (const life of [...this.fish, ...this.flora]) {
+    for (const life of [...this.fish, ...this.flora, ...this.articulatedCreatures]) {
       if (life.dead) continue;
-      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, life.x, life.y);
+      const articulatedHit = life.kind === 'articulated' ? this.closestArticulatedPartTo(life, this.player.x, this.player.y) : null;
+      const distance = articulatedHit?.distance ?? Phaser.Math.Distance.Between(this.player.x, this.player.y, life.x, life.y);
       if (distance < nearestDistance) {
         nearest = life;
         nearestDistance = distance;
@@ -709,9 +712,10 @@ export function nearestLife(this: DeepdiveScene, range: number): ScanTarget | nu
 export function nearestUnscannedLife(this: DeepdiveScene, x: number, y: number, range: number): ScanTarget | null {
     let nearest: ScanTarget | null = null;
     let nearestDistance = range;
-    for (const life of [...this.fish, ...this.flora]) {
+    for (const life of [...this.fish, ...this.flora, ...this.articulatedCreatures]) {
       if (life.scanned) continue;
-      const distance = Phaser.Math.Distance.Between(x, y, life.x, life.y);
+      const articulatedHit = life.kind === 'articulated' ? this.closestArticulatedPartTo(life, x, y) : null;
+      const distance = articulatedHit?.distance ?? Phaser.Math.Distance.Between(x, y, life.x, life.y);
       if (distance < nearestDistance) {
         nearest = life;
         nearestDistance = distance;
@@ -719,4 +723,3 @@ export function nearestUnscannedLife(this: DeepdiveScene, x: number, y: number, 
     }
     return nearest;
   }
-

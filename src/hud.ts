@@ -3,6 +3,7 @@ import type { BargeTab,Biome,CargoItem,FishSpecies,Flora,FloraSpecies,Quest,Radi
 import { FUEL_REFILL_AMOUNT,SONAR_FUEL_COST,SUB_FUEL_COST,SUB_OXYGEN_COST } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,upgrades } from './content';
 import { state,ui } from './state';
+import { articulatedCreatureDefs } from './articulated';
 import { activeQuest,bargeUpgradeCost,cargoCapacity,clampSelectedCargoIndex,fishAssetKey,fishRarity,floraAssetKey,floraRarity,fuelMax,fuelRefillCost,hullMax,lifeCatalogTotal,oxygenMax,rarityLabel,restart,subDef,subRepairCost,upgradeCost,upgradeMax } from './helpers';
 import { gameScene } from './game-ref';
 
@@ -925,7 +926,7 @@ export function logbookPanel() {
       kind: species.hostile ? 'Predatory fauna' : 'Neutral fauna',
       rarity: fishRarity(species),
       scanned: state.scannedSpecies.has(species.species),
-      imageKey: `${fishAssetKey(species)}-0`,
+      imageSrc: `/assets/generated/${fishAssetKey(species)}-0.png`,
       info: fishLogbookInfo(species),
     })),
     ...biomeFlora[state.biome].map((species) => ({
@@ -933,8 +934,16 @@ export function logbookPanel() {
       kind: species.hazardous ? 'Hazardous flora' : 'Flora',
       rarity: floraRarity(species),
       scanned: state.scannedSpecies.has(species.species),
-      imageKey: floraAssetKey(species),
+      imageSrc: `/assets/generated/${floraAssetKey(species)}.png`,
       info: floraLogbookInfo(species),
+    })),
+    ...articulatedCreatureDefs().filter((manifest) => state.biome >= manifest.minBiome).map((manifest) => ({
+      species: manifest.species,
+      kind: 'Articulated apex fauna',
+      rarity: manifest.rarity,
+      scanned: state.scannedSpecies.has(manifest.species),
+      imageSrc: `/assets/generated/${manifest.parts.find((part) => part.id === 'head')?.texture ?? manifest.parts[0]?.texture ?? ''}`,
+      info: 'Jointed abyssal hunter with separate head, jaws, body plates, fins, and tail. Field crews report the tail weakens first under sustained cutter work.',
     })),
   ].sort((a, b) => rarityRank(b.rarity) - rarityRank(a.rarity) || a.species.localeCompare(b.species));
 
@@ -954,7 +963,7 @@ export function logbookPanel() {
       ${entries.map((entry) => `
         <article class="logbook-entry ${entry.scanned ? 'is-scanned' : ''}">
           <div class="logbook-entry__portrait">
-            ${entry.scanned ? `<img src="/assets/generated/${entry.imageKey}.png" alt="">` : '<span>?</span>'}
+            ${entry.scanned ? `<img src="${entry.imageSrc}" alt="">` : '<span>?</span>'}
           </div>
           <div>
             <strong>${entry.scanned ? entry.species : 'Unknown lifeform'}</strong>
@@ -1352,4 +1361,3 @@ export function upgradeRow(upgrade: Upgrade) {
     </article>
   `;
 }
-

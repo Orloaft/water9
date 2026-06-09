@@ -32,6 +32,16 @@ export function sonarPing(this: DeepdiveScene, ) {
       fish.homeY = Phaser.Math.Linear(fish.homeY, this.player.y, 0.12);
       attracted += 1;
     }
+    for (const creature of this.articulatedCreatures) {
+      if (creature.dead) continue;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y);
+      if (distance > SONAR_ATTRACT_RADIUS + creature.radius) continue;
+      creature.aggro = Math.max(creature.aggro, 5.2);
+      creature.homeX = Phaser.Math.Linear(creature.homeX, this.player.x, 0.08);
+      creature.homeY = Phaser.Math.Linear(creature.homeY, this.player.y, 0.08);
+      if (creature.state === 'patrol') creature.state = 'stalk';
+      attracted += 1;
+    }
     this.drawSonarMap();
     state.status = attracted > 0
       ? `Sonar ping mapped nearby stone and drew ${attracted} hostile signal${attracted === 1 ? '' : 's'} closer.`
@@ -52,6 +62,12 @@ export function captureSonarContacts(this: DeepdiveScene, ) {
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance > SONAR_ATTRACT_RADIUS) continue;
       contacts.push({ x: fish.x, y: fish.y, kind: 'fish', hostile: fish.hostile, age: 0 });
+    }
+    for (const creature of this.articulatedCreatures) {
+      if (creature.dead) continue;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y);
+      if (distance > SONAR_ATTRACT_RADIUS + creature.radius) continue;
+      contacts.push({ x: creature.x, y: creature.y, kind: 'predator', hostile: true, age: 0 });
     }
     for (const flora of this.flora) {
       if (flora.dead) continue;
@@ -78,4 +94,3 @@ export function revealSonarAtWorld(this: DeepdiveScene, worldX: number, worldY: 
     }
     this.drawSonarMap();
   }
-
