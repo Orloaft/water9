@@ -9,7 +9,16 @@
   "sourceTransform": {
     "flipX": true,
     "scale": 3,
-    "resample": "nearest"
+    "resample": "lanczos",
+    "postProcess": {
+      "contrast": 1.08,
+      "sharpness": 1.7,
+      "unsharpMask": {
+        "radius": 1,
+        "percent": 110,
+        "threshold": 8
+      }
+    }
   },
   "coordinateSpace": {
     "units": "pixels",
@@ -71,6 +80,72 @@
         "width": 58,
         "height": 54
       },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "maskSourcePartId": "jaw",
+          "maskOffset": [18, 63],
+          "points": [
+            [38, 115],
+            [43, 96],
+            [61, 91],
+            [78, 98],
+            [92, 108],
+            [104, 116],
+            [114, 126],
+            [144, 121],
+            [154, 129],
+            [151, 138],
+            [132, 142],
+            [91, 138],
+            [57, 131]
+          ]
+        },
+        {
+          "kind": "polygon",
+          "maskSourcePartId": "jaw",
+          "maskOffset": [18, 63],
+          "points": [
+            [62, 101],
+            [67, 93],
+            [80, 99],
+            [77, 112]
+          ]
+        },
+        {
+          "kind": "polygon",
+          "maskSourcePartId": "jaw",
+          "maskOffset": [18, 63],
+          "points": [
+            [85, 118],
+            [91, 102],
+            [105, 110],
+            [101, 125]
+          ]
+        },
+        {
+          "kind": "polygon",
+          "maskSourcePartId": "jaw",
+          "maskOffset": [18, 63],
+          "points": [
+            [105, 123],
+            [114, 110],
+            [129, 116],
+            [123, 129]
+          ]
+        },
+        {
+          "kind": "polygon",
+          "maskSourcePartId": "jaw",
+          "maskOffset": [18, 63],
+          "points": [
+            [131, 120],
+            [138, 106],
+            [154, 112],
+            [151, 125]
+          ]
+        }
+      ],
       "size": {
         "width": 174,
         "height": 162
@@ -162,5 +237,5 @@
       }
     }
   ],
-  "notes": "Second articulated proof creature cut from one existing black swallower frame, flipped to the runtime right-facing convention, nearest-neighbor upscaled, and assembled with parent-body socket overlays on every anchored joint to prove the rig supports more than one cohesive segmented predator."
+  "notes": "Second articulated proof creature cut from one existing black swallower frame, flipped to the runtime right-facing convention, then Lanczos-upscaled with a restrained contrast/sharpen pass to reduce thumbnail blockiness while preserving silhouette. The head declares jaw-alpha-intersected mandible and fang cutouts so the lower jaw is carried by the hinged jaw part instead of being duplicated in the skull. It is assembled with parent-body socket overlays on every anchored joint to prove the rig supports more than one cohesive segmented predator."
 }

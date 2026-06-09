@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,7 +71,123 @@ def resample_filter(name: str | None) -> int:
         return Image.Resampling.BICUBIC
     if name == "bilinear":
         return Image.Resampling.BILINEAR
+    if name == "lanczos":
+        return Image.Resampling.LANCZOS
     return Image.Resampling.NEAREST
+
+
+def apply_post_process(image: Image.Image, process: dict[str, Any] | None) -> Image.Image:
+    if not process:
+        return image
+    result = image
+    contrast = process.get("contrast")
+    if contrast is not None:
+        result = ImageEnhance.Contrast(result).enhance(float(contrast))
+    sharpness = process.get("sharpness")
+    if sharpness is not None:
+        result = ImageEnhance.Sharpness(result).enhance(float(sharpness))
+    unsharp = process.get("unsharpMask")
+    if unsharp:
+        result = result.filter(
+            ImageFilter.UnsharpMask(
+                radius=float(unsharp.get("radius", 1)),
+                percent=int(unsharp.get("percent", 100)),
+                threshold=int(unsharp.get("threshold", 0)),
+            )
+        )
+    return result
+
+
+def paste_alpha_at(source_alpha: Image.Image, target_size: tuple[int, int], offset: tuple[int, int]) -> Image.Image:
+    target = Image.new("L", target_size, 0)
+    offset_x, offset_y = offset
+    source_w, source_h = source_alpha.size
+    target_w, target_h = target_size
+    source_left = max(0, -offset_x)
+    source_top = max(0, -offset_y)
+    target_left = max(0, offset_x)
+    target_top = max(0, offset_y)
+    width = min(source_w - source_left, target_w - target_left)
+    height = min(source_h - source_top, target_h - target_top)
+    if width <= 0 or height <= 0:
+        return target
+    target.paste(
+        source_alpha.crop((source_left, source_top, source_left + width, source_top + height)),
+        (target_left, target_top),
+    )
+    return target
+
+
+def apply_alpha_cutouts(
+    image: Image.Image,
+    cutouts: list[dict[str, Any]] | None,
+    part_images: dict[str, Image.Image] | None = None,
+) -> Image.Image:
+    if not cutouts:
+        return image
+    result = image.copy()
+    alpha = result.getchannel("A")
+    for cutout in cutouts:
+        shape_mask = Image.new("L", result.size, 0)
+        draw = ImageDraw.Draw(shape_mask)
+        kind = cutout.get("kind")
+        if kind == "polygon":
+            points = [tuple(point) for point in cutout.get("points", [])]
+            if len(points) < 3:
+                raise ValueError("polygon alpha cutout needs at least three points")
+            draw.polygon(points, fill=255)
+        elif kind == "rectangle":
+            box = crop_box(cutout)
+            draw.rectangle(box, fill=255)
+        elif kind == "ellipse":
+            box = crop_box(cutout)
+            draw.ellipse(box, fill=255)
+        else:
+            raise ValueError(f"unsupported alpha cutout kind {kind!r}")
+        mask_source_part_id = cutout.get("maskSourcePartId")
+        if mask_source_part_id:
+            if part_images is None or mask_source_part_id not in part_images:
+                raise ValueError(f"alpha cutout maskSourcePartId {mask_source_part_id!r} is missing")
+            mask_offset = cutout.get("maskOffset", [0, 0])
+            if not (isinstance(mask_offset, list) and len(mask_offset) == 2):
+                raise ValueError("alpha cutout maskOffset must be a two-number list")
+            source_alpha = part_images[mask_source_part_id].getchannel("A")
+            threshold = int(cutout.get("maskAlphaThreshold", 16))
+            source_alpha = source_alpha.point(lambda value: 255 if value > threshold else 0)
+            source_mask = paste_alpha_at(source_alpha, result.size, (int(mask_offset[0]), int(mask_offset[1])))
+            shape_mask = ImageChops.multiply(shape_mask, source_mask)
+        alpha.paste(0, mask=shape_mask)
+    result.putalpha(alpha)
+    return result
+
+
+def build_part_image(source_image: Image.Image, source_transform: dict[str, Any], part: dict[str, Any]) -> Image.Image:
+    crop = part.get("sourceCrop")
+    if not crop:
+        raise ValueError("part has no sourceCrop")
+    expected = transformed_source(source_image, source_transform).crop(crop_box(crop))
+    scale = source_transform.get("scale", 1)
+    if scale != 1:
+        scale = int(scale)
+        expected = expected.resize((expected.width * scale, expected.height * scale), resample_filter(source_transform.get("resample")))
+    return apply_post_process(expected, source_transform.get("postProcess"))
+
+
+def build_expected_part_images(
+    source_image: Image.Image,
+    source_transform: dict[str, Any],
+    parts: list[dict[str, Any]],
+) -> dict[str, Image.Image]:
+    raw_images = {
+        part["id"]: build_part_image(source_image, source_transform, part)
+        for part in parts
+        if part.get("id") and part.get("sourceCrop")
+    }
+    return {
+        part["id"]: apply_alpha_cutouts(raw_images[part["id"]], part.get("alphaCutouts"), raw_images)
+        for part in parts
+        if part.get("id") in raw_images
+    }
 
 
 def validate_declared_size(failures: list[str], owner: str, path: Path, declared: dict[str, Any] | None) -> None:
@@ -87,18 +203,15 @@ def validate_part_source_crop(
     failures: list[str],
     owner: str,
     generated_path: Path,
-    source_image: Image.Image,
-    source_transform: dict[str, Any],
+    expected_parts: dict[str, Image.Image],
     part: dict[str, Any],
 ) -> None:
-    crop = part.get("sourceCrop")
-    if not crop:
+    if not part.get("sourceCrop"):
         return
-    expected = transformed_source(source_image, source_transform).crop(crop_box(crop))
-    scale = source_transform.get("scale", 1)
-    if scale != 1:
-        scale = int(scale)
-        expected = expected.resize((expected.width * scale, expected.height * scale), resample_filter(source_transform.get("resample")))
+    expected = expected_parts.get(part.get("id"))
+    if expected is None:
+        fail(failures, f"{owner}: expected image could not be built")
+        return
     actual = load_rgba(generated_path)
     if not images_equal(expected, actual):
         fail(failures, f"{owner}: {generated_path.name} does not match declared source crop")
@@ -144,13 +257,19 @@ def validate_source_manifest(source_path: Path, runtime_by_id: dict[str, Any]) -
         return failures
     source_image = load_rgba(base_source)
     source_transform = manifest.get("sourceTransform") or {}
+    manifest_parts = manifest.get("parts", [])
+    try:
+        expected_parts = build_expected_part_images(source_image, source_transform, manifest_parts)
+    except Exception as error:
+        fail(failures, f"{owner}: could not build expected source parts: {error}")
+        expected_parts = {}
 
     runtime_parts_by_texture = {part["texture"]: part for part in runtime.get("parts", [])}
     runtime_overlays_by_texture = {overlay["texture"]: overlay for overlay in runtime.get("socketOverlays", [])}
     source_parts_by_id = {}
     source_parts_by_src = {}
 
-    for part in manifest.get("parts", []):
+    for part in manifest_parts:
         part_owner = f"{owner}.{part.get('id')}"
         src = part.get("src")
         if not src:
@@ -168,7 +287,7 @@ def validate_source_manifest(source_path: Path, runtime_by_id: dict[str, Any]) -
             fail(failures, f"{part_owner}: not referenced by runtime creature {runtime_id}")
         elif part.get("key") and runtime_part.get("textureKey") != part.get("key"):
             fail(failures, f"{part_owner}: key {part.get('key')} does not match runtime textureKey {runtime_part.get('textureKey')}")
-        validate_part_source_crop(failures, part_owner, generated_path, source_image, source_transform, part)
+        validate_part_source_crop(failures, part_owner, generated_path, expected_parts, part)
 
     for runtime_part in runtime.get("parts", []):
         if runtime_part.get("texture") not in source_parts_by_src:
