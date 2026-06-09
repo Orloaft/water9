@@ -244,22 +244,36 @@ async function validateCreature(creature, index) {
   if (!Array.isArray(socketOverlays)) {
     fail(`${creature.id}.socketOverlays must be an array when present`);
   } else {
-    const coveredJoints = new Set();
+    const coveredJoints = new Map();
     const overlayIds = new Set();
     for (let overlayIndex = 0; overlayIndex < socketOverlays.length; overlayIndex += 1) {
       const overlay = socketOverlays[overlayIndex];
       if (isPlainObject(overlay)) {
         if (overlayIds.has(overlay.id)) fail(`${creature.id}: duplicate socket overlay id ${overlay.id}`);
         overlayIds.add(overlay.id);
-        coveredJoints.add(`${overlay.parentId}->${overlay.childId}`);
+        const parent = partsById.get(overlay.parentId);
+        const child = partsById.get(overlay.childId);
+        if (parent && child) {
+          if (child.parentId !== overlay.parentId) {
+            fail(`${creature.id}.${overlay.id} socket must cover the real parent joint ${child.parentId}->${child.id}`);
+          }
+          const jointKey = `${overlay.parentId}->${overlay.childId}`;
+          if (coveredJoints.has(jointKey)) {
+            fail(`${creature.id}.${overlay.id} duplicates socket overlay ${coveredJoints.get(jointKey)} for joint ${jointKey}`);
+          }
+          coveredJoints.set(jointKey, overlay.id);
+          const joinedDepth = Math.max(parent.depth, child.depth);
+          if (finiteNumber(overlay.depth) && finiteNumber(joinedDepth) && overlay.depth <= joinedDepth) {
+            fail(`${creature.id}.${overlay.id}.depth must render above joined parts ${overlay.parentId}/${overlay.childId}`);
+          }
+        }
       }
       await validateSocketOverlay(creature, overlay, overlayIndex, partsById);
     }
     for (const part of creature.parts) {
       if (!isPlainObject(part) || !part.parentId || !part.motion) continue;
-      if (part.motion.kind !== 'fin' && part.motion.kind !== 'tail') continue;
       const key = `${part.parentId}->${part.id}`;
-      if (!coveredJoints.has(key)) fail(`${creature.id}.${part.id} ${part.motion.kind} joint needs a socket overlay`);
+      if (!coveredJoints.has(key)) fail(`${creature.id}.${part.id} anchored joint needs a socket overlay`);
     }
   }
   return {

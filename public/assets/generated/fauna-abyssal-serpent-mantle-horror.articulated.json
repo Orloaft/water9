@@ -253,6 +253,24 @@
       "offset": { "x": -25, "y": 0 }
     },
     {
+      "id": "body-3-socket",
+      "src": "fauna-abyssal-serpent-mantle-horror-body-3-socket.png",
+      "parentId": "body-2",
+      "childId": "body-3",
+      "sourcePartId": "body2",
+      "sourceCrop": { "x": 0, "y": 9, "width": 70, "height": 58 },
+      "offset": { "x": -30, "y": 0 }
+    },
+    {
+      "id": "body-2-socket",
+      "src": "fauna-abyssal-serpent-mantle-horror-body-2-socket.png",
+      "parentId": "body-1",
+      "childId": "body-2",
+      "sourcePartId": "body1",
+      "sourceCrop": { "x": 0, "y": 8, "width": 86, "height": 66 },
+      "offset": { "x": -32, "y": 0 }
+    },
+    {
       "id": "fin-back-socket",
       "src": "fauna-abyssal-serpent-mantle-horror-fin-back-socket.png",
       "parentId": "body-1",
@@ -260,6 +278,24 @@
       "sourcePartId": "body1",
       "sourceCrop": { "x": 24, "y": 0, "width": 82, "height": 50 },
       "offset": { "x": 0, "y": -16 }
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-abyssal-serpent-mantle-horror-head-socket.png",
+      "parentId": "body-1",
+      "childId": "head",
+      "sourcePartId": "body1",
+      "sourceCrop": { "x": 70, "y": 0, "width": 60, "height": 66 },
+      "offset": { "x": 47, "y": 0 }
+    },
+    {
+      "id": "jaw-socket",
+      "src": "fauna-abyssal-serpent-mantle-horror-jaw-socket.png",
+      "parentId": "head",
+      "childId": "jaw",
+      "sourcePartId": "head",
+      "sourceCrop": { "x": 28, "y": 40, "width": 68, "height": 46 },
+      "offset": { "x": 34, "y": 18 }
     },
     {
       "id": "fin-front-socket",
@@ -271,5 +307,5 @@
       "offset": { "x": 0, "y": 16 }
     }
   ],
-  "notes": "v3 parts are source-cut from one whole transparent creature to preserve silhouette, palette, and overlap cohesion. Runtime sprite-parts now carries equivalent parent anchors, rest offsets, and parent-body socket overlays so fins and tail tuck under body pixels like one connected creature."
+  "notes": "v3 parts are source-cut from one whole transparent creature to preserve silhouette, palette, and overlap cohesion. Runtime sprite-parts now carries equivalent parent anchors, rest offsets, and parent-body socket overlays for every joint so fins, body segments, neck, and jaw tuck under parent pixels like one connected creature."
 }
