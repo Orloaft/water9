@@ -26,10 +26,11 @@ ALPHA_THRESHOLD = 16
 MIN_OVERLAP_PIXELS = 48
 MIN_SOCKET_CHILD_PIXELS = 24
 MIN_SOCKET_PARENT_PIXELS = 32
-MODES = (
-    ("right", 1, 1.1, 0.0),
-    ("left", -1, 1.1, 0.0),
-    ("lunge", 1, 0.5, 1.0),
+DEFAULT_PHASE_SAMPLES = 8
+POSES = (
+    ("right", 1, 0.0),
+    ("left", -1, 0.0),
+    ("lunge", 1, 1.0),
 )
 
 
@@ -47,7 +48,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-overlap", type=int, default=MIN_OVERLAP_PIXELS)
     parser.add_argument("--min-socket-child-overlap", type=int, default=MIN_SOCKET_CHILD_PIXELS)
     parser.add_argument("--min-socket-parent-overlap", type=int, default=MIN_SOCKET_PARENT_PIXELS)
+    parser.add_argument("--phase-samples", type=int, default=DEFAULT_PHASE_SAMPLES)
     return parser.parse_args()
+
+
+def phase_values(sample_count: int) -> list[float]:
+    if sample_count <= 1:
+        return [1.1]
+    return [(math.tau * index) / sample_count for index in range(sample_count)]
 
 
 def anchor_offset(part: dict[str, Any], facing: int, rotation: float, anchor: tuple[float, float]) -> tuple[float, float]:
@@ -198,7 +206,8 @@ def validate_creature(
     min_overlap: int,
     min_socket_child_overlap: int,
     min_socket_parent_overlap: int,
-) -> list[str]:
+    phases: list[float],
+) -> tuple[list[str], int]:
     failures: list[str] = []
     images = {
         part["id"]: Image.open(asset_dir / part["texture"]).convert("RGBA")
@@ -210,59 +219,68 @@ def validate_creature(
     }
     parts = {part["id"]: part for part in creature["parts"]}
 
-    for mode_name, facing, phase, attack_blend in MODES:
-        placements = place_parts(creature, facing, phase, attack_blend)
-        masks = {
-            part["id"]: alpha_points(part, images[part["id"]], placements[part["id"]], facing)
-            for part in creature["parts"]
-        }
-        for part in creature["parts"]:
-            parent_id = part.get("parentId")
-            if not parent_id:
-                continue
-            overlap = len(masks[part["id"]] & masks[parent_id])
-            child_pixels = max(1, len(masks[part["id"]]))
-            coverage = overlap / child_pixels
-            if overlap < min_overlap:
-                failures.append(
-                    f"{creature['id']} {mode_name} {parent_id}->{part['id']} visual overlap "
-                    f"{overlap}px ({coverage:.3f} of child) below {min_overlap}px"
-                )
-        for overlay in creature.get("socketOverlays", []):
-            parent = parts.get(overlay.get("parentId"))
-            child = parts.get(overlay.get("childId"))
-            if not parent or not child:
-                continue
-            overlay_placement = place_socket_overlay(overlay, placements[parent["id"]], facing)
-            overlay_mask = alpha_points(overlay, overlay_images[overlay["id"]], overlay_placement, facing)
-            child_overlap = len(overlay_mask & masks[child["id"]])
-            parent_overlap = len(overlay_mask & masks[parent["id"]])
-            if child_overlap < min_socket_child_overlap:
-                failures.append(
-                    f"{creature['id']} {mode_name} socket {overlay['id']} covers child {child['id']} by "
-                    f"{child_overlap}px below {min_socket_child_overlap}px"
-                )
-            if parent_overlap < min_socket_parent_overlap:
-                failures.append(
-                    f"{creature['id']} {mode_name} socket {overlay['id']} aligns to parent {parent['id']} by "
-                    f"{parent_overlap}px below {min_socket_parent_overlap}px"
-                )
+    checked_poses = 0
+    for mode_name, facing, attack_blend in POSES:
+        for phase in phases:
+            checked_poses += 1
+            pose_name = f"{mode_name}@{phase:.2f}"
+            placements = place_parts(creature, facing, phase, attack_blend)
+            masks = {
+                part["id"]: alpha_points(part, images[part["id"]], placements[part["id"]], facing)
+                for part in creature["parts"]
+            }
+            for part in creature["parts"]:
+                parent_id = part.get("parentId")
+                if not parent_id:
+                    continue
+                overlap = len(masks[part["id"]] & masks[parent_id])
+                child_pixels = max(1, len(masks[part["id"]]))
+                coverage = overlap / child_pixels
+                if overlap < min_overlap:
+                    failures.append(
+                        f"{creature['id']} {pose_name} {parent_id}->{part['id']} visual overlap "
+                        f"{overlap}px ({coverage:.3f} of child) below {min_overlap}px"
+                    )
+            for overlay in creature.get("socketOverlays", []):
+                parent = parts.get(overlay.get("parentId"))
+                child = parts.get(overlay.get("childId"))
+                if not parent or not child:
+                    continue
+                overlay_placement = place_socket_overlay(overlay, placements[parent["id"]], facing)
+                overlay_mask = alpha_points(overlay, overlay_images[overlay["id"]], overlay_placement, facing)
+                child_overlap = len(overlay_mask & masks[child["id"]])
+                parent_overlap = len(overlay_mask & masks[parent["id"]])
+                if child_overlap < min_socket_child_overlap:
+                    failures.append(
+                        f"{creature['id']} {pose_name} socket {overlay['id']} covers child {child['id']} by "
+                        f"{child_overlap}px below {min_socket_child_overlap}px"
+                    )
+                if parent_overlap < min_socket_parent_overlap:
+                    failures.append(
+                        f"{creature['id']} {pose_name} socket {overlay['id']} aligns to parent {parent['id']} by "
+                        f"{parent_overlap}px below {min_socket_parent_overlap}px"
+                    )
 
-    return failures
+    return failures, checked_poses
 
 
 def main() -> int:
     args = parse_args()
+    phases = phase_values(args.phase_samples)
     manifest = json.loads(args.manifest.read_text())
     failures: list[str] = []
+    checked_poses = 0
     for creature in manifest.get("creatures", []):
-        failures.extend(validate_creature(
+        creature_failures, creature_checked_poses = validate_creature(
             creature,
             args.asset_dir,
             args.min_overlap,
             args.min_socket_child_overlap,
             args.min_socket_parent_overlap,
-        ))
+            phases,
+        )
+        failures.extend(creature_failures)
+        checked_poses += creature_checked_poses
 
     if failures:
         for failure in failures:
@@ -270,7 +288,10 @@ def main() -> int:
         return 1
 
     count = len(manifest.get("creatures", []))
-    print(f"Validated alpha seam overlap for {count} articulated creature{'s' if count != 1 else ''}.")
+    print(
+        f"Validated alpha seam overlap for {count} articulated creature{'s' if count != 1 else ''} "
+        f"across {checked_poses} motion pose samples."
+    )
     return 0
 
 
