@@ -6,6 +6,7 @@ import { state } from './state';
 import { rng } from './rng';
 import { cargoCapacity,clearBleed,clearVenom,fuelMax,oxygenMax,refillAtBoat,restart,subDef,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
+import { articulatedPlaceholderTextureKeys } from './articulated';
 import type { DeepdiveScene } from './scene';
 
 export function playtestSnapshot(this: DeepdiveScene, ) {
@@ -123,6 +124,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           })),
         };
       }),
+      articulatedPlaceholders: articulatedPlaceholderTextureKeys(),
       world: this.playtestWorldSurvey(),
     };
   }
@@ -221,7 +223,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.carrierSub.vy = 0;
       }
     } else if (command === 'teleportToArticulated') {
-      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead);
+      const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string } : {};
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
       if (creature) {
         this.player.x = Phaser.Math.Clamp(creature.x - 120, 20, WORLD_W * TILE - 20);
         this.player.y = Phaser.Math.Clamp(creature.y, 20, WORLD_H * TILE - 20);
@@ -233,9 +236,10 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         this.revealSonarAtWorld(creature.x, creature.y, 12);
       }
     } else if (command === 'reviewArticulated') {
-      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead);
+      const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string; mode?: string } : {};
+      const mode = typeof value === 'string' ? value : String(payload.mode ?? 'right');
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
       if (creature) {
-        const mode = String(value);
         const facing = mode.includes('left') ? -1 : 1;
         const reviewX = WORLD_W * TILE * 0.5 + facing * 140;
         const reviewY = SURFACE_Y + 220;
@@ -282,8 +286,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         this.cameras.main.centerOn(reviewX, reviewY);
       }
     } else if (command === 'damageArticulatedPart') {
-      const payload = (value ?? {}) as { partId?: string; amount?: number; source?: string };
-      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead);
+      const payload = (value ?? {}) as { creatureId?: string; partId?: string; amount?: number; source?: string };
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
       const part = creature?.parts.find((candidate) => candidate.id === (payload.partId ?? 'jaw'));
       if (creature && part) {
         const amount = Number(payload.amount) || part.maxHp + 5;
@@ -291,8 +295,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         this.updateArticulatedParts(creature, 0);
       }
     } else if (command === 'collideArticulated') {
-      const payload = (value ?? {}) as { partId?: string };
-      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead);
+      const payload = (value ?? {}) as { creatureId?: string; partId?: string };
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
       const part = creature?.parts.find((candidate) => candidate.id === (payload.partId ?? 'head'));
       if (creature && part) {
         creature.reviewFrozen = false;

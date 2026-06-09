@@ -663,11 +663,17 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
     if (attacking) {
       const jaw = creature.parts.find((part) => part.id === 'jaw');
       if (jaw && !jaw.detached && jaw.hp > 0) {
-        const head = creature.parts.find((part) => part.id === 'head') ?? creature.parts[0];
-        const markerX = head?.x ?? creature.x;
-        const markerY = (head?.y ?? creature.y) - 62 * PART_WORLD_SCALE - Math.sin(creature.phase * 8) * 2;
-        this.actors.fillStyle(0xff4f64, alpha * 0.68);
-        this.actors.fillTriangle(markerX, markerY, markerX - 8, markerY - 14, markerX + 8, markerY - 14);
+        const biteAnchor = this.articulatedPartAnchorWorld(creature, 'jaw', 'bite') ?? jaw;
+        const pulse = 0.65 + Math.sin(creature.phase * 12) * 0.25;
+        this.actors.lineStyle(2, 0xff4f64, alpha * pulse * 0.48);
+        this.actors.strokeCircle(biteAnchor.x, biteAnchor.y, 8 + creature.attackBlend * 5);
+        this.actors.lineStyle(1, 0xffb0bd, alpha * pulse * 0.32);
+        this.actors.lineBetween(
+          biteAnchor.x - creature.facingSign * 12,
+          biteAnchor.y - 3,
+          biteAnchor.x + creature.facingSign * 11,
+          biteAnchor.y + 2,
+        );
       }
     }
     if (creature.scan > 0 && !creature.scanned) {
@@ -677,8 +683,8 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       this.actors.strokePath();
     }
     if (creature.scanPulse > 0) {
-      this.actors.lineStyle(2, rarityColor(creature.manifest.rarity), creature.scanPulse * 0.75);
-      this.actors.strokeCircle(creature.x, creature.y, creature.radius + 10 + (1 - creature.scanPulse) * 18);
+      this.actors.lineStyle(2, rarityColor(creature.manifest.rarity), creature.scanPulse * 0.38);
+      this.actors.strokeCircle(creature.x, creature.y, creature.radius * 0.72 + 8 + (1 - creature.scanPulse) * 12);
     }
   }
 }

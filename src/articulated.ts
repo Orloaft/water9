@@ -35,7 +35,7 @@ const fallbackSerpentManifest: ArticulatedCreatureManifest = {
         front: [42, 0],
         tip: [-52, 4],
       },
-      restOffset: [12.6, 4],
+      restOffset: [48, 20],
       offset: [-138, 4],
       origin: [0.78, 0.5],
       size: [112, 72],
@@ -97,7 +97,7 @@ const fallbackSerpentManifest: ArticulatedCreatureManifest = {
       anchors: {
         root: [0, 26],
       },
-      restOffset: [4.9, -10.1],
+      restOffset: [10, 27],
       offset: [-22, -42],
       origin: [0.44, 0.86],
       size: [82, 78],
@@ -193,6 +193,7 @@ const fallbackSerpentManifest: ArticulatedCreatureManifest = {
 
 const articulatedManifests = new Map<string, ArticulatedCreatureManifest>();
 articulatedManifests.set(fallbackSerpentManifest.id, fallbackSerpentManifest);
+const placeholderTextureKeys = new Set<string>();
 
 export function loadArticulatedAssets(scene: Phaser.Scene) {
   scene.load.json(ARTICULATED_MANIFEST_KEY, '/assets/generated/articulated-creatures.parts.json');
@@ -223,6 +224,7 @@ export function ensureArticulatedTextures(scene: Phaser.Scene) {
   for (const manifest of articulatedCreatureDefs()) {
     for (const part of manifest.parts) {
       if (scene.textures.exists(part.textureKey)) continue;
+      placeholderTextureKeys.add(part.textureKey);
       const width = Math.max(8, Math.ceil(part.size[0]));
       const height = Math.max(8, Math.ceil(part.size[1]));
       const graphics = scene.add.graphics().setVisible(false);
@@ -239,6 +241,10 @@ export function ensureArticulatedTextures(scene: Phaser.Scene) {
       graphics.destroy();
     }
   }
+}
+
+export function articulatedPlaceholderTextureKeys() {
+  return [...placeholderTextureKeys];
 }
 
 export function createArticulatedCreature(
