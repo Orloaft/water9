@@ -51,6 +51,7 @@ export type PlaytestCommand =
   | 'teleportDepth'
   | 'teleportToArticulated'
   | 'reviewArticulated'
+  | 'damageArticulatedPart'
   | 'setOxygen'
   | 'setHull';
 export type DiverAnimation =
@@ -203,6 +204,10 @@ export interface ArticulatedPartState {
   maxHp: number;
   hurtFlash: number;
   jointStress: number;
+  detached: boolean;
+  detachVx: number;
+  detachVy: number;
+  detachAngularVelocity: number;
   x: number;
   y: number;
   rotation: number;

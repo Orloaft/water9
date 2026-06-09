@@ -754,6 +754,7 @@ export interface DeepdiveScene {
   nearestArticulatedDamageTarget: OmitThisParameter<typeof articulatedNs.nearestArticulatedDamageTarget>;
   nearestKnifeArticulatedTarget: OmitThisParameter<typeof articulatedNs.nearestKnifeArticulatedTarget>;
   damageArticulatedPart: OmitThisParameter<typeof articulatedNs.damageArticulatedPart>;
+  detachArticulatedPart: OmitThisParameter<typeof articulatedNs.detachArticulatedPart>;
   damageArticulatedInRadius: OmitThisParameter<typeof articulatedNs.damageArticulatedInRadius>;
   articulatedMobilityScale: OmitThisParameter<typeof articulatedNs.articulatedMobilityScale>;
   drawArticulatedCreatures: OmitThisParameter<typeof articulatedNs.drawArticulatedCreatures>;

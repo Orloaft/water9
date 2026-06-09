@@ -70,6 +70,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           parentId: joint.parentId,
           error: roundMetric(joint.error),
           stress: roundMetric(joint.stress),
+          detached: Boolean(joint.detached),
         }));
         const maxJointError = joints.reduce((max, joint) => Math.max(max, joint.error), 0);
         const maxJointStress = joints.reduce((max, joint) => Math.max(max, joint.stress), 0);
@@ -104,6 +105,10 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
             rotation: roundMetric(part.rotation),
             hp: Math.round(part.hp),
             jointStress: roundMetric(part.jointStress),
+            detached: part.detached,
+            detachVx: roundMetric(part.detachVx),
+            detachVy: roundMetric(part.detachVy),
+            detachAngularVelocity: roundMetric(part.detachAngularVelocity),
             sprite: part.sprite
               ? {
                 visible: part.sprite.visible,
@@ -262,12 +267,25 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         creature.parts.forEach((part) => {
           part.hp = Math.max(1, part.hp);
           part.hurtFlash = 0;
+          part.detached = false;
+          part.detachVx = 0;
+          part.detachVy = 0;
+          part.detachAngularVelocity = 0;
         });
         state.docked = false;
         state.atBoat = false;
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         this.updateArticulatedParts(creature, 0);
         this.cameras.main.centerOn(reviewX, reviewY);
+      }
+    } else if (command === 'damageArticulatedPart') {
+      const payload = (value ?? {}) as { partId?: string; amount?: number; source?: string };
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead);
+      const part = creature?.parts.find((candidate) => candidate.id === (payload.partId ?? 'jaw'));
+      if (creature && part) {
+        const amount = Number(payload.amount) || part.maxHp + 5;
+        this.damageArticulatedPart(creature, part, amount, payload.source ?? 'Playtest');
+        this.updateArticulatedParts(creature, 0);
       }
     } else if (command === 'setOxygen') {
       state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());

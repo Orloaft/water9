@@ -49,10 +49,14 @@ function smoothAngle(current: number, target: number, amount: number) {
   return current + Phaser.Math.Angle.Wrap(target - current) * amount;
 }
 
+function canDetachPart(manifest: ArticulatedPartManifest) {
+  return manifest.motion.kind === 'fin' || manifest.motion.kind === 'tail' || manifest.motion.kind === 'jaw';
+}
+
 export function articulatedPartAnchorWorld(creature: ArticulatedCreature, partId: string, anchorName: string) {
   const part = creature.parts.find((candidate) => candidate.id === partId);
   const manifest = manifestById(creature, partId);
-  if (!part || !manifest) return null;
+  if (!part || !manifest || part.detached) return null;
   return anchorWorldFor(part, manifest, facingFor(creature), anchorFor(manifest, anchorName));
 }
 
@@ -64,7 +68,10 @@ export function articulatedJointMetrics(creature: ArticulatedCreature) {
       const parent = manifest.parentId ? creature.parts.find((part) => part.id === manifest.parentId) : undefined;
       const child = creature.parts.find((part) => part.id === manifest.id);
       const parentManifest = manifest.parentId ? manifestById(creature, manifest.parentId) : undefined;
-      if (!parent || !child || !parentManifest) {
+      if (child?.detached) {
+        return { partId: manifest.id, parentId: manifest.parentId ?? '', error: 0, stress: 1, detached: true };
+      }
+      if (!parent || !child || !parentManifest || parent.detached) {
         return { partId: manifest.id, parentId: manifest.parentId ?? '', error: Number.POSITIVE_INFINITY, stress: 1 };
       }
       const parentAnchor = anchorWorldFor(parent, parentManifest, facing, anchorFor(parentManifest, manifest.parentAnchor));
@@ -78,6 +85,7 @@ export function articulatedJointMetrics(creature: ArticulatedCreature) {
         parentId: manifest.parentId ?? '',
         error,
         stress: Phaser.Math.Clamp(error / Math.max(1, manifest.hitRadius * PART_WORLD_SCALE), 0, 1),
+        detached: false,
       };
     });
 }
@@ -88,6 +96,39 @@ function refreshJointStress(creature: ArticulatedCreature) {
     const metric = metrics.find((candidate) => candidate.partId === part.id);
     part.jointStress = metric?.stress ?? 0;
   }
+}
+
+function updateDetachedArticulatedParts(creature: ArticulatedCreature, delta: number) {
+  for (const part of creature.parts) {
+    if (!part.detached) continue;
+    part.x += part.detachVx * delta;
+    part.y += part.detachVy * delta;
+    part.detachVy += 42 * delta;
+    part.detachVx *= Math.exp(-0.72 * delta);
+    part.detachVy *= Math.exp(-0.34 * delta);
+    part.rotation += part.detachAngularVelocity * delta;
+    part.detachAngularVelocity *= Math.exp(-0.28 * delta);
+  }
+}
+
+export function detachArticulatedPart(this: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, source = 'damage') {
+  const manifest = partManifest(creature, part);
+  if (part.detached || !canDetachPart(manifest)) return false;
+  const facing = facingFor(creature);
+  part.detached = true;
+  part.jointStress = 1;
+  part.detachVx = creature.vx * 0.35 - facing * Phaser.Math.FloatBetween(18, 46);
+  part.detachVy = creature.vy * 0.25 - Phaser.Math.FloatBetween(10, 34);
+  part.detachAngularVelocity = Phaser.Math.FloatBetween(-1.4, 1.4) + facing * 0.45;
+  part.hurtFlash = 1;
+  this.spawnFloatingText(`${part.id.replace(/-/g, ' ')} severed`, 0xff7a5c);
+  state.status = `${source} severed ${creature.species}'s ${part.id.replace(/-/g, ' ')}.`;
+  if (part.id === 'jaw' && creature.state === 'grab') {
+    creature.state = 'recover';
+    creature.grabTimer = 0;
+    creature.stateTimer = 1.2;
+  }
+  return true;
 }
 
 export function populateArticulatedCreatures(this: DeepdiveScene) {
@@ -119,6 +160,7 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
       creature.parts.forEach((part) => {
         part.hurtFlash = 0;
       });
+      updateDetachedArticulatedParts(creature, delta);
       this.updateArticulatedParts(creature, delta);
       refreshJointStress(creature);
       continue;
@@ -150,13 +192,14 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     creature.y += creature.vy * delta;
     if (creature.vx < -2) creature.facingSign = -1;
     if (creature.vx > 2) creature.facingSign = 1;
+    updateDetachedArticulatedParts(creature, delta);
     this.keepArticulatedCreatureInWater(creature);
     this.updateArticulatedParts(creature, delta);
     refreshJointStress(creature);
     this.resolveArticulatedGrab(creature, delta, controls);
 
     if (creature.stunned > 0 || this.isAtBoat()) continue;
-    const jaw = creature.parts.find((part) => part.id === 'jaw');
+    const jaw = creature.parts.find((part) => part.id === 'jaw' && !part.detached && part.hp > 0);
     const biteAnchor = this.articulatedPartAnchorWorld(creature, 'jaw', 'bite');
     const biteDistance = biteAnchor ? Phaser.Math.Distance.Between(this.player.x, this.player.y, biteAnchor.x, biteAnchor.y) : Number.POSITIVE_INFINITY;
     if ((creature.state === 'lunge' || creature.state === 'grab') && jaw && biteDistance < PLAYER_CONTACT_RADIUS + 22 && creature.bumpCooldown <= 0) {
@@ -176,6 +219,8 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
   const playerDistance = Math.max(1, Math.hypot(dx, dy));
   const homeDistance = Phaser.Math.Distance.Between(creature.x, creature.y, creature.homeX, creature.homeY);
   const canChase = !this.isAtBoat() && playerDistance < SERPENT_DETECTION_RANGE + state.biome * 24 && homeDistance < SERPENT_LEASH_RANGE;
+  const jaw = creature.parts.find((part) => part.id === 'jaw');
+  const canBite = Boolean(jaw && jaw.hp > 0 && !jaw.detached);
 
   if (canChase) {
     creature.aggro = Math.max(creature.aggro, 4.5);
@@ -185,7 +230,7 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
     if (creature.aggro <= 0 && creature.state !== 'recover') creature.state = 'patrol';
   }
 
-  if (creature.aggro > 0 && playerDistance < 172 && creature.grabCooldown <= 0 && creature.state !== 'lunge' && creature.state !== 'grab') {
+  if (canBite && creature.aggro > 0 && playerDistance < 172 && creature.grabCooldown <= 0 && creature.state !== 'lunge' && creature.state !== 'grab') {
     creature.state = 'lunge';
     creature.stateTimer = 0.74;
     creature.grabCooldown = SERPENT_GRAB_COOLDOWN;
@@ -247,7 +292,7 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
 export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: ArticulatedCreature) {
   const samples: [number, number][] = [[creature.x, creature.y]];
   for (const part of creature.parts) {
-    if (part.hp <= 0) continue;
+    if (part.hp <= 0 || part.detached) continue;
     const manifest = partManifest(creature, part);
     const radius = Math.max(8, manifest.hitRadius * PART_WORLD_SCALE * 0.78);
     samples.push(
@@ -334,6 +379,10 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
 
   const placePart = (part: ArticulatedPartState, index: number): void => {
     if (placed.has(part.id)) return;
+    if (part.detached) {
+      placed.add(part.id);
+      return;
+    }
     const manifest = partManifest(creature, part);
     const parent = manifest.parentId ? partById.get(manifest.parentId) : undefined;
     if (placing.has(part.id)) {
@@ -406,7 +455,7 @@ export function bumpArticulatedCreature(this: DeepdiveScene, creature: Articulat
   this.applyHullDamage(Math.max(5, damage - state.upgrades.suit), `${creature.species} hit ${part.id.replace(/-/g, ' ')} first.`);
   this.registerPredatorBite(creature);
   this.playFishBite(damage);
-  if (creature.state === 'lunge' && creature.grabTimer <= 0) {
+  if (creature.state === 'lunge' && creature.grabTimer <= 0 && !part.detached) {
     creature.state = 'grab';
     creature.grabTimer = SERPENT_GRAB_SECONDS;
     state.status = `${creature.species} has you. Thrash hard to break free.`;
@@ -418,7 +467,7 @@ export function bumpArticulatedCreature(this: DeepdiveScene, creature: Articulat
 export function closestArticulatedPartTo(this: DeepdiveScene, creature: ArticulatedCreature, x: number, y: number) {
   let nearest: { part: ArticulatedPartState; distance: number } | null = null;
   for (const part of creature.parts) {
-    if (part.hp <= 0) continue;
+    if (part.hp <= 0 || part.detached) continue;
     const distance = Phaser.Math.Distance.Between(x, y, part.x, part.y);
     if (!nearest || distance < nearest.distance) nearest = { part, distance };
   }
@@ -443,7 +492,7 @@ export function nearestKnifeArticulatedTarget(this: DeepdiveScene) {
 }
 
 export function damageArticulatedPart(this: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, amount: number, source: string) {
-  if (creature.dead || amount <= 0 || part.hp <= 0) return false;
+  if (creature.dead || amount <= 0 || part.hp <= 0 || part.detached) return false;
   const manifest = partManifest(creature, part);
   const damage = amount * manifest.damageMultiplier;
   part.hp = Math.max(0, part.hp - damage);
@@ -452,12 +501,14 @@ export function damageArticulatedPart(this: DeepdiveScene, creature: Articulated
   creature.hurtFlash = 1;
   creature.aggro = Math.max(creature.aggro, 5.5);
   creature.state = creature.state === 'patrol' ? 'stalk' : creature.state;
+  let detached = false;
   if (part.hp <= 0) {
     this.spawnFloatingText(`${part.id.replace(/-/g, ' ')} crippled`, 0xffd166);
+    detached = this.detachArticulatedPart(creature, part, source);
     if (part.id === 'head') creature.hp = 0;
   }
   if (creature.hp > 0) {
-    state.status = `${source} hit ${creature.species}'s ${part.id.replace(/-/g, ' ')}.`;
+    if (!detached) state.status = `${source} hit ${creature.species}'s ${part.id.replace(/-/g, ' ')}.`;
     return true;
   }
   creature.dead = true;
@@ -486,9 +537,11 @@ export function damageArticulatedInRadius(this: DeepdiveScene, centerX: number, 
 export function articulatedMobilityScale(this: DeepdiveScene, creature: ArticulatedCreature) {
   const tail = creature.parts.find((part) => part.id === 'tail');
   const fins = creature.parts.filter((part) => part.id.includes('fin'));
-  const tailScale = tail && tail.hp <= 0 ? 0.62 : 1;
-  const finScale = fins.length ? Phaser.Math.Clamp(fins.filter((part) => part.hp > 0).length / fins.length, 0.72, 1) : 1;
-  return tailScale * finScale;
+  const jaw = creature.parts.find((part) => part.id === 'jaw');
+  const tailScale = tail && (tail.hp <= 0 || tail.detached) ? 0.54 : 1;
+  const finScale = fins.length ? Phaser.Math.Clamp(fins.filter((part) => part.hp > 0 && !part.detached).length / fins.length, 0.66, 1) : 1;
+  const jawScale = jaw && (jaw.hp <= 0 || jaw.detached) ? 0.88 : 1;
+  return tailScale * finScale * jawScale;
 }
 
 export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
@@ -505,12 +558,13 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
     const attacking = creature.state === 'lunge' || creature.state === 'grab';
     for (const part of creature.parts) {
       const manifest = partManifest(creature, part);
-      const damageAlpha = part.hp <= 0 ? 0.26 : 1;
+      const damageAlpha = part.detached ? 0.62 : part.hp <= 0 ? 0.26 : 1;
       const dynamicDepth =
         2.1 +
         manifest.depth +
         (part.id === 'jaw' ? creature.attackBlend * 0.035 : 0) +
-        (part.id === 'fin-front' ? 0.018 : part.id === 'fin-back' ? -0.012 : 0);
+        (part.id === 'fin-front' ? 0.018 : part.id === 'fin-back' ? -0.012 : 0) -
+        (part.detached ? 0.08 : 0);
       part.sprite
         ?.setTexture(manifest.textureKey)
         .setVisible(true)
@@ -531,11 +585,14 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       this.actors.strokeCircle(creature.x, creature.y, creature.radius + 12);
     }
     if (attacking) {
-      const head = creature.parts.find((part) => part.id === 'head') ?? creature.parts[0];
-      const markerX = head?.x ?? creature.x;
-      const markerY = (head?.y ?? creature.y) - 62 * PART_WORLD_SCALE - Math.sin(creature.phase * 8) * 2;
-      this.actors.fillStyle(0xff4f64, alpha * 0.68);
-      this.actors.fillTriangle(markerX, markerY, markerX - 8, markerY - 14, markerX + 8, markerY - 14);
+      const jaw = creature.parts.find((part) => part.id === 'jaw');
+      if (jaw && !jaw.detached && jaw.hp > 0) {
+        const head = creature.parts.find((part) => part.id === 'head') ?? creature.parts[0];
+        const markerX = head?.x ?? creature.x;
+        const markerY = (head?.y ?? creature.y) - 62 * PART_WORLD_SCALE - Math.sin(creature.phase * 8) * 2;
+        this.actors.fillStyle(0xff4f64, alpha * 0.68);
+        this.actors.fillTriangle(markerX, markerY, markerX - 8, markerY - 14, markerX + 8, markerY - 14);
+      }
     }
     if (creature.scan > 0 && !creature.scanned) {
       this.actors.lineStyle(3, 0xb9f27c, 0.35 + creature.scan * 0.5);

@@ -86,6 +86,7 @@ function reviewSummary(mode, snap) {
     facingSign: creature?.facingSign ?? null,
     jointSummary: creature?.jointSummary ?? null,
     biteAnchor: creature?.biteAnchor ?? null,
+    joints: creature?.joints ?? [],
     parts: creature?.parts ?? [],
   };
 }
@@ -157,6 +158,23 @@ function verifyArticulatedReview(reviews) {
   return failures;
 }
 
+function verifyArticulatedDamage(review) {
+  const failures = [];
+  const parts = partMap(review);
+  const jaw = parts.get('jaw');
+  const jawJoint = review.joints?.find?.((joint) => joint.partId === 'jaw');
+  if (!jaw) {
+    failures.push('damage review: missing jaw part');
+  } else {
+    if (!jaw.detached) failures.push('damage review: jaw was not detached');
+    if (jaw.hp !== 0) failures.push(`damage review: jaw hp is ${jaw.hp}, expected 0`);
+    if (Math.abs(jaw.detachVx ?? 0) < 1 && Math.abs(jaw.detachVy ?? 0) < 1) failures.push('damage review: detached jaw has no drift velocity');
+  }
+  if (review.biteAnchor) failures.push('damage review: bite anchor still exists after jaw detachment');
+  if (!jawJoint?.detached) failures.push('damage review: jaw joint is not marked detached');
+  return failures;
+}
+
 try {
   await page.goto(targetUrl, { waitUntil: 'networkidle' });
   await waitForPlaytestApi();
@@ -180,6 +198,9 @@ try {
     articulatedReview.push(reviewSummary(mode, await snapshot()));
   }
   const articulatedFailures = verifyArticulatedReview(articulatedReview);
+  await command('reviewArticulated', 'right');
+  const articulatedDamage = reviewSummary('jaw-detached', await command('damageArticulatedPart', { partId: 'jaw', source: 'Playtest' }));
+  const articulatedDamageFailures = verifyArticulatedDamage(articulatedDamage);
 
   await command('setBiome', 1);
   await command('setCredits', 250000);
@@ -199,6 +220,8 @@ try {
     runtimeErrors,
     articulatedReview,
     articulatedFailures,
+    articulatedDamage,
+    articulatedDamageFailures,
     subSmoke: {
       depth: subSmoke.state.depth,
       hull: subSmoke.state.activeSub?.hull ?? null,
@@ -221,9 +244,10 @@ try {
     vents: biome.vents,
     bobbits: biome.bobbits,
   })));
-  if (runtimeErrors.length || articulatedFailures.length) {
+  if (runtimeErrors.length || articulatedFailures.length || articulatedDamageFailures.length) {
     for (const error of runtimeErrors) console.error('Runtime error:', error);
     for (const failure of articulatedFailures) console.error('Articulated review failure:', failure);
+    for (const failure of articulatedDamageFailures) console.error('Articulated damage failure:', failure);
     process.exitCode = 1;
   }
 } finally {
