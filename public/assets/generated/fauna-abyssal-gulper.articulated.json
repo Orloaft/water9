@@ -1,0 +1,148 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-abyssal-gulper",
+  "displayName": "Abyssal Gulper",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-abyss-black-swallower-2.png",
+  "sourceTransform": {
+    "flipX": true,
+    "scale": 3,
+    "resample": "nearest"
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail",
+      "key": "fauna-abyssal-gulper-tail",
+      "src": "fauna-abyssal-gulper-tail.png",
+      "sourceCrop": {
+        "x": 0,
+        "y": 5,
+        "width": 54,
+        "height": 45
+      },
+      "size": {
+        "width": 162,
+        "height": 135
+      }
+    },
+    {
+      "id": "body-2",
+      "key": "fauna-abyssal-gulper-body-2",
+      "src": "fauna-abyssal-gulper-body-2.png",
+      "sourceCrop": {
+        "x": 20,
+        "y": 0,
+        "width": 66,
+        "height": 54
+      },
+      "size": {
+        "width": 198,
+        "height": 162
+      }
+    },
+    {
+      "id": "body-1",
+      "key": "fauna-abyssal-gulper-body-1",
+      "src": "fauna-abyssal-gulper-body-1.png",
+      "sourceCrop": {
+        "x": 50,
+        "y": 0,
+        "width": 62,
+        "height": 54
+      },
+      "size": {
+        "width": 186,
+        "height": 162
+      }
+    },
+    {
+      "id": "head",
+      "key": "fauna-abyssal-gulper-head",
+      "src": "fauna-abyssal-gulper-head.png",
+      "sourceCrop": {
+        "x": 72,
+        "y": 0,
+        "width": 58,
+        "height": 54
+      },
+      "size": {
+        "width": 174,
+        "height": 162
+      }
+    },
+    {
+      "id": "jaw",
+      "key": "fauna-abyssal-gulper-jaw",
+      "src": "fauna-abyssal-gulper-jaw.png",
+      "sourceCrop": {
+        "x": 78,
+        "y": 21,
+        "width": 52,
+        "height": 33
+      },
+      "size": {
+        "width": 156,
+        "height": 99
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-socket",
+      "src": "fauna-abyssal-gulper-tail-socket.png",
+      "parentId": "body-2",
+      "childId": "tail",
+      "sourcePartId": "body-2",
+      "sourceCrop": {
+        "x": 0,
+        "y": 34,
+        "width": 92,
+        "height": 90
+      },
+      "offset": {
+        "x": -44,
+        "y": 0
+      }
+    },
+    {
+      "id": "body-2-socket",
+      "src": "fauna-abyssal-gulper-body-2-socket.png",
+      "parentId": "body-1",
+      "childId": "body-2",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 0,
+        "y": 28,
+        "width": 92,
+        "height": 102
+      },
+      "offset": {
+        "x": -45,
+        "y": 0
+      }
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-abyssal-gulper-head-socket.png",
+      "parentId": "body-1",
+      "childId": "head",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 86,
+        "y": 26,
+        "width": 94,
+        "height": 106
+      },
+      "offset": {
+        "x": 48,
+        "y": 0
+      }
+    }
+  ],
+  "notes": "Second articulated proof creature cut from one existing black swallower frame, flipped to the runtime right-facing convention, nearest-neighbor upscaled, and assembled with parent-body socket overlays to prove the rig supports more than one cohesive segmented predator."
+}

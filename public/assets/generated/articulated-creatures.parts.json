@@ -216,6 +216,312 @@
           "depth": 0.145
         }
       ]
+    },
+    {
+      "id": "abyssal-gulper",
+      "species": "Abyssal Gulper",
+      "minBiome": 4,
+      "color": 9407743,
+      "rarity": "legendary",
+      "radius": 48,
+      "hp": 210,
+      "speed": [
+        30,
+        58
+      ],
+      "spawn": {
+        "minDepth": 1500,
+        "maxDepth": 2600,
+        "count": 1
+      },
+      "parts": [
+        {
+          "id": "tail",
+          "textureKey": "fauna-abyssal-gulper-tail",
+          "texture": "fauna-abyssal-gulper-tail.png",
+          "parentId": "body-2",
+          "parentAnchor": "back",
+          "anchor": "front",
+          "anchors": {
+            "front": [
+              58,
+              0
+            ],
+            "tip": [
+              -62,
+              2
+            ]
+          },
+          "restOffset": [
+            54,
+            2
+          ],
+          "offset": [
+            -118,
+            0
+          ],
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            162,
+            135
+          ],
+          "depth": 0,
+          "hitRadius": 17,
+          "hpMultiplier": 0.62,
+          "damageMultiplier": 0.7,
+          "motion": {
+            "kind": "tail",
+            "amplitude": 10,
+            "frequency": 2.6,
+            "phase": 1.2,
+            "lag": 1.15
+          }
+        },
+        {
+          "id": "body-2",
+          "textureKey": "fauna-abyssal-gulper-body-2",
+          "texture": "fauna-abyssal-gulper-body-2.png",
+          "parentId": "body-1",
+          "parentAnchor": "back",
+          "anchor": "front",
+          "anchors": {
+            "front": [
+              70,
+              0
+            ],
+            "back": [
+              -70,
+              0
+            ]
+          },
+          "restOffset": [
+            58,
+            0
+          ],
+          "offset": [
+            -70,
+            0
+          ],
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            198,
+            162
+          ],
+          "depth": 0.02,
+          "hitRadius": 25,
+          "hpMultiplier": 0.92,
+          "damageMultiplier": 0.92,
+          "motion": {
+            "kind": "body",
+            "amplitude": 6,
+            "frequency": 2.2,
+            "phase": 0.75,
+            "lag": 0.6
+          }
+        },
+        {
+          "id": "body-1",
+          "textureKey": "fauna-abyssal-gulper-body-1",
+          "texture": "fauna-abyssal-gulper-body-1.png",
+          "anchors": {
+            "front": [
+              70,
+              0
+            ],
+            "back": [
+              -66,
+              0
+            ],
+            "dorsalFin": [
+              -10,
+              -38
+            ],
+            "ventralFin": [
+              -6,
+              34
+            ]
+          },
+          "offset": [
+            0,
+            0
+          ],
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            186,
+            162
+          ],
+          "depth": 0.06,
+          "hitRadius": 30,
+          "hpMultiplier": 1.08,
+          "damageMultiplier": 1.05,
+          "motion": {
+            "kind": "body",
+            "amplitude": 3,
+            "frequency": 1.9,
+            "phase": 0.2,
+            "lag": 0.2
+          }
+        },
+        {
+          "id": "jaw",
+          "textureKey": "fauna-abyssal-gulper-jaw",
+          "texture": "fauna-abyssal-gulper-jaw.png",
+          "parentId": "head",
+          "parentAnchor": "lowerJaw",
+          "anchor": "hinge",
+          "anchors": {
+            "hinge": [
+              -48,
+              -14
+            ],
+            "bite": [
+              46,
+              12
+            ]
+          },
+          "restOffset": [
+            -18,
+            4
+          ],
+          "offset": [
+            74,
+            20
+          ],
+          "origin": [
+            0.3,
+            0.28
+          ],
+          "size": [
+            156,
+            99
+          ],
+          "depth": 0.105,
+          "hitRadius": 16,
+          "hpMultiplier": 0.48,
+          "damageMultiplier": 1.32,
+          "motion": {
+            "kind": "jaw",
+            "amplitude": 18,
+            "frequency": 3.2,
+            "phase": 0
+          }
+        },
+        {
+          "id": "head",
+          "textureKey": "fauna-abyssal-gulper-head",
+          "texture": "fauna-abyssal-gulper-head.png",
+          "parentId": "body-1",
+          "parentAnchor": "front",
+          "anchor": "neck",
+          "anchors": {
+            "neck": [
+              -54,
+              0
+            ],
+            "lowerJaw": [
+              34,
+              16
+            ]
+          },
+          "restOffset": [
+            -32,
+            0
+          ],
+          "offset": [
+            72,
+            0
+          ],
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            174,
+            162
+          ],
+          "depth": 0.11,
+          "hitRadius": 28,
+          "hpMultiplier": 1.18,
+          "damageMultiplier": 1.22,
+          "motion": {
+            "kind": "root",
+            "amplitude": 2.5,
+            "frequency": 1.4,
+            "phase": 0
+          }
+        }
+      ],
+      "socketOverlays": [
+        {
+          "id": "tail-socket",
+          "textureKey": "fauna-abyssal-gulper-tail-socket",
+          "texture": "fauna-abyssal-gulper-tail-socket.png",
+          "parentId": "body-2",
+          "childId": "tail",
+          "offset": [
+            -44,
+            0
+          ],
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            92,
+            90
+          ],
+          "depth": 0.021
+        },
+        {
+          "id": "body-2-socket",
+          "textureKey": "fauna-abyssal-gulper-body-2-socket",
+          "texture": "fauna-abyssal-gulper-body-2-socket.png",
+          "parentId": "body-1",
+          "childId": "body-2",
+          "offset": [
+            -45,
+            0
+          ],
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            92,
+            102
+          ],
+          "depth": 0.064
+        },
+        {
+          "id": "head-socket",
+          "textureKey": "fauna-abyssal-gulper-head-socket",
+          "texture": "fauna-abyssal-gulper-head-socket.png",
+          "parentId": "body-1",
+          "childId": "head",
+          "offset": [
+            48,
+            0
+          ],
+          "origin": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            94,
+            106
+          ],
+          "depth": 0.118
+        }
+      ]
     }
   ]
 }

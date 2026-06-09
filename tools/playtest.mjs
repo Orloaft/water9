@@ -4,8 +4,10 @@ import { chromium } from 'playwright';
 const baseUrl = process.env.PLAYTEST_URL ?? 'http://localhost:5175/';
 const targetUrl = withPlaytestParam(baseUrl);
 const outputPath = process.env.PLAYTEST_OUT ?? 'playtest-report.json';
-const articulatedCreatureId = process.env.PLAYTEST_ARTICULATED_ID ?? 'abyssal-serpent';
 const articulatedManifest = JSON.parse(await readFile(new URL('../public/assets/generated/articulated-creatures.parts.json', import.meta.url), 'utf8'));
+const articulatedCreatureIds = process.env.PLAYTEST_ARTICULATED_ID
+  ? [process.env.PLAYTEST_ARTICULATED_ID]
+  : (articulatedManifest.creatures ?? []).map((creature) => creature.id);
 const expectedJointsByCreature = new Map(
   (articulatedManifest.creatures ?? []).map((creature) => [
     creature.id,
@@ -84,17 +86,16 @@ function summarizeBiome(snap) {
   };
 }
 
-function articulatedSubject(snap, creatureId = articulatedCreatureId) {
-  return snap.articulatedCreatures?.find((creature) => !creature.dead && (!creatureId || creature.id === creatureId))
-    ?? snap.articulatedCreatures?.find((creature) => !creature.dead)
-    ?? null;
+function articulatedSubject(snap, creatureId = null) {
+  if (creatureId) return snap.articulatedCreatures?.find((creature) => !creature.dead && creature.id === creatureId) ?? null;
+  return snap.articulatedCreatures?.find((creature) => !creature.dead) ?? null;
 }
 
 function partMap(creature) {
   return new Map((creature?.parts ?? []).map((part) => [part.id, part]));
 }
 
-function reviewSummary(mode, snap, creatureId = articulatedCreatureId) {
+function reviewSummary(mode, snap, creatureId = null) {
   const creature = articulatedSubject(snap, creatureId);
   return {
     mode,
@@ -116,23 +117,23 @@ function verifyArticulatedReview(reviews) {
   const failures = [];
   for (const review of reviews) {
     if (!review.jointSummary) {
-      failures.push(`${review.mode}: no articulated creature in review snapshot`);
+      failures.push(`${review.id ?? 'unknown'} ${review.mode}: no articulated creature in review snapshot`);
       continue;
     }
     const expectedJoints = expectedJointsByCreature.get(review.id) ?? 0;
     if (expectedJoints > 0 && review.jointSummary.count !== expectedJoints) {
-      failures.push(`${review.mode}: expected ${expectedJoints} joints for ${review.id}, saw ${review.jointSummary.count}`);
+      failures.push(`${review.id} ${review.mode}: expected ${expectedJoints} joints, saw ${review.jointSummary.count}`);
     }
     const expectedSockets = expectedSocketsByCreature.get(review.id) ?? 0;
     if (expectedSockets > 0 && review.socketOverlays.length !== expectedSockets) {
-      failures.push(`${review.mode}: expected ${expectedSockets} socket overlays for ${review.id}, saw ${review.socketOverlays.length}`);
+      failures.push(`${review.id} ${review.mode}: expected ${expectedSockets} socket overlays, saw ${review.socketOverlays.length}`);
     }
     const hiddenSocket = review.socketOverlays.find((overlay) => overlay.sprite?.visible !== true);
-    if (hiddenSocket) failures.push(`${review.mode}: socket overlay ${hiddenSocket.id} is not visible in review`);
-    if (review.jointSummary.missing !== 0) failures.push(`${review.mode}: missing ${review.jointSummary.missing} joints`);
-    if (review.jointSummary.maxError > 0.75) failures.push(`${review.mode}: joint error ${review.jointSummary.maxError}px exceeds 0.75px`);
-    if (review.jointSummary.maxStress > 0.08) failures.push(`${review.mode}: joint stress ${review.jointSummary.maxStress} exceeds 0.08`);
-    if (!review.biteAnchor) failures.push(`${review.mode}: missing jaw bite anchor`);
+    if (hiddenSocket) failures.push(`${review.id} ${review.mode}: socket overlay ${hiddenSocket.id} is not visible in review`);
+    if (review.jointSummary.missing !== 0) failures.push(`${review.id} ${review.mode}: missing ${review.jointSummary.missing} joints`);
+    if (review.jointSummary.maxError > 0.75) failures.push(`${review.id} ${review.mode}: joint error ${review.jointSummary.maxError}px exceeds 0.75px`);
+    if (review.jointSummary.maxStress > 0.08) failures.push(`${review.id} ${review.mode}: joint stress ${review.jointSummary.maxStress} exceeds 0.08`);
+    if (!review.biteAnchor) failures.push(`${review.id} ${review.mode}: missing jaw bite anchor`);
   }
 
   const right = reviews.find((review) => review.mode === 'right');
@@ -159,17 +160,17 @@ function verifyArticulatedReview(reviews) {
       yError = Math.max(yError, Math.abs((rightPart.y - rightCenter.y) - (leftPart.y - leftCenter.y)));
       rotationError = Math.max(rotationError, Math.abs(rightPart.rotation + leftPart.rotation));
     }
-    if (mirrorError > 1.25) failures.push(`left/right mirror x error ${mirrorError.toFixed(3)}px exceeds 1.25px`);
-    if (yError > 1.25) failures.push(`left/right mirror y error ${yError.toFixed(3)}px exceeds 1.25px`);
-    if (rotationError > 0.05) failures.push(`left/right rotation mirror error ${rotationError.toFixed(3)}rad exceeds 0.05rad`);
+    if (mirrorError > 1.25) failures.push(`${right.id} left/right mirror x error ${mirrorError.toFixed(3)}px exceeds 1.25px`);
+    if (yError > 1.25) failures.push(`${right.id} left/right mirror y error ${yError.toFixed(3)}px exceeds 1.25px`);
+    if (rotationError > 0.05) failures.push(`${right.id} left/right rotation mirror error ${rotationError.toFixed(3)}rad exceeds 0.05rad`);
     const rightScale = rightParts.get('head')?.sprite?.scaleX ?? 0;
     const leftScale = leftParts.get('head')?.sprite?.scaleX ?? 0;
-    if (rightScale <= 0) failures.push(`right review head scaleX ${rightScale} is not positive`);
-    if (leftScale >= 0) failures.push(`left review head scaleX ${leftScale} is not negative`);
+    if (rightScale <= 0) failures.push(`${right.id} right review head scaleX ${rightScale} is not positive`);
+    if (leftScale >= 0) failures.push(`${left.id} left review head scaleX ${leftScale} is not negative`);
   }
 
   if (right && lunge) {
-    if (lunge.state !== 'lunge') failures.push(`lunge review state is ${lunge.state}`);
+    if (lunge.state !== 'lunge') failures.push(`${lunge.id} lunge review state is ${lunge.state}`);
     const idleParts = partMap(right);
     const lungeParts = partMap(lunge);
     const idleJaw = idleParts.get('jaw');
@@ -180,7 +181,7 @@ function verifyArticulatedReview(reviews) {
       const idleRelative = Math.abs(idleJaw.rotation - idleHead.rotation);
       const lungeRelative = Math.abs(lungeJaw.rotation - lungeHead.rotation);
       if (lungeRelative - idleRelative < 0.15) {
-        failures.push(`lunge jaw opened ${(lungeRelative - idleRelative).toFixed(3)}rad over idle; expected at least 0.15rad`);
+        failures.push(`${lunge.id} lunge jaw opened ${(lungeRelative - idleRelative).toFixed(3)}rad over idle; expected at least 0.15rad`);
       }
     }
   }
@@ -194,27 +195,27 @@ function verifyArticulatedDamage(review) {
   const jaw = parts.get('jaw');
   const jawJoint = review.joints?.find?.((joint) => joint.partId === 'jaw');
   if (!jaw) {
-    failures.push('damage review: missing jaw part');
+    failures.push(`${review.id ?? 'unknown'} damage review: missing jaw part`);
   } else {
-    if (!jaw.detached) failures.push('damage review: jaw was not detached');
-    if (jaw.hp !== 0) failures.push(`damage review: jaw hp is ${jaw.hp}, expected 0`);
-    if (Math.abs(jaw.detachVx ?? 0) < 1 && Math.abs(jaw.detachVy ?? 0) < 1) failures.push('damage review: detached jaw has no drift velocity');
+    if (!jaw.detached) failures.push(`${review.id} damage review: jaw was not detached`);
+    if (jaw.hp !== 0) failures.push(`${review.id} damage review: jaw hp is ${jaw.hp}, expected 0`);
+    if (Math.abs(jaw.detachVx ?? 0) < 1 && Math.abs(jaw.detachVy ?? 0) < 1) failures.push(`${review.id} damage review: detached jaw has no drift velocity`);
   }
-  if (review.biteAnchor) failures.push('damage review: bite anchor still exists after jaw detachment');
-  if (!jawJoint?.detached) failures.push('damage review: jaw joint is not marked detached');
+  if (review.biteAnchor) failures.push(`${review.id} damage review: bite anchor still exists after jaw detachment`);
+  if (!jawJoint?.detached) failures.push(`${review.id} damage review: jaw joint is not marked detached`);
   return failures;
 }
 
 function verifyArticulatedCollision(review) {
   const failures = [];
   const head = partMap(review).get('head');
-  if (!head) failures.push('collision review: missing head part');
+  if (!head) failures.push(`${review.id ?? 'unknown'} collision review: missing head part`);
   else {
-    if ((head.terrainContact ?? 0) <= 0) failures.push('collision review: head did not report terrain contact');
-    if ((head.terrainNormalX ?? 0) >= -0.5) failures.push(`collision review: expected head normal to push left, got ${head.terrainNormalX}`);
+    if ((head.terrainContact ?? 0) <= 0) failures.push(`${review.id} collision review: head did not report terrain contact`);
+    if ((head.terrainNormalX ?? 0) >= -0.5) failures.push(`${review.id} collision review: expected head normal to push left, got ${head.terrainNormalX}`);
   }
-  if ((review.vx ?? 0) >= 80) failures.push(`collision review: creature vx ${review.vx} did not respond to terrain`);
-  if (review.jointSummary?.maxError > 0.75) failures.push(`collision review: seam error ${review.jointSummary.maxError}px after terrain response`);
+  if ((review.vx ?? 0) >= 80) failures.push(`${review.id} collision review: creature vx ${review.vx} did not respond to terrain`);
+  if (review.jointSummary?.maxError > 0.75) failures.push(`${review.id} collision review: seam error ${review.jointSummary.maxError}px after terrain response`);
   return failures;
 }
 
@@ -235,26 +236,38 @@ try {
   await command('setBiome', 4);
   await command('start');
   const articulatedReview = [];
-  for (const mode of ['right', 'left', 'lunge']) {
-    await command('reviewArticulated', { mode, creatureId: articulatedCreatureId });
-    await page.waitForTimeout(120);
-    articulatedReview.push(reviewSummary(mode, await snapshot(), articulatedCreatureId));
+  const articulatedCollision = [];
+  const articulatedDamage = [];
+  const articulatedFailures = [];
+  const articulatedCollisionFailures = [];
+  const articulatedDamageFailures = [];
+  for (const creatureId of articulatedCreatureIds) {
+    const creatureReview = [];
+    for (const mode of ['right', 'left', 'lunge']) {
+      await command('reviewArticulated', { mode, creatureId });
+      await page.waitForTimeout(120);
+      const summary = reviewSummary(mode, await snapshot(), creatureId);
+      creatureReview.push(summary);
+      articulatedReview.push(summary);
+    }
+    articulatedFailures.push(...verifyArticulatedReview(creatureReview));
+    await command('reviewArticulated', { mode: 'right', creatureId });
+    const collision = reviewSummary(
+      'head-terrain',
+      await command('collideArticulated', { creatureId, partId: 'head' }),
+      creatureId,
+    );
+    articulatedCollision.push(collision);
+    articulatedCollisionFailures.push(...verifyArticulatedCollision(collision));
+    await command('reviewArticulated', { mode: 'right', creatureId });
+    const damage = reviewSummary(
+      'jaw-detached',
+      await command('damageArticulatedPart', { creatureId, partId: 'jaw', source: 'Playtest' }),
+      creatureId,
+    );
+    articulatedDamage.push(damage);
+    articulatedDamageFailures.push(...verifyArticulatedDamage(damage));
   }
-  const articulatedFailures = verifyArticulatedReview(articulatedReview);
-  await command('reviewArticulated', { mode: 'right', creatureId: articulatedCreatureId });
-  const articulatedCollision = reviewSummary(
-    'head-terrain',
-    await command('collideArticulated', { creatureId: articulatedCreatureId, partId: 'head' }),
-    articulatedCreatureId,
-  );
-  const articulatedCollisionFailures = verifyArticulatedCollision(articulatedCollision);
-  await command('reviewArticulated', { mode: 'right', creatureId: articulatedCreatureId });
-  const articulatedDamage = reviewSummary(
-    'jaw-detached',
-    await command('damageArticulatedPart', { creatureId: articulatedCreatureId, partId: 'jaw', source: 'Playtest' }),
-    articulatedCreatureId,
-  );
-  const articulatedDamageFailures = verifyArticulatedDamage(articulatedDamage);
 
   await command('setBiome', 1);
   await command('setCredits', 250000);
