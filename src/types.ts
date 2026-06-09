@@ -51,6 +51,8 @@ export type PlaytestCommand =
   | 'teleportDepth'
   | 'teleportToArticulated'
   | 'liveArticulatedReview'
+  | 'advanceLiveArticulatedReview'
+  | 'focusArticulatedCamera'
   | 'reviewArticulated'
   | 'advanceArticulatedReview'
   | 'damageArticulatedPart'

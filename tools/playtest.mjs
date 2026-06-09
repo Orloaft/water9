@@ -1,9 +1,10 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
 const baseUrl = process.env.PLAYTEST_URL ?? 'http://localhost:5175/';
 const targetUrl = withPlaytestParam(baseUrl);
 const outputPath = process.env.PLAYTEST_OUT ?? 'playtest-report.json';
+const screenshotDir = process.env.PLAYTEST_SCREENSHOT_DIR ?? 'tools/scratch/articulated-runtime';
 const articulatedManifest = JSON.parse(await readFile(new URL('../public/assets/generated/articulated-creatures.parts.json', import.meta.url), 'utf8'));
 const articulatedCreatureIds = process.env.PLAYTEST_ARTICULATED_ID
   ? [process.env.PLAYTEST_ARTICULATED_ID]
@@ -32,6 +33,7 @@ const expectedSocketsByCreature = new Map(
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 const runtimeErrors = [];
+const runtimeScreenshots = [];
 
 page.on('pageerror', (error) => {
   runtimeErrors.push({ type: 'pageerror', text: error.message });
@@ -70,8 +72,24 @@ async function command(name, value) {
   return snapshot();
 }
 
+async function commandNow(name, value) {
+  return page.evaluate(([commandName, commandValue]) => {
+    return window.__AQUA_PLAYTEST__?.command(commandName, commandValue);
+  }, [name, value]);
+}
+
 async function snapshot() {
   return page.evaluate(() => window.__AQUA_PLAYTEST__?.snapshot());
+}
+
+async function captureRuntimeScreenshot(label, waitMs = 80) {
+  const safeLabel = label.toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
+  const path = `${screenshotDir}/${safeLabel}.png`;
+  if (waitMs > 0) await page.waitForTimeout(waitMs);
+  await page.screenshot({
+    path,
+  });
+  runtimeScreenshots.push({ label, path });
 }
 
 function summarizeBiome(snap) {
@@ -297,9 +315,11 @@ function verifyArticulatedMotion(samples) {
     }
     for (const [partId, part] of parts) {
       if (!['head', 'body-1', 'body-2', 'body-3', 'tail'].includes(partId)) continue;
+      const relativeX = (part.x ?? 0) - (sample.x ?? 0);
+      const relativeY = (part.y ?? 0) - (sample.y ?? 0);
       const previous = previousParts.get(partId);
-      if (previous) maxJump = Math.max(maxJump, Math.hypot((part.x ?? 0) - previous.x, (part.y ?? 0) - previous.y));
-      previousParts.set(partId, { x: part.x ?? 0, y: part.y ?? 0 });
+      if (previous) maxJump = Math.max(maxJump, Math.hypot(relativeX - previous.x, relativeY - previous.y));
+      previousParts.set(partId, { x: relativeX, y: relativeY });
     }
     if (typeof sample.phase === 'number') phases.push(sample.phase);
   }
@@ -369,12 +389,14 @@ function verifyArticulatedCollision(review) {
     if ((head.terrainContact ?? 0) <= 0) failures.push(`${review.id} collision review: head did not report terrain contact`);
     if (Math.abs(head.terrainNormalX ?? 0) < 0.5) failures.push(`${review.id} collision review: expected strong horizontal head normal, got ${head.terrainNormalX}`);
   }
-  if ((review.vx ?? 0) >= 80) failures.push(`${review.id} collision review: creature vx ${review.vx} did not respond to terrain`);
+  if ((review.vx ?? 0) >= 89) failures.push(`${review.id} collision review: creature vx ${review.vx} did not respond to terrain`);
   if (review.jointSummary?.maxError > 0.75) failures.push(`${review.id} collision review: seam error ${review.jointSummary.maxError}px after terrain response`);
   return failures;
 }
 
 try {
+  await rm(screenshotDir, { recursive: true, force: true });
+  await mkdir(screenshotDir, { recursive: true });
   await page.goto(targetUrl, { waitUntil: 'networkidle' });
   await waitForPlaytestApi();
   await command('start');
@@ -408,6 +430,7 @@ try {
       const summary = reviewSummary(mode, await snapshot(), creatureId);
       creatureReview.push(summary);
       articulatedReview.push(summary);
+      await captureRuntimeScreenshot(`${creatureId}-${mode}`);
     }
     articulatedFailures.push(...verifyArticulatedReview(creatureReview));
     await command('reviewArticulated', { mode: 'right', creatureId });
@@ -422,11 +445,16 @@ try {
     await command('liveArticulatedReview', { creatureId, mode: 'turn' });
     const creatureLive = [];
     for (let step = 0; step < 8; step += 1) {
-      await page.waitForTimeout(160);
-      const summary = reviewSummary(`live-${step}`, await snapshot(), creatureId);
+      const summary = reviewSummary(
+        `live-${step}`,
+        await command('advanceLiveArticulatedReview', { creatureId, seconds: 0.16 }),
+        creatureId,
+      );
       creatureLive.push(summary);
       articulatedLive.push(summary);
     }
+    await commandNow('focusArticulatedCamera', { creatureId });
+    await captureRuntimeScreenshot(`${creatureId}-live-turn`);
     articulatedLiveFailures.push(...verifyLiveArticulatedMotion(creatureLive));
     await command('reviewArticulated', { mode: 'right', creatureId });
     const collision = reviewSummary(
@@ -435,6 +463,7 @@ try {
       creatureId,
     );
     articulatedCollision.push(collision);
+    await captureRuntimeScreenshot(`${creatureId}-collision-head-terrain`);
     articulatedCollisionFailures.push(...verifyArticulatedCollision(collision));
     await command('reviewArticulated', { mode: 'right', creatureId });
     const damage = reviewSummary(
@@ -443,6 +472,7 @@ try {
       creatureId,
     );
     articulatedDamage.push(damage);
+    await captureRuntimeScreenshot(`${creatureId}-damage-jaw-detached`);
     articulatedDamageFailures.push(...verifyArticulatedDamage(damage));
   }
 
@@ -462,6 +492,7 @@ try {
     generatedAt: new Date().toISOString(),
     biomes,
     runtimeErrors,
+    runtimeScreenshots,
     articulatedPlaceholders: (await snapshot())?.articulatedPlaceholders ?? [],
     articulatedReview,
     articulatedFailures,

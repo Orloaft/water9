@@ -270,8 +270,17 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         }
         this.articulatedCreatures.forEach((candidate) => {
           candidate.reviewFrozen = false;
+          if (candidate === creature) return;
+          candidate.x = reviewX - facing * 2400;
+          candidate.y = reviewY + 1600;
+          candidate.homeX = candidate.x;
+          candidate.homeY = candidate.y;
+          candidate.vx = 0;
+          candidate.vy = 0;
+          candidate.reviewFrozen = true;
+          this.updateArticulatedParts(candidate, 0);
         });
-        this.player.x = reviewX + facing * 260;
+        this.player.x = reviewX + facing * 620;
         this.player.y = reviewY + (mode.includes('dive') ? 132 : -118);
         this.player.vx = 0;
         this.player.vy = 0;
@@ -307,6 +316,10 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
           node.offset = 0;
           node.bend = 0;
         });
+        clearVenom();
+        clearBleed();
+        state.hull = 100 + state.upgrades.suit * 25;
+        state.oxygen = oxygenMax();
         state.started = true;
         state.docked = false;
         state.atBoat = false;
@@ -316,9 +329,60 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.cargoOpen = false;
         state.lost = false;
         state.won = false;
+        state.status = '';
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         this.updateArticulatedParts(creature, 0);
         this.cameras.main.centerOn(reviewX, reviewY);
+      }
+    } else if (command === 'advanceLiveArticulatedReview') {
+      const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string; seconds?: number } : {};
+      const seconds = Phaser.Math.Clamp(Number(payload.seconds) || 0.16, 0, 1);
+      state.started = true;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.radioOpen = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.lost = false;
+      state.won = false;
+      state.status = '';
+      clearVenom();
+      clearBleed();
+      state.hull = 100 + state.upgrades.suit * 25;
+      state.oxygen = oxygenMax();
+      this.updateArticulatedCreatures(seconds);
+      const focus = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
+      if (focus) this.cameras.main.centerOn(focus.x, focus.y);
+      this.draw();
+    } else if (command === 'focusArticulatedCamera') {
+      const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string } : {};
+      const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
+      if (creature) {
+        const activeParts = creature.parts.filter((part) => !part.detached);
+        const extents = activeParts.map((part) => {
+          const manifest = partManifest(creature, part);
+          const halfW = manifest.size[0] * ENTITY_SCALE * 0.56;
+          const halfH = manifest.size[1] * ENTITY_SCALE * 0.56;
+          return { minX: part.x - halfW, maxX: part.x + halfW, minY: part.y - halfH, maxY: part.y + halfH };
+        });
+        const minX = Math.min(...extents.map((part) => part.minX));
+        const maxX = Math.max(...extents.map((part) => part.maxX));
+        const minY = Math.min(...extents.map((part) => part.minY));
+        const maxY = Math.max(...extents.map((part) => part.maxY));
+        const fitZoom = Phaser.Math.Clamp(Math.min(980 / Math.max(1, maxX - minX), 560 / Math.max(1, maxY - minY)), 0.62, 1.15);
+        clearVenom();
+        clearBleed();
+        state.hull = 100 + state.upgrades.suit * 25;
+        state.oxygen = oxygenMax();
+        state.lost = false;
+        state.won = false;
+        state.status = '';
+        state.paused = true;
+        this.cameras.main.setZoom(fitZoom);
+        this.cameras.main.centerOn((minX + maxX) * 0.5, (minY + maxY) * 0.5 - 42);
+        this.draw();
+        return this.playtestSnapshot();
       }
     } else if (command === 'reviewArticulated') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string; mode?: string } : {};
@@ -366,10 +430,12 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
           part.detachVy = 0;
           part.detachAngularVelocity = 0;
         });
+        state.paused = false;
         state.docked = false;
         state.atBoat = false;
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         this.updateArticulatedParts(creature, 0);
+        this.updateCameraZoom();
         this.cameras.main.centerOn(reviewX, reviewY);
       }
     } else if (command === 'advanceArticulatedReview') {
