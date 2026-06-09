@@ -167,6 +167,30 @@ async function validatePart(creature, part, index, partsById) {
   await validateTexture(creature, part);
 }
 
+async function validateSocketOverlay(creature, overlay, index, partsById) {
+  const owner = `${creature.id}.socketOverlays[${index}]`;
+  if (!isPlainObject(overlay)) {
+    fail(`${owner} must be an object`);
+    return;
+  }
+  if (typeof overlay.id !== 'string' || !overlay.id.trim()) fail(`${owner}.id must be a non-empty string`);
+  if (typeof overlay.textureKey !== 'string' || !overlay.textureKey.trim()) fail(`${owner}.textureKey must be a non-empty string`);
+  if (typeof overlay.parentId !== 'string' || !partsById.has(overlay.parentId)) {
+    fail(`${owner}.parentId references missing part ${String(overlay.parentId)}`);
+  }
+  if (typeof overlay.childId !== 'string' || !partsById.has(overlay.childId)) {
+    fail(`${owner}.childId references missing part ${String(overlay.childId)}`);
+  }
+  validateNumberTuple(owner, 'offset', overlay.offset, 2);
+  validateNumberTuple(owner, 'origin', overlay.origin, 2);
+  validateNumberTuple(owner, 'size', overlay.size, 2);
+  if (numberTuple(overlay.size, 2) && (!positiveNumber(overlay.size[0]) || !positiveNumber(overlay.size[1]))) {
+    fail(`${owner}.size must be positive`);
+  }
+  if (!finiteNumber(overlay.depth)) fail(`${owner}.depth must be a finite number`);
+  await validateTexture(creature, overlay);
+}
+
 async function validateCreature(creature, index) {
   const owner = `creatures[${index}]`;
   if (!isPlainObject(creature)) {
@@ -215,6 +239,28 @@ async function validateCreature(creature, index) {
 
   for (let partIndex = 0; partIndex < creature.parts.length; partIndex += 1) {
     await validatePart(creature, creature.parts[partIndex], partIndex, partsById);
+  }
+  const socketOverlays = creature.socketOverlays ?? [];
+  if (!Array.isArray(socketOverlays)) {
+    fail(`${creature.id}.socketOverlays must be an array when present`);
+  } else {
+    const coveredJoints = new Set();
+    const overlayIds = new Set();
+    for (let overlayIndex = 0; overlayIndex < socketOverlays.length; overlayIndex += 1) {
+      const overlay = socketOverlays[overlayIndex];
+      if (isPlainObject(overlay)) {
+        if (overlayIds.has(overlay.id)) fail(`${creature.id}: duplicate socket overlay id ${overlay.id}`);
+        overlayIds.add(overlay.id);
+        coveredJoints.add(`${overlay.parentId}->${overlay.childId}`);
+      }
+      await validateSocketOverlay(creature, overlay, overlayIndex, partsById);
+    }
+    for (const part of creature.parts) {
+      if (!isPlainObject(part) || !part.parentId || !part.motion) continue;
+      if (part.motion.kind !== 'fin' && part.motion.kind !== 'tail') continue;
+      const key = `${part.parentId}->${part.id}`;
+      if (!coveredJoints.has(key)) fail(`${creature.id}.${part.id} ${part.motion.kind} joint needs a socket overlay`);
+    }
   }
   return {
     parts: creature.parts.length,

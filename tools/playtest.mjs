@@ -12,6 +12,12 @@ const expectedJointsByCreature = new Map(
     (creature.parts ?? []).filter((part) => part.parentId).length,
   ]),
 );
+const expectedSocketsByCreature = new Map(
+  (articulatedManifest.creatures ?? []).map((creature) => [
+    creature.id,
+    (creature.socketOverlays ?? []).length,
+  ]),
+);
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
@@ -102,6 +108,7 @@ function reviewSummary(mode, snap, creatureId = articulatedCreatureId) {
     biteAnchor: creature?.biteAnchor ?? null,
     joints: creature?.joints ?? [],
     parts: creature?.parts ?? [],
+    socketOverlays: creature?.socketOverlays ?? [],
   };
 }
 
@@ -116,6 +123,12 @@ function verifyArticulatedReview(reviews) {
     if (expectedJoints > 0 && review.jointSummary.count !== expectedJoints) {
       failures.push(`${review.mode}: expected ${expectedJoints} joints for ${review.id}, saw ${review.jointSummary.count}`);
     }
+    const expectedSockets = expectedSocketsByCreature.get(review.id) ?? 0;
+    if (expectedSockets > 0 && review.socketOverlays.length !== expectedSockets) {
+      failures.push(`${review.mode}: expected ${expectedSockets} socket overlays for ${review.id}, saw ${review.socketOverlays.length}`);
+    }
+    const hiddenSocket = review.socketOverlays.find((overlay) => overlay.sprite?.visible !== true);
+    if (hiddenSocket) failures.push(`${review.mode}: socket overlay ${hiddenSocket.id} is not visible in review`);
     if (review.jointSummary.missing !== 0) failures.push(`${review.mode}: missing ${review.jointSummary.missing} joints`);
     if (review.jointSummary.maxError > 0.75) failures.push(`${review.mode}: joint error ${review.jointSummary.maxError}px exceeds 0.75px`);
     if (review.jointSummary.maxStress > 0.08) failures.push(`${review.mode}: joint stress ${review.jointSummary.maxStress} exceeds 0.08`);

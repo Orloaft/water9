@@ -189,6 +189,41 @@ const fallbackSerpentManifest: ArticulatedCreatureManifest = {
       motion: { kind: 'fin', amplitude: 9, frequency: 3.2, phase: 0.3 },
     },
   ],
+  socketOverlays: [
+    {
+      id: 'tail-socket',
+      textureKey: 'fauna-abyssal-serpent-mantle-horror-tail-socket',
+      texture: 'fauna-abyssal-serpent-mantle-horror-tail-socket.png',
+      parentId: 'body-3',
+      childId: 'tail',
+      offset: [-25, 0],
+      origin: [0.5, 0.5],
+      size: [62, 50],
+      depth: 0.018,
+    },
+    {
+      id: 'fin-back-socket',
+      textureKey: 'fauna-abyssal-serpent-mantle-horror-fin-back-socket',
+      texture: 'fauna-abyssal-serpent-mantle-horror-fin-back-socket.png',
+      parentId: 'body-1',
+      childId: 'fin-back',
+      offset: [0, -16],
+      origin: [0.5, 0.5],
+      size: [82, 50],
+      depth: 0.071,
+    },
+    {
+      id: 'fin-front-socket',
+      textureKey: 'fauna-abyssal-serpent-mantle-horror-fin-front-socket',
+      texture: 'fauna-abyssal-serpent-mantle-horror-fin-front-socket.png',
+      parentId: 'body-1',
+      childId: 'fin-front',
+      offset: [0, 16],
+      origin: [0.5, 0.5],
+      size: [82, 50],
+      depth: 0.145,
+    },
+  ],
 };
 
 const articulatedManifests = new Map<string, ArticulatedCreatureManifest>();
@@ -207,6 +242,11 @@ export function loadArticulatedAssets(scene: Phaser.Scene) {
         const path = `/assets/generated/${part.texture}`;
         if (part.texture.endsWith('.svg')) scene.load.svg(part.textureKey, path);
         else scene.load.image(part.textureKey, path);
+      }
+      for (const overlay of manifest.socketOverlays ?? []) {
+        const path = `/assets/generated/${overlay.texture}`;
+        if (overlay.texture.endsWith('.svg')) scene.load.svg(overlay.textureKey, path);
+        else scene.load.image(overlay.textureKey, path);
       }
     }
   });
@@ -238,6 +278,19 @@ export function ensureArticulatedTextures(scene: Phaser.Scene) {
         graphics.fillCircle(width * 0.72, height * 0.42, Math.max(2, height * 0.08));
       }
       graphics.generateTexture(part.textureKey, width, height);
+      graphics.destroy();
+    }
+    for (const overlay of manifest.socketOverlays ?? []) {
+      if (scene.textures.exists(overlay.textureKey)) continue;
+      placeholderTextureKeys.add(overlay.textureKey);
+      const width = Math.max(8, Math.ceil(overlay.size[0]));
+      const height = Math.max(8, Math.ceil(overlay.size[1]));
+      const graphics = scene.add.graphics().setVisible(false);
+      graphics.fillStyle(manifest.color, 0.58);
+      graphics.fillEllipse(width * 0.5, height * 0.5, width * 0.78, height * 0.55);
+      graphics.lineStyle(1, 0x08131c, 0.65);
+      graphics.strokeEllipse(width * 0.5, height * 0.5, width * 0.78, height * 0.55);
+      graphics.generateTexture(overlay.textureKey, width, height);
       graphics.destroy();
     }
   }
@@ -308,6 +361,16 @@ export function createArticulatedCreature(
       sprite: scene.add.image(x, y, part.textureKey)
         .setOrigin(part.origin[0], part.origin[1])
         .setDepth(2.1 + part.depth)
+        .setVisible(false),
+    })),
+    socketOverlays: (manifest.socketOverlays ?? []).map((overlay) => ({
+      id: overlay.id,
+      x,
+      y,
+      rotation: 0,
+      sprite: scene.add.image(x, y, overlay.textureKey)
+        .setOrigin(overlay.origin[0], overlay.origin[1])
+        .setDepth(2.1 + overlay.depth)
         .setVisible(false),
     })),
   };

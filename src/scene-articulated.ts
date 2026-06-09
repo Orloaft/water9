@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature, ArticulatedPartManifest, ArticulatedPartState, ControlState } from './types';
+import type { ArticulatedCreature, ArticulatedPartManifest, ArticulatedPartState, ArticulatedSocketOverlayState, ControlState } from './types';
 import { ENTITY_SCALE,PLAYER_CONTACT_RADIUS,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles } from './content';
 import { state } from './state';
@@ -20,6 +20,10 @@ function facingFor(creature: ArticulatedCreature) {
 
 function manifestById(creature: ArticulatedCreature, id: string) {
   return creature.manifest.parts.find((candidate) => candidate.id === id);
+}
+
+function overlayManifestById(creature: ArticulatedCreature, overlay: ArticulatedSocketOverlayState) {
+  return creature.manifest.socketOverlays?.find((candidate) => candidate.id === overlay.id);
 }
 
 function anchorFor(manifest: ArticulatedPartManifest, name: string | undefined) {
@@ -486,6 +490,16 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   creature.parts.forEach((part, index) => {
     placePart(part, index);
   });
+
+  creature.socketOverlays.forEach((overlay) => {
+    const manifest = overlayManifestById(creature, overlay);
+    const parent = manifest ? partById.get(manifest.parentId) : undefined;
+    if (!manifest || !parent || parent.detached) return;
+    const offset = localVectorOffsetFor(facing, parent.rotation, manifest.offset);
+    overlay.x = parent.x + offset.x;
+    overlay.y = parent.y + offset.y;
+    overlay.rotation = parent.rotation + facing * (manifest.rotationOffset ?? 0);
+  });
 }
 
 export function resolveArticulatedGrab(this: DeepdiveScene, creature: ArticulatedCreature, delta: number, controls?: ControlState) {
@@ -624,11 +638,13 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
   for (const creature of this.articulatedCreatures) {
     if (creature.dead) {
       creature.parts.forEach((part) => part.sprite?.setVisible(false));
+      creature.socketOverlays.forEach((overlay) => overlay.sprite?.setVisible(false));
       continue;
     }
     const alpha = this.articulatedVisibilityAlpha(creature, camera);
     if (alpha <= 0) {
       creature.parts.forEach((part) => part.sprite?.setVisible(false));
+      creature.socketOverlays.forEach((overlay) => overlay.sprite?.setVisible(false));
       continue;
     }
     const attacking = creature.state === 'lunge' || creature.state === 'grab';
@@ -655,6 +671,24 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         this.actors.lineStyle(2, 0xfff7df, part.hurtFlash * alpha);
         this.actors.strokeCircle(part.x, part.y, manifest.hitRadius * PART_WORLD_SCALE + 4);
       }
+    }
+    for (const overlay of creature.socketOverlays) {
+      const manifest = overlayManifestById(creature, overlay);
+      const parent = manifest ? creature.parts.find((part) => part.id === manifest.parentId) : undefined;
+      if (!manifest || !parent || parent.detached) {
+        overlay.sprite?.setVisible(false);
+        continue;
+      }
+      overlay.sprite
+        ?.setTexture(manifest.textureKey)
+        .setVisible(true)
+        .setPosition(overlay.x, overlay.y)
+        .setOrigin(manifest.origin[0], manifest.origin[1])
+        .setRotation(overlay.rotation)
+        .setAlpha(alpha)
+        .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE, manifest.size[1] * PART_WORLD_SCALE)
+        .setDepth(2.1 + manifest.depth);
+      if (overlay.sprite) overlay.sprite.scaleX = Math.abs(overlay.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
     }
     if (creature.stunned > 0) {
       this.actors.lineStyle(2, 0x8ee7f4, alpha * (0.38 + Math.sin(creature.phase * 9) * 0.16));

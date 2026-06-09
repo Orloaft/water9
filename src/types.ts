@@ -182,6 +182,19 @@ export interface ArticulatedPartManifest {
   motion: ArticulatedMotionManifest;
 }
 
+export interface ArticulatedSocketOverlayManifest {
+  id: string;
+  textureKey: string;
+  texture: string;
+  parentId: string;
+  childId: string;
+  offset: [number, number];
+  origin: [number, number];
+  size: [number, number];
+  depth: number;
+  rotationOffset?: number;
+}
+
 export interface ArticulatedCreatureManifest {
   id: string;
   species: string;
@@ -197,6 +210,7 @@ export interface ArticulatedCreatureManifest {
     count: number;
   };
   parts: ArticulatedPartManifest[];
+  socketOverlays?: ArticulatedSocketOverlayManifest[];
 }
 
 export interface ArticulatedPartState {
@@ -212,6 +226,14 @@ export interface ArticulatedPartState {
   terrainContact: number;
   terrainNormalX: number;
   terrainNormalY: number;
+  x: number;
+  y: number;
+  rotation: number;
+  sprite?: Phaser.GameObjects.Image;
+}
+
+export interface ArticulatedSocketOverlayState {
+  id: string;
   x: number;
   y: number;
   rotation: number;
@@ -254,6 +276,7 @@ export interface ArticulatedCreature {
   reviewFrozen?: boolean;
   manifest: ArticulatedCreatureManifest;
   parts: ArticulatedPartState[];
+  socketOverlays: ArticulatedSocketOverlayState[];
 }
 
 export type ScanTarget = Fish | Flora | ArticulatedCreature;

@@ -241,5 +241,34 @@
     "head",
     "fin-front"
   ],
-  "notes": "v3 parts are source-cut from one whole transparent creature to preserve silhouette, palette, and overlap cohesion. Runtime sprite-parts now carries equivalent parent anchors and rest offsets so the creature solves as a connected articulated rig."
+  "socketOverlays": [
+    {
+      "id": "tail-socket",
+      "src": "fauna-abyssal-serpent-mantle-horror-tail-socket.png",
+      "parentId": "body-3",
+      "childId": "tail",
+      "sourcePartId": "body3",
+      "sourceCrop": { "x": 0, "y": 8, "width": 62, "height": 50 },
+      "offset": { "x": -25, "y": 0 }
+    },
+    {
+      "id": "fin-back-socket",
+      "src": "fauna-abyssal-serpent-mantle-horror-fin-back-socket.png",
+      "parentId": "body-1",
+      "childId": "fin-back",
+      "sourcePartId": "body1",
+      "sourceCrop": { "x": 24, "y": 0, "width": 82, "height": 50 },
+      "offset": { "x": 0, "y": -16 }
+    },
+    {
+      "id": "fin-front-socket",
+      "src": "fauna-abyssal-serpent-mantle-horror-fin-front-socket.png",
+      "parentId": "body-1",
+      "childId": "fin-front",
+      "sourcePartId": "body1",
+      "sourceCrop": { "x": 24, "y": 32, "width": 82, "height": 50 },
+      "offset": { "x": 0, "y": 16 }
+    }
+  ],
+  "notes": "v3 parts are source-cut from one whole transparent creature to preserve silhouette, palette, and overlap cohesion. Runtime sprite-parts now carries equivalent parent anchors, rest offsets, and parent-body socket overlays so fins and tail tuck under body pixels like one connected creature."
 }

@@ -122,6 +122,20 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
               }
               : null,
           })),
+          socketOverlays: creature.socketOverlays.map((overlay) => ({
+            id: overlay.id,
+            x: roundMetric(overlay.x),
+            y: roundMetric(overlay.y),
+            rotation: roundMetric(overlay.rotation),
+            sprite: overlay.sprite
+              ? {
+                visible: overlay.sprite.visible,
+                scaleX: roundMetric(overlay.sprite.scaleX),
+                scaleY: roundMetric(overlay.sprite.scaleY),
+                depth: roundMetric(overlay.sprite.depth),
+              }
+              : null,
+          })),
         };
       }),
       articulatedPlaceholders: articulatedPlaceholderTextureKeys(),

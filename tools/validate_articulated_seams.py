@@ -24,6 +24,8 @@ DEFAULT_ASSET_DIR = ROOT / "public/assets/generated"
 PART_WORLD_SCALE = 0.72
 ALPHA_THRESHOLD = 16
 MIN_OVERLAP_PIXELS = 48
+MIN_SOCKET_CHILD_PIXELS = 24
+MIN_SOCKET_PARENT_PIXELS = 32
 MODES = (
     ("right", 1, 1.1, 0.0),
     ("left", -1, 1.1, 0.0),
@@ -43,6 +45,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument("--asset-dir", type=Path, default=DEFAULT_ASSET_DIR)
     parser.add_argument("--min-overlap", type=int, default=MIN_OVERLAP_PIXELS)
+    parser.add_argument("--min-socket-child-overlap", type=int, default=MIN_SOCKET_CHILD_PIXELS)
+    parser.add_argument("--min-socket-parent-overlap", type=int, default=MIN_SOCKET_PARENT_PIXELS)
     return parser.parse_args()
 
 
@@ -159,6 +163,15 @@ def place_parts(creature: dict[str, Any], facing: int, phase: float, attack_blen
     return placements
 
 
+def place_socket_overlay(overlay: dict[str, Any], parent_placement: Placement, facing: int) -> Placement:
+    offset = local_vector(facing, parent_placement.rotation, tuple(overlay["offset"]))
+    return Placement(
+        x=parent_placement.x + offset[0],
+        y=parent_placement.y + offset[1],
+        rotation=parent_placement.rotation + facing * overlay.get("rotationOffset", 0),
+    )
+
+
 def alpha_points(part: dict[str, Any], image: Image.Image, placement: Placement, facing: int) -> set[tuple[int, int]]:
     alpha = image.getchannel("A")
     pixels = alpha.load()
@@ -179,11 +192,21 @@ def alpha_points(part: dict[str, Any], image: Image.Image, placement: Placement,
     return points
 
 
-def validate_creature(creature: dict[str, Any], asset_dir: Path, min_overlap: int) -> list[str]:
+def validate_creature(
+    creature: dict[str, Any],
+    asset_dir: Path,
+    min_overlap: int,
+    min_socket_child_overlap: int,
+    min_socket_parent_overlap: int,
+) -> list[str]:
     failures: list[str] = []
     images = {
         part["id"]: Image.open(asset_dir / part["texture"]).convert("RGBA")
         for part in creature["parts"]
+    }
+    overlay_images = {
+        overlay["id"]: Image.open(asset_dir / overlay["texture"]).convert("RGBA")
+        for overlay in creature.get("socketOverlays", [])
     }
     parts = {part["id"]: part for part in creature["parts"]}
 
@@ -205,6 +228,25 @@ def validate_creature(creature: dict[str, Any], asset_dir: Path, min_overlap: in
                     f"{creature['id']} {mode_name} {parent_id}->{part['id']} visual overlap "
                     f"{overlap}px ({coverage:.3f} of child) below {min_overlap}px"
                 )
+        for overlay in creature.get("socketOverlays", []):
+            parent = parts.get(overlay.get("parentId"))
+            child = parts.get(overlay.get("childId"))
+            if not parent or not child:
+                continue
+            overlay_placement = place_socket_overlay(overlay, placements[parent["id"]], facing)
+            overlay_mask = alpha_points(overlay, overlay_images[overlay["id"]], overlay_placement, facing)
+            child_overlap = len(overlay_mask & masks[child["id"]])
+            parent_overlap = len(overlay_mask & masks[parent["id"]])
+            if child_overlap < min_socket_child_overlap:
+                failures.append(
+                    f"{creature['id']} {mode_name} socket {overlay['id']} covers child {child['id']} by "
+                    f"{child_overlap}px below {min_socket_child_overlap}px"
+                )
+            if parent_overlap < min_socket_parent_overlap:
+                failures.append(
+                    f"{creature['id']} {mode_name} socket {overlay['id']} aligns to parent {parent['id']} by "
+                    f"{parent_overlap}px below {min_socket_parent_overlap}px"
+                )
 
     return failures
 
@@ -214,7 +256,13 @@ def main() -> int:
     manifest = json.loads(args.manifest.read_text())
     failures: list[str] = []
     for creature in manifest.get("creatures", []):
-        failures.extend(validate_creature(creature, args.asset_dir, args.min_overlap))
+        failures.extend(validate_creature(
+            creature,
+            args.asset_dir,
+            args.min_overlap,
+            args.min_socket_child_overlap,
+            args.min_socket_parent_overlap,
+        ))
 
     if failures:
         for failure in failures:
