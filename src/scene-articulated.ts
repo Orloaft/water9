@@ -171,11 +171,12 @@ export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: Ar
 
 export function updateArticulatedParts(this: DeepdiveScene, creature: ArticulatedCreature, _delta: number) {
   const speed = Math.hypot(creature.vx, creature.vy);
-  const heading = speed > 3
-    ? Math.atan2(creature.vy, creature.vx)
-    : creature.facingSign < 0 ? Math.PI : 0;
-  const forward = new Phaser.Math.Vector2(Math.cos(heading), Math.sin(heading));
-  const normal = new Phaser.Math.Vector2(-forward.y, forward.x);
+  const facing = creature.facingSign < 0 ? -1 : 1;
+  const swimPitch = speed > 3
+    ? Phaser.Math.Clamp(Math.atan2(creature.vy, Math.max(1, Math.abs(creature.vx))), -0.62, 0.62)
+    : 0;
+  const forward = new Phaser.Math.Vector2(facing * Math.cos(swimPitch), Math.sin(swimPitch));
+  const normal = new Phaser.Math.Vector2(-facing * Math.sin(swimPitch), Math.cos(swimPitch));
   const lungeOpen = creature.state === 'lunge' || creature.state === 'grab' ? 1 : 0;
   creature.parts.forEach((part, index) => {
     const manifest = partManifest(creature, part);
@@ -188,7 +189,7 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const jawOpen = motion.kind === 'jaw' ? (Math.sin(creature.phase * 8) * 0.16 + lungeOpen * 0.42) * Math.sign(localY || 1) : 0;
     part.x = creature.x + forward.x * localX + normal.x * (localY + bodyWave);
     part.y = creature.y + forward.y * localX + normal.y * (localY + bodyWave);
-    part.rotation = heading + bodyWave * 0.012 + finWave * 0.018 + jawOpen;
+    part.rotation = facing * (swimPitch + bodyWave * 0.012 + finWave * 0.018 + jawOpen);
   });
 }
 
@@ -336,6 +337,7 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         .setRotation(part.rotation)
         .setAlpha((creature.stunned > 0 ? alpha * 0.68 : alpha) * damageAlpha)
         .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE, manifest.size[1] * PART_WORLD_SCALE);
+      if (part.sprite) part.sprite.scaleX = Math.abs(part.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
       if (part.hurtFlash > 0) {
         this.actors.lineStyle(2, 0xfff7df, part.hurtFlash * alpha);
         this.actors.strokeCircle(part.x, part.y, manifest.hitRadius * PART_WORLD_SCALE + 4);
