@@ -431,6 +431,25 @@ export interface FloraSpecies {
   radius: number;
 }
 
+export type EnvironmentPropKind = 'rock' | 'ore';
+
+export interface EnvironmentProp {
+  id: string;
+  kind: EnvironmentPropKind;
+  assetKey: string;
+  x: number;
+  y: number;
+  tileX: number;
+  tileY: number;
+  tile?: Tile;
+  width: number;
+  height: number;
+  rotation: number;
+  alpha: number;
+  depth: number;
+  flipX?: boolean;
+}
+
 export interface CargoItem {
   id: InventoryItemId;
   name: string;

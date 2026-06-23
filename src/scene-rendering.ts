@@ -15,9 +15,10 @@ export function draw(this: DeepdiveScene, ) {
     this.lampGloom.clear();
     this.overlay.clear();
     camera.setBackgroundColor(depthColor(state.depth));
-    this.drawParallax(camera);
-    this.drawWorld(camera);
-    this.drawSpecialRooms(camera);
+	    this.drawParallax(camera);
+	    this.drawWorld(camera);
+	    this.drawEnvironmentProps(camera);
+	    this.drawSpecialRooms(camera);
     this.drawBoat();
     this.drawLooseItems(camera);
     this.drawHazards();
@@ -111,8 +112,8 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
           .setPosition(x * TILE, y * TILE)
           .setDisplaySize(TILE, TILE);
         tileSpriteIndex += 1;
-        this.terrain.lineStyle(tile === 'anchorstone' ? 2 : 1, tile === 'anchorstone' ? 0xb9c2d0 : 0x071016, tile === 'anchorstone' ? 0.5 : 0.35);
-        this.terrain.strokeRect(x * TILE, y * TILE, TILE, TILE);
+	        this.terrain.lineStyle(tile === 'anchorstone' ? 2 : 1, tile === 'anchorstone' ? 0xb9c2d0 : 0x071016, tile === 'anchorstone' ? 0.32 : 0.14);
+	        this.terrain.strokeRect(x * TILE, y * TILE, TILE, TILE);
         if (tile === 'anchorstone') {
           this.terrain.lineStyle(1, 0x11141c, 0.4);
           this.terrain.lineBetween(x * TILE + 4, y * TILE + 7, x * TILE + 20, y * TILE + 7);
@@ -133,8 +134,31 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         }
       }
     }
-    for (let i = tileSpriteIndex; i < this.tileSprites.length; i += 1) {
-      this.tileSprites[i].setVisible(false);
+	    for (let i = tileSpriteIndex; i < this.tileSprites.length; i += 1) {
+	      this.tileSprites[i].setVisible(false);
+	    }
+	  }
+
+export function drawEnvironmentProps(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+    const view = camera.worldView;
+    let spriteIndex = 0;
+    for (const prop of this.environmentProps) {
+      if (prop.x < view.x - 90 || prop.x > view.right + 90 || prop.y < view.y - 90 || prop.y > view.bottom + 90) continue;
+      if (prop.tile && this.getTile(prop.tileX, prop.tileY) !== prop.tile) continue;
+      const sprite = this.environmentSpriteAt(spriteIndex, prop.assetKey);
+      sprite
+        .setTexture(prop.assetKey)
+        .setVisible(true)
+        .setPosition(prop.x, prop.y)
+        .setDisplaySize(prop.width, prop.height)
+        .setRotation(prop.rotation)
+        .setAlpha(prop.alpha)
+        .setDepth(prop.depth)
+        .setFlipX(Boolean(prop.flipX));
+      spriteIndex += 1;
+    }
+    for (let i = spriteIndex; i < this.environmentSprites.length; i += 1) {
+      this.environmentSprites[i].setVisible(false);
     }
   }
 

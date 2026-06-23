@@ -1,17 +1,18 @@
 import Phaser from 'phaser';
-import type { Bobbit,Fish,FishSpecies,Flora,FloraSpecies,Hazard,SpecialRoom,Tile,VeinRule } from './types';
+import type { Bobbit,EnvironmentProp,Fish,FishSpecies,Flora,FloraSpecies,Hazard,SpecialRoom,Tile,VeinRule } from './types';
 import { BIOLUME_CAVERN_CHANCE,BOBBIT_ESCAPE_SECONDS,deepScale,EGG_HP,NEST_CHAMBER_CHANCE,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,scaledDepthPx,scaledEntity,veinRuleAt,veinRulesForBiome } from './helpers';
+import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,isOreTile,oreEnvironmentAssetKey,scaledDepthPx,scaledEntity,veinRuleAt,veinRulesForBiome } from './helpers';
 import type { DeepdiveScene } from './scene';
 
 export function generateWorld(this: DeepdiveScene, ) {
     this.world = [];
     this.damage = [];
-    this.looseItems = [];
-    this.articulatedCreatures = [];
+	    this.looseItems = [];
+	    this.environmentProps = [];
+	    this.articulatedCreatures = [];
     this.flora = [];
     this.bobbits = [];
     this.specialRooms = [];
@@ -39,8 +40,9 @@ export function generateWorld(this: DeepdiveScene, ) {
     this.carveStarterCaverns(center);
     this.carveDeepTunnelNetwork(center);
     this.carveAnchorstoneStrata();
-    this.injectSpecialRooms(center);
-    this.populateOreVeins();
+	    this.injectSpecialRooms(center);
+	    this.populateOreVeins();
+	    this.populateEnvironmentProps();
 
     this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
     this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
@@ -307,8 +309,107 @@ export function growOreVein(this: DeepdiveScene, startX: number, startY: number,
   }
 
 export function canHostOre(this: DeepdiveScene, x: number, y: number) {
-    const tile = this.getTile(x, y);
-    return tile === 'stone' || tile === 'sand';
+	    const tile = this.getTile(x, y);
+	    return tile === 'stone' || tile === 'sand';
+	  }
+
+export function populateEnvironmentProps(this: DeepdiveScene) {
+    const props: EnvironmentProp[] = [];
+    for (let y = 8; y < WORLD_H - 2; y += 1) {
+      for (let x = 2; x < WORLD_W - 2; x += 1) {
+        const tile = this.getTile(x, y);
+        const def = tiles[tile];
+        if (!def.solid) continue;
+
+        if (isOreTile(tile)) {
+          const variant = Math.floor(hash(x * 13, y * 17, rng.seed) * 3);
+          const waterBias = [
+            { dx: 0, dy: -1, angle: -Math.PI / 2 },
+            { dx: 0, dy: 1, angle: Math.PI / 2 },
+            { dx: -1, dy: 0, angle: Math.PI },
+            { dx: 1, dy: 0, angle: 0 },
+          ].find((side) => this.getTile(x + side.dx, y + side.dy) === 'water');
+          const angle = waterBias?.angle ?? (hash(x, y, rng.seed) * Math.PI * 2);
+          const normalX = Math.cos(angle);
+          const normalY = Math.sin(angle);
+          const size = 28 + variant * 5 + (tile === 'ruinCore' || tile === 'abyssalCrown' ? 12 : 0);
+          props.push({
+            id: `ore-${x}-${y}`,
+            kind: 'ore',
+            assetKey: oreEnvironmentAssetKey(tile),
+            x: x * TILE + TILE * 0.5 + normalX * 3,
+            y: y * TILE + TILE * 0.5 + normalY * 3,
+            tileX: x,
+            tileY: y,
+            tile,
+            width: size,
+            height: size,
+            rotation: (hash(x * 5, y * 7, rng.seed) - 0.5) * 0.52,
+            alpha: 0.96,
+            depth: 1.24,
+            flipX: hash(x, y, rng.seed + 19) > 0.5,
+          });
+        }
+
+        const northWater = this.getTile(x, y - 1) === 'water';
+        const southWater = this.getTile(x, y + 1) === 'water';
+        const westWater = this.getTile(x - 1, y) === 'water';
+        const eastWater = this.getTile(x + 1, y) === 'water';
+        if (northWater && hash(x * 29, y * 31, rng.seed) > 0.82) {
+          const variant = Math.floor(hash(x, y, rng.seed) * 2);
+          props.push({
+            id: `floor-rock-${x}-${y}`,
+            kind: 'rock',
+            assetKey: `env-rock-floor-lip-${variant}`,
+            x: x * TILE + TILE * 0.5,
+            y: y * TILE + 1,
+            tileX: x,
+            tileY: y,
+            width: 42 + hash(y, x, rng.seed) * 18,
+            height: 22 + hash(x, y, rng.seed + 3) * 8,
+            rotation: (hash(x, y, rng.seed + 5) - 0.5) * 0.12,
+            alpha: 0.86,
+            depth: 1.02,
+            flipX: hash(x, y, rng.seed + 7) > 0.5,
+          });
+        }
+        if (southWater && hash(x * 37, y * 41, rng.seed) > 0.9) {
+          props.push({
+            id: `ceiling-rock-${x}-${y}`,
+            kind: 'rock',
+            assetKey: 'env-rock-ceiling-lip-0',
+            x: x * TILE + TILE * 0.5,
+            y: (y + 1) * TILE - 1,
+            tileX: x,
+            tileY: y,
+            width: 38 + hash(x, y, rng.seed + 11) * 16,
+            height: 18 + hash(y, x, rng.seed + 13) * 8,
+            rotation: Math.PI + (hash(x, y, rng.seed + 17) - 0.5) * 0.12,
+            alpha: 0.72,
+            depth: 0.98,
+            flipX: hash(y, x, rng.seed + 23) > 0.5,
+          });
+        }
+        if ((westWater || eastWater) && hash(x * 43, y * 47, rng.seed) > 0.9) {
+          const left = westWater;
+          props.push({
+            id: `wall-rock-${x}-${y}`,
+            kind: 'rock',
+            assetKey: left ? 'env-rock-wall-left-0' : 'env-rock-wall-right-0',
+            x: x * TILE + (left ? 1 : TILE - 1),
+            y: y * TILE + TILE * 0.5,
+            tileX: x,
+            tileY: y,
+            width: 20 + hash(x, y, rng.seed + 29) * 9,
+            height: 42 + hash(y, x, rng.seed + 31) * 16,
+            rotation: (left ? 0 : Math.PI) + (hash(x, y, rng.seed + 37) - 0.5) * 0.12,
+            alpha: 0.7,
+            depth: 0.99,
+          });
+        }
+      }
+    }
+    this.environmentProps = props.slice(0, 950);
   }
 
 export function makeBobbits(this: DeepdiveScene, ): Bobbit[] {

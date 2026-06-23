@@ -363,6 +363,7 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
   for (let i = 0; i < 4; i += 1) scene.load.image(`bobbit-${i}`, assetPath(`bobbit-${i}`));
   for (const key of parallaxTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of uiTextureKeys()) scene.load.image(key, assetPath(key));
+  for (const key of environmentTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of terrainTextureKeys()) {
     scene.load.image(key, assetPath(key));
   }
@@ -472,6 +473,57 @@ export function terrainTextureKeys() {
   ];
 }
 
+export function environmentTextureKeys() {
+  return [
+    'env-rock-floor-lip-0',
+    'env-rock-floor-lip-1',
+    'env-rock-ceiling-lip-0',
+    'env-rock-wall-left-0',
+    'env-rock-wall-right-0',
+    'env-ore-copper',
+    'env-ore-quartz',
+    'env-ore-ruby',
+    'env-ore-cobalt',
+    'env-ore-sunstone',
+    'env-ore-relic',
+    'env-ore-idol',
+    'env-ore-alien-alloy',
+    'env-ore-ruin-core',
+    'env-flora-glass-kelp',
+    'env-flora-moon-sponge',
+    'env-flora-sting-anemone',
+    'env-flora-brine-grass',
+    'env-flora-vent-coral',
+    'env-flora-ember-bloom',
+    'env-flora-black-fan',
+    'env-flora-needle-garden',
+    'env-flora-crown-polyp',
+    'env-flora-circuit-kelp',
+    'env-flora-glass-obelisk',
+    'env-flora-oracle-polyp',
+    'env-flora-oxygen-bloom',
+    'env-flora-lumen-fern',
+    'env-flora-lumen-nodule',
+  ];
+}
+
+export function isOreTile(tile: Tile) {
+  return tiles[tile].value > 0;
+}
+
+export function oreEnvironmentAssetKey(tile: Tile) {
+  if (tile === 'copper') return 'env-ore-copper';
+  if (tile === 'quartz') return 'env-ore-quartz';
+  if (tile === 'ruby') return 'env-ore-ruby';
+  if (tile === 'cobalt') return 'env-ore-cobalt';
+  if (tile === 'sunstone') return 'env-ore-sunstone';
+  if (tile === 'relic') return 'env-ore-relic';
+  if (tile === 'drownedIdol' || tile === 'precursorEngine' || tile === 'abyssalCrown') return 'env-ore-idol';
+  if (tile === 'alienAlloy') return 'env-ore-alien-alloy';
+  if (tile === 'ruinCore') return 'env-ore-ruin-core';
+  return 'env-ore-copper';
+}
+
 export function tileTextureKey(tile: Tile, x: number, y: number) {
   const variant = terrainTileVariant(x, y);
   if (tile === 'sand') return biomeTerrainTextureKey('sand', variant);
@@ -479,6 +531,7 @@ export function tileTextureKey(tile: Tile, x: number, y: number) {
     return hostRockTextureKey(x, y);
   }
   if (tile === 'bedrock' || tile === 'anchorstone') return biomeTerrainTextureKey('alloy', variant);
+  if (isOreTile(tile)) return hostRockTextureKey(x, y);
   if (tile === 'copper') return 'tile-copper';
   if (tile === 'quartz') return 'tile-quartz';
   if (tile === 'ruby') return 'tile-ruby';
@@ -546,8 +599,23 @@ export function fishAssetKey(species: FishSpecies) {
 }
 
 export function floraAssetKey(species: FloraSpecies) {
-  if (state.biome === 1) return species.hazardous ? 'flora-shallow-anemone' : 'flora-shallow-kelp';
-  return species.hazardous || species.rare ? 'flora-deep-coral' : 'flora-deep-tube';
+  if (species.species === 'Glass Kelp') return 'env-flora-glass-kelp';
+  if (species.species === 'Moon Sponge') return 'env-flora-moon-sponge';
+  if (species.species === 'Sting Anemone') return 'env-flora-sting-anemone';
+  if (species.species === 'Brine Grass') return 'env-flora-brine-grass';
+  if (species.species === 'Vent Coral') return 'env-flora-vent-coral';
+  if (species.species === 'Ember Bloom') return 'env-flora-ember-bloom';
+  if (species.species === 'Black Fan') return 'env-flora-black-fan';
+  if (species.species === 'Needle Garden') return 'env-flora-needle-garden';
+  if (species.species === 'Crown Polyp') return 'env-flora-crown-polyp';
+  if (species.species === 'Circuit Kelp') return 'env-flora-circuit-kelp';
+  if (species.species === 'Glass Obelisk') return 'env-flora-glass-obelisk';
+  if (species.species === 'Oracle Polyp') return 'env-flora-oracle-polyp';
+  if (species.species === 'Oxygen Bloom') return 'env-flora-oxygen-bloom';
+  if (species.species === 'Lumen Fern') return 'env-flora-lumen-fern';
+  if (species.species === 'Lumen Nodule') return 'env-flora-lumen-nodule';
+  if (state.biome === 1) return species.hazardous ? 'env-flora-sting-anemone' : 'env-flora-glass-kelp';
+  return species.hazardous || species.rare ? 'env-flora-vent-coral' : 'env-flora-moon-sponge';
 }
 
 export function fitImageWidth(image: Phaser.GameObjects.Image | undefined, width: number) {

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Environment Rework Preview</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #061017;
+      color: #d7eef4;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+    .panel {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      width: min(360px, calc(100vw - 32px));
+      padding: 14px;
+      background: rgba(3, 10, 15, 0.82);
+      border: 1px solid rgba(114, 230, 239, 0.28);
+      border-radius: 8px;
+      box-shadow: 0 18px 52px rgba(0,0,0,0.35);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+    .meta {
+      margin: 0 0 12px;
+      color: #a9c8d0;
+      font-size: 12px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    button {
+      border: 1px solid rgba(114, 230, 239, 0.38);
+      border-radius: 6px;
+      background: rgba(12, 48, 58, 0.82);
+      color: #e8fbff;
+      padding: 7px 10px;
+      cursor: pointer;
+    }
+    button[aria-pressed="true"] {
+      background: rgba(49, 142, 155, 0.9);
+      border-color: rgba(142, 231, 244, 0.78);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="preview"></canvas>
+  <section class="panel">
+    <h1>Environment Rework Preview</h1>
+    <p class="meta">Left: legacy tile-read. Right: collision grid hidden under rock lips, ore clusters, and distinct flora.</p>
+    <div class="row">
+      <button type="button" data-biome="reef" aria-pressed="true">Reef</button>
+      <button type="button" data-biome="thermal" aria-pressed="false">Thermal</button>
+      <button type="button" data-biome="abyssal" aria-pressed="false">Abyssal</button>
+    </div>
+  </section>
+  <script type="module">
+    const canvas = document.getElementById('preview');
+    const ctx = canvas.getContext('2d');
+    const buttons = [...document.querySelectorAll('button[data-biome]')];
+    let biome = 'reef';
+    const assets = [
+      'tile-reef-stone-0', 'tile-reef-stone-1', 'tile-reef-sand-0',
+      'tile-thermal-stone-0', 'tile-thermal-stone-1', 'tile-thermal-sand-0',
+      'tile-abyssal-stone-0', 'tile-abyssal-stone-1', 'tile-abyssal-sand-0',
+      'tile-copper', 'tile-quartz', 'tile-ruby',
+      'env-rock-floor-lip-0', 'env-rock-floor-lip-1', 'env-rock-ceiling-lip-0', 'env-rock-wall-left-0', 'env-rock-wall-right-0',
+      'env-ore-copper', 'env-ore-quartz', 'env-ore-ruby', 'env-ore-cobalt', 'env-ore-sunstone',
+      'env-flora-glass-kelp', 'env-flora-vent-coral', 'env-flora-black-fan', 'env-flora-glass-obelisk',
+    ];
+    const images = new Map();
+    function loadImage(key) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve([key, img]);
+        img.onerror = () => resolve([key, null]);
+        img.src = `/assets/generated/${key}.png`;
+      });
+    }
+    function tileKey(role, i = 0) {
+      if (role === 'ore') return ['tile-copper', 'tile-quartz', 'tile-ruby'][i % 3];
+      return `tile-${biome}-${role}-${i % 2}`;
+    }
+    function drawTile(key, x, y, size) {
+      const img = images.get(key);
+      if (img) ctx.drawImage(img, x, y, size, size);
+      else {
+        ctx.fillStyle = '#2b3440';
+        ctx.fillRect(x, y, size, size);
+      }
+    }
+    function drawLegacy(x0, y0, cols, rows, size) {
+      for (let y = 0; y < rows; y += 1) {
+        for (let x = 0; x < cols; x += 1) {
+          const edge = y < 2 || x < 2 || x > cols - 4 || y > rows - 3 || Math.sin(x * 0.9 + y * 0.7) > 0.72;
+          if (!edge && y < rows * 0.64) continue;
+          const ore = (x + y * 3) % 23 === 0;
+          drawTile(ore ? tileKey('ore', x + y) : tileKey(y > rows * 0.72 ? 'stone' : 'sand', x + y), x0 + x * size, y0 + y * size, size);
+          ctx.strokeStyle = 'rgba(2,7,10,0.45)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x0 + x * size, y0 + y * size, size, size);
+        }
+      }
+    }
+    function drawRework(x0, y0, cols, rows, size, t) {
+      for (let y = 0; y < rows; y += 1) {
+        for (let x = 0; x < cols; x += 1) {
+          const edge = y < 2 || x < 2 || x > cols - 4 || y > rows - 3 || Math.sin(x * 0.9 + y * 0.7) > 0.72;
+          if (!edge && y < rows * 0.64) continue;
+          drawTile(tileKey(y > rows * 0.72 ? 'stone' : 'sand', x + y), x0 + x * size, y0 + y * size, size);
+        }
+      }
+      const props = [
+        ['env-rock-floor-lip-0', 5, 11, 74, 36, 0],
+        ['env-rock-floor-lip-1', 13, 9, 66, 32, 0.04],
+        ['env-rock-ceiling-lip-0', 20, 4, 76, 34, Math.PI],
+        ['env-rock-wall-left-0', 2, 9, 28, 78, 0],
+        ['env-rock-wall-right-0', 27, 12, 28, 78, Math.PI],
+        ['env-ore-copper', 8, 12, 54, 54, 0.08],
+        ['env-ore-quartz', 18, 9, 58, 58, -0.08],
+        ['env-ore-ruby', 24, 15, 54, 54, 0.16],
+        ['env-ore-cobalt', 11, 17, 58, 58, -0.12],
+        ['env-flora-glass-kelp', 6, 10, 54, 96, 0],
+        ['env-flora-vent-coral', 16, 13, 72, 94, Math.sin(t * 0.001) * 0.03],
+        ['env-flora-black-fan', 22, 10, 72, 98, 0],
+      ];
+      for (const [key, gx, gy, w, h, rot] of props) {
+        const img = images.get(key);
+        if (!img) continue;
+        ctx.save();
+        ctx.translate(x0 + gx * size, y0 + gy * size);
+        ctx.rotate(rot);
+        ctx.drawImage(img, -w / 2, -h, w, h);
+        ctx.restore();
+      }
+    }
+    function frame(t) {
+      const dpr = window.devicePixelRatio || 1;
+      const w = Math.floor(window.innerWidth * dpr);
+      const h = Math.floor(window.innerHeight * dpr);
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const g = ctx.createLinearGradient(0, 0, 0, vh);
+      g.addColorStop(0, '#082631');
+      g.addColorStop(0.58, '#07151e');
+      g.addColorStop(1, '#03070c');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, vw, vh);
+      const size = Math.max(16, Math.min(24, Math.floor((vw - 180) / 64)));
+      const rows = 22;
+      const cols = 30;
+      const y0 = Math.max(140, (vh - rows * size) * 0.56);
+      drawLegacy(Math.max(32, vw * 0.08), y0, cols, rows, size);
+      drawRework(Math.max(vw * 0.52, 32), y0, cols, rows, size, t);
+      requestAnimationFrame(frame);
+    }
+    buttons.forEach((button) => button.addEventListener('click', () => {
+      biome = button.dataset.biome;
+      buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+    }));
+    Promise.all(assets.map(loadImage)).then((loaded) => {
+      loaded.forEach(([key, img]) => { if (img) images.set(key, img); });
+      requestAnimationFrame(frame);
+    });
+  </script>
+</body>
+</html>
