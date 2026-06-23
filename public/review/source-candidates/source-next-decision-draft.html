@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Next Source Decision Draft</title>
+  <style>
+    :root { color-scheme: dark; background:#061115; color:#e4f2f3; font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    body { margin:0; padding:24px; background:#061115; }
+    main { max-width:1280px; margin:0 auto; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); letter-spacing:0; }
+    h2 { margin:22px 0 10px; }
+    p, li { color:#bdd2d6; }
+    code, pre, textarea { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre, textarea { border:1px solid #25434b; background:#041014; color:#dff8ff; border-radius:6px; padding:10px; }
+    textarea { width:100%; min-height:520px; resize:vertical; }
+    .notice { border:1px solid #715a2c; background:#20190e; color:#f4d89b; border-radius:6px; padding:12px; margin:14px 0; }
+    .summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; margin:16px 0; }
+    .summary span { border:1px solid #243f47; background:#091a1f; border-radius:5px; padding:8px; }
+    .media { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+    .media a { display:block; border:1px solid #243f47; border-radius:6px; overflow:hidden; background:#07151a; color:#d8f6ff; text-decoration:none; }
+    .media img { display:block; width:100%; aspect-ratio:16/10; object-fit:contain; background:#02090b; }
+    .media span { display:block; padding:8px; font-weight:700; }
+  </style>
+</head>
+<body>
+  <main data-source-next-decision-draft data-source-next-decision-target="brine-crown">
+    <h1>Next Source Decision Draft</h1>
+    <p>Focused reviewed-only decision draft for Brine Crown.</p>
+    <div class="notice">This focused draft does not approve source art. The JSON must be completed by a human reviewer before strict dry-run or apply.</div>
+    <section class="summary">
+      <span>target <b>brine-crown</b></span>
+      <span>species <b>Brine Crown</b></span>
+      <span>status <b>needs-review</b></span>
+      <span>filename <b>water9-source-cohesion-reviewed-decisions.json</b></span>
+    </section>
+    <h2>Evidence</h2>
+    <section class="media"><a href="/assets/generated/fauna-brine-crown-whole-source.png"><img src="/assets/generated/fauna-brine-crown-whole-source.png" alt="Brine Crown source"><span>source</span></a><a href="/review/source-candidates/key-previews/brine-crown-key-preview.png"><img src="/review/source-candidates/key-previews/brine-crown-key-preview.png" alt="Brine Crown magenta key"><span>magenta key</span></a><a href="/review/source-candidates/quick-reviews/brine-crown-source-preview.png"><img src="/review/source-candidates/quick-reviews/brine-crown-source-preview.png" alt="Brine Crown sandbox preview"><span>sandbox preview</span></a><a href="/review/articulated/brine-crown-plan-preview.png"><img src="/review/articulated/brine-crown-plan-preview.png" alt="Brine Crown plan preview"><span>plan preview</span></a></section>
+    <h2>Decision JSON Draft</h2>
+    <textarea readonly spellcheck="false" data-source-next-decision-json>{
+  &quot;schema&quot;: &quot;water9/source-cohesion-decisions@1&quot;,
+  &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+  &quot;reviewedAt&quot;: &quot;&lt;YYYY-MM-DD&gt;&quot;,
+  &quot;policy&quot;: {
+    &quot;humanAuthored&quot;: true,
+    &quot;automationCannotApproveCohesion&quot;: true,
+    &quot;inspectSourceKeySandboxAndPlan&quot;: true
+  },
+  &quot;instructions&quot;: [
+    &quot;Keep status as needs-review until a real human reviewer has inspected source, key preview, sandbox screenshot, and articulation plan.&quot;,
+    &quot;For approval, set status to approved, fill reviewer/reviewedAt/overallNote, and give every visual check a score of 4 or 5 with evidence-based notes.&quot;,
+    &quot;For rejection, set status to rejected, fill reviewer/reviewedAt/overallNote, and list failedChecks with evidence-based notes.&quot;,
+    &quot;Run strict apply against the edited decision file; this starter is not an approval.&quot;
+  ],
+  &quot;decisions&quot;: [
+    {
+      &quot;id&quot;: &quot;brine-crown&quot;,
+      &quot;species&quot;: &quot;Brine Crown&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;evidenceFingerprint&quot;: {
+        &quot;schema&quot;: &quot;water9/source-cohesion-evidence-fingerprint@1&quot;,
+        &quot;id&quot;: &quot;brine-crown&quot;,
+        &quot;species&quot;: &quot;Brine Crown&quot;,
+        &quot;files&quot;: {
+          &quot;source&quot;: {
+            &quot;url&quot;: &quot;/assets/generated/fauna-brine-crown-whole-source.png&quot;,
+            &quot;exists&quot;: true,
+            &quot;size&quot;: 337378,
+            &quot;sha256&quot;: &quot;96acc19e0fbeca2427b173239e821100f0d7f6b977c43a55b1ef3d733ce94825&quot;
+          },
+          &quot;keyPreview&quot;: {
+            &quot;url&quot;: &quot;/review/source-candidates/key-previews/brine-crown-key-preview.png&quot;,
+            &quot;exists&quot;: true,
+            &quot;size&quot;: 141567,
+            &quot;sha256&quot;: &quot;98fbfd0e7a6cae35700d6339946b52a08d6426799b14bac87bd86c6f7df85006&quot;
+          },
+          &quot;sandboxScreenshot&quot;: {
+            &quot;url&quot;: &quot;/review/source-candidates/quick-reviews/brine-crown-source-preview.png&quot;,
+            &quot;exists&quot;: true,
+            &quot;size&quot;: 332225,
+            &quot;sha256&quot;: &quot;3df7ccb3b2f61f668e929914578ebe57ac87742cb3f35fad82369e1be2e52b5c&quot;
+          },
+          &quot;planPreview&quot;: {
+            &quot;url&quot;: &quot;/review/articulated/brine-crown-plan-preview.png&quot;,
+            &quot;exists&quot;: true,
+            &quot;size&quot;: 2038863,
+            &quot;sha256&quot;: &quot;bb5be0f7c1298d49b3b4ede0b26b8070068984ad4802360331e7d924fd4ce57a&quot;
+          }
+        },
+        &quot;digest&quot;: &quot;735527f4f7fcd03b7b54436336d031f78497962f923e6a39854287cb3ef263cf&quot;
+      },
+      &quot;failedChecks&quot;: [],
+      &quot;visualChecks&quot;: {
+        &quot;whole-creature-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;part-continuity-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;no-collage-artifacts&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;non-placeholder-art-direction&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;crop-safe-anatomy&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;clean-magenta-key&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;gameplay-read&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;neutral-riggable-pose&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;visible-attack-lane&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      },
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;reviewedAt&quot;: &quot;&lt;YYYY-MM-DD&gt;&quot;
+    }
+  ]
+}</textarea>
+    <h2>Commands</h2>
+    <pre>npm run source:next-decision-draft
+npm run source:next-decision-draft-check
+npm run source:next-decision-draft:serve-smoke
+npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict
+npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict --apply</pre>
+  </main>
+</body>
+</html>

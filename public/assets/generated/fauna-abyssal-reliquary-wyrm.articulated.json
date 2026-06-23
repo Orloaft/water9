@@ -1,0 +1,705 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-abyssal-reliquary-wyrm",
+  "runtimeCreatureId": "abyssal-reliquary-wyrm",
+  "displayName": "Abyssal Reliquary Wyrm",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-abyssal-reliquary-wyrm-whole-painted.png",
+  "sourceTransform": {
+    "highSource": "public/assets/generated/fauna-abyssal-reliquary-wyrm-whole-painted-hi.png",
+    "process": "bespoke Imagegen source cut into anatomical parts; no blueprint recolor"
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail",
+      "key": "fauna-abyssal-reliquary-wyrm-tail",
+      "src": "fauna-abyssal-reliquary-wyrm-tail.png",
+      "sourceCrop": {
+        "x": 18,
+        "y": 145,
+        "width": 210,
+        "height": 160
+      },
+      "size": {
+        "width": 210,
+        "height": 160
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.62,
+        "drag": 1.14,
+        "angularDrag": 0.43,
+        "severable": true,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.58
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 6.4,
+        "frequency": 1.58,
+        "phase": 1.22,
+        "lag": 0.72
+      }
+    },
+    {
+      "id": "tail-base",
+      "key": "fauna-abyssal-reliquary-wyrm-tail-base",
+      "src": "fauna-abyssal-reliquary-wyrm-tail-base.png",
+      "sourceCrop": {
+        "x": 205,
+        "y": 130,
+        "width": 180,
+        "height": 155
+      },
+      "size": {
+        "width": 180,
+        "height": 155
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.82,
+        "drag": 1.14,
+        "angularDrag": 0.43,
+        "severable": true,
+        "breakThreshold": 0.78,
+        "mobilityFactor": 0.64
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.4,
+        "frequency": 1.56,
+        "phase": 0.98,
+        "lag": 0.58
+      }
+    },
+    {
+      "id": "body-4",
+      "key": "fauna-abyssal-reliquary-wyrm-body-4",
+      "src": "fauna-abyssal-reliquary-wyrm-body-4.png",
+      "sourceCrop": {
+        "x": 355,
+        "y": 118,
+        "width": 150,
+        "height": 150
+      },
+      "size": {
+        "width": 150,
+        "height": 150
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.2,
+        "drag": 1.14,
+        "angularDrag": 0.43,
+        "severable": true,
+        "breakThreshold": 0.86,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.2,
+        "frequency": 1.54,
+        "phase": 0.72,
+        "lag": 0.42
+      }
+    },
+    {
+      "id": "body-3",
+      "key": "fauna-abyssal-reliquary-wyrm-body-3",
+      "src": "fauna-abyssal-reliquary-wyrm-body-3.png",
+      "sourceCrop": {
+        "x": 478,
+        "y": 102,
+        "width": 150,
+        "height": 162
+      },
+      "size": {
+        "width": 150,
+        "height": 162
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.95,
+        "drag": 0.9,
+        "angularDrag": 0.43,
+        "severable": false,
+        "breakThreshold": 1.28,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 3.1,
+        "frequency": 1.5,
+        "phase": 0.48,
+        "lag": 0.3
+      }
+    },
+    {
+      "id": "body-2",
+      "key": "fauna-abyssal-reliquary-wyrm-body-2",
+      "src": "fauna-abyssal-reliquary-wyrm-body-2.png",
+      "sourceCrop": {
+        "x": 596,
+        "y": 90,
+        "width": 160,
+        "height": 178
+      },
+      "size": {
+        "width": 160,
+        "height": 178
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.9,
+        "drag": 0.9,
+        "angularDrag": 0.43,
+        "severable": false,
+        "breakThreshold": 1.48,
+        "mobilityFactor": 0.84
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.2,
+        "frequency": 1.48,
+        "phase": 0.24,
+        "lag": 0.18
+      },
+      "damagedSrc": "fauna-abyssal-reliquary-wyrm-body-2-damaged.png",
+      "damagedKey": "fauna-abyssal-reliquary-wyrm-body-2-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "body-1",
+      "key": "fauna-abyssal-reliquary-wyrm-body-1",
+      "src": "fauna-abyssal-reliquary-wyrm-body-1.png",
+      "sourceCrop": {
+        "x": 695,
+        "y": 78,
+        "width": 132,
+        "height": 214
+      },
+      "size": {
+        "width": 132,
+        "height": 214
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.18,
+        "drag": 0.9,
+        "angularDrag": 0.43,
+        "severable": false,
+        "breakThreshold": 1.55,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.0,
+        "frequency": 1.42,
+        "phase": 0.08,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "rear-rib-fin",
+      "key": "fauna-abyssal-reliquary-wyrm-rear-rib-fin",
+      "src": "fauna-abyssal-reliquary-wyrm-rear-rib-fin.png",
+      "sourceCrop": {
+        "x": 270,
+        "y": 198,
+        "width": 230,
+        "height": 150
+      },
+      "size": {
+        "width": 230,
+        "height": 150
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.36,
+        "drag": 1.14,
+        "angularDrag": 0.78,
+        "severable": true,
+        "breakThreshold": 0.56,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 3.0,
+        "frequency": 1.72,
+        "phase": 0.52,
+        "lag": 0.22
+      }
+    },
+    {
+      "id": "mid-rib-fin",
+      "key": "fauna-abyssal-reliquary-wyrm-mid-rib-fin",
+      "src": "fauna-abyssal-reliquary-wyrm-mid-rib-fin.png",
+      "sourceCrop": {
+        "x": 455,
+        "y": 198,
+        "width": 210,
+        "height": 155
+      },
+      "size": {
+        "width": 210,
+        "height": 155
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.42,
+        "drag": 1.14,
+        "angularDrag": 0.78,
+        "severable": true,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.8
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 3.4,
+        "frequency": 1.78,
+        "phase": 0.34,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "front-rib-fin",
+      "key": "fauna-abyssal-reliquary-wyrm-front-rib-fin",
+      "src": "fauna-abyssal-reliquary-wyrm-front-rib-fin.png",
+      "sourceCrop": {
+        "x": 630,
+        "y": 190,
+        "width": 220,
+        "height": 160
+      },
+      "size": {
+        "width": 220,
+        "height": 160
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.46,
+        "drag": 1.14,
+        "angularDrag": 0.78,
+        "severable": true,
+        "breakThreshold": 0.66,
+        "mobilityFactor": 0.8
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 3.8,
+        "frequency": 1.84,
+        "phase": 0.22,
+        "lag": 0.18
+      }
+    },
+    {
+      "id": "head",
+      "key": "fauna-abyssal-reliquary-wyrm-head",
+      "src": "fauna-abyssal-reliquary-wyrm-head.png",
+      "sourceCrop": {
+        "x": 780,
+        "y": 68,
+        "width": 185,
+        "height": 146
+      },
+      "size": {
+        "width": 185,
+        "height": 146
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 4.1,
+        "drag": 0.9,
+        "angularDrag": 0.5,
+        "severable": false,
+        "breakThreshold": 1.78,
+        "mobilityFactor": 0.52
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 1.4,
+        "frequency": 1.16,
+        "phase": 0.0
+      }
+    },
+    {
+      "id": "jaw",
+      "key": "fauna-abyssal-reliquary-wyrm-jaw",
+      "src": "fauna-abyssal-reliquary-wyrm-jaw.png",
+      "sourceCrop": {
+        "x": 790,
+        "y": 188,
+        "width": 185,
+        "height": 145
+      },
+      "size": {
+        "width": 185,
+        "height": 145
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.78,
+        "drag": 1.14,
+        "angularDrag": 0.78,
+        "severable": true,
+        "breakThreshold": 0.86,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 12.8,
+        "frequency": 1.72,
+        "phase": 0.0,
+        "lag": 0.05
+      }
+    },
+    {
+      "id": "throat-tendrils",
+      "key": "fauna-abyssal-reliquary-wyrm-throat-tendrils",
+      "src": "fauna-abyssal-reliquary-wyrm-throat-tendrils.png",
+      "sourceCrop": {
+        "x": 752,
+        "y": 214,
+        "width": 220,
+        "height": 170
+      },
+      "size": {
+        "width": 220,
+        "height": 170
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.34,
+        "drag": 1.14,
+        "angularDrag": 0.78,
+        "severable": true,
+        "breakThreshold": 0.58,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.4,
+        "frequency": 1.92,
+        "phase": 0.12,
+        "lag": 0.28
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-tail-socket.png",
+      "parentId": "tail-base",
+      "childId": "tail",
+      "sourcePartId": "tail-base",
+      "sourceCrop": {
+        "x": 0,
+        "y": 44,
+        "width": 82,
+        "height": 76
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.08,
+      "bridgeSleeveScale": 0.44,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-tail-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-tail-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-socket"
+    },
+    {
+      "id": "tail-base-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-tail-base-socket.png",
+      "parentId": "body-4",
+      "childId": "tail-base",
+      "sourcePartId": "body-4",
+      "sourceCrop": {
+        "x": 0,
+        "y": 46,
+        "width": 82,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.21,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.08,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-tail-base-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-tail-base-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-base-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-base-socket"
+    },
+    {
+      "id": "body-4-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-body-4-socket.png",
+      "parentId": "body-3",
+      "childId": "body-4",
+      "sourcePartId": "body-3",
+      "sourceCrop": {
+        "x": 0,
+        "y": 50,
+        "width": 84,
+        "height": 80
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.6,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.04,
+      "bridgeSleeveScale": 0.36,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-body-4-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-body-4-wound",
+      "severedProcess": "deterministic sever wound overlay:body-4-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-4-socket"
+    },
+    {
+      "id": "body-3-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-body-3-socket.png",
+      "parentId": "body-2",
+      "childId": "body-3",
+      "sourcePartId": "body-2",
+      "sourceCrop": {
+        "x": 0,
+        "y": 56,
+        "width": 90,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.04,
+      "bridgeSleeveScale": 0.36,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-body-3-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-body-3-wound",
+      "severedProcess": "deterministic sever wound overlay:body-3-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-3-socket"
+    },
+    {
+      "id": "body-2-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-body-2-socket.png",
+      "parentId": "body-1",
+      "childId": "body-2",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 0,
+        "y": 66,
+        "width": 90,
+        "height": 94
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.64,
+      "bridgeAlpha": 0.24,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.04,
+      "bridgeSleeveScale": 0.38,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-body-2-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-body-2-wound",
+      "severedProcess": "deterministic sever wound overlay:body-2-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-2-socket"
+    },
+    {
+      "id": "rear-rib-fin-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-rear-rib-fin-socket.png",
+      "parentId": "body-4",
+      "childId": "rear-rib-fin",
+      "sourcePartId": "body-4",
+      "sourceCrop": {
+        "x": 16,
+        "y": 88,
+        "width": 90,
+        "height": 54
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-rear-rib-fin-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-rear-rib-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:rear-rib-fin-socket",
+      "socketProcess": "deterministic organic socket occlusion:rear-rib-fin-socket"
+    },
+    {
+      "id": "mid-rib-fin-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-mid-rib-fin-socket.png",
+      "parentId": "body-3",
+      "childId": "mid-rib-fin",
+      "sourcePartId": "body-3",
+      "sourceCrop": {
+        "x": 30,
+        "y": 94,
+        "width": 90,
+        "height": 56
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-mid-rib-fin-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-mid-rib-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:mid-rib-fin-socket",
+      "socketProcess": "deterministic organic socket occlusion:mid-rib-fin-socket"
+    },
+    {
+      "id": "front-rib-fin-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-front-rib-fin-socket.png",
+      "parentId": "body-2",
+      "childId": "front-rib-fin",
+      "sourcePartId": "body-2",
+      "sourceCrop": {
+        "x": 42,
+        "y": 108,
+        "width": 92,
+        "height": 58
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-front-rib-fin-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-front-rib-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:front-rib-fin-socket",
+      "socketProcess": "deterministic organic socket occlusion:front-rib-fin-socket"
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-head-socket.png",
+      "parentId": "body-1",
+      "childId": "head",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 80,
+        "y": 46,
+        "width": 50,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.6,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-head-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-head-wound",
+      "severedProcess": "deterministic sever wound overlay:head-socket",
+      "socketProcess": "deterministic organic socket occlusion:head-socket"
+    },
+    {
+      "id": "jaw-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-jaw-socket.png",
+      "parentId": "head",
+      "childId": "jaw",
+      "sourcePartId": "head",
+      "sourceCrop": {
+        "x": 20,
+        "y": 112,
+        "width": 82,
+        "height": 34
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.04,
+      "bridgeSleeveScale": 0.5,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-jaw-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-jaw-wound",
+      "severedProcess": "deterministic sever wound overlay:jaw-socket",
+      "socketProcess": "deterministic organic socket occlusion:jaw-socket"
+    },
+    {
+      "id": "throat-tendrils-socket",
+      "src": "fauna-abyssal-reliquary-wyrm-throat-tendrils-socket.png",
+      "parentId": "body-1",
+      "childId": "throat-tendrils",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 76,
+        "y": 118,
+        "width": 54,
+        "height": 70
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.5,
+      "severedSrc": "fauna-abyssal-reliquary-wyrm-throat-tendrils-wound.png",
+      "severedKey": "fauna-abyssal-reliquary-wyrm-throat-tendrils-wound",
+      "severedProcess": "deterministic sever wound overlay:throat-tendrils-socket",
+      "socketProcess": "deterministic organic socket occlusion:throat-tendrils-socket"
+    }
+  ],
+  "notes": "Abyssal Reliquary Wyrm is an original source-art monster: armored coffin-like skull, one hinged lower jaw, rib-fin appendages, long tapering body, and split lure tail. Parts are cropped from the same painting to avoid the repeated-mouth/stacked-segment failure mode from earlier gulper iterations.",
+  "murkTint": {
+    "color": 9423311,
+    "intensity": 0.1,
+    "stunnedIntensity": 0.2
+  },
+  "socketStyle": {
+    "alpha": 0.78,
+    "bridgeColor": 1517114,
+    "bridgeAlpha": 0.44,
+    "bridgeStunnedAlpha": 0.2,
+    "bridgeCoreColor": 7530223,
+    "bridgeCoreAlpha": 0.2,
+    "bridgeCoreStunnedAlpha": 0.05,
+    "bridgeWidthScale": 1.18,
+    "bridgeSleeveScale": 0.5
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source-bespoke-imagegen",
+    "backgroundKey": "alpha",
+    "reviewedBy": null,
+    "acceptanceNote": "Original bespoke Imagegen monster source. First articulated cut needs human motion review in the live preview before it can count toward accepted threat quality."
+  }
+}

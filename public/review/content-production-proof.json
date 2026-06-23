@@ -1,0 +1,636 @@
+{
+  "schema": "water9/content-production-proof@1",
+  "generatedAt": "2026-06-18T17:07:22.414Z",
+  "generatedFrom": {
+    "stageBoard": "public/review/content-stage-board.json",
+    "humanSignoff": "public/review/content-human-signoff-queue.json",
+    "reviewSession": "public/review/content-review-session.json",
+    "goalReadiness": "public/review/content-goal-readiness.json"
+  },
+  "policy": {
+    "humanReviewerRequired": true,
+    "automationCannotAcceptProduction": true,
+    "acceptanceRule": "A threat counts toward the 20-threat goal only when source art is human-approved, runtime rig evidence is no longer prototype-only, paired sandbox evidence is complete, and human threat acceptance records that it counts toward the gate.",
+    "prototypePreviewIsNotProductionAcceptance": true
+  },
+  "commands": [
+    "npm run content:production-proof",
+    "npm run content:production-proof-check",
+    "npm run content:review-session",
+    "npm run content:goal-readiness-strict",
+    "npm run content:goal-gate"
+  ],
+  "summary": {
+    "targetThreats": 20,
+    "candidates": 20,
+    "acceptedThreats": 0,
+    "prototypeOnly": 20,
+    "humanReviewRequired": 20,
+    "strictProductionReady": false,
+    "nextStage": "source-review"
+  },
+  "prototypeQuarantine": {
+    "policy": "Prototype rigs are sandbox-only evidence. They do not count toward the 20-threat goal until strict source approval and strict rig acceptance are recorded by a human reviewer.",
+    "count": 33,
+    "notCountedTowardGoal": 33,
+    "ids": [
+      "abyssal-crownmaw",
+      "abyssal-gulper",
+      "abyssal-lantern-mantis",
+      "abyssal-serpent",
+      "black-coral-gate",
+      "brine-crown",
+      "brine-mycelium-shelf",
+      "cavitation-boxer",
+      "chain-vein-siphonophore",
+      "chainmaw-eel",
+      "coronate-sting-crown",
+      "glass-sponge-sentinel",
+      "gulper-eel-maw",
+      "hadal-trencher-isopod",
+      "harpoon-cone",
+      "hookjaw-isopod",
+      "lantern-anemone-pit",
+      "predatory-tunicate-maw",
+      "razor-kelp-harp",
+      "reef-lion-moray",
+      "reliquary-siphonophore",
+      "saber-viperfish",
+      "sand-battery",
+      "sawback-ray",
+      "siphon-lily",
+      "thorn-fan-coralline",
+      "thornhalo-urchin",
+      "trap-jaw-bristle",
+      "trench-harvest-sea-spider",
+      "tripod-stilt-stalker",
+      "vampire-cloak-squid",
+      "velvet-lantern-cuttle",
+      "vent-claw-yeti"
+    ],
+    "samples": [
+      {
+        "id": "abyssal-crownmaw",
+        "species": "Abyssal Crownmaw",
+        "status": "prototype",
+        "sourceCandidateId": null,
+        "notCountedTowardGoal": true,
+        "blocker": "prototype rig requires approved single-source art and strict human rig acceptance",
+        "previewCommand": "npm run sandbox:preview -- --id abyssal-crownmaw --with diver --serve --open --visual",
+        "auditCommand": "npm run content:acceptance-audit -- --id abyssal-crownmaw"
+      },
+      {
+        "id": "abyssal-gulper",
+        "species": "Abyssal Gulper",
+        "status": "prototype",
+        "sourceCandidateId": null,
+        "notCountedTowardGoal": true,
+        "blocker": "prototype rig requires approved single-source art and strict human rig acceptance",
+        "previewCommand": "npm run sandbox:preview -- --id abyssal-gulper --with diver --serve --open --visual",
+        "auditCommand": "npm run content:acceptance-audit -- --id abyssal-gulper"
+      },
+      {
+        "id": "abyssal-lantern-mantis",
+        "species": "Abyssal Lantern Mantis",
+        "status": "prototype",
+        "sourceCandidateId": "abyssal-lantern-mantis",
+        "notCountedTowardGoal": true,
+        "blocker": "prototype rig requires approved single-source art and strict human rig acceptance",
+        "previewCommand": "npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual",
+        "auditCommand": "npm run content:acceptance-audit -- --id abyssal-lantern-mantis"
+      },
+      {
+        "id": "abyssal-serpent",
+        "species": "Abyssal Serpent",
+        "status": "prototype",
+        "sourceCandidateId": null,
+        "notCountedTowardGoal": true,
+        "blocker": "prototype rig requires approved single-source art and strict human rig acceptance",
+        "previewCommand": "npm run sandbox:preview -- --id abyssal-serpent --with diver --serve --open --visual",
+        "auditCommand": "npm run content:acceptance-audit -- --id abyssal-serpent"
+      },
+      {
+        "id": "black-coral-gate",
+        "species": "Black Coral Gate",
+        "status": "prototype",
+        "sourceCandidateId": "black-coral-gate",
+        "notCountedTowardGoal": true,
+        "blocker": "prototype rig requires approved single-source art and strict human rig acceptance",
+        "previewCommand": "npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual",
+        "auditCommand": "npm run content:acceptance-audit -- --id black-coral-gate"
+      },
+      {
+        "id": "brine-crown",
+        "species": "Brine Crown",
+        "status": "prototype",
+        "sourceCandidateId": "brine-crown",
+        "notCountedTowardGoal": true,
+        "blocker": "prototype rig requires approved single-source art and strict human rig acceptance",
+        "previewCommand": "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual",
+        "auditCommand": "npm run content:acceptance-audit -- --id brine-crown"
+      },
+      {
+        "id": "brine-mycelium-shelf",
+        "species": "Brine Mycelium Shelf",
+        "status": "prototype",
+        "sourceCandidateId": "brine-mycelium-shelf",
+        "notCountedTowardGoal": true,
+        "blocker": "prototype rig requires approved single-source art and strict human rig acceptance",
+        "previewCommand": "npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual",
+        "auditCommand": "npm run content:acceptance-audit -- --id brine-mycelium-shelf"
+      },
+      {
+        "id": "cavitation-boxer",
+        "species": "Cavitation Boxer",
+        "status": "prototype",
+        "sourceCandidateId": null,
+        "notCountedTowardGoal": true,
+        "blocker": "prototype rig requires approved single-source art and strict human rig acceptance",
+        "previewCommand": "npm run sandbox:preview -- --id cavitation-boxer --with diver --serve --open --visual",
+        "auditCommand": "npm run content:acceptance-audit -- --id cavitation-boxer"
+      }
+    ]
+  },
+  "items": [
+    {
+      "rank": 1,
+      "id": "abyssal-lantern-mantis",
+      "species": "Abyssal Lantern Mantis",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual",
+        "npm run source:accept -- --id abyssal-lantern-mantis --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id abyssal-lantern-mantis --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate abyssal-lantern-mantis \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id abyssal-lantern-mantis"
+      ]
+    },
+    {
+      "rank": 2,
+      "id": "black-coral-gate",
+      "species": "Black Coral Gate",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual",
+        "npm run source:accept -- --id black-coral-gate --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id black-coral-gate --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate black-coral-gate \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id black-coral-gate"
+      ]
+    },
+    {
+      "rank": 3,
+      "id": "brine-crown",
+      "species": "Brine Crown",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual",
+        "npm run source:accept -- --id brine-crown --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id brine-crown --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate brine-crown \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id brine-crown"
+      ]
+    },
+    {
+      "rank": 4,
+      "id": "brine-mycelium-shelf",
+      "species": "Brine Mycelium Shelf",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual",
+        "npm run source:accept -- --id brine-mycelium-shelf --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id brine-mycelium-shelf --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate brine-mycelium-shelf \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id brine-mycelium-shelf"
+      ]
+    },
+    {
+      "rank": 5,
+      "id": "chain-vein-siphonophore",
+      "species": "Chain Vein Siphonophore",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual",
+        "npm run source:accept -- --id chain-vein-siphonophore --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id chain-vein-siphonophore --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate chain-vein-siphonophore \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id chain-vein-siphonophore"
+      ]
+    },
+    {
+      "rank": 6,
+      "id": "coronate-sting-crown",
+      "species": "Coronate Sting Crown",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-coronate-sting-crown --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual",
+        "npm run source:accept -- --id coronate-sting-crown --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id coronate-sting-crown --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate coronate-sting-crown \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id coronate-sting-crown"
+      ]
+    },
+    {
+      "rank": 7,
+      "id": "glass-sponge-sentinel",
+      "species": "Glass Sponge Sentinel",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-glass-sponge-sentinel --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual",
+        "npm run source:accept -- --id glass-sponge-sentinel --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id glass-sponge-sentinel --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate glass-sponge-sentinel \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id glass-sponge-sentinel"
+      ]
+    },
+    {
+      "rank": 8,
+      "id": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual",
+        "npm run source:accept -- --id gulper-eel-maw --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id gulper-eel-maw --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate gulper-eel-maw \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id gulper-eel-maw"
+      ]
+    },
+    {
+      "rank": 9,
+      "id": "hadal-trencher-isopod",
+      "species": "Hadal Trencher Isopod",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-hadal-trencher-isopod --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual",
+        "npm run source:accept -- --id hadal-trencher-isopod --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id hadal-trencher-isopod --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate hadal-trencher-isopod \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id hadal-trencher-isopod"
+      ]
+    },
+    {
+      "rank": 10,
+      "id": "lantern-anemone-pit",
+      "species": "Lantern Anemone Pit",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual",
+        "npm run source:accept -- --id lantern-anemone-pit --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id lantern-anemone-pit --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate lantern-anemone-pit \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id lantern-anemone-pit"
+      ]
+    },
+    {
+      "rank": 11,
+      "id": "predatory-tunicate-maw",
+      "species": "Predatory Tunicate Maw",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual",
+        "npm run source:accept -- --id predatory-tunicate-maw --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id predatory-tunicate-maw --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate predatory-tunicate-maw \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id predatory-tunicate-maw"
+      ]
+    },
+    {
+      "rank": 12,
+      "id": "razor-kelp-harp",
+      "species": "Razor Kelp Harp",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-razor-kelp-harp --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual",
+        "npm run source:accept -- --id razor-kelp-harp --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id razor-kelp-harp --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate razor-kelp-harp \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id razor-kelp-harp"
+      ]
+    },
+    {
+      "rank": 13,
+      "id": "reef-lion-moray",
+      "species": "Reef Lion Moray",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-reef-lion-moray --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual",
+        "npm run source:accept -- --id reef-lion-moray --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id reef-lion-moray --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate reef-lion-moray \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id reef-lion-moray"
+      ]
+    },
+    {
+      "rank": 14,
+      "id": "reliquary-siphonophore",
+      "species": "Reliquary Siphonophore",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-reliquary-siphonophore --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual",
+        "npm run source:accept -- --id reliquary-siphonophore --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id reliquary-siphonophore --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate reliquary-siphonophore \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id reliquary-siphonophore"
+      ]
+    },
+    {
+      "rank": 15,
+      "id": "saber-viperfish",
+      "species": "Saber Viperfish",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-saber-viperfish --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual",
+        "npm run source:accept -- --id saber-viperfish --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id saber-viperfish --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate saber-viperfish \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id saber-viperfish"
+      ]
+    },
+    {
+      "rank": 16,
+      "id": "thorn-fan-coralline",
+      "species": "Thorn Fan Coralline",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-thorn-fan-coralline --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual",
+        "npm run source:accept -- --id thorn-fan-coralline --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id thorn-fan-coralline --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate thorn-fan-coralline \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id thorn-fan-coralline"
+      ]
+    },
+    {
+      "rank": 17,
+      "id": "trench-harvest-sea-spider",
+      "species": "Trench Harvest Sea Spider",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual",
+        "npm run source:accept -- --id trench-harvest-sea-spider --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id trench-harvest-sea-spider --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate trench-harvest-sea-spider \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id trench-harvest-sea-spider"
+      ]
+    },
+    {
+      "rank": 18,
+      "id": "tripod-stilt-stalker",
+      "species": "Tripod Stilt Stalker",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-tripod-stilt-stalker --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual",
+        "npm run source:accept -- --id tripod-stilt-stalker --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id tripod-stilt-stalker --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate tripod-stilt-stalker \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id tripod-stilt-stalker"
+      ]
+    },
+    {
+      "rank": 19,
+      "id": "vampire-cloak-squid",
+      "species": "Vampire Cloak Squid",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual",
+        "npm run source:accept -- --id vampire-cloak-squid --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id vampire-cloak-squid --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate vampire-cloak-squid \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id vampire-cloak-squid"
+      ]
+    },
+    {
+      "rank": 20,
+      "id": "vent-claw-yeti",
+      "species": "Vent-Claw Yeti",
+      "sourceApproved": false,
+      "rigStatus": "prototype",
+      "sandboxComplete": true,
+      "threatAccepted": false,
+      "countsTowardGoal": false,
+      "productionStatus": "prototype-only",
+      "blockers": [
+        "human source approval missing",
+        "runtime rig is still marked prototype",
+        "human threat acceptance missing",
+        "does not count toward the 20-threat gate"
+      ],
+      "commands": [
+        "npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual",
+        "npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual",
+        "npm run source:accept -- --id vent-claw-yeti --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run",
+        "npm run content:accept -- --id vent-claw-yeti --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate vent-claw-yeti \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "npm run source:image-check -- --id vent-claw-yeti"
+      ]
+    }
+  ]
+}

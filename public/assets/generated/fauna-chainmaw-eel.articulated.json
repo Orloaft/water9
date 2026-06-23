@@ -1,0 +1,454 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-chainmaw-eel",
+  "runtimeCreatureId": "chainmaw-eel",
+  "displayName": "Chainmaw Eel",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-chainmaw-eel-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail",
+      "key": "fauna-chainmaw-eel-tail",
+      "src": "fauna-chainmaw-eel-tail.png",
+      "sourceCrop": {
+        "x": 20,
+        "y": 130,
+        "width": 260,
+        "height": 250
+      },
+      "size": {
+        "width": 260,
+        "height": 250
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.82,
+        "drag": 1.08,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 0.78,
+        "mobilityFactor": 0.58
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 12.8,
+        "frequency": 2.55,
+        "phase": 1.72,
+        "lag": 1.55
+      }
+    },
+    {
+      "id": "body-5",
+      "key": "fauna-chainmaw-eel-body-5",
+      "src": "fauna-chainmaw-eel-body-5.png",
+      "sourceCrop": {
+        "x": 175,
+        "y": 112,
+        "width": 290,
+        "height": 270
+      },
+      "size": {
+        "width": 290,
+        "height": 270
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.2,
+        "drag": 1.08,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 0.9,
+        "mobilityFactor": 0.68
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 9.8,
+        "frequency": 2.35,
+        "phase": 1.25,
+        "lag": 1.18
+      }
+    },
+    {
+      "id": "body-4",
+      "key": "fauna-chainmaw-eel-body-4",
+      "src": "fauna-chainmaw-eel-body-4.png",
+      "sourceCrop": {
+        "x": 390,
+        "y": 88,
+        "width": 300,
+        "height": 292
+      },
+      "size": {
+        "width": 300,
+        "height": 292
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.0,
+        "drag": 0.88,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.2,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 7.2,
+        "frequency": 2.05,
+        "phase": 0.92,
+        "lag": 0.88
+      }
+    },
+    {
+      "id": "body-3",
+      "key": "fauna-chainmaw-eel-body-3",
+      "src": "fauna-chainmaw-eel-body-3.png",
+      "sourceCrop": {
+        "x": 600,
+        "y": 52,
+        "width": 315,
+        "height": 314
+      },
+      "size": {
+        "width": 315,
+        "height": 314
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.6,
+        "drag": 0.88,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.35,
+        "mobilityFactor": 0.84
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 5.5,
+        "frequency": 1.9,
+        "phase": 0.62,
+        "lag": 0.62
+      }
+    },
+    {
+      "id": "body-2",
+      "key": "fauna-chainmaw-eel-body-2",
+      "src": "fauna-chainmaw-eel-body-2.png",
+      "sourceCrop": {
+        "x": 805,
+        "y": 22,
+        "width": 318,
+        "height": 340
+      },
+      "size": {
+        "width": 318,
+        "height": 340
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.9,
+        "drag": 0.88,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.42,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 3.8,
+        "frequency": 1.75,
+        "phase": 0.38,
+        "lag": 0.42
+      },
+      "damagedSrc": "fauna-chainmaw-eel-body-2-damaged.png",
+      "damagedKey": "fauna-chainmaw-eel-body-2-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "body-1",
+      "key": "fauna-chainmaw-eel-body-1",
+      "src": "fauna-chainmaw-eel-body-1.png",
+      "sourceCrop": {
+        "x": 990,
+        "y": 24,
+        "width": 300,
+        "height": 342
+      },
+      "size": {
+        "width": 300,
+        "height": 342
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.05,
+        "drag": 0.88,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.48,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.2,
+        "frequency": 1.55,
+        "phase": 0.14,
+        "lag": 0.18
+      }
+    },
+    {
+      "id": "head",
+      "key": "fauna-chainmaw-eel-head",
+      "src": "fauna-chainmaw-eel-head.png",
+      "sourceCrop": {
+        "x": 1120,
+        "y": 48,
+        "width": 293,
+        "height": 346
+      },
+      "size": {
+        "width": 293,
+        "height": 346
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 2.8,
+        "drag": 0.88,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.65,
+        "mobilityFactor": 0.64
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.2,
+        "frequency": 1.35,
+        "phase": 0,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "jaw",
+      "key": "fauna-chainmaw-eel-jaw",
+      "src": "fauna-chainmaw-eel-jaw.png",
+      "sourceCrop": {
+        "x": 1190,
+        "y": 188,
+        "width": 230,
+        "height": 190
+      },
+      "size": {
+        "width": 230,
+        "height": 190
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.7,
+        "drag": 1.08,
+        "angularDrag": 0.52,
+        "severable": false,
+        "breakThreshold": 0.85,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 20.0,
+        "frequency": 3.3,
+        "phase": 0.2,
+        "lag": 0.1
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-socket",
+      "src": "fauna-chainmaw-eel-tail-socket.png",
+      "parentId": "body-5",
+      "childId": "tail",
+      "sourcePartId": "body-5",
+      "sourceCrop": {
+        "x": 0,
+        "y": 92,
+        "width": 86,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "body-5-socket",
+      "src": "fauna-chainmaw-eel-body-5-socket.png",
+      "parentId": "body-4",
+      "childId": "body-5",
+      "sourcePartId": "body-4",
+      "sourceCrop": {
+        "x": 0,
+        "y": 100,
+        "width": 92,
+        "height": 94
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "body-4-socket",
+      "src": "fauna-chainmaw-eel-body-4-socket.png",
+      "parentId": "body-3",
+      "childId": "body-4",
+      "sourcePartId": "body-3",
+      "sourceCrop": {
+        "x": 0,
+        "y": 110,
+        "width": 96,
+        "height": 98
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "body-3-socket",
+      "src": "fauna-chainmaw-eel-body-3-socket.png",
+      "parentId": "body-2",
+      "childId": "body-3",
+      "sourcePartId": "body-2",
+      "sourceCrop": {
+        "x": 0,
+        "y": 122,
+        "width": 98,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.6,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "body-2-socket",
+      "src": "fauna-chainmaw-eel-body-2-socket.png",
+      "parentId": "body-1",
+      "childId": "body-2",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 0,
+        "y": 120,
+        "width": 100,
+        "height": 108
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.6,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-chainmaw-eel-head-socket.png",
+      "parentId": "body-1",
+      "childId": "head",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 198,
+        "y": 104,
+        "width": 94,
+        "height": 116
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "jaw-socket",
+      "src": "fauna-chainmaw-eel-jaw-socket.png",
+      "parentId": "head",
+      "childId": "jaw",
+      "sourcePartId": "head",
+      "sourceCrop": {
+        "x": 92,
+        "y": 174,
+        "width": 82,
+        "height": 84
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    }
+  ],
+  "notes": "Prototype built from a single magenta-background Chainmaw source crop. The top full-body creature was isolated from generated thumbnail studies before chroma removal, then cut into overlapping eel body segments for sandbox review.",
+  "murkTint": {
+    "color": 8630208,
+    "intensity": 0.11,
+    "stunnedIntensity": 0.17
+  },
+  "socketStyle": {
+    "alpha": 0.6,
+    "bridgeColor": 462874,
+    "bridgeAlpha": 0.2,
+    "bridgeStunnedAlpha": 0.11,
+    "bridgeCoreColor": 7977161,
+    "bridgeCoreAlpha": 0.08,
+    "bridgeCoreStunnedAlpha": 0.04,
+    "bridgeWidthScale": 0.98,
+    "bridgeSleeveScale": 0.36
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Prototype generated from one magenta-background Chainmaw source. Needs sandbox/contact-sheet acceptance before counting toward the 20-threat goal."
+  }
+}

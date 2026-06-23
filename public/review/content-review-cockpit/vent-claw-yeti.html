@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vent-Claw Yeti Review Cockpit</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1a1e; --line:#29454c; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; --warn:#f0c36b; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1500px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 4px; font-size:30px; }
+    h2 { margin:24px 0 10px; font-size:18px; }
+    p { color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .warning { color:var(--warn); }
+    .summary { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 20px; }
+    .summary span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .summary strong { color:var(--text); margin-left:4px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+    .tile { min-height:210px; border:1px solid var(--line); background:#050b0d; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; }
+    .tile img { width:100%; height:190px; object-fit:contain; background:#050b0d; }
+    .tile span, .tile strong { display:block; padding:8px; color:var(--muted); }
+    .missing { align-items:center; justify-content:center; color:var(--warn); }
+    .panel { border:1px solid var(--line); border-radius:7px; background:var(--panel); padding:14px; margin-top:14px; }
+    .links { display:flex; flex-wrap:wrap; gap:12px; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="index.html">Back to cockpit index</a></p>
+    <h1>Vent-Claw Yeti</h1>
+    <code>vent-claw-yeti</code>
+    <p class="warning">Prototype evidence is not acceptance. This page is for review speed only; the strict gate still requires human source approval and human rig acceptance.</p>
+    <p class="warning">Human Approval Boundary: cockpit decision commands are dry-runs only. Run final approval from the dedicated source approval or threat acceptance runway after direct human review.</p>
+    <div class="summary"><span>source <strong>needs-human-source-approval</strong></span><span>rig <strong>needs-human-rig-acceptance</strong></span><span>runtime <strong>vent-claw-yeti</strong></span><span>accepted <strong>no</strong></span><span>media <strong>8</strong></span></div>
+    <div class="links">
+      <a href="/review/source-candidates/quick-reviews/vent-claw-yeti.html">source quick review</a>
+      <a href="/review/source-candidates/source-review-packets/vent-claw-yeti.md">source packet</a>
+      <a href="/review/acceptance-packets/vent-claw-yeti.md">acceptance packet</a>
+      <a href="/?entity=source-vent-claw-yeti&amp;companion=diver">source sandbox</a>
+      <a href="/?sandbox=vent-claw-yeti">live sandbox</a>
+      <a href="/?sandbox=vent-claw-yeti&amp;companion=diver">side-by-side sandbox</a>
+    </div>
+    <h2>Evidence</h2>
+    <section class="grid"><a class="tile" href="/assets/generated/fauna-vent-claw-yeti-whole-source.png">
+    <img src="/assets/generated/fauna-vent-claw-yeti-whole-source.png" alt="source art">
+    <span>source art</span>
+  </a>
+<a class="tile" href="/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png">
+    <img src="/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png" alt="magenta key preview">
+    <span>magenta key preview</span>
+  </a>
+<a class="tile" href="/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png">
+    <img src="/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png" alt="source sandbox preview">
+    <span>source sandbox preview</span>
+  </a>
+<a class="tile" href="/review/articulated/vent-claw-yeti-plan-preview.png">
+    <img src="/review/articulated/vent-claw-yeti-plan-preview.png" alt="articulation plan preview">
+    <span>articulation plan preview</span>
+  </a>
+<a class="tile" href="/review/content-review-cockpit/evidence/vent-claw-yeti__source-parity.png">
+    <img src="/review/content-review-cockpit/evidence/vent-claw-yeti__source-parity.png" alt="source parity overlay">
+    <span>source parity overlay</span>
+  </a>
+<a class="tile" href="/review/content-review-cockpit/evidence/vent-claw-yeti__sandbox-idle.png">
+    <img src="/review/content-review-cockpit/evidence/vent-claw-yeti__sandbox-idle.png" alt="sandbox idle">
+    <span>sandbox idle</span>
+  </a>
+<a class="tile" href="/review/content-review-cockpit/evidence/vent-claw-yeti__sandbox-lunge.png">
+    <img src="/review/content-review-cockpit/evidence/vent-claw-yeti__sandbox-lunge.png" alt="sandbox lunge">
+    <span>sandbox lunge</span>
+  </a>
+<a class="tile" href="/review/content-review-cockpit/evidence/vent-claw-yeti__sandbox-stunned.png">
+    <img src="/review/content-review-cockpit/evidence/vent-claw-yeti__sandbox-stunned.png" alt="sandbox stunned">
+    <span>sandbox stunned</span>
+  </a></section>
+    <section class="panel">
+      <h2>Blockers</h2>
+      <ul><li>human source approval missing</li><li>human rig acceptance missing</li></ul>
+    </section>
+    <section class="panel">
+      <h2>Commands</h2>
+      <pre><code>npm run content:review-cockpit
+npm run content:review-cockpit-check
+npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual
+npm run source:accept -- --id vent-claw-yeti --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run source:accept -- --id vent-claw-yeti --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json --dry-run
+npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual
+npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual
+npm run sandbox:visual -- --ids vent-claw-yeti --states idle,lunge,stunned --with diver
+npm run source:accept -- --id vent-claw-yeti --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run</code></pre>
+    </section>
+  </main>
+</body>
+</html>

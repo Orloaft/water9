@@ -1,0 +1,304 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-tripod-stilt-stalker",
+  "runtimeCreatureId": "tripod-stilt-stalker",
+  "displayName": "Tripod Stilt Stalker",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png",
+  "sourceTransform": {
+    "chromaKey": {
+      "color": [
+        255,
+        0,
+        255
+      ],
+      "tolerance": 24,
+      "feather": 12
+    }
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "core",
+      "key": "fauna-tripod-stilt-stalker-core",
+      "src": "fauna-tripod-stilt-stalker-core.png",
+      "sourceCrop": {
+        "x": 506,
+        "y": 284,
+        "width": 587,
+        "height": 432
+      },
+      "size": {
+        "width": 587,
+        "height": 432
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.4,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.3,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      },
+      "damagedSrc": "fauna-tripod-stilt-stalker-core-damaged.png",
+      "damagedKey": "fauna-tripod-stilt-stalker-core-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head",
+      "key": "fauna-tripod-stilt-stalker-head",
+      "src": "fauna-tripod-stilt-stalker-head.png",
+      "sourceCrop": {
+        "x": 952,
+        "y": 110,
+        "width": 476,
+        "height": 520
+      },
+      "size": {
+        "width": 476,
+        "height": 520
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.1,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "tail",
+      "key": "fauna-tripod-stilt-stalker-tail",
+      "src": "fauna-tripod-stilt-stalker-tail.png",
+      "sourceCrop": {
+        "x": 170,
+        "y": 289,
+        "width": 537,
+        "height": 598
+      },
+      "size": {
+        "width": 537,
+        "height": 598
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "upper-fin",
+      "key": "fauna-tripod-stilt-stalker-upper-fin",
+      "src": "fauna-tripod-stilt-stalker-upper-fin.png",
+      "sourceCrop": {
+        "x": 524,
+        "y": 172,
+        "width": 549,
+        "height": 242
+      },
+      "size": {
+        "width": 549,
+        "height": 242
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "lower-fin",
+      "key": "fauna-tripod-stilt-stalker-lower-fin",
+      "src": "fauna-tripod-stilt-stalker-lower-fin.png",
+      "sourceCrop": {
+        "x": 490,
+        "y": 587,
+        "width": 583,
+        "height": 304
+      },
+      "size": {
+        "width": 583,
+        "height": 304
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "head-socket",
+      "src": "fauna-tripod-stilt-stalker-head-socket.png",
+      "parentId": "core",
+      "childId": "head",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 426,
+        "y": 177,
+        "width": 78,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "tail-socket",
+      "src": "fauna-tripod-stilt-stalker-tail-socket.png",
+      "parentId": "core",
+      "childId": "tail",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 82,
+        "y": 177,
+        "width": 78,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "upper-fin-socket",
+      "src": "fauna-tripod-stilt-stalker-upper-fin-socket.png",
+      "parentId": "core",
+      "childId": "upper-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 254,
+        "y": 73,
+        "width": 78,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "lower-fin-socket",
+      "src": "fauna-tripod-stilt-stalker-lower-fin-socket.png",
+      "parentId": "core",
+      "childId": "lower-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 254,
+        "y": 282,
+        "width": 78,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    }
+  ],
+  "notes": "Auto-generated starter plan with source-alpha crop expansion (100.0% source coverage). Use plan-preview to revise crops and anchors before extraction.",
+  "murkTint": {
+    "color": 7919057,
+    "intensity": 0.12,
+    "stunnedIntensity": 0.18
+  },
+  "socketStyle": {
+    "alpha": 0.6,
+    "bridgeColor": 462874,
+    "bridgeAlpha": 0.2,
+    "bridgeCoreColor": 7977161,
+    "bridgeCoreAlpha": 0.08,
+    "bridgeWidthScale": 0.98,
+    "bridgeSleeveScale": 0.36
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Starter articulation plan generated from the source-candidate whole-source image. Crops, anchors, sockets, motion, and anatomy require human adjustment before this can become accepted content.",
+    "sourceCandidateId": "tripod-stilt-stalker"
+  },
+  "extraction": {
+    "preserveSourceLayoutRestOffsets": true
+  }
+}

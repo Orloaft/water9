@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Approved Source Runtime Handoff</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#29444b; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1360px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:14px 0 8px; color:var(--muted); font-size:13px; text-transform:uppercase; }
+    p { color:var(--muted); }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .summary, .badges { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .summary span, .badges span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    strong { color:var(--text); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:14px; align-items:start; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; }
+    .card header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Approved Source Runtime Handoff</h1>
+    <p>Read-only command matrix for moving strict-approved source candidates into registered runtime creatures and paired-diver sandbox review.</p>
+    <div class="summary">
+      <span>missing runtime <strong>0</strong></span>
+      <span>approved missing runtime <strong>0</strong></span>
+      <span>Rigging eligible handoffs <strong>0</strong></span>
+      <span>Accepted for content gate: 0</span>
+      <span>blocked until source approval <strong>0</strong></span>
+    </div>
+    <section class="card">
+      <h2>Report Commands</h2>
+      <pre><code>npm run content:approved-runtime-handoff
+npm run content:approved-runtime-handoff-check
+npm run content:runtime-coverage &amp;&amp; npm run content:runtime-coverage-check</code></pre>
+    </section>
+    <section class="grid"><article class="card" data-approved-runtime-handoff="empty">
+    <header>
+      <div><h2>No Missing Runtime Handoffs</h2><code>empty-state</code></div>
+      <strong>healthy empty state</strong>
+    </header>
+    <p>All current 20 source candidates already have runtime prototypes. This card proves the approved-source-to-runtime handoff is empty rather than absent.</p>
+    <h3>Approved Source To Runtime Chain</h3>
+    <pre><code>npm run content:runtime-coverage &amp;&amp; npm run content:runtime-coverage-check
+npm run sandbox:index &amp;&amp; npm run sandbox:runtime-check
+npm run content:approved-runtime-handoff-check</code></pre>
+  </article></section>
+  </main>
+</body>
+</html>

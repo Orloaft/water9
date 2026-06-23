@@ -9,6 +9,7 @@ import type { DeepdiveScene } from './scene';
 
 export function draw(this: DeepdiveScene, ) {
     const camera = this.cameras.main;
+    this.articulatedBridges.clear();
     this.actors.clear();
     this.darkness.clear();
     this.lampGloom.clear();

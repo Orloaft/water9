@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Ingest Readiness</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061114; --panel:#0d1e24; --line:#294751; --text:#e7f7f8; --muted:#9eb7bd; --accent:#83e8ff; --warn:#e5bb67; --good:#72d9a0; --bad:#df7b72; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1320px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    p { color:var(--muted); }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    table { width:100%; border-collapse:collapse; margin:18px 0 24px; border:1px solid var(--line); background:var(--panel); }
+    th, td { text-align:left; border-bottom:1px solid var(--line); padding:8px 10px; vertical-align:top; }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    .summary { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }
+    .summary span { border:1px solid var(--line); background:var(--panel); padding:8px 10px; border-radius:6px; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:14px; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:6px; padding:14px; }
+    .ready { border-left:3px solid var(--good); }
+    .missing { border-left:3px solid var(--warn); }
+    .blocked { border-left:3px solid var(--bad); }
+    dl { display:grid; gap:7px; }
+    dt { color:var(--muted); font-size:11px; text-transform:uppercase; }
+    dd { margin:0; display:flex; flex-wrap:wrap; gap:6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Source Ingest Readiness</h1>
+    <p>Non-destructive readiness check for the current source acquisition sprint.</p>
+    <div class="summary">
+      <span>batch ready: false</span>
+      <span>ready: 0</span>
+      <span>missing: 0</span>
+      <span>blocked: 0</span>
+    </div>
+    <h2>Batch Commands</h2>
+    <pre><code>npm run source:acquisition-runbook
+npm run source:ingest-readiness
+npm run source:ingest-readiness-check
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids 
+npm run source:advance-inbox -- --ids 
+npm run source:advance-inbox -- --ids  --apply
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids  --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids 
+npm run source:image-check
+npm run source:preview-check
+npm run source:review-dossier</code></pre>
+    <h2>Targets</h2>
+    <table>
+      <thead><tr><th>Rank</th><th>Candidate</th><th>Status</th><th>Present File</th><th>Validation</th><th>Next</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <section class="cards"></section>
+  </main>
+</body>
+</html>

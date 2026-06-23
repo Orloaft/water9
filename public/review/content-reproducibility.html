@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Content Reproducibility</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#29444b; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1320px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:14px 0 8px; color:var(--muted); font-size:13px; text-transform:uppercase; }
+    p { color:var(--muted); }
+    article { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; margin:12px 0; }
+    article header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .summary, .grid { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .summary span, .grid span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    strong { color:var(--text); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Content Reproducibility</h1>
+    <p>Target-scoped audit for regenerating magenta source art into articulated runtime previews. This page does not approve source art or accept threats.</p>
+    <pre><code>npm run content:reproducibility
+npm run content:reproducibility-check
+npm run articulated:extract-plan -- --plan tools/scratch/&lt;id&gt;-starter-plan.json --dry-run
+npm run sandbox:preview -- --id &lt;id&gt; --with diver --serve --open --visual</code></pre>
+    <div class="summary">
+      <span>target threats <strong>20</strong></span>
+      <span>reproducible <strong>20</strong></span>
+      <span>magenta sources <strong>20</strong></span>
+      <span>runtime registered <strong>20</strong></span>
+    </div>
+    <article data-reproducibility-target="abyssal-lantern-mantis">
+    <header>
+      <div><h2>Abyssal Lantern Mantis</h2><code>abyssal-lantern-mantis</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/abyssal-lantern-mantis-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/abyssal-lantern-mantis.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/abyssal-lantern-mantis-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/abyssal-lantern-mantis-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/abyssal-lantern-mantis-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/abyssal-lantern-mantis-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/abyssal-lantern-mantis-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id abyssal-lantern-mantis --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --preview public/review/articulated/abyssal-lantern-mantis-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --out public/review/articulated/abyssal-lantern-mantis-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual
+npm run sandbox:visual -- --ids abyssal-lantern-mantis --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="black-coral-gate">
+    <header>
+      <div><h2>Black Coral Gate</h2><code>black-coral-gate</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-black-coral-gate-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/black-coral-gate-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/black-coral-gate.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/black-coral-gate-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/black-coral-gate-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/black-coral-gate-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/black-coral-gate-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/black-coral-gate-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id black-coral-gate --plan tools/scratch/black-coral-gate-starter-plan.json --preview public/review/articulated/black-coral-gate-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/black-coral-gate-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/black-coral-gate-starter-plan.json --out public/review/articulated/black-coral-gate-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/black-coral-gate-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/black-coral-gate-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual
+npm run sandbox:visual -- --ids black-coral-gate --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="brine-crown">
+    <header>
+      <div><h2>Brine Crown</h2><code>brine-crown</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-brine-crown-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/brine-crown-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/brine-crown.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/brine-crown-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/brine-crown-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/brine-crown-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/brine-crown-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/brine-crown-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id brine-crown --plan tools/scratch/brine-crown-starter-plan.json --preview public/review/articulated/brine-crown-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/brine-crown-starter-plan.json --out public/review/articulated/brine-crown-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/brine-crown-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/brine-crown-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual
+npm run sandbox:visual -- --ids brine-crown --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="brine-mycelium-shelf">
+    <header>
+      <div><h2>Brine Mycelium Shelf</h2><code>brine-mycelium-shelf</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/brine-mycelium-shelf.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/brine-mycelium-shelf-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/brine-mycelium-shelf-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/brine-mycelium-shelf-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/brine-mycelium-shelf-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/brine-mycelium-shelf-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id brine-mycelium-shelf --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --preview public/review/articulated/brine-mycelium-shelf-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --out public/review/articulated/brine-mycelium-shelf-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual
+npm run sandbox:visual -- --ids brine-mycelium-shelf --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="chain-vein-siphonophore">
+    <header>
+      <div><h2>Chain Vein Siphonophore</h2><code>chain-vein-siphonophore</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/chain-vein-siphonophore-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/chain-vein-siphonophore.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/chain-vein-siphonophore-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/chain-vein-siphonophore-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/chain-vein-siphonophore-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/chain-vein-siphonophore-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/chain-vein-siphonophore-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id chain-vein-siphonophore --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --preview public/review/articulated/chain-vein-siphonophore-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --out public/review/articulated/chain-vein-siphonophore-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual
+npm run sandbox:visual -- --ids chain-vein-siphonophore --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="coronate-sting-crown">
+    <header>
+      <div><h2>Coronate Sting Crown</h2><code>coronate-sting-crown</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-coronate-sting-crown-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/coronate-sting-crown-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/coronate-sting-crown.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/coronate-sting-crown-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/coronate-sting-crown-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/coronate-sting-crown-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/coronate-sting-crown-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/coronate-sting-crown-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-coronate-sting-crown --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id coronate-sting-crown --plan tools/scratch/coronate-sting-crown-starter-plan.json --preview public/review/articulated/coronate-sting-crown-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/coronate-sting-crown-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --out public/review/articulated/coronate-sting-crown-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/coronate-sting-crown-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual
+npm run sandbox:visual -- --ids coronate-sting-crown --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="glass-sponge-sentinel">
+    <header>
+      <div><h2>Glass Sponge Sentinel</h2><code>glass-sponge-sentinel</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-glass-sponge-sentinel-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/glass-sponge-sentinel-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/glass-sponge-sentinel.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/glass-sponge-sentinel-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/glass-sponge-sentinel-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/glass-sponge-sentinel-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/glass-sponge-sentinel-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/glass-sponge-sentinel-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-glass-sponge-sentinel --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id glass-sponge-sentinel --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --preview public/review/articulated/glass-sponge-sentinel-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --out public/review/articulated/glass-sponge-sentinel-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual
+npm run sandbox:visual -- --ids glass-sponge-sentinel --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="gulper-eel-maw">
+    <header>
+      <div><h2>Gulper Eel Maw</h2><code>gulper-eel-maw</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-gulper-eel-maw-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/gulper-eel-maw-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/gulper-eel-maw.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/gulper-eel-maw-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/gulper-eel-maw-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/gulper-eel-maw-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/gulper-eel-maw-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/gulper-eel-maw-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id gulper-eel-maw --plan tools/scratch/gulper-eel-maw-starter-plan.json --preview public/review/articulated/gulper-eel-maw-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/gulper-eel-maw-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --out public/review/articulated/gulper-eel-maw-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/gulper-eel-maw-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual
+npm run sandbox:visual -- --ids gulper-eel-maw --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="hadal-trencher-isopod">
+    <header>
+      <div><h2>Hadal Trencher Isopod</h2><code>hadal-trencher-isopod</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/hadal-trencher-isopod-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/hadal-trencher-isopod.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/hadal-trencher-isopod-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/hadal-trencher-isopod-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/hadal-trencher-isopod-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/hadal-trencher-isopod-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/hadal-trencher-isopod-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-hadal-trencher-isopod --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id hadal-trencher-isopod --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --preview public/review/articulated/hadal-trencher-isopod-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --out public/review/articulated/hadal-trencher-isopod-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual
+npm run sandbox:visual -- --ids hadal-trencher-isopod --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="lantern-anemone-pit">
+    <header>
+      <div><h2>Lantern Anemone Pit</h2><code>lantern-anemone-pit</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-lantern-anemone-pit-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/lantern-anemone-pit-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/lantern-anemone-pit.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/lantern-anemone-pit-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/lantern-anemone-pit-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/lantern-anemone-pit-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/lantern-anemone-pit-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/lantern-anemone-pit-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id lantern-anemone-pit --plan tools/scratch/lantern-anemone-pit-starter-plan.json --preview public/review/articulated/lantern-anemone-pit-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --out public/review/articulated/lantern-anemone-pit-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual
+npm run sandbox:visual -- --ids lantern-anemone-pit --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="predatory-tunicate-maw">
+    <header>
+      <div><h2>Predatory Tunicate Maw</h2><code>predatory-tunicate-maw</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/predatory-tunicate-maw-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/predatory-tunicate-maw.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/predatory-tunicate-maw-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/predatory-tunicate-maw-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/predatory-tunicate-maw-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/predatory-tunicate-maw-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/predatory-tunicate-maw-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id predatory-tunicate-maw --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --preview public/review/articulated/predatory-tunicate-maw-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --out public/review/articulated/predatory-tunicate-maw-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual
+npm run sandbox:visual -- --ids predatory-tunicate-maw --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="razor-kelp-harp">
+    <header>
+      <div><h2>Razor Kelp Harp</h2><code>razor-kelp-harp</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-razor-kelp-harp-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/razor-kelp-harp-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/razor-kelp-harp.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/razor-kelp-harp-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/razor-kelp-harp-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/razor-kelp-harp-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/razor-kelp-harp-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/razor-kelp-harp-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-razor-kelp-harp --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id razor-kelp-harp --plan tools/scratch/razor-kelp-harp-starter-plan.json --preview public/review/articulated/razor-kelp-harp-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/razor-kelp-harp-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --out public/review/articulated/razor-kelp-harp-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/razor-kelp-harp-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual
+npm run sandbox:visual -- --ids razor-kelp-harp --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="reef-lion-moray">
+    <header>
+      <div><h2>Reef Lion Moray</h2><code>reef-lion-moray</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-reef-lion-moray-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/reef-lion-moray-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/reef-lion-moray.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/reef-lion-moray-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/reef-lion-moray-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/reef-lion-moray-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/reef-lion-moray-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/reef-lion-moray-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-reef-lion-moray --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id reef-lion-moray --plan tools/scratch/reef-lion-moray-starter-plan.json --preview public/review/articulated/reef-lion-moray-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/reef-lion-moray-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/reef-lion-moray-starter-plan.json --out public/review/articulated/reef-lion-moray-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/reef-lion-moray-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/reef-lion-moray-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual
+npm run sandbox:visual -- --ids reef-lion-moray --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="reliquary-siphonophore">
+    <header>
+      <div><h2>Reliquary Siphonophore</h2><code>reliquary-siphonophore</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-reliquary-siphonophore-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/reliquary-siphonophore-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/reliquary-siphonophore.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/reliquary-siphonophore-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/reliquary-siphonophore-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/reliquary-siphonophore-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/reliquary-siphonophore-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/reliquary-siphonophore-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-reliquary-siphonophore --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id reliquary-siphonophore --plan tools/scratch/reliquary-siphonophore-starter-plan.json --preview public/review/articulated/reliquary-siphonophore-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --out public/review/articulated/reliquary-siphonophore-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual
+npm run sandbox:visual -- --ids reliquary-siphonophore --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="saber-viperfish">
+    <header>
+      <div><h2>Saber Viperfish</h2><code>saber-viperfish</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-saber-viperfish-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/saber-viperfish-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/saber-viperfish.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/saber-viperfish-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/saber-viperfish-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/saber-viperfish-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/saber-viperfish-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/saber-viperfish-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-saber-viperfish --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id saber-viperfish --plan tools/scratch/saber-viperfish-starter-plan.json --preview public/review/articulated/saber-viperfish-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/saber-viperfish-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/saber-viperfish-starter-plan.json --out public/review/articulated/saber-viperfish-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/saber-viperfish-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/saber-viperfish-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual
+npm run sandbox:visual -- --ids saber-viperfish --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="thorn-fan-coralline">
+    <header>
+      <div><h2>Thorn Fan Coralline</h2><code>thorn-fan-coralline</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-thorn-fan-coralline-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/thorn-fan-coralline-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/thorn-fan-coralline.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/thorn-fan-coralline-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/thorn-fan-coralline-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/thorn-fan-coralline-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/thorn-fan-coralline-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/thorn-fan-coralline-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-thorn-fan-coralline --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id thorn-fan-coralline --plan tools/scratch/thorn-fan-coralline-starter-plan.json --preview public/review/articulated/thorn-fan-coralline-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --out public/review/articulated/thorn-fan-coralline-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual
+npm run sandbox:visual -- --ids thorn-fan-coralline --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="trench-harvest-sea-spider">
+    <header>
+      <div><h2>Trench Harvest Sea Spider</h2><code>trench-harvest-sea-spider</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/trench-harvest-sea-spider-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/trench-harvest-sea-spider.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/trench-harvest-sea-spider-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/trench-harvest-sea-spider-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/trench-harvest-sea-spider-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/trench-harvest-sea-spider-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/trench-harvest-sea-spider-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id trench-harvest-sea-spider --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --preview public/review/articulated/trench-harvest-sea-spider-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --out public/review/articulated/trench-harvest-sea-spider-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual
+npm run sandbox:visual -- --ids trench-harvest-sea-spider --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="tripod-stilt-stalker">
+    <header>
+      <div><h2>Tripod Stilt Stalker</h2><code>tripod-stilt-stalker</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/tripod-stilt-stalker-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/tripod-stilt-stalker.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/tripod-stilt-stalker-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/tripod-stilt-stalker-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/tripod-stilt-stalker-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/tripod-stilt-stalker-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/tripod-stilt-stalker-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-tripod-stilt-stalker --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id tripod-stilt-stalker --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --preview public/review/articulated/tripod-stilt-stalker-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --out public/review/articulated/tripod-stilt-stalker-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual
+npm run sandbox:visual -- --ids tripod-stilt-stalker --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="vampire-cloak-squid">
+    <header>
+      <div><h2>Vampire Cloak Squid</h2><code>vampire-cloak-squid</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-vampire-cloak-squid-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/vampire-cloak-squid-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/vampire-cloak-squid.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/vampire-cloak-squid-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/vampire-cloak-squid-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/vampire-cloak-squid-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/vampire-cloak-squid-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/vampire-cloak-squid-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id vampire-cloak-squid --plan tools/scratch/vampire-cloak-squid-starter-plan.json --preview public/review/articulated/vampire-cloak-squid-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --out public/review/articulated/vampire-cloak-squid-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual
+npm run sandbox:visual -- --ids vampire-cloak-squid --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+<article data-reproducibility-target="vent-claw-yeti">
+    <header>
+      <div><h2>Vent-Claw Yeti</h2><code>vent-claw-yeti</code></div>
+      <strong>reproducible</strong>
+    </header>
+    <div class="grid">
+      <span>source key <strong>magenta</strong></span>
+      <span>contract <strong>yes</strong></span>
+      <span>starter plan <strong>yes</strong></span>
+      <span>runtime <strong>yes</strong></span>
+    </div>
+    <h3>Evidence</h3>
+    <ul>
+      <li><code>source</code>: ok <code>public/assets/generated/fauna-vent-claw-yeti-whole-source.png</code></li><li><code>keyPreview</code>: ok <code>public/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png</code></li><li><code>artContract</code>: ok <code>public/review/source-candidates/art-contracts/vent-claw-yeti.json</code></li><li><code>starterPlan</code>: ok <code>tools/scratch/vent-claw-yeti-starter-plan.json</code></li><li><code>planPreview</code>: ok <code>public/review/articulated/vent-claw-yeti-plan-preview.png</code></li><li><code>sourceParity</code>: ok <code>public/review/articulated/source-parity/vent-claw-yeti-source-parity.png</code></li><li><code>contactSheet</code>: ok <code>public/review/articulated/vent-claw-yeti-contact.png</code></li><li><code>phaseStrip</code>: ok <code>public/review/articulated/vent-claw-yeti-phase.png</code></li>
+    </ul>
+    <h3>Commands</h3>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual
+npm run articulated:prepare-plan -- --id vent-claw-yeti --plan tools/scratch/vent-claw-yeti-starter-plan.json --preview public/review/articulated/vent-claw-yeti-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/vent-claw-yeti-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --out public/review/articulated/vent-claw-yeti-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --dry-run
+npm run articulated:extract-plan -- --plan tools/scratch/vent-claw-yeti-starter-plan.json
+npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual
+npm run sandbox:visual -- --ids vent-claw-yeti --states idle,lunge,stunned --with diver</code></pre>
+    
+  </article>
+  </main>
+</body>
+</html>

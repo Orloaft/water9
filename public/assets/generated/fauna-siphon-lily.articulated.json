@@ -1,0 +1,724 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-siphon-lily",
+  "runtimeCreatureId": "siphon-lily",
+  "displayName": "Siphon Lily",
+  "kind": "articulated-creature",
+  "depthBand": "deep",
+  "source": "public/assets/generated/fauna-siphon-lily-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "base-foot",
+      "key": "fauna-siphon-lily-base-foot",
+      "src": "fauna-siphon-lily-base-foot.png",
+      "sourceCrop": {
+        "x": 20,
+        "y": 740,
+        "width": 420,
+        "height": 180
+      },
+      "size": {
+        "width": 420,
+        "height": 180
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.2,
+        "drag": 1.05,
+        "angularDrag": 0.62,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.7
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 2.2,
+        "frequency": 1.15,
+        "phase": 1.7,
+        "lag": 0.6
+      }
+    },
+    {
+      "id": "stalk-lower",
+      "key": "fauna-siphon-lily-stalk-lower",
+      "src": "fauna-siphon-lily-stalk-lower.png",
+      "sourceCrop": {
+        "x": 45,
+        "y": 555,
+        "width": 355,
+        "height": 340
+      },
+      "size": {
+        "width": 355,
+        "height": 340
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.1,
+        "drag": 1.05,
+        "angularDrag": 0.62,
+        "severable": false,
+        "breakThreshold": 0.9,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 3.4,
+        "frequency": 1.45,
+        "phase": 1.1,
+        "lag": 0.46
+      }
+    },
+    {
+      "id": "stalk-mid",
+      "key": "fauna-siphon-lily-stalk-mid",
+      "src": "fauna-siphon-lily-stalk-mid.png",
+      "sourceCrop": {
+        "x": 85,
+        "y": 360,
+        "width": 300,
+        "height": 350
+      },
+      "size": {
+        "width": 300,
+        "height": 350
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.35,
+        "drag": 0.9,
+        "angularDrag": 0.48,
+        "severable": false,
+        "breakThreshold": 1.05,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.8,
+        "frequency": 1.28,
+        "phase": 0.58,
+        "lag": 0.32
+      }
+    },
+    {
+      "id": "root-body",
+      "key": "fauna-siphon-lily-root-body",
+      "src": "fauna-siphon-lily-root-body.png",
+      "sourceCrop": {
+        "x": 150,
+        "y": 170,
+        "width": 470,
+        "height": 420
+      },
+      "size": {
+        "width": 470,
+        "height": 420
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.3,
+        "drag": 0.9,
+        "angularDrag": 0.48,
+        "severable": false,
+        "breakThreshold": 1.4,
+        "mobilityFactor": 0.76
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.8,
+        "frequency": 1.18,
+        "phase": 0.0,
+        "lag": 0.12
+      },
+      "damagedSrc": "fauna-siphon-lily-root-body-damaged.png",
+      "damagedKey": "fauna-siphon-lily-root-body-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "cup-head",
+      "key": "fauna-siphon-lily-cup-head",
+      "src": "fauna-siphon-lily-cup-head.png",
+      "sourceCrop": {
+        "x": 130,
+        "y": 55,
+        "width": 620,
+        "height": 365
+      },
+      "size": {
+        "width": 620,
+        "height": 365
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 2.0,
+        "drag": 0.9,
+        "angularDrag": 0.48,
+        "severable": false,
+        "breakThreshold": 1.25,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.3,
+        "frequency": 1.12,
+        "phase": 0.18,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "petal-left",
+      "key": "fauna-siphon-lily-petal-left",
+      "src": "fauna-siphon-lily-petal-left.png",
+      "sourceCrop": {
+        "x": 80,
+        "y": 50,
+        "width": 370,
+        "height": 345
+      },
+      "size": {
+        "width": 370,
+        "height": 345
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.72,
+        "drag": 0.9,
+        "angularDrag": 0.48,
+        "severable": false,
+        "breakThreshold": 0.82,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 18.0,
+        "frequency": 2.4,
+        "phase": 0.1,
+        "lag": 0.12
+      }
+    },
+    {
+      "id": "petal-right",
+      "key": "fauna-siphon-lily-petal-right",
+      "src": "fauna-siphon-lily-petal-right.png",
+      "sourceCrop": {
+        "x": 405,
+        "y": 65,
+        "width": 355,
+        "height": 360
+      },
+      "size": {
+        "width": 355,
+        "height": 360
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.72,
+        "drag": 0.9,
+        "angularDrag": 0.48,
+        "severable": false,
+        "breakThreshold": 0.82,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 19.0,
+        "frequency": 2.55,
+        "phase": 0.42,
+        "lag": 0.12
+      }
+    },
+    {
+      "id": "rim-fringe",
+      "key": "fauna-siphon-lily-rim-fringe",
+      "src": "fauna-siphon-lily-rim-fringe.png",
+      "sourceCrop": {
+        "x": 215,
+        "y": 205,
+        "width": 460,
+        "height": 260
+      },
+      "size": {
+        "width": 460,
+        "height": 260
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.42,
+        "drag": 1.05,
+        "angularDrag": 0.62,
+        "severable": false,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.6,
+        "frequency": 2.2,
+        "phase": 1.2,
+        "lag": 0.28
+      }
+    },
+    {
+      "id": "tendril-left",
+      "key": "fauna-siphon-lily-tendril-left",
+      "src": "fauna-siphon-lily-tendril-left.png",
+      "sourceCrop": {
+        "x": 0,
+        "y": 390,
+        "width": 275,
+        "height": 450
+      },
+      "size": {
+        "width": 275,
+        "height": 450
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.58,
+        "drag": 1.05,
+        "angularDrag": 0.62,
+        "severable": false,
+        "breakThreshold": 0.68,
+        "mobilityFactor": 0.8
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 7.0,
+        "frequency": 1.7,
+        "phase": 1.8,
+        "lag": 0.6
+      }
+    },
+    {
+      "id": "tendril-center",
+      "key": "fauna-siphon-lily-tendril-center",
+      "src": "fauna-siphon-lily-tendril-center.png",
+      "sourceCrop": {
+        "x": 370,
+        "y": 430,
+        "width": 280,
+        "height": 425
+      },
+      "size": {
+        "width": 280,
+        "height": 425
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.52,
+        "drag": 1.05,
+        "angularDrag": 0.62,
+        "severable": false,
+        "breakThreshold": 0.65,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 8.2,
+        "frequency": 1.85,
+        "phase": 2.25,
+        "lag": 0.58
+      }
+    },
+    {
+      "id": "tendril-right",
+      "key": "fauna-siphon-lily-tendril-right",
+      "src": "fauna-siphon-lily-tendril-right.png",
+      "sourceCrop": {
+        "x": 540,
+        "y": 455,
+        "width": 410,
+        "height": 440
+      },
+      "size": {
+        "width": 410,
+        "height": 440
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.54,
+        "drag": 1.05,
+        "angularDrag": 0.62,
+        "severable": false,
+        "breakThreshold": 0.68,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 8.8,
+        "frequency": 1.75,
+        "phase": 2.7,
+        "lag": 0.64
+      }
+    },
+    {
+      "id": "bead-bank",
+      "key": "fauna-siphon-lily-bead-bank",
+      "src": "fauna-siphon-lily-bead-bank.png",
+      "sourceCrop": {
+        "x": 535,
+        "y": 90,
+        "width": 330,
+        "height": 455
+      },
+      "size": {
+        "width": 330,
+        "height": 455
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.38,
+        "drag": 1.05,
+        "angularDrag": 0.62,
+        "severable": false,
+        "breakThreshold": 0.55,
+        "mobilityFactor": 0.84
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.2,
+        "frequency": 1.95,
+        "phase": 0.9,
+        "lag": 0.26
+      }
+    },
+    {
+      "id": "lure-filament",
+      "key": "fauna-siphon-lily-lure-filament",
+      "src": "fauna-siphon-lily-lure-filament.png",
+      "sourceCrop": {
+        "x": 545,
+        "y": 0,
+        "width": 350,
+        "height": 210
+      },
+      "size": {
+        "width": 350,
+        "height": 210
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.24,
+        "drag": 1.05,
+        "angularDrag": 0.62,
+        "severable": false,
+        "breakThreshold": 0.48,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 7.2,
+        "frequency": 2.35,
+        "phase": 1.65,
+        "lag": 0.34
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "base-foot-socket",
+      "src": "fauna-siphon-lily-base-foot-socket.png",
+      "parentId": "stalk-lower",
+      "childId": "base-foot",
+      "sourcePartId": "stalk-lower",
+      "sourceCrop": {
+        "x": 74,
+        "y": 240,
+        "width": 140,
+        "height": 90
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "stalk-lower-socket",
+      "src": "fauna-siphon-lily-stalk-lower-socket.png",
+      "parentId": "stalk-mid",
+      "childId": "stalk-lower",
+      "sourcePartId": "stalk-mid",
+      "sourceCrop": {
+        "x": 74,
+        "y": 244,
+        "width": 130,
+        "height": 100
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "stalk-mid-socket",
+      "src": "fauna-siphon-lily-stalk-mid-socket.png",
+      "parentId": "root-body",
+      "childId": "stalk-mid",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 70,
+        "y": 278,
+        "width": 140,
+        "height": 120
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "cup-head-socket",
+      "src": "fauna-siphon-lily-cup-head-socket.png",
+      "parentId": "root-body",
+      "childId": "cup-head",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 150,
+        "y": 38,
+        "width": 150,
+        "height": 130
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "petal-left-socket",
+      "src": "fauna-siphon-lily-petal-left-socket.png",
+      "parentId": "cup-head",
+      "childId": "petal-left",
+      "sourcePartId": "cup-head",
+      "sourceCrop": {
+        "x": 52,
+        "y": 80,
+        "width": 132,
+        "height": 112
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "petal-right-socket",
+      "src": "fauna-siphon-lily-petal-right-socket.png",
+      "parentId": "cup-head",
+      "childId": "petal-right",
+      "sourcePartId": "cup-head",
+      "sourceCrop": {
+        "x": 408,
+        "y": 82,
+        "width": 126,
+        "height": 116
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "rim-fringe-socket",
+      "src": "fauna-siphon-lily-rim-fringe-socket.png",
+      "parentId": "cup-head",
+      "childId": "rim-fringe",
+      "sourcePartId": "cup-head",
+      "sourceCrop": {
+        "x": 210,
+        "y": 220,
+        "width": 170,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "tendril-left-socket",
+      "src": "fauna-siphon-lily-tendril-left-socket.png",
+      "parentId": "root-body",
+      "childId": "tendril-left",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 28,
+        "y": 238,
+        "width": 128,
+        "height": 118
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "tendril-center-socket",
+      "src": "fauna-siphon-lily-tendril-center-socket.png",
+      "parentId": "root-body",
+      "childId": "tendril-center",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 270,
+        "y": 258,
+        "width": 128,
+        "height": 118
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "tendril-right-socket",
+      "src": "fauna-siphon-lily-tendril-right-socket.png",
+      "parentId": "root-body",
+      "childId": "tendril-right",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 322,
+        "y": 268,
+        "width": 132,
+        "height": 118
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "bead-bank-socket",
+      "src": "fauna-siphon-lily-bead-bank-socket.png",
+      "parentId": "root-body",
+      "childId": "bead-bank",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 330,
+        "y": 46,
+        "width": 124,
+        "height": 132
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "lure-filament-socket",
+      "src": "fauna-siphon-lily-lure-filament-socket.png",
+      "parentId": "cup-head",
+      "childId": "lure-filament",
+      "sourcePartId": "cup-head",
+      "sourceCrop": {
+        "x": 384,
+        "y": 0,
+        "width": 110,
+        "height": 82
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.1
+      },
+      "alpha": 0.44,
+      "bridgeAlpha": 0.15,
+      "bridgeCoreAlpha": 0.055,
+      "bridgeWidthScale": 0.82,
+      "bridgeSleeveScale": 0.3
+    }
+  ],
+  "notes": "Prototype built from one magenta-background Siphon Lily source. The rig uses a rooted stalk, flared cup head, hinged petal jaws, lure filament, bead organs, and three broad tendrils for siphon-pull/snap style motion.",
+  "murkTint": {
+    "color": 7919804,
+    "intensity": 0.12,
+    "stunnedIntensity": 0.2
+  },
+  "socketStyle": {
+    "alpha": 0.52,
+    "bridgeColor": 464154,
+    "bridgeAlpha": 0.15,
+    "bridgeStunnedAlpha": 0.08,
+    "bridgeCoreColor": 9106130,
+    "bridgeCoreAlpha": 0.055,
+    "bridgeCoreStunnedAlpha": 0.03,
+    "bridgeWidthScale": 0.82,
+    "bridgeSleeveScale": 0.3
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Prototype generated from one magenta-background Siphon Lily source. Needs sandbox/contact-sheet acceptance before counting toward the 20-threat goal."
+  }
+}

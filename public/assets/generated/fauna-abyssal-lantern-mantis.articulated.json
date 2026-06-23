@@ -1,0 +1,301 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-abyssal-lantern-mantis",
+  "runtimeCreatureId": "abyssal-lantern-mantis",
+  "displayName": "Abyssal Lantern Mantis",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png",
+  "sourceTransform": {
+    "chromaKey": {
+      "color": [
+        255,
+        0,
+        255
+      ],
+      "tolerance": 24,
+      "feather": 12
+    }
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "core",
+      "key": "fauna-abyssal-lantern-mantis-core",
+      "src": "fauna-abyssal-lantern-mantis-core.png",
+      "sourceCrop": {
+        "x": 514,
+        "y": 352,
+        "width": 646,
+        "height": 322
+      },
+      "size": {
+        "width": 646,
+        "height": 322
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.4,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.3,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      },
+      "damagedSrc": "fauna-abyssal-lantern-mantis-core-damaged.png",
+      "damagedKey": "fauna-abyssal-lantern-mantis-core-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head",
+      "key": "fauna-abyssal-lantern-mantis-head",
+      "src": "fauna-abyssal-lantern-mantis-head.png",
+      "sourceCrop": {
+        "x": 1026,
+        "y": 396,
+        "width": 377,
+        "height": 200
+      },
+      "size": {
+        "width": 377,
+        "height": 200
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.1,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.15,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "tail",
+      "key": "fauna-abyssal-lantern-mantis-tail",
+      "src": "fauna-abyssal-lantern-mantis-tail.png",
+      "sourceCrop": {
+        "x": 259,
+        "y": 435,
+        "width": 457,
+        "height": 189
+      },
+      "size": {
+        "width": 457,
+        "height": 189
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.9,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "upper-fin",
+      "key": "fauna-abyssal-lantern-mantis-upper-fin",
+      "src": "fauna-abyssal-lantern-mantis-upper-fin.png",
+      "sourceCrop": {
+        "x": 555,
+        "y": 302,
+        "width": 565,
+        "height": 133
+      },
+      "size": {
+        "width": 565,
+        "height": 133
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 1.3,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "lower-fin",
+      "key": "fauna-abyssal-lantern-mantis-lower-fin",
+      "src": "fauna-abyssal-lantern-mantis-lower-fin.png",
+      "sourceCrop": {
+        "x": 555,
+        "y": 591,
+        "width": 565,
+        "height": 133
+      },
+      "size": {
+        "width": 565,
+        "height": 133
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 1.9,
+        "lag": 0.2
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "head-socket",
+      "src": "fauna-abyssal-lantern-mantis-head-socket.png",
+      "parentId": "core",
+      "childId": "head",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 483,
+        "y": 132,
+        "width": 58,
+        "height": 58
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "tail-socket",
+      "src": "fauna-abyssal-lantern-mantis-tail-socket.png",
+      "parentId": "core",
+      "childId": "tail",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 106,
+        "y": 132,
+        "width": 58,
+        "height": 58
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "upper-fin-socket",
+      "src": "fauna-abyssal-lantern-mantis-upper-fin-socket.png",
+      "parentId": "core",
+      "childId": "upper-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 294,
+        "y": 54,
+        "width": 58,
+        "height": 58
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "lower-fin-socket",
+      "src": "fauna-abyssal-lantern-mantis-lower-fin-socket.png",
+      "parentId": "core",
+      "childId": "lower-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 294,
+        "y": 210,
+        "width": 58,
+        "height": 58
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    }
+  ],
+  "notes": "Auto-generated starter plan. Use plan-preview to revise crops and anchors before extraction.",
+  "murkTint": {
+    "color": 7919057,
+    "intensity": 0.12,
+    "stunnedIntensity": 0.18
+  },
+  "socketStyle": {
+    "alpha": 0.6,
+    "bridgeColor": 462874,
+    "bridgeAlpha": 0.2,
+    "bridgeCoreColor": 7977161,
+    "bridgeCoreAlpha": 0.08,
+    "bridgeWidthScale": 0.98,
+    "bridgeSleeveScale": 0.36
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Starter articulation plan generated from the source-candidate whole-source image. Crops, anchors, sockets, motion, and anatomy require human adjustment before this can become accepted content.",
+    "sourceCandidateId": "abyssal-lantern-mantis"
+  }
+}

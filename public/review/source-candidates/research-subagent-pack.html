@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Research Subagent Pack</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061013; --panel:#0c1b20; --line:#24424b; --text:#e2f5f6; --muted:#91aab0; --accent:#7ce5ff; --warn:#e7bd6d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1340px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:16px 0 8px; color:var(--warn); font-size:13px; text-transform:uppercase; }
+    h4 { margin:12px 0 6px; color:var(--muted); font-size:12px; text-transform:uppercase; }
+    p { color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    code { display:block; color:var(--muted); margin-top:3px; }
+    pre { border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    table { width:100%; border-collapse:collapse; margin:18px 0 24px; border:1px solid var(--line); background:var(--panel); }
+    th, td { text-align:left; border-bottom:1px solid var(--line); padding:8px 10px; vertical-align:top; }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:6px; padding:14px; margin:14px 0; }
+    .card header { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+    .candidate-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:10px; }
+    .candidate-grid article { border:1px solid var(--line); background:#08161a; border-radius:5px; padding:10px; }
+    ul { margin:0; padding-left:18px; color:#bdd5d9; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Research Subagent Pack</h1>
+    <p>Split underwater threat research across parallel read-only subagents, then validate/import accepted findings before regenerating source prompts.</p>
+    <pre><code>npm run research:subagent-pack
+npm run research:subagent-pack-check
+npm run research:check
+npm run research:import -- --all
+npm run source:generation-queue
+npm run source:contracts
+npm run source:check
+npm run sandbox:preview -- --id &lt;candidate-id&gt; --kind source --serve --open --visual</code></pre>
+    <table>
+      <thead><tr><th>Assignment</th><th>Candidates</th><th>Focus</th></tr></thead>
+      <tbody><tr>
+    <td><a href="research-subagent-assignments/01-mobile-predator-motion.md">Mobile Predator Motion</a><code>mobile-predator-motion</code></td>
+    <td>9</td>
+    <td>Audit fish/eel/squid/crustacean threats for believable swimming, attack telegraph, readable side profile, and crop-safe articulated anatomy.</td>
+  </tr>
+<tr>
+    <td><a href="research-subagent-assignments/02-sessile-ambush-hazards.md">Sessile Ambush Hazards</a><code>sessile-ambush-hazards</code></td>
+    <td>5</td>
+    <td>Audit fixed flora/fauna hazards for a strong rooted silhouette, clear danger mouth/spine/lure read, and separation between body and environment.</td>
+  </tr>
+<tr>
+    <td><a href="research-subagent-assignments/03-complex-colonial-forms.md">Complex Colonial Forms</a><code>complex-colonial-forms</code></td>
+    <td>6</td>
+    <td>Audit colonial, chain, siphonophore, coral, and mycelium concepts for non-collage cohesion and simplified source-generation language.</td>
+  </tr></tbody>
+    </table>
+    <section class="card" id="mobile-predator-motion">
+    <header>
+      <div>
+        <h2>Mobile Predator Motion</h2>
+        <code>mobile-predator-motion</code>
+      </div>
+      <a href="research-subagent-assignments/01-mobile-predator-motion.md">assignment file</a>
+    </header>
+    <p>Audit fish/eel/squid/crustacean threats for believable swimming, attack telegraph, readable side profile, and crop-safe articulated anatomy.</p>
+    <h3>Lane Source Handoff</h3>
+    <pre><code>npm run source:next-prompt -- --id hadal-trencher-isopod
+npm run source:session -- --id hadal-trencher-isopod
+npm run source:inbox-capture -- --id hadal-trencher-isopod --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids hadal-trencher-isopod,vent-claw-yeti,abyssal-lantern-mantis,trench-harvest-sea-spider,vampire-cloak-squid,gulper-eel-maw,saber-viperfish,tripod-stilt-stalker,reef-lion-moray
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids hadal-trencher-isopod,vent-claw-yeti,abyssal-lantern-mantis,trench-harvest-sea-spider,vampire-cloak-squid,gulper-eel-maw,saber-viperfish,tripod-stilt-stalker,reef-lion-moray --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids hadal-trencher-isopod,vent-claw-yeti,abyssal-lantern-mantis,trench-harvest-sea-spider,vampire-cloak-squid,gulper-eel-maw,saber-viperfish,tripod-stilt-stalker,reef-lion-moray</code></pre>
+    <h3>Candidates</h3>
+    <div class="candidate-grid">
+      <article>
+        <strong>Hadal Trencher Isopod</strong>
+        <code>hadal-trencher-isopod</code>
+        <p>Armored burrow ambusher that braces into the sediment, raises shield plates, then lunges in a short crushing shove.</p>
+        <h4>Required Read</h4>
+        <ul><li>One cohesive full-body isopod-like threat, not a generic beetle, trilobite, or crab.</li><li>Segmented armored back is the first read, with the head and shove direction clearly visible.</li><li>Legs, antennae, plates, and mouthparts are thick enough to crop and rig at sprite scale.</li><li>Defensive curl and forward lunge shapes must be visually plausible from the same anatomy.</li><li>No sand clouds, seafloor, burrow hole, shadows, haze, or loose debris baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id hadal-trencher-isopod
+npm run source:session -- --id hadal-trencher-isopod
+npm run source:inbox-capture -- --id hadal-trencher-isopod --open
+npm run source:recover-inline -- --id hadal-trencher-isopod --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids hadal-trencher-isopod
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids hadal-trencher-isopod --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids hadal-trencher-isopod
+npm run sandbox:preview -- --id hadal-trencher-isopod --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Vent-Claw Yeti</strong>
+        <code>vent-claw-yeti</code>
+        <p>Thermal grappler that guards vent lanes, fans its bristled claws, then hooks and drags the diver toward a hot zone.</p>
+        <h4>Required Read</h4>
+        <ul><li>One whole crab-like arthropod, not a furry mammal, lobster, or humanoid monster.</li><li>Oversized bristled claws are the first read and clearly indicate grab range.</li><li>Main carapace, abdomen tuck, legs, claws, and antennae stay connected as one riggable body.</li><li>Bristles read as clustered biological setae, not smoke, fur clouds, or flame.</li><li>No vent chimney, lava plume, bubbles, floor plane, cast shadow, or environmental lighting baked in.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id vent-claw-yeti
+npm run source:session -- --id vent-claw-yeti
+npm run source:inbox-capture -- --id vent-claw-yeti --open
+npm run source:recover-inline -- --id vent-claw-yeti --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids vent-claw-yeti
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids vent-claw-yeti --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids vent-claw-yeti
+npm run sandbox:preview -- --id vent-claw-yeti --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Abyssal Lantern Mantis</strong>
+        <code>abyssal-lantern-mantis</code>
+        <p>Burst striker that locks on with lantern eye spots, coils its raptorial arms, then releases a fast straight-line punch.</p>
+        <h4>Required Read</h4>
+        <ul><li>One full-body mantis-shrimp-like predator with clear head, torso, abdomen, and tail fan.</li><li>Coiled raptorial arms are the first danger read and must show punch direction.</li><li>Eye stalks, antennae, strike arms, walking limbs, and tail fan need crop-safe separation.</li><li>The creature should feel biological and crustacean, not a robot, gun, or armored fish.</li><li>No punch streaks, shock rings, cave wall, bubbles, shadows, or light cones baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id abyssal-lantern-mantis
+npm run source:session -- --id abyssal-lantern-mantis
+npm run source:inbox-capture -- --id abyssal-lantern-mantis --open
+npm run source:recover-inline -- --id abyssal-lantern-mantis --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids abyssal-lantern-mantis
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids abyssal-lantern-mantis --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids abyssal-lantern-mantis
+npm run sandbox:preview -- --id abyssal-lantern-mantis --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Trench Harvest Sea Spider</strong>
+        <code>trench-harvest-sea-spider</code>
+        <p>Long-legged pinning hunter that steps over obstacles, plants barbed legs around the diver, then siphons during a brief hold.</p>
+        <h4>Required Read</h4>
+        <ul><li>One cohesive sea-spider-inspired arthropod, not a land spider or insect.</li><li>Tiny central body with long articulated legs is the first silhouette read.</li><li>Forward proboscis must read as a biological siphon and not a weapon barrel.</li><li>Legs are separated enough for rigging, with thick joints and clear contact claws.</li><li>No webbing, carcass, seafloor, drifting particles, shadows, blood clouds, or environmental props baked in.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id trench-harvest-sea-spider
+npm run source:session -- --id trench-harvest-sea-spider
+npm run source:inbox-capture -- --id trench-harvest-sea-spider --open
+npm run source:recover-inline -- --id trench-harvest-sea-spider --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids trench-harvest-sea-spider
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids trench-harvest-sea-spider --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids trench-harvest-sea-spider
+npm run sandbox:preview -- --id trench-harvest-sea-spider --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Vampire Cloak Squid</strong>
+        <code>vampire-cloak-squid</code>
+        <p>Cephalopod feint attacker that cloaks into a spined umbrella, flashes photophores, then snaps its arms outward for a short-range grab.</p>
+        <h4>Required Read</h4>
+        <ul><li>One whole cephalopod with mantle, eyes, arms, and webbing clearly connected.</li><li>Cloak web and arm crown are the main gameplay read, not loose tentacles.</li><li>Eight arms are grouped into riggable clusters without becoming a tangled mass.</li><li>Photophore spots are visible but do not cover the anatomy.</li><li>No ink cloud, particles, water background, shadows, or cropped-off arms baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id vampire-cloak-squid
+npm run source:session -- --id vampire-cloak-squid
+npm run source:inbox-capture -- --id vampire-cloak-squid --open
+npm run source:recover-inline -- --id vampire-cloak-squid --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids vampire-cloak-squid
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids vampire-cloak-squid --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids vampire-cloak-squid
+npm run sandbox:preview -- --id vampire-cloak-squid --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Gulper Eel Maw</strong>
+        <code>gulper-eel-maw</code>
+        <p>Inhale ambusher that blooms a huge mouth pouch, pulls the diver into a short suction cone, then snaps shut before a deflated recovery window.</p>
+        <h4>Required Read</h4>
+        <ul><li>One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.</li><li>Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.</li><li>Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.</li><li>Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.</li><li>No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id gulper-eel-maw
+npm run source:session -- --id gulper-eel-maw
+npm run source:inbox-capture -- --id gulper-eel-maw --open
+npm run source:recover-inline -- --id gulper-eel-maw --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids gulper-eel-maw
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids gulper-eel-maw --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids gulper-eel-maw
+npm run sandbox:preview -- --id gulper-eel-maw --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Saber Viperfish</strong>
+        <code>saber-viperfish</code>
+        <p>Lock-on dash striker that flashes its photophore chain, unhinges saber jaws, then commits to a fast straight impale that can be dodged and punished.</p>
+        <h4>Required Read</h4>
+        <ul><li>One whole viperfish-like vertebrate, not a barracuda, dragon, or metal spear device.</li><li>Oversized saber teeth and unhinged jaw are the first danger read.</li><li>Photophore belly chain, dorsal lure spine, fins, tail, and skull share one biological material language.</li><li>Teeth are large readable fang shapes rather than many tiny noisy needles.</li><li>No motion streaks, target reticle, bubbles, prey fish, lighting beams, or shadow baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id saber-viperfish
+npm run source:session -- --id saber-viperfish
+npm run source:inbox-capture -- --id saber-viperfish --open
+npm run source:recover-inline -- --id saber-viperfish --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids saber-viperfish
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids saber-viperfish --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids saber-viperfish
+npm run sandbox:preview -- --id saber-viperfish --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Tripod Stilt Stalker</strong>
+        <code>tripod-stilt-stalker</code>
+        <p>Stilted trap sentinel that plants three long fin rays, sweeps a sensory tripline, then hop-stabs across the safe gap with a brittle spear motion.</p>
+        <h4>Required Read</h4>
+        <ul><li>One whole tripodfish-like vertebrate, not a crab, spider, or walking machine.</li><li>Three long stilt fin rays are the first silhouette read and clearly support the body.</li><li>Upturned head, sensory pectoral rays, dorsal fin, body trunk, and tail stilt connect as one fish.</li><li>Stilts and sensory rays are thick and separated enough for crop-safe articulation.</li><li>No seabed, sand cloud, planted shadow, bubbles, particles, or floor contact marks baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id tripod-stilt-stalker
+npm run source:session -- --id tripod-stilt-stalker
+npm run source:inbox-capture -- --id tripod-stilt-stalker --open
+npm run source:recover-inline -- --id tripod-stilt-stalker --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids tripod-stilt-stalker
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids tripod-stilt-stalker --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids tripod-stilt-stalker
+npm run sandbox:preview -- --id tripod-stilt-stalker --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Reef Lion Moray</strong>
+        <code>reef-lion-moray</code>
+        <p>Hybrid reef ambusher that flares venom fins to block escape lanes, lunges with a moray bite, then exposes its folded spine fan during recovery.</p>
+        <h4>Required Read</h4>
+        <ul><li>One cohesive vertebrate hybrid, not a separate eel wrapped in decorative lionfish fins.</li><li>Moray head and flared venom spine fan are the first reads at game scale.</li><li>Eel torso, jaws, pectoral fans, dorsal spines, tail coil, and cheek frills remain visibly connected.</li><li>Spines and fin membranes are broad enough to crop and animate without becoming noisy feathers.</li><li>No reef wall, cave hole, coral scenery, sand plume, shadow, bubbles, or poison cloud baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id reef-lion-moray
+npm run source:session -- --id reef-lion-moray
+npm run source:inbox-capture -- --id reef-lion-moray --open
+npm run source:recover-inline -- --id reef-lion-moray --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids reef-lion-moray
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids reef-lion-moray --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids reef-lion-moray
+npm run sandbox:preview -- --id reef-lion-moray --kind source --serve --open --visual</code></pre>
+      </article>
+    </div>
+  </section>
+<section class="card" id="sessile-ambush-hazards">
+    <header>
+      <div>
+        <h2>Sessile Ambush Hazards</h2>
+        <code>sessile-ambush-hazards</code>
+      </div>
+      <a href="research-subagent-assignments/02-sessile-ambush-hazards.md">assignment file</a>
+    </header>
+    <p>Audit fixed flora/fauna hazards for a strong rooted silhouette, clear danger mouth/spine/lure read, and separation between body and environment.</p>
+    <h3>Lane Source Handoff</h3>
+    <pre><code>npm run source:next-prompt -- --id brine-crown
+npm run source:session -- --id brine-crown
+npm run source:inbox-capture -- --id brine-crown --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown,coronate-sting-crown,predatory-tunicate-maw,razor-kelp-harp,lantern-anemone-pit
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown,coronate-sting-crown,predatory-tunicate-maw,razor-kelp-harp,lantern-anemone-pit --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown,coronate-sting-crown,predatory-tunicate-maw,razor-kelp-harp,lantern-anemone-pit</code></pre>
+    <h3>Candidates</h3>
+    <div class="candidate-grid">
+      <article>
+        <strong>Brine Crown</strong>
+        <code>brine-crown</code>
+        <p>Stationary area-control hazard that swells, raises spines, and grows corrosive brine patches instead of chasing the diver.</p>
+        <h4>Required Read</h4>
+        <ul><li>One rooted radial organism, not a collage of coral, starfish, and vent tubes.</li><li>Central crown or toxic throat is the first read.</li><li>Low anchored basal mat with uneven rays/fronds and visible hinge/root zones.</li><li>Readable toxic blisters, spine halo, and corrosive danger cues at game scale.</li><li>No loose detached parts, environmental shadows, haze, floor plane, or particles baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id brine-crown
+npm run source:session -- --id brine-crown
+npm run source:inbox-capture -- --id brine-crown --open
+npm run source:recover-inline -- --id brine-crown --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown
+npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Coronate Sting Crown</strong>
+        <code>coronate-sting-crown</code>
+        <p>Pulsing cnidarian hazard that expands its crown, sweeps thick oral arms, and releases a radial sting burst after a readable bell contraction.</p>
+        <h4>Required Read</h4>
+        <ul><li>One cohesive jellyfish organism, not a swarm or decorative cluster.</li><li>Crown-shaped lappet rim and domed bell are the first read at game scale.</li><li>Oral arms are thick, separated, and crop-safe for articulation.</li><li>Tentacle danger zone is visible without becoming a hair-thin curtain.</li><li>Bioluminescent sting cues stay on anatomy, with no baked bubbles, haze, water column, or impact particles.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id coronate-sting-crown
+npm run source:session -- --id coronate-sting-crown
+npm run source:inbox-capture -- --id coronate-sting-crown --open
+npm run source:recover-inline -- --id coronate-sting-crown --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids coronate-sting-crown
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids coronate-sting-crown --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids coronate-sting-crown
+npm run sandbox:preview -- --id coronate-sting-crown --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Predatory Tunicate Maw</strong>
+        <code>predatory-tunicate-maw</code>
+        <p>Sessile soft-bodied snap trap that poses as a harmless stalk, opens a translucent mouth, and clamps shut when the diver crosses its bite lane.</p>
+        <h4>Required Read</h4>
+        <ul><li>One rooted soft-bodied tunicate creature, not a plant, clam, or anemone.</li><li>Large open siphon mouth is the first danger read.</li><li>Upper and lower mouth lobes are thick and separated for hinge animation.</li><li>Stalk, anchor foot, tunic body, and internal folds remain connected as one organism.</li><li>No surrounding rock wall, sediment, prey fish, particles, or shadows baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id predatory-tunicate-maw
+npm run source:session -- --id predatory-tunicate-maw
+npm run source:inbox-capture -- --id predatory-tunicate-maw --open
+npm run source:recover-inline -- --id predatory-tunicate-maw --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids predatory-tunicate-maw
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids predatory-tunicate-maw --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids predatory-tunicate-maw
+npm run sandbox:preview -- --id predatory-tunicate-maw --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Razor Kelp Harp</strong>
+        <code>razor-kelp-harp</code>
+        <p>Rooted snare hazard that fans blade-fronds into lanes, waits for the diver to cross, then snaps a cutting curtain inward.</p>
+        <h4>Required Read</h4>
+        <ul><li>One cohesive kelp-like ambusher, not a loose pile of seaweed strips.</li><li>Root holdfast and central crown are visible so the entity reads as anchored and sessile.</li><li>Five to seven broad serrated blade-fronds create clear danger lanes at sprite scale.</li><li>Gas bladders, hinge knots, and curled blade tips remain crop-safe for later articulation.</li><li>No water column, sand floor, bubbles, shadows, or detached plant debris baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id razor-kelp-harp
+npm run source:session -- --id razor-kelp-harp
+npm run source:inbox-capture -- --id razor-kelp-harp --open
+npm run source:recover-inline -- --id razor-kelp-harp --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids razor-kelp-harp
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids razor-kelp-harp --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids razor-kelp-harp
+npm run sandbox:preview -- --id razor-kelp-harp --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Lantern Anemone Pit</strong>
+        <code>lantern-anemone-pit</code>
+        <p>Sessile lure ambusher that opens as a harmless flower, flashes lure polyps, then clamps a ring of stinging petals around nearby prey.</p>
+        <h4>Required Read</h4>
+        <ul><li>One anchored anemone organism, not a decorative coral flower cluster.</li><li>Central mouth pit is the first danger read when open.</li><li>Two rings of thick petal-tentacles are broad enough for sprite-scale articulation.</li><li>Lure bulbs, mouth rim, column base, and outer petals are visually connected.</li><li>Danger is communicated through clamp posture, stinging bulbs, and mouth depth rather than gore or particles.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id lantern-anemone-pit
+npm run source:session -- --id lantern-anemone-pit
+npm run source:inbox-capture -- --id lantern-anemone-pit --open
+npm run source:recover-inline -- --id lantern-anemone-pit --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids lantern-anemone-pit
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids lantern-anemone-pit --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids lantern-anemone-pit
+npm run sandbox:preview -- --id lantern-anemone-pit --kind source --serve --open --visual</code></pre>
+      </article>
+    </div>
+  </section>
+<section class="card" id="complex-colonial-forms">
+    <header>
+      <div>
+        <h2>Complex Colonial Forms</h2>
+        <code>complex-colonial-forms</code>
+      </div>
+      <a href="research-subagent-assignments/03-complex-colonial-forms.md">assignment file</a>
+    </header>
+    <p>Audit colonial, chain, siphonophore, coral, and mycelium concepts for non-collage cohesion and simplified source-generation language.</p>
+    <h3>Lane Source Handoff</h3>
+    <pre><code>npm run source:next-prompt -- --id glass-sponge-sentinel
+npm run source:session -- --id glass-sponge-sentinel
+npm run source:inbox-capture -- --id glass-sponge-sentinel --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids glass-sponge-sentinel,black-coral-gate,reliquary-siphonophore,chain-vein-siphonophore,brine-mycelium-shelf,thorn-fan-coralline
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids glass-sponge-sentinel,black-coral-gate,reliquary-siphonophore,chain-vein-siphonophore,brine-mycelium-shelf,thorn-fan-coralline --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids glass-sponge-sentinel,black-coral-gate,reliquary-siphonophore,chain-vein-siphonophore,brine-mycelium-shelf,thorn-fan-coralline</code></pre>
+    <h3>Candidates</h3>
+    <div class="candidate-grid">
+      <article>
+        <strong>Glass Sponge Sentinel</strong>
+        <code>glass-sponge-sentinel</code>
+        <p>Sessile lane-control sentinel: bait the aim, dodge the brittle needle cone, then punish the exposed recharge window.</p>
+        <h4>Required Read</h4>
+        <ul><li>One vase-like glass sponge organism, not a generic coral fan or separate sponge colony.</li><li>Large central osculum throat is the first danger read.</li><li>Bold cross-braced lattice ribs remain readable at game scale rather than dissolving into lace noise.</li><li>Needle-cone petals and rim spicules are thick enough to crop and articulate.</li><li>Anchored base, throat, rim, and needle petals share one lighting and material language.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id glass-sponge-sentinel
+npm run source:session -- --id glass-sponge-sentinel
+npm run source:inbox-capture -- --id glass-sponge-sentinel --open
+npm run source:recover-inline -- --id glass-sponge-sentinel --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids glass-sponge-sentinel
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids glass-sponge-sentinel --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids glass-sponge-sentinel
+npm run sandbox:preview -- --id glass-sponge-sentinel --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Black Coral Gate</strong>
+        <code>black-coral-gate</code>
+        <p>Passage-control ambusher that holds an open arch, telegraphs with glowing hinge polyps, then drops and clamps a living portcullis around the diver.</p>
+        <h4>Required Read</h4>
+        <ul><li>One cohesive whole-source organism on pure magenta, not separate coral chunks glued onto stone ruins.</li><li>Open arch / portcullis silhouette is the first read, with the bite line clearly visible at game scale.</li><li>Left and right rooted pillars share one material language and connect through a living crown bridge.</li><li>Crop-safe thick bars, hinge knots, root mats, and latch jaws have visible margins for later cutting.</li><li>Danger read comes from closing thorn-bars, glowing hinge polyps, and clamp teeth, not baked-in particles or scenery.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id black-coral-gate
+npm run source:session -- --id black-coral-gate
+npm run source:inbox-capture -- --id black-coral-gate --open
+npm run source:recover-inline -- --id black-coral-gate --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids black-coral-gate
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids black-coral-gate --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids black-coral-gate
+npm run sandbox:preview -- --id black-coral-gate --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Reliquary Siphonophore</strong>
+        <code>reliquary-siphonophore</code>
+        <p>Vertical tripwire colony: thread the safe gap, avoid the stinging curtain pulse, then punish the dim reload window.</p>
+        <h4>Required Read</h4>
+        <ul><li>One cohesive whole-source organism on pure #ff00ff magenta, centered with generous crop margin.</li><li>Vertical chandelier or reliquary colony with a clear top, spine, bell clusters, and dangling hazard zone.</li><li>Tripwire tendrils are broad enough to crop, rig, and see at 64px; avoid hair-thin jelly threads.</li><li>Safe gap is visually plausible: tendrils hang in separate arcs rather than one opaque curtain.</li><li>Ruin/reliquary flavor stays organic shell, glass, and pearl shapes, not a literal lantern, cage, or metal object.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id reliquary-siphonophore
+npm run source:session -- --id reliquary-siphonophore
+npm run source:inbox-capture -- --id reliquary-siphonophore --open
+npm run source:recover-inline -- --id reliquary-siphonophore --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids reliquary-siphonophore
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids reliquary-siphonophore --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids reliquary-siphonophore
+npm run sandbox:preview -- --id reliquary-siphonophore --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Chain Vein Siphonophore</strong>
+        <code>chain-vein-siphonophore</code>
+        <p>Living tripwire colony that unfolds from a compact soft colony curl, stretches stinging lines across a lane, then contracts its feeding polyps inward toward the player.</p>
+        <h4>Required Read</h4>
+        <ul><li>One continuous colonial organism, not separate beads or loose jellyfish pieces.</li><li>Continuous soft colony stem, swimming bells, feeding cluster, and stinging lines are all visible.</li><li>Tripwire tendrils are few, broad, and separated enough to rig.</li><li>The safe gap between hanging lines remains readable at sprite scale.</li><li>All anatomy stays isolated on pure magenta with no water haze, shadows, plankton, or baked glow clouds.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id chain-vein-siphonophore
+npm run source:session -- --id chain-vein-siphonophore
+npm run source:inbox-capture -- --id chain-vein-siphonophore --open
+npm run source:recover-inline -- --id chain-vein-siphonophore --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids chain-vein-siphonophore
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids chain-vein-siphonophore --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids chain-vein-siphonophore
+npm run sandbox:preview -- --id chain-vein-siphonophore --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Brine Mycelium Shelf</strong>
+        <code>brine-mycelium-shelf</code>
+        <p>Creeping sessile fungal shelf that blocks ledges, exhales spore bursts, and extends brittle feeding plates to punish close movement.</p>
+        <h4>Required Read</h4>
+        <ul><li>One living encrusting shelf organism, not a pile of land mushrooms dropped underwater.</li><li>Layered shelf plates and central spore pores are readable before surface texture detail.</li><li>Mycelial root web visibly ties the plates into one anchored threat.</li><li>Several large plates have clear hinge zones for extension and recoil animation.</li><li>No wreck wall, cave surface, fog, spore cloud, or environmental substrate baked into the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id brine-mycelium-shelf
+npm run source:session -- --id brine-mycelium-shelf
+npm run source:inbox-capture -- --id brine-mycelium-shelf --open
+npm run source:recover-inline -- --id brine-mycelium-shelf --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-mycelium-shelf
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-mycelium-shelf --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-mycelium-shelf
+npm run sandbox:preview -- --id brine-mycelium-shelf --kind source --serve --open --visual</code></pre>
+      </article><article>
+        <strong>Thorn Fan Coralline</strong>
+        <code>thorn-fan-coralline</code>
+        <p>Reef-like fan ambusher that disguises itself as cover, rotates into the current, then lashes thorn ribs to create a temporary damage wall.</p>
+        <h4>Required Read</h4>
+        <ul><li>One rooted fan-shaped reef organism, not background coral decoration.</li><li>Thick thorn ribs and central stalk define the first silhouette at game scale.</li><li>Left and right fan lobes have separable branch groups for folding and lashing.</li><li>Stinging polyp beads sit on the ribs without becoming noisy dotted texture.</li><li>No reef wall, seabed, lighting shaft, fish, bubbles, or baked current lines in the source.</li></ul>
+        <h4>Source Handoff</h4>
+        <pre><code>npm run source:next-prompt -- --id thorn-fan-coralline
+npm run source:session -- --id thorn-fan-coralline
+npm run source:inbox-capture -- --id thorn-fan-coralline --open
+npm run source:recover-inline -- --id thorn-fan-coralline --image &lt;saved-image-path&gt; --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids thorn-fan-coralline
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids thorn-fan-coralline --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids thorn-fan-coralline
+npm run sandbox:preview -- --id thorn-fan-coralline --kind source --serve --open --visual</code></pre>
+      </article>
+    </div>
+  </section>
+  </main>
+</body>
+</html>

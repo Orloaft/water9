@@ -1,0 +1,134 @@
+{
+  "schema": "water9/source-art-contract@1",
+  "generatedFrom": "source-candidates.json",
+  "id": "brine-mycelium-shelf",
+  "species": "Brine Mycelium Shelf",
+  "rank": null,
+  "status": "needs-review",
+  "depthBand": "submerged wrecks / hypoxic cave shelves",
+  "gameplayVerb": "Creeping sessile fungal shelf that blocks ledges, exhales spore bursts, and extends brittle feeding plates to punish close movement.",
+  "expectedOutput": "public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png",
+  "source": "public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png",
+  "sourceCohesion": "single-source",
+  "backgroundKey": "magenta",
+  "requiredRead": [
+    "One living encrusting shelf organism, not a pile of land mushrooms dropped underwater.",
+    "Layered shelf plates and central spore pores are readable before surface texture detail.",
+    "Mycelial root web visibly ties the plates into one anchored threat.",
+    "Several large plates have clear hinge zones for extension and recoil animation.",
+    "No wreck wall, cave surface, fog, spore cloud, or environmental substrate baked into the source."
+  ],
+  "articulatableParts": [
+    "mycelial root mat",
+    "central swollen spore sac",
+    "upper shelf plate",
+    "lower shelf plate",
+    "left feeding plate",
+    "right feeding plate",
+    "front brittle plate lip",
+    "spore pore cluster",
+    "filament whisker fringe",
+    "cracked crust overlays",
+    "integrated warning-color tissue patches"
+  ],
+  "promptRisks": [
+    "Avoid terrestrial mushroom caps with stems; keep the form encrusting and underwater-adapted.",
+    "Avoid making the source look like an inert rock or coral slab.",
+    "Avoid dense fuzzy texture that hides the main plates and hinge zones.",
+    "Avoid baked spore clouds or fog covering the anatomy.",
+    "Avoid magenta, hot pink, or purple fungal tissue near the key color."
+  ],
+  "contractReviewChecklist": [
+    "Shelf plates grow from one low mycelial root mat through visible hinge-root webs; no individual mushroom caps or stems.",
+    "Spore sac, plates, pores, and filament fringe read as one underwater biofilm organism, not a rock or coral slab.",
+    "Plate lips are thick enough for crop-safe articulation and are not hidden by fuzzy texture or baked spore clouds."
+  ],
+  "auditGuidance": {
+    "lane": "complex-colonial-forms",
+    "strengths": [
+      "Strong non-collage constraints: encrusting shelf organism, root mat, central spore sac, and hingeable plates form one anchored threat.",
+      "The prompt risks correctly reject terrestrial mushroom stems, baked substrate, fog, and fuzzy texture that would obscure articulation."
+    ],
+    "sourceGenerationRisks": [
+      "Marine fungus references are visually sparse, so generation may default to land bracket mushrooms or coral/sponge slabs.",
+      "Spore burst gameplay can lead to baked clouds that cover plate hinges, pore clusters, and crop margins."
+    ],
+    "suggestedResearchPatch": {
+      "biologicalAnchors": [
+        "Blend bracket fungus shelf morphology with marine biofilm/mycelial mats and encrusting sponge/tunicate texture cues.",
+        "Use puffball-like pore swelling only for the spore sac behavior, not for a terrestrial mushroom body."
+      ],
+      "requiredRead": [
+        "Shelf plates need obvious hinge/thin-root connection zones tying them into the mycelial mat."
+      ],
+      "promptRisks": [
+        "Avoid 'mushroom cap and stem', 'forest fungus', 'coral rock', 'foggy spores', and 'cave wall attached' language."
+      ],
+      "motionPhases": [
+        "flat encrusted idle",
+        "spore sac swells through pore cluster",
+        "plates extend outward",
+        "spore burst VFX separate",
+        "brittle plates recoil"
+      ]
+    },
+    "referenceSearchTerms": [
+      "marine fungal mycelium biofilm",
+      "underwater biofilm mat sulfur bacteria",
+      "bracket fungus shelf morphology",
+      "encrusting sponge tunicate colony"
+    ]
+  },
+  "sourcePoseRules": [
+    "Generate a neutral riggable source pose, not the peak attack impact frame.",
+    "Attack direction must still be obvious from species-appropriate anatomy: jaws, oral disc, osculum, spines, fins, lures, eyes, claws, or body aim.",
+    "Primary pivots and crop zones must be visible: jaw pivots, limb roots, fin roots, tail base, stalk base, rim folds, throat valves, or equivalent anatomy.",
+    "Major appendages, valves, rims, plates, or tentacles must be separated enough for later cropping, with small overlaps allowed only where anatomy connects.",
+    "Default pose must show both the idle read and the attack telegraph read without baking in trails, particles, prey, or damage effects."
+  ],
+  "cohesionLock": [
+    "One-source proof: render one continuous organism in one neutral source pose, not a parts board, variants sheet, or disconnected thumbnails.",
+    "Connection proof: every crop-intended appendage must visibly grow from or overlap the same body with a readable hinge, socket, root, or skin transition.",
+    "Style proof: all body regions and crop-intended organs must share one palette, line weight, lighting direction, material language, and shadow logic.",
+    "Proportion proof: body parts must look like they belong to the same animal when articulated; reject mismatched copied fragments or arbitrary size jumps.",
+    "Production proof: reject outputs that read as placeholder shapes, collage kitbash, props, UI icons, environmental rocks, duplicate creatures, or loose weapons."
+  ],
+  "globalRejects": [
+    "collage of unrelated animal parts instead of one physically coherent creature",
+    "detached mouth, detached limbs, duplicate bodies, loose props, bubbles, prey, water vortex, floor plane, cast shadow, or text",
+    "black, white, transparent, textured, gradient, or shadowed background instead of flat #ff00ff magenta",
+    "silhouette that fails to communicate the gameplay verb at small sprite scale",
+    "parts too thin, overlapped, hidden, or ambiguous to crop into articulated sprites",
+    "lighting, palette, or rendering style that changes between body regions",
+    "full attack impact pose, motion smear, or VFX-heavy action frame that hides the neutral riggable anatomy"
+  ],
+  "generationPrompt": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater threat called Brine Mycelium Shelf, sessile marine fungal biofilm ambusher shaped like layered bracket fungus and encrusting sponge, low horizontal mycelial root mat, swollen central spore sac, four to six broad shelf plates growing from one low mycelial mat through wide fleshy hinge collars and root webs thick enough to crop, with brittle lips and visible hinge seams, pale sulfur yellow bone white sickly green charcoal and muted teal palette, spore pore clusters, filament whisker fringe, crop-friendly separated plates and sac, readable silhouette at 64px, centered full organism with generous margin, crisp painterly browser-game sprite, no environment, no wall, no floor, no shadow, no haze, no spore cloud, no text\n\nResearch audit hardening:\n- Lane: complex-colonial-forms\n- Biological anchor: Blend bracket fungus shelf morphology with marine biofilm/mycelial mats and encrusting sponge/tunicate texture cues.\n- Biological anchor: Use puffball-like pore swelling only for the spore sac behavior, not for a terrestrial mushroom body.\n- Extra required read: Shelf plates need obvious hinge/thin-root connection zones tying them into the mycelial mat.\n- Avoid: Marine fungus references are visually sparse, so generation may default to land bracket mushrooms or coral/sponge slabs.\n- Avoid: Spore burst gameplay can lead to baked clouds that cover plate hinges, pore clusters, and crop margins.\n- Avoid: Avoid 'mushroom cap and stem', 'forest fungus', 'coral rock', 'foggy spores', and 'cave wall attached' language.\n- Preserve motion phase readability: flat encrusted idle\n- Preserve motion phase readability: spore sac swells through pore cluster\n- Preserve motion phase readability: plates extend outward\n- Preserve motion phase readability: spore burst VFX separate\n- Preserve motion phase readability: brittle plates recoil\n- Reference search term: marine fungal mycelium biofilm\n- Reference search term: underwater biofilm mat sulfur bacteria\n- Reference search term: bracket fungus shelf morphology\n- Reference search term: encrusting sponge tunicate colony\n\nSource pose contract:\n- Generate a neutral riggable source pose, not the peak attack impact frame.\n- Attack direction must still be obvious from species-appropriate anatomy: jaws, oral disc, osculum, spines, fins, lures, eyes, claws, or body aim.\n- Primary pivots and crop zones must be visible: jaw pivots, limb roots, fin roots, tail base, stalk base, rim folds, throat valves, or equivalent anatomy.\n- Major appendages, valves, rims, plates, or tentacles must be separated enough for later cropping, with small overlaps allowed only where anatomy connects.\n- Default pose must show both the idle read and the attack telegraph read without baking in trails, particles, prey, or damage effects.\n\nCohesion lock:\n- One-source proof: render one continuous organism in one neutral source pose, not a parts board, variants sheet, or disconnected thumbnails.\n- Connection proof: every crop-intended appendage must visibly grow from or overlap the same body with a readable hinge, socket, root, or skin transition.\n- Style proof: all body regions and crop-intended organs must share one palette, line weight, lighting direction, material language, and shadow logic.\n- Proportion proof: body parts must look like they belong to the same animal when articulated; reject mismatched copied fragments or arbitrary size jumps.\n- Production proof: reject outputs that read as placeholder shapes, collage kitbash, props, UI icons, environmental rocks, duplicate creatures, or loose weapons.\n\nNon-negotiable pass/fail requirements:\n- One living encrusting shelf organism, not a pile of land mushrooms dropped underwater.\n- Layered shelf plates and central spore pores are readable before surface texture detail.\n- Mycelial root web visibly ties the plates into one anchored threat.\n- Several large plates have clear hinge zones for extension and recoil animation.\n- No wreck wall, cave surface, fog, spore cloud, or environmental substrate baked into the source.\n\nCandidate-specific contract checks:\n- Shelf plates grow from one low mycelial root mat through visible hinge-root webs; no individual mushroom caps or stems.\n- Spore sac, plates, pores, and filament fringe read as one underwater biofilm organism, not a rock or coral slab.\n- Plate lips are thick enough for crop-safe articulation and are not hidden by fuzzy texture or baked spore clouds.\n\nReject immediately if:\n- Avoid terrestrial mushroom caps with stems; keep the form encrusting and underwater-adapted.\n- Avoid making the source look like an inert rock or coral slab.\n- Avoid dense fuzzy texture that hides the main plates and hinge zones.\n- Avoid baked spore clouds or fog covering the anatomy.\n- Avoid magenta, hot pink, or purple fungal tissue near the key color.\n- collage of unrelated animal parts instead of one physically coherent creature\n- detached mouth, detached limbs, duplicate bodies, loose props, bubbles, prey, water vortex, floor plane, cast shadow, or text\n- black, white, transparent, textured, gradient, or shadowed background instead of flat #ff00ff magenta\n- silhouette that fails to communicate the gameplay verb at small sprite scale\n- parts too thin, overlapped, hidden, or ambiguous to crop into articulated sprites\n- lighting, palette, or rendering style that changes between body regions\n- full attack impact pose, motion smear, or VFX-heavy action frame that hides the neutral riggable anatomy",
+  "reviewChecklist": [
+    "Single creature: every visible part belongs to one connected anatomy.",
+    "Part continuity: all crop-intended appendages have compatible proportions, visible connection zones, and one lighting/material treatment.",
+    "Design read: the silhouette and largest features match the gameplay verb.",
+    "Extraction read: required articulated parts are visible, separated, and thick enough for clean crops.",
+    "Pose read: neutral source pose preserves visible pivots, attack direction, and crop-safe appendages.",
+    "Source hygiene: flat #ff00ff background, no baked environment, no cast shadow, no text.",
+    "Style cohesion: one palette, one lighting model, one rendering style across the full creature.",
+    "Small-sprite read: the creature remains recognizable when scaled down in the sandbox.",
+    "Shelf plates grow from one low mycelial root mat through visible hinge-root webs; no individual mushroom caps or stems.",
+    "Spore sac, plates, pores, and filament fringe read as one underwater biofilm organism, not a rock or coral slab.",
+    "Plate lips are thick enough for crop-safe articulation and are not hidden by fuzzy texture or baked spore clouds."
+  ],
+  "commands": {
+    "markBeforeGeneration": "npm run source:imagegen-mark -- --id brine-mycelium-shelf",
+    "checkGeneratedFile": "npm run source:imagegen-status -- --id brine-mycelium-shelf",
+    "autoIngestGeneratedFile": "npm run source:imagegen-status -- --id brine-mycelium-shelf --ingest",
+    "ingestGeneratedFile": "npm run source:ingest -- --id brine-mycelium-shelf --image <image-path> --copy",
+    "rejectGeneratedFile": "npm run source:reject-attempt -- --id brine-mycelium-shelf --attempt-kind visual-failure --image <bad-output-path> --reason \"<specific visual failure after inspecting the generated source image>\"",
+    "rejectMissingGeneratedFile": "npm run source:imagegen-status -- --reject-missing",
+    "validateImage": "npm run source:image-check -- --id brine-mycelium-shelf",
+    "buildGallery": "npm run source:gallery",
+    "validateSources": "npm run source:check"
+  },
+  "files": {
+    "markdown": "public/review/source-candidates/art-contracts/brine-mycelium-shelf.md",
+    "json": "public/review/source-candidates/art-contracts/brine-mycelium-shelf.json"
+  }
+}

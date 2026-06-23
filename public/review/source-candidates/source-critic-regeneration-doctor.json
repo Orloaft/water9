@@ -1,0 +1,169 @@
+{
+  "schema": "water9/source-critic-regeneration-doctor@1",
+  "generatedAt": "2026-06-18T17:07:19.287Z",
+  "generatedFrom": {
+    "queue": "/mnt/nxt-dev/water9/public/review/source-candidates/source-critic-regeneration-queue.json",
+    "inboxDir": "tools/source-inbox"
+  },
+  "policy": {
+    "advisoryOnly": true,
+    "doesNotApproveSources": true,
+    "doesNotAcceptThreats": true,
+    "replacementMustReturnToSourceReview": true
+  },
+  "summary": {
+    "regenerateCandidates": 9,
+    "nextCandidateId": "black-coral-gate",
+    "nextCandidateSpecies": "Black Coral Gate",
+    "status": "replacement-matches-current-source",
+    "readyForReplacementIngest": false,
+    "inboxFiles": 1,
+    "validInboxFiles": 1,
+    "replacementMatchesCurrentSource": true
+  },
+  "target": {
+    "id": "black-coral-gate",
+    "species": "Black Coral Gate",
+    "lane": "complex-colonial-forms",
+    "status": "replacement-matches-current-source",
+    "readyForReplacementIngest": false,
+    "replacementMatchesCurrentSource": true,
+    "currentSource": {
+      "exists": true,
+      "size": 437428,
+      "sha256": "862444d7f279a7e56bd5ff3663c7b90afd10f0cb701df934b926ada45ed0fb57",
+      "path": "public/assets/generated/fauna-black-coral-gate-whole-source.png"
+    },
+    "promptFile": "public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt",
+    "expectedInboxFiles": [
+      "tools/source-inbox/black-coral-gate.png",
+      "tools/source-inbox/fauna-black-coral-gate-whole-source.png"
+    ],
+    "inboxFiles": [
+      {
+        "file": "black-coral-gate.png",
+        "exists": true,
+        "size": 437428,
+        "sha256": "862444d7f279a7e56bd5ff3663c7b90afd10f0cb701df934b926ada45ed0fb57",
+        "path": "tools/source-inbox/black-coral-gate.png",
+        "imageCheck": {
+          "checked": true,
+          "passed": true,
+          "metric": {
+            "id": "black-coral-gate",
+            "source": "/mnt/nxt-dev/water9/tools/source-inbox/black-coral-gate.png",
+            "sourceFingerprint": {
+              "path": "/mnt/nxt-dev/water9/tools/source-inbox/black-coral-gate.png",
+              "size": 437428,
+              "mtimeMs": 1781786538575,
+              "sha256": "862444d7f279a7e56bd5ff3663c7b90afd10f0cb701df934b926ada45ed0fb57"
+            },
+            "checked": true,
+            "size": [
+              1536,
+              1024
+            ],
+            "borderMagenta": 1,
+            "backgroundRatio": 0.6789,
+            "subjectBBox": [
+              82,
+              77,
+              1465,
+              1000
+            ],
+            "subjectSize": [
+              1383,
+              923
+            ],
+            "innerMagentaRatio": 0,
+            "subjectMagentaBiasRatio": 0.00542,
+            "subjectTranslucentRatio": 0,
+            "detail": {
+              "sampledSubjectPixels": 56115,
+              "quantizedColorBins": 223,
+              "colorEntropy": 3.5043,
+              "edgeDensity": 0.1277,
+              "averageLocalContrast": 8.7476
+            },
+            "connectivity": {
+              "sampleStep": 2,
+              "sampledComponents": 2,
+              "largestComponentRatio": 1,
+              "significantComponents": 1
+            },
+            "failures": [],
+            "validator": {
+              "tool": "tools/validate_source_candidate_images.py",
+              "version": "water9/source-image-validation@1",
+              "thresholds": {
+                "magentaThreshold": 12,
+                "minBorderMagenta": 0.95,
+                "minBackgroundRatio": 0.15,
+                "maxBackgroundRatio": 0.92,
+                "minSubjectSize": 48,
+                "minSubjectMargin": 4,
+                "maxInnerMagentaRatio": 0.003,
+                "maxSubjectMagentaBiasRatio": 0.02,
+                "maxSubjectTranslucentRatio": 0.01,
+                "minColorEntropy": 3,
+                "minColorBins": 64,
+                "minEdgeDensity": 0.015,
+                "minAverageLocalContrast": 1.5,
+                "minLargestComponentRatio": 0.75,
+                "maxSignificantComponents": 6
+              }
+            },
+            "validationFingerprint": "a1e1629c4b144ebdedd43fb0245218e8222636ed689e048477d6dd417aed28bc"
+          },
+          "failures": []
+        }
+      }
+    ],
+    "links": {
+      "source": "/assets/generated/fauna-black-coral-gate-whole-source.png",
+      "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#black-coral-gate",
+      "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#black-coral-gate",
+      "quickReview": "/review/source-candidates/quick-reviews/black-coral-gate.html",
+      "planPreview": "/review/articulated/black-coral-gate-plan-preview.png",
+      "sandboxPreview": "/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png",
+      "liveSourceSandbox": "/?entity=source-black-coral-gate&companion=diver"
+    },
+    "critic": {
+      "cohesionRisks": [
+        "Silhouette reads more like a closed dome or creature mask than an open coral arch.",
+        "Central bars and teeth feel portcullis-like but not clearly grown from left/right pillars."
+      ],
+      "animationRisk": "Phase/contact evidence barely sells a drop/clamp cycle and stays visually closed.",
+      "advisoryState": "critic-recommends-regenerate"
+    },
+    "commands": [
+      "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt",
+      "npm run source:imagegen-mark -- --id black-coral-gate",
+      "npm run source:imagegen-status -- --id black-coral-gate",
+      "npm run source:imagegen-status -- --id black-coral-gate --ingest",
+      "npm run source:inbox-capture -- --id black-coral-gate --open",
+      "npm run source:recover-inline -- --id black-coral-gate --image <saved-image-path> --copy --validate",
+      "npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+      "npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite"
+    ],
+    "allCommands": {
+      "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt",
+      "markImagegen": "npm run source:imagegen-mark -- --id black-coral-gate",
+      "checkImagegen": "npm run source:imagegen-status -- --id black-coral-gate",
+      "ingestImagegen": "npm run source:imagegen-status -- --id black-coral-gate --ingest",
+      "captureManual": "npm run source:inbox-capture -- --id black-coral-gate --open",
+      "recoverSavedImage": "npm run source:recover-inline -- --id black-coral-gate --image <saved-image-path> --copy --validate",
+      "generateOpenAiDryRun": "npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+      "generateOpenAiApply": "npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+      "validateInbox": "python3 tools/validate_source_candidate_images.py --id black-coral-gate --image tools/source-inbox/black-coral-gate.png",
+      "dryRunReplace": "npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite --dry-run",
+      "applyReplace": "npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite",
+      "imageCheck": "npm run source:image-check -- --id black-coral-gate",
+      "sourcePreview": "npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual",
+      "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+    },
+    "failures": [
+      "replacement inbox image is byte-identical to the current source; generate or capture a distinct replacement before overwrite"
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Intake Doctor</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background:#071316; color:#e4f4f6; }
+    body { margin:0; }
+    main { max-width:1180px; margin:0 auto; padding:26px 16px 48px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); }
+    p, li { color:#aac0c7; }
+    code, pre { background:#061014; color:#dffbff; border-radius:5px; }
+    code { padding:1px 4px; }
+    pre { padding:12px; border:1px solid #24414a; overflow:auto; }
+    .panel { border:1px solid #294955; border-radius:8px; background:#0c2026; padding:16px; margin:16px 0; }
+    .status { display:flex; flex-wrap:wrap; gap:10px; }
+    .status span { border:1px solid #315766; border-radius:6px; padding:8px 10px; }
+    table { width:100%; border-collapse:collapse; margin-top:16px; }
+    th, td { text-align:left; padding:8px; border-bottom:1px solid #203b45; vertical-align:top; }
+    th { color:#dffbff; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Source Intake Doctor</h1>
+    <p>Focused status for the next source-image bottleneck. Use this before ingesting generated magenta source art.</p>
+    <section class="panel">
+      <h2>Brine Crown <code>brine-crown</code></h2>
+      <div class="status">
+        <span>status <strong>source-present</strong></span>
+        <span>ready for ingest <strong>true</strong></span>
+        <span>inbox files <strong>1</strong></span>
+      </div>
+      <h3>Expected Inbox Files</h3>
+      <ul><li><code>tools/source-inbox/brine-crown.png</code></li><li><code>tools/source-inbox/fauna-brine-crown-whole-source.png</code></li></ul>
+      <h3>Commands</h3>
+      <pre><code>npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown
+npm run source:check
+npm run source:gallery</code></pre>
+      <h3>Intake Utilities</h3>
+      <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown
+npm run source:inbox-capture -- --id brine-crown --open
+npm run source:ingest-current -- --id brine-crown --dry-run
+npm run source:ingest-current -- --id brine-crown --apply</code></pre>
+    </section>
+    <section class="panel">
+      <h2>Queue Snapshot</h2>
+      <table><thead><tr><th>Rank</th><th>Candidate</th><th>Status</th><th>Source</th><th>Inbox</th></tr></thead><tbody></tbody></table>
+    </section>
+  </main>
+</body>
+</html>

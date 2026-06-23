@@ -1,0 +1,2015 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Research Dispatch Board</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061014; --panel:#0c1c22; --line:#294653; --text:#e5f6f8; --muted:#96aeb8; --accent:#7ee8ff; --warn:#f0d9aa; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); }
+    main { max-width:1440px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:14px 0 8px; color:var(--muted); font-size:12px; text-transform:uppercase; }
+    p { color:var(--muted); line-height:1.45; }
+    .notice { border:1px solid #6a5230; border-radius:6px; background:#1d1710; color:var(--warn); padding:10px 12px; margin:14px 0; }
+    .summary { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .summary span { border:1px solid var(--line); border-radius:6px; background:#0b1b22; padding:8px 10px; color:var(--muted); }
+    table { width:100%; border-collapse:collapse; border:1px solid var(--line); background:var(--panel); margin:18px 0; }
+    th, td { text-align:left; border-bottom:1px solid var(--line); padding:8px 10px; vertical-align:top; }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    code, pre, textarea { font-family:"SFMono-Regular",Consolas,monospace; }
+    code { display:block; color:var(--muted); }
+    pre { margin:0; border:1px solid var(--line); background:#050b0d; padding:8px; white-space:pre-wrap; overflow:auto; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:12px; }
+    .card { border:1px solid var(--line); border-radius:7px; background:var(--panel); padding:14px; }
+    .card header { display:flex; justify-content:space-between; gap:12px; }
+    textarea { width:100%; min-height:220px; border:1px solid var(--line); border-radius:6px; background:#050b0d; color:var(--text); padding:10px; resize:vertical; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Research Dispatch Board</h1>
+    <p>Per-candidate subagent packets for fauna/flora research, source-art risks, articulation planning, and sandbox review handoff.</p>
+    <div class="notice">Read-only dispatch surface. Research packets do not approve source art or count threats toward the strict gate.</div>
+    <pre><code>npm run research:dispatch
+npm run research:dispatch-check
+npm run sandbox:lab -- --id abyssal-gulper --with diver
+npm run source:approval-runway:preview -- --id &lt;candidate-id&gt;</code></pre>
+    <section class="summary">
+      <span>candidates <strong>20</strong></span>
+      <span>packets <strong>20</strong></span>
+      <span>lanes <strong>3</strong></span>
+      <span>audited <strong>20</strong></span>
+      <span>sources <strong>20</strong></span>
+    </section>
+    <table>
+      <thead><tr><th>Candidate</th><th>Lane</th><th>Source</th><th>Audit</th><th>Packet</th><th>Commands</th></tr></thead>
+      <tbody><tr data-lane="complex-colonial-forms">
+    <td><code>black-coral-gate</code><strong>Black Coral Gate</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/black-coral-gate.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-black-coral-gate --with diver
+npm run sandbox:preview -- --id black-coral-gate --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id black-coral-gate</code></pre></td>
+  </tr>
+<tr data-lane="complex-colonial-forms">
+    <td><code>brine-mycelium-shelf</code><strong>Brine Mycelium Shelf</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/brine-mycelium-shelf.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-brine-mycelium-shelf --with diver
+npm run sandbox:preview -- --id brine-mycelium-shelf --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id brine-mycelium-shelf</code></pre></td>
+  </tr>
+<tr data-lane="complex-colonial-forms">
+    <td><code>chain-vein-siphonophore</code><strong>Chain Vein Siphonophore</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/chain-vein-siphonophore.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-chain-vein-siphonophore --with diver
+npm run sandbox:preview -- --id chain-vein-siphonophore --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id chain-vein-siphonophore</code></pre></td>
+  </tr>
+<tr data-lane="complex-colonial-forms">
+    <td><code>glass-sponge-sentinel</code><strong>Glass Sponge Sentinel</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/glass-sponge-sentinel.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-glass-sponge-sentinel --with diver
+npm run sandbox:preview -- --id glass-sponge-sentinel --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id glass-sponge-sentinel</code></pre></td>
+  </tr>
+<tr data-lane="complex-colonial-forms">
+    <td><code>reliquary-siphonophore</code><strong>Reliquary Siphonophore</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/reliquary-siphonophore.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-reliquary-siphonophore --with diver
+npm run sandbox:preview -- --id reliquary-siphonophore --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id reliquary-siphonophore</code></pre></td>
+  </tr>
+<tr data-lane="complex-colonial-forms">
+    <td><code>thorn-fan-coralline</code><strong>Thorn Fan Coralline</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/thorn-fan-coralline.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-thorn-fan-coralline --with diver
+npm run sandbox:preview -- --id thorn-fan-coralline --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id thorn-fan-coralline</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>abyssal-lantern-mantis</code><strong>Abyssal Lantern Mantis</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/abyssal-lantern-mantis.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-abyssal-lantern-mantis --with diver
+npm run sandbox:preview -- --id abyssal-lantern-mantis --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id abyssal-lantern-mantis</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>gulper-eel-maw</code><strong>Gulper Eel Maw</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/gulper-eel-maw.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-gulper-eel-maw --with diver
+npm run sandbox:preview -- --id gulper-eel-maw --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id gulper-eel-maw</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>hadal-trencher-isopod</code><strong>Hadal Trencher Isopod</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/hadal-trencher-isopod.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-hadal-trencher-isopod --with diver
+npm run sandbox:preview -- --id hadal-trencher-isopod --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id hadal-trencher-isopod</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>reef-lion-moray</code><strong>Reef Lion Moray</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/reef-lion-moray.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-reef-lion-moray --with diver
+npm run sandbox:preview -- --id reef-lion-moray --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id reef-lion-moray</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>saber-viperfish</code><strong>Saber Viperfish</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/saber-viperfish.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-saber-viperfish --with diver
+npm run sandbox:preview -- --id saber-viperfish --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id saber-viperfish</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>trench-harvest-sea-spider</code><strong>Trench Harvest Sea Spider</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/trench-harvest-sea-spider.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-trench-harvest-sea-spider --with diver
+npm run sandbox:preview -- --id trench-harvest-sea-spider --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id trench-harvest-sea-spider</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>tripod-stilt-stalker</code><strong>Tripod Stilt Stalker</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/tripod-stilt-stalker.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-tripod-stilt-stalker --with diver
+npm run sandbox:preview -- --id tripod-stilt-stalker --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id tripod-stilt-stalker</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>vampire-cloak-squid</code><strong>Vampire Cloak Squid</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/vampire-cloak-squid.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-vampire-cloak-squid --with diver
+npm run sandbox:preview -- --id vampire-cloak-squid --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id vampire-cloak-squid</code></pre></td>
+  </tr>
+<tr data-lane="mobile-predator-motion">
+    <td><code>vent-claw-yeti</code><strong>Vent-Claw Yeti</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/vent-claw-yeti.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-vent-claw-yeti --with diver
+npm run sandbox:preview -- --id vent-claw-yeti --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id vent-claw-yeti</code></pre></td>
+  </tr>
+<tr data-lane="sessile-ambush-hazards">
+    <td><code>brine-crown</code><strong>Brine Crown</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/brine-crown.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-brine-crown --with diver
+npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id brine-crown</code></pre></td>
+  </tr>
+<tr data-lane="sessile-ambush-hazards">
+    <td><code>coronate-sting-crown</code><strong>Coronate Sting Crown</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/coronate-sting-crown.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-coronate-sting-crown --with diver
+npm run sandbox:preview -- --id coronate-sting-crown --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id coronate-sting-crown</code></pre></td>
+  </tr>
+<tr data-lane="sessile-ambush-hazards">
+    <td><code>lantern-anemone-pit</code><strong>Lantern Anemone Pit</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/lantern-anemone-pit.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-lantern-anemone-pit --with diver
+npm run sandbox:preview -- --id lantern-anemone-pit --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id lantern-anemone-pit</code></pre></td>
+  </tr>
+<tr data-lane="sessile-ambush-hazards">
+    <td><code>predatory-tunicate-maw</code><strong>Predatory Tunicate Maw</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/predatory-tunicate-maw.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-predatory-tunicate-maw --with diver
+npm run sandbox:preview -- --id predatory-tunicate-maw --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id predatory-tunicate-maw</code></pre></td>
+  </tr>
+<tr data-lane="sessile-ambush-hazards">
+    <td><code>razor-kelp-harp</code><strong>Razor Kelp Harp</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes</td>
+    <td>yes</td>
+    <td><a href="/review/source-candidates/research-dispatch-packets/razor-kelp-harp.md">packet</a></td>
+    <td><pre><code>npm run sandbox:lab -- --id source-razor-kelp-harp --with diver
+npm run sandbox:preview -- --id razor-kelp-harp --kind source --serve --open --visual
+npm run source:approval-runway:preview -- --id razor-kelp-harp</code></pre></td>
+  </tr></tbody>
+    </table>
+    <section class="grid"><article class="card" id="black-coral-gate">
+    <header>
+      <div><h2>Black Coral Gate</h2><code>black-coral-gate</code></div>
+      <span>complex-colonial-forms</span>
+    </header>
+    <p>Passage-control ambusher that holds an open arch, telegraphs with glowing hinge polyps, then drops and clamps a living portcullis around the diver.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>Antipatharia black coral thorny skeleton</li><li>black coral polyps close up</li><li>gorgonian sea fan branching colony</li><li>brittle star arm curling motion</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Black Coral Gate (black-coral-gate)
+Lane: complex-colonial-forms
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Passage-control ambusher that holds an open arch, telegraphs with glowing hinge polyps, then drops and clamps a living portcullis around the diver.
+
+Biological anchors:
+- Black coral / antipatharian branching skeletons: dark thorny axial rods with living polyps on the surface.
+- Gorgonian sea fans and whip corals for a gate-like lattice that still reads as one colony.
+- Coral polyp retraction and synchronized pulsing as the visual telegraph before closure.
+- Basket-star or brittle-star hinge logic for flexible branching arms that fold inward without becoming mechanical.
+- Encrusting ruin fauna cues: the organism may mimic an archway, but the body must remain biological, rooted, and alive.
+
+Required visual read:
+- One cohesive whole-source organism on pure magenta, not separate coral chunks glued onto stone ruins.
+- Open arch / portcullis silhouette is the first read, with the bite line clearly visible at game scale.
+- Left and right rooted pillars share one material language and connect through a living crown bridge.
+- Crop-safe thick bars, hinge knots, root mats, and latch jaws have visible margins for later cutting.
+- Danger read comes from closing thorn-bars, glowing hinge polyps, and clamp teeth, not baked-in particles or scenery.
+
+Articulatable parts:
+- left root mat
+- right root mat
+- left pillar trunk
+- right pillar trunk
+- upper crown bridge torso
+- central descending portcullis bar cluster
+- near folding thorn gate arm
+- far folding thorn gate arm
+- left hinge polyp knot
+- right hinge polyp knot
+- lower clamp teeth / latch spines
+- glow-polyp warning overlay
+
+Known prompt risks:
+- Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.
+- Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.
+- Avoid thin hairlike coral branches that cannot be cropped or read at game scale.
+- Avoid magenta, hot pink, or purple body values that will conflict with the chroma key.
+- Keep bubbles, slam VFX, rubble, sand, and lighting effects separate from the base source.
+
+Reference search terms:
+- Antipatharia black coral thorny skeleton
+- black coral polyps close up
+- gorgonian sea fan branching colony
+- brittle star arm curling motion
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id black-coral-gate --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-black-coral-gate --with diver
+npm run source:approval-runway:preview -- --id black-coral-gate
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;complex-colonial-forms&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;black-coral-gate&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="brine-mycelium-shelf">
+    <header>
+      <div><h2>Brine Mycelium Shelf</h2><code>brine-mycelium-shelf</code></div>
+      <span>complex-colonial-forms</span>
+    </header>
+    <p>Creeping sessile fungal shelf that blocks ledges, exhales spore bursts, and extends brittle feeding plates to punish close movement.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>marine fungal mycelium biofilm</li><li>underwater biofilm mat sulfur bacteria</li><li>bracket fungus shelf morphology</li><li>encrusting sponge tunicate colony</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Brine Mycelium Shelf (brine-mycelium-shelf)
+Lane: complex-colonial-forms
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Creeping sessile fungal shelf that blocks ledges, exhales spore bursts, and extends brittle feeding plates to punish close movement.
+
+Biological anchors:
+- Marine fungal mycelium and biofilm mats for a spreading, rooted decomposer footprint.
+- Bracket fungus and shelf mushroom silhouettes translated into underwater encrusting plates.
+- Sulfur bacterial mats for pale filament networks and hypoxic warning coloration.
+- Sponge and tunicate encrustation cues for a plausible submerged colony texture.
+- Puffball spore-release logic for a clear inhale, swell, and burst attack cycle.
+
+Required visual read:
+- One living encrusting shelf organism, not a pile of land mushrooms dropped underwater.
+- Layered shelf plates and central spore pores are readable before surface texture detail.
+- Mycelial root web visibly ties the plates into one anchored threat.
+- Several large plates have clear hinge zones for extension and recoil animation.
+- No wreck wall, cave surface, fog, spore cloud, or environmental substrate baked into the source.
+
+Articulatable parts:
+- mycelial root mat
+- central swollen spore sac
+- upper shelf plate
+- lower shelf plate
+- left feeding plate
+- right feeding plate
+- front brittle plate lip
+- spore pore cluster
+- filament whisker fringe
+- cracked crust overlays
+- integrated warning-color tissue patches
+
+Known prompt risks:
+- Avoid terrestrial mushroom caps with stems; keep the form encrusting and underwater-adapted.
+- Avoid making the source look like an inert rock or coral slab.
+- Avoid dense fuzzy texture that hides the main plates and hinge zones.
+- Avoid baked spore clouds or fog covering the anatomy.
+- Avoid magenta, hot pink, or purple fungal tissue near the key color.
+
+Reference search terms:
+- marine fungal mycelium biofilm
+- underwater biofilm mat sulfur bacteria
+- bracket fungus shelf morphology
+- encrusting sponge tunicate colony
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id brine-mycelium-shelf --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-brine-mycelium-shelf --with diver
+npm run source:approval-runway:preview -- --id brine-mycelium-shelf
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;complex-colonial-forms&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;brine-mycelium-shelf&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="chain-vein-siphonophore">
+    <header>
+      <div><h2>Chain Vein Siphonophore</h2><code>chain-vein-siphonophore</code></div>
+      <span>complex-colonial-forms</span>
+    </header>
+    <p>Living tripwire colony that unfolds from a compact soft colony curl, stretches stinging lines across a lane, then contracts its feeding polyps inward toward the player.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>Praya dubia siphonophore colony</li><li>Apolemia uvaria siphonophore chain</li><li>siphonophore nectophore stem zooids</li><li>siphonophore tentilla cnidocyte batteries</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Chain Vein Siphonophore (chain-vein-siphonophore)
+Lane: complex-colonial-forms
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Living tripwire colony that unfolds from a compact soft colony curl, stretches stinging lines across a lane, then contracts its feeding polyps inward toward the player.
+
+Biological anchors:
+- Siphonophore colony body plan made of specialized zooids rather than a single jelly bell.
+- Nectophore swimming bells arranged along a central stem for segmented propulsion.
+- Feeding polyps and bracts clustered beneath the stem for a visible predatory center.
+- Long tentilla with cnidocyte batteries represented as bead-like sting nodes.
+- Praya and Apolemia-like open-water chain silhouette with flexible colony articulation.
+
+Required visual read:
+- One continuous colonial organism, not separate beads or loose jellyfish pieces.
+- Continuous soft colony stem, swimming bells, feeding cluster, and stinging lines are all visible.
+- Tripwire tendrils are few, broad, and separated enough to rig.
+- The safe gap between hanging lines remains readable at sprite scale.
+- All anatomy stays isolated on pure magenta with no water haze, shadows, plankton, or baked glow clouds.
+
+Articulatable parts:
+- front float bract
+- continuous soft colony stem
+- upper nectophore bell pair
+- middle nectophore bell pair
+- lower nectophore bell pair
+- left shield bract
+- right shield bract
+- feeding polyp cluster
+- four broad stinging tendrils
+- tentilla bead nodes
+- terminal lure bulb
+- sting bead tissue accents
+
+Known prompt risks:
+- Avoid making it a single jellyfish umbrella; it must read as a siphonophore colony.
+- Avoid detached beads or pearls that do not connect to the central stem.
+- Avoid literal chains, wires, hooks, or mechanical trip mines.
+- Avoid overly thin tendrils that disappear at 64px.
+- Keep pure magenta only in the background and avoid magenta internal glow.
+- Keep electric arcs and contact sparks separate from the base sprite.
+
+Reference search terms:
+- Praya dubia siphonophore colony
+- Apolemia uvaria siphonophore chain
+- siphonophore nectophore stem zooids
+- siphonophore tentilla cnidocyte batteries
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id chain-vein-siphonophore --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-chain-vein-siphonophore --with diver
+npm run source:approval-runway:preview -- --id chain-vein-siphonophore
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;complex-colonial-forms&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;chain-vein-siphonophore&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="glass-sponge-sentinel">
+    <header>
+      <div><h2>Glass Sponge Sentinel</h2><code>glass-sponge-sentinel</code></div>
+      <span>complex-colonial-forms</span>
+    </header>
+    <p>Sessile lane-control sentinel: bait the aim, dodge the brittle needle cone, then punish the exposed recharge window.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>Euplectella aspergillum glass sponge</li><li>Hexactinellida osculum vase sponge</li><li>deep sea glass sponge reef spicules</li><li>Venus flower basket silica lattice</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Glass Sponge Sentinel (glass-sponge-sentinel)
+Lane: complex-colonial-forms
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Sessile lane-control sentinel: bait the aim, dodge the brittle needle cone, then punish the exposed recharge window.
+
+Biological anchors:
+- Glass sponges / Hexactinellida: rigid silica lattice body, vase or barrel silhouette, deep-water filter-feeder posture.
+- Venus flower basket cues: woven cage ribs, cross-braced spicule grid, translucent mineral-white skeleton.
+- Osculum and pump anatomy: a large central throat that visibly inhales, compresses, then vents the attack direction.
+- Siliceous spicules as defense: brittle needle bundles, star-like spicule clusters, and glassy spear cones that feel organic, not metallic.
+- Deep sponge reef habitat logic: sessile sentinel anchored to rock, dangerous because it controls approach lanes rather than chasing.
+
+Required visual read:
+- One vase-like glass sponge organism, not a generic coral fan or separate sponge colony.
+- Large central osculum throat is the first danger read.
+- Bold cross-braced lattice ribs remain readable at game scale rather than dissolving into lace noise.
+- Needle-cone petals and rim spicules are thick enough to crop and articulate.
+- Anchored base, throat, rim, and needle petals share one lighting and material language.
+
+Articulatable parts:
+- root rock/base anchor
+- lower stalk or foot collar
+- main vase body torso
+- front lattice rib group
+- rear lattice rib group
+- left rim plate
+- right rim plate
+- central osculum/throat valve head
+- three brittle needle-cone petals
+- outer spicule crown
+- small fracture shard overlays
+- separate needle-cone projectile / pressure-ring VFX
+
+Known prompt risks:
+- Avoid a generic coral fan or sea plant; it must read as one vase-like glass sponge organism.
+- Avoid metal turrets, guns, cannons, crystals, or sci-fi machinery; needles are biological silica spicules.
+- Avoid dense lace detail that becomes noise at sprite scale; use bold crop-safe ribs and a few large needle petals.
+- Avoid multiple separate sponge colonies; generate one cohesive whole-source creature with one clear silhouette.
+- Keep pure magenta only in the background and keep all anatomy fully inside the crop.
+
+Reference search terms:
+- Euplectella aspergillum glass sponge
+- Hexactinellida osculum vase sponge
+- deep sea glass sponge reef spicules
+- Venus flower basket silica lattice
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id glass-sponge-sentinel --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-glass-sponge-sentinel --with diver
+npm run source:approval-runway:preview -- --id glass-sponge-sentinel
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;complex-colonial-forms&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;glass-sponge-sentinel&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="reliquary-siphonophore">
+    <header>
+      <div><h2>Reliquary Siphonophore</h2><code>reliquary-siphonophore</code></div>
+      <span>complex-colonial-forms</span>
+    </header>
+    <p>Vertical tripwire colony: thread the safe gap, avoid the stinging curtain pulse, then punish the dim reload window.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>deep sea siphonophore nectophore colony</li><li>Marrus orthocanna siphonophore</li><li>Apolemia siphonophore chain</li><li>Portuguese man o war tentilla cnidocytes</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Reliquary Siphonophore (reliquary-siphonophore)
+Lane: complex-colonial-forms
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Vertical tripwire colony: thread the safe gap, avoid the stinging curtain pulse, then punish the dim reload window.
+
+Biological anchors:
+- Siphonophore colony logic: one animal-like colony made from specialized zooids, not a swarm of unrelated jellyfish.
+- Portuguese man-of-war and deep siphonophore cues: float/crest, nectophore bells, feeding polyps, and long stinging tentilla.
+- Chandelier silhouette: a clear upper float, central living chain, hanging bead organs, and three to five broad readable tripwire tendrils.
+- Bioluminescent lure organs and pulsing zooid beads for telegraph clarity.
+- Cnidocyte sting behavior: fine biological harpoons implied through glowing tentilla tips, not metal hooks or wires.
+
+Required visual read:
+- One cohesive whole-source organism on pure #ff00ff magenta, centered with generous crop margin.
+- Vertical chandelier or reliquary colony with a clear top, spine, bell clusters, and dangling hazard zone.
+- Tripwire tendrils are broad enough to crop, rig, and see at 64px; avoid hair-thin jelly threads.
+- Safe gap is visually plausible: tendrils hang in separate arcs rather than one opaque curtain.
+- Ruin/reliquary flavor stays organic shell, glass, and pearl shapes, not a literal lantern, cage, or metal object.
+
+Articulatable parts:
+- top gas float / crest
+- central colony spine torso
+- stacked nectophore bell clusters
+- left lateral bell fin
+- right lateral bell fin
+- connected zooid/bract chain with visible membranes
+- front feeding polyp cluster
+- rear feeding polyp cluster
+- four broad tripwire tendrils with bulb tips
+- anatomical lure bead
+- sting-tip bead anatomy
+- separate tripwire pulse / contact spark VFX
+
+Known prompt risks:
+- Avoid a generic jellyfish umbrella; require siphonophore colony structure with float, bells, zooids, and tendrils.
+- Avoid loose collage parts; all visible anatomy must belong to one continuous whole-source organism.
+- Avoid hair-thin tentacles that cannot be cropped or socketed; use a few broad readable tripwire tendrils.
+- Avoid literal metal chandeliers, cages, church relics, candles, or jewelry.
+- Keep glow, sting pulses, and contact sparks as separate VFX so they do not cover the base anatomy.
+- Keep pure magenta only in the background; avoid magenta internal glow that breaks chroma keying.
+
+Reference search terms:
+- deep sea siphonophore nectophore colony
+- Marrus orthocanna siphonophore
+- Apolemia siphonophore chain
+- Portuguese man o war tentilla cnidocytes
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id reliquary-siphonophore --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-reliquary-siphonophore --with diver
+npm run source:approval-runway:preview -- --id reliquary-siphonophore
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;complex-colonial-forms&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;reliquary-siphonophore&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="thorn-fan-coralline">
+    <header>
+      <div><h2>Thorn Fan Coralline</h2><code>thorn-fan-coralline</code></div>
+      <span>complex-colonial-forms</span>
+    </header>
+    <p>Reef-like fan ambusher that disguises itself as cover, rotates into the current, then lashes thorn ribs to create a temporary damage wall.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>gorgonian sea fan thick branches</li><li>fire coral stinging polyps</li><li>hydroid colony stinging polyps</li><li>crustose coralline algae reef plating</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Thorn Fan Coralline (thorn-fan-coralline)
+Lane: complex-colonial-forms
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Reef-like fan ambusher that disguises itself as cover, rotates into the current, then lashes thorn ribs to create a temporary damage wall.
+
+Biological anchors:
+- Gorgonian sea fan structure for a flattened branching lattice with a rooted stalk.
+- Fire coral and hydroid sting cues for contact-danger polyps along the ribs.
+- Crustose coralline algae for armored pink-free plating and reef-integrated growth.
+- Feather star arm flexibility for fan ribs that can fold, rake, and reopen organically.
+- Sea fan current-feeding posture for a believable rotate-and-spread telegraph.
+
+Required visual read:
+- One rooted fan-shaped reef organism, not background coral decoration.
+- Thick thorn ribs and central stalk define the first silhouette at game scale.
+- Left and right fan lobes have separable branch groups for folding and lashing.
+- Stinging polyp beads sit on the ribs without becoming noisy dotted texture.
+- No reef wall, seabed, lighting shaft, fish, bubbles, or baked current lines in the source.
+
+Articulatable parts:
+- rooted reef foot
+- central stalk spine
+- left fan lobe
+- right fan lobe
+- upper rib cluster
+- lower rib cluster
+- front thorn rake
+- rear support ribs
+- stinging polyp bead rows
+- armored coralline plates
+- fold hinge knots
+- integrated warning-color wall tissue
+
+Known prompt risks:
+- Avoid background reef scenery; the fan must read as an enemy entity.
+- Avoid thin lace branches that disappear at small sprite size.
+- Avoid perfect ornamental symmetry that feels like a decorative logo.
+- Avoid detached coral chunks or separate fan colonies.
+- Keep current streaks, sting flashes, and impact sparks as separate VFX assets.
+
+Reference search terms:
+- gorgonian sea fan thick branches
+- fire coral stinging polyps
+- hydroid colony stinging polyps
+- crustose coralline algae reef plating
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id thorn-fan-coralline --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-thorn-fan-coralline --with diver
+npm run source:approval-runway:preview -- --id thorn-fan-coralline
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;complex-colonial-forms&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;thorn-fan-coralline&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="abyssal-lantern-mantis">
+    <header>
+      <div><h2>Abyssal Lantern Mantis</h2><code>abyssal-lantern-mantis</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Burst striker that locks on with lantern eye spots, coils its raptorial arms, then releases a fast straight-line punch.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>mantis shrimp raptorial appendage folded</li><li>stomatopod meral saddle anatomy</li><li>mantis shrimp eye stalks</li><li>mantis shrimp tail fan side view</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Abyssal Lantern Mantis (abyssal-lantern-mantis)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Burst striker that locks on with lantern eye spots, coils its raptorial arms, then releases a fast straight-line punch.
+
+Biological anchors:
+- Mantis shrimp raptorial appendages for spring-loaded striking arms and saddle-like joints.
+- Stomatopod segmented thorax and plated abdomen for a colorful but armored arthropod read.
+- Deep reef and cave predator cues with reduced color saturation, luminous eye spots, and tactile antennae.
+- Spearer and smasher mantis shrimp behaviors blended into one readable attack telegraph.
+- Compound eye stalk anatomy for a rotating aim signal without adding machinery.
+
+Required visual read:
+- One full-body mantis-shrimp-like predator with clear head, torso, abdomen, and tail fan.
+- Coiled raptorial arms are the first danger read and must show punch direction.
+- Eye stalks, antennae, strike arms, walking limbs, and tail fan need crop-safe separation.
+- The creature should feel biological and crustacean, not a robot, gun, or armored fish.
+- No punch streaks, shock rings, cave wall, bubbles, shadows, or light cones baked into the source.
+
+Articulatable parts:
+- plated forward head carapace
+- left raised compound eye stalk
+- right raised compound eye stalk
+- left long antenna whip
+- right long antenna whip
+- compressed thorax torso plates
+- left folded raptorial strike arm
+- right folded raptorial strike arm
+- small underside walking limb cluster
+- rear segmented abdomen chain
+- broad stabilizing tail fan
+- cyan lantern eye glow overlays
+
+Known prompt risks:
+- Avoid robotic boxing gloves, cannons, drills, or mechanical pistons.
+- Avoid tropical rainbow saturation that fights the abyssal threat tone.
+- Avoid fish-like fins replacing the crustacean legs and plated abdomen.
+- Avoid making the eye glow magenta or hot pink.
+- Keep punch trails, shock rings, and aim beams as separate VFX.
+
+Reference search terms:
+- mantis shrimp raptorial appendage folded
+- stomatopod meral saddle anatomy
+- mantis shrimp eye stalks
+- mantis shrimp tail fan side view
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id abyssal-lantern-mantis --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-abyssal-lantern-mantis --with diver
+npm run source:approval-runway:preview -- --id abyssal-lantern-mantis
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;abyssal-lantern-mantis&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="gulper-eel-maw">
+    <header>
+      <div><h2>Gulper Eel Maw</h2><code>gulper-eel-maw</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Inhale ambusher that blooms a huge mouth pouch, pulls the diver into a short suction cone, then snaps shut before a deflated recovery window.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>pelican eel mouth open</li><li>gulper eel buccal cavity</li><li>Eurypharynx pelecanoides anatomy</li><li>pelican eel tail lure</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Gulper Eel Maw (gulper-eel-maw)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Inhale ambusher that blooms a huge mouth pouch, pulls the diver into a short suction cone, then snaps shut before a deflated recovery window.
+
+Biological anchors:
+- Pelican eel and gulper eel anatomy: oversized hinged jaws, loose expandable throat pouch, tiny skull, and long whip body.
+- Deep pelagic predator posture: sparse fins, black flexible skin, and a silhouette dominated by the mouth rather than armor.
+- Bioluminescent tail lure behavior for a readable bait phase before the suction attack.
+- Expandable buccal cavity mechanics: pouch inflates as a volume hazard, then collapses after the snap.
+- Abyssal reduced-detail anatomy: small eyes, visible gill seams, and fragile ribbonlike body proportions.
+
+Required visual read:
+- One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.
+- Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.
+- Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.
+- Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.
+- No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source.
+
+Articulatable parts:
+- upper hinged jaw hoop
+- lower hinged jaw hoop
+- expandable throat pouch membrane
+- small skull hinge collar
+- dark inner mouth plate
+- narrow eel neck segment
+- front ribbon body segment
+- rear whip tail segment
+- tail-tip lure bulb
+- left tiny pectoral fin
+- right tiny pectoral fin
+- gill slit seam plates
+
+Known prompt risks:
+- Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.
+- Avoid a detached monster mouth; all jaw and pouch structures must connect to the body.
+- Avoid making suction currents part of the base sprite; pull effects should be separate VFX.
+- Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.
+- Avoid over-detailing the black body so the hinge zones and lure remain readable.
+
+Reference search terms:
+- pelican eel mouth open
+- gulper eel buccal cavity
+- Eurypharynx pelecanoides anatomy
+- pelican eel tail lure
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id gulper-eel-maw --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-gulper-eel-maw --with diver
+npm run source:approval-runway:preview -- --id gulper-eel-maw
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;gulper-eel-maw&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="hadal-trencher-isopod">
+    <header>
+      <div><h2>Hadal Trencher Isopod</h2><code>hadal-trencher-isopod</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Armored burrow ambusher that braces into the sediment, raises shield plates, then lunges in a short crushing shove.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>Bathynomus giganteus side view</li><li>giant isopod curled posture</li><li>deep sea isopod pereopods</li><li>isopod pleotelson anatomy</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Hadal Trencher Isopod (hadal-trencher-isopod)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Armored burrow ambusher that braces into the sediment, raises shield plates, then lunges in a short crushing shove.
+
+Biological anchors:
+- Giant isopod body plan with overlapping armored tergites and a curled defensive posture.
+- Deep-sea scavenger cues: heavy antennae, compact legs, and blunt crushing mouthparts.
+- Bathynomus-style domed carapace for a readable shield-first silhouette.
+- Burrowing amphipod and isopod behavior for sudden sandline emergence without becoming a worm.
+- Abyssal pressure adaptation cues through pale chitin, dark seams, and reduced eye spots.
+
+Required visual read:
+- One cohesive full-body isopod-like threat, not a generic beetle, trilobite, or crab.
+- Segmented armored back is the first read, with the head and shove direction clearly visible.
+- Legs, antennae, plates, and mouthparts are thick enough to crop and rig at sprite scale.
+- Defensive curl and forward lunge shapes must be visually plausible from the same anatomy.
+- No sand clouds, seafloor, burrow hole, shadows, haze, or loose debris baked into the source.
+
+Articulatable parts:
+- broad forward head shield
+- central overlapping thorax plate stack
+- rear curled abdomen plate stack
+- left heavy sensory antenna
+- right heavy sensory antenna
+- left blunt mandible plate
+- right blunt mandible plate
+- front compact walking leg pair
+- middle compact walking leg pair
+- rear anchoring walking leg pair
+- left and right side shield flanges
+- rear curled tail fan plate
+
+Known prompt risks:
+- Avoid making it look like a land beetle; keep marine isopod proportions and flattened body logic.
+- Avoid overly tiny legs hidden under the shell; they need to rig clearly.
+- Avoid perfect trilobite symmetry or fossil styling that reads as extinct decoration.
+- Avoid magenta, hot pink, or purple body colors that conflict with the chroma key.
+- Keep sand burst, impact dust, and burrow opening as separate VFX rather than source art.
+
+Reference search terms:
+- Bathynomus giganteus side view
+- giant isopod curled posture
+- deep sea isopod pereopods
+- isopod pleotelson anatomy
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id hadal-trencher-isopod --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-hadal-trencher-isopod --with diver
+npm run source:approval-runway:preview -- --id hadal-trencher-isopod
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;hadal-trencher-isopod&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="reef-lion-moray">
+    <header>
+      <div><h2>Reef Lion Moray</h2><code>reef-lion-moray</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Hybrid reef ambusher that flares venom fins to block escape lanes, lunges with a moray bite, then exposes its folded spine fan during recovery.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>moray eel side view open mouth</li><li>lionfish pectoral fin fan anatomy</li><li>scorpionfish venom dorsal spines</li><li>moray eel gill pores</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Reef Lion Moray (reef-lion-moray)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Hybrid reef ambusher that flares venom fins to block escape lanes, lunges with a moray bite, then exposes its folded spine fan during recovery.
+
+Biological anchors:
+- Moray eel anatomy: elongated muscular body, blunt predatory head, hinged jaws, and gill pore rhythm.
+- Lionfish and scorpionfish danger cues: venomous dorsal spines, broad pectoral fans, and striped warning pattern.
+- Reef cave ambush behavior translated into a full-body source without adding a cave or rock.
+- Flexible eel locomotion for coil, lunge, and recoil animation phases.
+- Venomous fin display logic: expanded fins are the warning and lane-control shape, not loose decoration.
+
+Required visual read:
+- One cohesive vertebrate hybrid, not a separate eel wrapped in decorative lionfish fins.
+- Moray head and flared venom spine fan are the first reads at game scale.
+- Eel torso, jaws, pectoral fans, dorsal spines, tail coil, and cheek frills remain visibly connected.
+- Spines and fin membranes are broad enough to crop and animate without becoming noisy feathers.
+- No reef wall, cave hole, coral scenery, sand plume, shadow, bubbles, or poison cloud baked into the source.
+
+Articulatable parts:
+- blunt moray head plate
+- upper hooked jaw plate
+- lower hinged jaw plate
+- inner bite mouth plate
+- throat gill pouch
+- sinuous eel torso coil
+- folding dorsal venom spine fan
+- left striped pectoral fan
+- right striped pectoral fan
+- cheek frill whisker cluster
+- banded tail coil segment
+- tail blade fin
+
+Known prompt risks:
+- Avoid a collage of eel plus loose lionfish fins; the hybrid must read as one continuous vertebrate.
+- Avoid thin hairlike spines that disappear at sprite scale; use broad crop-safe venom rays.
+- Avoid including reef scenery, cave darkness, or coral props in the isolated source.
+- Avoid making the fins look like decorative wings instead of biological pectoral and dorsal fins.
+- Avoid magenta, hot pink, or purple warning stripes that could interfere with keying.
+
+Reference search terms:
+- moray eel side view open mouth
+- lionfish pectoral fin fan anatomy
+- scorpionfish venom dorsal spines
+- moray eel gill pores
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id reef-lion-moray --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-reef-lion-moray --with diver
+npm run source:approval-runway:preview -- --id reef-lion-moray
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;reef-lion-moray&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="saber-viperfish">
+    <header>
+      <div><h2>Saber Viperfish</h2><code>saber-viperfish</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Lock-on dash striker that flashes its photophore chain, unhinges saber jaws, then commits to a fast straight impale that can be dodged and punished.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>deep sea viperfish side view</li><li>Chauliodus sloani jaw teeth</li><li>viperfish photophores</li><li>viperfish dorsal lure</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Saber Viperfish (saber-viperfish)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Lock-on dash striker that flashes its photophore chain, unhinges saber jaws, then commits to a fast straight impale that can be dodged and punished.
+
+Biological anchors:
+- Deep-sea viperfish anatomy: oversized recurved teeth, hinged jaws, narrow head, and long predatory body.
+- Photophore rows along the belly for a sequential lock-on telegraph visible at small scale.
+- Dorsal lure spine cues from bathypelagic predators, kept biological rather than mechanical.
+- Needlelike fang silhouette and reflective eyes for a readable danger front.
+- Fast vertical and diagonal ambush behavior from mesopelagic predators translated into a dash attack.
+
+Required visual read:
+- One whole viperfish-like vertebrate, not a barracuda, dragon, or metal spear device.
+- Oversized saber teeth and unhinged jaw are the first danger read.
+- Photophore belly chain, dorsal lure spine, fins, tail, and skull share one biological material language.
+- Teeth are large readable fang shapes rather than many tiny noisy needles.
+- No motion streaks, target reticle, bubbles, prey fish, lighting beams, or shadow baked into the source.
+
+Articulatable parts:
+- armored skull wedge
+- upper saber tooth row
+- lower hinged jaw plate
+- dark throat cavity plate
+- left reflective eye plate
+- right reflective eye plate
+- dorsal lure spine
+- photophore belly chain
+- segmented body trunk
+- left pectoral fin blade
+- right pectoral fin blade
+- forked tail fin
+
+Known prompt risks:
+- Avoid a generic toothy fish; the jaw hinge, saber teeth, photophore chain, and dorsal lure must define it.
+- Avoid too many tiny teeth that become visual noise; use fewer large crop-safe fangs.
+- Avoid metal blades, harpoons, armor plating, or sci-fi weapon cues.
+- Avoid baked dash trails or impact sparks that should be generated separately.
+- Avoid magenta or hot pink light sources inside the creature.
+
+Reference search terms:
+- deep sea viperfish side view
+- Chauliodus sloani jaw teeth
+- viperfish photophores
+- viperfish dorsal lure
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id saber-viperfish --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-saber-viperfish --with diver
+npm run source:approval-runway:preview -- --id saber-viperfish
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;saber-viperfish&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="trench-harvest-sea-spider">
+    <header>
+      <div><h2>Trench Harvest Sea Spider</h2><code>trench-harvest-sea-spider</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Long-legged pinning hunter that steps over obstacles, plants barbed legs around the diver, then siphons during a brief hold.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>deep sea pycnogonid giant sea spider</li><li>sea spider proboscis anatomy</li><li>pycnogonid long legs side view</li><li>sea spider ovigers</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Trench Harvest Sea Spider (trench-harvest-sea-spider)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Long-legged pinning hunter that steps over obstacles, plants barbed legs around the diver, then siphons during a brief hold.
+
+Biological anchors:
+- Pycnogonid sea spider anatomy with tiny central body and very long jointed legs.
+- Deep-sea gigantism cues for oversized limb span and sparse, alien proportions.
+- Proboscis feeding behavior for a forward siphon mouth rather than jaws or teeth.
+- Carcass-fall scavenger ecology with grasping claws and slow deliberate stepping.
+- Arthropod joint logic with visible coxae, knees, and hooked terminal claws.
+
+Required visual read:
+- One cohesive sea-spider-inspired arthropod, not a land spider or insect.
+- Tiny central body with long articulated legs is the first silhouette read.
+- Forward proboscis must read as a biological siphon and not a weapon barrel.
+- Legs are separated enough for rigging, with thick joints and clear contact claws.
+- No webbing, carcass, seafloor, drifting particles, shadows, blood clouds, or environmental props baked in.
+
+Articulatable parts:
+- tiny knuckled central body
+- small forward head nub
+- soft forward proboscis siphon
+- left long front stepping leg
+- right long front stepping leg
+- left long middle pinning leg
+- right long middle pinning leg
+- left long rear bracing leg
+- right long rear bracing leg
+- hooked terminal claw cluster
+- dorsal rounded egg-sac lump
+- cold siphon glow overlay
+
+Known prompt risks:
+- Avoid a terrestrial spider read; keep pycnogonid tiny-body and marine proboscis anatomy.
+- Avoid making legs hair-thin; every limb needs usable thickness for articulation.
+- Avoid web strands, silk, or horror-web language because sea spiders do not use webs.
+- Avoid a gun-like proboscis; it should be soft biological feeding anatomy.
+- Avoid magenta highlights on joints, eyes, or siphon effects.
+
+Reference search terms:
+- deep sea pycnogonid giant sea spider
+- sea spider proboscis anatomy
+- pycnogonid long legs side view
+- sea spider ovigers
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id trench-harvest-sea-spider --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-trench-harvest-sea-spider --with diver
+npm run source:approval-runway:preview -- --id trench-harvest-sea-spider
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;trench-harvest-sea-spider&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="tripod-stilt-stalker">
+    <header>
+      <div><h2>Tripod Stilt Stalker</h2><code>tripod-stilt-stalker</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Stilted trap sentinel that plants three long fin rays, sweeps a sensory tripline, then hop-stabs across the safe gap with a brittle spear motion.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>tripodfish Bathypterois side view</li><li>tripodfish fin rays</li><li>Bathypterois grallator anatomy</li><li>tripod fish perched posture</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Tripod Stilt Stalker (tripod-stilt-stalker)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Stilted trap sentinel that plants three long fin rays, sweeps a sensory tripline, then hop-stabs across the safe gap with a brittle spear motion.
+
+Biological anchors:
+- Tripodfish body plan: elongated pelvic and caudal fin rays used as stilts above the seafloor.
+- Abyssal benthic sit-and-wait behavior with upward-facing mouth and reduced swimming effort.
+- Long pectoral sensory rays for detecting movement without needing eyes as the main read.
+- Slender deep-sea fish proportions: narrow head, soft body trunk, and sparse translucent fins.
+- Soft-sediment predator logic translated into a perched trap without including the seabed.
+
+Required visual read:
+- One whole tripodfish-like vertebrate, not a crab, spider, or walking machine.
+- Three long stilt fin rays are the first silhouette read and clearly support the body.
+- Upturned head, sensory pectoral rays, dorsal fin, body trunk, and tail stilt connect as one fish.
+- Stilts and sensory rays are thick and separated enough for crop-safe articulation.
+- No seabed, sand cloud, planted shadow, bubbles, particles, or floor contact marks baked into the source.
+
+Articulatable parts:
+- narrow head capsule
+- upturned mouth plate
+- left glassy eye spot
+- right glassy eye spot
+- slender body torso
+- small dorsal sail fin
+- left pectoral sensory ray
+- right pectoral sensory ray
+- left pelvic tripod stilt
+- right pelvic tripod stilt
+- rear caudal tripod stilt
+- thin tail membrane flag
+
+Known prompt risks:
+- Avoid making the stilts look like insect legs or metal rods; they are elongated fish fin rays.
+- Avoid including a floor plane or sediment mound because the source must remain isolated.
+- Avoid hair-thin rays that cannot be selected, cropped, or animated cleanly.
+- Avoid turning the fish into a spider silhouette; keep the head, trunk, fins, and tail readable.
+- Avoid magenta, hot pink, or purple tissue near the background key color.
+
+Reference search terms:
+- tripodfish Bathypterois side view
+- tripodfish fin rays
+- Bathypterois grallator anatomy
+- tripod fish perched posture
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id tripod-stilt-stalker --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-tripod-stilt-stalker --with diver
+npm run source:approval-runway:preview -- --id tripod-stilt-stalker
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;tripod-stilt-stalker&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="vampire-cloak-squid">
+    <header>
+      <div><h2>Vampire Cloak Squid</h2><code>vampire-cloak-squid</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Cephalopod feint attacker that cloaks into a spined umbrella, flashes photophores, then snaps its arms outward for a short-range grab.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>Vampyroteuthis infernalis webbed arms</li><li>vampire squid pineapple posture</li><li>vampire squid cirri photophores</li><li>vampire squid side view</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Vampire Cloak Squid (vampire-cloak-squid)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Cephalopod feint attacker that cloaks into a spined umbrella, flashes photophores, then snaps its arms outward for a short-range grab.
+
+Biological anchors:
+- Vampire squid cloak webbing connecting the arms into an umbrella-like defensive mantle.
+- Eight arm structure with cirri and soft spines for a threatening but organic silhouette.
+- Large blue eyes and compact mantle for immediate cephalopod recognition.
+- Photophores on arm tips and mantle as readable telegraph lights.
+- Inside-out pineapple posture for a defensive phase that changes silhouette before attack.
+
+Required visual read:
+- One whole cephalopod with mantle, eyes, arms, and webbing clearly connected.
+- Cloak web and arm crown are the main gameplay read, not loose tentacles.
+- Eight arms are grouped into riggable clusters without becoming a tangled mass.
+- Photophore spots are visible but do not cover the anatomy.
+- No ink cloud, particles, water background, shadows, or cropped-off arms baked into the source.
+
+Articulatable parts:
+- compact dark mantle body
+- large pale left eye
+- large pale right eye
+- broad cloak web membrane
+- front webbed arm pair
+- left webbed arm pair
+- right webbed arm pair
+- rear webbed arm pair
+- soft arm spine and cirri fringe
+- cyan photophore tip lights
+- small mantle fin pair
+- central mouth and beak shadow
+
+Known prompt risks:
+- Avoid bat wings, fangs, capes, or humanoid vampire styling; keep it biological.
+- Avoid squid tentacle tangles that obscure the eight-arm cloak structure.
+- Avoid magenta or pink photophores that conflict with the background.
+- Avoid a giant octopus silhouette; compact mantle and webbed arms should identify vampire squid.
+- Keep ink, flash bursts, and stun effects separate from the base anatomy.
+
+Reference search terms:
+- Vampyroteuthis infernalis webbed arms
+- vampire squid pineapple posture
+- vampire squid cirri photophores
+- vampire squid side view
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id vampire-cloak-squid --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-vampire-cloak-squid --with diver
+npm run source:approval-runway:preview -- --id vampire-cloak-squid
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;vampire-cloak-squid&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="vent-claw-yeti">
+    <header>
+      <div><h2>Vent-Claw Yeti</h2><code>vent-claw-yeti</code></div>
+      <span>mobile-predator-motion</span>
+    </header>
+    <p>Thermal grappler that guards vent lanes, fans its bristled claws, then hooks and drags the diver toward a hot zone.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>Kiwa hirsuta yeti crab claws</li><li>yeti crab setae closeup</li><li>squat lobster lateral posture</li><li>hydrothermal vent crab anatomy</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Vent-Claw Yeti (vent-claw-yeti)
+Lane: mobile-predator-motion
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Thermal grappler that guards vent lanes, fans its bristled claws, then hooks and drags the diver toward a hot zone.
+
+Biological anchors:
+- Yeti crab / Kiwaidae inspiration with long bristled claws used for bacterial farming.
+- Hydrothermal vent ecology cues: mineral staining, pale shell, and chemosynthetic filament growth.
+- Squat lobster posture for a compact body with oversized articulated forelimbs.
+- Crab defensive display behavior for raised claws and readable lateral threat poses.
+- Deep-sea reduced-eye anatomy with tactile antennae and sensory setae.
+
+Required visual read:
+- One whole crab-like arthropod, not a furry mammal, lobster, or humanoid monster.
+- Oversized bristled claws are the first read and clearly indicate grab range.
+- Main carapace, abdomen tuck, legs, claws, and antennae stay connected as one riggable body.
+- Bristles read as clustered biological setae, not smoke, fur clouds, or flame.
+- No vent chimney, lava plume, bubbles, floor plane, cast shadow, or environmental lighting baked in.
+
+Articulatable parts:
+- main carapace torso
+- abdomen tuck
+- left upper claw arm
+- left bristled claw hand
+- right upper claw arm
+- right bristled claw hand
+- front walking leg pair
+- middle walking leg pair
+- rear walking leg pair
+- left antenna
+- right antenna
+- setae glow overlay clusters
+
+Known prompt risks:
+- Avoid mammal-like fur; the bristles are crab setae and bacterial mats.
+- Avoid a normal beach crab silhouette; emphasize deep-sea squat posture and huge farming claws.
+- Avoid making the vent heat or smoke part of the body silhouette.
+- Avoid thin bristles that turn into noise; use readable grouped tufts.
+- Avoid magenta or pink glows inside the creature that could key out.
+
+Reference search terms:
+- Kiwa hirsuta yeti crab claws
+- yeti crab setae closeup
+- squat lobster lateral posture
+- hydrothermal vent crab anatomy
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id vent-claw-yeti --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-vent-claw-yeti --with diver
+npm run source:approval-runway:preview -- --id vent-claw-yeti
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;mobile-predator-motion&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;vent-claw-yeti&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="brine-crown">
+    <header>
+      <div><h2>Brine Crown</h2><code>brine-crown</code></div>
+      <span>sessile-ambush-hazards</span>
+    </header>
+    <p>Stationary area-control hazard that swells, raises spines, and grows corrosive brine patches instead of chasing the diver.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>hydrothermal vent microbial mat mineral crust</li><li>deep sea brine pool edge</li><li>toxic coral polyps</li><li>starfish radial anatomy</li><li>hydrothermal chimney black smoker</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Brine Crown (brine-crown)
+Lane: sessile-ambush-hazards
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Stationary area-control hazard that swells, raises spines, and grows corrosive brine patches instead of chasing the diver.
+
+Biological anchors:
+- Vent-associated chemosynthetic mats and mineral crusts for a rooted abyssal footprint.
+- Starfish-like radial arm logic for readable uneven rays and outward danger lanes.
+- Toxic coral and brine-pool blister cues for corrosive sacs and warning colors.
+- Hydrothermal chimney forms for a central crown cup and dark toxic throat.
+
+Required visual read:
+- One rooted radial organism, not a collage of coral, starfish, and vent tubes.
+- Central crown or toxic throat is the first read.
+- Low anchored basal mat with uneven rays/fronds and visible hinge/root zones.
+- Readable toxic blisters, spine halo, and corrosive danger cues at game scale.
+- No loose detached parts, environmental shadows, haze, floor plane, or particles baked into the source.
+
+Articulatable parts:
+- basal mat torso
+- central crown cup head
+- dark throat pore
+- front radial frond
+- left radial frond
+- right radial frond
+- rear radial fronds
+- brine blister bank
+- spine halo cluster
+- root tendril skirt
+
+Known prompt risks:
+- Avoid a decorative reef; the source must read as a dangerous organism.
+- Avoid perfect radial ornament symmetry that feels like a logo.
+- Avoid magenta or hot pink body colors that will key out.
+- Avoid loose vent tubes or starfish arms that do not grow from the same mat.
+- Keep toxic clouds, bubbles, and brine puddles as separate VFX rather than baked source art.
+
+Reference search terms:
+- hydrothermal vent microbial mat mineral crust
+- deep sea brine pool edge
+- toxic coral polyps
+- starfish radial anatomy
+- hydrothermal chimney black smoker
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-brine-crown --with diver
+npm run source:approval-runway:preview -- --id brine-crown
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;sessile-ambush-hazards&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;brine-crown&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="coronate-sting-crown">
+    <header>
+      <div><h2>Coronate Sting Crown</h2><code>coronate-sting-crown</code></div>
+      <span>sessile-ambush-hazards</span>
+    </header>
+    <p>Pulsing cnidarian hazard that expands its crown, sweeps thick oral arms, and releases a radial sting burst after a readable bell contraction.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>coronate jellyfish lappets</li><li>Atolla jellyfish alarm bioluminescence</li><li>scyphozoan oral arms</li><li>jellyfish bell contraction jet propulsion</li><li>cnidocyte tentacle anatomy</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Coronate Sting Crown (coronate-sting-crown)
+Lane: sessile-ambush-hazards
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Pulsing cnidarian hazard that expands its crown, sweeps thick oral arms, and releases a radial sting burst after a readable bell contraction.
+
+Biological anchors:
+- Coronate jellyfish bell anatomy with a deep groove separating the domed top from the lappet crown.
+- Atolla-like deep-sea warning read: compact red-black bell, rim lappets, and bioluminescent alarm accents.
+- Scyphozoan oral arms and trailing tentacles for sweeping contact damage and follow-through animation.
+- Cnidocyte sting logic expressed through glowing bead tips and armed tentacle edges rather than weapons.
+- Jetting bell contraction for short burst movement and recoil windows.
+
+Required visual read:
+- One cohesive jellyfish organism, not a swarm or decorative cluster.
+- Crown-shaped lappet rim and domed bell are the first read at game scale.
+- Oral arms are thick, separated, and crop-safe for articulation.
+- Tentacle danger zone is visible without becoming a hair-thin curtain.
+- Bioluminescent sting cues stay on anatomy, with no baked bubbles, haze, water column, or impact particles.
+
+Articulatable parts:
+- domed bell cap
+- lower bell skirt
+- segmented crown lappets
+- central oral trunk
+- front oral arm
+- left oral arm
+- right oral arm
+- rear oral arms
+- four thick trailing tentacles
+- sting bead tip cluster
+- subtle translucent bell rim anatomy
+
+Known prompt risks:
+- Avoid a generic umbrella jellyfish; crown lappets and deep bell groove must be obvious.
+- Avoid hair-thin tentacle noise that cannot be cut or rigged.
+- Avoid magenta, pink, or purple body colors that conflict with chroma keying.
+- Avoid multiple jellyfish or a decorative swarm.
+- Keep sting flashes, shock rings, and bubbles as separate VFX rather than baked source art.
+
+Reference search terms:
+- coronate jellyfish lappets
+- Atolla jellyfish alarm bioluminescence
+- scyphozoan oral arms
+- jellyfish bell contraction jet propulsion
+- cnidocyte tentacle anatomy
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id coronate-sting-crown --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-coronate-sting-crown --with diver
+npm run source:approval-runway:preview -- --id coronate-sting-crown
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;sessile-ambush-hazards&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;coronate-sting-crown&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="lantern-anemone-pit">
+    <header>
+      <div><h2>Lantern Anemone Pit</h2><code>lantern-anemone-pit</code></div>
+      <span>sessile-ambush-hazards</span>
+    </header>
+    <p>Sessile lure ambusher that opens as a harmless flower, flashes lure polyps, then clamps a ring of stinging petals around nearby prey.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>sea anemone oral disc anatomy</li><li>tube anemone cerianthid retraction</li><li>corallimorph mushroom anemone</li><li>cnidarian stinging tentacles</li><li>bioluminescent anemone lure</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Lantern Anemone Pit (lantern-anemone-pit)
+Lane: sessile-ambush-hazards
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Sessile lure ambusher that opens as a harmless flower, flashes lure polyps, then clamps a ring of stinging petals around nearby prey.
+
+Biological anchors:
+- Sea anemone oral disc anatomy for a central mouth, radial tentacles, and soft column base.
+- Tube anemone and cerianthid cues for retractable petal rings and burrow-like anchoring.
+- Bioluminescent lure organs inspired by deep reef predators for a readable bait signal.
+- Cnidarian stinging tentacles for contact danger without mechanical teeth.
+- Corallimorph mushroom-anemone forms for a wide deceptive flower silhouette.
+
+Required visual read:
+- One anchored anemone organism, not a decorative coral flower cluster.
+- Central mouth pit is the first danger read when open.
+- Two rings of thick petal-tentacles are broad enough for sprite-scale articulation.
+- Lure bulbs, mouth rim, column base, and outer petals are visually connected.
+- Danger is communicated through clamp posture, stinging bulbs, and mouth depth rather than gore or particles.
+
+Articulatable parts:
+- buried column base
+- outer pedal disc skirt
+- central mouth pit
+- upper lip ring
+- left outer petal-tentacle
+- right outer petal-tentacle
+- front inner petal-tentacle
+- rear inner petal-tentacle
+- lure bulb cluster
+- stinging bead tips
+- mouth shadow insert
+- retraction fold overlays
+
+Known prompt risks:
+- Avoid a cute decorative flower; it must read as a dangerous sessile predator.
+- Avoid making the tentacles hair-thin or too numerous for articulation.
+- Avoid literal teeth, metal jaws, or land-plant leaves.
+- Avoid magenta or pink glow that conflicts with the chroma key background.
+- Keep lure halos, sting sparks, and digestive clouds separate from the base source.
+
+Reference search terms:
+- sea anemone oral disc anatomy
+- tube anemone cerianthid retraction
+- corallimorph mushroom anemone
+- cnidarian stinging tentacles
+- bioluminescent anemone lure
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id lantern-anemone-pit --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-lantern-anemone-pit --with diver
+npm run source:approval-runway:preview -- --id lantern-anemone-pit
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;sessile-ambush-hazards&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;lantern-anemone-pit&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="predatory-tunicate-maw">
+    <header>
+      <div><h2>Predatory Tunicate Maw</h2><code>predatory-tunicate-maw</code></div>
+      <span>sessile-ambush-hazards</span>
+    </header>
+    <p>Sessile soft-bodied snap trap that poses as a harmless stalk, opens a translucent mouth, and clamps shut when the diver crosses its bite lane.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>Megalodicopia predatory tunicate</li><li>ascidian siphon anatomy</li><li>tunicate gelatinous tunic</li><li>deep sea predatory tunicate stalk</li><li>sea squirt internal folds</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Predatory Tunicate Maw (predatory-tunicate-maw)
+Lane: sessile-ambush-hazards
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Sessile soft-bodied snap trap that poses as a harmless stalk, opens a translucent mouth, and clamps shut when the diver crosses its bite lane.
+
+Biological anchors:
+- Megalodicopia-like predatory tunicate with a soft stalk and large paired siphon mouth.
+- Ascidiacean tunic texture: translucent gelatin body, ridged lips, and internal filtering folds.
+- Sessile hardground anchoring with a flexible stalk instead of active swimming.
+- Siphon feeding behavior exaggerated into a clamp-trap read.
+- Deep-sea soft-bodied translucency with visible internal organs for vulnerability cues.
+
+Required visual read:
+- One rooted soft-bodied tunicate creature, not a plant, clam, or anemone.
+- Large open siphon mouth is the first danger read.
+- Upper and lower mouth lobes are thick and separated for hinge animation.
+- Stalk, anchor foot, tunic body, and internal folds remain connected as one organism.
+- No surrounding rock wall, sediment, prey fish, particles, or shadows baked into the source.
+
+Articulatable parts:
+- anchor foot pad
+- flexible stalk
+- main translucent tunic body
+- upper siphon jaw lobe
+- lower siphon jaw lobe
+- left lip ridge
+- right lip ridge
+- inner filter fold fan
+- internal organ sac
+- small side siphon
+- rim toothlike papillae
+- soft siphon lip membrane
+
+Known prompt risks:
+- Avoid making it a clam, venus flytrap plant, or fantasy mouth monster; preserve tunicate softness and siphon anatomy.
+- Avoid hard teeth, bones, metal jaws, or mechanical hinges.
+- Avoid transparency so faint that the silhouette disappears at game scale.
+- Avoid magenta, hot pink, or purple body tones that interfere with chroma keying.
+- Keep mucus strands, bite impacts, and prey silhouettes as separate VFX.
+
+Reference search terms:
+- Megalodicopia predatory tunicate
+- ascidian siphon anatomy
+- tunicate gelatinous tunic
+- deep sea predatory tunicate stalk
+- sea squirt internal folds
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id predatory-tunicate-maw --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-predatory-tunicate-maw --with diver
+npm run source:approval-runway:preview -- --id predatory-tunicate-maw
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;sessile-ambush-hazards&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;predatory-tunicate-maw&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article>
+<article class="card" id="razor-kelp-harp">
+    <header>
+      <div><h2>Razor Kelp Harp</h2><code>razor-kelp-harp</code></div>
+      <span>sessile-ambush-hazards</span>
+    </header>
+    <p>Rooted snare hazard that fans blade-fronds into lanes, waits for the diver to cross, then snaps a cutting curtain inward.</p>
+    <h3>Reference Terms</h3>
+    <ul><li>bull kelp holdfast anatomy</li><li>giant kelp gas bladder pneumatocyst</li><li>ribbon kelp blade morphology</li><li>serrated algae edge</li><li>kelp forest holdfast fronds</li></ul>
+    <h3>Dispatch Prompt</h3>
+    <textarea readonly>You are a Water 9 underwater-threat research subagent.
+
+Work read-only. Do not edit files. Review this candidate's biological inspiration, gameplay verb, source-art risks, and articulation needs.
+
+Candidate: Razor Kelp Harp (razor-kelp-harp)
+Lane: sessile-ambush-hazards
+Current source status: needs-review
+Has source image: true
+
+Gameplay verb:
+Rooted snare hazard that fans blade-fronds into lanes, waits for the diver to cross, then snaps a cutting curtain inward.
+
+Biological anchors:
+- Bull kelp and giant kelp holdfast anatomy for a rooted base, gas bladders, and long blade-like fronds.
+- Ribbon kelp motion logic for flexible straps that sway, curl, and whip without becoming tentacles.
+- Sawgrass and serrated algae silhouettes for readable cutting edges at game scale.
+- Seaweed camouflage behavior: passive drifting posture hides attack lanes until the telegraph.
+- Epiphytic crust and small encrusting organisms for age, toughness, and reef attachment.
+
+Required visual read:
+- One cohesive kelp-like ambusher, not a loose pile of seaweed strips.
+- Root holdfast and central crown are visible so the entity reads as anchored and sessile.
+- Five to seven broad serrated blade-fronds create clear danger lanes at sprite scale.
+- Gas bladders, hinge knots, and curled blade tips remain crop-safe for later articulation.
+- No water column, sand floor, bubbles, shadows, or detached plant debris baked into the source.
+
+Articulatable parts:
+- single organic bull-kelp holdfast tissue pad
+- central crown node
+- left outer blade-frond
+- left inner blade-frond
+- front cutting blade-frond
+- right inner blade-frond
+- right outer blade-frond
+- gas bladder cluster
+- integrated serrated blade edges
+- curling tip hooks
+- root tendril skirt
+
+Known prompt risks:
+- Avoid thin spaghetti seaweed that cannot be cropped or rigged.
+- Avoid a generic plant clump; the holdfast, crown, and blade lanes must define one creature.
+- Avoid magenta, hot pink, or purple body colors that may key out with the background.
+- Avoid loose detached strips or floating debris that look like separate props.
+- Keep slash trails, bubbles, and water distortion as separate VFX rather than baked art.
+
+Reference search terms:
+- bull kelp holdfast anatomy
+- giant kelp gas bladder pneumatocyst
+- ribbon kelp blade morphology
+- serrated algae edge
+- kelp forest holdfast fronds
+
+Preview/review commands available to the human operator:
+npm run sandbox:preview -- --id razor-kelp-harp --kind source --serve --open --visual
+npm run sandbox:lab -- --id source-razor-kelp-harp --with diver
+npm run source:approval-runway:preview -- --id razor-kelp-harp
+
+Return only JSON matching this schema:
+{
+  &quot;schema&quot;: &quot;water9/subagent-research-audit@1&quot;,
+  &quot;lane&quot;: &quot;sessile-ambush-hazards&quot;,
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;razor-kelp-harp&quot;,
+      &quot;strengths&quot;: [&quot;specific source/articulation strength&quot;],
+      &quot;sourceGenerationRisks&quot;: [&quot;specific risk that could produce incohesive art&quot;],
+      &quot;suggestedResearchPatch&quot;: {
+        &quot;biologicalAnchors&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;requiredRead&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;promptRisks&quot;: [&quot;optional replacement/addition&quot;],
+        &quot;motionPhases&quot;: [&quot;optional replacement/addition&quot;]
+      },
+      &quot;referenceSearchTerms&quot;: [&quot;stable biological reference keywords&quot;]
+    }
+  ]
+}
+</textarea>
+  </article></section>
+  </main>
+</body>
+</html>

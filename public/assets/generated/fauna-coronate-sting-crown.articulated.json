@@ -1,0 +1,301 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-coronate-sting-crown",
+  "runtimeCreatureId": "coronate-sting-crown",
+  "displayName": "Coronate Sting Crown",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-coronate-sting-crown-whole-source.png",
+  "sourceTransform": {
+    "chromaKey": {
+      "color": [
+        255,
+        0,
+        255
+      ],
+      "tolerance": 24,
+      "feather": 12
+    }
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "core",
+      "key": "fauna-coronate-sting-crown-core",
+      "src": "fauna-coronate-sting-crown-core.png",
+      "sourceCrop": {
+        "x": 604,
+        "y": 269,
+        "width": 349,
+        "height": 532
+      },
+      "size": {
+        "width": 349,
+        "height": 532
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.4,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.3,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      },
+      "damagedSrc": "fauna-coronate-sting-crown-core-damaged.png",
+      "damagedKey": "fauna-coronate-sting-crown-core-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head",
+      "key": "fauna-coronate-sting-crown-head",
+      "src": "fauna-coronate-sting-crown-head.png",
+      "sourceCrop": {
+        "x": 880,
+        "y": 342,
+        "width": 204,
+        "height": 330
+      },
+      "size": {
+        "width": 204,
+        "height": 330
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.1,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.15,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "tail",
+      "key": "fauna-coronate-sting-crown-tail",
+      "src": "fauna-coronate-sting-crown-tail.png",
+      "sourceCrop": {
+        "x": 465,
+        "y": 407,
+        "width": 248,
+        "height": 312
+      },
+      "size": {
+        "width": 248,
+        "height": 312
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.9,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "upper-fin",
+      "key": "fauna-coronate-sting-crown-upper-fin",
+      "src": "fauna-coronate-sting-crown-upper-fin.png",
+      "sourceCrop": {
+        "x": 625,
+        "y": 186,
+        "width": 306,
+        "height": 220
+      },
+      "size": {
+        "width": 306,
+        "height": 220
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 1.3,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "lower-fin",
+      "key": "fauna-coronate-sting-crown-lower-fin",
+      "src": "fauna-coronate-sting-crown-lower-fin.png",
+      "sourceCrop": {
+        "x": 625,
+        "y": 664,
+        "width": 306,
+        "height": 220
+      },
+      "size": {
+        "width": 306,
+        "height": 220
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 1.9,
+        "lag": 0.2
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "head-socket",
+      "src": "fauna-coronate-sting-crown-head-socket.png",
+      "parentId": "core",
+      "childId": "head",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 244,
+        "y": 234,
+        "width": 63,
+        "height": 63
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "tail-socket",
+      "src": "fauna-coronate-sting-crown-tail-socket.png",
+      "parentId": "core",
+      "childId": "tail",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 41,
+        "y": 234,
+        "width": 63,
+        "height": 63
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "upper-fin-socket",
+      "src": "fauna-coronate-sting-crown-upper-fin-socket.png",
+      "parentId": "core",
+      "childId": "upper-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 143,
+        "y": 106,
+        "width": 63,
+        "height": 63
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "lower-fin-socket",
+      "src": "fauna-coronate-sting-crown-lower-fin-socket.png",
+      "parentId": "core",
+      "childId": "lower-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 143,
+        "y": 364,
+        "width": 63,
+        "height": 63
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    }
+  ],
+  "notes": "Auto-generated starter plan. Use plan-preview to revise crops and anchors before extraction.",
+  "murkTint": {
+    "color": 7919057,
+    "intensity": 0.12,
+    "stunnedIntensity": 0.18
+  },
+  "socketStyle": {
+    "alpha": 0.6,
+    "bridgeColor": 462874,
+    "bridgeAlpha": 0.2,
+    "bridgeCoreColor": 7977161,
+    "bridgeCoreAlpha": 0.08,
+    "bridgeWidthScale": 0.98,
+    "bridgeSleeveScale": 0.36
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Starter articulation plan generated from the source-candidate whole-source image. Crops, anchors, sockets, motion, and anatomy require human adjustment before this can become accepted content.",
+    "sourceCandidateId": "coronate-sting-crown"
+  }
+}

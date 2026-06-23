@@ -1,0 +1,120 @@
+{
+  "schema": "water9/source-intake-doctor@1",
+  "generatedAt": "2026-06-18T17:06:57.946Z",
+  "generatedFrom": {
+    "sourceCandidates": "/mnt/nxt-dev/water9/public/review/source-candidates/source-candidates.json",
+    "sourceQueue": "/mnt/nxt-dev/water9/public/review/source-candidates/source-generation-queue.json",
+    "nextAction": "/mnt/nxt-dev/water9/public/review/content-next-action.json",
+    "inboxDir": "/mnt/nxt-dev/water9/tools/source-inbox"
+  },
+  "target": {
+    "id": "brine-crown",
+    "rank": 1,
+    "species": "Brine Crown",
+    "status": "source-present",
+    "queueRank": null,
+    "source": "public/assets/generated/fauna-brine-crown-whole-source.png",
+    "expectedInboxFiles": [
+      "tools/source-inbox/brine-crown.png",
+      "tools/source-inbox/fauna-brine-crown-whole-source.png"
+    ],
+    "inboxFiles": [
+      {
+        "file": "brine-crown.png",
+        "exists": true,
+        "size": 337378,
+        "path": "tools/source-inbox/brine-crown.png",
+        "imageCheck": {
+          "checked": true,
+          "passed": true,
+          "metric": {
+            "id": "brine-crown",
+            "source": "/mnt/nxt-dev/water9/tools/source-inbox/brine-crown.png",
+            "sourceFingerprint": {
+              "path": "/mnt/nxt-dev/water9/tools/source-inbox/brine-crown.png",
+              "size": 337378,
+              "mtimeMs": 1781788264136,
+              "sha256": "96acc19e0fbeca2427b173239e821100f0d7f6b977c43a55b1ef3d733ce94825"
+            },
+            "checked": true,
+            "size": [
+              1536,
+              1024
+            ],
+            "borderMagenta": 1,
+            "backgroundRatio": 0.773,
+            "subjectBBox": [
+              327,
+              214,
+              1221,
+              907
+            ],
+            "subjectSize": [
+              894,
+              693
+            ],
+            "innerMagentaRatio": 0,
+            "subjectMagentaBiasRatio": 0.00478,
+            "subjectTranslucentRatio": 0,
+            "detail": {
+              "sampledSubjectPixels": 89271,
+              "quantizedColorBins": 358,
+              "colorEntropy": 4.5071,
+              "edgeDensity": 0.1295,
+              "averageLocalContrast": 7.1324
+            },
+            "connectivity": {
+              "sampleStep": 2,
+              "sampledComponents": 5,
+              "largestComponentRatio": 0.9999,
+              "significantComponents": 1
+            },
+            "failures": [],
+            "validator": {
+              "tool": "tools/validate_source_candidate_images.py",
+              "version": "water9/source-image-validation@1",
+              "thresholds": {
+                "magentaThreshold": 12,
+                "minBorderMagenta": 0.95,
+                "minBackgroundRatio": 0.15,
+                "maxBackgroundRatio": 0.92,
+                "minSubjectSize": 48,
+                "minSubjectMargin": 4,
+                "maxInnerMagentaRatio": 0.003,
+                "maxSubjectMagentaBiasRatio": 0.02,
+                "maxSubjectTranslucentRatio": 0.01,
+                "minColorEntropy": 3,
+                "minColorBins": 64,
+                "minEdgeDensity": 0.015,
+                "minAverageLocalContrast": 1.5,
+                "minLargestComponentRatio": 0.75,
+                "maxSignificantComponents": 6
+              }
+            },
+            "validationFingerprint": "9745e5d6eff044d63bee0c799ec66d68edf298245885a2da28747a7206b498a0"
+          },
+          "failures": []
+        }
+      }
+    ],
+    "generatedSources": [
+      {
+        "exists": true,
+        "size": 337378,
+        "path": "public/assets/generated/fauna-brine-crown-whole-source.png"
+      }
+    ],
+    "promptFile": null,
+    "contractFile": "public/review/source-candidates/art-contracts/brine-crown.md",
+    "commands": [
+      "npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown --dry-run",
+      "npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown",
+      "npm run source:check",
+      "npm run source:gallery"
+    ],
+    "readyForIngest": true,
+    "failures": []
+  },
+  "queue": [],
+  "failures": []
+}

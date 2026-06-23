@@ -1,0 +1,649 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-abyssal-glasshook-skulk",
+  "runtimeCreatureId": "abyssal-glasshook-skulk",
+  "displayName": "Abyssal Glasshook Skulk",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-abyssal-glasshook-skulk-whole-painted.png",
+  "sourceTransform": {
+    "highSource": "public/assets/generated/fauna-abyssal-glasshook-skulk-whole-painted-hi.png",
+    "process": "bespoke Imagegen source cut into a compact crustacean-like articulated rig"
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail-fan",
+      "key": "fauna-abyssal-glasshook-skulk-tail-fan",
+      "src": "fauna-abyssal-glasshook-skulk-tail-fan.png",
+      "sourceCrop": {
+        "x": 65,
+        "y": 120,
+        "width": 230,
+        "height": 150
+      },
+      "size": {
+        "width": 230,
+        "height": 150
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.4,
+        "severable": true,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.8
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 8.4,
+        "frequency": 2.18,
+        "phase": 1.24,
+        "lag": 0.52
+      }
+    },
+    {
+      "id": "tail-stem",
+      "key": "fauna-abyssal-glasshook-skulk-tail-stem",
+      "src": "fauna-abyssal-glasshook-skulk-tail-stem.png",
+      "sourceCrop": {
+        "x": 245,
+        "y": 145,
+        "width": 165,
+        "height": 115
+      },
+      "size": {
+        "width": 165,
+        "height": 115
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.58,
+        "drag": 1.18,
+        "angularDrag": 0.4,
+        "severable": true,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.76
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 6.2,
+        "frequency": 2.05,
+        "phase": 0.84,
+        "lag": 0.4
+      }
+    },
+    {
+      "id": "abdomen-3",
+      "key": "fauna-abyssal-glasshook-skulk-abdomen-3",
+      "src": "fauna-abyssal-glasshook-skulk-abdomen-3.png",
+      "sourceCrop": {
+        "x": 345,
+        "y": 85,
+        "width": 140,
+        "height": 185
+      },
+      "size": {
+        "width": 140,
+        "height": 185
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.2,
+        "drag": 0.92,
+        "angularDrag": 0.4,
+        "severable": true,
+        "breakThreshold": 0.82,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.2,
+        "frequency": 1.95,
+        "phase": 0.48,
+        "lag": 0.24
+      }
+    },
+    {
+      "id": "abdomen-2",
+      "key": "fauna-abyssal-glasshook-skulk-abdomen-2",
+      "src": "fauna-abyssal-glasshook-skulk-abdomen-2.png",
+      "sourceCrop": {
+        "x": 465,
+        "y": 65,
+        "width": 150,
+        "height": 205
+      },
+      "size": {
+        "width": 150,
+        "height": 205
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.75,
+        "drag": 0.92,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 1.1,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.8,
+        "frequency": 1.82,
+        "phase": 0.24,
+        "lag": 0.14
+      }
+    },
+    {
+      "id": "thorax",
+      "key": "fauna-abyssal-glasshook-skulk-thorax",
+      "src": "fauna-abyssal-glasshook-skulk-thorax.png",
+      "sourceCrop": {
+        "x": 585,
+        "y": 70,
+        "width": 155,
+        "height": 205
+      },
+      "size": {
+        "width": 155,
+        "height": 205
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.35,
+        "drag": 0.92,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 1.35,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.2,
+        "frequency": 1.65,
+        "phase": 0.06,
+        "lag": 0.06
+      },
+      "damagedSrc": "fauna-abyssal-glasshook-skulk-thorax-damaged.png",
+      "damagedKey": "fauna-abyssal-glasshook-skulk-thorax-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head",
+      "key": "fauna-abyssal-glasshook-skulk-head",
+      "src": "fauna-abyssal-glasshook-skulk-head.png",
+      "sourceCrop": {
+        "x": 700,
+        "y": 90,
+        "width": 145,
+        "height": 125
+      },
+      "size": {
+        "width": 145,
+        "height": 125
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.22,
+        "drag": 0.92,
+        "angularDrag": 0.48,
+        "severable": false,
+        "breakThreshold": 1.08,
+        "mobilityFactor": 0.7
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 1.8,
+        "frequency": 1.5,
+        "phase": 0.0,
+        "lag": 0.04
+      }
+    },
+    {
+      "id": "upper-claw",
+      "key": "fauna-abyssal-glasshook-skulk-upper-claw",
+      "src": "fauna-abyssal-glasshook-skulk-upper-claw.png",
+      "sourceCrop": {
+        "x": 595,
+        "y": 175,
+        "width": 330,
+        "height": 125
+      },
+      "size": {
+        "width": 330,
+        "height": 125
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.62,
+        "drag": 1.18,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 16.0,
+        "frequency": 2.2,
+        "phase": 0.08,
+        "lag": 0.04
+      }
+    },
+    {
+      "id": "lower-claw",
+      "key": "fauna-abyssal-glasshook-skulk-lower-claw",
+      "src": "fauna-abyssal-glasshook-skulk-lower-claw.png",
+      "sourceCrop": {
+        "x": 590,
+        "y": 245,
+        "width": 265,
+        "height": 125
+      },
+      "size": {
+        "width": 265,
+        "height": 125
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.58,
+        "drag": 1.18,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": -14.0,
+        "frequency": 2.25,
+        "phase": 0.0,
+        "lag": 0.04
+      }
+    },
+    {
+      "id": "rear-swimmeret",
+      "key": "fauna-abyssal-glasshook-skulk-rear-swimmeret",
+      "src": "fauna-abyssal-glasshook-skulk-rear-swimmeret.png",
+      "sourceCrop": {
+        "x": 330,
+        "y": 215,
+        "width": 120,
+        "height": 120
+      },
+      "size": {
+        "width": 120,
+        "height": 120
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.22,
+        "drag": 1.18,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.5,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 5.0,
+        "frequency": 2.45,
+        "phase": 0.5,
+        "lag": 0.18
+      }
+    },
+    {
+      "id": "mid-swimmeret",
+      "key": "fauna-abyssal-glasshook-skulk-mid-swimmeret",
+      "src": "fauna-abyssal-glasshook-skulk-mid-swimmeret.png",
+      "sourceCrop": {
+        "x": 440,
+        "y": 210,
+        "width": 120,
+        "height": 130
+      },
+      "size": {
+        "width": 120,
+        "height": 130
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.24,
+        "drag": 1.18,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.52,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 5.6,
+        "frequency": 2.55,
+        "phase": 0.32,
+        "lag": 0.16
+      }
+    },
+    {
+      "id": "front-swimmeret",
+      "key": "fauna-abyssal-glasshook-skulk-front-swimmeret",
+      "src": "fauna-abyssal-glasshook-skulk-front-swimmeret.png",
+      "sourceCrop": {
+        "x": 530,
+        "y": 205,
+        "width": 130,
+        "height": 125
+      },
+      "size": {
+        "width": 130,
+        "height": 125
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.26,
+        "drag": 1.18,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.54,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 6.0,
+        "frequency": 2.65,
+        "phase": 0.16,
+        "lag": 0.14
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-fan-socket",
+      "src": "fauna-abyssal-glasshook-skulk-tail-fan-socket.png",
+      "parentId": "tail-stem",
+      "childId": "tail-fan",
+      "sourcePartId": "tail-stem",
+      "sourceCrop": {
+        "x": 0,
+        "y": 30,
+        "width": 78,
+        "height": 62
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-tail-fan-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-tail-fan-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-fan-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-fan-socket"
+    },
+    {
+      "id": "tail-stem-socket",
+      "src": "fauna-abyssal-glasshook-skulk-tail-stem-socket.png",
+      "parentId": "abdomen-3",
+      "childId": "tail-stem",
+      "sourcePartId": "abdomen-3",
+      "sourceCrop": {
+        "x": 0,
+        "y": 70,
+        "width": 78,
+        "height": 76
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.4,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-tail-stem-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-tail-stem-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-stem-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-stem-socket"
+    },
+    {
+      "id": "abdomen-3-socket",
+      "src": "fauna-abyssal-glasshook-skulk-abdomen-3-socket.png",
+      "parentId": "abdomen-2",
+      "childId": "abdomen-3",
+      "sourcePartId": "abdomen-2",
+      "sourceCrop": {
+        "x": 0,
+        "y": 82,
+        "width": 82,
+        "height": 82
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.6,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.38,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-abdomen-3-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-abdomen-3-wound",
+      "severedProcess": "deterministic sever wound overlay:abdomen-3-socket",
+      "socketProcess": "deterministic organic socket occlusion:abdomen-3-socket"
+    },
+    {
+      "id": "abdomen-2-socket",
+      "src": "fauna-abyssal-glasshook-skulk-abdomen-2-socket.png",
+      "parentId": "thorax",
+      "childId": "abdomen-2",
+      "sourcePartId": "thorax",
+      "sourceCrop": {
+        "x": 0,
+        "y": 84,
+        "width": 86,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.38,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-abdomen-2-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-abdomen-2-wound",
+      "severedProcess": "deterministic sever wound overlay:abdomen-2-socket",
+      "socketProcess": "deterministic organic socket occlusion:abdomen-2-socket"
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-abyssal-glasshook-skulk-head-socket.png",
+      "parentId": "thorax",
+      "childId": "head",
+      "sourcePartId": "thorax",
+      "sourceCrop": {
+        "x": 105,
+        "y": 52,
+        "width": 48,
+        "height": 68
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-head-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-head-wound",
+      "severedProcess": "deterministic sever wound overlay:head-socket",
+      "socketProcess": "deterministic organic socket occlusion:head-socket"
+    },
+    {
+      "id": "upper-claw-socket",
+      "src": "fauna-abyssal-glasshook-skulk-upper-claw-socket.png",
+      "parentId": "thorax",
+      "childId": "upper-claw",
+      "sourcePartId": "thorax",
+      "sourceCrop": {
+        "x": 88,
+        "y": 102,
+        "width": 58,
+        "height": 58
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.46,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-upper-claw-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-upper-claw-wound",
+      "severedProcess": "deterministic sever wound overlay:upper-claw-socket",
+      "socketProcess": "deterministic organic socket occlusion:upper-claw-socket"
+    },
+    {
+      "id": "lower-claw-socket",
+      "src": "fauna-abyssal-glasshook-skulk-lower-claw-socket.png",
+      "parentId": "thorax",
+      "childId": "lower-claw",
+      "sourcePartId": "thorax",
+      "sourceCrop": {
+        "x": 76,
+        "y": 132,
+        "width": 64,
+        "height": 56
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.46,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-lower-claw-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-lower-claw-wound",
+      "severedProcess": "deterministic sever wound overlay:lower-claw-socket",
+      "socketProcess": "deterministic organic socket occlusion:lower-claw-socket"
+    },
+    {
+      "id": "rear-swimmeret-socket",
+      "src": "fauna-abyssal-glasshook-skulk-rear-swimmeret-socket.png",
+      "parentId": "abdomen-3",
+      "childId": "rear-swimmeret",
+      "sourcePartId": "abdomen-3",
+      "sourceCrop": {
+        "x": 30,
+        "y": 116,
+        "width": 70,
+        "height": 54
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.44,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-rear-swimmeret-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-rear-swimmeret-wound",
+      "severedProcess": "deterministic sever wound overlay:rear-swimmeret-socket",
+      "socketProcess": "deterministic organic socket occlusion:rear-swimmeret-socket"
+    },
+    {
+      "id": "mid-swimmeret-socket",
+      "src": "fauna-abyssal-glasshook-skulk-mid-swimmeret-socket.png",
+      "parentId": "abdomen-2",
+      "childId": "mid-swimmeret",
+      "sourcePartId": "abdomen-2",
+      "sourceCrop": {
+        "x": 42,
+        "y": 124,
+        "width": 72,
+        "height": 56
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.44,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-mid-swimmeret-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-mid-swimmeret-wound",
+      "severedProcess": "deterministic sever wound overlay:mid-swimmeret-socket",
+      "socketProcess": "deterministic organic socket occlusion:mid-swimmeret-socket"
+    },
+    {
+      "id": "front-swimmeret-socket",
+      "src": "fauna-abyssal-glasshook-skulk-front-swimmeret-socket.png",
+      "parentId": "thorax",
+      "childId": "front-swimmeret",
+      "sourcePartId": "thorax",
+      "sourceCrop": {
+        "x": 26,
+        "y": 142,
+        "width": 78,
+        "height": 54
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.44,
+      "severedSrc": "fauna-abyssal-glasshook-skulk-front-swimmeret-wound.png",
+      "severedKey": "fauna-abyssal-glasshook-skulk-front-swimmeret-wound",
+      "severedProcess": "deterministic sever wound overlay:front-swimmeret-socket",
+      "socketProcess": "deterministic organic socket occlusion:front-swimmeret-socket"
+    }
+  ],
+  "notes": "Abyssal Glasshook Skulk is a smaller agile predator with a short arched carapace, fan tail, hooked head, two scythe claws, and swimmerets. It intentionally avoids the eel/wyrm body plan.",
+  "murkTint": {
+    "color": 7523022,
+    "intensity": 0.09,
+    "stunnedIntensity": 0.19
+  },
+  "socketStyle": {
+    "alpha": 0.78,
+    "bridgeColor": 1191994,
+    "bridgeAlpha": 0.44,
+    "bridgeStunnedAlpha": 0.2,
+    "bridgeCoreColor": 6484212,
+    "bridgeCoreAlpha": 0.2,
+    "bridgeCoreStunnedAlpha": 0.05,
+    "bridgeWidthScale": 1.12,
+    "bridgeSleeveScale": 0.48
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source-bespoke-imagegen",
+    "backgroundKey": "alpha",
+    "reviewedBy": null,
+    "acceptanceNote": "Original smaller-beast Imagegen source. Needs live motion review before acceptance."
+  }
+}

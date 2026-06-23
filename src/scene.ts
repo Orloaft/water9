@@ -21,6 +21,7 @@ import { ensureArticulatedTextures } from './articulated';
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
   terrain!: Phaser.GameObjects.Graphics;
+  articulatedBridges!: Phaser.GameObjects.Graphics;
   actors!: Phaser.GameObjects.Graphics;
   darkness!: Phaser.GameObjects.Graphics;
   lampGloom!: Phaser.GameObjects.Graphics;
@@ -108,6 +109,7 @@ export class DeepdiveScene extends Phaser.Scene {
       phase: 0,
       sprite: this.add.image(this.player.x, this.player.y, 'sub-tier1').setDepth(2.15).setOrigin(0.5).setVisible(false),
     };
+    this.articulatedBridges = this.add.graphics().setDepth(2.08);
     this.actors = this.add.graphics().setDepth(3);
     this.darkness = this.add.graphics().setDepth(5);
     this.lampGloom = this.add.graphics().setDepth(6);
@@ -747,6 +749,11 @@ export interface DeepdiveScene {
   keepArticulatedCreatureInWater: OmitThisParameter<typeof articulatedNs.keepArticulatedCreatureInWater>;
   updateArticulatedParts: OmitThisParameter<typeof articulatedNs.updateArticulatedParts>;
   articulatedPartAnchorWorld: OmitThisParameter<typeof articulatedNs.articulatedPartAnchorWorld>;
+  articulatedBitePart: OmitThisParameter<typeof articulatedNs.articulatedBitePart>;
+  articulatedBiteAnchorWorld: OmitThisParameter<typeof articulatedNs.articulatedBiteAnchorWorld>;
+  articulatedPartHitShape: OmitThisParameter<typeof articulatedNs.articulatedPartHitShape>;
+  articulatedPartHitDistanceTo: OmitThisParameter<typeof articulatedNs.articulatedPartHitDistanceTo>;
+  articulatedPartTerrainContact: OmitThisParameter<typeof articulatedNs.articulatedPartTerrainContact>;
   articulatedJointMetrics: OmitThisParameter<typeof articulatedNs.articulatedJointMetrics>;
   resolveArticulatedGrab: OmitThisParameter<typeof articulatedNs.resolveArticulatedGrab>;
   bumpArticulatedCreature: OmitThisParameter<typeof articulatedNs.bumpArticulatedCreature>;

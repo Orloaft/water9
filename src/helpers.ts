@@ -4,7 +4,7 @@ import { audioKeys,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BA
 import { biomeFish,biomeFlora,shopItems,subDefs,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { articulatedCreatureDefs, loadArticulatedAssets } from './articulated';
+import { articulatedCreatureDefs, loadArticulatedAssets, shouldSpawnArticulatedCreature } from './articulated';
 import { clearFullscreenWarning,meter,renderHud,showFullscreenWarning } from './hud';
 import type { DeepdiveScene } from './scene';
 
@@ -800,11 +800,12 @@ export function floraSpeciesByName(name: string) {
 export function currentApexSpecies() {
   if (state.biome === 1) return 'Blue-ring Octopus';
   if (state.biome === 2) return 'Gulper Eel';
+  if (state.biome === 4) return 'Abyssal Crownmaw';
   return 'Abyssal Serpent';
 }
 
 export function lifeCatalogTotal() {
-  const articulatedCount = articulatedCreatureDefs().filter((manifest) => state.biome >= manifest.minBiome).length;
+  const articulatedCount = articulatedCreatureDefs().filter((manifest) => state.biome >= manifest.minBiome && shouldSpawnArticulatedCreature(manifest)).length;
   return biomeFish[state.biome].length + biomeFlora[state.biome].length + articulatedCount;
 }
 

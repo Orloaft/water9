@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import './styles.css';
 import { DeepdiveScene } from './scene';
+import { EntitySandboxScene } from './scene-sandbox';
 import { setGame, gameScene } from './game-ref';
 import { renderHud } from './hud';
 
@@ -14,9 +15,12 @@ function installPlaytestApi() {
   };
 }
 
-renderHud();
+const params = new URLSearchParams(window.location.search);
+const sandboxMode = params.has('sandbox') || params.get('mode') === 'sandbox' || params.has('entity');
 
-const forceCanvasRenderer = new URLSearchParams(window.location.search).has('playtest');
+if (!sandboxMode) renderHud();
+
+const forceCanvasRenderer = params.has('playtest') || sandboxMode;
 
 const game = new Phaser.Game({
   type: forceCanvasRenderer ? Phaser.CANVAS : Phaser.AUTO,
@@ -34,7 +38,7 @@ const game = new Phaser.Game({
   input: {
     gamepad: true,
   },
-  scene: DeepdiveScene,
+  scene: sandboxMode ? EntitySandboxScene : DeepdiveScene,
 });
 
 setGame(game);

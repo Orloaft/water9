@@ -1,0 +1,301 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-hadal-trencher-isopod",
+  "runtimeCreatureId": "hadal-trencher-isopod",
+  "displayName": "Hadal Trencher Isopod",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png",
+  "sourceTransform": {
+    "chromaKey": {
+      "color": [
+        255,
+        0,
+        255
+      ],
+      "tolerance": 24,
+      "feather": 12
+    }
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "core",
+      "key": "fauna-hadal-trencher-isopod-core",
+      "src": "fauna-hadal-trencher-isopod-core.png",
+      "sourceCrop": {
+        "x": 518,
+        "y": 268,
+        "width": 808,
+        "height": 370
+      },
+      "size": {
+        "width": 808,
+        "height": 370
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.4,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.3,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      },
+      "damagedSrc": "fauna-hadal-trencher-isopod-core-damaged.png",
+      "damagedKey": "fauna-hadal-trencher-isopod-core-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head",
+      "key": "fauna-hadal-trencher-isopod-head",
+      "src": "fauna-hadal-trencher-isopod-head.png",
+      "sourceCrop": {
+        "x": 1157,
+        "y": 319,
+        "width": 471,
+        "height": 230
+      },
+      "size": {
+        "width": 471,
+        "height": 230
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.1,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.15,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "tail",
+      "key": "fauna-hadal-trencher-isopod-tail",
+      "src": "fauna-hadal-trencher-isopod-tail.png",
+      "sourceCrop": {
+        "x": 198,
+        "y": 364,
+        "width": 572,
+        "height": 217
+      },
+      "size": {
+        "width": 572,
+        "height": 217
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.9,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "upper-fin",
+      "key": "fauna-hadal-trencher-isopod-upper-fin",
+      "src": "fauna-hadal-trencher-isopod-upper-fin.png",
+      "sourceCrop": {
+        "x": 568,
+        "y": 211,
+        "width": 707,
+        "height": 153
+      },
+      "size": {
+        "width": 707,
+        "height": 153
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 1.3,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "lower-fin",
+      "key": "fauna-hadal-trencher-isopod-lower-fin",
+      "src": "fauna-hadal-trencher-isopod-lower-fin.png",
+      "sourceCrop": {
+        "x": 568,
+        "y": 542,
+        "width": 707,
+        "height": 153
+      },
+      "size": {
+        "width": 707,
+        "height": 153
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 1.9,
+        "lag": 0.2
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "head-socket",
+      "src": "fauna-hadal-trencher-isopod-head-socket.png",
+      "parentId": "core",
+      "childId": "head",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 606,
+        "y": 152,
+        "width": 67,
+        "height": 67
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "tail-socket",
+      "src": "fauna-hadal-trencher-isopod-tail-socket.png",
+      "parentId": "core",
+      "childId": "tail",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 134,
+        "y": 152,
+        "width": 67,
+        "height": 67
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "upper-fin-socket",
+      "src": "fauna-hadal-trencher-isopod-upper-fin-socket.png",
+      "parentId": "core",
+      "childId": "upper-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 370,
+        "y": 62,
+        "width": 67,
+        "height": 67
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "lower-fin-socket",
+      "src": "fauna-hadal-trencher-isopod-lower-fin-socket.png",
+      "parentId": "core",
+      "childId": "lower-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 370,
+        "y": 240,
+        "width": 67,
+        "height": 67
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    }
+  ],
+  "notes": "Auto-generated starter plan. Use plan-preview to revise crops and anchors before extraction.",
+  "murkTint": {
+    "color": 7919057,
+    "intensity": 0.12,
+    "stunnedIntensity": 0.18
+  },
+  "socketStyle": {
+    "alpha": 0.6,
+    "bridgeColor": 462874,
+    "bridgeAlpha": 0.2,
+    "bridgeCoreColor": 7977161,
+    "bridgeCoreAlpha": 0.08,
+    "bridgeWidthScale": 0.98,
+    "bridgeSleeveScale": 0.36
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Starter articulation plan generated from the source-candidate whole-source image. Crops, anchors, sockets, motion, and anatomy require human adjustment before this can become accepted content.",
+    "sourceCandidateId": "hadal-trencher-isopod"
+  }
+}

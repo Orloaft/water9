@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Subagent Audit Ledger</title>
+  <style>
+    :root { color-scheme: dark; background:#061014; color:#d9edf0; font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    body { margin:0; padding:28px; background:#061014; }
+    main { max-width:1160px; margin:0 auto; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); letter-spacing:0; }
+    h2 { margin:0; font-size:1.1rem; }
+    h3 { margin:14px 0 8px; color:#99b5bd; font-size:.8rem; text-transform:uppercase; }
+    p, li, dd { color:#bfd4d9; }
+    code { color:#dff8ff; font-family:"SFMono-Regular",Consolas,monospace; overflow-wrap:anywhere; }
+    .notice, .card, .summary { border:1px solid #294653; background:#0b1d24; border-radius:6px; padding:14px; }
+    .notice { border-color:#6a5230; background:#1d1710; color:#f0d9aa; margin:14px 0; }
+    .summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:8px; margin:18px 0; }
+    .summary span { border:1px solid #203b46; background:#07171d; border-radius:5px; padding:8px 10px; }
+    .card { margin:12px 0; }
+    .card header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    dl { display:grid; grid-template-columns:90px 1fr; gap:5px 10px; margin:12px 0; }
+    dt { color:#8fa8ae; }
+    dd { margin:0; }
+  </style>
+</head>
+<body>
+  <main data-content-subagent-audit-ledger>
+    <h1>Subagent Audit Ledger</h1>
+    <p>Independent audit record for the Water 9 content pipeline.</p>
+    <div class="notice">These audits do not approve source art, do not accept threats, and do not count preview-only work toward the strict 20-threat gate.</div>
+    <section class="summary">
+      <span>audits <strong>3</strong></span>
+      <span>completed <strong>3</strong></span>
+      <span>paired visual checked <strong>40</strong></span>
+      <span>research audited <strong>20</strong></span>
+      <span>human-approved sources <strong>0</strong></span>
+      <span>strict complete <strong>false</strong></span>
+    </section>
+    <article class="card" data-subagent-audit="sandbox-preview-infrastructure-audit-2026-06-18">
+    <header><h2>sandbox-preview-infrastructure-audit-2026-06-18</h2><strong>completed</strong></header>
+    <dl>
+      <dt>agent</dt><dd>Chandrasekhar the 2nd <code>019edb22-6da8-7591-a133-f6dcf9b9e410</code></dd>
+      <dt>scope</dt><dd>sandbox-preview-infrastructure</dd>
+      <dt>repo</dt><dd><code>/mnt/nxt-dev/water9</code></dd>
+      <dt>edits</dt><dd>no</dd>
+    </dl>
+    <p>Audited quick sandbox preview coverage, paired-diver browser evidence, production-boundary metadata, and remaining preview-only blockers.</p>
+    <h3>Proven</h3>
+    <ul><li>125 registered sandbox entries are previewable</li><li>20 target runtime previews and 20 source previews have paired-diver coverage</li><li>sandbox visual checks verify snapshot identity, metadata, production boundaries, nonblank canvas, companion rendering, and articulated framing</li></ul>
+    <h3>Gaps Found</h3>
+    <ul><li>strict content goal is still incomplete because sources and threats lack human approval</li><li>persisted visual reports did not include generatedAt timestamps before this pass</li><li>sandbox evidence covers registered manifest entries, not arbitrary unregistered ids</li></ul>
+    <h3>Gaps Closed This Pass</h3>
+    <ul><li>sandbox manifest, index, lab, and preview CLI now expose reviewGateLabel and reviewGateSeverity</li><li>persisted sandbox visual reports and screenshot sidecars now include generatedAt timestamps</li></ul>
+  </article>
+<article class="card" data-subagent-audit="research-source-trace-audit-2026-06-18">
+    <header><h2>research-source-trace-audit-2026-06-18</h2><strong>completed</strong></header>
+    <dl>
+      <dt>agent</dt><dd>Ramanujan the 2nd <code>019edb22-8531-7dc3-b478-5e6ec29be99c</code></dd>
+      <dt>scope</dt><dd>research-source-trace</dd>
+      <dt>repo</dt><dd><code>/mnt/nxt-dev/water9</code></dd>
+      <dt>edits</dt><dd>no</dd>
+    </dl>
+    <p>Audited research briefs, subagent assignment lanes, audit findings, source traces, and source-candidate coverage for the active 20 underwater threats.</p>
+    <h3>Proven</h3>
+    <ul><li>20 research briefs are linked to source candidates</li><li>3 research assignment lanes cover all 20 candidates</li><li>20 candidates have subagent audit findings and source trace records</li><li>20 source candidates have source images present</li></ul>
+    <h3>Gaps Found</h3>
+    <ul><li>source-generation queue and sprint are currently empty because all active candidates already have source images</li><li>repo research artifacts prove audit coverage but not human source approval</li><li>all 20 source candidates remain needs-review</li></ul>
+    <h3>Gaps Closed This Pass</h3>
+    <ul><li>live subagent audit provenance is now recorded in this ledger</li></ul>
+  </article>
+<article class="card" data-subagent-audit="source-approval-session-workflow-audit-2026-06-18">
+    <header><h2>source-approval-session-workflow-audit-2026-06-18</h2><strong>completed</strong></header>
+    <dl>
+      <dt>agent</dt><dd>Maxwell the 2nd <code>019edb6a-ba2f-7450-b77e-60a2047d5c8c</code></dd>
+      <dt>scope</dt><dd>source-approval-session-workflow</dd>
+      <dt>repo</dt><dd><code>/mnt/nxt-dev/water9</code></dd>
+      <dt>edits</dt><dd>no</dd>
+    </dl>
+    <p>Audited the source approval session workflow from session page to focused next review, batch decision workspace, strict dry-run, and explicit apply.</p>
+    <h3>Proven</h3>
+    <ul><li>source approval session exposes the focused next review, batch decision workspace, strict dry-run, and explicit apply sequence</li><li>source-next-review defaults the focused decision starter to needs-review and includes evidence fingerprints for source, key, sandbox, and plan media</li><li>strict source cohesion apply validates current evidence fingerprints, reviewer identity, and human-authored decision data before approval metadata can be applied</li></ul>
+    <h3>Gaps Found</h3>
+    <ul><li>strict content goal is still incomplete because 20 source candidates remain unapproved by a human reviewer</li><li>focused next review and batch workspace commands used the generic water9-source-cohesion-decisions.json filename while the approval session used the preferred reviewed-only filename</li><li>this audit did not run the source cohesion apply dry-run because that command writes the source-cohesion-decision-run-report artifact</li></ul>
+    <h3>Gaps Closed This Pass</h3>
+    <ul><li>live subagent audit provenance is now recorded for the source approval session workflow</li><li>review workflow validators now require source-approval-session-workflow audit coverage</li><li>focused source review and batch decision workspace commands now standardize on water9-source-cohesion-reviewed-decisions.json</li></ul>
+  </article>
+  </main>
+</body>
+</html>

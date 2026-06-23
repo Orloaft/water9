@@ -1,0 +1,693 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-abyssal-riftmaw",
+  "runtimeCreatureId": "abyssal-riftmaw",
+  "displayName": "Abyssal Riftmaw",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-abyssal-riftmaw-whole-painted.png",
+  "sourceTransform": {
+    "blueprint": "public/assets/generated/fauna-abyssal-gulper-v2-whole-painted.png",
+    "process": "deterministic recolor plus silhouette overpaint; same socket topology as Abyssal Gulper"
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail",
+      "key": "fauna-abyssal-riftmaw-tail",
+      "src": "fauna-abyssal-riftmaw-tail.png",
+      "sourceCrop": {
+        "x": 22,
+        "y": 190,
+        "width": 210,
+        "height": 150
+      },
+      "size": {
+        "width": 210,
+        "height": 150
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.78,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": true,
+        "breakThreshold": 0.76,
+        "mobilityFactor": 0.58
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.6,
+        "frequency": 1.72,
+        "phase": 1.16,
+        "lag": 0.68
+      }
+    },
+    {
+      "id": "tail-base",
+      "key": "fauna-abyssal-riftmaw-tail-base",
+      "src": "fauna-abyssal-riftmaw-tail-base.png",
+      "sourceCrop": {
+        "x": 142,
+        "y": 172,
+        "width": 195,
+        "height": 133
+      },
+      "size": {
+        "width": 195,
+        "height": 133
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.92,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": true,
+        "breakThreshold": 0.82,
+        "mobilityFactor": 0.64
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.8,
+        "frequency": 1.68,
+        "phase": 0.9,
+        "lag": 0.52
+      }
+    },
+    {
+      "id": "body-4",
+      "key": "fauna-abyssal-riftmaw-body-4",
+      "src": "fauna-abyssal-riftmaw-body-4.png",
+      "sourceCrop": {
+        "x": 262,
+        "y": 160,
+        "width": 158,
+        "height": 125
+      },
+      "size": {
+        "width": 158,
+        "height": 125
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.28,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": true,
+        "breakThreshold": 0.88,
+        "mobilityFactor": 0.7
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 3.9,
+        "frequency": 1.62,
+        "phase": 0.68,
+        "lag": 0.38
+      }
+    },
+    {
+      "id": "body-3",
+      "key": "fauna-abyssal-riftmaw-body-3",
+      "src": "fauna-abyssal-riftmaw-body-3.png",
+      "sourceCrop": {
+        "x": 382,
+        "y": 150,
+        "width": 162,
+        "height": 140
+      },
+      "size": {
+        "width": 162,
+        "height": 140
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.25,
+        "drag": 0.86,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 1.4,
+        "mobilityFactor": 0.84
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 3.2,
+        "frequency": 1.64,
+        "phase": 0.64,
+        "lag": 0.46
+      }
+    },
+    {
+      "id": "body-2",
+      "key": "fauna-abyssal-riftmaw-body-2",
+      "src": "fauna-abyssal-riftmaw-body-2.png",
+      "sourceCrop": {
+        "x": 500,
+        "y": 142,
+        "width": 166,
+        "height": 155
+      },
+      "size": {
+        "width": 166,
+        "height": 155
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.7,
+        "drag": 0.86,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 1.45,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.0,
+        "frequency": 1.58,
+        "phase": 0.34,
+        "lag": 0.26
+      },
+      "damagedSrc": "fauna-abyssal-riftmaw-body-2-damaged.png",
+      "damagedKey": "fauna-abyssal-riftmaw-body-2-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "body-1",
+      "key": "fauna-abyssal-riftmaw-body-1",
+      "src": "fauna-abyssal-riftmaw-body-1.png",
+      "sourceCrop": {
+        "x": 520,
+        "y": 105,
+        "width": 180,
+        "height": 205
+      },
+      "size": {
+        "width": 180,
+        "height": 205
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.1,
+        "drag": 0.86,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 1.5,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 0.9,
+        "frequency": 1.54,
+        "phase": 0.1,
+        "lag": 0.1
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              130,
+              72
+            ],
+            [
+              180,
+              68
+            ],
+            [
+              180,
+              205
+            ],
+            [
+              118,
+              205
+            ],
+            [
+              100,
+              142
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dorsal-fin",
+      "key": "fauna-abyssal-riftmaw-dorsal-fin",
+      "src": "fauna-abyssal-riftmaw-dorsal-fin.png",
+      "sourceCrop": {
+        "x": 492,
+        "y": 88,
+        "width": 180,
+        "height": 105
+      },
+      "size": {
+        "width": 180,
+        "height": 105
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.42,
+        "drag": 1.1,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.76
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 0.75,
+        "frequency": 1.5,
+        "phase": 0.18,
+        "lag": 0.04
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              0,
+              66
+            ],
+            [
+              180,
+              58
+            ],
+            [
+              180,
+              105
+            ],
+            [
+              0,
+              105
+            ]
+          ]
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              32,
+              0
+            ],
+            [
+              18,
+              105
+            ],
+            [
+              0,
+              105
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pectoral-fin",
+      "key": "fauna-abyssal-riftmaw-pectoral-fin",
+      "src": "fauna-abyssal-riftmaw-pectoral-fin.png",
+      "sourceCrop": {
+        "x": 507,
+        "y": 228,
+        "width": 170,
+        "height": 130
+      },
+      "size": {
+        "width": 170,
+        "height": 130
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.44,
+        "drag": 1.1,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.64,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.2,
+        "frequency": 2.0,
+        "phase": 0.24,
+        "lag": 0.28
+      }
+    },
+    {
+      "id": "head",
+      "key": "fauna-abyssal-riftmaw-head",
+      "src": "fauna-abyssal-riftmaw-head.png",
+      "sourceCrop": {
+        "x": 650,
+        "y": 110,
+        "width": 205,
+        "height": 132
+      },
+      "size": {
+        "width": 205,
+        "height": 132
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 3.35,
+        "drag": 0.86,
+        "angularDrag": 0.46,
+        "severable": false,
+        "breakThreshold": 1.68,
+        "mobilityFactor": 0.58
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 1.9,
+        "frequency": 1.22,
+        "phase": 0.0
+      }
+    },
+    {
+      "id": "jaw",
+      "key": "fauna-abyssal-riftmaw-jaw",
+      "src": "fauna-abyssal-riftmaw-jaw.png",
+      "sourceCrop": {
+        "x": 640,
+        "y": 205,
+        "width": 212,
+        "height": 135
+      },
+      "size": {
+        "width": 212,
+        "height": 135
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.62,
+        "drag": 1.1,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.84,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 12.4,
+        "frequency": 1.84,
+        "phase": 0.0,
+        "lag": 0.06
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              212,
+              0
+            ],
+            [
+              212,
+              28
+            ],
+            [
+              112,
+              26
+            ],
+            [
+              62,
+              48
+            ],
+            [
+              0,
+              64
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-socket",
+      "src": "fauna-abyssal-riftmaw-tail-socket.png",
+      "parentId": "tail-base",
+      "childId": "tail",
+      "sourcePartId": "tail-base",
+      "sourceCrop": {
+        "x": 0,
+        "y": 42,
+        "width": 78,
+        "height": 70
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.12,
+      "bridgeSleeveScale": 0.48,
+      "severedSrc": "fauna-abyssal-riftmaw-tail-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-tail-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-socket"
+    },
+    {
+      "id": "tail-base-socket",
+      "src": "fauna-abyssal-riftmaw-tail-base-socket.png",
+      "parentId": "body-4",
+      "childId": "tail-base",
+      "sourcePartId": "body-4",
+      "sourceCrop": {
+        "x": 0,
+        "y": 35,
+        "width": 82,
+        "height": 74
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.6,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.08,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-riftmaw-tail-base-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-tail-base-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-base-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-base-socket"
+    },
+    {
+      "id": "body-4-socket",
+      "src": "fauna-abyssal-riftmaw-body-4-socket.png",
+      "parentId": "body-3",
+      "childId": "body-4",
+      "sourcePartId": "body-3",
+      "sourceCrop": {
+        "x": 0,
+        "y": 43,
+        "width": 84,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.34,
+      "severedSrc": "fauna-abyssal-riftmaw-body-4-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-body-4-wound",
+      "severedProcess": "deterministic sever wound overlay:body-4-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-4-socket"
+    },
+    {
+      "id": "body-3-socket",
+      "src": "fauna-abyssal-riftmaw-body-3-socket.png",
+      "parentId": "body-2",
+      "childId": "body-3",
+      "sourcePartId": "body-2",
+      "sourceCrop": {
+        "x": 0,
+        "y": 50,
+        "width": 88,
+        "height": 84
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.36,
+      "severedSrc": "fauna-abyssal-riftmaw-body-3-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-body-3-wound",
+      "severedProcess": "deterministic sever wound overlay:body-3-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-3-socket"
+    },
+    {
+      "id": "body-2-socket",
+      "src": "fauna-abyssal-riftmaw-body-2-socket.png",
+      "parentId": "body-1",
+      "childId": "body-2",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 0,
+        "y": 55,
+        "width": 88,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.24,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.38,
+      "severedSrc": "fauna-abyssal-riftmaw-body-2-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-body-2-wound",
+      "severedProcess": "deterministic sever wound overlay:body-2-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-2-socket"
+    },
+    {
+      "id": "dorsal-fin-socket",
+      "src": "fauna-abyssal-riftmaw-dorsal-fin-socket.png",
+      "parentId": "body-1",
+      "childId": "dorsal-fin",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 42,
+        "y": 0,
+        "width": 92,
+        "height": 60
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.34,
+      "severedSrc": "fauna-abyssal-riftmaw-dorsal-fin-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-dorsal-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:dorsal-fin-socket",
+      "socketProcess": "deterministic organic socket occlusion:dorsal-fin-socket"
+    },
+    {
+      "id": "pectoral-fin-socket",
+      "src": "fauna-abyssal-riftmaw-pectoral-fin-socket.png",
+      "parentId": "body-1",
+      "childId": "pectoral-fin",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 38,
+        "y": 106,
+        "width": 90,
+        "height": 62
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-riftmaw-pectoral-fin-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-pectoral-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:pectoral-fin-socket",
+      "socketProcess": "deterministic organic socket occlusion:pectoral-fin-socket"
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-abyssal-riftmaw-head-socket.png",
+      "parentId": "body-1",
+      "childId": "head",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 94,
+        "y": 48,
+        "width": 80,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.24,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.04,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-riftmaw-head-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-head-wound",
+      "severedProcess": "deterministic sever wound overlay:head-socket",
+      "socketProcess": "deterministic organic socket occlusion:head-socket"
+    },
+    {
+      "id": "jaw-socket",
+      "src": "fauna-abyssal-riftmaw-jaw-socket.png",
+      "parentId": "head",
+      "childId": "jaw",
+      "sourcePartId": "head",
+      "sourceCrop": {
+        "x": 42,
+        "y": 76,
+        "width": 74,
+        "height": 54
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.25,
+      "bridgeCoreAlpha": 0.1,
+      "bridgeWidthScale": 1.08,
+      "bridgeSleeveScale": 0.5,
+      "severedSrc": "fauna-abyssal-riftmaw-jaw-wound.png",
+      "severedKey": "fauna-abyssal-riftmaw-jaw-wound",
+      "severedProcess": "deterministic sever wound overlay:jaw-socket",
+      "socketProcess": "deterministic organic socket occlusion:jaw-socket"
+    }
+  ],
+  "notes": "Abyssal Riftmaw is the first follow-on monster using the Abyssal Gulper as a blueprint: single cohesive source, one head, hinged lower jaw, five-part body/tail chain, dorsal and pectoral fins, socket overlays, sever wounds, and damage texture.",
+  "murkTint": {
+    "color": 14117706,
+    "intensity": 0.14,
+    "stunnedIntensity": 0.2
+  },
+  "socketStyle": {
+    "alpha": 0.78,
+    "bridgeColor": 2626618,
+    "bridgeAlpha": 0.46,
+    "bridgeStunnedAlpha": 0.22,
+    "bridgeCoreColor": 16744764,
+    "bridgeCoreAlpha": 0.22,
+    "bridgeCoreStunnedAlpha": 0.06,
+    "bridgeWidthScale": 1.2,
+    "bridgeSleeveScale": 0.52
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source-blueprint-derivative",
+    "backgroundKey": "alpha",
+    "reviewedBy": null,
+    "acceptanceNote": "New monster pass derived from the accepted Abyssal Gulper blueprint. Needs human source, motion, and sandbox review before acceptance."
+  }
+}

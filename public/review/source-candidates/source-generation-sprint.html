@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Generation Sprint</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061013; --panel:#0c1b20; --line:#24424b; --text:#e2f5f6; --muted:#91aab0; --accent:#7ce5ff; --warn:#e7bd6d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1340px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:16px 0 7px; font-size:13px; color:var(--warn); text-transform:uppercase; }
+    p { color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    code { color:var(--muted); }
+    pre { border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    table { width:100%; border-collapse:collapse; margin:18px 0 24px; border:1px solid var(--line); background:var(--panel); }
+    th, td { text-align:left; border-bottom:1px solid var(--line); padding:8px 10px; vertical-align:top; }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:14px; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:6px; padding:14px; }
+    .card header { display:flex; gap:10px; align-items:flex-start; }
+    .card header span { flex:0 0 auto; width:28px; height:28px; display:grid; place-items:center; border:1px solid var(--line); color:var(--warn); }
+    dl { display:grid; gap:7px; margin:14px 0; }
+    dt { color:var(--muted); font-size:11px; text-transform:uppercase; }
+    dd { margin:0; }
+    ul { margin:0; padding-left:18px; color:#bdd5d9; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Source Generation Sprint</h1>
+    <p>Generate this focused batch on clean <code>#ff00ff</code> magenta backgrounds, then validate the inbox before ingesting.</p>
+    <pre><code># run image generation for the first prompt
+# fallback for manually saved/downloaded images:
+npm run source:check
+npm run source:gallery
+npm run content:status -- --json</code></pre>
+    <table>
+      <thead><tr><th>Rank</th><th>Candidate</th><th>Score</th><th>Rejections</th><th>Inbox Target</th><th>Contract</th></tr></thead>
+      <tbody><tr>
+    <td colspan="6">No queued source candidates remain. Rebuild the queue after adding new missing source art.</td>
+  </tr></tbody>
+    </table>
+    <section class="cards"></section>
+  </main>
+</body>
+</html>

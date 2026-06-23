@@ -1,0 +1,618 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-abyssal-mandible-bobbit",
+  "runtimeCreatureId": "abyssal-mandible-bobbit",
+  "displayName": "Abyssal Mandible Bobbit",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-abyssal-mandible-bobbit-whole-painted.png",
+  "sourceTransform": {
+    "highSource": "public/assets/generated/fauna-abyssal-mandible-bobbit-topdown-whole-painted-hi.png",
+    "process": "bespoke top-down Imagegen source cut into a long segmented worm with mandible parts"
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail",
+      "key": "fauna-abyssal-mandible-bobbit-tail",
+      "src": "fauna-abyssal-mandible-bobbit-tail.png",
+      "sourceCrop": {
+        "x": 20,
+        "y": 142,
+        "width": 166,
+        "height": 88
+      },
+      "size": {
+        "width": 166,
+        "height": 88
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.52,
+        "drag": 1.12,
+        "angularDrag": 0.38,
+        "severable": true,
+        "breakThreshold": 0.68,
+        "mobilityFactor": 0.62
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.6,
+        "frequency": 1.9,
+        "phase": 1.18,
+        "lag": 0.58
+      }
+    },
+    {
+      "id": "body-5",
+      "key": "fauna-abyssal-mandible-bobbit-body-5",
+      "src": "fauna-abyssal-mandible-bobbit-body-5.png",
+      "sourceCrop": {
+        "x": 148,
+        "y": 132,
+        "width": 150,
+        "height": 104
+      },
+      "size": {
+        "width": 150,
+        "height": 104
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.88,
+        "drag": 1.12,
+        "angularDrag": 0.38,
+        "severable": true,
+        "breakThreshold": 0.76,
+        "mobilityFactor": 0.66
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.2,
+        "frequency": 1.86,
+        "phase": 0.98,
+        "lag": 0.48
+      }
+    },
+    {
+      "id": "body-4",
+      "key": "fauna-abyssal-mandible-bobbit-body-4",
+      "src": "fauna-abyssal-mandible-bobbit-body-4.png",
+      "sourceCrop": {
+        "x": 270,
+        "y": 118,
+        "width": 148,
+        "height": 122
+      },
+      "size": {
+        "width": 148,
+        "height": 122
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.15,
+        "drag": 1.12,
+        "angularDrag": 0.38,
+        "severable": true,
+        "breakThreshold": 0.84,
+        "mobilityFactor": 0.7
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 3.8,
+        "frequency": 1.82,
+        "phase": 0.78,
+        "lag": 0.36
+      }
+    },
+    {
+      "id": "body-3",
+      "key": "fauna-abyssal-mandible-bobbit-body-3",
+      "src": "fauna-abyssal-mandible-bobbit-body-3.png",
+      "sourceCrop": {
+        "x": 392,
+        "y": 102,
+        "width": 150,
+        "height": 142
+      },
+      "size": {
+        "width": 150,
+        "height": 142
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.55,
+        "drag": 0.88,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.12,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 3.0,
+        "frequency": 1.76,
+        "phase": 0.56,
+        "lag": 0.28
+      }
+    },
+    {
+      "id": "body-2",
+      "key": "fauna-abyssal-mandible-bobbit-body-2",
+      "src": "fauna-abyssal-mandible-bobbit-body-2.png",
+      "sourceCrop": {
+        "x": 516,
+        "y": 92,
+        "width": 150,
+        "height": 154
+      },
+      "size": {
+        "width": 150,
+        "height": 154
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.05,
+        "drag": 0.88,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.3,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.0,
+        "frequency": 1.68,
+        "phase": 0.32,
+        "lag": 0.18
+      },
+      "damagedSrc": "fauna-abyssal-mandible-bobbit-body-2-damaged.png",
+      "damagedKey": "fauna-abyssal-mandible-bobbit-body-2-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "body-1",
+      "key": "fauna-abyssal-mandible-bobbit-body-1",
+      "src": "fauna-abyssal-mandible-bobbit-body-1.png",
+      "sourceCrop": {
+        "x": 630,
+        "y": 96,
+        "width": 114,
+        "height": 158
+      },
+      "size": {
+        "width": 114,
+        "height": 158
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.55,
+        "drag": 0.88,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.42,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.0,
+        "frequency": 1.56,
+        "phase": 0.08,
+        "lag": 0.06
+      }
+    },
+    {
+      "id": "head",
+      "key": "fauna-abyssal-mandible-bobbit-head",
+      "src": "fauna-abyssal-mandible-bobbit-head.png",
+      "sourceCrop": {
+        "x": 710,
+        "y": 112,
+        "width": 124,
+        "height": 162
+      },
+      "size": {
+        "width": 124,
+        "height": 162
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 2.6,
+        "drag": 0.88,
+        "angularDrag": 0.46,
+        "severable": false,
+        "breakThreshold": 1.48,
+        "mobilityFactor": 0.58
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 0.9,
+        "frequency": 1.36,
+        "phase": 0.0,
+        "lag": 0.04
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              74,
+              0
+            ],
+            [
+              124,
+              0
+            ],
+            [
+              124,
+              60
+            ],
+            [
+              88,
+              50
+            ]
+          ]
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              88,
+              112
+            ],
+            [
+              124,
+              98
+            ],
+            [
+              124,
+              162
+            ],
+            [
+              72,
+              162
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "upper-mandible",
+      "key": "fauna-abyssal-mandible-bobbit-upper-mandible",
+      "src": "fauna-abyssal-mandible-bobbit-upper-mandible.png",
+      "sourceCrop": {
+        "x": 764,
+        "y": 82,
+        "width": 176,
+        "height": 90
+      },
+      "size": {
+        "width": 176,
+        "height": 90
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.46,
+        "drag": 1.12,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 8.0,
+        "frequency": 1.5,
+        "phase": 0.0,
+        "lag": 0.03
+      },
+      "alphaCutouts": [
+        {
+          "kind": "rectangle",
+          "x": 0,
+          "y": 58,
+          "width": 176,
+          "height": 32
+        }
+      ]
+    },
+    {
+      "id": "lower-mandible",
+      "key": "fauna-abyssal-mandible-bobbit-lower-mandible",
+      "src": "fauna-abyssal-mandible-bobbit-lower-mandible.png",
+      "sourceCrop": {
+        "x": 754,
+        "y": 214,
+        "width": 176,
+        "height": 90
+      },
+      "size": {
+        "width": 176,
+        "height": 90
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.46,
+        "drag": 1.12,
+        "angularDrag": 0.76,
+        "severable": true,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 8.0,
+        "frequency": 1.52,
+        "phase": 0.0,
+        "lag": 0.03
+      },
+      "alphaCutouts": [
+        {
+          "kind": "rectangle",
+          "x": 0,
+          "y": 0,
+          "width": 176,
+          "height": 34
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              126,
+              44
+            ],
+            [
+              176,
+              34
+            ],
+            [
+              176,
+              90
+            ],
+            [
+              116,
+              90
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-socket",
+      "src": "fauna-abyssal-mandible-bobbit-tail-socket.png",
+      "parentId": "body-5",
+      "childId": "tail",
+      "sourcePartId": "body-5",
+      "sourceCrop": {
+        "x": 0,
+        "y": 30,
+        "width": 72,
+        "height": 52
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-mandible-bobbit-tail-wound.png",
+      "severedKey": "fauna-abyssal-mandible-bobbit-tail-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-socket"
+    },
+    {
+      "id": "body-5-socket",
+      "src": "fauna-abyssal-mandible-bobbit-body-5-socket.png",
+      "parentId": "body-4",
+      "childId": "body-5",
+      "sourcePartId": "body-4",
+      "sourceCrop": {
+        "x": 0,
+        "y": 38,
+        "width": 76,
+        "height": 64
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.38,
+      "severedSrc": "fauna-abyssal-mandible-bobbit-body-5-wound.png",
+      "severedKey": "fauna-abyssal-mandible-bobbit-body-5-wound",
+      "severedProcess": "deterministic sever wound overlay:body-5-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-5-socket"
+    },
+    {
+      "id": "body-4-socket",
+      "src": "fauna-abyssal-mandible-bobbit-body-4-socket.png",
+      "parentId": "body-3",
+      "childId": "body-4",
+      "sourcePartId": "body-3",
+      "sourceCrop": {
+        "x": 0,
+        "y": 42,
+        "width": 80,
+        "height": 70
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.6,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.36,
+      "severedSrc": "fauna-abyssal-mandible-bobbit-body-4-wound.png",
+      "severedKey": "fauna-abyssal-mandible-bobbit-body-4-wound",
+      "severedProcess": "deterministic sever wound overlay:body-4-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-4-socket"
+    },
+    {
+      "id": "body-3-socket",
+      "src": "fauna-abyssal-mandible-bobbit-body-3-socket.png",
+      "parentId": "body-2",
+      "childId": "body-3",
+      "sourcePartId": "body-2",
+      "sourceCrop": {
+        "x": 0,
+        "y": 48,
+        "width": 82,
+        "height": 76
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.36,
+      "severedSrc": "fauna-abyssal-mandible-bobbit-body-3-wound.png",
+      "severedKey": "fauna-abyssal-mandible-bobbit-body-3-wound",
+      "severedProcess": "deterministic sever wound overlay:body-3-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-3-socket"
+    },
+    {
+      "id": "body-2-socket",
+      "src": "fauna-abyssal-mandible-bobbit-body-2-socket.png",
+      "parentId": "body-1",
+      "childId": "body-2",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 0,
+        "y": 58,
+        "width": 88,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.24,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.38,
+      "severedSrc": "fauna-abyssal-mandible-bobbit-body-2-wound.png",
+      "severedKey": "fauna-abyssal-mandible-bobbit-body-2-wound",
+      "severedProcess": "deterministic sever wound overlay:body-2-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-2-socket"
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-abyssal-mandible-bobbit-head-socket.png",
+      "parentId": "body-1",
+      "childId": "head",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 68,
+        "y": 50,
+        "width": 42,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.4,
+      "severedSrc": "fauna-abyssal-mandible-bobbit-head-wound.png",
+      "severedKey": "fauna-abyssal-mandible-bobbit-head-wound",
+      "severedProcess": "deterministic sever wound overlay:head-socket",
+      "socketProcess": "deterministic organic socket occlusion:head-socket"
+    },
+    {
+      "id": "upper-mandible-socket",
+      "src": "fauna-abyssal-mandible-bobbit-upper-mandible-socket.png",
+      "parentId": "head",
+      "childId": "upper-mandible",
+      "sourcePartId": "head",
+      "sourceCrop": {
+        "x": 72,
+        "y": 18,
+        "width": 30,
+        "height": 40
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.42,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.4,
+      "severedSrc": "fauna-abyssal-mandible-bobbit-upper-mandible-wound.png",
+      "severedKey": "fauna-abyssal-mandible-bobbit-upper-mandible-wound",
+      "severedProcess": "deterministic sever wound overlay:upper-mandible-socket",
+      "socketProcess": "deterministic organic socket occlusion:upper-mandible-socket"
+    },
+    {
+      "id": "lower-mandible-socket",
+      "src": "fauna-abyssal-mandible-bobbit-lower-mandible-socket.png",
+      "parentId": "head",
+      "childId": "lower-mandible",
+      "sourcePartId": "head",
+      "sourceCrop": {
+        "x": 72,
+        "y": 106,
+        "width": 32,
+        "height": 40
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.42,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.4,
+      "severedSrc": "fauna-abyssal-mandible-bobbit-lower-mandible-wound.png",
+      "severedKey": "fauna-abyssal-mandible-bobbit-lower-mandible-wound",
+      "severedProcess": "deterministic sever wound overlay:lower-mandible-socket",
+      "socketProcess": "deterministic organic socket occlusion:lower-mandible-socket"
+    }
+  ],
+  "notes": "Long ambush worm with one head, hinged upper and lower mandible parts, and varied top-down body segments.",
+  "murkTint": {
+    "color": 12603510,
+    "intensity": 0.12,
+    "stunnedIntensity": 0.2
+  },
+  "socketStyle": {
+    "alpha": 0.78,
+    "bridgeColor": 2822948,
+    "bridgeAlpha": 0.44,
+    "bridgeStunnedAlpha": 0.2,
+    "bridgeCoreColor": 8119786,
+    "bridgeCoreAlpha": 0.2,
+    "bridgeCoreStunnedAlpha": 0.05,
+    "bridgeWidthScale": 1.16,
+    "bridgeSleeveScale": 0.48
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source-bespoke-imagegen",
+    "backgroundKey": "alpha",
+    "reviewedBy": null,
+    "acceptanceNote": "Original long Bobbit-worm enemy with articulated mandibles; needs live motion review before acceptance."
+  }
+}

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Articulated Diver Preview</title>
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #06151a; color: #dff7fb; font: 14px system-ui, sans-serif; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+    .panel { position: fixed; left: 16px; top: 16px; width: 330px; padding: 14px; background: rgba(3, 14, 20, 0.88); border: 1px solid rgba(99, 220, 235, 0.28); border-radius: 8px; }
+    h1 { margin: 0 0 8px; font-size: 18px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+    button { color: #e7fbff; background: #0b2b34; border: 1px solid rgba(99, 220, 235, 0.45); border-radius: 6px; padding: 8px 11px; cursor: pointer; }
+    button[aria-pressed="true"] { background: #1b7b88; }
+    label { display: flex; align-items: center; gap: 8px; justify-content: space-between; width: 100%; }
+    input { width: 190px; }
+    .meta { color: #a9cad0; font-size: 12px; line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <canvas id="preview"></canvas>
+  <section class="panel">
+    <h1>Articulated Diver Preview</h1>
+    <div class="meta" id="meta">Loading...</div>
+    <div class="row">
+      <button type="button" class="mode" data-mode="swim" aria-pressed="true">Swim</button>
+      <button type="button" class="mode" data-mode="mine" aria-pressed="false">Tool</button>
+      <button type="button" class="mode" data-mode="idle" aria-pressed="false">Idle</button>
+      <button type="button" class="mode" data-mode="source" aria-pressed="false">Source</button>
+    </div>
+    <div class="row"><label>Scale <input id="scale" type="range" min="0.45" max="1.3" step="0.02" value="0.78"></label></div>
+    <div class="row"><label>Motion <input id="motion" type="range" min="0" max="1.8" step="0.05" value="1"></label></div>
+    <div class="meta">Preview-only prototype. Current player sprite is unchanged.</div>
+  </section>
+  <script type="module">
+    const canvas = document.getElementById('preview');
+    const ctx = canvas.getContext('2d');
+    const meta = document.getElementById('meta');
+    const scaleInput = document.getElementById('scale');
+    const motionInput = document.getElementById('motion');
+    const buttons = [...document.querySelectorAll('.mode')];
+    const state = { dpr: 1, time: 0, mode: 'swim', manifest: null, images: new Map(), source: null };
+
+    function resize() {
+      state.dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      canvas.width = Math.floor(innerWidth * state.dpr);
+      canvas.height = Math.floor(innerHeight * state.dpr);
+      canvas.style.width = `${innerWidth}px`;
+      canvas.style.height = `${innerHeight}px`;
+      ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    async function load() {
+      const response = await fetch('/assets/generated/diver-articulated-suit.parts.json', { cache: 'no-cache' });
+      state.manifest = await response.json();
+      state.source = await loadImage('/assets/generated/diver-articulated-suit-v2-whole-painted.png');
+      await Promise.all(state.manifest.parts.map(async (part) => {
+        const img = await loadImage(`/assets/generated/${part.texture}`);
+        if (img) state.images.set(part.textureKey, img);
+      }));
+      meta.textContent = `${state.manifest.displayName} / ${state.manifest.parts.length} parts`;
+    }
+
+    function local(part, anchor) {
+      const point = part.anchors?.[anchor] || [0, 0];
+      return {
+        x: point[0] - part.origin[0] * part.size[0],
+        y: point[1] - part.origin[1] * part.size[1],
+      };
+    }
+
+    function rotate(x, y, r) {
+      const c = Math.cos(r);
+      const s = Math.sin(r);
+      return { x: x * c - y * s, y: x * s + y * c };
+    }
+
+    function pose(part, t) {
+      const m = Number(motionInput.value);
+      const swim = Math.sin(t * 4.4);
+      const kick = Math.sin(t * 5.2);
+      if (state.mode === 'mine') {
+        if (part.id === 'upper-arm') return -0.12;
+        if (part.id === 'forearm') return 0.1 + Math.sin(t * 6) * 0.04;
+        if (part.id === 'tool') return 0.02 + Math.sin(t * 11) * 0.015;
+        if (part.id.includes('thigh') || part.id.includes('shin')) return 0.06 * swim * m;
+      }
+      if (state.mode === 'swim') {
+        if (part.id === 'rear-thigh') return -0.18 + kick * 0.18 * m;
+        if (part.id === 'rear-shin') return 0.18 - kick * 0.2 * m;
+        if (part.id === 'front-thigh') return 0.16 - kick * 0.16 * m;
+        if (part.id === 'front-shin') return -0.1 + kick * 0.18 * m;
+        if (part.id === 'upper-arm') return -0.08 + swim * 0.06 * m;
+        if (part.id === 'forearm') return 0.08 - swim * 0.08 * m;
+        if (part.id === 'backpack') return Math.sin(t * 6) * 0.015 * m;
+      }
+      if (part.id === 'helmet') return Math.sin(t * 1.8) * 0.025 * m;
+      if (part.id === 'torso') return Math.sin(t * 2.0) * 0.018 * m;
+      return 0;
+    }
+
+    function buildRig(t) {
+      const map = new Map();
+      const root = state.manifest.parts.find((part) => part.id === 'torso');
+      const cx = innerWidth * 0.56;
+      const cy = innerHeight * 0.52 + Math.sin(t * 2.0) * 4;
+      const s = Number(scaleInput.value);
+      const drawPart = (part) => {
+        const parent = part.parentId ? map.get(part.parentId) : null;
+        const rot = (parent?.rotation || 0) + pose(part, t);
+        let x = cx;
+        let y = cy;
+        if (parent) {
+          const parentAnchor = local(parent.part, part.parentAnchor);
+          const pa = rotate(parentAnchor.x * s, parentAnchor.y * s, parent.rotation);
+          const rest = part.restOffset || [0, 0];
+          const childAnchor = local(part, part.anchor);
+          const ca = rotate(childAnchor.x * s, childAnchor.y * s, rot);
+          x = parent.x + pa.x + rest[0] * s - ca.x;
+          y = parent.y + pa.y + rest[1] * s - ca.y;
+        }
+        const entry = { part, x, y, rotation: rot };
+        map.set(part.id, entry);
+      };
+      drawPart(root);
+      for (let i = 0; i < 3; i += 1) {
+        for (const part of state.manifest.parts) if (!map.has(part.id) && (!part.parentId || map.has(part.parentId))) drawPart(part);
+      }
+      return [...map.values()].sort((a, b) => a.part.depth - b.part.depth);
+    }
+
+    function draw() {
+      state.time += 1 / 60;
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      const gradient = ctx.createLinearGradient(0, 0, 0, innerHeight);
+      gradient.addColorStop(0, '#08262e');
+      gradient.addColorStop(1, '#02080c');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, innerWidth, innerHeight);
+      if (!state.manifest) return requestAnimationFrame(draw);
+      if (state.mode === 'source' && state.source) {
+        const w = Math.min(innerWidth * 0.62, state.source.width * 0.54);
+        const h = w * state.source.height / state.source.width;
+        ctx.drawImage(state.source, innerWidth * 0.5 - w * 0.5, innerHeight * 0.5 - h * 0.5, w, h);
+        return requestAnimationFrame(draw);
+      }
+      for (const entry of buildRig(state.time)) {
+        const img = state.images.get(entry.part.textureKey);
+        if (!img) continue;
+        const s = Number(scaleInput.value);
+        ctx.save();
+        ctx.translate(entry.x, entry.y);
+        ctx.rotate(entry.rotation);
+        ctx.scale(s, s);
+        ctx.drawImage(img, -entry.part.origin[0] * entry.part.size[0], -entry.part.origin[1] * entry.part.size[1], entry.part.size[0], entry.part.size[1]);
+        ctx.restore();
+      }
+      requestAnimationFrame(draw);
+    }
+
+    buttons.forEach((button) => button.addEventListener('click', () => {
+      state.mode = button.dataset.mode;
+      buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+    }));
+    addEventListener('resize', resize);
+    resize();
+    load().then(draw);
+  </script>
+</body>
+</html>

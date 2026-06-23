@@ -1,0 +1,562 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-sawback-ray",
+  "runtimeCreatureId": "sawback-ray",
+  "displayName": "Sawback Ray",
+  "kind": "articulated-creature",
+  "depthBand": "deep",
+  "source": "public/assets/generated/fauna-sawback-ray-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail-tip",
+      "key": "fauna-sawback-ray-tail-tip",
+      "src": "fauna-sawback-ray-tail-tip.png",
+      "sourceCrop": {
+        "x": 24,
+        "y": 315,
+        "width": 330,
+        "height": 185
+      },
+      "size": {
+        "width": 330,
+        "height": 185
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.75,
+        "drag": 1.08,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.58
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 8.5,
+        "frequency": 2.25,
+        "phase": 1.4,
+        "lag": 1.2
+      }
+    },
+    {
+      "id": "stinger",
+      "key": "fauna-sawback-ray-stinger",
+      "src": "fauna-sawback-ray-stinger.png",
+      "sourceCrop": {
+        "x": 24,
+        "y": 410,
+        "width": 205,
+        "height": 130
+      },
+      "size": {
+        "width": 205,
+        "height": 130
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.32,
+        "drag": 1.08,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 11.0,
+        "frequency": 2.6,
+        "phase": 1.8,
+        "lag": 1.45
+      }
+    },
+    {
+      "id": "tail-base",
+      "key": "fauna-sawback-ray-tail-base",
+      "src": "fauna-sawback-ray-tail-base.png",
+      "sourceCrop": {
+        "x": 300,
+        "y": 270,
+        "width": 480,
+        "height": 240
+      },
+      "size": {
+        "width": 480,
+        "height": 240
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.0,
+        "drag": 1.08,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.88,
+        "mobilityFactor": 0.68
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.5,
+        "frequency": 2.0,
+        "phase": 0.9,
+        "lag": 0.8
+      }
+    },
+    {
+      "id": "upper-tip",
+      "key": "fauna-sawback-ray-upper-tip",
+      "src": "fauna-sawback-ray-upper-tip.png",
+      "sourceCrop": {
+        "x": 245,
+        "y": 50,
+        "width": 430,
+        "height": 245
+      },
+      "size": {
+        "width": 430,
+        "height": 245
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.62,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.76
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 8.0,
+        "frequency": 1.7,
+        "phase": 1.25,
+        "lag": 0.6
+      }
+    },
+    {
+      "id": "upper-wing",
+      "key": "fauna-sawback-ray-upper-wing",
+      "src": "fauna-sawback-ray-upper-wing.png",
+      "sourceCrop": {
+        "x": 520,
+        "y": 75,
+        "width": 640,
+        "height": 310
+      },
+      "size": {
+        "width": 640,
+        "height": 310
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.35,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.0,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 5.8,
+        "frequency": 1.45,
+        "phase": 0.6,
+        "lag": 0.42
+      }
+    },
+    {
+      "id": "lower-tip",
+      "key": "fauna-sawback-ray-lower-tip",
+      "src": "fauna-sawback-ray-lower-tip.png",
+      "sourceCrop": {
+        "x": 255,
+        "y": 470,
+        "width": 450,
+        "height": 230
+      },
+      "size": {
+        "width": 450,
+        "height": 230
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.62,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.76
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 8.4,
+        "frequency": 1.7,
+        "phase": 1.45,
+        "lag": 0.62
+      }
+    },
+    {
+      "id": "lower-wing",
+      "key": "fauna-sawback-ray-lower-wing",
+      "src": "fauna-sawback-ray-lower-wing.png",
+      "sourceCrop": {
+        "x": 540,
+        "y": 345,
+        "width": 680,
+        "height": 340
+      },
+      "size": {
+        "width": 680,
+        "height": 340
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.35,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.0,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 6.2,
+        "frequency": 1.45,
+        "phase": 0.78,
+        "lag": 0.44
+      }
+    },
+    {
+      "id": "body-core",
+      "key": "fauna-sawback-ray-body-core",
+      "src": "fauna-sawback-ray-body-core.png",
+      "sourceCrop": {
+        "x": 724,
+        "y": 162,
+        "width": 520,
+        "height": 396
+      },
+      "size": {
+        "width": 520,
+        "height": 396
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.2,
+        "drag": 0.82,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.55,
+        "mobilityFactor": 0.84
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.8,
+        "frequency": 1.25,
+        "phase": 0.0,
+        "lag": 0.12
+      },
+      "damagedSrc": "fauna-sawback-ray-body-core-damaged.png",
+      "damagedKey": "fauna-sawback-ray-body-core-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head-plate",
+      "key": "fauna-sawback-ray-head-plate",
+      "src": "fauna-sawback-ray-head-plate.png",
+      "sourceCrop": {
+        "x": 1115,
+        "y": 170,
+        "width": 500,
+        "height": 360
+      },
+      "size": {
+        "width": 500,
+        "height": 360
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 2.25,
+        "drag": 0.82,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.35,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.0,
+        "frequency": 1.1,
+        "phase": 0.1,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "saw-ridge",
+      "key": "fauna-sawback-ray-saw-ridge",
+      "src": "fauna-sawback-ray-saw-ridge.png",
+      "sourceCrop": {
+        "x": 735,
+        "y": 70,
+        "width": 560,
+        "height": 205
+      },
+      "size": {
+        "width": 560,
+        "height": 205
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.72,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.88,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 2.2,
+        "frequency": 2.1,
+        "phase": 0.9,
+        "lag": 0.18
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-tip-socket",
+      "src": "fauna-sawback-ray-tail-tip-socket.png",
+      "parentId": "tail-base",
+      "childId": "tail-tip",
+      "sourcePartId": "tail-base",
+      "sourceCrop": {
+        "x": 18,
+        "y": 82,
+        "width": 95,
+        "height": 96
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "stinger-socket",
+      "src": "fauna-sawback-ray-stinger-socket.png",
+      "parentId": "tail-tip",
+      "childId": "stinger",
+      "sourcePartId": "tail-tip",
+      "sourceCrop": {
+        "x": 8,
+        "y": 68,
+        "width": 86,
+        "height": 70
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "tail-base-socket",
+      "src": "fauna-sawback-ray-tail-base-socket.png",
+      "parentId": "body-core",
+      "childId": "tail-base",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 0,
+        "y": 166,
+        "width": 104,
+        "height": 102
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "upper-tip-socket",
+      "src": "fauna-sawback-ray-upper-tip-socket.png",
+      "parentId": "upper-wing",
+      "childId": "upper-tip",
+      "sourcePartId": "upper-wing",
+      "sourceCrop": {
+        "x": 12,
+        "y": 44,
+        "width": 100,
+        "height": 88
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "upper-wing-socket",
+      "src": "fauna-sawback-ray-upper-wing-socket.png",
+      "parentId": "body-core",
+      "childId": "upper-wing",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 48,
+        "y": 0,
+        "width": 126,
+        "height": 118
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "lower-tip-socket",
+      "src": "fauna-sawback-ray-lower-tip-socket.png",
+      "parentId": "lower-wing",
+      "childId": "lower-tip",
+      "sourcePartId": "lower-wing",
+      "sourceCrop": {
+        "x": 12,
+        "y": 220,
+        "width": 104,
+        "height": 88
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "lower-wing-socket",
+      "src": "fauna-sawback-ray-lower-wing-socket.png",
+      "parentId": "body-core",
+      "childId": "lower-wing",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 42,
+        "y": 250,
+        "width": 132,
+        "height": 124
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-sawback-ray-head-socket.png",
+      "parentId": "body-core",
+      "childId": "head-plate",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 404,
+        "y": 110,
+        "width": 108,
+        "height": 128
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    },
+    {
+      "id": "saw-ridge-socket",
+      "src": "fauna-sawback-ray-saw-ridge-socket.png",
+      "parentId": "body-core",
+      "childId": "saw-ridge",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 160,
+        "y": 0,
+        "width": 148,
+        "height": 100
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.3
+    }
+  ],
+  "notes": "Prototype built from one corrected magenta-background Sawback Ray source: broad flattened ray silhouette, short wedge head, dorsal saw ridge, tail and stinger. Crop centers are used to compute initial rest offsets so the assembled idle pose remains close to the whole-source silhouette before fin/tail motion.",
+  "murkTint": {
+    "color": 8565960,
+    "intensity": 0.1,
+    "stunnedIntensity": 0.16
+  },
+  "socketStyle": {
+    "alpha": 0.58,
+    "bridgeColor": 529178,
+    "bridgeAlpha": 0.18,
+    "bridgeStunnedAlpha": 0.1,
+    "bridgeCoreColor": 8305869,
+    "bridgeCoreAlpha": 0.07,
+    "bridgeCoreStunnedAlpha": 0.04,
+    "bridgeWidthScale": 0.92,
+    "bridgeSleeveScale": 0.3
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Prototype generated from one corrected magenta-background Sawback Ray source. Needs sandbox/contact-sheet acceptance before counting toward the 20-threat goal."
+  }
+}

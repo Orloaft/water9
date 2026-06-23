@@ -1,0 +1,301 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-thorn-fan-coralline",
+  "runtimeCreatureId": "thorn-fan-coralline",
+  "displayName": "Thorn Fan Coralline",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-thorn-fan-coralline-whole-source.png",
+  "sourceTransform": {
+    "chromaKey": {
+      "color": [
+        255,
+        0,
+        255
+      ],
+      "tolerance": 24,
+      "feather": 12
+    }
+  },
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "core",
+      "key": "fauna-thorn-fan-coralline-core",
+      "src": "fauna-thorn-fan-coralline-core.png",
+      "sourceCrop": {
+        "x": 472,
+        "y": 280,
+        "width": 610,
+        "height": 521
+      },
+      "size": {
+        "width": 610,
+        "height": 521
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.4,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.3,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.2
+      },
+      "damagedSrc": "fauna-thorn-fan-coralline-core-damaged.png",
+      "damagedKey": "fauna-thorn-fan-coralline-core-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head",
+      "key": "fauna-thorn-fan-coralline-head",
+      "src": "fauna-thorn-fan-coralline-head.png",
+      "sourceCrop": {
+        "x": 955,
+        "y": 352,
+        "width": 356,
+        "height": 324
+      },
+      "size": {
+        "width": 356,
+        "height": 324
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.1,
+        "drag": 0.9,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.15,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "tail",
+      "key": "fauna-thorn-fan-coralline-tail",
+      "src": "fauna-thorn-fan-coralline-tail.png",
+      "sourceCrop": {
+        "x": 231,
+        "y": 414,
+        "width": 432,
+        "height": 306
+      },
+      "size": {
+        "width": 432,
+        "height": 306
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 0.9,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "upper-fin",
+      "key": "fauna-thorn-fan-coralline-upper-fin",
+      "src": "fauna-thorn-fan-coralline-upper-fin.png",
+      "sourceCrop": {
+        "x": 510,
+        "y": 199,
+        "width": 533,
+        "height": 216
+      },
+      "size": {
+        "width": 533,
+        "height": 216
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 1.3,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "lower-fin",
+      "key": "fauna-thorn-fan-coralline-lower-fin",
+      "src": "fauna-thorn-fan-coralline-lower-fin.png",
+      "sourceCrop": {
+        "x": 510,
+        "y": 666,
+        "width": 533,
+        "height": 216
+      },
+      "size": {
+        "width": 533,
+        "height": 216
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 1.1,
+        "drag": 1.08,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 0.95,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 1.15,
+        "phase": 1.9,
+        "lag": 0.2
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "head-socket",
+      "src": "fauna-thorn-fan-coralline-head-socket.png",
+      "parentId": "core",
+      "childId": "head",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 436,
+        "y": 214,
+        "width": 94,
+        "height": 94
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "tail-socket",
+      "src": "fauna-thorn-fan-coralline-tail-socket.png",
+      "parentId": "core",
+      "childId": "tail",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 80,
+        "y": 214,
+        "width": 94,
+        "height": 94
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "upper-fin-socket",
+      "src": "fauna-thorn-fan-coralline-upper-fin-socket.png",
+      "parentId": "core",
+      "childId": "upper-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 258,
+        "y": 88,
+        "width": 94,
+        "height": 94
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    },
+    {
+      "id": "lower-fin-socket",
+      "src": "fauna-thorn-fan-coralline-lower-fin-socket.png",
+      "parentId": "core",
+      "childId": "lower-fin",
+      "sourcePartId": "core",
+      "sourceCrop": {
+        "x": 258,
+        "y": 340,
+        "width": 94,
+        "height": 94
+      },
+      "alphaFeather": {
+        "all": 9,
+        "curve": 1.5,
+        "minimum": 0.15
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.2,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.36
+    }
+  ],
+  "notes": "Auto-generated starter plan. Use plan-preview to revise crops and anchors before extraction.",
+  "murkTint": {
+    "color": 7919057,
+    "intensity": 0.12,
+    "stunnedIntensity": 0.18
+  },
+  "socketStyle": {
+    "alpha": 0.6,
+    "bridgeColor": 462874,
+    "bridgeAlpha": 0.2,
+    "bridgeCoreColor": 7977161,
+    "bridgeCoreAlpha": 0.08,
+    "bridgeWidthScale": 0.98,
+    "bridgeSleeveScale": 0.36
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Starter articulation plan generated from the source-candidate whole-source image. Crops, anchors, sockets, motion, and anatomy require human adjustment before this can become accepted content.",
+    "sourceCandidateId": "thorn-fan-coralline"
+  }
+}

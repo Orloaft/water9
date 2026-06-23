@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Research Source Trace</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061013; --panel:#0c1b20; --line:#24424b; --text:#e2f5f6; --muted:#91aab0; --accent:#7ce5ff; --good:#7ee29c; --warn:#e7bd6d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1280px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:30px; }
+    p { color:var(--muted); }
+    .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin:18px 0; }
+    .metrics div { border:1px solid var(--line); background:var(--panel); padding:10px; }
+    .metrics strong { display:block; font-size:22px; }
+    table { width:100%; border-collapse:collapse; border:1px solid var(--line); background:var(--panel); }
+    th, td { text-align:left; border-bottom:1px solid var(--line); padding:8px 10px; vertical-align:top; }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    code, small { display:block; color:var(--muted); }
+    td strong { display:block; }
+    .sourced td:first-child { border-left:3px solid var(--good); }
+    .missing-source td:first-child { border-left:3px solid var(--warn); }
+    pre { border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Research Source Trace</h1>
+    <p>Candidate-level trace from research brief to subagent audit to source-generation prompt.</p>
+    <section class="metrics">
+      <div><span>Candidates</span><strong>20</strong></div>
+      <div><span>Audited</span><strong>20/20</strong></div>
+      <div><span>Queued</span><strong>0</strong></div>
+      <div><span>Hardened prompts</span><strong>0/0</strong></div>
+    </section>
+    <pre><code>npm run research:source-trace
+npm run research:source-trace-check
+npm run source:generation-queue</code></pre>
+    <table>
+      <thead><tr><th>Candidate</th><th>Lane</th><th>Audit</th><th>Queue</th><th>Prompt</th><th>Sprint</th></tr></thead>
+      <tbody><tr class="sourced">
+    <td><code>abyssal-lantern-mantis</code><strong>Abyssal Lantern Mantis</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>black-coral-gate</code><strong>Black Coral Gate</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/03-complex-colonial-forms.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>brine-crown</code><strong>Brine Crown</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/02-sessile-ambush-hazards.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>brine-mycelium-shelf</code><strong>Brine Mycelium Shelf</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/03-complex-colonial-forms.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>chain-vein-siphonophore</code><strong>Chain Vein Siphonophore</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/03-complex-colonial-forms.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>coronate-sting-crown</code><strong>Coronate Sting Crown</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/02-sessile-ambush-hazards.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>glass-sponge-sentinel</code><strong>Glass Sponge Sentinel</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/03-complex-colonial-forms.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>gulper-eel-maw</code><strong>Gulper Eel Maw</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>hadal-trencher-isopod</code><strong>Hadal Trencher Isopod</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>lantern-anemone-pit</code><strong>Lantern Anemone Pit</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/02-sessile-ambush-hazards.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>predatory-tunicate-maw</code><strong>Predatory Tunicate Maw</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/02-sessile-ambush-hazards.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>razor-kelp-harp</code><strong>Razor Kelp Harp</strong></td>
+    <td>sessile-ambush-hazards</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/02-sessile-ambush-hazards.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>reef-lion-moray</code><strong>Reef Lion Moray</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>reliquary-siphonophore</code><strong>Reliquary Siphonophore</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/03-complex-colonial-forms.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>saber-viperfish</code><strong>Saber Viperfish</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>thorn-fan-coralline</code><strong>Thorn Fan Coralline</strong></td>
+    <td>complex-colonial-forms</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/03-complex-colonial-forms.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>trench-harvest-sea-spider</code><strong>Trench Harvest Sea Spider</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>tripod-stilt-stalker</code><strong>Tripod Stilt Stalker</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>vampire-cloak-squid</code><strong>Vampire Cloak Squid</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr>
+<tr class="sourced">
+    <td><code>vent-claw-yeti</code><strong>Vent-Claw Yeti</strong></td>
+    <td>mobile-predator-motion</td>
+    <td>yes<small>public/review/source-candidates/research-subagent-audits/01-mobile-predator-motion.json</small></td>
+    <td>no</td>
+    <td>n/a</td>
+    <td>no</td>
+  </tr></tbody>
+    </table>
+  </main>
+</body>
+</html>

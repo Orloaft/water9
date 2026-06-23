@@ -1,0 +1,53 @@
+{
+  "schema": "water9/content-visual-regeneration-queue@1",
+  "generatedAt": "2026-06-18T17:21:10.030Z",
+  "generatedFrom": {
+    "feedbackLedger": "public/review/content-visual-feedback-ledger.json",
+    "sandboxManifest": "public/review/sandbox/manifest.json",
+    "articulatedManifest": "public/assets/generated/articulated-creatures.parts.json"
+  },
+  "policy": {
+    "sourceFirstRegenerationRequired": true,
+    "promptDoesNotApproveArt": true,
+    "blockedPrototypeCannotCountTowardStrictGate": true,
+    "mechanicalRigPrototypeIsNotArtDirection": true,
+    "cohesionFailureRequiresNewSource": true
+  },
+  "summary": {
+    "items": 1,
+    "blockingItems": 1,
+    "unmappedPrototypeItems": 1,
+    "countsTowardStrictGate": 0,
+    "nextTargetId": "abyssal-serpent",
+    "nextPromptFile": "public/review/content-visual-regeneration-prompts/01-abyssal-serpent.txt"
+  },
+  "items": [
+    {
+      "rank": 1,
+      "targetId": "abyssal-serpent",
+      "species": "Abyssal Serpent",
+      "status": "rejected-needs-cohesion-regeneration",
+      "severity": "blocking",
+      "summary": "The preview lacks visual cohesion and should be treated as a mechanical rig proof-of-concept, not production-ready creature art or evidence of final capability.",
+      "failedChecks": [
+        "whole-creature-cohesion",
+        "part-continuity-cohesion",
+        "non-placeholder-art-direction"
+      ],
+      "requiredAction": "Regenerate from a unified full-source concept with one silhouette, one material language, clear anatomy hierarchy, and a believable limb/body plan before extracting articulated parts. The next review must prove the creature reads as one organism before rigging quality is evaluated.",
+      "promptFile": "public/review/content-visual-regeneration-prompts/01-abyssal-serpent.txt",
+      "prompt": "Visual regeneration target: Abyssal Serpent (abyssal-serpent)\n\nReason for regeneration:\nThe preview lacks visual cohesion and should be treated as a mechanical rig proof-of-concept, not production-ready creature art or evidence of final capability.\n\nCreate one cohesive full-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nThe output must be one intact organism first; articulated parts are extracted only after the full source concept passes human cohesion review.\nTreat the current runtime preview as a mechanical rig test only. It is not art direction, not a salvage target, and not evidence that the final creature design works.\n\nFailed checks to fix:\n- whole-creature-cohesion\n- part-continuity-cohesion\n- non-placeholder-art-direction\n\nReview notes:\n- Do not use this screenshot as evidence that the 20-threat quality gate is satisfied.\n- Do not promote this runtime prototype into the target threat roster without a new source review and human cohesion approval.\n- Do not salvage this by only tuning sockets, animation timing, scale, palette, or cleanup; the blocker is source-level creature cohesion.\n\nDesign requirements:\n- One readable silhouette with a clear head/body/tail or equivalent anatomy hierarchy.\n- Connected anatomy with visible tissue, membrane, shell, tendon, hinge, or socket transitions between future moving parts.\n- Consistent lighting, palette, texture scale, and material language across the whole organism.\n- A clear gameplay attack lane that can be read beside the diver at sandbox scale.\n- Neutral riggable pose with crop-safe margins and no hidden roots for future limbs or jaws.\n- No baked water, particles, prey, UI text, duplicated creatures, decorative frame, or environmental background.\n- No magenta, hot pink, or near-key body colors that will be removed during chroma extraction.\n\nForbidden shortcuts:\n- Do not merely repaint, upscale, re-time, socket-tune, or crop the rejected prototype.\n- Do not assemble unrelated body parts into a collage, even if the parts animate cleanly.\n- Do not rely on sandbox motion, effects, darkness, or scale to hide weak creature design.\n- Do not produce a design that only works as a still image but lacks clear articulation logic.\n\nRequired action from feedback ledger:\nRegenerate from a unified full-source concept with one silhouette, one material language, clear anatomy hierarchy, and a believable limb/body plan before extracting articulated parts. The next review must prove the creature reads as one organism before rigging quality is evaluated.\n\nAcceptance bar before rigging:\n- Human reviewer must approve the intact source as a cohesive creature before parts are cut.\n- Source must pass magenta-key cleanup without halos or lost anatomy.\n- Sandbox preview must remain labeled preview-only until source, rig, motion, paired-diver, and final threat acceptance all pass.",
+      "sandboxRegistered": true,
+      "sandboxPreviewOnly": true,
+      "targetGateCandidate": false,
+      "countsTowardStrictGate": false,
+      "commands": {
+        "openPrompt": "sed -n '1,260p' public/review/content-visual-regeneration-prompts/01-abyssal-serpent.txt",
+        "previewPrototype": "npm run sandbox:preview -- --id abyssal-serpent --serve --open --visual",
+        "previewWithDiver": "npm run sandbox:preview -- --id abyssal-serpent --with diver --serve --open --visual",
+        "rebuildFeedback": "npm run content:visual-feedback && npm run content:visual-feedback-check",
+        "rebuildQueue": "npm run content:visual-regeneration && npm run content:visual-regeneration-check"
+      }
+    }
+  ]
+}

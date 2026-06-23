@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Plan Coverage</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#29444b; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1340px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:14px 0 8px; color:var(--muted); font-size:13px; text-transform:uppercase; }
+    p { color:var(--muted); }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .summary, .badges { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .summary span, .badges span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    strong { color:var(--text); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:14px; align-items:start; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; }
+    .card header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Plan Coverage</h1>
+    <p>Articulation staging coverage for source candidates. Mechanical staging is not production acceptance.</p>
+    <div class="summary">
+      <span>candidates <strong>20</strong></span>
+      <span>starter plans <strong>20</strong></span>
+      <span>plan previews <strong>20</strong></span>
+      <span>runtime registered <strong>20</strong></span>
+      <span>accepted threats <strong>0</strong></span>
+    </div>
+    <section class="card">
+      <h2>Batch Commands</h2>
+      <h3>Mechanical staging for candidates missing a plan or preview</h3>
+      <pre><code># all candidates already have starter plans and previews</code></pre>
+      <h3>Validate Existing Plans</h3>
+      <pre><code>npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/black-coral-gate-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/vent-claw-yeti-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/coronate-sting-crown-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/razor-kelp-harp-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/gulper-eel-maw-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/saber-viperfish-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json &amp;&amp; npm run articulated:plan-check -- --plan tools/scratch/reef-lion-moray-starter-plan.json</code></pre>
+      <h3>Production Prep Approved Sources</h3>
+      <pre><code># no source candidates are approved yet</code></pre>
+    </section>
+    <section class="grid"><article class="card" id="brine-crown" data-plan-coverage-candidate="brine-crown">
+    <header>
+      <div><h2>Brine Crown</h2><code>brine-crown</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id brine-crown
+npm run articulated:prepare-plan -- --id brine-crown --plan tools/scratch/brine-crown-starter-plan.json --preview public/review/articulated/brine-crown-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/brine-crown-starter-plan.json --out public/review/articulated/brine-crown-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/brine-crown-starter-plan.json --dry-run
+npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="glass-sponge-sentinel" data-plan-coverage-candidate="glass-sponge-sentinel">
+    <header>
+      <div><h2>Glass Sponge Sentinel</h2><code>glass-sponge-sentinel</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id glass-sponge-sentinel
+npm run articulated:prepare-plan -- --id glass-sponge-sentinel --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --preview public/review/articulated/glass-sponge-sentinel-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --out public/review/articulated/glass-sponge-sentinel-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --dry-run
+npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="black-coral-gate" data-plan-coverage-candidate="black-coral-gate">
+    <header>
+      <div><h2>Black Coral Gate</h2><code>black-coral-gate</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id black-coral-gate
+npm run articulated:prepare-plan -- --id black-coral-gate --plan tools/scratch/black-coral-gate-starter-plan.json --preview public/review/articulated/black-coral-gate-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/black-coral-gate-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/black-coral-gate-starter-plan.json --out public/review/articulated/black-coral-gate-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/black-coral-gate-starter-plan.json --dry-run
+npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="reliquary-siphonophore" data-plan-coverage-candidate="reliquary-siphonophore">
+    <header>
+      <div><h2>Reliquary Siphonophore</h2><code>reliquary-siphonophore</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id reliquary-siphonophore
+npm run articulated:prepare-plan -- --id reliquary-siphonophore --plan tools/scratch/reliquary-siphonophore-starter-plan.json --preview public/review/articulated/reliquary-siphonophore-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --out public/review/articulated/reliquary-siphonophore-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --dry-run
+npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="hadal-trencher-isopod" data-plan-coverage-candidate="hadal-trencher-isopod">
+    <header>
+      <div><h2>Hadal Trencher Isopod</h2><code>hadal-trencher-isopod</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id hadal-trencher-isopod
+npm run articulated:prepare-plan -- --id hadal-trencher-isopod --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --preview public/review/articulated/hadal-trencher-isopod-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --out public/review/articulated/hadal-trencher-isopod-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --dry-run
+npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="vent-claw-yeti" data-plan-coverage-candidate="vent-claw-yeti">
+    <header>
+      <div><h2>Vent-Claw Yeti</h2><code>vent-claw-yeti</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id vent-claw-yeti
+npm run articulated:prepare-plan -- --id vent-claw-yeti --plan tools/scratch/vent-claw-yeti-starter-plan.json --preview public/review/articulated/vent-claw-yeti-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/vent-claw-yeti-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --out public/review/articulated/vent-claw-yeti-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --dry-run
+npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="abyssal-lantern-mantis" data-plan-coverage-candidate="abyssal-lantern-mantis">
+    <header>
+      <div><h2>Abyssal Lantern Mantis</h2><code>abyssal-lantern-mantis</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id abyssal-lantern-mantis
+npm run articulated:prepare-plan -- --id abyssal-lantern-mantis --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --preview public/review/articulated/abyssal-lantern-mantis-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --out public/review/articulated/abyssal-lantern-mantis-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --dry-run
+npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="trench-harvest-sea-spider" data-plan-coverage-candidate="trench-harvest-sea-spider">
+    <header>
+      <div><h2>Trench Harvest Sea Spider</h2><code>trench-harvest-sea-spider</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id trench-harvest-sea-spider
+npm run articulated:prepare-plan -- --id trench-harvest-sea-spider --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --preview public/review/articulated/trench-harvest-sea-spider-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --out public/review/articulated/trench-harvest-sea-spider-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --dry-run
+npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="coronate-sting-crown" data-plan-coverage-candidate="coronate-sting-crown">
+    <header>
+      <div><h2>Coronate Sting Crown</h2><code>coronate-sting-crown</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id coronate-sting-crown
+npm run articulated:prepare-plan -- --id coronate-sting-crown --plan tools/scratch/coronate-sting-crown-starter-plan.json --preview public/review/articulated/coronate-sting-crown-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/coronate-sting-crown-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --out public/review/articulated/coronate-sting-crown-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --dry-run
+npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="chain-vein-siphonophore" data-plan-coverage-candidate="chain-vein-siphonophore">
+    <header>
+      <div><h2>Chain Vein Siphonophore</h2><code>chain-vein-siphonophore</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id chain-vein-siphonophore
+npm run articulated:prepare-plan -- --id chain-vein-siphonophore --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --preview public/review/articulated/chain-vein-siphonophore-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --out public/review/articulated/chain-vein-siphonophore-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --dry-run
+npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="vampire-cloak-squid" data-plan-coverage-candidate="vampire-cloak-squid">
+    <header>
+      <div><h2>Vampire Cloak Squid</h2><code>vampire-cloak-squid</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id vampire-cloak-squid
+npm run articulated:prepare-plan -- --id vampire-cloak-squid --plan tools/scratch/vampire-cloak-squid-starter-plan.json --preview public/review/articulated/vampire-cloak-squid-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --out public/review/articulated/vampire-cloak-squid-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --dry-run
+npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="predatory-tunicate-maw" data-plan-coverage-candidate="predatory-tunicate-maw">
+    <header>
+      <div><h2>Predatory Tunicate Maw</h2><code>predatory-tunicate-maw</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id predatory-tunicate-maw
+npm run articulated:prepare-plan -- --id predatory-tunicate-maw --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --preview public/review/articulated/predatory-tunicate-maw-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --out public/review/articulated/predatory-tunicate-maw-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --dry-run
+npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="razor-kelp-harp" data-plan-coverage-candidate="razor-kelp-harp">
+    <header>
+      <div><h2>Razor Kelp Harp</h2><code>razor-kelp-harp</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id razor-kelp-harp
+npm run articulated:prepare-plan -- --id razor-kelp-harp --plan tools/scratch/razor-kelp-harp-starter-plan.json --preview public/review/articulated/razor-kelp-harp-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/razor-kelp-harp-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --out public/review/articulated/razor-kelp-harp-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --dry-run
+npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="lantern-anemone-pit" data-plan-coverage-candidate="lantern-anemone-pit">
+    <header>
+      <div><h2>Lantern Anemone Pit</h2><code>lantern-anemone-pit</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id lantern-anemone-pit
+npm run articulated:prepare-plan -- --id lantern-anemone-pit --plan tools/scratch/lantern-anemone-pit-starter-plan.json --preview public/review/articulated/lantern-anemone-pit-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --out public/review/articulated/lantern-anemone-pit-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --dry-run
+npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="brine-mycelium-shelf" data-plan-coverage-candidate="brine-mycelium-shelf">
+    <header>
+      <div><h2>Brine Mycelium Shelf</h2><code>brine-mycelium-shelf</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id brine-mycelium-shelf
+npm run articulated:prepare-plan -- --id brine-mycelium-shelf --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --preview public/review/articulated/brine-mycelium-shelf-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --out public/review/articulated/brine-mycelium-shelf-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --dry-run
+npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="thorn-fan-coralline" data-plan-coverage-candidate="thorn-fan-coralline">
+    <header>
+      <div><h2>Thorn Fan Coralline</h2><code>thorn-fan-coralline</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id thorn-fan-coralline
+npm run articulated:prepare-plan -- --id thorn-fan-coralline --plan tools/scratch/thorn-fan-coralline-starter-plan.json --preview public/review/articulated/thorn-fan-coralline-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --out public/review/articulated/thorn-fan-coralline-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --dry-run
+npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="gulper-eel-maw" data-plan-coverage-candidate="gulper-eel-maw">
+    <header>
+      <div><h2>Gulper Eel Maw</h2><code>gulper-eel-maw</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id gulper-eel-maw
+npm run articulated:prepare-plan -- --id gulper-eel-maw --plan tools/scratch/gulper-eel-maw-starter-plan.json --preview public/review/articulated/gulper-eel-maw-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/gulper-eel-maw-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --out public/review/articulated/gulper-eel-maw-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --dry-run
+npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="saber-viperfish" data-plan-coverage-candidate="saber-viperfish">
+    <header>
+      <div><h2>Saber Viperfish</h2><code>saber-viperfish</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id saber-viperfish
+npm run articulated:prepare-plan -- --id saber-viperfish --plan tools/scratch/saber-viperfish-starter-plan.json --preview public/review/articulated/saber-viperfish-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/saber-viperfish-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/saber-viperfish-starter-plan.json --out public/review/articulated/saber-viperfish-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/saber-viperfish-starter-plan.json --dry-run
+npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="tripod-stilt-stalker" data-plan-coverage-candidate="tripod-stilt-stalker">
+    <header>
+      <div><h2>Tripod Stilt Stalker</h2><code>tripod-stilt-stalker</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id tripod-stilt-stalker
+npm run articulated:prepare-plan -- --id tripod-stilt-stalker --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --preview public/review/articulated/tripod-stilt-stalker-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --out public/review/articulated/tripod-stilt-stalker-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --dry-run
+npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual</code></pre>
+  </article>
+<article class="card" id="reef-lion-moray" data-plan-coverage-candidate="reef-lion-moray">
+    <header>
+      <div><h2>Reef Lion Moray</h2><code>reef-lion-moray</code></div>
+      <strong>runtime</strong>
+    </header>
+    <div class="badges">
+      <span>source <strong>present</strong></span>
+      <span>approved source <strong>false</strong></span>
+      <span>starter plan <strong>present</strong></span>
+      <span>plan preview <strong>present</strong></span>
+      <span>accepted <strong>false</strong></span>
+    </div>
+    <h3>Commands</h3>
+    <pre><code>npm run source:review-queue:preview -- --id reef-lion-moray
+npm run articulated:prepare-plan -- --id reef-lion-moray --plan tools/scratch/reef-lion-moray-starter-plan.json --preview public/review/articulated/reef-lion-moray-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/reef-lion-moray-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/reef-lion-moray-starter-plan.json --out public/review/articulated/reef-lion-moray-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/reef-lion-moray-starter-plan.json --dry-run
+npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual</code></pre>
+  </article></section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "schema": "water9/content-approved-runtime-handoff@1",
+  "generatedAt": "2026-06-18T17:06:59.543Z",
+  "generatedFrom": {
+    "runtimeCoverage": "/mnt/nxt-dev/water9/public/review/content-runtime-coverage.json",
+    "planCoverage": "/mnt/nxt-dev/water9/public/review/content-plan-coverage.json"
+  },
+  "emptyState": {
+    "active": true,
+    "reason": "All current 20 source candidates already have runtime prototypes; no approved-source-to-runtime handoffs are queued.",
+    "invariant": "This report must exist even when empty so content infrastructure can prove the handoff queue is intentionally empty.",
+    "nextChecks": [
+      "npm run content:runtime-coverage && npm run content:runtime-coverage-check",
+      "npm run sandbox:index && npm run sandbox:runtime-check",
+      "npm run content:approved-runtime-handoff-check"
+    ],
+    "acceptanceBoundary": "A runtime prototype is previewable content only; it does not count as one of the 20 accepted threats until source approval, rig acceptance, and the strict content gate all pass."
+  },
+  "summary": {
+    "candidates": 20,
+    "missingRuntime": 0,
+    "approvedSourcesMissingRuntime": 0,
+    "productionEligible": 0,
+    "riggingEligibleOnly": 0,
+    "blockedUntilSourceApproval": 0
+  },
+  "approvedMissingRuntimeIds": [],
+  "blockedUntilSourceApprovalIds": [],
+  "items": []
+}

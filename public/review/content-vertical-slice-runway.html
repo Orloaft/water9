@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water9 Content Vertical Slice Runway</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#24424b; --text:#e6f5f5; --muted:#9bb0b5; --accent:#7dd7e8; --warn:#e7bd6d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1420px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    p { color:var(--muted); max-width:880px; }
+    a { color:var(--accent); text-decoration:none; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:12px 0 0; padding:10px; border:1px solid var(--line); background:#050b0d; overflow:auto; white-space:pre-wrap; }
+    .summary { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 24px; }
+    .summary span { border:1px solid var(--line); background:#09161a; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .summary strong { color:var(--text); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:14px; }
+    .route { border:1px solid var(--line); background:var(--panel); border-radius:6px; padding:14px; }
+    .route header { display:flex; justify-content:space-between; gap:12px; margin-bottom:10px; }
+    .route header code { display:block; color:var(--muted); margin-top:2px; }
+    .route header span { color:var(--warn); }
+    .media { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+    .media img { width:100%; height:128px; object-fit:contain; border:1px solid var(--line); background:#050b0d; }
+    dl { display:grid; grid-template-columns:110px 1fr; gap:4px 10px; margin:0; }
+    dt { color:var(--muted); }
+    dd { margin:0; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water9 Content Vertical Slice Runway</h1>
+    <p>Per-threat proof chain for rapid content iteration. Every route must preserve the human approval boundary before it can count toward the 20-threat gate.</p>
+    <pre><code>npm run content:vertical-slice
+npm run content:vertical-slice-check
+npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:visual-board &amp;&amp; npm run source:visual-board-check
+npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:quickstart &amp;&amp; npm run sandbox:quickstart-check
+npm run sandbox:visual -- --ids &lt;runtime-id&gt; --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run content:acceptance-audit-index &amp;&amp; npm run content:acceptance-audit-index-check
+npm run content:goal-gate</code></pre>
+    <div class="summary">
+      <span>routes <strong>20</strong></span>
+      <span>mechanically reviewable <strong>20/20</strong></span>
+      <span>accepted <strong>0/20</strong></span>
+      <span>next blocker <strong>awaiting-human-source-approval</strong></span>
+    </div>
+    <section class="grid"><article class="route" data-vertical-slice-route="abyssal-lantern-mantis">
+    <header>
+      <div><strong>Abyssal Lantern Mantis</strong><code>abyssal-lantern-mantis</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png" alt="Abyssal Lantern Mantis source">
+      <img src="/review/source-candidates/key-previews/abyssal-lantern-mantis-key-preview.png" alt="Abyssal Lantern Mantis key preview">
+      <img src="/review/articulated/abyssal-lantern-mantis-plan-preview.png" alt="Abyssal Lantern Mantis articulation plan">
+      <img src="/review/articulated/thumbs/abyssal-lantern-mantis-contact-thumb.png" alt="Abyssal Lantern Mantis contact sheet">
+      <img src="/review/articulated/thumbs/abyssal-lantern-mantis-phase-thumb.png" alt="Abyssal Lantern Mantis phase strip">
+      <img src="/review/articulated/thumbs/abyssal-lantern-mantis-source-parity-thumb.png" alt="Abyssal Lantern Mantis source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/abyssal-lantern-mantis.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/abyssal-lantern-mantis-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · abyssal-lantern-mantis</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/abyssal-lantern-mantis__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id abyssal-lantern-mantis
+npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --out public/review/articulated/abyssal-lantern-mantis-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual
+npm run sandbox:visual -- --ids abyssal-lantern-mantis --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids abyssal-lantern-mantis --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id abyssal-lantern-mantis --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id abyssal-lantern-mantis
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="black-coral-gate">
+    <header>
+      <div><strong>Black Coral Gate</strong><code>black-coral-gate</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-black-coral-gate-whole-source.png" alt="Black Coral Gate source">
+      <img src="/review/source-candidates/key-previews/black-coral-gate-key-preview.png" alt="Black Coral Gate key preview">
+      <img src="/review/articulated/black-coral-gate-plan-preview.png" alt="Black Coral Gate articulation plan">
+      <img src="/review/articulated/thumbs/black-coral-gate-contact-thumb.png" alt="Black Coral Gate contact sheet">
+      <img src="/review/articulated/thumbs/black-coral-gate-phase-thumb.png" alt="Black Coral Gate phase strip">
+      <img src="/review/articulated/thumbs/black-coral-gate-source-parity-thumb.png" alt="Black Coral Gate source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/black-coral-gate.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/black-coral-gate-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · black-coral-gate</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/black-coral-gate__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id black-coral-gate
+npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/black-coral-gate-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/black-coral-gate-starter-plan.json --out public/review/articulated/black-coral-gate-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/black-coral-gate-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual
+npm run sandbox:visual -- --ids black-coral-gate --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids black-coral-gate --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id black-coral-gate --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id black-coral-gate
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="brine-crown">
+    <header>
+      <div><strong>Brine Crown</strong><code>brine-crown</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-brine-crown-whole-source.png" alt="Brine Crown source">
+      <img src="/review/source-candidates/key-previews/brine-crown-key-preview.png" alt="Brine Crown key preview">
+      <img src="/review/articulated/brine-crown-plan-preview.png" alt="Brine Crown articulation plan">
+      <img src="/review/articulated/thumbs/brine-crown-contact-thumb.png" alt="Brine Crown contact sheet">
+      <img src="/review/articulated/thumbs/brine-crown-phase-thumb.png" alt="Brine Crown phase strip">
+      <img src="/review/articulated/thumbs/brine-crown-source-parity-thumb.png" alt="Brine Crown source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/brine-crown.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/brine-crown-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · brine-crown</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/brine-crown__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id brine-crown
+npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/brine-crown-starter-plan.json --out public/review/articulated/brine-crown-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/brine-crown-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual
+npm run sandbox:visual -- --ids brine-crown --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids brine-crown --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id brine-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id brine-crown
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="brine-mycelium-shelf">
+    <header>
+      <div><strong>Brine Mycelium Shelf</strong><code>brine-mycelium-shelf</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-brine-mycelium-shelf-whole-source.png" alt="Brine Mycelium Shelf source">
+      <img src="/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png" alt="Brine Mycelium Shelf key preview">
+      <img src="/review/articulated/brine-mycelium-shelf-plan-preview.png" alt="Brine Mycelium Shelf articulation plan">
+      <img src="/review/articulated/thumbs/brine-mycelium-shelf-contact-thumb.png" alt="Brine Mycelium Shelf contact sheet">
+      <img src="/review/articulated/thumbs/brine-mycelium-shelf-phase-thumb.png" alt="Brine Mycelium Shelf phase strip">
+      <img src="/review/articulated/thumbs/brine-mycelium-shelf-source-parity-thumb.png" alt="Brine Mycelium Shelf source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/brine-mycelium-shelf.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/brine-mycelium-shelf-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · brine-mycelium-shelf</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/brine-mycelium-shelf__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id brine-mycelium-shelf
+npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --out public/review/articulated/brine-mycelium-shelf-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual
+npm run sandbox:visual -- --ids brine-mycelium-shelf --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids brine-mycelium-shelf --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id brine-mycelium-shelf --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id brine-mycelium-shelf
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="chain-vein-siphonophore">
+    <header>
+      <div><strong>Chain Vein Siphonophore</strong><code>chain-vein-siphonophore</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png" alt="Chain Vein Siphonophore source">
+      <img src="/review/source-candidates/key-previews/chain-vein-siphonophore-key-preview.png" alt="Chain Vein Siphonophore key preview">
+      <img src="/review/articulated/chain-vein-siphonophore-plan-preview.png" alt="Chain Vein Siphonophore articulation plan">
+      <img src="/review/articulated/thumbs/chain-vein-siphonophore-contact-thumb.png" alt="Chain Vein Siphonophore contact sheet">
+      <img src="/review/articulated/thumbs/chain-vein-siphonophore-phase-thumb.png" alt="Chain Vein Siphonophore phase strip">
+      <img src="/review/articulated/thumbs/chain-vein-siphonophore-source-parity-thumb.png" alt="Chain Vein Siphonophore source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/chain-vein-siphonophore.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/chain-vein-siphonophore-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · chain-vein-siphonophore</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/chain-vein-siphonophore__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id chain-vein-siphonophore
+npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --out public/review/articulated/chain-vein-siphonophore-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual
+npm run sandbox:visual -- --ids chain-vein-siphonophore --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids chain-vein-siphonophore --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id chain-vein-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id chain-vein-siphonophore
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="coronate-sting-crown">
+    <header>
+      <div><strong>Coronate Sting Crown</strong><code>coronate-sting-crown</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-coronate-sting-crown-whole-source.png" alt="Coronate Sting Crown source">
+      <img src="/review/source-candidates/key-previews/coronate-sting-crown-key-preview.png" alt="Coronate Sting Crown key preview">
+      <img src="/review/articulated/coronate-sting-crown-plan-preview.png" alt="Coronate Sting Crown articulation plan">
+      <img src="/review/articulated/thumbs/coronate-sting-crown-contact-thumb.png" alt="Coronate Sting Crown contact sheet">
+      <img src="/review/articulated/thumbs/coronate-sting-crown-phase-thumb.png" alt="Coronate Sting Crown phase strip">
+      <img src="/review/articulated/thumbs/coronate-sting-crown-source-parity-thumb.png" alt="Coronate Sting Crown source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/coronate-sting-crown.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/coronate-sting-crown-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · coronate-sting-crown</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/coronate-sting-crown__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id coronate-sting-crown
+npm run sandbox:preview -- --id source-coronate-sting-crown --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/coronate-sting-crown-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --out public/review/articulated/coronate-sting-crown-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual
+npm run sandbox:visual -- --ids coronate-sting-crown --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids coronate-sting-crown --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id coronate-sting-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id coronate-sting-crown
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="glass-sponge-sentinel">
+    <header>
+      <div><strong>Glass Sponge Sentinel</strong><code>glass-sponge-sentinel</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-glass-sponge-sentinel-whole-source.png" alt="Glass Sponge Sentinel source">
+      <img src="/review/source-candidates/key-previews/glass-sponge-sentinel-key-preview.png" alt="Glass Sponge Sentinel key preview">
+      <img src="/review/articulated/glass-sponge-sentinel-plan-preview.png" alt="Glass Sponge Sentinel articulation plan">
+      <img src="/review/articulated/thumbs/glass-sponge-sentinel-contact-thumb.png" alt="Glass Sponge Sentinel contact sheet">
+      <img src="/review/articulated/thumbs/glass-sponge-sentinel-phase-thumb.png" alt="Glass Sponge Sentinel phase strip">
+      <img src="/review/articulated/thumbs/glass-sponge-sentinel-source-parity-thumb.png" alt="Glass Sponge Sentinel source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/glass-sponge-sentinel.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/glass-sponge-sentinel-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · glass-sponge-sentinel</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/glass-sponge-sentinel__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id glass-sponge-sentinel
+npm run sandbox:preview -- --id source-glass-sponge-sentinel --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --out public/review/articulated/glass-sponge-sentinel-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual
+npm run sandbox:visual -- --ids glass-sponge-sentinel --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids glass-sponge-sentinel --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id glass-sponge-sentinel --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id glass-sponge-sentinel
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="gulper-eel-maw">
+    <header>
+      <div><strong>Gulper Eel Maw</strong><code>gulper-eel-maw</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-gulper-eel-maw-whole-source.png" alt="Gulper Eel Maw source">
+      <img src="/review/source-candidates/key-previews/gulper-eel-maw-key-preview.png" alt="Gulper Eel Maw key preview">
+      <img src="/review/articulated/gulper-eel-maw-plan-preview.png" alt="Gulper Eel Maw articulation plan">
+      <img src="/review/articulated/thumbs/gulper-eel-maw-contact-thumb.png" alt="Gulper Eel Maw contact sheet">
+      <img src="/review/articulated/thumbs/gulper-eel-maw-phase-thumb.png" alt="Gulper Eel Maw phase strip">
+      <img src="/review/articulated/thumbs/gulper-eel-maw-source-parity-thumb.png" alt="Gulper Eel Maw source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/gulper-eel-maw.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/gulper-eel-maw-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · gulper-eel-maw</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/gulper-eel-maw__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id gulper-eel-maw
+npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/gulper-eel-maw-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --out public/review/articulated/gulper-eel-maw-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual
+npm run sandbox:visual -- --ids gulper-eel-maw --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids gulper-eel-maw --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id gulper-eel-maw --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id gulper-eel-maw
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="hadal-trencher-isopod">
+    <header>
+      <div><strong>Hadal Trencher Isopod</strong><code>hadal-trencher-isopod</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-hadal-trencher-isopod-whole-source.png" alt="Hadal Trencher Isopod source">
+      <img src="/review/source-candidates/key-previews/hadal-trencher-isopod-key-preview.png" alt="Hadal Trencher Isopod key preview">
+      <img src="/review/articulated/hadal-trencher-isopod-plan-preview.png" alt="Hadal Trencher Isopod articulation plan">
+      <img src="/review/articulated/thumbs/hadal-trencher-isopod-contact-thumb.png" alt="Hadal Trencher Isopod contact sheet">
+      <img src="/review/articulated/thumbs/hadal-trencher-isopod-phase-thumb.png" alt="Hadal Trencher Isopod phase strip">
+      <img src="/review/articulated/thumbs/hadal-trencher-isopod-source-parity-thumb.png" alt="Hadal Trencher Isopod source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/hadal-trencher-isopod.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/hadal-trencher-isopod-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · hadal-trencher-isopod</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/hadal-trencher-isopod__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id hadal-trencher-isopod
+npm run sandbox:preview -- --id source-hadal-trencher-isopod --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --out public/review/articulated/hadal-trencher-isopod-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual
+npm run sandbox:visual -- --ids hadal-trencher-isopod --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids hadal-trencher-isopod --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id hadal-trencher-isopod --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id hadal-trencher-isopod
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="lantern-anemone-pit">
+    <header>
+      <div><strong>Lantern Anemone Pit</strong><code>lantern-anemone-pit</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-lantern-anemone-pit-whole-source.png" alt="Lantern Anemone Pit source">
+      <img src="/review/source-candidates/key-previews/lantern-anemone-pit-key-preview.png" alt="Lantern Anemone Pit key preview">
+      <img src="/review/articulated/lantern-anemone-pit-plan-preview.png" alt="Lantern Anemone Pit articulation plan">
+      <img src="/review/articulated/thumbs/lantern-anemone-pit-contact-thumb.png" alt="Lantern Anemone Pit contact sheet">
+      <img src="/review/articulated/thumbs/lantern-anemone-pit-phase-thumb.png" alt="Lantern Anemone Pit phase strip">
+      <img src="/review/articulated/thumbs/lantern-anemone-pit-source-parity-thumb.png" alt="Lantern Anemone Pit source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/lantern-anemone-pit.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/lantern-anemone-pit-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · lantern-anemone-pit</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/lantern-anemone-pit__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id lantern-anemone-pit
+npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --out public/review/articulated/lantern-anemone-pit-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual
+npm run sandbox:visual -- --ids lantern-anemone-pit --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids lantern-anemone-pit --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id lantern-anemone-pit --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id lantern-anemone-pit
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="predatory-tunicate-maw">
+    <header>
+      <div><strong>Predatory Tunicate Maw</strong><code>predatory-tunicate-maw</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png" alt="Predatory Tunicate Maw source">
+      <img src="/review/source-candidates/key-previews/predatory-tunicate-maw-key-preview.png" alt="Predatory Tunicate Maw key preview">
+      <img src="/review/articulated/predatory-tunicate-maw-plan-preview.png" alt="Predatory Tunicate Maw articulation plan">
+      <img src="/review/articulated/thumbs/predatory-tunicate-maw-contact-thumb.png" alt="Predatory Tunicate Maw contact sheet">
+      <img src="/review/articulated/thumbs/predatory-tunicate-maw-phase-thumb.png" alt="Predatory Tunicate Maw phase strip">
+      <img src="/review/articulated/thumbs/predatory-tunicate-maw-source-parity-thumb.png" alt="Predatory Tunicate Maw source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/predatory-tunicate-maw.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/predatory-tunicate-maw-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · predatory-tunicate-maw</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/predatory-tunicate-maw__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id predatory-tunicate-maw
+npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --out public/review/articulated/predatory-tunicate-maw-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual
+npm run sandbox:visual -- --ids predatory-tunicate-maw --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids predatory-tunicate-maw --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id predatory-tunicate-maw --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id predatory-tunicate-maw
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="razor-kelp-harp">
+    <header>
+      <div><strong>Razor Kelp Harp</strong><code>razor-kelp-harp</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-razor-kelp-harp-whole-source.png" alt="Razor Kelp Harp source">
+      <img src="/review/source-candidates/key-previews/razor-kelp-harp-key-preview.png" alt="Razor Kelp Harp key preview">
+      <img src="/review/articulated/razor-kelp-harp-plan-preview.png" alt="Razor Kelp Harp articulation plan">
+      <img src="/review/articulated/thumbs/razor-kelp-harp-contact-thumb.png" alt="Razor Kelp Harp contact sheet">
+      <img src="/review/articulated/thumbs/razor-kelp-harp-phase-thumb.png" alt="Razor Kelp Harp phase strip">
+      <img src="/review/articulated/thumbs/razor-kelp-harp-source-parity-thumb.png" alt="Razor Kelp Harp source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/razor-kelp-harp.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/razor-kelp-harp-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · razor-kelp-harp</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/razor-kelp-harp__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id razor-kelp-harp
+npm run sandbox:preview -- --id source-razor-kelp-harp --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/razor-kelp-harp-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --out public/review/articulated/razor-kelp-harp-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual
+npm run sandbox:visual -- --ids razor-kelp-harp --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids razor-kelp-harp --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id razor-kelp-harp --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id razor-kelp-harp
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="reef-lion-moray">
+    <header>
+      <div><strong>Reef Lion Moray</strong><code>reef-lion-moray</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-reef-lion-moray-whole-source.png" alt="Reef Lion Moray source">
+      <img src="/review/source-candidates/key-previews/reef-lion-moray-key-preview.png" alt="Reef Lion Moray key preview">
+      <img src="/review/articulated/reef-lion-moray-plan-preview.png" alt="Reef Lion Moray articulation plan">
+      <img src="/review/articulated/thumbs/reef-lion-moray-contact-thumb.png" alt="Reef Lion Moray contact sheet">
+      <img src="/review/articulated/thumbs/reef-lion-moray-phase-thumb.png" alt="Reef Lion Moray phase strip">
+      <img src="/review/articulated/thumbs/reef-lion-moray-source-parity-thumb.png" alt="Reef Lion Moray source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/reef-lion-moray.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/reef-lion-moray-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · reef-lion-moray</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/reef-lion-moray__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id reef-lion-moray
+npm run sandbox:preview -- --id source-reef-lion-moray --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/reef-lion-moray-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/reef-lion-moray-starter-plan.json --out public/review/articulated/reef-lion-moray-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/reef-lion-moray-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual
+npm run sandbox:visual -- --ids reef-lion-moray --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids reef-lion-moray --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id reef-lion-moray --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id reef-lion-moray
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="reliquary-siphonophore">
+    <header>
+      <div><strong>Reliquary Siphonophore</strong><code>reliquary-siphonophore</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-reliquary-siphonophore-whole-source.png" alt="Reliquary Siphonophore source">
+      <img src="/review/source-candidates/key-previews/reliquary-siphonophore-key-preview.png" alt="Reliquary Siphonophore key preview">
+      <img src="/review/articulated/reliquary-siphonophore-plan-preview.png" alt="Reliquary Siphonophore articulation plan">
+      <img src="/review/articulated/thumbs/reliquary-siphonophore-contact-thumb.png" alt="Reliquary Siphonophore contact sheet">
+      <img src="/review/articulated/thumbs/reliquary-siphonophore-phase-thumb.png" alt="Reliquary Siphonophore phase strip">
+      <img src="/review/articulated/thumbs/reliquary-siphonophore-source-parity-thumb.png" alt="Reliquary Siphonophore source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/reliquary-siphonophore.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/reliquary-siphonophore-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · reliquary-siphonophore</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/reliquary-siphonophore__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id reliquary-siphonophore
+npm run sandbox:preview -- --id source-reliquary-siphonophore --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --out public/review/articulated/reliquary-siphonophore-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual
+npm run sandbox:visual -- --ids reliquary-siphonophore --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids reliquary-siphonophore --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id reliquary-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id reliquary-siphonophore
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="saber-viperfish">
+    <header>
+      <div><strong>Saber Viperfish</strong><code>saber-viperfish</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-saber-viperfish-whole-source.png" alt="Saber Viperfish source">
+      <img src="/review/source-candidates/key-previews/saber-viperfish-key-preview.png" alt="Saber Viperfish key preview">
+      <img src="/review/articulated/saber-viperfish-plan-preview.png" alt="Saber Viperfish articulation plan">
+      <img src="/review/articulated/thumbs/saber-viperfish-contact-thumb.png" alt="Saber Viperfish contact sheet">
+      <img src="/review/articulated/thumbs/saber-viperfish-phase-thumb.png" alt="Saber Viperfish phase strip">
+      <img src="/review/articulated/thumbs/saber-viperfish-source-parity-thumb.png" alt="Saber Viperfish source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/saber-viperfish.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/saber-viperfish-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · saber-viperfish</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/saber-viperfish__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id saber-viperfish
+npm run sandbox:preview -- --id source-saber-viperfish --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/saber-viperfish-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/saber-viperfish-starter-plan.json --out public/review/articulated/saber-viperfish-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/saber-viperfish-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual
+npm run sandbox:visual -- --ids saber-viperfish --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids saber-viperfish --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id saber-viperfish --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id saber-viperfish
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="thorn-fan-coralline">
+    <header>
+      <div><strong>Thorn Fan Coralline</strong><code>thorn-fan-coralline</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-thorn-fan-coralline-whole-source.png" alt="Thorn Fan Coralline source">
+      <img src="/review/source-candidates/key-previews/thorn-fan-coralline-key-preview.png" alt="Thorn Fan Coralline key preview">
+      <img src="/review/articulated/thorn-fan-coralline-plan-preview.png" alt="Thorn Fan Coralline articulation plan">
+      <img src="/review/articulated/thumbs/thorn-fan-coralline-contact-thumb.png" alt="Thorn Fan Coralline contact sheet">
+      <img src="/review/articulated/thumbs/thorn-fan-coralline-phase-thumb.png" alt="Thorn Fan Coralline phase strip">
+      <img src="/review/articulated/thumbs/thorn-fan-coralline-source-parity-thumb.png" alt="Thorn Fan Coralline source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/thorn-fan-coralline.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/thorn-fan-coralline-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · thorn-fan-coralline</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/thorn-fan-coralline__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id thorn-fan-coralline
+npm run sandbox:preview -- --id source-thorn-fan-coralline --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --out public/review/articulated/thorn-fan-coralline-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual
+npm run sandbox:visual -- --ids thorn-fan-coralline --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids thorn-fan-coralline --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id thorn-fan-coralline --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id thorn-fan-coralline
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="trench-harvest-sea-spider">
+    <header>
+      <div><strong>Trench Harvest Sea Spider</strong><code>trench-harvest-sea-spider</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png" alt="Trench Harvest Sea Spider source">
+      <img src="/review/source-candidates/key-previews/trench-harvest-sea-spider-key-preview.png" alt="Trench Harvest Sea Spider key preview">
+      <img src="/review/articulated/trench-harvest-sea-spider-plan-preview.png" alt="Trench Harvest Sea Spider articulation plan">
+      <img src="/review/articulated/thumbs/trench-harvest-sea-spider-contact-thumb.png" alt="Trench Harvest Sea Spider contact sheet">
+      <img src="/review/articulated/thumbs/trench-harvest-sea-spider-phase-thumb.png" alt="Trench Harvest Sea Spider phase strip">
+      <img src="/review/articulated/thumbs/trench-harvest-sea-spider-source-parity-thumb.png" alt="Trench Harvest Sea Spider source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/trench-harvest-sea-spider.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/trench-harvest-sea-spider-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · trench-harvest-sea-spider</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/trench-harvest-sea-spider__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id trench-harvest-sea-spider
+npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --out public/review/articulated/trench-harvest-sea-spider-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual
+npm run sandbox:visual -- --ids trench-harvest-sea-spider --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids trench-harvest-sea-spider --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id trench-harvest-sea-spider --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id trench-harvest-sea-spider
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="tripod-stilt-stalker">
+    <header>
+      <div><strong>Tripod Stilt Stalker</strong><code>tripod-stilt-stalker</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-tripod-stilt-stalker-whole-source.png" alt="Tripod Stilt Stalker source">
+      <img src="/review/source-candidates/key-previews/tripod-stilt-stalker-key-preview.png" alt="Tripod Stilt Stalker key preview">
+      <img src="/review/articulated/tripod-stilt-stalker-plan-preview.png" alt="Tripod Stilt Stalker articulation plan">
+      <img src="/review/articulated/thumbs/tripod-stilt-stalker-contact-thumb.png" alt="Tripod Stilt Stalker contact sheet">
+      <img src="/review/articulated/thumbs/tripod-stilt-stalker-phase-thumb.png" alt="Tripod Stilt Stalker phase strip">
+      <img src="/review/articulated/thumbs/tripod-stilt-stalker-source-parity-thumb.png" alt="Tripod Stilt Stalker source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/tripod-stilt-stalker.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/tripod-stilt-stalker-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · tripod-stilt-stalker</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/tripod-stilt-stalker__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id tripod-stilt-stalker
+npm run sandbox:preview -- --id source-tripod-stilt-stalker --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --out public/review/articulated/tripod-stilt-stalker-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual
+npm run sandbox:visual -- --ids tripod-stilt-stalker --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids tripod-stilt-stalker --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id tripod-stilt-stalker --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id tripod-stilt-stalker
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="vampire-cloak-squid">
+    <header>
+      <div><strong>Vampire Cloak Squid</strong><code>vampire-cloak-squid</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-vampire-cloak-squid-whole-source.png" alt="Vampire Cloak Squid source">
+      <img src="/review/source-candidates/key-previews/vampire-cloak-squid-key-preview.png" alt="Vampire Cloak Squid key preview">
+      <img src="/review/articulated/vampire-cloak-squid-plan-preview.png" alt="Vampire Cloak Squid articulation plan">
+      <img src="/review/articulated/thumbs/vampire-cloak-squid-contact-thumb.png" alt="Vampire Cloak Squid contact sheet">
+      <img src="/review/articulated/thumbs/vampire-cloak-squid-phase-thumb.png" alt="Vampire Cloak Squid phase strip">
+      <img src="/review/articulated/thumbs/vampire-cloak-squid-source-parity-thumb.png" alt="Vampire Cloak Squid source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/vampire-cloak-squid.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/vampire-cloak-squid-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · vampire-cloak-squid</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/vampire-cloak-squid__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id vampire-cloak-squid
+npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --out public/review/articulated/vampire-cloak-squid-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual
+npm run sandbox:visual -- --ids vampire-cloak-squid --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids vampire-cloak-squid --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id vampire-cloak-squid --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id vampire-cloak-squid
+npm run content:goal-gate</code></pre>
+  </article>
+<article class="route" data-vertical-slice-route="vent-claw-yeti">
+    <header>
+      <div><strong>Vent-Claw Yeti</strong><code>vent-claw-yeti</code></div>
+      <span>awaiting-human-source-approval</span>
+    </header>
+    <div class="media">
+      <img src="/assets/generated/fauna-vent-claw-yeti-whole-source.png" alt="Vent-Claw Yeti source">
+      <img src="/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png" alt="Vent-Claw Yeti key preview">
+      <img src="/review/articulated/vent-claw-yeti-plan-preview.png" alt="Vent-Claw Yeti articulation plan">
+      <img src="/review/articulated/thumbs/vent-claw-yeti-contact-thumb.png" alt="Vent-Claw Yeti contact sheet">
+      <img src="/review/articulated/thumbs/vent-claw-yeti-phase-thumb.png" alt="Vent-Claw Yeti phase strip">
+      <img src="/review/articulated/thumbs/vent-claw-yeti-source-parity-thumb.png" alt="Vent-Claw Yeti source parity">
+    </div>
+    <dl>
+      <dt>Contract</dt><dd>ready · <a href="/review/source-candidates/art-contracts/vent-claw-yeti.md">md</a></dd>
+      <dt>Source Review</dt><dd>ready for human review · not approved</dd>
+      <dt>Plan</dt><dd>ready · tools/scratch/vent-claw-yeti-starter-plan.json</dd>
+      <dt>Rig Quality</dt><dd>contact, phase, parity, and cohesion ready · human production approval still required</dd>
+      <dt>Runtime</dt><dd>registered · vent-claw-yeti</dd>
+      <dt>Runtime Visuals</dt><dd>idle, lunge, stunned with diver · /mnt/nxt-dev/water9/tools/scratch/content-candidate-paired-visuals/vent-claw-yeti__prototype__with-diver__idle.png</dd>
+      <dt>Acceptance Audit</dt><dd>ready · no audit page</dd>
+      <dt>Blockers</dt><dd>human source approval missing; human threat acceptance missing</dd>
+    </dl>
+    <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check
+npm run source:image-check -- --id vent-claw-yeti
+npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/vent-claw-yeti-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --out public/review/articulated/vent-claw-yeti-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --dry-run
+npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run articulated:preview
+npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual
+npm run sandbox:visual -- --ids vent-claw-yeti --states idle,lunge,stunned --with diver
+npm run sandbox:visual -- --ids vent-claw-yeti --states idle,lunge,stunned --with diver --out-dir tools/scratch/content-candidate-paired-visuals --report tools/scratch/content-candidate-paired-visuals-report.json
+npm run source:accept -- --id vent-claw-yeti --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run
+npm run content:acceptance-audit -- --id vent-claw-yeti
+npm run content:goal-gate</code></pre>
+  </article></section>
+  </main>
+</body>
+</html>

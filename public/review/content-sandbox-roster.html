@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Water9 Content Sandbox Roster</title>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background:#061014; color:#e5f6f8; }
+      body { margin:0; background:#061014; }
+      main { max-width:1220px; margin:0 auto; padding:28px 18px 48px; }
+      h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4.2rem); letter-spacing:0; }
+      p { color:#9db7c2; line-height:1.5; }
+      .summary { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }
+      .summary span { border:1px solid #294653; border-radius:6px; background:#0b1d24; padding:8px 10px; color:#bdd6df; }
+      .notice { border:1px solid #6a5230; border-radius:6px; background:#1d1710; color:#f0d9aa; padding:10px 12px; margin:16px 0; }
+      table { width:100%; border-collapse:collapse; border:1px solid #203b46; background:#081920; }
+      th, td { border-bottom:1px solid #18303a; padding:9px 10px; text-align:left; vertical-align:top; }
+      th { position:sticky; top:0; background:#10242c; z-index:1; }
+      code { color:#cfeef6; overflow-wrap:anywhere; font-family:"SFMono-Regular", Consolas, monospace; }
+      a { color:#7ee8ff; text-decoration:none; }
+      a:hover { text-decoration:underline; }
+      @media (max-width:760px) { main { padding:18px 10px 32px; } table { font-size:.82rem; } th,td { padding:7px 6px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Content Sandbox Roster</h1>
+      <p>Quick launch surface for all 20 target threats. Each row must provide source, runtime, paired-diver preview, and visual-check commands before the content route can be considered mechanically reviewable.</p>
+      <div class="notice">Previewable does not mean accepted. Human source approval and threat acceptance remain separate gates.</div>
+      <div class="summary">
+        <span>20/20 sandbox-ready</span>
+        <span>20 runtime previews</span>
+        <span>20 source previews</span>
+        <span>20 paired runtime</span>
+        <span>20 paired source</span>
+        <span>0 accepted threats</span>
+      </div>
+      <h2>Commands</h2>
+      <ul><li><code>npm run sandbox:index</code></li><li><code>npm run content:sandbox-roster</code></li><li><code>npm run content:sandbox-roster-check</code></li><li><code>npm run sandbox:preview -- --id &lt;entity-id&gt; --with diver --serve --open --visual</code></li><li><code>npm run sandbox:visual -- --ids &lt;entity-id&gt; --with diver</code></li></ul>
+      <table>
+        <thead><tr><th>Target</th><th>Ready</th><th>Stage</th><th>Runtime</th><th>Source</th><th>Runtime Paired Preview</th><th>Runtime Paired Visual</th><th>Source Paired Preview</th><th>Source Paired Visual</th></tr></thead>
+        <tbody>
+        <tr data-sandbox-roster="abyssal-lantern-mantis" data-ready="yes">
+          <td><code>abyssal-lantern-mantis</code><br>Abyssal Lantern Mantis</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=abyssal-lantern-mantis">runtime</a><br><a href="/?sandbox=abyssal-lantern-mantis&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-abyssal-lantern-mantis">source</a><br><a href="/?entity=source-abyssal-lantern-mantis&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id abyssal-lantern-mantis --serve --open --visual</code><br><code>npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids abyssal-lantern-mantis --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-abyssal-lantern-mantis --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-abyssal-lantern-mantis --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="black-coral-gate" data-ready="yes">
+          <td><code>black-coral-gate</code><br>Black Coral Gate</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=black-coral-gate">runtime</a><br><a href="/?sandbox=black-coral-gate&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-black-coral-gate">source</a><br><a href="/?entity=source-black-coral-gate&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id black-coral-gate --serve --open --visual</code><br><code>npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids black-coral-gate --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-black-coral-gate --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-black-coral-gate --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="brine-crown" data-ready="yes">
+          <td><code>brine-crown</code><br>Brine Crown</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=brine-crown">runtime</a><br><a href="/?sandbox=brine-crown&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-brine-crown">source</a><br><a href="/?entity=source-brine-crown&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id brine-crown --serve --open --visual</code><br><code>npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids brine-crown --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-brine-crown --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-brine-crown --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="brine-mycelium-shelf" data-ready="yes">
+          <td><code>brine-mycelium-shelf</code><br>Brine Mycelium Shelf</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=brine-mycelium-shelf">runtime</a><br><a href="/?sandbox=brine-mycelium-shelf&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-brine-mycelium-shelf">source</a><br><a href="/?entity=source-brine-mycelium-shelf&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id brine-mycelium-shelf --serve --open --visual</code><br><code>npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids brine-mycelium-shelf --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-brine-mycelium-shelf --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-brine-mycelium-shelf --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="chain-vein-siphonophore" data-ready="yes">
+          <td><code>chain-vein-siphonophore</code><br>Chain Vein Siphonophore</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=chain-vein-siphonophore">runtime</a><br><a href="/?sandbox=chain-vein-siphonophore&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-chain-vein-siphonophore">source</a><br><a href="/?entity=source-chain-vein-siphonophore&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id chain-vein-siphonophore --serve --open --visual</code><br><code>npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids chain-vein-siphonophore --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-chain-vein-siphonophore --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-chain-vein-siphonophore --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="coronate-sting-crown" data-ready="yes">
+          <td><code>coronate-sting-crown</code><br>Coronate Sting Crown</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=coronate-sting-crown">runtime</a><br><a href="/?sandbox=coronate-sting-crown&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-coronate-sting-crown">source</a><br><a href="/?entity=source-coronate-sting-crown&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id coronate-sting-crown --serve --open --visual</code><br><code>npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids coronate-sting-crown --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-coronate-sting-crown --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-coronate-sting-crown --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-coronate-sting-crown --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="glass-sponge-sentinel" data-ready="yes">
+          <td><code>glass-sponge-sentinel</code><br>Glass Sponge Sentinel</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=glass-sponge-sentinel">runtime</a><br><a href="/?sandbox=glass-sponge-sentinel&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-glass-sponge-sentinel">source</a><br><a href="/?entity=source-glass-sponge-sentinel&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id glass-sponge-sentinel --serve --open --visual</code><br><code>npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids glass-sponge-sentinel --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-glass-sponge-sentinel --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-glass-sponge-sentinel --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-glass-sponge-sentinel --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="gulper-eel-maw" data-ready="yes">
+          <td><code>gulper-eel-maw</code><br>Gulper Eel Maw</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=gulper-eel-maw">runtime</a><br><a href="/?sandbox=gulper-eel-maw&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-gulper-eel-maw">source</a><br><a href="/?entity=source-gulper-eel-maw&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id gulper-eel-maw --serve --open --visual</code><br><code>npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids gulper-eel-maw --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-gulper-eel-maw --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-gulper-eel-maw --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="hadal-trencher-isopod" data-ready="yes">
+          <td><code>hadal-trencher-isopod</code><br>Hadal Trencher Isopod</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=hadal-trencher-isopod">runtime</a><br><a href="/?sandbox=hadal-trencher-isopod&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-hadal-trencher-isopod">source</a><br><a href="/?entity=source-hadal-trencher-isopod&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id hadal-trencher-isopod --serve --open --visual</code><br><code>npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids hadal-trencher-isopod --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-hadal-trencher-isopod --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-hadal-trencher-isopod --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-hadal-trencher-isopod --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="lantern-anemone-pit" data-ready="yes">
+          <td><code>lantern-anemone-pit</code><br>Lantern Anemone Pit</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=lantern-anemone-pit">runtime</a><br><a href="/?sandbox=lantern-anemone-pit&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-lantern-anemone-pit">source</a><br><a href="/?entity=source-lantern-anemone-pit&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id lantern-anemone-pit --serve --open --visual</code><br><code>npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids lantern-anemone-pit --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-lantern-anemone-pit --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-lantern-anemone-pit --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="predatory-tunicate-maw" data-ready="yes">
+          <td><code>predatory-tunicate-maw</code><br>Predatory Tunicate Maw</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=predatory-tunicate-maw">runtime</a><br><a href="/?sandbox=predatory-tunicate-maw&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-predatory-tunicate-maw">source</a><br><a href="/?entity=source-predatory-tunicate-maw&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id predatory-tunicate-maw --serve --open --visual</code><br><code>npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids predatory-tunicate-maw --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-predatory-tunicate-maw --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-predatory-tunicate-maw --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="razor-kelp-harp" data-ready="yes">
+          <td><code>razor-kelp-harp</code><br>Razor Kelp Harp</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=razor-kelp-harp">runtime</a><br><a href="/?sandbox=razor-kelp-harp&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-razor-kelp-harp">source</a><br><a href="/?entity=source-razor-kelp-harp&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id razor-kelp-harp --serve --open --visual</code><br><code>npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids razor-kelp-harp --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-razor-kelp-harp --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-razor-kelp-harp --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-razor-kelp-harp --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="reef-lion-moray" data-ready="yes">
+          <td><code>reef-lion-moray</code><br>Reef Lion Moray</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=reef-lion-moray">runtime</a><br><a href="/?sandbox=reef-lion-moray&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-reef-lion-moray">source</a><br><a href="/?entity=source-reef-lion-moray&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id reef-lion-moray --serve --open --visual</code><br><code>npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids reef-lion-moray --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-reef-lion-moray --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-reef-lion-moray --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-reef-lion-moray --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="reliquary-siphonophore" data-ready="yes">
+          <td><code>reliquary-siphonophore</code><br>Reliquary Siphonophore</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=reliquary-siphonophore">runtime</a><br><a href="/?sandbox=reliquary-siphonophore&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-reliquary-siphonophore">source</a><br><a href="/?entity=source-reliquary-siphonophore&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id reliquary-siphonophore --serve --open --visual</code><br><code>npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids reliquary-siphonophore --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-reliquary-siphonophore --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-reliquary-siphonophore --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-reliquary-siphonophore --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="saber-viperfish" data-ready="yes">
+          <td><code>saber-viperfish</code><br>Saber Viperfish</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=saber-viperfish">runtime</a><br><a href="/?sandbox=saber-viperfish&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-saber-viperfish">source</a><br><a href="/?entity=source-saber-viperfish&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id saber-viperfish --serve --open --visual</code><br><code>npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids saber-viperfish --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-saber-viperfish --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-saber-viperfish --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-saber-viperfish --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="thorn-fan-coralline" data-ready="yes">
+          <td><code>thorn-fan-coralline</code><br>Thorn Fan Coralline</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=thorn-fan-coralline">runtime</a><br><a href="/?sandbox=thorn-fan-coralline&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-thorn-fan-coralline">source</a><br><a href="/?entity=source-thorn-fan-coralline&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id thorn-fan-coralline --serve --open --visual</code><br><code>npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids thorn-fan-coralline --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-thorn-fan-coralline --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-thorn-fan-coralline --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-thorn-fan-coralline --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="trench-harvest-sea-spider" data-ready="yes">
+          <td><code>trench-harvest-sea-spider</code><br>Trench Harvest Sea Spider</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=trench-harvest-sea-spider">runtime</a><br><a href="/?sandbox=trench-harvest-sea-spider&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-trench-harvest-sea-spider">source</a><br><a href="/?entity=source-trench-harvest-sea-spider&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id trench-harvest-sea-spider --serve --open --visual</code><br><code>npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids trench-harvest-sea-spider --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-trench-harvest-sea-spider --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-trench-harvest-sea-spider --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="tripod-stilt-stalker" data-ready="yes">
+          <td><code>tripod-stilt-stalker</code><br>Tripod Stilt Stalker</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=tripod-stilt-stalker">runtime</a><br><a href="/?sandbox=tripod-stilt-stalker&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-tripod-stilt-stalker">source</a><br><a href="/?entity=source-tripod-stilt-stalker&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id tripod-stilt-stalker --serve --open --visual</code><br><code>npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids tripod-stilt-stalker --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-tripod-stilt-stalker --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-tripod-stilt-stalker --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-tripod-stilt-stalker --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="vampire-cloak-squid" data-ready="yes">
+          <td><code>vampire-cloak-squid</code><br>Vampire Cloak Squid</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=vampire-cloak-squid">runtime</a><br><a href="/?sandbox=vampire-cloak-squid&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-vampire-cloak-squid">source</a><br><a href="/?entity=source-vampire-cloak-squid&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id vampire-cloak-squid --serve --open --visual</code><br><code>npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids vampire-cloak-squid --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-vampire-cloak-squid --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-vampire-cloak-squid --with diver</code></td>
+        </tr>
+        <tr data-sandbox-roster="vent-claw-yeti" data-ready="yes">
+          <td><code>vent-claw-yeti</code><br>Vent-Claw Yeti</td>
+          <td>yes</td>
+          <td>source-signoff</td>
+          <td><a href="/?sandbox=vent-claw-yeti">runtime</a><br><a href="/?sandbox=vent-claw-yeti&amp;companion=diver">with diver</a></td>
+          <td><a href="/?entity=source-vent-claw-yeti">source</a><br><a href="/?entity=source-vent-claw-yeti&amp;companion=diver">with diver</a></td>
+          <td><code>npm run sandbox:preview -- --id vent-claw-yeti --serve --open --visual</code><br><code>npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids vent-claw-yeti --states idle,lunge,stunned --with diver</code></td>
+          <td><code>npm run sandbox:preview -- --id source-vent-claw-yeti --serve --open --visual</code><br><code>npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual</code></td>
+          <td><code>npm run sandbox:visual -- --ids source-vent-claw-yeti --with diver</code></td>
+        </tr></tbody>
+      </table>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "schema": "water9/source-review-target-packet@1",
+  "generatedAt": "2026-06-18T17:21:08.495Z",
+  "generatedFrom": {
+    "sequencer": "public/review/source-candidates/source-review-sequencer.json",
+    "criticHealth": "public/review/source-candidates/source-critic-regeneration-health.json",
+    "approvalRunway": "public/review/source-approval-runway.json"
+  },
+  "artifacts": {
+    "json": "public/review/source-candidates/source-review-target-packet.json",
+    "markdown": "public/review/source-candidates/source-review-target-packet.md",
+    "html": "public/review/source-candidates/source-review-target-packet.html"
+  },
+  "policy": {
+    "doesNotApproveSources": true,
+    "doesNotAcceptThreats": true,
+    "previewOnlyDoesNotCountTowardGate": true,
+    "followsSourceReviewSequencer": true,
+    "overwriteIngestOnlyWhenDistinctReplacementReady": true
+  },
+  "summary": {
+    "totalCandidates": 20,
+    "approvalReady": 20,
+    "criticRegenerationRequired": 0,
+    "distinctReplacementReady": 0,
+    "validNoopReplacements": 0,
+    "missingReplacements": 0,
+    "invalidReplacements": 0,
+    "approved": 0,
+    "countsTowardGate": 0,
+    "sequencerNextTarget": "brine-crown",
+    "sequencerNextLane": "approval-ready"
+  },
+  "commandBoundary": "This approval lane may expose dry-run source approval commands only. Real approval requires human inspection.",
+  "target": {
+    "id": "brine-crown",
+    "species": "Brine Crown",
+    "lane": "approval-ready",
+    "status": "approval-ready; human source review required",
+    "healthStatus": "replacement-applied",
+    "readyForHumanReview": true,
+    "humanApproved": false,
+    "countsTowardGate": false,
+    "recommendedFirst": "npm run source:quick-review -- --id brine-crown",
+    "nextCommands": [
+      "npm run source:quick-review -- --id brine-crown",
+      "npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual",
+      "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual",
+      "npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json",
+      "npm run source:accept -- --id brine-crown --status approved --reviewed-by <human-reviewer> --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run"
+    ],
+    "promptFile": "public/review/source-candidates/critic-regeneration-prompts/07-brine-crown.txt",
+    "promptText": "Critic regeneration target: Brine Crown (brine-crown)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated full-body 2D game creature source art, cohesive underwater threat called Brine Crown, stationary abyssal vent organism forming one rooted toxic basal mat, inspired by coralline hydrothermal flora without starfish or cephalopod anatomy, central jagged crown cup with dark toxic throat, five to seven short thick radial lobes fused flat into the basal mat, opaque brine blisters glowing sickly green amber, mineral spines around the rim, root-like tendrils, gloomy charcoal deep teal bone oxidized copper palette, crisp readable silhouette, crop-friendly hinge zones, no environment, no shadows, no haze, no duplicate creatures, no detached limbs, no text\n\nSubagent cohesion failures to fix:\n- Curled radial lobes read strongly as cephalopod arms, which the contract rejects.\n- Dense mineral and coral detail makes the basal mat, crown, blister bank, and spines feel kitbashed.\n\nSubagent animation risk to solve:\n- Phase/contact evidence is nearly static; spine raise, blister swelling, and brine-lane growth need heavy deformation or repaint.\n\nExisting regenerate-if-observed risks:\n- Curled radial lobes read strongly as cephalopod arms, which the contract rejects.\n- Dense mineral and coral detail makes the basal mat, crown, blister bank, and spines feel kitbashed.\n- Avoid a decorative reef; the source must read as a dangerous organism.\n- Avoid perfect radial ornament symmetry that feels like a logo.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One rooted radial organism, not a collage of coral, starfish, and vent tubes.\n- Central crown or toxic throat is the first read.\n- Low anchored basal mat with uneven rays/fronds and visible hinge/root zones.\n- Readable toxic blisters, spine halo, and corrosive danger cues at game scale.\n- No loose detached parts, environmental shadows, haze, floor plane, or particles baked into the source.\n\nCrop-safe articulatable parts:\n- basal mat torso\n- central crown cup head\n- dark throat pore\n- front radial frond\n- left radial frond\n- right radial frond\n- rear radial fronds\n- brine blister bank\n- spine halo cluster\n- root tendril skirt\n\nPrompt risks to avoid:\n- Avoid a decorative reef; the source must read as a dangerous organism.\n- Avoid perfect radial ornament symmetry that feels like a logo.\n- Avoid magenta or hot pink body colors that will key out.\n- Avoid loose vent tubes or starfish arms that do not grow from the same mat.\n- Keep toxic clouds, bubbles, and brine puddles as separate VFX rather than baked source art.\n- Reject cephalopod tentacles, curled octopus arms, eyes, free-swimming anatomy, or loose starfish limbs.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.\n",
+    "links": {
+      "sequencer": "/review/source-candidates/source-review-sequencer.html",
+      "source": "/assets/generated/fauna-brine-crown-whole-source.png",
+      "thumbnail": "/review/source-candidates/thumbs/brine-crown-source-thumb.png",
+      "keyPreview": "/review/source-candidates/key-previews/brine-crown-key-preview.png",
+      "sourcePreview": "/?entity=source-brine-crown&companion=diver",
+      "quickReview": "/review/source-candidates/quick-reviews/brine-crown.html",
+      "reviewPacket": "public/review/source-candidates/source-review-packets/brine-crown.md",
+      "planPreview": "/review/articulated/brine-crown-plan-preview.png",
+      "sourceApprovalRunway": "/review/source-approval-runway.html",
+      "criticRegenerationHealth": "/review/source-candidates/source-critic-regeneration-health.html",
+      "contentReviewSession": "/review/content-review-session.html"
+    }
+  }
+}

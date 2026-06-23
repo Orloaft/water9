@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Water 9 Source Inbox Review</title>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #071316; color: #e5f4f7; }
+      body { margin: 0; background: #071316; }
+      main { max-width: 1320px; margin: 0 auto; padding: 26px 16px 56px; }
+      h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 4rem); letter-spacing: 0; }
+      p { color: #a8c1c8; line-height: 1.45; }
+      .summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+      .summary span { border: 1px solid #284651; border-radius: 6px; background: #0d2026; padding: 8px 10px; color: #d4ecf1; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+      .card { border: 1px solid #24414b; border-radius: 8px; background: #0b1d23; padding: 14px; }
+      .card.ready { border-color: #4fbf95; }
+      .card.blocked { border-color: #d78755; }
+      .card.missing { border-color: #385866; }
+      header { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+      h2 { margin: 0; font-size: 1.1rem; }
+      h3 { margin: 12px 0 6px; font-size: 0.86rem; color: #d5edf2; }
+      code, pre { background: #061014; color: #d7fbff; border-radius: 5px; }
+      code { padding: 1px 4px; }
+      pre { padding: 10px; overflow: auto; border: 1px solid #1f3b45; }
+      a { color: #83e8ff; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .source-image, .source-missing { display: grid; place-items: center; min-height: 190px; margin: 12px 0; border: 1px solid #213b45; border-radius: 6px; background: #050d10; overflow: hidden; }
+      .source-image img { display: block; width: 100%; max-height: 320px; object-fit: contain; image-rendering: auto; }
+      .source-missing { color: #77949d; }
+      .verb { min-height: 3.8em; }
+      dl { display: grid; gap: 7px; margin: 10px 0; }
+      dt { color: #7f9ca5; font-size: 0.78rem; text-transform: uppercase; }
+      dd { margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+      ul { margin: 0; padding-left: 18px; color: #bdd3d9; }
+      @media (max-width: 740px) { main { padding: 18px 10px 36px; } .grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Source Inbox Review</h1>
+      <p>Review generated whole-source creature images before ingestion, extraction, rigging, or acceptance. Images must be cohesive single-creature designs on clean magenta backgrounds.</p>
+      <p>For inline-only generated images, run <code>npm run source:inbox-capture</code> and paste, drop, or select the image into the local capture page.</p>
+      <p>Recommended next capture: <code>npm run source:inbox-capture --open</code></p>
+      <div class="summary">
+        <span>0 queued candidates</span>
+        <span>0 ready</span>
+        <span>0 blocked</span>
+        <span>0 missing images</span>
+        <span>0 failures</span>
+      </div>
+      <section>
+        <h2>Skipped Inbox Files</h2>
+        <ul><li><code>HANDOFF.md</code>: not a source image extension</li><li><code>README.md</code>: not a source image extension</li><li><code>abyssal-lantern-mantis.png</code>: does not map to a source candidate id</li><li><code>black-coral-gate.png</code>: does not map to a source candidate id</li><li><code>brine-crown.png</code>: does not map to a source candidate id</li><li><code>brine-mycelium-shelf.png</code>: does not map to a source candidate id</li><li><code>chain-vein-siphonophore.png</code>: does not map to a source candidate id</li><li><code>coronate-sting-crown.png</code>: does not map to a source candidate id</li><li><code>glass-sponge-sentinel.png</code>: does not map to a source candidate id</li><li><code>gulper-eel-maw.png</code>: does not map to a source candidate id</li><li><code>lantern-anemone-pit.png</code>: does not map to a source candidate id</li><li><code>predatory-tunicate-maw.png</code>: does not map to a source candidate id</li><li><code>razor-kelp-harp.png</code>: does not map to a source candidate id</li><li><code>reef-lion-moray.png</code>: does not map to a source candidate id</li><li><code>reliquary-siphonophore.png</code>: does not map to a source candidate id</li><li><code>source-inbox-handoff.json</code>: not a source image extension</li><li><code>thorn-fan-coralline.png</code>: does not map to a source candidate id</li><li><code>trench-harvest-sea-spider.png</code>: does not map to a source candidate id</li><li><code>tripod-stilt-stalker.png</code>: does not map to a source candidate id</li><li><code>vampire-cloak-squid.png</code>: does not map to a source candidate id</li><li><code>vent-claw-yeti.png</code>: does not map to a source candidate id</li></ul>
+      </section>
+      <section class="grid">
+        
+      </section>
+    </main>
+  </body>
+</html>

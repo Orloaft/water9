@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Acceptance Audit: brine-crown</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061114; --panel:#0d1e24; --line:#294751; --text:#e7f7f8; --muted:#9eb7bd; --accent:#83e8ff; --warn:#f0c66e; --danger:#ff8a7a; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1280px; margin:0 auto; padding:26px 18px 52px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); }
+    h2 { margin:0 0 10px; font-size:18px; }
+    p, li, dt { color:var(--muted); }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; padding:12px; border:1px solid var(--line); border-radius:6px; background:#050b0d; color:var(--text); overflow:auto; white-space:pre-wrap; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px; margin:18px 0; }
+    .panel { border:1px solid var(--line); border-radius:7px; background:var(--panel); padding:15px; }
+    .status { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .status span { border:1px solid var(--line); border-radius:5px; padding:7px 9px; color:var(--muted); background:#09171b; }
+    .status strong { color:var(--text); margin-left:4px; }
+    .next { border-color:#6a5230; background:#1d1710; }
+    .disclosure { border-color:#7a413a; background:#26120f; }
+    .disclosure h2 { color:#ffc4bd; }
+    .blockers { border-color:#6e3a35; }
+    .blockers h2 { color:#ffc4bd; }
+    dl { display:grid; grid-template-columns:150px 1fr; gap:7px 10px; margin:0; }
+    dd { margin:0; overflow-wrap:anywhere; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Acceptance Audit</h1>
+    <p><code>brine-crown</code> evidence audit for the strict 20-threat gate. This report does not approve content.</p>
+    <div class="status">
+      <span>stage <strong>human-source-review-needed</strong></span>
+      <span>gate <strong>Not Accepted</strong></span>
+      <span>counts toward gate <strong>false</strong></span>
+      <span>source ready <strong>true</strong></span>
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>true</strong></span>
+      <span>threat accepted <strong>false</strong></span>
+    </div>
+    <section class="panel disclosure">
+      <h2>Gate Disclosure</h2>
+      <p>Preview-only or incomplete evidence. Do not treat screenshots, sandbox motion, or prototype rigs as production-quality accepted content.</p>
+      <dl>
+        <dt>source</dt><dd><code>source-preview-only-human-review-required</code></dd>
+        <dt>threat</dt><dd><code>prototype-preview-only-human-acceptance-required</code></dd>
+      </dl>
+    </section>
+    <section class="panel next">
+      <h2>Next Action</h2>
+      <p>A human reviewer must inspect the source gallery and run the source approval dry-run command without --dry-run when satisfied.</p>
+    </section>
+    <section class="grid">
+      <article class="panel">
+        <h2>Source Candidate</h2>
+        <dl>
+          <dt>status</dt><dd><code>needs-review</code></dd>
+          <dt>species</dt><dd>Brine Crown</dd>
+          <dt>preview report</dt><dd><code>/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals-report.json</code></dd>
+        </dl>
+        <h2>Source Review Links</h2>
+        <ul><li>approvalRunway: <code>/review/source-approval-runway.html</code></li><li>approvalChecklist: <code>/review/source-approval-checklist.json</code></li><li>visualBoard: <code>/review/source-visual-board.html</code></li><li>reviewDossier: <code>/review/source-candidates/source-review-dossier.html</code></li><li>reviewQueue: <code>/review/source-candidates/quick-reviews/index.html</code></li><li>quickReview: <code>/review/source-candidates/quick-reviews/brine-crown.html</code></li><li>source: <code>/assets/generated/fauna-brine-crown-whole-source.png</code></li><li>thumbnail: <code>/review/source-candidates/thumbs/brine-crown-source-thumb.png</code></li><li>keyPreview: <code>/review/source-candidates/key-previews/brine-crown-key-preview.png</code></li><li>sandboxScreenshot: <code>/review/source-candidates/quick-reviews/brine-crown-source-preview.png</code></li><li>planPreview: <code>/review/articulated/brine-crown-plan-preview.png</code></li><li>reviewPacket: <code>public/review/source-candidates/source-review-packets/brine-crown.md</code></li><li>artContract: <code>public/review/source-candidates/art-contracts/brine-crown.md</code></li></ul>
+      </article>
+      <article class="panel">
+        <h2>Articulated Threat</h2>
+        <dl>
+          <dt>quality</dt><dd><code>prototype</code></dd>
+          <dt>species</dt><dd>Brine Crown</dd>
+          <dt>sandbox report</dt><dd><code>/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals-report.json</code></dd>
+        </dl>
+        <h2>Threat Review Links</h2>
+        <ul><li>reviewGallery: <code>/review/articulated/index.html</code></li><li>sandboxPreview: <code>/?sandbox=brine-crown&amp;with=diver</code></li><li>source: <code>/assets/generated/fauna-brine-crown-whole-source.png</code></li><li>sourceThumb: <code>/review/articulated/thumbs/brine-crown-source-thumb.png</code></li><li>planPreview: <code>/review/articulated/brine-crown-plan-preview.png</code></li><li>contactSheet: <code>/review/articulated/brine-crown-contact.png</code></li><li>phaseStrip: <code>/review/articulated/brine-crown-phase.png</code></li><li>sourceParity: <code>/review/articulated/source-parity/brine-crown-source-parity.png</code></li><li>sourceParityThumb: <code>/review/articulated/thumbs/brine-crown-source-parity-thumb.png</code></li><li>pairedSandboxReport: <code>/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals-report.json</code></li><li>pairedSandboxScreenshot: <code>/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals/brine-crown__prototype__with-diver__idle.png</code></li></ul>
+      </article>
+    </section>
+    <section class="grid">
+      <article class="panel blockers">
+        <h2>Source Blockers</h2>
+        <ul><li>None.</li></ul>
+        <h2>Source Warnings</h2>
+        <ul><li>human source approval has not been recorded</li></ul>
+      </article>
+      <article class="panel blockers">
+        <h2>Threat Blockers</h2>
+        <ul><li>linked source candidate is not human-approved</li></ul>
+        <h2>Threat Warnings</h2>
+        <ul><li>quality.status is prototype, not accepted</li></ul>
+      </article>
+    </section>
+    <section class="grid">
+      <article class="panel">
+        <h2>Source Approval Dry Run</h2>
+        <pre><code>npm run source:accept -- --id brine-crown --status approved --reviewed-by &lt;human-reviewer&gt; \
+  --note '&lt;specific source approval note&gt;' \
+  --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane \
+  --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; \
+  --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' \
+  --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run</code></pre>
+      </article>
+      <article class="panel">
+        <h2>Threat Acceptance Dry Run</h2>
+        <pre><code>npm run content:accept -- --id brine-crown --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate brine-crown \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run</code></pre>
+      </article>
+    </section>
+    <section class="panel">
+      <h2>Sandbox Framing</h2>
+      <pre><code>{
+  &quot;idle&quot;: {
+    &quot;width&quot;: 960,
+    &quot;height&quot;: 640,
+    &quot;ignoredTop&quot;: 109,
+    &quot;ignoredBottom&quot;: 115,
+    &quot;bbox&quot;: [
+      10,
+      109,
+      700,
+      483
+    ],
+    &quot;widthRatio&quot;: 0.7198,
+    &quot;heightRatio&quot;: 0.5859,
+    &quot;areaRatio&quot;: 0.4218,
+    &quot;foregroundRatio&quot;: 0.0643
+  },
+  &quot;lunge&quot;: {
+    &quot;width&quot;: 960,
+    &quot;height&quot;: 640,
+    &quot;ignoredTop&quot;: 109,
+    &quot;ignoredBottom&quot;: 115,
+    &quot;bbox&quot;: [
+      10,
+      109,
+      702,
+      487
+    ],
+    &quot;widthRatio&quot;: 0.7219,
+    &quot;heightRatio&quot;: 0.5922,
+    &quot;areaRatio&quot;: 0.4275,
+    &quot;foregroundRatio&quot;: 0.0652
+  },
+  &quot;stunned&quot;: {
+    &quot;width&quot;: 960,
+    &quot;height&quot;: 640,
+    &quot;ignoredTop&quot;: 109,
+    &quot;ignoredBottom&quot;: 115,
+    &quot;bbox&quot;: [
+      10,
+      109,
+      700,
+      481
+    ],
+    &quot;widthRatio&quot;: 0.7198,
+    &quot;heightRatio&quot;: 0.5828,
+    &quot;areaRatio&quot;: 0.4195,
+    &quot;foregroundRatio&quot;: 0.0392
+  }
+}</code></pre>
+    </section>
+  </main>
+</body>
+</html>

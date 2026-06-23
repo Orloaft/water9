@@ -55,7 +55,9 @@ export type PlaytestCommand =
   | 'focusArticulatedCamera'
   | 'reviewArticulated'
   | 'advanceArticulatedReview'
+  | 'advanceArticulatedDamageReview'
   | 'damageArticulatedPart'
+  | 'exerciseArticulatedToolDamage'
   | 'collideArticulated'
   | 'setOxygen'
   | 'setHull';
@@ -165,10 +167,26 @@ export interface ArticulatedMotionManifest {
   lag?: number;
 }
 
+export type ArticulatedAnatomyRole = 'head' | 'jaw' | 'torso' | 'tail' | 'fin';
+
+export interface ArticulatedAnatomyManifest {
+  role: ArticulatedAnatomyRole;
+  mass: number;
+  drag: number;
+  angularDrag: number;
+  severable: boolean;
+  breakThreshold: number;
+  mobilityFactor?: number;
+}
+
 export interface ArticulatedPartManifest {
   id: string;
   textureKey: string;
   texture: string;
+  detachedTextureKey?: string;
+  detachedTexture?: string;
+  damagedTextureKey?: string;
+  damagedTexture?: string;
   parentId?: string;
   parentAnchor?: string;
   anchor?: string;
@@ -183,13 +201,58 @@ export interface ArticulatedPartManifest {
   hitRadius: number;
   hpMultiplier: number;
   damageMultiplier: number;
+  anatomy?: ArticulatedAnatomyManifest;
   motion: ArticulatedMotionManifest;
 }
 
-export interface ArticulatedSocketOverlayManifest {
+export interface ArticulatedSocketStyleManifest {
+  alpha?: number;
+  bridgeAlpha?: number;
+  bridgeStunnedAlpha?: number;
+  bridgeCoreAlpha?: number;
+  bridgeCoreStunnedAlpha?: number;
+  bridgeColor?: number;
+  bridgeCoreColor?: number;
+  bridgeWidthScale?: number;
+  bridgeSleeveScale?: number;
+}
+
+export interface ArticulatedMurkTintManifest {
+  color: number;
+  intensity: number;
+  stunnedIntensity?: number;
+}
+
+export type ArticulatedBehaviorKind = 'serpent' | 'ambusher' | 'charger' | 'territorial' | 'passive';
+export type ArticulatedRuntimeSpawnMode = 'accepted' | 'legacy' | 'prototype' | 'never';
+
+export interface ArticulatedCombatManifest {
+  behavior?: ArticulatedBehaviorKind;
+  hostile?: boolean;
+  detectionRange?: number;
+  leashRange?: number;
+  attackRange?: number;
+  lungeSeconds?: number;
+  lungeSpeedScale?: number;
+  grabSeconds?: number;
+  grabCooldown?: number;
+  grabEnabled?: boolean;
+  bitePartId?: string;
+  biteAnchor?: string;
+  contactPadding?: number;
+}
+
+export interface ArticulatedRuntimeManifest {
+  spawn?: ArticulatedRuntimeSpawnMode;
+  focusSlice?: boolean;
+}
+
+export interface ArticulatedSocketOverlayManifest extends ArticulatedSocketStyleManifest {
   id: string;
   textureKey: string;
   texture: string;
+  severedTextureKey?: string;
+  severedTexture?: string;
   parentId: string;
   childId: string;
   offset: [number, number];
@@ -214,7 +277,24 @@ export interface ArticulatedCreatureManifest {
     count: number;
   };
   parts: ArticulatedPartManifest[];
+  combat?: ArticulatedCombatManifest;
+  runtime?: ArticulatedRuntimeManifest;
+  murkTint?: ArticulatedMurkTintManifest;
+  socketStyle?: ArticulatedSocketStyleManifest;
   socketOverlays?: ArticulatedSocketOverlayManifest[];
+  quality?: {
+    status?: 'prototype' | 'accepted' | string;
+    sourceCohesion?: string;
+    backgroundKey?: string;
+    reviewedBy?: string;
+    reviewedAt?: string;
+    acceptanceNote?: string;
+    sourceCandidateId?: string;
+    visualChecklist?: Record<string, boolean>;
+    visualScores?: Record<string, number>;
+    visualNotes?: Record<string, string>;
+    reviewEvidence?: Record<string, boolean>;
+  };
 }
 
 export interface ArticulatedPartState {
@@ -233,6 +313,9 @@ export interface ArticulatedPartState {
   x: number;
   y: number;
   rotation: number;
+  softRotation: number;
+  softAngularVelocity: number;
+  softInitialized: boolean;
   sprite?: Phaser.GameObjects.Image;
 }
 
@@ -241,6 +324,17 @@ export interface ArticulatedSocketOverlayState {
   x: number;
   y: number;
   rotation: number;
+  width: number;
+  height: number;
+  span: number;
+  parentAnchorX: number;
+  parentAnchorY: number;
+  childAnchorX: number;
+  childAnchorY: number;
+  bridgeWidth: number;
+  bridgeCoverage: number;
+  parentCoverage: number;
+  childCoverage: number;
   sprite?: Phaser.GameObjects.Image;
 }
 
@@ -254,6 +348,19 @@ export interface ArticulatedSpineNodeState {
   vy: number;
   constraintError: number;
   initialized: boolean;
+}
+
+export interface ArticulatedCollisionDebug {
+  partId: string;
+  frontSign: 1 | -1;
+  edgeX: number;
+  edgeY: number;
+  halfWidth: number;
+  halfHeight: number;
+  tileX: number;
+  tileY: number;
+  halfRows: number;
+  writtenTiles: { x: number; y: number; tile: Tile }[];
 }
 
 export interface ArticulatedCreature {
@@ -291,6 +398,7 @@ export interface ArticulatedCreature {
   grabTimer: number;
   grabCooldown: number;
   reviewFrozen?: boolean;
+  collisionDebug?: ArticulatedCollisionDebug;
   manifest: ArticulatedCreatureManifest;
   parts: ArticulatedPartState[];
   spine: ArticulatedSpineNodeState[];
@@ -530,6 +638,10 @@ declare global {
       snapshot: () => unknown;
       command: (command: PlaytestCommand, value?: unknown) => unknown;
       grantCredits: (amount: number) => unknown;
+    };
+    __AQUA_SANDBOX__?: {
+      snapshot: () => unknown;
+      setMode: (mode: 'idle' | 'lunge' | 'stunned') => unknown;
     };
   }
 }

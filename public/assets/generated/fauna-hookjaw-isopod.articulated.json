@@ -1,0 +1,724 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-hookjaw-isopod",
+  "runtimeCreatureId": "hookjaw-isopod",
+  "displayName": "Hookjaw Isopod",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-hookjaw-isopod-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail-fan",
+      "key": "fauna-hookjaw-isopod-tail-fan",
+      "src": "fauna-hookjaw-isopod-tail-fan.png",
+      "sourceCrop": {
+        "x": 20,
+        "y": 245,
+        "width": 260,
+        "height": 220
+      },
+      "size": {
+        "width": 260,
+        "height": 220
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.62,
+        "drag": 1.15,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 0.68,
+        "mobilityFactor": 0.6
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 6.5,
+        "frequency": 2.15,
+        "phase": 1.5,
+        "lag": 1.0
+      }
+    },
+    {
+      "id": "abdomen",
+      "key": "fauna-hookjaw-isopod-abdomen",
+      "src": "fauna-hookjaw-isopod-abdomen.png",
+      "sourceCrop": {
+        "x": 95,
+        "y": 170,
+        "width": 560,
+        "height": 350
+      },
+      "size": {
+        "width": 560,
+        "height": 350
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.15,
+        "drag": 1.15,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 0.9,
+        "mobilityFactor": 0.66
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 3.8,
+        "frequency": 1.85,
+        "phase": 0.9,
+        "lag": 0.6
+      }
+    },
+    {
+      "id": "rear-plate",
+      "key": "fauna-hookjaw-isopod-rear-plate",
+      "src": "fauna-hookjaw-isopod-rear-plate.png",
+      "sourceCrop": {
+        "x": 300,
+        "y": 110,
+        "width": 430,
+        "height": 440
+      },
+      "size": {
+        "width": 430,
+        "height": 440
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.35,
+        "drag": 0.9,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 1.0,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.2,
+        "frequency": 1.55,
+        "phase": 0.8,
+        "lag": 0.42
+      }
+    },
+    {
+      "id": "mid-plate",
+      "key": "fauna-hookjaw-isopod-mid-plate",
+      "src": "fauna-hookjaw-isopod-mid-plate.png",
+      "sourceCrop": {
+        "x": 610,
+        "y": 82,
+        "width": 430,
+        "height": 470
+      },
+      "size": {
+        "width": 430,
+        "height": 470
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.6,
+        "drag": 0.9,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 1.15,
+        "mobilityFactor": 0.76
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.6,
+        "frequency": 1.4,
+        "phase": 0.42,
+        "lag": 0.24
+      }
+    },
+    {
+      "id": "front-plate",
+      "key": "fauna-hookjaw-isopod-front-plate",
+      "src": "fauna-hookjaw-isopod-front-plate.png",
+      "sourceCrop": {
+        "x": 895,
+        "y": 105,
+        "width": 430,
+        "height": 445
+      },
+      "size": {
+        "width": 430,
+        "height": 445
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.65,
+        "drag": 0.9,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 1.18,
+        "mobilityFactor": 0.76
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.4,
+        "frequency": 1.32,
+        "phase": 0.2,
+        "lag": 0.16
+      }
+    },
+    {
+      "id": "root-body",
+      "key": "fauna-hookjaw-isopod-root-body",
+      "src": "fauna-hookjaw-isopod-root-body.png",
+      "sourceCrop": {
+        "x": 470,
+        "y": 115,
+        "width": 760,
+        "height": 455
+      },
+      "size": {
+        "width": 760,
+        "height": 455
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.2,
+        "drag": 0.9,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 1.55,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.1,
+        "frequency": 1.1,
+        "phase": 0.0,
+        "lag": 0.08
+      },
+      "damagedSrc": "fauna-hookjaw-isopod-root-body-damaged.png",
+      "damagedKey": "fauna-hookjaw-isopod-root-body-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head-plate",
+      "key": "fauna-hookjaw-isopod-head-plate",
+      "src": "fauna-hookjaw-isopod-head-plate.png",
+      "sourceCrop": {
+        "x": 1095,
+        "y": 120,
+        "width": 545,
+        "height": 430
+      },
+      "size": {
+        "width": 545,
+        "height": 430
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 2.4,
+        "drag": 0.9,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 1.35,
+        "mobilityFactor": 0.64
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.1,
+        "frequency": 1.2,
+        "phase": 0.1,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "jaw-upper",
+      "key": "fauna-hookjaw-isopod-jaw-upper",
+      "src": "fauna-hookjaw-isopod-jaw-upper.png",
+      "sourceCrop": {
+        "x": 1290,
+        "y": 220,
+        "width": 360,
+        "height": 185
+      },
+      "size": {
+        "width": 360,
+        "height": 185
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.52,
+        "drag": 1.15,
+        "angularDrag": 0.58,
+        "severable": false,
+        "breakThreshold": 0.75,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 17.5,
+        "frequency": 3.0,
+        "phase": 0.0,
+        "lag": 0.1
+      }
+    },
+    {
+      "id": "jaw-lower",
+      "key": "fauna-hookjaw-isopod-jaw-lower",
+      "src": "fauna-hookjaw-isopod-jaw-lower.png",
+      "sourceCrop": {
+        "x": 1265,
+        "y": 315,
+        "width": 385,
+        "height": 255
+      },
+      "size": {
+        "width": 385,
+        "height": 255
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.58,
+        "drag": 1.15,
+        "angularDrag": 0.58,
+        "severable": false,
+        "breakThreshold": 0.78,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 19.0,
+        "frequency": 3.15,
+        "phase": 0.25,
+        "lag": 0.12
+      }
+    },
+    {
+      "id": "antenna-upper",
+      "key": "fauna-hookjaw-isopod-antenna-upper",
+      "src": "fauna-hookjaw-isopod-antenna-upper.png",
+      "sourceCrop": {
+        "x": 1315,
+        "y": 35,
+        "width": 340,
+        "height": 200
+      },
+      "size": {
+        "width": 340,
+        "height": 200
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.25,
+        "drag": 1.15,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 0.5,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 6.2,
+        "frequency": 2.2,
+        "phase": 1.1,
+        "lag": 0.3
+      }
+    },
+    {
+      "id": "antenna-lower",
+      "key": "fauna-hookjaw-isopod-antenna-lower",
+      "src": "fauna-hookjaw-isopod-antenna-lower.png",
+      "sourceCrop": {
+        "x": 1375,
+        "y": 425,
+        "width": 285,
+        "height": 190
+      },
+      "size": {
+        "width": 285,
+        "height": 190
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.25,
+        "drag": 1.15,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 0.5,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 5.8,
+        "frequency": 2.05,
+        "phase": 1.55,
+        "lag": 0.32
+      }
+    },
+    {
+      "id": "leg-upper-bank",
+      "key": "fauna-hookjaw-isopod-leg-upper-bank",
+      "src": "fauna-hookjaw-isopod-leg-upper-bank.png",
+      "sourceCrop": {
+        "x": 390,
+        "y": 18,
+        "width": 840,
+        "height": 245
+      },
+      "size": {
+        "width": 840,
+        "height": 245
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.8,
+        "drag": 1.15,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.8,
+        "frequency": 2.4,
+        "phase": 1.25,
+        "lag": 0.35
+      }
+    },
+    {
+      "id": "leg-lower-bank",
+      "key": "fauna-hookjaw-isopod-leg-lower-bank",
+      "src": "fauna-hookjaw-isopod-leg-lower-bank.png",
+      "sourceCrop": {
+        "x": 405,
+        "y": 430,
+        "width": 880,
+        "height": 225
+      },
+      "size": {
+        "width": 880,
+        "height": 225
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.8,
+        "drag": 1.15,
+        "angularDrag": 0.45,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 5.2,
+        "frequency": 2.45,
+        "phase": 1.75,
+        "lag": 0.38
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-fan-socket",
+      "src": "fauna-hookjaw-isopod-tail-fan-socket.png",
+      "parentId": "abdomen",
+      "childId": "tail-fan",
+      "sourcePartId": "abdomen",
+      "sourceCrop": {
+        "x": 0,
+        "y": 126,
+        "width": 94,
+        "height": 96
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "abdomen-socket",
+      "src": "fauna-hookjaw-isopod-abdomen-socket.png",
+      "parentId": "root-body",
+      "childId": "abdomen",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 0,
+        "y": 176,
+        "width": 112,
+        "height": 110
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "rear-plate-socket",
+      "src": "fauna-hookjaw-isopod-rear-plate-socket.png",
+      "parentId": "root-body",
+      "childId": "rear-plate",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 112,
+        "y": 70,
+        "width": 124,
+        "height": 116
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "mid-plate-socket",
+      "src": "fauna-hookjaw-isopod-mid-plate-socket.png",
+      "parentId": "root-body",
+      "childId": "mid-plate",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 318,
+        "y": 48,
+        "width": 136,
+        "height": 126
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "front-plate-socket",
+      "src": "fauna-hookjaw-isopod-front-plate-socket.png",
+      "parentId": "root-body",
+      "childId": "front-plate",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 540,
+        "y": 78,
+        "width": 136,
+        "height": 128
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-hookjaw-isopod-head-socket.png",
+      "parentId": "root-body",
+      "childId": "head-plate",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 635,
+        "y": 155,
+        "width": 120,
+        "height": 124
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "jaw-upper-socket",
+      "src": "fauna-hookjaw-isopod-jaw-upper-socket.png",
+      "parentId": "head-plate",
+      "childId": "jaw-upper",
+      "sourcePartId": "head-plate",
+      "sourceCrop": {
+        "x": 286,
+        "y": 92,
+        "width": 104,
+        "height": 88
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "jaw-lower-socket",
+      "src": "fauna-hookjaw-isopod-jaw-lower-socket.png",
+      "parentId": "head-plate",
+      "childId": "jaw-lower",
+      "sourcePartId": "head-plate",
+      "sourceCrop": {
+        "x": 260,
+        "y": 205,
+        "width": 116,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "antenna-upper-socket",
+      "src": "fauna-hookjaw-isopod-antenna-upper-socket.png",
+      "parentId": "head-plate",
+      "childId": "antenna-upper",
+      "sourcePartId": "head-plate",
+      "sourceCrop": {
+        "x": 294,
+        "y": 0,
+        "width": 106,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "antenna-lower-socket",
+      "src": "fauna-hookjaw-isopod-antenna-lower-socket.png",
+      "parentId": "head-plate",
+      "childId": "antenna-lower",
+      "sourcePartId": "head-plate",
+      "sourceCrop": {
+        "x": 328,
+        "y": 312,
+        "width": 106,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "leg-upper-socket",
+      "src": "fauna-hookjaw-isopod-leg-upper-socket.png",
+      "parentId": "root-body",
+      "childId": "leg-upper-bank",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 284,
+        "y": 0,
+        "width": 174,
+        "height": 98
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "leg-lower-socket",
+      "src": "fauna-hookjaw-isopod-leg-lower-socket.png",
+      "parentId": "root-body",
+      "childId": "leg-lower-bank",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 282,
+        "y": 350,
+        "width": 180,
+        "height": 98
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.92,
+      "bridgeSleeveScale": 0.32
+    }
+  ],
+  "notes": "Prototype built from one magenta-background Hookjaw Isopod source. The rig uses grouped leg banks, overlapping armor plates, a head shield, paired hook jaws, antennae, abdomen, and tail fan to support latch/drag style animation without noisy individual legs.",
+  "murkTint": {
+    "color": 8368064,
+    "intensity": 0.1,
+    "stunnedIntensity": 0.17
+  },
+  "socketStyle": {
+    "alpha": 0.56,
+    "bridgeColor": 528922,
+    "bridgeAlpha": 0.18,
+    "bridgeStunnedAlpha": 0.1,
+    "bridgeCoreColor": 8173769,
+    "bridgeCoreAlpha": 0.07,
+    "bridgeCoreStunnedAlpha": 0.04,
+    "bridgeWidthScale": 0.92,
+    "bridgeSleeveScale": 0.32
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Prototype generated from one magenta-background Hookjaw Isopod source. Needs sandbox/contact-sheet acceptance before counting toward the 20-threat goal."
+  }
+}

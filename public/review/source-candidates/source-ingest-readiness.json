@@ -1,0 +1,28 @@
+{
+  "schema": "water9/source-ingest-readiness@1",
+  "generatedAt": "2026-06-18T04:13:04.053Z",
+  "runbook": "public/review/source-candidates/source-acquisition-runbook.json",
+  "sprint": "public/review/source-candidates/source-generation-sprint.json",
+  "inboxDir": "tools/source-inbox",
+  "ids": [],
+  "batchReady": false,
+  "summary": {
+    "ready": 0,
+    "missing": 0,
+    "blocked": 0
+  },
+  "batchCommands": {
+    "rebuildRunbook": "npm run source:acquisition-runbook",
+    "readiness": "npm run source:ingest-readiness",
+    "readinessCheck": "npm run source:ingest-readiness-check",
+    "inboxCheck": "npm run source:inbox-check -- --dir tools/source-inbox --strict --ids ",
+    "advanceDryRun": "npm run source:advance-inbox -- --ids ",
+    "advanceApply": "npm run source:advance-inbox -- --ids  --apply",
+    "ingestDryRun": "npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids  --dry-run",
+    "ingestApply": "npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids ",
+    "sourceImageCheck": "npm run source:image-check",
+    "sourcePreviewCheck": "npm run source:preview-check",
+    "reviewDossier": "npm run source:review-dossier"
+  },
+  "candidates": []
+}

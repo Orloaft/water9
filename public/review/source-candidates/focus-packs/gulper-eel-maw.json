@@ -1,0 +1,628 @@
+{
+  "schema": "water9/source-focus-pack@1",
+  "generatedAt": "2026-06-17T13:04:42.108Z",
+  "id": "gulper-eel-maw",
+  "species": "Gulper Eel Maw",
+  "rank": 1,
+  "score": 87,
+  "status": "draft",
+  "depthBand": "bathypelagic abyss / open blackwater lanes",
+  "gameplayVerb": "Inhale ambusher that blooms a huge mouth pouch, pulls the diver into a short suction cone, then snaps shut before a deflated recovery window.",
+  "promptFile": "public/review/source-candidates/generation-queue-prompts/01-gulper-eel-maw.txt",
+  "expectedOutput": "public/assets/generated/fauna-gulper-eel-maw-whole-source.png",
+  "inboxTarget": "tools/source-inbox/gulper-eel-maw.png",
+  "contract": "public/review/source-candidates/art-contracts/gulper-eel-maw.md",
+  "prompt": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy\n\nResearch audit hardening:\n- Lane: mobile-predator-motion\n- Biological anchor: Pelican eel expandable buccal cavity, tiny skull, loose throat pouch, and whip tail.\n- Extra required read: Show jaw hoops, skull hinge collar, pouch membrane, neck, body, and tail lure as one continuous animal.\n- Avoid: Huge mouth focus can generate a detached maw or worm-like monster without eel vertebrate continuity.\n- Avoid: Black flexible body may lose hinge, fin, and lure readability at sprite scale.\n- Avoid: Avoid suction vortices, prey silhouettes, or floating-mouth horror imagery in the source.\n- Preserve motion phase readability: tail lure bait, mouth pouch bloom, suction hold, snap shut, deflated recovery\n- Reference search term: pelican eel mouth open\n- Reference search term: gulper eel buccal cavity\n- Reference search term: Eurypharynx pelecanoides anatomy\n- Reference search term: pelican eel tail lure\n\nSource pose contract:\n- Generate a neutral riggable source pose, not the peak attack impact frame.\n- Attack direction must still be obvious from species-appropriate anatomy: jaws, oral disc, osculum, spines, fins, lures, eyes, claws, or body aim.\n- Primary pivots and crop zones must be visible: jaw pivots, limb roots, fin roots, tail base, stalk base, rim folds, throat valves, or equivalent anatomy.\n- Major appendages, valves, rims, plates, or tentacles must be separated enough for later cropping, with small overlaps allowed only where anatomy connects.\n- Default pose must show both the idle read and the attack telegraph read without baking in trails, particles, prey, or damage effects.\n\nCohesion lock:\n- One-source proof: render one continuous organism in one neutral source pose, not a parts board, variants sheet, or disconnected thumbnails.\n- Connection proof: every crop-intended appendage must visibly grow from or overlap the same body with a readable hinge, socket, root, or skin transition.\n- Style proof: all body regions and crop-intended organs must share one palette, line weight, lighting direction, material language, and shadow logic.\n- Proportion proof: body parts must look like they belong to the same animal when articulated; reject mismatched copied fragments or arbitrary size jumps.\n- Production proof: reject outputs that read as placeholder shapes, collage kitbash, props, UI icons, environmental rocks, duplicate creatures, or loose weapons.\n\nRequired read:\n- One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.\n- Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.\n- Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.\n- Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.\n- Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.\n- Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.\n- Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.\n- No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source.\n\nCandidate-specific contract checks:\n- Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.\n- Spatial ratio read: mouth pouch occupies roughly the front 35-45% while connected body and tail occupy the rear 55-65%, preventing a detached maw or portal-creature read.\n- Rig crop read: jaw hoops, pouch membrane, pectoral fins, tail base, and tail lure have visible magenta negative space around their outer edges while remaining connected at the roots.\n\nReject if any of these are true:\n- Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.\n- Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.\n- Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.\n- Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.\n- Avoid making suction currents part of the base sprite; pull effects should be separate VFX.\n- Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.\n- Avoid over-detailing the black body so the hinge zones and lure remain readable.\n- The subject is a collage, detached prop assembly, duplicate creature, or placeholder design.\n- The background is not a clean, flat #ff00ff magenta key.\n- The silhouette does not communicate the gameplay verb at small sprite scale.\n- The source is a full attack impact frame that hides pivots, limb roots, crop-safe appendages, or neutral riggable anatomy.",
+  "requiredRead": [
+    "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+    "Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.",
+    "Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.",
+    "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+    "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+    "Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.",
+    "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+    "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+  ],
+  "sourcePoseRules": [
+    "Generate a neutral riggable source pose, not the peak attack impact frame.",
+    "Attack direction must still be obvious from species-appropriate anatomy: jaws, oral disc, osculum, spines, fins, lures, eyes, claws, or body aim.",
+    "Primary pivots and crop zones must be visible: jaw pivots, limb roots, fin roots, tail base, stalk base, rim folds, throat valves, or equivalent anatomy.",
+    "Major appendages, valves, rims, plates, or tentacles must be separated enough for later cropping, with small overlaps allowed only where anatomy connects.",
+    "Default pose must show both the idle read and the attack telegraph read without baking in trails, particles, prey, or damage effects."
+  ],
+  "qualityChecks": [
+    "whole-creature-cohesion",
+    "part-continuity-cohesion",
+    "readable-silhouette",
+    "no-collage-artifacts",
+    "non-placeholder-art-direction",
+    "crop-safe-anatomy",
+    "clean-magenta-key",
+    "gameplay-read",
+    "neutral-riggable-pose",
+    "visible-attack-lane"
+  ],
+  "articulatableParts": [
+    "upper hinged jaw hoop",
+    "lower hinged jaw hoop",
+    "expandable throat pouch membrane",
+    "small skull hinge collar",
+    "dark inner mouth plate",
+    "narrow eel neck segment",
+    "front ribbon body segment",
+    "rear whip tail segment",
+    "tail-tip lure bulb",
+    "left tiny pectoral fin",
+    "right tiny pectoral fin",
+    "gill slit seam plates"
+  ],
+  "auditHardening": [
+    "Lane: mobile-predator-motion",
+    "Biological anchor: Pelican eel expandable buccal cavity, tiny skull, loose throat pouch, and whip tail.",
+    "Extra required read: Show jaw hoops, skull hinge collar, pouch membrane, neck, body, and tail lure as one continuous animal.",
+    "Avoid: Huge mouth focus can generate a detached maw or worm-like monster without eel vertebrate continuity.",
+    "Avoid: Black flexible body may lose hinge, fin, and lure readability at sprite scale.",
+    "Avoid: Avoid suction vortices, prey silhouettes, or floating-mouth horror imagery in the source.",
+    "Motion phase: tail lure bait, mouth pouch bloom, suction hold, snap shut, deflated recovery",
+    "Reference search term: pelican eel mouth open",
+    "Reference search term: gulper eel buccal cavity",
+    "Reference search term: Eurypharynx pelecanoides anatomy",
+    "Reference search term: pelican eel tail lure"
+  ],
+  "rejectIf": [
+    "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+    "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+    "Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.",
+    "Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.",
+    "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+    "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+    "Avoid over-detailing the black body so the hinge zones and lure remain readable.",
+    "The subject reads as a collage, detached prop assembly, duplicate creature, or placeholder design.",
+    "The source bakes in VFX, prey, UI, shadows, bubbles, or environment that should be separate.",
+    "The background is not a clean, flat #ff00ff magenta key.",
+    "The image hides pivots, limb roots, crop-safe appendages, or neutral riggable anatomy."
+  ],
+  "rejections": [
+    {
+      "id": "gulper-eel-maw-2026-06-16T22-42-51-795Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-16T22:42:51.795Z",
+      "reason": "Image generation rendered inline but no new image file appeared under /home/orlovboros/.codex/generated_images, so it could not be ingested into the project pipeline.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, side-facing three-quarter view facing right, enormous hinged mouth pouch dominating the silhouette, tiny skull hinge collar, dark inner mouth plate, expandable translucent throat membrane, long black ribbon eel body tapering into a whip tail, small pectoral fins, gill slit seam plates, cyan tail-tip lure bulb, charcoal black deep teal ivory and cold blue palette with no magenta body color, readable full creature at 64px, crop-friendly separated jaws pouch body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth; all jaw and pouch structures must connect to the body.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ]
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-16T23-37-31-515Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-16T23:37:31.515Z",
+      "reason": "Built-in image generation rendered in the client but did not create an accessible source image file under /home/orlovboros/.codex/generated_images or the workspace for ingestion.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict side profile facing right, mouth opens toward the right and tail trails left in one continuous S-curve, enormous hinged mouth pouch dominating the silhouette, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, long black ribbon eel body tapering into a whip tail, small pectoral fins, gill slit seam plates, cyan tail-tip lure bulb, charcoal black deep teal ivory and cold blue palette with no magenta body color, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ]
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-16T23-58-55-882Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-16T23:58:55.882Z",
+      "reason": "No new image file appeared under /home/orlovboros/.codex/generated_images after image generation.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict side profile facing right, mouth opens toward the right and tail trails left in one continuous S-curve, enormous hinged mouth pouch dominating the silhouette, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, long black ribbon eel body tapering into a whip tail, small pectoral fins, gill slit seam plates, cyan tail-tip lure bulb, charcoal black deep teal ivory and cold blue palette with no magenta body color, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-16T23:57:52.487Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T01-03-53-290Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T01:03:53.290Z",
+      "reason": "Built-in image generation rendered inline, but no accessible file appeared under /home/orlovboros/.codex/generated_images for ingestion.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict side profile facing right, mouth opens toward the right and tail trails left in one continuous S-curve, enormous hinged mouth pouch dominating the silhouette, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, long black ribbon eel body tapering into a whip tail, small pectoral fins, gill slit seam plates, cyan tail-tip lure bulb, charcoal black deep teal ivory and cold blue palette with no magenta body color, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T01:01:52.376Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T02-05-56-962Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T02:05:56.962Z",
+      "reason": "Generated output is a radial tentacled creature with multiple curled appendages, not a single cohesive side-profile pelican-eel body with one head, one tail, and visible jaw pouch hinges.",
+      "originalImage": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+      "copiedImage": "public/review/source-candidates/rejected/gulper-eel-maw-2026-06-17T02-05-56-962Z.png",
+      "sourceBytes": 2751999,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict side profile facing right, mouth opens toward the right and tail trails left in one continuous S-curve, enormous hinged mouth pouch dominating the silhouette, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, long black ribbon eel body tapering into a whip tail, small pectoral fins, gill slit seam plates, cyan tail-tip lure bulb, charcoal black deep teal ivory and cold blue palette with no magenta body color, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ]
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T02-09-26-452Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T02:09:26.452Z",
+      "reason": "The built-in image generator rendered a visually usable gulper eel inline, but no new recoverable image file appeared under /home/orlovboros/.codex/generated_images after the source-generation marker, so it cannot be ingested into the project pipeline.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict side profile facing right, mouth opens toward the right and tail trails left in one continuous S-curve, enormous hinged mouth pouch dominating the silhouette, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, long black ribbon eel body tapering into a whip tail, small pectoral fins, gill slit seam plates, cyan tail-tip lure bulb, charcoal black deep teal ivory and cold blue palette with no magenta body color, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T02:08:05.566Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T02-39-35-285Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T02:39:35.285Z",
+      "reason": "Built-in image generation produced a visually promising inline Gulper Eel Maw concept, but no new recoverable image file appeared under /home/orlovboros/.codex/generated_images for inbox ingest.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict side profile facing right, mouth opens toward the right and tail trails left in one continuous S-curve, enormous hinged mouth pouch dominating the silhouette, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, long black ribbon eel body tapering into a whip tail, small pectoral fins, gill slit seam plates, cyan tail-tip lure bulb, charcoal black deep teal ivory and cold blue palette with no magenta body color, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T02:38:19.114Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T03-04-46-560Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T03:04:46.560Z",
+      "reason": "Built-in image generation displayed an inline Gulper Eel Maw candidate, but no new or modified file appeared under /home/orlovboros/.codex/generated_images after the project marker, so there is no project-bound artifact to validate or ingest.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict side profile facing right, mouth opens toward the right and tail trails left in one continuous S-curve, enormous hinged mouth pouch dominating the silhouette, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, long black ribbon eel body tapering into a whip tail, small pectoral fins, gill slit seam plates, cyan tail-tip lure bulb, charcoal black deep teal ivory and cold blue palette with no magenta body color, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Huge hinged mouth pouch is the first read and clearly indicates the inhale direction.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T03:03:40.975Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T03-14-58-218Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T03:14:58.218Z",
+      "reason": "Built-in image generation displayed an inline Gulper Eel Maw candidate that visually matched the stricter side-profile contract, but no new or modified project-recoverable file appeared under /home/orlovboros/.codex/generated_images after the marker, so it cannot be validated or ingested.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.",
+        "Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.",
+        "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.",
+        "Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T03:13:39.033Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T03-49-27-889Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T03:49:27.889Z",
+      "reason": "Built-in image generation rendered inline but produced no recoverable file under /home/orlovboros/.codex/generated_images for project ingestion.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.",
+        "Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.",
+        "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.",
+        "Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T03:47:45.923Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T05-26-11-141Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T05:26:11.141Z",
+      "reason": "Built-in image generation rendered inline after the handoff marker, but no new or modified image file appeared under /home/orlovboros/.codex/generated_images, /home/orlovboros/.codex, or the project workspace for ingestion.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.",
+        "Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.",
+        "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.",
+        "Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T05:24:47.268Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T09-57-21-492Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T09:57:21.492Z",
+      "reason": "Built-in image generation rendered an inline Gulper Eel Maw image in the client, but no new or modified project-recoverable image file appeared under CODEX_HOME or the workspace for ingestion.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.",
+        "Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.",
+        "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.",
+        "Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T09:54:11.837Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T10-54-50-100Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T10:54:50.100Z",
+      "reason": "Built-in image generation displayed a promising inline Gulper Eel Maw source image, but no new or modified recoverable file appeared under /home/orlovboros/.codex/generated_images after the marker, so it cannot be validated or ingested.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.",
+        "Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.",
+        "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.",
+        "Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T10:53:32.690Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    },
+    {
+      "id": "gulper-eel-maw-2026-06-17T12-45-34-200Z",
+      "candidateId": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rejectedAt": "2026-06-17T12:45:34.200Z",
+      "reason": "Built-in image generation rendered an inline Gulper Eel Maw candidate, but no new or modified recoverable file appeared under /home/orlovboros/.codex/generated_images after the handoff marker, so it cannot be validated or ingested without manual capture.",
+      "originalImage": null,
+      "copiedImage": null,
+      "sourceBytes": null,
+      "candidateStatusAtRejection": "draft",
+      "promptSnapshot": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy",
+      "requiredRead": [
+        "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+        "Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.",
+        "Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.",
+        "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+        "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+        "Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.",
+        "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+        "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+      ],
+      "promptRisks": [
+        "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+        "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+        "Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.",
+        "Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.",
+        "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+        "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+        "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+      ],
+      "sourceImagegenMarker": {
+        "markerPath": "/mnt/nxt-dev/water9/tools/scratch/source-imagegen-handoff-marker.json",
+        "createdAt": "2026-06-17T12:41:37.506Z",
+        "generatedDir": "/home/orlovboros/.codex/generated_images",
+        "previousFileCount": 36,
+        "newestBefore": {
+          "path": "/home/orlovboros/.codex/generated_images/019e1e63-ed2b-73b2-a205-e9345de4ce2e/ig_0aeb196cecb99c2c016a30cb7c1e208191b84d69da3b434e22.png",
+          "size": 2751999,
+          "mtimeMs": 1781582786663,
+          "mtime": "2026-06-16T04:06:26.663Z"
+        }
+      }
+    }
+  ],
+  "commands": {
+    "session": "npm run source:session -- --id gulper-eel-maw",
+    "status": "npm run source:imagegen-status -- --id gulper-eel-maw",
+    "autoIngest": "npm run source:imagegen-status -- --id gulper-eel-maw --ingest",
+    "rejectMissing": "npm run source:imagegen-status -- --id gulper-eel-maw --reject-missing --reason \"No recoverable generated file appeared.\"",
+    "inboxCapture": "npm run source:inbox-capture",
+    "recoverInline": "npm run source:recover-inline -- --id gulper-eel-maw --copy --validate",
+    "recoverInlineExplicitImage": "npm run source:recover-inline -- --id gulper-eel-maw --image <saved-image-path> --copy --validate",
+    "inboxCheck": "npm run source:inbox-check -- --dir tools/source-inbox --strict",
+    "inboxIngestDryRun": "npm run source:ingest-batch -- --dir tools/source-inbox --strict --dry-run",
+    "inboxIngest": "npm run source:ingest-batch -- --dir tools/source-inbox --strict",
+    "sourceCheck": "npm run source:check",
+    "sourceGallery": "npm run source:gallery",
+    "sourceApprovalDryRun": "npm run source:accept -- --id gulper-eel-maw --status approved --reviewed-by <human-reviewer> \\\n  --note '<specific source approval note>' \\\n  --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane \\\n  --score whole-creature-cohesion=<4-5> --score part-continuity-cohesion=<4-5> --score readable-silhouette=<4-5> --score no-collage-artifacts=<4-5> --score non-placeholder-art-direction=<4-5> --score crop-safe-anatomy=<4-5> --score clean-magenta-key=<4-5> --score gameplay-read=<4-5> --score neutral-riggable-pose=<4-5> --score visible-attack-lane=<4-5> \\\n  --visual-note whole-creature-cohesion='<specific rationale>' --visual-note part-continuity-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note no-collage-artifacts='<specific rationale>' --visual-note non-placeholder-art-direction='<specific rationale>' --visual-note crop-safe-anatomy='<specific rationale>' --visual-note clean-magenta-key='<specific rationale>' --visual-note gameplay-read='<specific rationale>' --visual-note neutral-riggable-pose='<specific rationale>' --visual-note visible-attack-lane='<specific rationale>' \\\n  --source-reviewed --dry-run"
+  }
+}

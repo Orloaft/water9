@@ -1,0 +1,1627 @@
+{
+  "schema": "water9/content-reproducibility@1",
+  "generatedAt": "2026-06-18T17:07:22.039Z",
+  "generatedFrom": {
+    "articulationRoster": "/mnt/nxt-dev/water9/public/review/content-articulation-roster.json",
+    "sourceCandidates": "/mnt/nxt-dev/water9/public/review/source-candidates/source-candidates.json"
+  },
+  "policy": {
+    "reportDoesNotApproveSources": true,
+    "reportDoesNotAcceptThreats": true,
+    "humanApprovalStillRequired": true
+  },
+  "summary": {
+    "targetThreats": 20,
+    "items": 20,
+    "reproducibleTargets": 20,
+    "magentaSources": 20,
+    "artContracts": 20,
+    "starterPlans": 20,
+    "planPreviews": 20,
+    "runtimeRegistered": 20,
+    "sourceApproved": 0,
+    "acceptedThreats": 0
+  },
+  "items": [
+    {
+      "id": "abyssal-lantern-mantis",
+      "species": "Abyssal Lantern Mantis",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "abyssal-lantern-mantis",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png",
+          "exists": true,
+          "bytes": 285559,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/abyssal-lantern-mantis-key-preview.png",
+          "exists": true,
+          "bytes": 154058,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/abyssal-lantern-mantis.json",
+          "exists": true,
+          "bytes": 14010,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/abyssal-lantern-mantis-starter-plan.json",
+          "exists": true,
+          "bytes": 6629,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/abyssal-lantern-mantis-plan-preview.png",
+          "exists": true,
+          "bytes": 288883,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/abyssal-lantern-mantis-source-parity.png",
+          "exists": true,
+          "bytes": 6527,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/abyssal-lantern-mantis-contact.png",
+          "exists": true,
+          "bytes": 3127646,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/abyssal-lantern-mantis-phase.png",
+          "exists": true,
+          "bytes": 1617024,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id abyssal-lantern-mantis --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --preview public/review/articulated/abyssal-lantern-mantis-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --out public/review/articulated/abyssal-lantern-mantis-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids abyssal-lantern-mantis --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "black-coral-gate",
+      "species": "Black Coral Gate",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-black-coral-gate-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "black-coral-gate",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-black-coral-gate-whole-source.png",
+          "exists": true,
+          "bytes": 437428,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/black-coral-gate-key-preview.png",
+          "exists": true,
+          "bytes": 253500,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/black-coral-gate.json",
+          "exists": true,
+          "bytes": 14505,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/black-coral-gate-starter-plan.json",
+          "exists": true,
+          "bytes": 6600,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/black-coral-gate-plan-preview.png",
+          "exists": true,
+          "bytes": 453048,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/black-coral-gate-source-parity.png",
+          "exists": true,
+          "bytes": 8472,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/black-coral-gate-contact.png",
+          "exists": true,
+          "bytes": 5329783,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/black-coral-gate-phase.png",
+          "exists": true,
+          "bytes": 2772530,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id black-coral-gate --plan tools/scratch/black-coral-gate-starter-plan.json --preview public/review/articulated/black-coral-gate-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/black-coral-gate-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/black-coral-gate-starter-plan.json --out public/review/articulated/black-coral-gate-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/black-coral-gate-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/black-coral-gate-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids black-coral-gate --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "brine-crown",
+      "species": "Brine Crown",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-brine-crown-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "brine-crown",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-brine-crown-whole-source.png",
+          "exists": true,
+          "bytes": 337378,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/brine-crown-key-preview.png",
+          "exists": true,
+          "bytes": 141567,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/brine-crown.json",
+          "exists": true,
+          "bytes": 13971,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/brine-crown-starter-plan.json",
+          "exists": true,
+          "bytes": 6572,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/brine-crown-plan-preview.png",
+          "exists": true,
+          "bytes": 2038863,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/brine-crown-source-parity.png",
+          "exists": true,
+          "bytes": 6896,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/brine-crown-contact.png",
+          "exists": true,
+          "bytes": 4973009,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/brine-crown-phase.png",
+          "exists": true,
+          "bytes": 1594587,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id brine-crown --plan tools/scratch/brine-crown-starter-plan.json --preview public/review/articulated/brine-crown-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/brine-crown-starter-plan.json --out public/review/articulated/brine-crown-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/brine-crown-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/brine-crown-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids brine-crown --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "brine-mycelium-shelf",
+      "species": "Brine Mycelium Shelf",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "brine-mycelium-shelf",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png",
+          "exists": true,
+          "bytes": 358754,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png",
+          "exists": true,
+          "bytes": 155905,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/brine-mycelium-shelf.json",
+          "exists": true,
+          "bytes": 14185,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/brine-mycelium-shelf-starter-plan.json",
+          "exists": true,
+          "bytes": 6615,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/brine-mycelium-shelf-plan-preview.png",
+          "exists": true,
+          "bytes": 361121,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/brine-mycelium-shelf-source-parity.png",
+          "exists": true,
+          "bytes": 4264,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/brine-mycelium-shelf-contact.png",
+          "exists": true,
+          "bytes": 3856725,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/brine-mycelium-shelf-phase.png",
+          "exists": true,
+          "bytes": 1683953,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id brine-mycelium-shelf --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --preview public/review/articulated/brine-mycelium-shelf-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --out public/review/articulated/brine-mycelium-shelf-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids brine-mycelium-shelf --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "chain-vein-siphonophore",
+      "species": "Chain Vein Siphonophore",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "chain-vein-siphonophore",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png",
+          "exists": true,
+          "bytes": 297689,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/chain-vein-siphonophore-key-preview.png",
+          "exists": true,
+          "bytes": 156113,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/chain-vein-siphonophore.json",
+          "exists": true,
+          "bytes": 14421,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/chain-vein-siphonophore-starter-plan.json",
+          "exists": true,
+          "bytes": 6777,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/chain-vein-siphonophore-plan-preview.png",
+          "exists": true,
+          "bytes": 275117,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/chain-vein-siphonophore-source-parity.png",
+          "exists": true,
+          "bytes": 7973,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/chain-vein-siphonophore-contact.png",
+          "exists": true,
+          "bytes": 4422672,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/chain-vein-siphonophore-phase.png",
+          "exists": true,
+          "bytes": 2474498,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id chain-vein-siphonophore --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --preview public/review/articulated/chain-vein-siphonophore-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --out public/review/articulated/chain-vein-siphonophore-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids chain-vein-siphonophore --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "coronate-sting-crown",
+      "species": "Coronate Sting Crown",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-coronate-sting-crown-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "coronate-sting-crown",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-coronate-sting-crown-whole-source.png",
+          "exists": true,
+          "bytes": 347657,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/coronate-sting-crown-key-preview.png",
+          "exists": true,
+          "bytes": 162605,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/coronate-sting-crown.json",
+          "exists": true,
+          "bytes": 14096,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/coronate-sting-crown-starter-plan.json",
+          "exists": true,
+          "bytes": 6621,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/coronate-sting-crown-plan-preview.png",
+          "exists": true,
+          "bytes": 354958,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/coronate-sting-crown-source-parity.png",
+          "exists": true,
+          "bytes": 6474,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/coronate-sting-crown-contact.png",
+          "exists": true,
+          "bytes": 3428239,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/coronate-sting-crown-phase.png",
+          "exists": true,
+          "bytes": 1522435,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-coronate-sting-crown --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id coronate-sting-crown --plan tools/scratch/coronate-sting-crown-starter-plan.json --preview public/review/articulated/coronate-sting-crown-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/coronate-sting-crown-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --out public/review/articulated/coronate-sting-crown-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/coronate-sting-crown-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids coronate-sting-crown --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "glass-sponge-sentinel",
+      "species": "Glass Sponge Sentinel",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-glass-sponge-sentinel-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "glass-sponge-sentinel",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-glass-sponge-sentinel-whole-source.png",
+          "exists": true,
+          "bytes": 241521,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/glass-sponge-sentinel-key-preview.png",
+          "exists": true,
+          "bytes": 102514,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/glass-sponge-sentinel.json",
+          "exists": true,
+          "bytes": 15115,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/glass-sponge-sentinel-starter-plan.json",
+          "exists": true,
+          "bytes": 6614,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/glass-sponge-sentinel-plan-preview.png",
+          "exists": true,
+          "bytes": 246081,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/glass-sponge-sentinel-source-parity.png",
+          "exists": true,
+          "bytes": 4870,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/glass-sponge-sentinel-contact.png",
+          "exists": true,
+          "bytes": 2192359,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/glass-sponge-sentinel-phase.png",
+          "exists": true,
+          "bytes": 930641,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-glass-sponge-sentinel --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id glass-sponge-sentinel --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --preview public/review/articulated/glass-sponge-sentinel-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --out public/review/articulated/glass-sponge-sentinel-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids glass-sponge-sentinel --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-gulper-eel-maw-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "gulper-eel-maw",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-gulper-eel-maw-whole-source.png",
+          "exists": true,
+          "bytes": 110660,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/gulper-eel-maw-key-preview.png",
+          "exists": true,
+          "bytes": 82047,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/gulper-eel-maw.json",
+          "exists": true,
+          "bytes": 17243,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/gulper-eel-maw-starter-plan.json",
+          "exists": true,
+          "bytes": 6706,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/gulper-eel-maw-plan-preview.png",
+          "exists": true,
+          "bytes": 120342,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/gulper-eel-maw-source-parity.png",
+          "exists": true,
+          "bytes": 3959,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/gulper-eel-maw-contact.png",
+          "exists": true,
+          "bytes": 2117093,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/gulper-eel-maw-phase.png",
+          "exists": true,
+          "bytes": 1289432,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id gulper-eel-maw --plan tools/scratch/gulper-eel-maw-starter-plan.json --preview public/review/articulated/gulper-eel-maw-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/gulper-eel-maw-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --out public/review/articulated/gulper-eel-maw-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/gulper-eel-maw-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids gulper-eel-maw --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "hadal-trencher-isopod",
+      "species": "Hadal Trencher Isopod",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "hadal-trencher-isopod",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png",
+          "exists": true,
+          "bytes": 1447194,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/hadal-trencher-isopod-key-preview.png",
+          "exists": true,
+          "bytes": 412564,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/hadal-trencher-isopod.json",
+          "exists": true,
+          "bytes": 13921,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/hadal-trencher-isopod-starter-plan.json",
+          "exists": true,
+          "bytes": 6624,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/hadal-trencher-isopod-plan-preview.png",
+          "exists": true,
+          "bytes": 1145140,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/hadal-trencher-isopod-source-parity.png",
+          "exists": true,
+          "bytes": 5083,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/hadal-trencher-isopod-contact.png",
+          "exists": true,
+          "bytes": 11385326,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/hadal-trencher-isopod-phase.png",
+          "exists": true,
+          "bytes": 6984875,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-hadal-trencher-isopod --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id hadal-trencher-isopod --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --preview public/review/articulated/hadal-trencher-isopod-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --out public/review/articulated/hadal-trencher-isopod-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids hadal-trencher-isopod --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "lantern-anemone-pit",
+      "species": "Lantern Anemone Pit",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-lantern-anemone-pit-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "lantern-anemone-pit",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-lantern-anemone-pit-whole-source.png",
+          "exists": true,
+          "bytes": 278695,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/lantern-anemone-pit-key-preview.png",
+          "exists": true,
+          "bytes": 114491,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/lantern-anemone-pit.json",
+          "exists": true,
+          "bytes": 14264,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/lantern-anemone-pit-starter-plan.json",
+          "exists": true,
+          "bytes": 6602,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/lantern-anemone-pit-plan-preview.png",
+          "exists": true,
+          "bytes": 272120,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/lantern-anemone-pit-source-parity.png",
+          "exists": true,
+          "bytes": 5008,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/lantern-anemone-pit-contact.png",
+          "exists": true,
+          "bytes": 2571346,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/lantern-anemone-pit-phase.png",
+          "exists": true,
+          "bytes": 1047518,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id lantern-anemone-pit --plan tools/scratch/lantern-anemone-pit-starter-plan.json --preview public/review/articulated/lantern-anemone-pit-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --out public/review/articulated/lantern-anemone-pit-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids lantern-anemone-pit --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "predatory-tunicate-maw",
+      "species": "Predatory Tunicate Maw",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "predatory-tunicate-maw",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png",
+          "exists": true,
+          "bytes": 294105,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/predatory-tunicate-maw-key-preview.png",
+          "exists": true,
+          "bytes": 137635,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/predatory-tunicate-maw.json",
+          "exists": true,
+          "bytes": 14259,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/predatory-tunicate-maw-starter-plan.json",
+          "exists": true,
+          "bytes": 6767,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/predatory-tunicate-maw-plan-preview.png",
+          "exists": true,
+          "bytes": 996773,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/predatory-tunicate-maw-source-parity.png",
+          "exists": true,
+          "bytes": 5802,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/predatory-tunicate-maw-contact.png",
+          "exists": true,
+          "bytes": 4608214,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/predatory-tunicate-maw-phase.png",
+          "exists": true,
+          "bytes": 2515446,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id predatory-tunicate-maw --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --preview public/review/articulated/predatory-tunicate-maw-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --out public/review/articulated/predatory-tunicate-maw-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids predatory-tunicate-maw --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "razor-kelp-harp",
+      "species": "Razor Kelp Harp",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-razor-kelp-harp-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "razor-kelp-harp",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-razor-kelp-harp-whole-source.png",
+          "exists": true,
+          "bytes": 371679,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/razor-kelp-harp-key-preview.png",
+          "exists": true,
+          "bytes": 221613,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/razor-kelp-harp.json",
+          "exists": true,
+          "bytes": 13901,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/razor-kelp-harp-starter-plan.json",
+          "exists": true,
+          "bytes": 6594,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/razor-kelp-harp-plan-preview.png",
+          "exists": true,
+          "bytes": 382747,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/razor-kelp-harp-source-parity.png",
+          "exists": true,
+          "bytes": 9809,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/razor-kelp-harp-contact.png",
+          "exists": true,
+          "bytes": 3821860,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/razor-kelp-harp-phase.png",
+          "exists": true,
+          "bytes": 1776840,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-razor-kelp-harp --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id razor-kelp-harp --plan tools/scratch/razor-kelp-harp-starter-plan.json --preview public/review/articulated/razor-kelp-harp-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/razor-kelp-harp-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --out public/review/articulated/razor-kelp-harp-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/razor-kelp-harp-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids razor-kelp-harp --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "reef-lion-moray",
+      "species": "Reef Lion Moray",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-reef-lion-moray-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "reef-lion-moray",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-reef-lion-moray-whole-source.png",
+          "exists": true,
+          "bytes": 199073,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/reef-lion-moray-key-preview.png",
+          "exists": true,
+          "bytes": 106328,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/reef-lion-moray.json",
+          "exists": true,
+          "bytes": 14187,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/reef-lion-moray-starter-plan.json",
+          "exists": true,
+          "bytes": 6582,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/reef-lion-moray-plan-preview.png",
+          "exists": true,
+          "bytes": 203188,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/reef-lion-moray-source-parity.png",
+          "exists": true,
+          "bytes": 4330,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/reef-lion-moray-contact.png",
+          "exists": true,
+          "bytes": 2257048,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/reef-lion-moray-phase.png",
+          "exists": true,
+          "bytes": 1203789,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-reef-lion-moray --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id reef-lion-moray --plan tools/scratch/reef-lion-moray-starter-plan.json --preview public/review/articulated/reef-lion-moray-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/reef-lion-moray-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/reef-lion-moray-starter-plan.json --out public/review/articulated/reef-lion-moray-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/reef-lion-moray-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/reef-lion-moray-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids reef-lion-moray --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "reliquary-siphonophore",
+      "species": "Reliquary Siphonophore",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-reliquary-siphonophore-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "reliquary-siphonophore",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-reliquary-siphonophore-whole-source.png",
+          "exists": true,
+          "bytes": 281586,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/reliquary-siphonophore-key-preview.png",
+          "exists": true,
+          "bytes": 152056,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/reliquary-siphonophore.json",
+          "exists": true,
+          "bytes": 14913,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/reliquary-siphonophore-starter-plan.json",
+          "exists": true,
+          "bytes": 6633,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/reliquary-siphonophore-plan-preview.png",
+          "exists": true,
+          "bytes": 289434,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/reliquary-siphonophore-source-parity.png",
+          "exists": true,
+          "bytes": 8410,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/reliquary-siphonophore-contact.png",
+          "exists": true,
+          "bytes": 3036967,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/reliquary-siphonophore-phase.png",
+          "exists": true,
+          "bytes": 1254515,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-reliquary-siphonophore --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id reliquary-siphonophore --plan tools/scratch/reliquary-siphonophore-starter-plan.json --preview public/review/articulated/reliquary-siphonophore-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --out public/review/articulated/reliquary-siphonophore-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids reliquary-siphonophore --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "saber-viperfish",
+      "species": "Saber Viperfish",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-saber-viperfish-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "saber-viperfish",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-saber-viperfish-whole-source.png",
+          "exists": true,
+          "bytes": 1140689,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/saber-viperfish-key-preview.png",
+          "exists": true,
+          "bytes": 249802,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/saber-viperfish.json",
+          "exists": true,
+          "bytes": 13833,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/saber-viperfish-starter-plan.json",
+          "exists": true,
+          "bytes": 6588,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/saber-viperfish-plan-preview.png",
+          "exists": true,
+          "bytes": 632986,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/saber-viperfish-source-parity.png",
+          "exists": true,
+          "bytes": 5435,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/saber-viperfish-contact.png",
+          "exists": true,
+          "bytes": 8697876,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/saber-viperfish-phase.png",
+          "exists": true,
+          "bytes": 5680106,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-saber-viperfish --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id saber-viperfish --plan tools/scratch/saber-viperfish-starter-plan.json --preview public/review/articulated/saber-viperfish-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/saber-viperfish-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/saber-viperfish-starter-plan.json --out public/review/articulated/saber-viperfish-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/saber-viperfish-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/saber-viperfish-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids saber-viperfish --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "thorn-fan-coralline",
+      "species": "Thorn Fan Coralline",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-thorn-fan-coralline-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "thorn-fan-coralline",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-thorn-fan-coralline-whole-source.png",
+          "exists": true,
+          "bytes": 499312,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/thorn-fan-coralline-key-preview.png",
+          "exists": true,
+          "bytes": 236047,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/thorn-fan-coralline.json",
+          "exists": true,
+          "bytes": 13926,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/thorn-fan-coralline-starter-plan.json",
+          "exists": true,
+          "bytes": 6618,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/thorn-fan-coralline-plan-preview.png",
+          "exists": true,
+          "bytes": 511972,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/thorn-fan-coralline-source-parity.png",
+          "exists": true,
+          "bytes": 7770,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/thorn-fan-coralline-contact.png",
+          "exists": true,
+          "bytes": 5417319,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/thorn-fan-coralline-phase.png",
+          "exists": true,
+          "bytes": 2729684,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-thorn-fan-coralline --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id thorn-fan-coralline --plan tools/scratch/thorn-fan-coralline-starter-plan.json --preview public/review/articulated/thorn-fan-coralline-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --out public/review/articulated/thorn-fan-coralline-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids thorn-fan-coralline --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "trench-harvest-sea-spider",
+      "species": "Trench Harvest Sea Spider",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "trench-harvest-sea-spider",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png",
+          "exists": true,
+          "bytes": 269825,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/trench-harvest-sea-spider-key-preview.png",
+          "exists": true,
+          "bytes": 161785,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/trench-harvest-sea-spider.json",
+          "exists": true,
+          "bytes": 13354,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/trench-harvest-sea-spider-starter-plan.json",
+          "exists": true,
+          "bytes": 6786,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/trench-harvest-sea-spider-plan-preview.png",
+          "exists": true,
+          "bytes": 286423,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/trench-harvest-sea-spider-source-parity.png",
+          "exists": true,
+          "bytes": 9345,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/trench-harvest-sea-spider-contact.png",
+          "exists": true,
+          "bytes": 3667434,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/trench-harvest-sea-spider-phase.png",
+          "exists": true,
+          "bytes": 2428251,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id trench-harvest-sea-spider --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --preview public/review/articulated/trench-harvest-sea-spider-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --out public/review/articulated/trench-harvest-sea-spider-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids trench-harvest-sea-spider --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "tripod-stilt-stalker",
+      "species": "Tripod Stilt Stalker",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "tripod-stilt-stalker",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png",
+          "exists": true,
+          "bytes": 198742,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/tripod-stilt-stalker-key-preview.png",
+          "exists": true,
+          "bytes": 116078,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/tripod-stilt-stalker.json",
+          "exists": true,
+          "bytes": 13627,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/tripod-stilt-stalker-starter-plan.json",
+          "exists": true,
+          "bytes": 6758,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/tripod-stilt-stalker-plan-preview.png",
+          "exists": true,
+          "bytes": 202999,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/tripod-stilt-stalker-source-parity.png",
+          "exists": true,
+          "bytes": 6274,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/tripod-stilt-stalker-contact.png",
+          "exists": true,
+          "bytes": 2848868,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/tripod-stilt-stalker-phase.png",
+          "exists": true,
+          "bytes": 1993437,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-tripod-stilt-stalker --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id tripod-stilt-stalker --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --preview public/review/articulated/tripod-stilt-stalker-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --out public/review/articulated/tripod-stilt-stalker-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids tripod-stilt-stalker --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "vampire-cloak-squid",
+      "species": "Vampire Cloak Squid",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-vampire-cloak-squid-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "vampire-cloak-squid",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-vampire-cloak-squid-whole-source.png",
+          "exists": true,
+          "bytes": 162282,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/vampire-cloak-squid-key-preview.png",
+          "exists": true,
+          "bytes": 70543,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/vampire-cloak-squid.json",
+          "exists": true,
+          "bytes": 13724,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/vampire-cloak-squid-starter-plan.json",
+          "exists": true,
+          "bytes": 6609,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/vampire-cloak-squid-plan-preview.png",
+          "exists": true,
+          "bytes": 1120445,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/vampire-cloak-squid-source-parity.png",
+          "exists": true,
+          "bytes": 5182,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/vampire-cloak-squid-contact.png",
+          "exists": true,
+          "bytes": 2328561,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/vampire-cloak-squid-phase.png",
+          "exists": true,
+          "bytes": 1191999,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id vampire-cloak-squid --plan tools/scratch/vampire-cloak-squid-starter-plan.json --preview public/review/articulated/vampire-cloak-squid-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --out public/review/articulated/vampire-cloak-squid-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids vampire-cloak-squid --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    },
+    {
+      "id": "vent-claw-yeti",
+      "species": "Vent-Claw Yeti",
+      "reproducible": true,
+      "source": {
+        "path": "public/assets/generated/fauna-vent-claw-yeti-whole-source.png",
+        "backgroundKey": "magenta",
+        "approved": false
+      },
+      "runtime": {
+        "id": "vent-claw-yeti",
+        "registered": true,
+        "accepted": false
+      },
+      "evidence": {
+        "source": {
+          "path": "public/assets/generated/fauna-vent-claw-yeti-whole-source.png",
+          "exists": true,
+          "bytes": 257068,
+          "ok": true
+        },
+        "keyPreview": {
+          "path": "public/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png",
+          "exists": true,
+          "bytes": 153905,
+          "ok": true
+        },
+        "artContract": {
+          "path": "public/review/source-candidates/art-contracts/vent-claw-yeti.json",
+          "exists": true,
+          "bytes": 13090,
+          "ok": true
+        },
+        "starterPlan": {
+          "path": "tools/scratch/vent-claw-yeti-starter-plan.json",
+          "exists": true,
+          "bytes": 6716,
+          "ok": true
+        },
+        "planPreview": {
+          "path": "public/review/articulated/vent-claw-yeti-plan-preview.png",
+          "exists": true,
+          "bytes": 278666,
+          "ok": true
+        },
+        "sourceParity": {
+          "path": "public/review/articulated/source-parity/vent-claw-yeti-source-parity.png",
+          "exists": true,
+          "bytes": 6676,
+          "ok": true
+        },
+        "contactSheet": {
+          "path": "public/review/articulated/vent-claw-yeti-contact.png",
+          "exists": true,
+          "bytes": 3770218,
+          "ok": true
+        },
+        "phaseStrip": {
+          "path": "public/review/articulated/vent-claw-yeti-phase.png",
+          "exists": true,
+          "bytes": 2353712,
+          "ok": true
+        }
+      },
+      "commands": {
+        "sourceContracts": "npm run source:contracts && npm run source:contracts-check",
+        "sourcePreview": "npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id vent-claw-yeti --plan tools/scratch/vent-claw-yeti-starter-plan.json --preview public/review/articulated/vent-claw-yeti-plan-preview.png --allow-unapproved",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/vent-claw-yeti-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --out public/review/articulated/vent-claw-yeti-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --dry-run",
+        "extractApply": "npm run articulated:extract-plan -- --plan tools/scratch/vent-claw-yeti-starter-plan.json",
+        "sourceParity": "npm run articulated:source-parity",
+        "visualCohesion": "npm run articulated:visual-cohesion",
+        "pairedSandboxPreview": "npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual",
+        "pairedSandboxVisual": "npm run sandbox:visual -- --ids vent-claw-yeti --states idle,lunge,stunned --with diver"
+      },
+      "commandCount": 11,
+      "blockers": []
+    }
+  ]
+}

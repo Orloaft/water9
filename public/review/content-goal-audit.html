@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Content Goal Audit</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; background: #061115; color: #d8ecec; }
+    body { margin: 0; padding: 28px; }
+    main { max-width: 1120px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 4.8rem); letter-spacing: 0; }
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 22px 0; }
+    .summary div, .card { border: 1px solid #24464c; background: #0b1d22; border-radius: 6px; padding: 14px; }
+    .card { margin: 12px 0; }
+    .card header { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+    h2 { margin: 0; font-size: 1.05rem; }
+    h3 { margin: 14px 0 8px; font-size: .78rem; text-transform: uppercase; color: #91b8bd; }
+    strong { color: #f0fbfb; }
+    strong.passed { color: #78f0b2; }
+    strong.partial { color: #ffd36c; }
+    strong.incomplete { color: #ff8f8f; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #041012; border: 1px solid #1b393f; padding: 10px; border-radius: 6px; }
+    li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <main data-content-goal-audit data-content-goal-complete="false" data-accepted-threats="0">
+    <h1>Water 9 Content Goal Audit</h1>
+    <p>This audit maps the active goal to current evidence. Passing preview checks or mechanical image checks is not content acceptance.</p>
+    <div class="summary">
+      <div><span>goal complete</span><br><strong>false</strong></div>
+      <div><span>strict goal complete</span><br><strong>false</strong></div>
+      <div><span>accepted threats</span><br><strong>0/20</strong></div>
+      <div><span>source approval ready</span><br><strong>20</strong></div>
+      <div><span>critic regeneration required</span><br><strong>0</strong></div>
+    </div>
+    
+    <section class="card" data-goal-audit-requirement="quick-sandbox-preview">
+      <header><h2>Quick sandbox preview for any entity</h2><strong class="passed">passed</strong></header>
+      <h3>Evidence</h3>
+      <ul><li>sandbox manifest entries: 125</li><li>diver entry: true</li><li>abyssal-gulper entry: true</li><li>source preview entries: 20</li><li>goal preview smoke uses quick paired target preview: true</li></ul>
+      <h3>Blockers</h3>
+      <ul><li>none</li></ul>
+      <h3>Commands</h3>
+      <pre>npm run sandbox:preview -- --id abyssal-gulper --with diver --serve --open --visual
+npm run sandbox:lab -- --id abyssal-gulper --with diver
+npm run sandbox:visual:paired:targets:quick
+npm run content:goal-preview-smoke</pre>
+    </section>
+  
+
+    <section class="card" data-goal-audit-requirement="subagent-research">
+      <header><h2>Subagent research coverage for underwater fauna and flora</h2><strong class="passed">passed</strong></header>
+      <h3>Evidence</h3>
+      <ul><li>research assignments: 3</li><li>audited candidates: 20</li><li>audit failures: 0</li></ul>
+      <h3>Blockers</h3>
+      <ul><li>none</li></ul>
+      <h3>Commands</h3>
+      <pre>npm run research:subagent-pack
+npm run research:dispatch
+npm run research:audits
+npm run research:regeneration-handoff</pre>
+    </section>
+  
+
+    <section class="card" data-goal-audit-requirement="imagen-magenta-source">
+      <header><h2>Imagen/OpenAI source generation and magenta-key intake</h2><strong class="passed">passed</strong></header>
+      <h3>Evidence</h3>
+      <ul><li>source images present: 20/20</li><li>mechanically checked source images: 20</li><li>source image validation failures: 0</li><li>critic regeneration required: 0</li><li>current regeneration target: brine-crown</li><li>current replacement distinct-ready: false</li></ul>
+      <h3>Blockers</h3>
+      <ul><li>none</li></ul>
+      <h3>Commands</h3>
+      <pre>npm run source:generate-openai -- --id &lt;candidate-id&gt; --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:inbox-capture -- --id &lt;candidate-id&gt; --open
+npm run source:regeneration-workspace
+npm run source:regeneration-workspace-check
+python3 tools/validate_source_candidate_images.py --report tools/scratch/source-candidate-images-report.json</pre>
+    </section>
+  
+
+    <section class="card" data-goal-audit-requirement="magenta-to-articulation">
+      <header><h2>Magenta extraction into articulated in-game entities</h2><strong class="partial">partial</strong></header>
+      <h3>Evidence</h3>
+      <ul><li>stage-board runtime targets: 20/20</li><li>articulated manifest creatures: 33</li><li>prototype creatures: 33</li><li>accepted threats: 0/20</li></ul>
+      <h3>Blockers</h3>
+      <ul><li>20 articulated threats still need strict human acceptance</li></ul>
+      <h3>Commands</h3>
+      <pre>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run content:acceptance-audit -- --id &lt;runtime-id&gt;
+npm run content:review-session</pre>
+    </section>
+  
+
+    <section class="card" data-goal-audit-requirement="visual-rejection-regeneration">
+      <header><h2>Rejected preview art is quarantined and routed to regeneration</h2><strong class="passed">passed</strong></header>
+      <h3>Evidence</h3>
+      <ul><li>visual feedback items: 1</li><li>blocking visual feedback items: 1</li><li>visual regeneration items: 1</li><li>visual regeneration blocking items: 1</li><li>regeneration strict gate credit: 0</li><li>rejected feedback missing regeneration route: 0</li></ul>
+      <h3>Blockers</h3>
+      <ul><li>none</li></ul>
+      <h3>Commands</h3>
+      <pre>npm run content:visual-feedback
+npm run content:visual-feedback-check
+npm run content:visual-regeneration
+npm run content:visual-regeneration-check
+npm run content:visual-regeneration:serve-smoke</pre>
+    </section>
+  
+
+    <section class="card" data-goal-audit-requirement="rigorous-20-threat-gate">
+      <header><h2>20 new underwater threats pass rigorous quality gate</h2><strong class="incomplete">incomplete</strong></header>
+      <h3>Evidence</h3>
+      <ul><li>strict goal complete: false</li><li>accepted threats: 0/20</li><li>source approval-ready: 20</li><li>source critic regeneration required: 0</li><li>source sequencer next lane: approval-ready</li></ul>
+      <h3>Blockers</h3>
+      <ul><li>20 threats still do not count toward the goal</li><li>20 source images still need human approval</li></ul>
+      <h3>Commands</h3>
+      <pre>npm run content:goal-readiness-strict
+npm run content:gate
+npm run content:review-session
+npm run content:production-proof</pre>
+    </section>
+  
+    <section class="card">
+      <header><h2>Hard Stop</h2><strong class="incomplete">enforced</strong></header>
+      <p>Do not mark the goal complete: preview/research/source/rigging infrastructure exists, but strict human source approval and threat acceptance are not complete.</p>
+    </section>
+  </main>
+</body>
+</html>

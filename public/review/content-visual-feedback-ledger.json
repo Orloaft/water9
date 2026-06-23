@@ -1,0 +1,64 @@
+{
+  "schema": "water9/content-visual-feedback-ledger@1",
+  "generatedAt": "2026-06-18T17:21:09.907Z",
+  "generatedFrom": {
+    "input": "tools/audit/content-visual-feedback-input.json",
+    "sandboxManifest": "public/review/sandbox/manifest.json",
+    "articulatedManifest": "public/assets/generated/articulated-creatures.parts.json",
+    "acceptanceRunway": "public/review/content-acceptance-runway.json"
+  },
+  "policy": {
+    "visualFeedbackCanBlockPrototypePromotion": true,
+    "blockedPrototypeCannotCountTowardStrictGate": true,
+    "prototypeScreenshotIsNotCapabilityProof": true,
+    "mechanicalRigPrototypeIsNotArtDirection": true,
+    "cohesionFailureRequiresNewSource": true
+  },
+  "summary": {
+    "records": 1,
+    "blockingRecords": 1,
+    "openRecords": 1,
+    "sandboxRegistered": 1,
+    "runtimePrototypes": 1,
+    "targetGateCandidates": 0,
+    "unmappedPrototypeBlockers": 1,
+    "countsTowardStrictGate": 0
+  },
+  "items": [
+    {
+      "id": "abyssal-serpent-cohesion-rejection-2026-06-18",
+      "targetId": "abyssal-serpent",
+      "targetKind": "articulated",
+      "status": "rejected-needs-cohesion-regeneration",
+      "severity": "blocking",
+      "reviewer": "user",
+      "source": "thread-feedback",
+      "summary": "The preview lacks visual cohesion and should be treated as a mechanical rig proof-of-concept, not production-ready creature art or evidence of final capability.",
+      "failedChecks": [
+        "whole-creature-cohesion",
+        "part-continuity-cohesion",
+        "non-placeholder-art-direction"
+      ],
+      "requiredAction": "Regenerate from a unified full-source concept with one silhouette, one material language, clear anatomy hierarchy, and a believable limb/body plan before extracting articulated parts. The next review must prove the creature reads as one organism before rigging quality is evaluated.",
+      "notes": [
+        "Do not use this screenshot as evidence that the 20-threat quality gate is satisfied.",
+        "Do not promote this runtime prototype into the target threat roster without a new source review and human cohesion approval.",
+        "Do not salvage this by only tuning sockets, animation timing, scale, palette, or cleanup; the blocker is source-level creature cohesion."
+      ],
+      "sandboxRegistered": true,
+      "sandboxReviewStage": "prototype",
+      "sandboxReviewGateLabel": "PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review",
+      "sandboxPreviewOnly": true,
+      "runtimePrototype": true,
+      "targetGateCandidate": false,
+      "countsTowardStrictGate": false,
+      "open": true,
+      "gateImpact": "Blocks prototype promotion until a regenerated source and human cohesion approval exist.",
+      "commands": {
+        "preview": "npm run sandbox:preview -- --id abyssal-serpent --serve --open --visual",
+        "pairedPreview": "npm run sandbox:preview -- --id abyssal-serpent --with diver --serve --open --visual",
+        "visualCheck": "npm run sandbox:visual -- --ids abyssal-serpent --states idle,lunge,stunned"
+      }
+    }
+  ]
+}

@@ -1,18 +1,49 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature, ArticulatedPartManifest, ArticulatedPartState, ArticulatedSocketOverlayState, ControlState } from './types';
+import type { ArticulatedCreature, ArticulatedCreatureManifest, ArticulatedPartManifest, ArticulatedPartState, ArticulatedSocketOverlayManifest, ArticulatedSocketOverlayState, ArticulatedSocketStyleManifest, ControlState } from './types';
 import { ENTITY_SCALE,PLAYER_CONTACT_RADIUS,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles } from './content';
 import { state } from './state';
-import { articulatedCreatureDefs, createArticulatedCreature, partManifest } from './articulated';
+import { articulatedBehaviorFor,articulatedCreatureDefs,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
 import { rarityColor, scaledDepthPx } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 
 const PART_WORLD_SCALE = ENTITY_SCALE;
+const BODY_SWIM_WAVE_SCALE = 1.32;
+const TAIL_SWIM_WAVE_SCALE = 1.45;
+const FIN_SWIM_WAVE_SCALE = 1.08;
+const ARTICULATED_PITCH_SCALE = 0.4;
 const SERPENT_DETECTION_RANGE = 430;
 const SERPENT_LEASH_RANGE = 720;
 const SERPENT_GRAB_SECONDS = 1.18;
 const SERPENT_GRAB_COOLDOWN = 5.5;
+
+function articulatedCombatFor(creature: ArticulatedCreature) {
+  const behavior = articulatedBehaviorFor(creature.manifest);
+  const behaviorDefaults = {
+    serpent: { detectionRange: SERPENT_DETECTION_RANGE, leashRange: SERPENT_LEASH_RANGE, attackRange: 172, lungeSeconds: 0.74, lungeSpeedScale: 2.45, grabSeconds: SERPENT_GRAB_SECONDS, grabCooldown: SERPENT_GRAB_COOLDOWN, grabEnabled: true, contactPadding: 22 },
+    ambusher: { detectionRange: 360, leashRange: 540, attackRange: 140, lungeSeconds: 0.82, lungeSpeedScale: 2.7, grabSeconds: 0.82, grabCooldown: 6.4, grabEnabled: true, contactPadding: 18 },
+    charger: { detectionRange: 520, leashRange: 840, attackRange: 220, lungeSeconds: 0.58, lungeSpeedScale: 3.15, grabSeconds: 0, grabCooldown: 4.8, grabEnabled: false, contactPadding: 28 },
+    territorial: { detectionRange: 300, leashRange: 440, attackRange: 118, lungeSeconds: 0.62, lungeSpeedScale: 1.9, grabSeconds: 0, grabCooldown: 5.8, grabEnabled: false, contactPadding: 20 },
+    passive: { detectionRange: 0, leashRange: 260, attackRange: 0, lungeSeconds: 0.6, lungeSpeedScale: 1, grabSeconds: 0, grabCooldown: 999, grabEnabled: false, contactPadding: 12 },
+  }[behavior];
+  const combat = creature.manifest.combat ?? {};
+  return {
+    behavior,
+    hostile: combat.hostile ?? creature.hostile,
+    detectionRange: combat.detectionRange ?? behaviorDefaults.detectionRange,
+    leashRange: combat.leashRange ?? behaviorDefaults.leashRange,
+    attackRange: combat.attackRange ?? behaviorDefaults.attackRange,
+    lungeSeconds: combat.lungeSeconds ?? behaviorDefaults.lungeSeconds,
+    lungeSpeedScale: combat.lungeSpeedScale ?? behaviorDefaults.lungeSpeedScale,
+    grabSeconds: combat.grabSeconds ?? behaviorDefaults.grabSeconds,
+    grabCooldown: combat.grabCooldown ?? behaviorDefaults.grabCooldown,
+    grabEnabled: combat.grabEnabled ?? behaviorDefaults.grabEnabled,
+    bitePartId: combat.bitePartId,
+    biteAnchor: combat.biteAnchor ?? 'bite',
+    contactPadding: combat.contactPadding ?? behaviorDefaults.contactPadding,
+  };
+}
 
 function facingFor(creature: ArticulatedCreature) {
   return creature.facingSign < 0 ? -1 : 1;
@@ -24,6 +55,30 @@ function manifestById(creature: ArticulatedCreature, id: string) {
 
 function overlayManifestById(creature: ArticulatedCreature, overlay: ArticulatedSocketOverlayState) {
   return creature.manifest.socketOverlays?.find((candidate) => candidate.id === overlay.id);
+}
+
+function socketStyleValue(
+  creature: ArticulatedCreature,
+  overlay: ArticulatedSocketOverlayManifest,
+  key: keyof ArticulatedSocketStyleManifest,
+  fallback: number,
+) {
+  return overlay[key] ?? creature.manifest.socketStyle?.[key] ?? fallback;
+}
+
+function murkTintFor(creature: ArticulatedCreature) {
+  const tint = creature.manifest.murkTint;
+  if (!tint) return undefined;
+  const target = Phaser.Display.Color.IntegerToColor(tint.color);
+  const intensity = Phaser.Math.Clamp(
+    creature.stunned > 0 ? (tint.stunnedIntensity ?? tint.intensity) : tint.intensity,
+    0,
+    1,
+  );
+  const red = Phaser.Math.Linear(255, target.red, intensity);
+  const green = Phaser.Math.Linear(255, target.green, intensity);
+  const blue = Phaser.Math.Linear(255, target.blue, intensity);
+  return Phaser.Display.Color.GetColor(red, green, blue);
 }
 
 function anchorFor(manifest: ArticulatedPartManifest, name: string | undefined) {
@@ -49,12 +104,57 @@ function anchorWorldFor(part: ArticulatedPartState, manifest: ArticulatedPartMan
   return new Phaser.Math.Vector2(part.x + offset.x, part.y + offset.y);
 }
 
+export function articulatedPartHitShape(creature: ArticulatedCreature, part: ArticulatedPartState) {
+  const manifest = partManifest(creature, part);
+  const facing = facingFor(creature);
+  const centerOffset = localVectorOffsetFor(facing, part.rotation, [
+    (0.5 - manifest.origin[0]) * manifest.size[0],
+    (0.5 - manifest.origin[1]) * manifest.size[1],
+  ]);
+  const width = manifest.size[0] * PART_WORLD_SCALE;
+  const height = manifest.size[1] * PART_WORLD_SCALE;
+  const longAxisY = manifest.motion.kind === 'fin' && height > width * 1.05;
+  const longSize = longAxisY ? height : width;
+  const shortSize = longAxisY ? width : height;
+  const radius = Phaser.Math.Clamp(
+    Math.max(shortSize * 0.36, manifest.hitRadius * PART_WORLD_SCALE * 0.78),
+    5,
+    Math.max(6, longSize * 0.42),
+  );
+  return {
+    centerX: part.x + centerOffset.x,
+    centerY: part.y + centerOffset.y,
+    rotation: part.rotation + (longAxisY ? Math.PI / 2 : 0),
+    halfLength: Math.max(0, longSize * 0.5 - radius),
+    radius,
+  };
+}
+
+export function articulatedPartHitDistanceTo(creature: ArticulatedCreature, part: ArticulatedPartState, x: number, y: number) {
+  const shape = articulatedPartHitShape(creature, part);
+  const dx = x - shape.centerX;
+  const dy = y - shape.centerY;
+  const cos = Math.cos(-shape.rotation);
+  const sin = Math.sin(-shape.rotation);
+  const localX = dx * cos - dy * sin;
+  const localY = dx * sin + dy * cos;
+  const closestX = Phaser.Math.Clamp(localX, -shape.halfLength, shape.halfLength);
+  const signedDistance = Math.hypot(localX - closestX, localY) - shape.radius;
+  return {
+    distance: Math.max(0, signedDistance),
+    signedDistance,
+    shape,
+  };
+}
+
 function smoothAngle(current: number, target: number, amount: number) {
   return current + Phaser.Math.Angle.Wrap(target - current) * amount;
 }
 
-function spineLagIndexFor(manifest: ArticulatedPartManifest) {
-  return Math.max(0, -manifest.offset[0]) / 48;
+function spineLagIndexFor(spineManifests: ArticulatedPartManifest[], manifest: ArticulatedPartManifest) {
+  const index = spineManifests.findIndex((candidate) => candidate.id === manifest.id);
+  if (index < 0 || spineManifests.length <= 1) return 0;
+  return (index / (spineManifests.length - 1)) * 3.2;
 }
 
 function spineNodeFor(creature: ArticulatedCreature, manifest: ArticulatedPartManifest) {
@@ -71,12 +171,48 @@ function restOffsetFor(creature: ArticulatedCreature, manifest: ArticulatedPartM
   const node = manifest.motion.kind === 'body' || manifest.motion.kind === 'tail'
     ? creature.spine.find((candidate) => candidate.partId === manifest.id)
     : undefined;
-  const restY = manifest.restOffset[1] + (node ? node.offset * 0.28 / PART_WORLD_SCALE : 0);
+  const isMandible = manifest.id === 'upper-mandible' || manifest.id === 'lower-mandible';
+  const jawSign = manifest.id === 'upper-mandible' ? -1 : manifest.id === 'lower-mandible' ? 1 : 0;
+  const mandibleClose = isMandible
+    ? creature.state === 'grab'
+      ? 1
+      : Phaser.Math.Clamp(creature.attackBlend ?? 0, 0, 1)
+    : 0;
+  const mandiblePinch = isMandible ? -jawSign * mandibleClose * 30 : 0;
+  const restY = manifest.restOffset[1] + mandiblePinch + (node ? node.offset * 0.28 / PART_WORLD_SCALE : 0);
   return localVectorOffsetFor(facing, rotation, [manifest.restOffset[0], restY]);
 }
 
+function defaultAnatomyFor(manifest: ArticulatedPartManifest) {
+  const role = manifest.motion.kind === 'root' || manifest.motion.kind === 'body'
+    ? (manifest.id === 'head' ? 'head' : 'torso')
+    : manifest.motion.kind;
+  const mobilityFactor = role === 'tail'
+    ? 0.54
+    : role === 'fin'
+      ? 0.76
+      : role === 'jaw'
+        ? 0.88
+        : role === 'torso'
+          ? 0.84
+          : 0.62;
+  return {
+    role,
+    mass: Math.max(0.25, manifest.hitRadius / 24),
+    drag: 0.72,
+    angularDrag: 0.28,
+    severable: role === 'fin' || role === 'tail' || role === 'jaw',
+    breakThreshold: 1,
+    mobilityFactor,
+  };
+}
+
+function anatomyFor(manifest: ArticulatedPartManifest) {
+  return { ...defaultAnatomyFor(manifest), ...manifest.anatomy };
+}
+
 function canDetachPart(manifest: ArticulatedPartManifest) {
-  return manifest.motion.kind === 'fin' || manifest.motion.kind === 'tail' || manifest.motion.kind === 'jaw';
+  return anatomyFor(manifest).severable;
 }
 
 function solidAt(scene: DeepdiveScene, x: number, y: number) {
@@ -86,14 +222,40 @@ function solidAt(scene: DeepdiveScene, x: number, y: number) {
   return tiles[scene.getTile(tx, ty)].solid;
 }
 
-function terrainContactForPart(scene: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, manifest: ArticulatedPartManifest) {
-  const radius = Math.max(8, manifest.hitRadius * PART_WORLD_SCALE * 0.78);
+function terrainContactForPart(scene: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, _manifest: ArticulatedPartManifest) {
+  const shape = articulatedPartHitShape(creature, part);
+  const axisX = Math.cos(shape.rotation);
+  const axisY = Math.sin(shape.rotation);
+  const normalX = -axisY;
+  const normalY = axisX;
+  const sideRadius = Math.max(6, shape.radius);
+  const capLength = shape.halfLength;
+  const projectedHalfWidth = Math.abs(axisX) * capLength + sideRadius;
+  const projectedHalfHeight = Math.abs(axisY) * capLength + sideRadius;
+  const edgeInsetY = Math.min(projectedHalfHeight * 0.42, sideRadius * 0.72);
+  const edgeInsetX = Math.min(projectedHalfWidth * 0.42, sideRadius * 0.72);
   const samples = [
-    { x: part.x, y: part.y, nx: 0, ny: 0 },
-    { x: part.x - radius, y: part.y, nx: 1, ny: 0 },
-    { x: part.x + radius, y: part.y, nx: -1, ny: 0 },
-    { x: part.x, y: part.y - radius, nx: 0, ny: 1 },
-    { x: part.x, y: part.y + radius, nx: 0, ny: -1 },
+    { x: shape.centerX, y: shape.centerY, nx: 0, ny: 0 },
+    { x: shape.centerX + axisX * (capLength + sideRadius), y: shape.centerY + axisY * (capLength + sideRadius), nx: -axisX, ny: -axisY },
+    { x: shape.centerX - axisX * (capLength + sideRadius), y: shape.centerY - axisY * (capLength + sideRadius), nx: axisX, ny: axisY },
+    { x: shape.centerX + normalX * sideRadius, y: shape.centerY + normalY * sideRadius, nx: -normalX, ny: -normalY },
+    { x: shape.centerX - normalX * sideRadius, y: shape.centerY - normalY * sideRadius, nx: normalX, ny: normalY },
+    { x: shape.centerX + projectedHalfWidth, y: shape.centerY, nx: -1, ny: 0 },
+    { x: shape.centerX + projectedHalfWidth, y: shape.centerY - edgeInsetY, nx: -1, ny: 0 },
+    { x: shape.centerX + projectedHalfWidth, y: shape.centerY + edgeInsetY, nx: -1, ny: 0 },
+    { x: shape.centerX - projectedHalfWidth, y: shape.centerY, nx: 1, ny: 0 },
+    { x: shape.centerX - projectedHalfWidth, y: shape.centerY - edgeInsetY, nx: 1, ny: 0 },
+    { x: shape.centerX - projectedHalfWidth, y: shape.centerY + edgeInsetY, nx: 1, ny: 0 },
+    { x: shape.centerX, y: shape.centerY + projectedHalfHeight, nx: 0, ny: -1 },
+    { x: shape.centerX - edgeInsetX, y: shape.centerY + projectedHalfHeight, nx: 0, ny: -1 },
+    { x: shape.centerX + edgeInsetX, y: shape.centerY + projectedHalfHeight, nx: 0, ny: -1 },
+    { x: shape.centerX, y: shape.centerY - projectedHalfHeight, nx: 0, ny: 1 },
+    { x: shape.centerX - edgeInsetX, y: shape.centerY - projectedHalfHeight, nx: 0, ny: 1 },
+    { x: shape.centerX + edgeInsetX, y: shape.centerY - projectedHalfHeight, nx: 0, ny: 1 },
+    { x: shape.centerX + axisX * capLength + normalX * sideRadius * 0.72, y: shape.centerY + axisY * capLength + normalY * sideRadius * 0.72, nx: -(axisX + normalX * 0.55), ny: -(axisY + normalY * 0.55) },
+    { x: shape.centerX + axisX * capLength - normalX * sideRadius * 0.72, y: shape.centerY + axisY * capLength - normalY * sideRadius * 0.72, nx: -(axisX - normalX * 0.55), ny: -(axisY - normalY * 0.55) },
+    { x: shape.centerX - axisX * capLength + normalX * sideRadius * 0.72, y: shape.centerY - axisY * capLength + normalY * sideRadius * 0.72, nx: axisX - normalX * 0.55, ny: axisY - normalY * 0.55 },
+    { x: shape.centerX - axisX * capLength - normalX * sideRadius * 0.72, y: shape.centerY - axisY * capLength - normalY * sideRadius * 0.72, nx: axisX + normalX * 0.55, ny: axisY + normalY * 0.55 },
   ];
   let count = 0;
   let nx = 0;
@@ -102,11 +264,12 @@ function terrainContactForPart(scene: DeepdiveScene, creature: ArticulatedCreatu
     if (!solidAt(scene, sample.x, sample.y)) continue;
     count += 1;
     if (sample.nx || sample.ny) {
-      nx += sample.nx;
-      ny += sample.ny;
+      const sampleLen = Math.max(1, Math.hypot(sample.nx, sample.ny));
+      nx += sample.nx / sampleLen;
+      ny += sample.ny / sampleLen;
     } else {
-      const awayX = part.x - creature.x;
-      const awayY = part.y - creature.y;
+      const awayX = shape.centerX - creature.x;
+      const awayY = shape.centerY - creature.y;
       const len = Math.max(1, Math.hypot(awayX, awayY));
       nx += awayX / len;
       ny += awayY / len;
@@ -122,11 +285,101 @@ function terrainContactForPart(scene: DeepdiveScene, creature: ArticulatedCreatu
   };
 }
 
+export function articulatedPartTerrainContact(this: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState) {
+  return terrainContactForPart(this, creature, part, partManifest(creature, part));
+}
+
 export function articulatedPartAnchorWorld(creature: ArticulatedCreature, partId: string, anchorName: string) {
   const part = creature.parts.find((candidate) => candidate.id === partId);
   const manifest = manifestById(creature, partId);
   if (!part || !manifest || part.detached) return null;
   return anchorWorldFor(part, manifest, facingFor(creature), anchorFor(manifest, anchorName));
+}
+
+export function articulatedBitePart(creature: ArticulatedCreature) {
+  const combat = articulatedCombatFor(creature);
+  const parts = creature.parts;
+  const alive = (part: ArticulatedPartState | undefined) => part && part.hp > 0 && !part.detached ? part : null;
+  if (combat.bitePartId) return alive(parts.find((part) => part.id === combat.bitePartId));
+  const primaryBite = parts.find((part) => part.id === 'jaw')
+    ?? parts.find((part) => anatomyFor(partManifest(creature, part)).role === 'jaw')
+    ?? parts.find((part) => partManifest(creature, part).motion.kind === 'jaw');
+  if (primaryBite) return alive(primaryBite);
+  const candidates = [
+    parts.find((part) => Boolean(partManifest(creature, part).anchors?.[combat.biteAnchor])),
+    parts.find((part) => part.id === 'head'),
+  ];
+  return candidates.map(alive).find(Boolean) ?? null;
+}
+
+export function articulatedBiteAnchorWorld(creature: ArticulatedCreature) {
+  const upperMandible = creature.parts.find((candidate) => candidate.id === 'upper-mandible' && candidate.hp > 0 && !candidate.detached);
+  const lowerMandible = creature.parts.find((candidate) => candidate.id === 'lower-mandible' && candidate.hp > 0 && !candidate.detached);
+  const head = creature.parts.find((candidate) => candidate.id === 'head' && candidate.hp > 0 && !candidate.detached);
+  const headManifest = head ? manifestById(creature, head.id) : undefined;
+  if (upperMandible && lowerMandible && head && headManifest?.anchors?.bite) {
+    return anchorWorldFor(head, headManifest, facingFor(creature), headManifest.anchors.bite);
+  }
+  const upperManifest = upperMandible ? manifestById(creature, upperMandible.id) : undefined;
+  const lowerManifest = lowerMandible ? manifestById(creature, lowerMandible.id) : undefined;
+  if (upperMandible && lowerMandible && upperManifest?.anchors?.bite && lowerManifest?.anchors?.bite) {
+    const facing = facingFor(creature);
+    const upper = anchorWorldFor(upperMandible, upperManifest, facing, upperManifest.anchors.bite);
+    const lower = anchorWorldFor(lowerMandible, lowerManifest, facing, lowerManifest.anchors.bite);
+    return new Phaser.Math.Vector2((upper.x + lower.x) * 0.5, (upper.y + lower.y) * 0.5);
+  }
+  const part = articulatedBitePart(creature);
+  if (!part) return null;
+  const manifest = partManifest(creature, part);
+  const combat = articulatedCombatFor(creature);
+  const anchorName = manifest.anchors?.[combat.biteAnchor] ? combat.biteAnchor : manifest.anchors?.bite ? 'bite' : undefined;
+  return anchorWorldFor(part, manifest, facingFor(creature), anchorFor(manifest, anchorName));
+}
+
+function destroyArticulatedCreatureSprites(creature: ArticulatedCreature) {
+  creature.parts.forEach((part) => part.sprite?.destroy());
+  creature.socketOverlays.forEach((overlay) => overlay.sprite?.destroy());
+}
+
+function articulatedSpawnPocketTiles(manifest: ArticulatedCreatureManifest) {
+  const extents = manifest.parts.reduce(
+    (max, part) => ({
+      x: Math.max(max.x, Math.abs(part.offset[0]) * PART_WORLD_SCALE + part.size[0] * PART_WORLD_SCALE * 0.62),
+      y: Math.max(max.y, Math.abs(part.offset[1]) * PART_WORLD_SCALE + part.size[1] * PART_WORLD_SCALE * 0.62),
+    }),
+    { x: manifest.radius * PART_WORLD_SCALE, y: manifest.radius * PART_WORLD_SCALE },
+  );
+  return {
+    x: Math.ceil(extents.x / TILE) + 4,
+    y: Math.ceil(extents.y / TILE) + 4,
+  };
+}
+
+function clampArticulatedSpawnPoint(manifest: ArticulatedCreatureManifest, point: { x: number; y: number }) {
+  const pocket = articulatedSpawnPocketTiles(manifest);
+  return {
+    x: Phaser.Math.Clamp(point.x, (pocket.x + 1) * TILE, (WORLD_W - pocket.x - 1) * TILE),
+    y: Phaser.Math.Clamp(point.y, Math.max(8, pocket.y + 1) * TILE, (WORLD_H - pocket.y - 1) * TILE),
+  };
+}
+
+function carveArticulatedSpawnPocket(scene: DeepdiveScene, manifest: ArticulatedCreatureManifest, point: { x: number; y: number }) {
+  const pocket = articulatedSpawnPocketTiles(manifest);
+  const cx = Math.floor(point.x / TILE);
+  const cy = Math.floor(point.y / TILE);
+  for (let y = Math.max(8, cy - pocket.y); y <= Math.min(WORLD_H - 3, cy + pocket.y); y += 1) {
+    for (let x = Math.max(2, cx - pocket.x); x <= Math.min(WORLD_W - 3, cx + pocket.x); x += 1) {
+      const dx = (x - cx) / Math.max(1, pocket.x);
+      const dy = (y - cy) / Math.max(1, pocket.y);
+      if (dx * dx + dy * dy <= 1.28) scene.setTile(x, y, 'water');
+    }
+  }
+}
+
+function articulatedSpawnIsClear(scene: DeepdiveScene, creature: ArticulatedCreature) {
+  return creature.parts
+    .filter((part) => !part.detached && part.hp > 0)
+    .every((part) => !terrainContactForPart(scene, creature, part, partManifest(creature, part)));
 }
 
 export function articulatedJointMetrics(creature: ArticulatedCreature) {
@@ -170,14 +423,15 @@ function refreshJointStress(creature: ArticulatedCreature) {
 function updateDetachedArticulatedParts(scene: DeepdiveScene, creature: ArticulatedCreature, delta: number) {
   for (const part of creature.parts) {
     if (!part.detached) continue;
+    const manifest = partManifest(creature, part);
+    const anatomy = anatomyFor(manifest);
     part.x += part.detachVx * delta;
     part.y += part.detachVy * delta;
     part.detachVy += 42 * delta;
-    part.detachVx *= Math.exp(-0.72 * delta);
-    part.detachVy *= Math.exp(-0.34 * delta);
+    part.detachVx *= Math.exp(-anatomy.drag * delta);
+    part.detachVy *= Math.exp(-anatomy.drag * 0.48 * delta);
     part.rotation += part.detachAngularVelocity * delta;
-    part.detachAngularVelocity *= Math.exp(-0.28 * delta);
-    const manifest = partManifest(creature, part);
+    part.detachAngularVelocity *= Math.exp(-anatomy.angularDrag * delta);
     const contact = terrainContactForPart(scene, creature, part, manifest);
     part.terrainContact = contact ? Math.min(1, contact.count / 3) : 0;
     part.terrainNormalX = contact?.nx ?? 0;
@@ -197,16 +451,41 @@ function updateDetachedArticulatedParts(scene: DeepdiveScene, creature: Articula
 export function detachArticulatedPart(this: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, source = 'damage') {
   const manifest = partManifest(creature, part);
   if (part.detached || !canDetachPart(manifest)) return false;
+  const anatomy = anatomyFor(manifest);
   const facing = facingFor(creature);
+  const impulseScale = 1 / Math.sqrt(Phaser.Math.Clamp(anatomy.mass, 0.2, 6));
   part.detached = true;
   part.jointStress = 1;
-  part.detachVx = creature.vx * 0.35 - facing * Phaser.Math.FloatBetween(18, 46);
-  part.detachVy = creature.vy * 0.25 - Phaser.Math.FloatBetween(10, 34);
-  part.detachAngularVelocity = Phaser.Math.FloatBetween(-1.4, 1.4) + facing * 0.45;
+  const impulseX = anatomy.role === 'jaw'
+    ? Phaser.Math.FloatBetween(76, 116)
+    : anatomy.role === 'fin'
+      ? Phaser.Math.FloatBetween(36, 76)
+      : Phaser.Math.FloatBetween(24, 62);
+  const impulseY = anatomy.role === 'jaw'
+    ? Phaser.Math.FloatBetween(28, 58)
+    : anatomy.role === 'fin'
+      ? -Phaser.Math.FloatBetween(18, 44)
+      : -Phaser.Math.FloatBetween(12, 40);
+  part.detachVx = creature.vx * 0.35 - facing * impulseX * impulseScale;
+  part.detachVy = creature.vy * 0.25 + impulseY * impulseScale;
+  const initialSeparation = anatomy.role === 'jaw' ? 0.2 : anatomy.role === 'tail' ? 0.34 : anatomy.role === 'fin' ? 0.14 : 0.12;
+  const anatomicalSeparationX = anatomy.role === 'jaw' ? -facing * 28 : anatomy.role === 'tail' ? -facing * 58 : 0;
+  const anatomicalSeparationY = anatomy.role === 'jaw' ? 34 : anatomy.role === 'tail' ? 8 : 0;
+  part.x += part.detachVx * initialSeparation + anatomicalSeparationX;
+  part.y += part.detachVy * initialSeparation + anatomicalSeparationY;
+  const tumble = (Phaser.Math.FloatBetween(-1.5, 1.5) + facing * 0.5) * impulseScale;
+  const minTumble = anatomy.role === 'fin' ? 0.64 : anatomy.role === 'jaw' ? 0.48 : 0.36;
+  part.detachAngularVelocity = Math.abs(tumble) < minTumble ? minTumble * facing : tumble;
   part.hurtFlash = 1;
   this.spawnFloatingText(`${part.id.replace(/-/g, ' ')} severed`, 0xff7a5c);
   state.status = `${source} severed ${creature.species}'s ${part.id.replace(/-/g, ' ')}.`;
-  if (part.id === 'jaw' && creature.state === 'grab') {
+  const detachedManifest = partManifest(creature, part);
+  const detachedWasBitePart = part.id === (creature.manifest.combat?.bitePartId ?? '')
+    || part.id === 'jaw'
+    || anatomyFor(detachedManifest).role === 'jaw'
+    || detachedManifest.motion.kind === 'jaw'
+    || Boolean(detachedManifest.anchors?.bite);
+  if (detachedWasBitePart && creature.state === 'grab') {
     creature.state = 'recover';
     creature.grabTimer = 0;
     creature.stateTimer = 1.2;
@@ -218,13 +497,34 @@ export function populateArticulatedCreatures(this: DeepdiveScene) {
   this.articulatedCreatures = [];
   for (const manifest of articulatedCreatureDefs()) {
     if (state.biome < manifest.minBiome) continue;
+    if (!shouldSpawnArticulatedCreature(manifest)) continue;
     for (let i = 0; i < manifest.spawn.count; i += 1) {
-      const point = this.findOpenWaterInBand(scaledDepthPx(manifest.spawn.minDepth), scaledDepthPx(manifest.spawn.maxDepth));
-      const creature = createArticulatedCreature(this, manifest, point.x, point.y);
-      creature.homeX = point.x;
-      creature.homeY = point.y;
-      creature.phase += i * 1.7;
-      this.updateArticulatedParts(creature, 0);
+      const minY = scaledDepthPx(manifest.spawn.minDepth);
+      const maxY = scaledDepthPx(manifest.spawn.maxDepth);
+      let creature: ArticulatedCreature | null = null;
+      for (let attempt = 0; attempt < 90; attempt += 1) {
+        const point = clampArticulatedSpawnPoint(manifest, this.findOpenWaterInBand(minY, maxY));
+        const candidate = createArticulatedCreature(this, manifest, point.x, point.y);
+        candidate.homeX = point.x;
+        candidate.homeY = point.y;
+        candidate.phase += i * 1.7;
+        candidate.facingSign = attempt % 2 === 0 ? 1 : -1;
+        this.updateArticulatedParts(candidate, 0);
+        if (articulatedSpawnIsClear(this, candidate)) {
+          creature = candidate;
+          break;
+        }
+        destroyArticulatedCreatureSprites(candidate);
+      }
+      if (!creature) {
+        const point = clampArticulatedSpawnPoint(manifest, this.findOpenWaterInBand(minY, maxY));
+        carveArticulatedSpawnPocket(this, manifest, point);
+        creature = createArticulatedCreature(this, manifest, point.x, point.y);
+        creature.homeX = point.x;
+        creature.homeY = point.y;
+        creature.phase += i * 1.7;
+        this.updateArticulatedParts(creature, 0);
+      }
       this.articulatedCreatures.push(creature);
     }
   }
@@ -243,6 +543,10 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
       creature.parts.forEach((part) => {
         part.hurtFlash = 0;
       });
+      creature.x += creature.vx * delta;
+      creature.y += creature.vy * delta;
+      creature.vx *= Math.exp(-2.15 * delta);
+      creature.vy *= Math.exp(-2.15 * delta);
       updateDetachedArticulatedParts(this, creature, delta);
       this.updateArticulatedParts(creature, delta);
       refreshJointStress(creature);
@@ -287,28 +591,29 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     this.resolveArticulatedGrab(creature, delta, controls);
 
     if (creature.stunned > 0 || this.isAtBoat()) continue;
-    const jaw = creature.parts.find((part) => part.id === 'jaw' && !part.detached && part.hp > 0);
-    const biteAnchor = this.articulatedPartAnchorWorld(creature, 'jaw', 'bite');
+    const combat = articulatedCombatFor(creature);
+    const bitePart = this.articulatedBitePart(creature);
+    const biteAnchor = this.articulatedBiteAnchorWorld(creature);
     const biteDistance = biteAnchor ? Phaser.Math.Distance.Between(this.player.x, this.player.y, biteAnchor.x, biteAnchor.y) : Number.POSITIVE_INFINITY;
-    if ((creature.state === 'lunge' || creature.state === 'grab') && jaw && biteDistance < PLAYER_CONTACT_RADIUS + 22 && creature.bumpCooldown <= 0) {
-      this.bumpArticulatedCreature(creature, jaw, biteDistance);
+    if ((creature.state === 'lunge' || creature.state === 'grab') && bitePart && biteDistance < PLAYER_CONTACT_RADIUS + combat.contactPadding && creature.bumpCooldown <= 0) {
+      this.bumpArticulatedCreature(creature, bitePart, biteDistance);
       continue;
     }
     const hit = this.closestArticulatedPartTo(creature, this.player.x, this.player.y);
-    if (hit && hit.distance < partManifest(creature, hit.part).hitRadius * PART_WORLD_SCALE + PLAYER_CONTACT_RADIUS && creature.bumpCooldown <= 0) {
+    if (hit && hit.distance < PLAYER_CONTACT_RADIUS && creature.bumpCooldown <= 0) {
       this.bumpArticulatedCreature(creature, hit.part, hit.distance);
     }
   }
 }
 
 export function steerArticulatedCreature(this: DeepdiveScene, creature: ArticulatedCreature, delta: number) {
+  const combat = articulatedCombatFor(creature);
   const dx = this.player.x - creature.x;
   const dy = this.player.y - creature.y;
   const playerDistance = Math.max(1, Math.hypot(dx, dy));
   const homeDistance = Phaser.Math.Distance.Between(creature.x, creature.y, creature.homeX, creature.homeY);
-  const canChase = !this.isAtBoat() && playerDistance < SERPENT_DETECTION_RANGE + state.biome * 24 && homeDistance < SERPENT_LEASH_RANGE;
-  const jaw = creature.parts.find((part) => part.id === 'jaw');
-  const canBite = Boolean(jaw && jaw.hp > 0 && !jaw.detached);
+  const canChase = combat.hostile && combat.behavior !== 'passive' && !this.isAtBoat() && playerDistance < combat.detectionRange + state.biome * 24 && homeDistance < combat.leashRange;
+  const canBite = Boolean(this.articulatedBitePart(creature));
 
   if (canChase) {
     creature.aggro = Math.max(creature.aggro, 4.5);
@@ -318,10 +623,10 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
     if (creature.aggro <= 0 && creature.state !== 'recover') creature.state = 'patrol';
   }
 
-  if (canBite && creature.aggro > 0 && playerDistance < 172 && creature.grabCooldown <= 0 && creature.state !== 'lunge' && creature.state !== 'grab') {
+  if (canBite && creature.aggro > 0 && playerDistance < combat.attackRange && creature.grabCooldown <= 0 && creature.state !== 'lunge' && creature.state !== 'grab') {
     creature.state = 'lunge';
-    creature.stateTimer = 0.74;
-    creature.grabCooldown = SERPENT_GRAB_COOLDOWN;
+    creature.stateTimer = combat.lungeSeconds;
+    creature.grabCooldown = combat.grabCooldown;
     state.status = `${creature.species} is coiling for a strike.`;
   }
 
@@ -344,7 +649,7 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
     targetX = this.player.x + this.player.vx * 0.16;
     targetY = this.player.y + this.player.vy * 0.16;
     steering = 8.2;
-    speedScale *= 2.45;
+    speedScale *= combat.lungeSpeedScale;
     if (creature.stateTimer <= 0) {
       creature.state = 'recover';
       creature.stateTimer = 0.8;
@@ -369,7 +674,7 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
   creature.vy += (ty / len) * desiredSpeed * steering * delta;
   creature.vx *= Math.exp(-1.05 * delta);
   creature.vy *= Math.exp(-1.05 * delta);
-  const maxSpeed = creature.speed * (creature.state === 'lunge' ? 3.1 : creature.aggro > 0 ? 1.85 : 1.25) * this.articulatedMobilityScale(creature);
+  const maxSpeed = creature.speed * (creature.state === 'lunge' ? Math.max(1.6, combat.lungeSpeedScale + 0.65) : creature.aggro > 0 ? 1.85 : 1.25) * this.articulatedMobilityScale(creature);
   const speed = Math.hypot(creature.vx, creature.vy);
   if (speed > maxSpeed) {
     creature.vx = (creature.vx / speed) * maxSpeed;
@@ -428,7 +733,7 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   const speed = Math.hypot(creature.vx, creature.vy);
   const facing = facingFor(creature);
   const targetPitch = speed > 3
-    ? Phaser.Math.Clamp(Math.atan2(creature.vy, Math.max(1, Math.abs(creature.vx))), -0.62, 0.62)
+    ? Phaser.Math.Clamp(Math.atan2(creature.vy, Math.max(1, Math.abs(creature.vx))), -0.62, 0.62) * ARTICULATED_PITCH_SCALE
     : 0;
   const targetAttackBlend = creature.state === 'lunge' || creature.state === 'grab' ? 1 : 0;
   const targetSwimEffort = Phaser.Math.Clamp(
@@ -457,27 +762,48 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   const placing = new Set<string>();
   const spineMotionCache = new Map<string, { offset: number; bend: number }>();
   const dynamicSpine = delta > 0 && !creature.reviewFrozen && !options.preserveSmoothedPose;
+  const manifestById = new Map(creature.manifest.parts.map((manifest) => [manifest.id, manifest]));
+  const spineManifests = creature.manifest.parts
+    .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
+    .sort((a, b) => b.offset[0] - a.offset[0]);
+  const motionLagIndexFor = (manifest: ReturnType<typeof partManifest>) => {
+    const direct = spineLagIndexFor(spineManifests, manifest);
+    if (direct > 0 || manifest.motion.kind === 'body' || manifest.motion.kind === 'tail') return direct;
+    let parent = manifest.parentId ? manifestById.get(manifest.parentId) : undefined;
+    while (parent) {
+      const parentLag = spineLagIndexFor(spineManifests, parent);
+      if (parentLag > 0 || parent.motion.kind === 'body' || parent.motion.kind === 'tail') {
+        const attachmentLag = manifest.motion.kind === 'fin' ? 0.68 : manifest.motion.kind === 'jaw' ? 0.34 : 0.18;
+        return Phaser.Math.Clamp(parentLag + attachmentLag, 0, 3.2);
+      }
+      parent = parent.parentId ? manifestById.get(parent.parentId) : undefined;
+    }
+    return 0;
+  };
 
   const targetWaveFor = (manifest: ReturnType<typeof partManifest>) => {
     const motion = manifest.motion;
     const motionEffort = motion.kind === 'body' || motion.kind === 'tail' || motion.kind === 'fin' ? swimEffort : 1;
-    const lagIndex = spineLagIndexFor(manifest);
-    const swimWave = Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * lagIndex) * (motion.amplitude ?? 0) * motionEffort * PART_WORLD_SCALE;
+    const motionScale = motion.kind === 'tail'
+      ? TAIL_SWIM_WAVE_SCALE
+      : motion.kind === 'body'
+        ? BODY_SWIM_WAVE_SCALE
+        : motion.kind === 'fin'
+          ? FIN_SWIM_WAVE_SCALE
+          : 1;
+    const lagIndex = motionLagIndexFor(manifest);
+    const swimWave = Math.sin(creature.phase * (motion.frequency ?? 2) + (motion.phase ?? 0) - (motion.lag ?? 0) * lagIndex) * (motion.amplitude ?? 0) * motionEffort * motionScale * PART_WORLD_SCALE;
     if (motion.kind !== 'body' && motion.kind !== 'tail') return swimWave;
     const pitchWake = -swimPitch * Phaser.Math.Clamp(lagIndex, 0, 3.2) * 7.2 * swimEffort;
     const lungeWake = lungeOpen * Math.sin(creature.phase * 2.1 - lagIndex * 0.82) * 4.8 * swimEffort;
     return swimWave + pitchWake + lungeWake;
   };
 
-  const spineManifests = creature.manifest.parts
-    .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
-    .sort((a, b) => b.offset[0] - a.offset[0]);
-
   const prepareSpineDynamics = () => {
     const targets = spineManifests.map((manifest) => {
       const localX = manifest.offset[0] * PART_WORLD_SCALE;
       const localY = manifest.offset[1] * PART_WORLD_SCALE;
-      const lagIndex = spineLagIndexFor(manifest);
+      const lagIndex = spineLagIndexFor(spineManifests, manifest);
       const baseX = creature.x + forward.x * localX + normal.x * localY;
       const baseY = creature.y + forward.y * localX + normal.y * localY;
       const targetOffset = targetWaveFor(manifest);
@@ -565,6 +891,33 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     return spineMotionCache.get(manifest.id) ?? { offset: 0, bend: 0 };
   };
 
+  const softRotationFor = (part: ArticulatedPartState, manifest: ReturnType<typeof partManifest>, targetRotation: number) => {
+    if (manifest.motion.kind !== 'fin' && manifest.motion.kind !== 'jaw') {
+      part.softRotation = targetRotation;
+      part.softAngularVelocity = 0;
+      part.softInitialized = true;
+      return targetRotation;
+    }
+    if (!part.softInitialized) {
+      part.softRotation = targetRotation;
+      part.softAngularVelocity = 0;
+      part.softInitialized = true;
+    }
+    const dynamicSoftMotion = delta > 0 && !creature.reviewFrozen && !options.preserveSmoothedPose;
+    if (!dynamicSoftMotion) {
+      part.softRotation = targetRotation;
+      part.softAngularVelocity = 0;
+      return targetRotation;
+    }
+    const stiffness = manifest.motion.kind === 'jaw' ? 48 : 32;
+    const damping = manifest.motion.kind === 'jaw' ? 12 : 8.5;
+    const error = Phaser.Math.Angle.Wrap(targetRotation - part.softRotation);
+    part.softAngularVelocity += error * stiffness * delta;
+    part.softAngularVelocity *= Math.exp(-damping * delta);
+    part.softRotation = Phaser.Math.Angle.Wrap(part.softRotation + part.softAngularVelocity * delta);
+    return part.softRotation;
+  };
+
   const motionRotation = (manifest: ReturnType<typeof partManifest>, parent?: ArticulatedPartState) => {
     const motion = manifest.motion;
     const spineMotion = spineMotionFor(manifest);
@@ -573,7 +926,19 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const parentRotation = parent?.rotation ?? rootRotation;
     const rotationOffset = facing * (manifest.rotationOffset ?? 0);
     if (motion.kind === 'jaw') {
-      return parentRotation + rotationOffset + facing * ((Math.sin(creature.phase * 8) * 0.08 + lungeOpen * 0.44) * Math.sign(manifest.offset[1] || 1));
+      if (manifest.id === 'upper-mandible' || manifest.id === 'lower-mandible') {
+        const jawSign = manifest.id === 'upper-mandible' ? -1 : 1;
+        const close = creature.state === 'grab'
+          ? 1
+          : Phaser.Math.Clamp(lungeOpen, 0, 1);
+        const openAngle = 0.82;
+        const closedAngle = -0.24;
+        const angle = openAngle + (closedAngle - openAngle) * close;
+        return parentRotation + rotationOffset + facing * jawSign * angle;
+      }
+      const jawOpenScale = Phaser.Math.Clamp((motion.amplitude ?? 21) / 21, 0.35, 1.25);
+      const jawPulse = Math.sin(creature.phase * (motion.frequency ?? 8) + (motion.phase ?? 0) - (motion.lag ?? 0) * 0.6);
+      return parentRotation + rotationOffset + facing * ((jawPulse * 0.08 + lungeOpen * 0.44) * jawOpenScale * Math.sign(manifest.offset[1] || 1));
     }
     if (motion.kind === 'fin') {
       return parentRotation + rotationOffset + facing * wave * 0.018;
@@ -598,7 +963,24 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const wave = motion.kind === 'body' || motion.kind === 'tail' ? spineMotion.offset : targetWaveFor(manifest);
     const bodyWave = motion.kind === 'body' || motion.kind === 'tail' ? wave : 0;
     const finWave = motion.kind === 'fin' ? wave : 0;
-    const jawOpen = motion.kind === 'jaw' ? (Math.sin(creature.phase * 8) * 0.16 + lungeOpen * 0.42) * Math.sign(localY || 1) : 0;
+    const jawOpenScale = motion.kind === 'jaw' ? Phaser.Math.Clamp((motion.amplitude ?? 21) / 21, 0.35, 1.25) : 1;
+    const jawPulse = motion.kind === 'jaw'
+      ? Math.sin(creature.phase * (motion.frequency ?? 8) + (motion.phase ?? 0) - (motion.lag ?? 0) * 0.6)
+      : 0;
+    const jawSign = manifest.id === 'upper-mandible' ? -1 : manifest.id === 'lower-mandible' ? 1 : Math.sign(localY || 1);
+    const mandibleClose = manifest.id === 'upper-mandible' || manifest.id === 'lower-mandible'
+      ? creature.state === 'grab'
+        ? 1
+        : Phaser.Math.Clamp(lungeOpen, 0, 1)
+      : 0;
+    const mandibleOpenAngle = 0.82;
+    const mandibleClosedAngle = -0.24;
+    const mandibleJawAngle = mandibleOpenAngle + (mandibleClosedAngle - mandibleOpenAngle) * mandibleClose;
+    const jawOpen = motion.kind === 'jaw'
+      ? manifest.id === 'upper-mandible' || manifest.id === 'lower-mandible'
+        ? mandibleJawAngle * jawSign
+        : (jawPulse * 0.16 + lungeOpen * 0.42) * jawOpenScale * jawSign
+      : 0;
     part.x = creature.x + forward.x * localX + normal.x * (localY + bodyWave);
     part.y = creature.y + forward.y * localX + normal.y * (localY + bodyWave);
     part.rotation = facing * (swimPitch + bodyWave * 0.012 + finWave * 0.018 + jawOpen);
@@ -621,7 +1003,7 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     if (parent) {
       placePart(parent);
       const parentManifest = partManifest(creature, parent);
-      part.rotation = motionRotation(manifest, parent);
+      part.rotation = softRotationFor(part, manifest, motionRotation(manifest, parent));
       const parentAnchor = anchorWorldFor(parent, parentManifest, facing, anchorFor(parentManifest, manifest.parentAnchor));
       const spineMotion = spineMotionFor(manifest);
       if (manifest.motion.kind === 'body' || manifest.motion.kind === 'tail') {
@@ -635,6 +1017,7 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
       part.y = parentAnchor.y + restOffset.y - childAnchorOffset.y;
     } else {
       placeOffsetPart(part, manifest);
+      part.rotation = softRotationFor(part, manifest, part.rotation);
     }
     placing.delete(part.id);
     placed.add(part.id);
@@ -647,20 +1030,89 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   creature.socketOverlays.forEach((overlay) => {
     const manifest = overlayManifestById(creature, overlay);
     const parent = manifest ? partById.get(manifest.parentId) : undefined;
-    if (!manifest || !parent || parent.detached) return;
-    const offset = localVectorOffsetFor(facing, parent.rotation, manifest.offset);
-    overlay.x = parent.x + offset.x;
-    overlay.y = parent.y + offset.y;
-    overlay.rotation = parent.rotation + facing * (manifest.rotationOffset ?? 0);
+    const child = manifest ? partById.get(manifest.childId) : undefined;
+    const parentManifest = parent ? partManifest(creature, parent) : undefined;
+    const childManifest = child ? partManifest(creature, child) : undefined;
+    if (!manifest || !parent || !child || !parentManifest || !childManifest || parent.detached) {
+      overlay.span = 0;
+      overlay.parentAnchorX = overlay.x;
+      overlay.parentAnchorY = overlay.y;
+      overlay.childAnchorX = overlay.x;
+      overlay.childAnchorY = overlay.y;
+      overlay.bridgeWidth = 0;
+      overlay.bridgeCoverage = 0;
+      overlay.parentCoverage = 0;
+      overlay.childCoverage = 0;
+      return;
+    }
+    const childJointManifest = creature.manifest.parts.find((candidate) => candidate.id === manifest.childId);
+    const parentAnchorName = childJointManifest?.parentAnchor;
+    const childAnchorName = childJointManifest?.anchor;
+    const parentAnchor = anchorWorldFor(parent, parentManifest, facing, anchorFor(parentManifest, parentAnchorName));
+    if (child.detached) {
+      const stumpOffset = localVectorOffsetFor(facing, parent.rotation, manifest.offset);
+      const baseWidth = manifest.size[0] * PART_WORLD_SCALE;
+      const baseHeight = manifest.size[1] * PART_WORLD_SCALE;
+      overlay.x = parentAnchor.x + stumpOffset.x;
+      overlay.y = parentAnchor.y + stumpOffset.y;
+      overlay.rotation = parent.rotation + facing * (manifest.rotationOffset ?? 0);
+      overlay.width = baseWidth;
+      overlay.height = baseHeight;
+      overlay.span = 0;
+      overlay.parentAnchorX = parentAnchor.x;
+      overlay.parentAnchorY = parentAnchor.y;
+      overlay.childAnchorX = parentAnchor.x;
+      overlay.childAnchorY = parentAnchor.y;
+      overlay.bridgeWidth = 0;
+      overlay.bridgeCoverage = 0;
+      overlay.parentCoverage = 1;
+      overlay.childCoverage = 0;
+      return;
+    }
+    const childAnchor = anchorWorldFor(child, childManifest, facing, anchorFor(childManifest, childAnchorName));
+    const dx = childAnchor.x - parentAnchor.x;
+    const dy = childAnchor.y - parentAnchor.y;
+    const span = Math.max(1, Math.hypot(dx, dy));
+    const tangentX = dx / span;
+    const tangentY = dy / span;
+    const normalX = -dy / span;
+    const normalY = dx / span;
+    const along = manifest.offset[0] * PART_WORLD_SCALE;
+    const across = manifest.offset[1] * PART_WORLD_SCALE;
+    overlay.x = (parentAnchor.x + childAnchor.x) * 0.5 + tangentX * along + normalX * across;
+    overlay.y = (parentAnchor.y + childAnchor.y) * 0.5 + tangentY * along + normalY * across;
+    overlay.rotation = Math.atan2(dy, dx) + facing * (manifest.rotationOffset ?? 0);
+    const baseWidth = manifest.size[0] * PART_WORLD_SCALE;
+    const baseHeight = manifest.size[1] * PART_WORLD_SCALE;
+    overlay.width = Math.min(Math.max(baseWidth, span + baseWidth * 0.12), baseWidth * 1.32);
+    overlay.height = baseHeight;
+    overlay.span = span;
+    overlay.parentAnchorX = parentAnchor.x;
+    overlay.parentAnchorY = parentAnchor.y;
+    overlay.childAnchorX = childAnchor.x;
+    overlay.childAnchorY = childAnchor.y;
+    overlay.bridgeWidth = Phaser.Math.Clamp(
+      baseHeight * 0.62 * socketStyleValue(creature, manifest, 'bridgeWidthScale', 1),
+      4,
+      Math.max(
+        6,
+        span * 0.68 * socketStyleValue(creature, manifest, 'bridgeWidthScale', 1),
+        baseHeight * socketStyleValue(creature, manifest, 'bridgeSleeveScale', 0),
+      ),
+    );
+    overlay.bridgeCoverage = overlay.bridgeWidth > 0 ? 1 : 0;
+    overlay.parentCoverage = overlay.bridgeCoverage;
+    overlay.childCoverage = overlay.bridgeCoverage;
   });
 }
 
 export function resolveArticulatedGrab(this: DeepdiveScene, creature: ArticulatedCreature, delta: number, controls?: ControlState) {
   if (creature.state !== 'grab') return;
+  const combat = articulatedCombatFor(creature);
   creature.grabTimer = Math.max(0, creature.grabTimer - delta);
   const struggle = controls?.hasMove ? controls.move.length() : 0;
   const target = state.pilotingSub && state.activeSub ? state.activeSub : this.player;
-  const biteAnchor = this.articulatedPartAnchorWorld(creature, 'jaw', 'bite');
+  const biteAnchor = this.articulatedBiteAnchorWorld(creature);
   const pullX = biteAnchor?.x ?? creature.x;
   const pullY = biteAnchor?.y ?? creature.y;
   const dx = pullX - target.x;
@@ -668,9 +1120,9 @@ export function resolveArticulatedGrab(this: DeepdiveScene, creature: Articulate
   const distance = Math.max(1, Math.hypot(dx, dy));
   target.vx += (dx / distance) * (58 - struggle * 16) * delta;
   target.vy += (dy / distance) * (58 - struggle * 16) * delta;
-  this.applyHullDamage((9.2 - struggle * 2.6) * delta, `${creature.species} is dragging you in its jaws.`);
+  this.applyHullDamage((9.2 - struggle * 2.6) * delta, `${creature.species} is dragging you in.`);
   state.oxygen = Math.max(0, state.oxygen - (2.4 - struggle * 0.7) * delta);
-  if (creature.grabTimer <= 0 || struggle > 0.82) {
+  if (!combat.grabEnabled || creature.grabTimer <= 0 || struggle > 0.82) {
     creature.state = 'recover';
     creature.stateTimer = 1.1;
     state.status = struggle > 0.82 ? `You wrenched free of ${creature.species}.` : `${creature.species} released its grip.`;
@@ -679,7 +1131,9 @@ export function resolveArticulatedGrab(this: DeepdiveScene, creature: Articulate
 }
 
 export function bumpArticulatedCreature(this: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, distance: number) {
-  const biteAnchor = part.id === 'jaw' ? this.articulatedPartAnchorWorld(creature, 'jaw', 'bite') : null;
+  const combat = articulatedCombatFor(creature);
+  const bitePart = this.articulatedBitePart(creature);
+  const biteAnchor = bitePart && part.id === bitePart.id ? this.articulatedBiteAnchorWorld(creature) : null;
   const contactX = biteAnchor?.x ?? part.x;
   const contactY = biteAnchor?.y ?? part.y;
   const contactDistance = Math.max(1, Phaser.Math.Distance.Between(this.player.x, this.player.y, contactX, contactY), distance);
@@ -698,9 +1152,9 @@ export function bumpArticulatedCreature(this: DeepdiveScene, creature: Articulat
   this.applyHullDamage(Math.max(5, damage - state.upgrades.suit), `${creature.species} hit ${part.id.replace(/-/g, ' ')} first.`);
   this.registerPredatorBite(creature);
   this.playFishBite(damage);
-  if (creature.state === 'lunge' && creature.grabTimer <= 0 && !part.detached) {
+  if (combat.grabEnabled && creature.state === 'lunge' && creature.grabTimer <= 0 && !part.detached) {
     creature.state = 'grab';
-    creature.grabTimer = SERPENT_GRAB_SECONDS;
+    creature.grabTimer = combat.grabSeconds;
     state.status = `${creature.species} has you. Thrash hard to break free.`;
     this.spawnFloatingText('Grabbed', 0xff4f64);
   }
@@ -708,11 +1162,13 @@ export function bumpArticulatedCreature(this: DeepdiveScene, creature: Articulat
 }
 
 export function closestArticulatedPartTo(this: DeepdiveScene, creature: ArticulatedCreature, x: number, y: number) {
-  let nearest: { part: ArticulatedPartState; distance: number } | null = null;
+  let nearest: { part: ArticulatedPartState; distance: number; signedDistance: number; hitShape: ReturnType<typeof articulatedPartHitShape> } | null = null;
   for (const part of creature.parts) {
     if (part.hp <= 0 || part.detached) continue;
-    const distance = Phaser.Math.Distance.Between(x, y, part.x, part.y);
-    if (!nearest || distance < nearest.distance) nearest = { part, distance };
+    const hit = articulatedPartHitDistanceTo(creature, part, x, y);
+    if (!nearest || hit.signedDistance < nearest.signedDistance) {
+      nearest = { part, distance: hit.distance, signedDistance: hit.signedDistance, hitShape: hit.shape };
+    }
   }
   return nearest;
 }
@@ -723,8 +1179,7 @@ export function nearestArticulatedDamageTarget(this: DeepdiveScene, x: number, y
     if (creature.dead) continue;
     const hit = this.closestArticulatedPartTo(creature, x, y);
     if (!hit) continue;
-    const manifest = partManifest(creature, hit.part);
-    if (hit.distance > manifest.hitRadius * PART_WORLD_SCALE + extraRange) continue;
+    if (hit.distance > extraRange) continue;
     if (!nearest || hit.distance < nearest.distance) nearest = { creature, part: hit.part, distance: hit.distance };
   }
   return nearest;
@@ -737,17 +1192,32 @@ export function nearestKnifeArticulatedTarget(this: DeepdiveScene) {
 export function damageArticulatedPart(this: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, amount: number, source: string) {
   if (creature.dead || amount <= 0 || part.hp <= 0 || part.detached) return false;
   const manifest = partManifest(creature, part);
+  const anatomy = anatomyFor(manifest);
   const damage = amount * manifest.damageMultiplier;
   part.hp = Math.max(0, part.hp - damage);
   part.hurtFlash = 1;
   creature.hp = Math.max(0, creature.hp - damage * (part.id === 'head' ? 0.92 : 0.62));
   creature.hurtFlash = 1;
+  const dx = part.x - creature.x;
+  const dy = part.y - creature.y;
+  const distance = Math.max(1, Math.hypot(dx, dy));
+  const impact = Phaser.Math.Clamp((10 + damage * 0.16) / Math.sqrt(Phaser.Math.Clamp(anatomy.mass, 0.25, 8)), 8, 92);
+  creature.vx -= (dx / distance) * impact;
+  creature.vy -= (dy / distance) * impact * 0.72;
+  if (manifest.motion.kind === 'body' || manifest.motion.kind === 'tail') {
+    const node = spineNodeFor(creature, manifest);
+    node.offset += Phaser.Math.Clamp((dy / distance) * impact * 0.18, -14, 14);
+    node.vx -= (dx / distance) * impact * 0.08;
+    node.vy -= (dy / distance) * impact * 0.08;
+  }
   creature.aggro = Math.max(creature.aggro, 5.5);
   creature.state = creature.state === 'patrol' ? 'stalk' : creature.state;
   let detached = false;
   if (part.hp <= 0) {
     this.spawnFloatingText(`${part.id.replace(/-/g, ' ')} crippled`, 0xffd166);
-    detached = this.detachArticulatedPart(creature, part, source);
+    if (!anatomy.severable || damage >= part.maxHp * anatomy.breakThreshold) {
+      detached = this.detachArticulatedPart(creature, part, source);
+    }
     if (part.id === 'head') creature.hp = 0;
   }
   if (creature.hp > 0) {
@@ -769,7 +1239,7 @@ export function damageArticulatedInRadius(this: DeepdiveScene, centerX: number, 
     if (creature.dead) continue;
     const hit = this.closestArticulatedPartTo(creature, centerX, centerY);
     if (!hit) continue;
-    if (hit.distance > radius + partManifest(creature, hit.part).hitRadius * PART_WORLD_SCALE) continue;
+    if (hit.distance > radius) continue;
     const falloff = Phaser.Math.Clamp(1 - hit.distance / Math.max(1, radius), 0.3, 1);
     this.damageArticulatedPart(creature, hit.part, amount * falloff, source);
     hits += 1;
@@ -778,13 +1248,13 @@ export function damageArticulatedInRadius(this: DeepdiveScene, centerX: number, 
 }
 
 export function articulatedMobilityScale(this: DeepdiveScene, creature: ArticulatedCreature) {
-  const tail = creature.parts.find((part) => part.id === 'tail');
-  const fins = creature.parts.filter((part) => part.id.includes('fin'));
-  const jaw = creature.parts.find((part) => part.id === 'jaw');
-  const tailScale = tail && (tail.hp <= 0 || tail.detached) ? 0.54 : 1;
-  const finScale = fins.length ? Phaser.Math.Clamp(fins.filter((part) => part.hp > 0 && !part.detached).length / fins.length, 0.66, 1) : 1;
-  const jawScale = jaw && (jaw.hp <= 0 || jaw.detached) ? 0.88 : 1;
-  return tailScale * finScale * jawScale;
+  let scale = 1;
+  for (const part of creature.parts) {
+    if (part.hp > 0 && !part.detached) continue;
+    const anatomy = anatomyFor(partManifest(creature, part));
+    scale *= Phaser.Math.Clamp(anatomy.mobilityFactor ?? 1, 0.2, 1);
+  }
+  return Phaser.Math.Clamp(scale, 0.18, 1);
 }
 
 export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
@@ -801,17 +1271,44 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       continue;
     }
     const attacking = creature.state === 'lunge' || creature.state === 'grab';
+    const murkTint = murkTintFor(creature);
+    for (const overlay of creature.socketOverlays) {
+      const manifest = overlayManifestById(creature, overlay);
+      const parent = manifest ? creature.parts.find((part) => part.id === manifest.parentId) : undefined;
+      const child = manifest ? creature.parts.find((part) => part.id === manifest.childId) : undefined;
+      if (!manifest || !parent || !child || parent.detached || child.detached || overlay.bridgeWidth <= 0) continue;
+      const bridgeAlpha = alpha * (creature.stunned > 0
+        ? socketStyleValue(creature, manifest, 'bridgeStunnedAlpha', 0.18)
+        : socketStyleValue(creature, manifest, 'bridgeAlpha', 0.32));
+      const coreAlpha = alpha * (creature.stunned > 0
+        ? socketStyleValue(creature, manifest, 'bridgeCoreStunnedAlpha', 0.09)
+        : socketStyleValue(creature, manifest, 'bridgeCoreAlpha', 0.16));
+      const bridgeColor = socketStyleValue(creature, manifest, 'bridgeColor', 0x02060c);
+      const bridgeCoreColor = socketStyleValue(creature, manifest, 'bridgeCoreColor', creature.color);
+      this.articulatedBridges.lineStyle(overlay.bridgeWidth * 0.96, bridgeColor, bridgeAlpha);
+      this.articulatedBridges.lineBetween(overlay.parentAnchorX, overlay.parentAnchorY, overlay.childAnchorX, overlay.childAnchorY);
+      this.articulatedBridges.fillStyle(bridgeColor, bridgeAlpha);
+      this.articulatedBridges.fillCircle(overlay.parentAnchorX, overlay.parentAnchorY, overlay.bridgeWidth * 0.46);
+      this.articulatedBridges.fillCircle(overlay.childAnchorX, overlay.childAnchorY, overlay.bridgeWidth * 0.46);
+      this.articulatedBridges.lineStyle(Math.max(2, overlay.bridgeWidth * 0.38), bridgeCoreColor, coreAlpha);
+      this.articulatedBridges.lineBetween(overlay.parentAnchorX, overlay.parentAnchorY, overlay.childAnchorX, overlay.childAnchorY);
+    }
     for (const part of creature.parts) {
       const manifest = partManifest(creature, part);
-      const damageAlpha = part.detached ? 0.62 : part.hp <= 0 ? 0.26 : 1;
+      const damageAlpha = part.detached ? 0.62 : part.hp <= 0 ? (manifest.damagedTextureKey ? 0.94 : 0.26) : 1;
       const dynamicDepth =
         2.1 +
         manifest.depth +
         (part.id === 'jaw' ? creature.attackBlend * 0.035 : 0) +
         (part.id === 'fin-front' ? 0.018 : part.id === 'fin-back' ? -0.012 : 0) -
         (part.detached ? 0.08 : 0);
+      const textureKey = part.detached && manifest.detachedTextureKey
+        ? manifest.detachedTextureKey
+        : part.hp <= 0 && manifest.damagedTextureKey
+          ? manifest.damagedTextureKey
+          : manifest.textureKey;
       part.sprite
-        ?.setTexture(manifest.textureKey)
+        ?.setTexture(textureKey)
         .setVisible(true)
         .setPosition(part.x, part.y)
         .setOrigin(manifest.origin[0], manifest.origin[1])
@@ -819,7 +1316,11 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         .setAlpha((creature.stunned > 0 ? alpha * 0.68 : alpha) * damageAlpha)
         .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE, manifest.size[1] * PART_WORLD_SCALE)
         .setDepth(dynamicDepth);
-      if (part.sprite) part.sprite.scaleX = Math.abs(part.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
+      if (part.sprite) {
+        part.sprite.scaleX = Math.abs(part.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
+        if (murkTint === undefined) part.sprite.clearTint();
+        else part.sprite.setTint(murkTint);
+      }
       if (part.hurtFlash > 0) {
         this.actors.lineStyle(2, 0xfff7df, part.hurtFlash * alpha);
         this.actors.strokeCircle(part.x, part.y, manifest.hitRadius * PART_WORLD_SCALE + 4);
@@ -828,29 +1329,39 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
     for (const overlay of creature.socketOverlays) {
       const manifest = overlayManifestById(creature, overlay);
       const parent = manifest ? creature.parts.find((part) => part.id === manifest.parentId) : undefined;
-      if (!manifest || !parent || parent.detached) {
+      const child = manifest ? creature.parts.find((part) => part.id === manifest.childId) : undefined;
+      const severed = Boolean(manifest?.severedTextureKey && parent && child?.detached && !parent.detached);
+      if (!manifest || !parent || !child || parent.detached || (child.detached && !severed)) {
         overlay.sprite?.setVisible(false);
         continue;
       }
+      const textureKey = severed && manifest.severedTextureKey ? manifest.severedTextureKey : manifest.textureKey;
       overlay.sprite
-        ?.setTexture(manifest.textureKey)
+        ?.setTexture(textureKey)
         .setVisible(true)
         .setPosition(overlay.x, overlay.y)
         .setOrigin(manifest.origin[0], manifest.origin[1])
         .setRotation(overlay.rotation)
-        .setAlpha(alpha)
-        .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE, manifest.size[1] * PART_WORLD_SCALE)
+        .setAlpha(alpha * (severed ? Math.min(1, socketStyleValue(creature, manifest, 'alpha', 0.82) + 0.12) : socketStyleValue(creature, manifest, 'alpha', 0.82)))
+        .setDisplaySize(
+          overlay.width || manifest.size[0] * PART_WORLD_SCALE,
+          overlay.height || manifest.size[1] * PART_WORLD_SCALE,
+        )
         .setDepth(2.1 + manifest.depth);
-      if (overlay.sprite) overlay.sprite.scaleX = Math.abs(overlay.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
+      if (overlay.sprite) {
+        overlay.sprite.scaleX = Math.abs(overlay.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
+        if (murkTint === undefined) overlay.sprite.clearTint();
+        else overlay.sprite.setTint(murkTint);
+      }
     }
     if (creature.stunned > 0) {
       this.actors.lineStyle(2, 0x8ee7f4, alpha * (0.38 + Math.sin(creature.phase * 9) * 0.16));
       this.actors.strokeCircle(creature.x, creature.y, creature.radius + 12);
     }
     if (attacking) {
-      const jaw = creature.parts.find((part) => part.id === 'jaw');
-      if (jaw && !jaw.detached && jaw.hp > 0) {
-        const biteAnchor = this.articulatedPartAnchorWorld(creature, 'jaw', 'bite') ?? jaw;
+      const bitePart = this.articulatedBitePart(creature);
+      if (bitePart) {
+        const biteAnchor = this.articulatedBiteAnchorWorld(creature) ?? bitePart;
         const pulse = 0.65 + Math.sin(creature.phase * 12) * 0.25;
         this.actors.lineStyle(2, 0xff4f64, alpha * pulse * 0.48);
         this.actors.strokeCircle(biteAnchor.x, biteAnchor.y, 8 + creature.attackBlend * 5);

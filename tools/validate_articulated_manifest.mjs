@@ -7,6 +7,7 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const manifestPath = join(root, 'public/assets/generated/articulated-creatures.parts.json');
 const assetsDir = join(root, 'public/assets/generated');
 const validMotionKinds = new Set(['root', 'body', 'tail', 'fin', 'jaw']);
+const validAnatomyRoles = new Set(['head', 'jaw', 'torso', 'tail', 'fin']);
 const validRarities = new Set(['common', 'uncommon', 'rare', 'epic', 'legendary']);
 const validBiomes = new Set([1, 2, 3, 4]);
 const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
@@ -36,6 +37,72 @@ function numberTuple(value, length) {
 
 function positiveNumber(value) {
   return finiteNumber(value) && value > 0;
+}
+
+function optionalUnitNumber(owner, key, value) {
+  if (value === undefined) return;
+  if (!finiteNumber(value) || value < 0 || value > 1) fail(`${owner}.${key} must be a number from 0 to 1`);
+}
+
+function optionalPositiveRange(owner, key, value, min, max) {
+  if (value === undefined) return;
+  if (!finiteNumber(value) || value < min || value > max) fail(`${owner}.${key} must be a number from ${min} to ${max}`);
+}
+
+function optionalColor(owner, key, value) {
+  if (value === undefined) return;
+  if (!Number.isInteger(value) || value < 0x000000 || value > 0xffffff) fail(`${owner}.${key} must be a 24-bit integer color`);
+}
+
+function validateSocketStyle(owner, style) {
+  if (style === undefined) return;
+  if (!isPlainObject(style)) {
+    fail(`${owner} must be an object`);
+    return;
+  }
+  optionalUnitNumber(owner, 'alpha', style.alpha);
+  optionalUnitNumber(owner, 'bridgeAlpha', style.bridgeAlpha);
+  optionalUnitNumber(owner, 'bridgeStunnedAlpha', style.bridgeStunnedAlpha);
+  optionalUnitNumber(owner, 'bridgeCoreAlpha', style.bridgeCoreAlpha);
+  optionalUnitNumber(owner, 'bridgeCoreStunnedAlpha', style.bridgeCoreStunnedAlpha);
+  optionalColor(owner, 'bridgeColor', style.bridgeColor);
+  optionalColor(owner, 'bridgeCoreColor', style.bridgeCoreColor);
+  optionalPositiveRange(owner, 'bridgeWidthScale', style.bridgeWidthScale, 0.1, 2.5);
+  optionalPositiveRange(owner, 'bridgeSleeveScale', style.bridgeSleeveScale, 0.05, 1.2);
+}
+
+function validateMurkTint(owner, tint) {
+  if (tint === undefined) return;
+  if (!isPlainObject(tint)) {
+    fail(`${owner} must be an object`);
+    return;
+  }
+  optionalColor(owner, 'color', tint.color);
+  if (tint.color === undefined) fail(`${owner}.color is required`);
+  if (!finiteNumber(tint.intensity) || tint.intensity < 0 || tint.intensity > 1) {
+    fail(`${owner}.intensity must be a number from 0 to 1`);
+  }
+  optionalUnitNumber(owner, 'stunnedIntensity', tint.stunnedIntensity);
+}
+
+function validateAnatomy(owner, anatomy) {
+  if (!isPlainObject(anatomy)) {
+    fail(`${owner}.anatomy must be an object`);
+    return;
+  }
+  if (!validAnatomyRoles.has(anatomy.role)) fail(`${owner}.anatomy.role ${String(anatomy.role)} is not supported`);
+  if (!positiveNumber(anatomy.mass) || anatomy.mass > 12) fail(`${owner}.anatomy.mass must be a positive number up to 12`);
+  if (!finiteNumber(anatomy.drag) || anatomy.drag < 0 || anatomy.drag > 5) fail(`${owner}.anatomy.drag must be a number from 0 to 5`);
+  if (!finiteNumber(anatomy.angularDrag) || anatomy.angularDrag < 0 || anatomy.angularDrag > 5) {
+    fail(`${owner}.anatomy.angularDrag must be a number from 0 to 5`);
+  }
+  if (typeof anatomy.severable !== 'boolean') fail(`${owner}.anatomy.severable must be a boolean`);
+  if (!positiveNumber(anatomy.breakThreshold) || anatomy.breakThreshold > 5) {
+    fail(`${owner}.anatomy.breakThreshold must be a positive number up to 5`);
+  }
+  if (anatomy.mobilityFactor !== undefined && (!finiteNumber(anatomy.mobilityFactor) || anatomy.mobilityFactor < 0.05 || anatomy.mobilityFactor > 1.2)) {
+    fail(`${owner}.anatomy.mobilityFactor must be a number from 0.05 to 1.2 when present`);
+  }
 }
 
 function validateNumberTuple(owner, key, value, length) {
@@ -116,6 +183,96 @@ async function validateTexture(creature, part) {
   }
 }
 
+async function validateDetachedTexture(creature, part) {
+  const owner = `${creature.id}.${part.id}`;
+  if (part.detachedTexture === undefined && part.detachedTextureKey === undefined) return;
+  if (typeof part.detachedTextureKey !== 'string' || !part.detachedTextureKey) {
+    fail(`${owner}.detachedTextureKey must be a non-empty string when detachedTexture is present`);
+  }
+  if (typeof part.detachedTexture !== 'string' || !part.detachedTexture) {
+    fail(`${owner}.detachedTexture must be a non-empty filename when detachedTextureKey is present`);
+    return;
+  }
+  const texturePath = join(assetsDir, basename(part.detachedTexture));
+  try {
+    await access(texturePath);
+  } catch {
+    fail(`${owner}.detachedTexture missing file: ${part.detachedTexture}`);
+    return;
+  }
+  try {
+    const size = await imageSize(texturePath);
+    if (numberTuple(part.size, 2)) {
+      const [expectedW, expectedH] = part.size;
+      if (Math.round(size.width) !== Math.round(expectedW) || Math.round(size.height) !== Math.round(expectedH)) {
+        fail(`${owner}.size ${expectedW}x${expectedH} does not match ${part.detachedTexture} ${size.width}x${size.height}`);
+      }
+    }
+  } catch (error) {
+    fail(`${owner}.detachedTexture could not be inspected: ${error.message}`);
+  }
+}
+
+async function validateDamagedTexture(creature, part) {
+  const owner = `${creature.id}.${part.id}`;
+  if (part.damagedTexture === undefined && part.damagedTextureKey === undefined) return;
+  if (typeof part.damagedTextureKey !== 'string' || !part.damagedTextureKey) {
+    fail(`${owner}.damagedTextureKey must be a non-empty string when damagedTexture is present`);
+  }
+  if (typeof part.damagedTexture !== 'string' || !part.damagedTexture) {
+    fail(`${owner}.damagedTexture must be a non-empty filename when damagedTextureKey is present`);
+    return;
+  }
+  const texturePath = join(assetsDir, basename(part.damagedTexture));
+  try {
+    await access(texturePath);
+  } catch {
+    fail(`${owner}.damagedTexture missing file: ${part.damagedTexture}`);
+    return;
+  }
+  try {
+    const size = await imageSize(texturePath);
+    if (numberTuple(part.size, 2)) {
+      const [expectedW, expectedH] = part.size;
+      if (Math.round(size.width) !== Math.round(expectedW) || Math.round(size.height) !== Math.round(expectedH)) {
+        fail(`${owner}.size ${expectedW}x${expectedH} does not match ${part.damagedTexture} ${size.width}x${size.height}`);
+      }
+    }
+  } catch (error) {
+    fail(`${owner}.damagedTexture could not be inspected: ${error.message}`);
+  }
+}
+
+async function validateOverlaySeveredTexture(creature, overlay) {
+  const owner = `${creature.id}.${overlay.id}`;
+  if (overlay.severedTexture === undefined && overlay.severedTextureKey === undefined) return;
+  if (typeof overlay.severedTextureKey !== 'string' || !overlay.severedTextureKey) {
+    fail(`${owner}.severedTextureKey must be a non-empty string when severedTexture is present`);
+  }
+  if (typeof overlay.severedTexture !== 'string' || !overlay.severedTexture) {
+    fail(`${owner}.severedTexture must be a non-empty filename when severedTextureKey is present`);
+    return;
+  }
+  const texturePath = join(assetsDir, basename(overlay.severedTexture));
+  try {
+    await access(texturePath);
+  } catch {
+    fail(`${owner}.severedTexture missing file: ${overlay.severedTexture}`);
+    return;
+  }
+  try {
+    const size = await imageSize(texturePath);
+    if (numberTuple(overlay.size, 2)) {
+      const [expectedW, expectedH] = overlay.size;
+      if (Math.round(size.width) !== Math.round(expectedW) || Math.round(size.height) !== Math.round(expectedH)) {
+        fail(`${owner}.size ${expectedW}x${expectedH} does not match ${overlay.severedTexture} ${size.width}x${size.height}`);
+      }
+    }
+  } catch (error) {
+    fail(`${owner}.severedTexture could not be inspected: ${error.message}`);
+  }
+}
+
 async function validatePart(creature, part, index, partsById) {
   const owner = `${creature.id}.parts[${index}]`;
   if (!isPlainObject(part)) {
@@ -134,6 +291,7 @@ async function validatePart(creature, part, index, partsById) {
   if (!positiveNumber(part.hitRadius)) fail(`${owner}.hitRadius must be positive`);
   if (!positiveNumber(part.hpMultiplier)) fail(`${owner}.hpMultiplier must be positive`);
   if (!positiveNumber(part.damageMultiplier)) fail(`${owner}.damageMultiplier must be positive`);
+  validateAnatomy(owner, part.anatomy);
   if (!isPlainObject(part.motion)) {
     fail(`${owner}.motion must be an object`);
   } else if (!validMotionKinds.has(part.motion.kind)) {
@@ -165,6 +323,8 @@ async function validatePart(creature, part, index, partsById) {
     }
   }
   await validateTexture(creature, part);
+  await validateDetachedTexture(creature, part);
+  await validateDamagedTexture(creature, part);
 }
 
 async function validateSocketOverlay(creature, overlay, index, partsById) {
@@ -188,7 +348,39 @@ async function validateSocketOverlay(creature, overlay, index, partsById) {
     fail(`${owner}.size must be positive`);
   }
   if (!finiteNumber(overlay.depth)) fail(`${owner}.depth must be a finite number`);
+  validateSocketStyle(owner, overlay);
   await validateTexture(creature, overlay);
+  await validateOverlaySeveredTexture(creature, overlay);
+}
+
+function validateDamageStateParity(creature, partsById, socketOverlays) {
+  const torsoDamageParts = creature.parts.filter((part) =>
+    isPlainObject(part) &&
+    part.anatomy?.role === 'torso' &&
+    part.anatomy?.severable !== true &&
+    part.damagedTextureKey &&
+    part.damagedTexture
+  );
+  if (!torsoDamageParts.length) {
+    fail(`${creature.id}: needs at least one non-severable torso damagedTexture for readable cripple damage`);
+  }
+
+  const overlaysByChild = new Map(
+    socketOverlays
+      .filter((overlay) => isPlainObject(overlay))
+      .map((overlay) => [overlay.childId, overlay]),
+  );
+  for (const part of creature.parts) {
+    if (!isPlainObject(part) || !part.parentId || part.anatomy?.severable !== true) continue;
+    const overlay = overlaysByChild.get(part.id);
+    if (!overlay) {
+      fail(`${creature.id}.${part.id}: severable attached part needs a socket overlay for wound rendering`);
+      continue;
+    }
+    if (!overlay.severedTextureKey || !overlay.severedTexture) {
+      fail(`${creature.id}.${part.id}: severable attached part needs severedTexture on socket ${overlay.id}`);
+    }
+  }
 }
 
 async function validateCreature(creature, index) {
@@ -219,6 +411,8 @@ async function validateCreature(creature, index) {
     fail(`${creature.id}.parts must contain at least one part`);
     return { parts: 0, joints: 0 };
   }
+  validateSocketStyle(`${creature.id}.socketStyle`, creature.socketStyle);
+  validateMurkTint(`${creature.id}.murkTint`, creature.murkTint);
 
   const partsById = new Map();
   const textureKeys = new Map();
@@ -275,6 +469,7 @@ async function validateCreature(creature, index) {
       const key = `${part.parentId}->${part.id}`;
       if (!coveredJoints.has(key)) fail(`${creature.id}.${part.id} anchored joint needs a socket overlay`);
     }
+    validateDamageStateParity(creature, partsById, socketOverlays);
   }
   return {
     parts: creature.parts.length,

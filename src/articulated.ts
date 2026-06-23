@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature, ArticulatedCreatureManifest, ArticulatedPartState, Biome } from './types';
+import type { ArticulatedBehaviorKind, ArticulatedCreature, ArticulatedCreatureManifest, ArticulatedPartState, Biome } from './types';
 import { ENTITY_SCALE } from './constants';
 
 export const ARTICULATED_MANIFEST_KEY = 'articulated-creatures__parts';
@@ -229,6 +229,25 @@ const fallbackSerpentManifest: ArticulatedCreatureManifest = {
 const articulatedManifests = new Map<string, ArticulatedCreatureManifest>();
 articulatedManifests.set(fallbackSerpentManifest.id, fallbackSerpentManifest);
 const placeholderTextureKeys = new Set<string>();
+let articulatedManifestSource: 'fallback' | 'generated' = 'fallback';
+let articulatedManifestSchema = 'fallback';
+const legacyRuntimeCreatureIds = new Set(['abyssal-serpent', 'abyssal-gulper', 'abyssal-crownmaw']);
+
+function prototypeRuntimeEnabled() {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.has('prototypeThreats') || params.get('threats') === 'prototype' || params.has('playtest');
+}
+
+function inferredBehaviorFor(manifest: ArticulatedCreatureManifest): ArticulatedBehaviorKind {
+  const id = manifest.id.toLowerCase();
+  if (manifest.combat?.behavior) return manifest.combat.behavior;
+  if (id.includes('ray') || id.includes('boxer') || id.includes('mantis')) return 'charger';
+  if (id.includes('eel') || id.includes('serpent') || id.includes('gulper') || id.includes('maw')) return 'serpent';
+  if (id.includes('coral') || id.includes('shelf') || id.includes('anemone') || id.includes('harp')) return 'territorial';
+  if (id.includes('sponge') || id.includes('battery') || id.includes('crown')) return 'territorial';
+  return 'ambusher';
+}
 
 export function loadArticulatedAssets(scene: Phaser.Scene) {
   scene.load.json(ARTICULATED_MANIFEST_KEY, '/assets/generated/articulated-creatures.parts.json');
@@ -236,17 +255,34 @@ export function loadArticulatedAssets(scene: Phaser.Scene) {
     const file = scene.cache.json.get(ARTICULATED_MANIFEST_KEY) as ArticulatedManifestFile | undefined;
     if (!file?.creatures?.length) return;
     articulatedManifests.clear();
+    articulatedManifestSource = 'generated';
+    articulatedManifestSchema = file.schema;
     for (const manifest of file.creatures) {
       articulatedManifests.set(manifest.id, manifest);
       for (const part of manifest.parts) {
         const path = `/assets/generated/${part.texture}`;
         if (part.texture.endsWith('.svg')) scene.load.svg(part.textureKey, path);
         else scene.load.image(part.textureKey, path);
+        if (part.detachedTextureKey && part.detachedTexture) {
+          const detachedPath = `/assets/generated/${part.detachedTexture}`;
+          if (part.detachedTexture.endsWith('.svg')) scene.load.svg(part.detachedTextureKey, detachedPath);
+          else scene.load.image(part.detachedTextureKey, detachedPath);
+        }
+        if (part.damagedTextureKey && part.damagedTexture) {
+          const damagedPath = `/assets/generated/${part.damagedTexture}`;
+          if (part.damagedTexture.endsWith('.svg')) scene.load.svg(part.damagedTextureKey, damagedPath);
+          else scene.load.image(part.damagedTextureKey, damagedPath);
+        }
       }
       for (const overlay of manifest.socketOverlays ?? []) {
         const path = `/assets/generated/${overlay.texture}`;
         if (overlay.texture.endsWith('.svg')) scene.load.svg(overlay.textureKey, path);
         else scene.load.image(overlay.textureKey, path);
+        if (overlay.severedTextureKey && overlay.severedTexture) {
+          const severedPath = `/assets/generated/${overlay.severedTexture}`;
+          if (overlay.severedTexture.endsWith('.svg')) scene.load.svg(overlay.severedTextureKey, severedPath);
+          else scene.load.image(overlay.severedTextureKey, severedPath);
+        }
       }
     }
   });
@@ -260,44 +296,84 @@ export function articulatedCreatureDef(id: string) {
   return articulatedManifests.get(id) ?? fallbackSerpentManifest;
 }
 
+export function articulatedBehaviorFor(manifest: ArticulatedCreatureManifest) {
+  return inferredBehaviorFor(manifest);
+}
+
+export function articulatedRuntimeSpawnMode(manifest: ArticulatedCreatureManifest) {
+  if (manifest.runtime?.spawn) return manifest.runtime.spawn;
+  if (manifest.quality?.status === 'accepted') return 'accepted';
+  if (legacyRuntimeCreatureIds.has(manifest.id)) return 'legacy';
+  return 'prototype';
+}
+
+export function shouldSpawnArticulatedCreature(manifest: ArticulatedCreatureManifest) {
+  const mode = articulatedRuntimeSpawnMode(manifest);
+  if (mode === 'never') return false;
+  if (mode === 'accepted' || mode === 'legacy') return true;
+  return prototypeRuntimeEnabled();
+}
+
+export function articulatedRuntimeFocusIds() {
+  return [...legacyRuntimeCreatureIds];
+}
+
 export function ensureArticulatedTextures(scene: Phaser.Scene) {
   for (const manifest of articulatedCreatureDefs()) {
     for (const part of manifest.parts) {
-      if (scene.textures.exists(part.textureKey)) continue;
-      placeholderTextureKeys.add(part.textureKey);
-      const width = Math.max(8, Math.ceil(part.size[0]));
-      const height = Math.max(8, Math.ceil(part.size[1]));
-      const graphics = scene.add.graphics().setVisible(false);
-      graphics.clear();
-      graphics.fillStyle(manifest.color, 0.9);
-      graphics.fillEllipse(width * 0.5, height * 0.5, width * 0.86, height * 0.68);
-      graphics.lineStyle(2, 0x08131c, 0.85);
-      graphics.strokeEllipse(width * 0.5, height * 0.5, width * 0.86, height * 0.68);
-      if (part.motion.kind === 'jaw' || part.id === 'head') {
-        graphics.fillStyle(0x73fbd3, 0.8);
-        graphics.fillCircle(width * 0.72, height * 0.42, Math.max(2, height * 0.08));
+      const requiredTextureKeys = [
+        part.textureKey,
+        ...(part.detachedTextureKey ? [part.detachedTextureKey] : []),
+        ...(part.damagedTextureKey ? [part.damagedTextureKey] : []),
+      ];
+      for (const textureKey of requiredTextureKeys) {
+        if (scene.textures.exists(textureKey)) continue;
+        placeholderTextureKeys.add(textureKey);
+        const width = Math.max(8, Math.ceil(part.size[0]));
+        const height = Math.max(8, Math.ceil(part.size[1]));
+        const graphics = scene.add.graphics().setVisible(false);
+        graphics.clear();
+        graphics.fillStyle(manifest.color, 0.9);
+        graphics.fillEllipse(width * 0.5, height * 0.5, width * 0.86, height * 0.68);
+        graphics.lineStyle(2, 0x08131c, 0.85);
+        graphics.strokeEllipse(width * 0.5, height * 0.5, width * 0.86, height * 0.68);
+        if (part.motion.kind === 'jaw' || part.id === 'head') {
+          graphics.fillStyle(0x73fbd3, 0.8);
+          graphics.fillCircle(width * 0.72, height * 0.42, Math.max(2, height * 0.08));
+        }
+        graphics.generateTexture(textureKey, width, height);
+        graphics.destroy();
       }
-      graphics.generateTexture(part.textureKey, width, height);
-      graphics.destroy();
     }
     for (const overlay of manifest.socketOverlays ?? []) {
-      if (scene.textures.exists(overlay.textureKey)) continue;
-      placeholderTextureKeys.add(overlay.textureKey);
-      const width = Math.max(8, Math.ceil(overlay.size[0]));
-      const height = Math.max(8, Math.ceil(overlay.size[1]));
-      const graphics = scene.add.graphics().setVisible(false);
-      graphics.fillStyle(manifest.color, 0.58);
-      graphics.fillEllipse(width * 0.5, height * 0.5, width * 0.78, height * 0.55);
-      graphics.lineStyle(1, 0x08131c, 0.65);
-      graphics.strokeEllipse(width * 0.5, height * 0.5, width * 0.78, height * 0.55);
-      graphics.generateTexture(overlay.textureKey, width, height);
-      graphics.destroy();
+      const requiredTextureKeys = [overlay.textureKey, ...(overlay.severedTextureKey ? [overlay.severedTextureKey] : [])];
+      for (const textureKey of requiredTextureKeys) {
+        if (scene.textures.exists(textureKey)) continue;
+        placeholderTextureKeys.add(textureKey);
+        const width = Math.max(8, Math.ceil(overlay.size[0]));
+        const height = Math.max(8, Math.ceil(overlay.size[1]));
+        const graphics = scene.add.graphics().setVisible(false);
+        graphics.fillStyle(manifest.color, 0.58);
+        graphics.fillEllipse(width * 0.5, height * 0.5, width * 0.78, height * 0.55);
+        graphics.lineStyle(1, 0x08131c, 0.65);
+        graphics.strokeEllipse(width * 0.5, height * 0.5, width * 0.78, height * 0.55);
+        graphics.generateTexture(textureKey, width, height);
+        graphics.destroy();
+      }
     }
   }
 }
 
 export function articulatedPlaceholderTextureKeys() {
   return [...placeholderTextureKeys];
+}
+
+export function articulatedManifestInfo() {
+  return {
+    source: articulatedManifestSource,
+    schema: articulatedManifestSchema,
+    ids: [...articulatedManifests.keys()],
+  };
 }
 
 export function createArticulatedCreature(
@@ -324,7 +400,7 @@ export function createArticulatedCreature(
     attackBlend: 0,
     swimEffort: 0.35,
     color: manifest.color,
-    hostile: true,
+    hostile: manifest.combat?.hostile ?? inferredBehaviorFor(manifest) !== 'passive',
     scanned: false,
     scan: 0,
     scanning: false,
@@ -362,6 +438,9 @@ export function createArticulatedCreature(
       x,
       y,
       rotation: 0,
+      softRotation: 0,
+      softAngularVelocity: 0,
+      softInitialized: false,
       sprite: scene.add.image(x, y, part.textureKey)
         .setOrigin(part.origin[0], part.origin[1])
         .setDepth(2.1 + part.depth)
@@ -372,6 +451,17 @@ export function createArticulatedCreature(
       x,
       y,
       rotation: 0,
+      width: overlay.size[0] * ENTITY_SCALE,
+      height: overlay.size[1] * ENTITY_SCALE,
+      span: 0,
+      parentAnchorX: x,
+      parentAnchorY: y,
+      childAnchorX: x,
+      childAnchorY: y,
+      bridgeWidth: 0,
+      bridgeCoverage: 0,
+      parentCoverage: 0,
+      childCoverage: 0,
       sprite: scene.add.image(x, y, overlay.textureKey)
         .setOrigin(overlay.origin[0], overlay.origin[1])
         .setDepth(2.1 + overlay.depth)

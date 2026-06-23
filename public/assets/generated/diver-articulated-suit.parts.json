@@ -1,0 +1,465 @@
+{
+  "schema": "water9/diver-articulated-preview@1",
+  "id": "diver-articulated-suit",
+  "displayName": "Bespoke Articulated Diver Suit",
+  "source": "public/assets/generated/diver-articulated-suit-whole-painted.png",
+  "sourceTransform": {
+    "highSource": "public/assets/generated/diver-articulated-suit-v2-whole-painted-hi.png",
+    "process": "bespoke Imagegen v2 cohesive side-view source cut into player-suit body parts for motion review"
+  },
+  "parts": [
+    {
+      "id": "backpack",
+      "textureKey": "diver-articulated-suit-backpack",
+      "texture": "diver-articulated-suit-backpack.png",
+      "sourceCrop": {
+        "x": 245,
+        "y": 45,
+        "width": 150,
+        "height": 180
+      },
+      "offset": [
+        -123.5,
+        -87.0
+      ],
+      "origin": [
+        0.55,
+        0.48
+      ],
+      "size": [
+        150,
+        180
+      ],
+      "anchors": {
+        "torso": [
+          54,
+          46
+        ]
+      },
+      "depth": -0.04,
+      "parentId": "torso",
+      "parentAnchor": "backpack",
+      "anchor": "torso",
+      "restOffset": [
+        -10,
+        -8
+      ]
+    },
+    {
+      "id": "torso",
+      "textureKey": "diver-articulated-suit-torso",
+      "texture": "diver-articulated-suit-torso.png",
+      "sourceCrop": {
+        "x": 340,
+        "y": 75,
+        "width": 175,
+        "height": 215
+      },
+      "offset": [
+        -16.0,
+        -39.5
+      ],
+      "origin": [
+        0.48,
+        0.48
+      ],
+      "size": [
+        175,
+        215
+      ],
+      "anchors": {
+        "neck": [
+          78,
+          -60
+        ],
+        "backpack": [
+          -58,
+          -36
+        ],
+        "shoulder": [
+          78,
+          18
+        ],
+        "hipRear": [
+          -44,
+          88
+        ],
+        "hipFront": [
+          -2,
+          92
+        ]
+      },
+      "depth": 0
+    },
+    {
+      "id": "helmet",
+      "textureKey": "diver-articulated-suit-helmet",
+      "texture": "diver-articulated-suit-helmet.png",
+      "sourceCrop": {
+        "x": 485,
+        "y": 75,
+        "width": 145,
+        "height": 135
+      },
+      "offset": [
+        114.0,
+        -79.5
+      ],
+      "origin": [
+        0.42,
+        0.56
+      ],
+      "size": [
+        145,
+        135
+      ],
+      "anchors": {
+        "neck": [
+          -48,
+          30
+        ]
+      },
+      "depth": 0.06,
+      "parentId": "torso",
+      "parentAnchor": "neck",
+      "anchor": "neck",
+      "restOffset": [
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "upper-arm",
+      "textureKey": "diver-articulated-suit-upper-arm",
+      "texture": "diver-articulated-suit-upper-arm.png",
+      "sourceCrop": {
+        "x": 365,
+        "y": 160,
+        "width": 150,
+        "height": 95
+      },
+      "offset": [
+        -3.5,
+        -14.5
+      ],
+      "origin": [
+        0.18,
+        0.35
+      ],
+      "size": [
+        150,
+        95
+      ],
+      "anchors": {
+        "shoulder": [
+          -48,
+          -10
+        ],
+        "elbow": [
+          52,
+          28
+        ]
+      },
+      "depth": 0.08,
+      "parentId": "torso",
+      "parentAnchor": "shoulder",
+      "anchor": "shoulder",
+      "restOffset": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "forearm",
+      "textureKey": "diver-articulated-suit-forearm",
+      "texture": "diver-articulated-suit-forearm.png",
+      "sourceCrop": {
+        "x": 500,
+        "y": 185,
+        "width": 155,
+        "height": 80
+      },
+      "offset": [
+        134.0,
+        3.0
+      ],
+      "origin": [
+        0.17,
+        0.42
+      ],
+      "size": [
+        155,
+        80
+      ],
+      "anchors": {
+        "elbow": [
+          -52,
+          2
+        ],
+        "wrist": [
+          50,
+          12
+        ]
+      },
+      "depth": 0.09,
+      "parentId": "upper-arm",
+      "parentAnchor": "elbow",
+      "anchor": "elbow",
+      "restOffset": [
+        4,
+        0
+      ]
+    },
+    {
+      "id": "hand",
+      "textureKey": "diver-articulated-suit-hand",
+      "texture": "diver-articulated-suit-hand.png",
+      "sourceCrop": {
+        "x": 610,
+        "y": 205,
+        "width": 70,
+        "height": 55
+      },
+      "offset": [
+        201.5,
+        10.5
+      ],
+      "origin": [
+        0.25,
+        0.5
+      ],
+      "size": [
+        70,
+        55
+      ],
+      "anchors": {
+        "wrist": [
+          -18,
+          0
+        ],
+        "toolGrip": [
+          14,
+          2
+        ]
+      },
+      "depth": 0.1,
+      "parentId": "forearm",
+      "parentAnchor": "wrist",
+      "anchor": "wrist",
+      "restOffset": [
+        2,
+        0
+      ]
+    },
+    {
+      "id": "tool",
+      "textureKey": "diver-articulated-suit-tool",
+      "texture": "diver-articulated-suit-tool.png",
+      "sourceCrop": {
+        "x": 630,
+        "y": 205,
+        "width": 230,
+        "height": 90
+      },
+      "offset": [
+        301.5,
+        28.0
+      ],
+      "origin": [
+        0.12,
+        0.48
+      ],
+      "size": [
+        230,
+        90
+      ],
+      "anchors": {
+        "grip": [
+          -70,
+          -2
+        ],
+        "tip": [
+          92,
+          12
+        ]
+      },
+      "depth": 0.11,
+      "parentId": "hand",
+      "parentAnchor": "toolGrip",
+      "anchor": "grip",
+      "restOffset": [
+        8,
+        4
+      ]
+    },
+    {
+      "id": "rear-thigh",
+      "textureKey": "diver-articulated-suit-rear-thigh",
+      "texture": "diver-articulated-suit-rear-thigh.png",
+      "sourceCrop": {
+        "x": 220,
+        "y": 265,
+        "width": 170,
+        "height": 90
+      },
+      "offset": [
+        -138.5,
+        88.0
+      ],
+      "origin": [
+        0.68,
+        0.24
+      ],
+      "size": [
+        170,
+        90
+      ],
+      "anchors": {
+        "hip": [
+          46,
+          -28
+        ],
+        "knee": [
+          -44,
+          22
+        ]
+      },
+      "depth": -0.02,
+      "parentId": "torso",
+      "parentAnchor": "hipRear",
+      "anchor": "hip",
+      "restOffset": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "rear-shin",
+      "textureKey": "diver-articulated-suit-rear-shin",
+      "texture": "diver-articulated-suit-rear-shin.png",
+      "sourceCrop": {
+        "x": 65,
+        "y": 280,
+        "width": 185,
+        "height": 100
+      },
+      "offset": [
+        -286.0,
+        108.0
+      ],
+      "origin": [
+        0.76,
+        0.28
+      ],
+      "size": [
+        185,
+        100
+      ],
+      "anchors": {
+        "knee": [
+          58,
+          -26
+        ],
+        "foot": [
+          -54,
+          32
+        ]
+      },
+      "depth": -0.03,
+      "parentId": "rear-thigh",
+      "parentAnchor": "knee",
+      "anchor": "knee",
+      "restOffset": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "front-thigh",
+      "textureKey": "diver-articulated-suit-front-thigh",
+      "texture": "diver-articulated-suit-front-thigh.png",
+      "sourceCrop": {
+        "x": 255,
+        "y": 290,
+        "width": 170,
+        "height": 90
+      },
+      "offset": [
+        -103.5,
+        113.0
+      ],
+      "origin": [
+        0.52,
+        0.22
+      ],
+      "size": [
+        170,
+        90
+      ],
+      "anchors": {
+        "hip": [
+          -18,
+          -28
+        ],
+        "knee": [
+          38,
+          24
+        ]
+      },
+      "depth": 0.02,
+      "parentId": "torso",
+      "parentAnchor": "hipFront",
+      "anchor": "hip",
+      "restOffset": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "front-shin",
+      "textureKey": "diver-articulated-suit-front-shin",
+      "texture": "diver-articulated-suit-front-shin.png",
+      "sourceCrop": {
+        "x": 120,
+        "y": 315,
+        "width": 190,
+        "height": 105
+      },
+      "offset": [
+        -228.5,
+        145.5
+      ],
+      "origin": [
+        0.64,
+        0.22
+      ],
+      "size": [
+        190,
+        105
+      ],
+      "anchors": {
+        "knee": [
+          44,
+          -30
+        ],
+        "foot": [
+          -42,
+          36
+        ]
+      },
+      "depth": 0.01,
+      "parentId": "front-thigh",
+      "parentAnchor": "knee",
+      "anchor": "knee",
+      "restOffset": [
+        0,
+        2
+      ]
+    }
+  ],
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source-bespoke-imagegen",
+    "acceptanceNote": "Preview-only articulated diver suit. Needs side-view cleanup and runtime integration after human review."
+  }
+}

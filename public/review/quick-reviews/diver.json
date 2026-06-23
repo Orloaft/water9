@@ -1,0 +1,56 @@
+{
+  "schema": "water9/content-quick-review@1",
+  "generatedAt": "2026-06-17T01:39:36.193Z",
+  "id": "diver",
+  "preview": {
+    "found": true,
+    "id": "diver",
+    "name": "Diver",
+    "kind": "diver",
+    "rarity": "common",
+    "hostile": false,
+    "source": "src/scene-sandbox.ts",
+    "notes": "player animation preview",
+    "relativeUrl": "/?entity=diver",
+    "url": "http://127.0.0.1:5177/?entity=diver",
+    "devServerCommand": "npm run dev -- --port 5177",
+    "visualCheckCommand": null
+  },
+  "steps": [
+    {
+      "label": "npm run sandbox:index",
+      "startedAt": "2026-06-17T01:39:32.935Z",
+      "durationMs": 136,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 sandbox:index\n> node tools/build_sandbox_index.mjs\n\n{\n  \"outDir\": \"/mnt/nxt-dev/water9/public/review/sandbox\",\n  \"entries\": 86,\n  \"byKind\": {\n    \"articulated\": 14,\n    \"diver\": 1,\n    \"fish\": 36,\n    \"flora\": 12,\n    \"item\": 8,\n    \"object\": 7,\n    \"ore\": 8\n  }\n}",
+      "stderrTail": ""
+    },
+    {
+      "label": "npm run sandbox:preview -- --id diver --json",
+      "startedAt": "2026-06-17T01:39:33.071Z",
+      "durationMs": 120,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 sandbox:preview\n> node tools/preview_sandbox_entity.mjs --id diver --json\n\n{\n  \"found\": true,\n  \"id\": \"diver\",\n  \"name\": \"Diver\",\n  \"kind\": \"diver\",\n  \"rarity\": \"common\",\n  \"hostile\": false,\n  \"source\": \"src/scene-sandbox.ts\",\n  \"notes\": \"player animation preview\",\n  \"relativeUrl\": \"/?entity=diver\",\n  \"url\": \"http://127.0.0.1:5177/?entity=diver\",\n  \"devServerCommand\": \"npm run dev -- --port 5177\",\n  \"visualCheckCommand\": null\n}",
+      "stderrTail": ""
+    },
+    {
+      "label": "npm run sandbox:visual -- --ids diver --report tools/scratch/quick-review-diver-visual-report.json --out-dir tools/scratch/quick-review-diver-visuals",
+      "startedAt": "2026-06-17T01:39:33.191Z",
+      "durationMs": 3002,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 sandbox:visual\n> node tools/check_sandbox_visuals.mjs --ids diver --report tools/scratch/quick-review-diver-visual-report.json --out-dir tools/scratch/quick-review-diver-visuals\n\n{\n  \"checked\": 1,\n  \"outputDir\": \"/mnt/nxt-dev/water9/tools/scratch/quick-review-diver-visuals\",\n  \"reportPath\": \"/mnt/nxt-dev/water9/tools/scratch/quick-review-diver-visual-report.json\",\n  \"failures\": []\n}",
+      "stderrTail": ""
+    }
+  ],
+  "artifacts": {
+    "visualReport": "tools/scratch/quick-review-diver-visual-report.json",
+    "visualOutDir": "tools/scratch/quick-review-diver-visuals",
+    "acceptanceAudit": null,
+    "exemplarPack": null
+  },
+  "exemplarSummary": null,
+  "ok": true
+}

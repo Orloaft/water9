@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Rigging Sprint</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#29444b; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1320px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:14px 0 8px; color:var(--muted); font-size:13px; text-transform:uppercase; }
+    p { color:var(--muted); }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .summary, .badges { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .summary span, .badges span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    strong { color:var(--text); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:14px; align-items:start; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; }
+    .card header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Rigging Sprint</h1>
+    <p>Missing runtime registration handoff. Production extraction remains gated by human source approval.</p>
+    <div class="summary">
+      <span>missing runtime <strong>0</strong></span>
+      <span>sprint size <strong>0</strong></span>
+      <span>source approved in sprint <strong>0</strong></span>
+      <span>plan artifacts staged <strong>0</strong></span>
+      <span>plan previews staged <strong>0</strong></span>
+    </div>
+    <section class="card">
+      <h2>Sprint Commands</h2>
+      <h3>Review Every Source</h3>
+      <pre><code># source review queue: no missing-runtime candidates; rerun npm run content:rigging-sprint after source approval or new source intake --allow-unapproved</code></pre>
+      <h3>Mechanical Dry Run Only</h3>
+      <pre><code># mechanical dry-run queue: no missing-runtime candidates; rerun npm run content:rigging-sprint after source approval or new source intake --allow-unapproved</code></pre>
+      <h3>Production Plan Prep For Approved Sources</h3>
+      <pre><code># no sprint sources are approved yet</code></pre>
+      <h3>Post-Registration Coverage</h3>
+      <pre><code>npm run articulated:check &amp;&amp; npm run sandbox:index &amp;&amp; npm run content:runtime-coverage &amp;&amp; npm run content:runtime-coverage-check &amp;&amp; npm run content:rigging-sprint &amp;&amp; npm run content:rigging-sprint-check</code></pre>
+    </section>
+    <section class="grid"></section>
+  </main>
+</body>
+</html>

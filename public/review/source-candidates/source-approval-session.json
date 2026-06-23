@@ -1,0 +1,135 @@
+{
+  "schema": "water9/source-approval-session@1",
+  "generatedAt": "2026-06-18T17:21:09.538Z",
+  "generatedFrom": {
+    "approvalRunway": "/mnt/nxt-dev/water9/public/review/source-approval-runway.json",
+    "cohesionDecisions": "/mnt/nxt-dev/water9/public/review/source-candidates/source-cohesion-decision-template.json",
+    "nextReview": "/mnt/nxt-dev/water9/public/review/source-candidates/source-next-review.json",
+    "visualBoard": "/mnt/nxt-dev/water9/public/review/source-visual-board.json",
+    "goalReadiness": "/mnt/nxt-dev/water9/public/review/content-goal-readiness.json"
+  },
+  "policy": {
+    "humanAuthoredDecisionsRequired": true,
+    "automationCannotApproveSourceArt": true,
+    "wrapsExistingStrictApplyGate": true,
+    "keepsAcceptSourceCandidateAsFinalGate": true
+  },
+  "summary": {
+    "candidates": 20,
+    "readyForHumanReview": 20,
+    "humanApproved": 0,
+    "blockedBeforeHumanReview": 0,
+    "requiredChecks": 10,
+    "templateDecisions": 20,
+    "nextTarget": "brine-crown",
+    "nextTargetSpecies": "Brine Crown",
+    "strictGoalComplete": false,
+    "goalNextStage": "source-review"
+  },
+  "links": {
+    "approvalSession": "/review/source-candidates/source-approval-session.html",
+    "decisionWorkspace": "/review/source-candidates/source-cohesion-decision-template.html",
+    "approvalRunway": "/review/source-approval-runway.html",
+    "visualBoard": "/review/source-visual-board.html",
+    "nextReview": "/review/source-candidates/source-next-review.html",
+    "nextDecisionDraft": "/review/source-candidates/source-next-decision-draft.html",
+    "goalReadiness": "/review/content-goal-readiness.md"
+  },
+  "commands": {
+    "rebuildEvidence": "npm run source:approval-session && npm run source:approval-session-check",
+    "openWorkbench": "npm run source:approval-session:serve-smoke",
+    "focusedNextReview": "npm run source:next-review && npm run source:next-review-check && npm run source:next-review:serve-smoke",
+    "focusedDecisionDraft": "npm run source:next-decision-draft && npm run source:next-decision-draft-check && npm run source:next-decision-draft:serve-smoke",
+    "buildDecisionWorkspace": "npm run source:cohesion-decisions && npm run source:cohesion-decisions-check",
+    "previewNextSource": "npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual",
+    "previewNextRuntime": "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual",
+    "strictApply": "npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict",
+    "strictApplyWithApply": "npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict --apply"
+  },
+  "reviewSteps": [
+    {
+      "id": "open-session",
+      "title": "Open this session",
+      "command": "npm run source:approval-session:serve-smoke",
+      "evidence": "/review/source-candidates/source-approval-session.html"
+    },
+    {
+      "id": "review-focused-target",
+      "title": "Review the focused next target",
+      "command": "npm run source:next-review && npm run source:next-review-check && npm run source:next-review:serve-smoke",
+      "evidence": "/review/source-candidates/source-next-review.html"
+    },
+    {
+      "id": "prepare-focused-decision-draft",
+      "title": "Prepare the focused decision draft",
+      "command": "npm run source:next-decision-draft && npm run source:next-decision-draft-check && npm run source:next-decision-draft:serve-smoke",
+      "evidence": "/review/source-candidates/source-next-decision-draft.html"
+    },
+    {
+      "id": "review-evidence",
+      "title": "Inspect source evidence",
+      "command": "npm run source:cohesion-decisions && npm run source:cohesion-decisions-check",
+      "evidence": "/review/source-candidates/source-cohesion-decision-template.html"
+    },
+    {
+      "id": "fill-decisions",
+      "title": "Fill reviewer-authored decisions",
+      "command": null,
+      "evidence": "water9-source-cohesion-reviewed-decisions.json"
+    },
+    {
+      "id": "strict-dry-run",
+      "title": "Run strict apply dry-run",
+      "command": "npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict",
+      "evidence": "public/review/source-candidates/source-cohesion-decision-run-report.json"
+    },
+    {
+      "id": "apply-reviewed-decisions",
+      "title": "Apply only after dry-run succeeds",
+      "command": "npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict --apply",
+      "evidence": "source candidate approval metadata"
+    }
+  ],
+  "nextTarget": {
+    "id": "brine-crown",
+    "species": "Brine Crown",
+    "links": {
+      "source": "/assets/generated/fauna-brine-crown-whole-source.png",
+      "keyPreview": "/review/source-candidates/key-previews/brine-crown-key-preview.png",
+      "sandboxScreenshot": "/review/source-candidates/quick-reviews/brine-crown-source-preview.png",
+      "planPreview": "/review/articulated/brine-crown-plan-preview.png",
+      "quickReview": "/review/source-candidates/quick-reviews/brine-crown.html",
+      "focusedNextReview": "/review/source-candidates/source-next-review.html",
+      "focusedDecisionDraft": "/review/source-candidates/source-next-decision-draft.html",
+      "liveSourceSandbox": "/?entity=source-brine-crown&companion=diver",
+      "liveRuntimeSandbox": "/?sandbox=brine-crown&companion=diver"
+    },
+    "commands": {
+      "quickReview": "npm run source:quick-review -- --id brine-crown",
+      "sourcePreview": "npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual",
+      "runtimePreview": "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual",
+      "focusedNextReview": "npm run source:next-review && npm run source:next-review-check && npm run source:next-review:serve-smoke",
+      "focusedDecisionDraft": "npm run source:next-decision-draft && npm run source:next-decision-draft-check && npm run source:next-decision-draft:serve-smoke"
+    },
+    "evidenceFingerprintDigest": "735527f4f7fcd03b7b54436336d031f78497962f923e6a39854287cb3ef263cf"
+  },
+  "decisionOutput": {
+    "filename": "water9-source-cohesion-reviewed-decisions.json",
+    "schema": "water9/source-cohesion-decisions@1",
+    "sourceTemplate": "/review/source-candidates/source-cohesion-decision-template.json",
+    "requiredChecks": [
+      "whole-creature-cohesion",
+      "part-continuity-cohesion",
+      "readable-silhouette",
+      "no-collage-artifacts",
+      "non-placeholder-art-direction",
+      "crop-safe-anatomy",
+      "clean-magenta-key",
+      "gameplay-read",
+      "neutral-riggable-pose",
+      "visible-attack-lane"
+    ],
+    "strictApplyCommand": "npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict",
+    "strictApplyCommandWithApply": "npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict --apply"
+  }
+}

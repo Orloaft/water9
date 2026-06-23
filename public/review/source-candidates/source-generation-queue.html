@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Acquisition Board</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#29444b; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; --warn:#f0bd6b; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1360px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2, h3 { margin:0 0 8px; }
+    h2 { font-size:18px; }
+    h3 { margin-top:14px; font-size:13px; color:var(--warn); text-transform:uppercase; letter-spacing:.04em; }
+    p { margin:0 0 12px; color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:8px 0 0; padding:10px; border:1px solid var(--line); background:#050b0d; overflow:auto; white-space:pre-wrap; }
+    .summary { display:flex; flex-wrap:wrap; gap:9px; margin:18px 0 24px; }
+    .summary span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .summary strong { color:var(--text); margin-left:4px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(390px,1fr)); gap:14px; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:15px; }
+    .card header { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+    .card header span { flex:0 0 auto; width:30px; height:30px; display:grid; place-items:center; border:1px solid var(--line); color:var(--warn); }
+    dl { display:grid; gap:7px; margin:14px 0; }
+    dt { color:var(--muted); font-size:11px; text-transform:uppercase; }
+    dd { margin:0; overflow-wrap:anywhere; }
+    ul { margin:0; padding-left:18px; color:#bdd5d9; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Source Acquisition Board</h1>
+    <p>Generate every missing whole-source creature image on a flat <code>#ff00ff</code> magenta background. Use this board when the five-item sprint is too narrow.</p>
+    <div class="summary">
+      <span>queued candidates <strong>0</strong></span>
+      <span>prompt dir <strong>/mnt/nxt-dev/water9/public/review/source-candidates/generation-queue-prompts</strong></span>
+      <span>inbox <strong>tools/source-inbox</strong></span>
+    </div>
+    <pre><code>npm run source:generation-queue
+npm run source:inbox-capture
+npm run source:inbox-review
+npm run source:inbox-check -- --dir tools/source-inbox --strict
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict
+npm run source:check</code></pre>
+    <section class="grid"></section>
+  </main>
+</body>
+</html>

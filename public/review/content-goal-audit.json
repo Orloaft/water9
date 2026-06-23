@@ -1,0 +1,154 @@
+{
+  "schema": "water9/content-goal-audit@1",
+  "generatedAt": "2026-06-18T17:21:10.154Z",
+  "complete": false,
+  "strictGoalComplete": false,
+  "summary": {
+    "targetThreats": 20,
+    "acceptedThreats": 0,
+    "sandboxEntries": 125,
+    "sourceEntries": 20,
+    "sourceImages": 20,
+    "sourceApprovalReady": 20,
+    "sourceCriticRegenerationRequired": 0,
+    "researchAssignments": 3,
+    "auditedCandidates": 20,
+    "runtimeTargets": 20,
+    "articulatedCreatures": 33,
+    "visualFeedbackItems": 1,
+    "visualFeedbackBlockingItems": 1,
+    "visualRegenerationItems": 1,
+    "visualRegenerationBlockingItems": 1,
+    "visualRegenerationGateCredit": 0,
+    "rejectedFeedbackWithoutRegeneration": 0
+  },
+  "hardStop": "Do not mark the goal complete: preview/research/source/rigging infrastructure exists, but strict human source approval and threat acceptance are not complete.",
+  "requirements": [
+    {
+      "id": "quick-sandbox-preview",
+      "title": "Quick sandbox preview for any entity",
+      "status": "passed",
+      "passed": true,
+      "evidence": [
+        "sandbox manifest entries: 125",
+        "diver entry: true",
+        "abyssal-gulper entry: true",
+        "source preview entries: 20",
+        "goal preview smoke uses quick paired target preview: true"
+      ],
+      "blockers": [],
+      "commands": [
+        "npm run sandbox:preview -- --id abyssal-gulper --with diver --serve --open --visual",
+        "npm run sandbox:lab -- --id abyssal-gulper --with diver",
+        "npm run sandbox:visual:paired:targets:quick",
+        "npm run content:goal-preview-smoke"
+      ]
+    },
+    {
+      "id": "subagent-research",
+      "title": "Subagent research coverage for underwater fauna and flora",
+      "status": "passed",
+      "passed": true,
+      "evidence": [
+        "research assignments: 3",
+        "audited candidates: 20",
+        "audit failures: 0"
+      ],
+      "blockers": [],
+      "commands": [
+        "npm run research:subagent-pack",
+        "npm run research:dispatch",
+        "npm run research:audits",
+        "npm run research:regeneration-handoff"
+      ]
+    },
+    {
+      "id": "imagen-magenta-source",
+      "title": "Imagen/OpenAI source generation and magenta-key intake",
+      "status": "passed",
+      "passed": true,
+      "evidence": [
+        "source images present: 20/20",
+        "mechanically checked source images: 20",
+        "source image validation failures: 0",
+        "critic regeneration required: 0",
+        "current regeneration target: brine-crown",
+        "current replacement distinct-ready: false"
+      ],
+      "blockers": [],
+      "commands": [
+        "npm run source:generate-openai -- --id <candidate-id> --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "npm run source:inbox-capture -- --id <candidate-id> --open",
+        "npm run source:regeneration-workspace",
+        "npm run source:regeneration-workspace-check",
+        "python3 tools/validate_source_candidate_images.py --report tools/scratch/source-candidate-images-report.json"
+      ]
+    },
+    {
+      "id": "magenta-to-articulation",
+      "title": "Magenta extraction into articulated in-game entities",
+      "status": "partial",
+      "passed": false,
+      "evidence": [
+        "stage-board runtime targets: 20/20",
+        "articulated manifest creatures: 33",
+        "prototype creatures: 33",
+        "accepted threats: 0/20"
+      ],
+      "blockers": [
+        "20 articulated threats still need strict human acceptance"
+      ],
+      "commands": [
+        "npm run articulated:source-parity",
+        "npm run articulated:visual-cohesion",
+        "npm run content:acceptance-audit -- --id <runtime-id>",
+        "npm run content:review-session"
+      ]
+    },
+    {
+      "id": "visual-rejection-regeneration",
+      "title": "Rejected preview art is quarantined and routed to regeneration",
+      "status": "passed",
+      "passed": true,
+      "evidence": [
+        "visual feedback items: 1",
+        "blocking visual feedback items: 1",
+        "visual regeneration items: 1",
+        "visual regeneration blocking items: 1",
+        "regeneration strict gate credit: 0",
+        "rejected feedback missing regeneration route: 0"
+      ],
+      "blockers": [],
+      "commands": [
+        "npm run content:visual-feedback",
+        "npm run content:visual-feedback-check",
+        "npm run content:visual-regeneration",
+        "npm run content:visual-regeneration-check",
+        "npm run content:visual-regeneration:serve-smoke"
+      ]
+    },
+    {
+      "id": "rigorous-20-threat-gate",
+      "title": "20 new underwater threats pass rigorous quality gate",
+      "status": "incomplete",
+      "passed": false,
+      "evidence": [
+        "strict goal complete: false",
+        "accepted threats: 0/20",
+        "source approval-ready: 20",
+        "source critic regeneration required: 0",
+        "source sequencer next lane: approval-ready"
+      ],
+      "blockers": [
+        "20 threats still do not count toward the goal",
+        "20 source images still need human approval"
+      ],
+      "commands": [
+        "npm run content:goal-readiness-strict",
+        "npm run content:gate",
+        "npm run content:review-session",
+        "npm run content:production-proof"
+      ]
+    }
+  ]
+}

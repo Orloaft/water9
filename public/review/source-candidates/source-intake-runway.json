@@ -1,0 +1,40 @@
+{
+  "schema": "water9/source-intake-runway@1",
+  "generatedAt": "2026-06-18T17:06:56.157Z",
+  "generatedFrom": {
+    "sprint": "public/review/source-candidates/source-generation-sprint.json",
+    "inbox": "public/review/source-inbox/manifest.json",
+    "trace": "public/review/source-candidates/research-source-trace.json",
+    "rejections": "public/review/source-candidates/rejected-attempts.json",
+    "imagegenMarker": "tools/scratch/source-imagegen-handoff-marker.json",
+    "sourceCandidates": "public/review/source-candidates/source-candidates.json"
+  },
+  "summary": {
+    "sprint": 0,
+    "inboxReady": 0,
+    "inboxMissing": 0,
+    "inboxBlocked": 0,
+    "promptsWithAuditHardening": 0,
+    "activeMarker": "lantern-anemone-pit",
+    "activeMarkerInSprint": false,
+    "activeMarkerHasSource": true,
+    "activeMarkerIsHistorical": true,
+    "currentTarget": null,
+    "missingArtifactAttempts": 0,
+    "visualRejections": 0,
+    "openaiApiKeyAvailable": false
+  },
+  "commands": {
+    "openSprint": "npm run source:sprint:preview",
+    "capture": "npm run source:inbox-capture",
+    "imagegenHealth": "npm run source:imagegen-health",
+    "inboxCheck": "npm run source:inbox-check -- --dir tools/source-inbox --strict --ids ",
+    "inboxIngestDryRun": "npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids  --dry-run",
+    "inboxIngest": "npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids ",
+    "previewCheck": "npm run source:preview-check",
+    "sourceCheck": "npm run source:check",
+    "sourceGallery": "npm run source:gallery",
+    "status": "npm run content:status -- --json"
+  },
+  "candidates": []
+}

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Workstation</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0b1c21; --line:#294a54; --text:#e5f7f8; --muted:#9ab4ba; --accent:#75ddf3; --warn:#e2bd72; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1280px; margin:0 auto; padding:26px 18px 52px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); }
+    h2 { margin:0 0 10px; font-size:18px; }
+    p, li, td { color:var(--muted); }
+    a { color:var(--accent); }
+    code, pre, textarea { font-family:"SFMono-Regular",Consolas,monospace; }
+    code { color:#dffbff; }
+    pre, textarea { width:100%; margin:0; padding:12px; border:1px solid var(--line); border-radius:6px; background:#050b0d; color:var(--text); overflow:auto; }
+    textarea { min-height:320px; resize:vertical; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px; margin:18px 0; }
+    .panel { border:1px solid var(--line); border-radius:7px; background:var(--panel); padding:15px; }
+    .status { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .status span { border:1px solid var(--line); border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .status strong { color:var(--text); margin-left:4px; }
+    .escalation { border-color:var(--line); background:var(--panel); }
+    .escalation h2 { color:var(--text); }
+    table { width:100%; border-collapse:collapse; }
+    th, td { text-align:left; vertical-align:top; border-bottom:1px solid #203942; padding:8px; }
+    th { color:var(--text); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Source Workstation</h1>
+    <p>Single-target page for generating, saving, validating, and ingesting the current source-image blocker.</p>
+    <section class="panel">
+      <h2>Brine Crown <code>brine-crown</code></h2>
+      <div class="status">
+        <span>status <strong>needs-review</strong></span>
+        <span>doctor <strong>source-present</strong></span>
+        <span>queue rank <strong>none</strong></span>
+        <span>rejections <strong>0</strong></span>
+        <span>manual capture <strong>false</strong></span>
+      </div>
+      <p>Expected output: <code>public/assets/generated/fauna-brine-crown-whole-source.png</code></p>
+      <p>Prompt file: <code>none</code></p>
+    </section>
+    <section class="panel escalation">
+      <h2>Manual Capture Escalation</h2>
+      <p>Manual capture escalation starts at 5 missing-artifact attempts.</p>
+      <p><strong>Manual capture required:</strong> false</p>
+      <p><strong>No more inline retries:</strong> false</p>
+      <div class="status">
+        <span>missing artifacts <strong>0/5</strong></span>
+        <span>no more inline retries <strong>false</strong></span>
+      </div>
+      <p>Primary command: <code>npm run source:inbox-capture -- --id brine-crown --open</code></p>
+      <p>Expected inbox file: <code>tools/source-inbox/brine-crown.png</code></p>
+      <pre><code>npm run source:recover-inline -- --id brine-crown --image &lt;saved-image-path&gt; --copy --validate
+npm run source:recover-inline -- --id brine-crown --data-url-stdin --copy --validate
+npm run source:recover-inline -- --id brine-crown --stdin-base64 --stdin-filename brine-crown.png --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown
+npm run source:ingest-current -- --id brine-crown --dry-run
+npm run source:ingest-current -- --id brine-crown --apply</code></pre>
+    </section>
+    <section class="grid">
+      <article class="panel"><h2>Inbox Targets</h2><ul><li>tools/source-inbox/brine-crown.png</li><li>tools/source-inbox/fauna-brine-crown-whole-source.png</li></ul></article>
+      <article class="panel"><h2>Commands</h2><pre><code>npm run source:next-prompt -- --id brine-crown
+npm run source:inbox-capture -- --id brine-crown --open
+npm run source:inbox-capture
+npm run source:recover-inline -- --id brine-crown --image &lt;saved-image-path&gt; --copy --validate
+npm run source:recover-inline -- --id brine-crown --data-url-stdin --copy --validate
+npm run source:recover-inline -- --id brine-crown --stdin-base64 --stdin-filename brine-crown.png --copy --validate
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown
+npm run source:ingest-current -- --id brine-crown --dry-run
+npm run source:ingest-current -- --id brine-crown --apply
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown
+npm run source:image-check -- --id brine-crown
+npm run source:preview-check
+npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual
+npm run source:review-dossier
+npm run source:review-dossier-check
+npm run source:quick-review-all -- --no-build
+npm run source:check
+npm run source:gallery</code></pre></article>
+      <article class="panel"><h2>Operator Sequence</h2><ul><li>Open the current prompt with npm run source:next-prompt -- --id brine-crown.</li><li>Generate one cohesive whole-source creature on pure #ff00ff and save it as tools/source-inbox/brine-crown.png.</li><li>If the image is only available inline, use source:recover-inline instead of attempting more unrecoverable generations.</li><li>Run npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown; do not ingest until it passes.</li><li>Run npm run source:ingest-current -- --id brine-crown --dry-run, then apply with --apply if the dry run is clean.</li><li>Run npm run source:image-check -- --id brine-crown, npm run source:preview-check, and the source sandbox preview before human review.</li><li>Reject outputs with weak silhouette, detached parts, non-magenta background, crop-hostile anatomy, or non-riggable pose.</li></ul></article>
+      <article class="panel"><h2>Quality Gate Commands</h2><pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown
+npm run source:ingest-current -- --id brine-crown --dry-run
+npm run source:image-check -- --id brine-crown
+npm run source:preview-check
+npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check
+npm run source:check
+npm run content:status -- --json</code></pre></article>
+      <article class="panel"><h2>Page Utilities</h2><pre><code>npm run source:workstation
+npm run source:workstation-check
+npm run source:workstation:preview
+npm run source:ingest-current -- --id brine-crown --dry-run
+npm run source:ingest-current -- --id brine-crown --apply</code></pre></article>
+      <article class="panel"><h2>Capture UI</h2><p>Start the capture server with the target preselected:</p><pre><code>npm run source:inbox-capture -- --id brine-crown --open</code></pre><p>Default local URL after the server starts: <a href="http://127.0.0.1:5188/?id=brine-crown">http://127.0.0.1:5188/?id=brine-crown</a></p></article>
+    </section>
+    <section class="grid">
+      <article class="panel"><h2>Required Read</h2><ul><li>One rooted radial organism, not a collage of coral, starfish, and vent tubes.</li><li>Central crown or toxic throat is the first read.</li><li>Low anchored basal mat with uneven rays/fronds and visible hinge/root zones.</li><li>Readable toxic blisters, spine halo, and corrosive danger cues at game scale.</li><li>No loose detached parts, environmental shadows, haze, floor plane, or particles baked into the source.</li></ul></article>
+      <article class="panel"><h2>Reject If</h2><ul><li>Avoid a decorative reef; the source must read as a dangerous organism.</li><li>Avoid perfect radial ornament symmetry that feels like a logo.</li><li>Avoid magenta or hot pink body colors that will key out.</li><li>Avoid loose vent tubes or starfish arms that do not grow from the same mat.</li><li>Keep toxic clouds, bubbles, and brine puddles as separate VFX rather than baked source art.</li><li>Reject cephalopod tentacles, curled octopus arms, eyes, free-swimming anatomy, or loose starfish limbs.</li></ul></article>
+      <article class="panel"><h2>Review Checklist</h2><ul><li>Short radial lobes are fused flat into one basal mat and do not read as tentacles, octopus arms, or free limbs.</li><li>Central crown cup, toxic throat, brine blisters, roots, and mineral spines share one rooted vent-organism anatomy.</li><li>The creature remains stationary and low to the seafloor, not a free-swimming cephalopod or decorative starfish.</li></ul></article>
+      <article class="panel"><h2>Articulatable Parts</h2><ul><li>basal mat torso</li><li>central crown cup head</li><li>dark throat pore</li><li>front radial frond</li><li>left radial frond</li><li>right radial frond</li><li>rear radial fronds</li><li>brine blister bank</li><li>spine halo cluster</li><li>root tendril skirt</li></ul></article>
+    </section>
+    <section class="panel">
+      <h2>Generation Prompt</h2>
+      <textarea spellcheck="false">Flat pure #ff00ff magenta background, isolated full-body 2D game creature source art, cohesive underwater threat called Brine Crown, stationary abyssal vent organism forming one rooted toxic basal mat, inspired by coralline hydrothermal flora without starfish or cephalopod anatomy, central jagged crown cup with dark toxic throat, five to seven short thick radial lobes fused flat into the basal mat, opaque brine blisters glowing sickly green amber, mineral spines around the rim, root-like tendrils, gloomy charcoal deep teal bone oxidized copper palette, crisp readable silhouette, crop-friendly hinge zones, no environment, no shadows, no haze, no duplicate creatures, no detached limbs, no text</textarea>
+    </section>
+    <section class="panel">
+      <h2>Recent Rejections</h2>
+      <table><thead><tr><th>When</th><th>Kind</th><th>Reason</th></tr></thead><tbody><tr><td colspan="3">none</td></tr></tbody></table>
+    </section>
+  </main>
+</body>
+</html>

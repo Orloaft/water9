@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Approval Session</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; background:#061115; color:#dceeee; }
+    * { box-sizing:border-box; }
+    body { margin:0; }
+    main { max-width:1280px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); letter-spacing:0; }
+    h2 { margin:0 0 8px; font-size:1.05rem; }
+    p { color:#99b9bd; }
+    a { color:#79daf0; text-decoration:none; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; border:1px solid #24464c; border-radius:6px; background:#041012; padding:10px; }
+    .summary, .links, .commands { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; margin:18px 0; }
+    .summary span, .card, .policy { border:1px solid #24464c; background:#0b1d22; border-radius:6px; padding:14px; }
+    .summary strong { display:block; font-size:1.4rem; color:#f5ffff; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; margin:18px 0; }
+    .tile { border:1px solid #24464c; background:#041012; border-radius:6px; overflow:hidden; min-height:160px; }
+    .tile img { display:block; width:100%; aspect-ratio:16/10; object-fit:contain; background:#020607; }
+    .tile span, .tile strong { display:block; padding:8px 10px; color:#99b9bd; }
+    .missing { display:grid; place-items:center; }
+    .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; }
+    .warning { color:#ffd27a; }
+  </style>
+</head>
+<body>
+  <main data-source-approval-session data-next-target="brine-crown">
+    <h1>Water 9 Source Approval Session</h1>
+    <p>Reviewer-facing wrapper for the approval-ready source queue. It preserves the human approval boundary and routes completed decisions through the strict apply command.</p>
+    <div class="summary">
+      <span>ready<strong>20</strong></span>
+      <span>approved<strong>0</strong></span>
+      <span>blocked<strong>0</strong></span>
+      <span>checks each<strong>10</strong></span>
+    </div>
+    <section class="policy">
+      <h2>Policy</h2>
+      <p class="warning">This page does not approve content automatically. A human reviewer must inspect evidence, author the decision file, run the strict dry-run, then explicitly apply reviewed decisions.</p>
+      <pre><code>npm run source:cohesion-decisions &amp;&amp; npm run source:cohesion-decisions-check
+npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict
+npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict --apply</code></pre>
+    </section>
+    <section class="policy">
+      <h2>Next Target: Brine Crown</h2>
+      <p><code>brine-crown</code> · evidence fingerprint <code>735527f4f7fcd03b7b54436336d031f78497962f923e6a39854287cb3ef263cf</code></p>
+      <div class="grid">
+        <a class="tile" href="/assets/generated/fauna-brine-crown-whole-source.png"><img src="/assets/generated/fauna-brine-crown-whole-source.png" alt="source"><span>source</span></a>
+        <a class="tile" href="/review/source-candidates/key-previews/brine-crown-key-preview.png"><img src="/review/source-candidates/key-previews/brine-crown-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+        <a class="tile" href="/review/source-candidates/quick-reviews/brine-crown-source-preview.png"><img src="/review/source-candidates/quick-reviews/brine-crown-source-preview.png" alt="sandbox screenshot"><span>sandbox screenshot</span></a>
+        <a class="tile" href="/review/articulated/brine-crown-plan-preview.png"><img src="/review/articulated/brine-crown-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+      </div>
+      <div class="links">
+        <a href="/review/source-candidates/quick-reviews/brine-crown.html">quick review</a>
+        <a href="/review/source-candidates/source-next-review.html">focused next review</a>
+        <a href="/review/source-candidates/source-next-decision-draft.html">focused decision draft</a>
+        <a href="/?entity=source-brine-crown&amp;companion=diver">live source sandbox</a>
+        <a href="/?sandbox=brine-crown&amp;companion=diver">live runtime sandbox</a>
+        <a href="/review/source-candidates/source-cohesion-decision-template.html">batch decision workspace</a>
+      </div>
+    </section>
+    <section>
+      <h2>Review Steps</h2>
+      <div class="steps"><article class="card" data-source-approval-step="open-session">
+      <h2>Open this session</h2>
+      <p>/review/source-candidates/source-approval-session.html</p>
+      <pre><code>npm run source:approval-session:serve-smoke</code></pre>
+    </article>
+<article class="card" data-source-approval-step="review-focused-target">
+      <h2>Review the focused next target</h2>
+      <p>/review/source-candidates/source-next-review.html</p>
+      <pre><code>npm run source:next-review &amp;&amp; npm run source:next-review-check &amp;&amp; npm run source:next-review:serve-smoke</code></pre>
+    </article>
+<article class="card" data-source-approval-step="prepare-focused-decision-draft">
+      <h2>Prepare the focused decision draft</h2>
+      <p>/review/source-candidates/source-next-decision-draft.html</p>
+      <pre><code>npm run source:next-decision-draft &amp;&amp; npm run source:next-decision-draft-check &amp;&amp; npm run source:next-decision-draft:serve-smoke</code></pre>
+    </article>
+<article class="card" data-source-approval-step="review-evidence">
+      <h2>Inspect source evidence</h2>
+      <p>/review/source-candidates/source-cohesion-decision-template.html</p>
+      <pre><code>npm run source:cohesion-decisions &amp;&amp; npm run source:cohesion-decisions-check</code></pre>
+    </article>
+<article class="card" data-source-approval-step="fill-decisions">
+      <h2>Fill reviewer-authored decisions</h2>
+      <p>water9-source-cohesion-reviewed-decisions.json</p>
+      
+    </article>
+<article class="card" data-source-approval-step="strict-dry-run">
+      <h2>Run strict apply dry-run</h2>
+      <p>public/review/source-candidates/source-cohesion-decision-run-report.json</p>
+      <pre><code>npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict</code></pre>
+    </article>
+<article class="card" data-source-approval-step="apply-reviewed-decisions">
+      <h2>Apply only after dry-run succeeds</h2>
+      <p>source candidate approval metadata</p>
+      <pre><code>npm run source:cohesion-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict --apply</code></pre>
+    </article></div>
+    </section>
+  </main>
+</body>
+</html>

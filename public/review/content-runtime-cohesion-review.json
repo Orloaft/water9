@@ -1,0 +1,351 @@
+{
+  "schema": "water9/content-runtime-cohesion-review@1",
+  "generatedAt": "2026-06-18T17:21:10.524Z",
+  "generatedFrom": {
+    "qualityGateNext": "public/review/content-quality-gate-next.json",
+    "reviewSession": "public/review/content-review-session.json",
+    "threatDecisions": "public/review/content-threat-acceptance-decision-template.json"
+  },
+  "policy": {
+    "humanReviewerRequired": true,
+    "automationCannotApprove": true,
+    "sourceApprovalMustPrecedeThreatAcceptance": true,
+    "inGameAssemblyEvidenceRequired": true,
+    "screenshotAloneIsNotCapabilityProof": true
+  },
+  "target": {
+    "id": "brine-crown",
+    "species": "Brine Crown",
+    "nextGate": "human-source-approval",
+    "sourceApproved": false,
+    "threatAccepted": false,
+    "previewOnly": true,
+    "sourcePreviewBoundary": {
+      "schema": "water9/sandbox-production-boundary@1",
+      "reviewStage": "source-review",
+      "qualityStatus": "needs-review",
+      "productionReady": false,
+      "acceptedForContentGate": false,
+      "previewOnly": true,
+      "manualReviewRequired": "human source image approval before rigging",
+      "claim": "source-art preview only; source approval and rig acceptance are separate gates"
+    },
+    "runtimePreviewBoundary": {
+      "schema": "water9/sandbox-production-boundary@1",
+      "reviewStage": "prototype",
+      "qualityStatus": "prototype",
+      "productionReady": false,
+      "acceptedForContentGate": false,
+      "previewOnly": true,
+      "manualReviewRequired": "approved source art plus strict human rig and sandbox acceptance",
+      "claim": "preview-only prototype; render/visual pass is not human acceptance"
+    }
+  },
+  "media": [
+    {
+      "label": "source art",
+      "url": "/assets/generated/fauna-brine-crown-whole-source.png",
+      "present": true
+    },
+    {
+      "label": "magenta key preview",
+      "url": "/review/source-candidates/key-previews/brine-crown-key-preview.png",
+      "present": true
+    },
+    {
+      "label": "source sandbox preview",
+      "url": "/review/source-candidates/quick-reviews/brine-crown-source-preview.png",
+      "present": true
+    },
+    {
+      "label": "articulation plan preview",
+      "url": "/review/articulated/brine-crown-plan-preview.png",
+      "present": true
+    },
+    {
+      "label": "source parity overlay",
+      "url": "/review/articulated/source-parity/brine-crown-source-parity.png",
+      "present": true
+    },
+    {
+      "label": "contact sheet",
+      "url": "/review/articulated/brine-crown-contact.png",
+      "present": true
+    },
+    {
+      "label": "phase strip",
+      "url": "/review/articulated/brine-crown-phase.png",
+      "present": true
+    },
+    {
+      "label": "sandbox idle",
+      "url": "/review/content-review-cockpit/evidence/brine-crown__sandbox-idle.png",
+      "present": true
+    },
+    {
+      "label": "sandbox lunge",
+      "url": "/review/content-review-cockpit/evidence/brine-crown__sandbox-lunge.png",
+      "present": true
+    },
+    {
+      "label": "sandbox stunned",
+      "url": "/review/content-review-cockpit/evidence/brine-crown__sandbox-stunned.png",
+      "present": true
+    }
+  ],
+  "requiredChecks": [
+    "single-source-cohesion",
+    "readable-silhouette",
+    "anatomy-cohesion",
+    "production-visual-cohesion",
+    "socket-seams",
+    "motion-stability",
+    "sandbox-behavior"
+  ],
+  "decisionFile": {
+    "schema": "water9/content-threat-acceptance-decisions@1",
+    "reviewer": "<human-reviewer>",
+    "reviewedAt": "<ISO-8601 timestamp>",
+    "policy": {
+      "humanAuthored": true,
+      "automationCannotAcceptThreats": true,
+      "inspectSourceContactPhaseParityAndSandbox": true,
+      "screenshotAloneIsNotApproval": true
+    },
+    "decisions": [
+      {
+        "id": "brine-crown",
+        "species": "Brine Crown",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "brine-crown",
+        "overallNote": "",
+        "evidenceFingerprint": {
+          "schema": "water9/content-threat-acceptance-evidence-fingerprint@1",
+          "digest": "698670ef4b8fb397e3226e06e7dca2bf89078446cfe790f8b0be53060a17d3cb",
+          "files": {
+            "runtimeManifest": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/articulated-creatures.parts.json",
+              "exists": true,
+              "size": 480058,
+              "sha256": "c1af4edbaccd4587bf221fabee09bb8a6df4dfd06eb5702fc5994211041aabe7"
+            },
+            "sourceCandidateManifest": {
+              "path": "/mnt/nxt-dev/water9/public/review/source-candidates/source-candidates.json",
+              "exists": true,
+              "size": 120724,
+              "sha256": "c10ed4a5fe14f8564edffb83079ca6f716312f9bfe381e3b39d83327a57b83ba"
+            },
+            "reviewManifest": {
+              "path": "/mnt/nxt-dev/water9/public/review/articulated/review-manifest.json",
+              "exists": true,
+              "size": 584834,
+              "sha256": "ca7848943696b41ca589218fa43f44773103077ea347a728815506bec3340e83"
+            },
+            "sourceManifest": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown.articulated.json",
+              "exists": true,
+              "size": 7025,
+              "sha256": "2346256436cbd2ea94cb369581e741df90893faec69bf9125764bb5b6d203633"
+            },
+            "sourceImage": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-whole-source.png",
+              "exists": true,
+              "size": 337378,
+              "sha256": "96acc19e0fbeca2427b173239e821100f0d7f6b977c43a55b1ef3d733ce94825"
+            },
+            "sourceCandidateImage": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-whole-source.png",
+              "exists": true,
+              "size": 337378,
+              "sha256": "96acc19e0fbeca2427b173239e821100f0d7f6b977c43a55b1ef3d733ce94825"
+            },
+            "contact": {
+              "path": "/mnt/nxt-dev/water9/public/review/articulated/brine-crown-contact.png",
+              "exists": true,
+              "size": 4973009,
+              "sha256": "fd3a19ec041c55670d60811323dbb7c9303b8763fd6e43bfcab7ea38cd2b2e7b"
+            },
+            "phase": {
+              "path": "/mnt/nxt-dev/water9/public/review/articulated/brine-crown-phase.png",
+              "exists": true,
+              "size": 1594587,
+              "sha256": "90339a7dbe5697e3c3eed5670f2e1b63891cfd6daf8c3f921f876a614a5d9824"
+            },
+            "sourceParity": {
+              "path": "/mnt/nxt-dev/water9/public/review/articulated/source-parity/brine-crown-source-parity.png",
+              "exists": true,
+              "size": 6896,
+              "sha256": "1a6ec4134abf8f3f3d2c42a94cb476d8b43a3a8bd4d26c99c339338f8fc6e7a8"
+            },
+            "contactThumb": {
+              "path": "/mnt/nxt-dev/water9/public/review/articulated/thumbs/brine-crown-contact-thumb.png",
+              "exists": true,
+              "size": 153192,
+              "sha256": "7c5c7099da109c3f1e6d6b96fc546f173699d0779a336e5b727e590b5a7f20f4"
+            },
+            "phaseThumb": {
+              "path": "/mnt/nxt-dev/water9/public/review/articulated/thumbs/brine-crown-phase-thumb.png",
+              "exists": true,
+              "size": 107707,
+              "sha256": "2fdea2e5cb9cc260dcee000322079d889d927df49811c82f0cbbaf2e6cca1b82"
+            },
+            "sourceParityThumb": {
+              "path": "/mnt/nxt-dev/water9/public/review/articulated/thumbs/brine-crown-source-parity-thumb.png",
+              "exists": true,
+              "size": 5887,
+              "sha256": "80d4bbf35c5ddf4d2829b757921a189dc5a953f2578e27f3a1189099604305b5"
+            },
+            "sourceThumb": {
+              "path": "/mnt/nxt-dev/water9/public/review/articulated/thumbs/brine-crown-source-thumb.png",
+              "exists": true,
+              "size": 86421,
+              "sha256": "08f57b28b920029142353869d8bf608da64fb441a048674cec3acd538843661b"
+            },
+            "sandboxScreenshot": {
+              "path": "/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals/brine-crown__prototype__with-diver__idle.png",
+              "exists": true,
+              "size": 191805,
+              "sha256": "498de619b747b864b91db9e482f5a48e4c00aa5217b107d1787d688777155bd0"
+            },
+            "sandbox-idle-screenshot": {
+              "path": "/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals/brine-crown__prototype__with-diver__idle.png",
+              "exists": true,
+              "size": 191805,
+              "sha256": "498de619b747b864b91db9e482f5a48e4c00aa5217b107d1787d688777155bd0"
+            },
+            "sandbox-idle-sidecar": {
+              "path": "/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals/brine-crown__prototype__with-diver__idle.json",
+              "exists": true,
+              "size": 700,
+              "sha256": "005eaec85941ee0847b59f7c26015d903244c0342f63655174e8092133e48486"
+            },
+            "sandbox-lunge-screenshot": {
+              "path": "/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals/brine-crown__prototype__with-diver__lunge.png",
+              "exists": true,
+              "size": 190555,
+              "sha256": "e84a4e97fabdf48fba21b410078407db03d95032040714caeb32e8cdf8f29687"
+            },
+            "sandbox-lunge-sidecar": {
+              "path": "/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals/brine-crown__prototype__with-diver__lunge.json",
+              "exists": true,
+              "size": 702,
+              "sha256": "8fc9593cecc110544eee24d1f7edf0a46ae348d8c7aff61ba6f5941ba8b42598"
+            },
+            "sandbox-stunned-screenshot": {
+              "path": "/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals/brine-crown__prototype__with-diver__stunned.png",
+              "exists": true,
+              "size": 193165,
+              "sha256": "8370b6d7c81aed2abe10ff4acee46d8caa12e08ded8f88f3c8008405b31562a0"
+            },
+            "sandbox-stunned-sidecar": {
+              "path": "/mnt/nxt-dev/water9/tools/scratch/sandbox-target-paired-visuals/brine-crown__prototype__with-diver__stunned.json",
+              "exists": true,
+              "size": 706,
+              "sha256": "d6f252b40d9a7782341e36d61d267ae127afe2d64a3702edc09514a68d090c50"
+            },
+            "texture:fauna-brine-crown-core-damaged.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-core-damaged.png",
+              "exists": true,
+              "size": 282392,
+              "sha256": "b6db7236604e20e296a90a44e9543aaced13f83b71a4024cb01f0b03293e65be"
+            },
+            "texture:fauna-brine-crown-core.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-core.png",
+              "exists": true,
+              "size": 282265,
+              "sha256": "ce806387be062cb831a8a4c0e0ff8d59d07891d2b632335fb55765a236e09f0d"
+            },
+            "texture:fauna-brine-crown-head-socket.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-head-socket.png",
+              "exists": true,
+              "size": 9426,
+              "sha256": "64e5142679e1ffe4bdb58188059e98cc1dedff6d3f5cc631d9fa79b3660c1676"
+            },
+            "texture:fauna-brine-crown-head.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-head.png",
+              "exists": true,
+              "size": 31954,
+              "sha256": "a346754506c89ad6fd007c37fb9988c79ca226b7f5da4bda3819b639e59178e7"
+            },
+            "texture:fauna-brine-crown-lower-fin-socket.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-lower-fin-socket.png",
+              "exists": true,
+              "size": 12772,
+              "sha256": "420a7098319f20b25bccfa0b5aadacccec2e5b7dd858e6e1d066c247a5c6dfa6"
+            },
+            "texture:fauna-brine-crown-lower-fin.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-lower-fin.png",
+              "exists": true,
+              "size": 81619,
+              "sha256": "1d99ef683172b2c9f40708d4afb2a9dba8c2b1c3483cad385daf07df24699a1a"
+            },
+            "texture:fauna-brine-crown-tail-socket.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-tail-socket.png",
+              "exists": true,
+              "size": 10201,
+              "sha256": "72ea91cd975896520a4fd9b8dafee16b05ce0f49e9d8bdec94486cb4e1df7526"
+            },
+            "texture:fauna-brine-crown-tail.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-tail.png",
+              "exists": true,
+              "size": 61122,
+              "sha256": "785c15171e214a0aac7c78787e04ef5d5d0265045f65ce02e83afbbd9e8cae61"
+            },
+            "texture:fauna-brine-crown-upper-fin-socket.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-upper-fin-socket.png",
+              "exists": true,
+              "size": 9248,
+              "sha256": "dbb3e415b3dff9ba8ca3955959e5989a5ef72be967c90023616d004c9a2679d6"
+            },
+            "texture:fauna-brine-crown-upper-fin.png": {
+              "path": "/mnt/nxt-dev/water9/public/assets/generated/fauna-brine-crown-upper-fin.png",
+              "exists": true,
+              "size": 28978,
+              "sha256": "a659c279545c05122417dadfb46a8e59ee656d87ff7d58525578b2ff6aaa5a42"
+            }
+          }
+        },
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      }
+    ]
+  },
+  "commands": {
+    "rebuild": "npm run content:runtime-cohesion-review",
+    "check": "npm run content:runtime-cohesion-review-check",
+    "serveSmoke": "npm run content:runtime-cohesion-review:serve-smoke",
+    "sourcePreview": "npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual",
+    "runtimePreview": "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual",
+    "sandboxVisual": "npm run sandbox:visual -- --ids brine-crown --states idle,lunge,stunned --with diver",
+    "strictDryRun": "npm run content:threat-decisions-apply -- --decisions water9-threat-acceptance-reviewed-decisions.json --strict"
+  }
+}

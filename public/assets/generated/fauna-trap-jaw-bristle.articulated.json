@@ -1,0 +1,625 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-trap-jaw-bristle",
+  "runtimeCreatureId": "trap-jaw-bristle",
+  "displayName": "Trap-Jaw Bristle",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-trap-jaw-bristle-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "thorax-chain",
+      "key": "fauna-trap-jaw-bristle-thorax-chain",
+      "src": "fauna-trap-jaw-bristle-thorax-chain.png",
+      "sourceCrop": {
+        "x": 500,
+        "y": 250,
+        "width": 600,
+        "height": 350
+      },
+      "size": {
+        "width": 600,
+        "height": 350
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.4,
+        "drag": 0.84,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 1.5,
+        "mobilityFactor": 0.62
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.2,
+        "frequency": 1.05,
+        "phase": 0.0,
+        "lag": 0.08
+      },
+      "damagedSrc": "fauna-trap-jaw-bristle-thorax-chain-damaged.png",
+      "damagedKey": "fauna-trap-jaw-bristle-thorax-chain-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "abdomen-chain",
+      "key": "fauna-trap-jaw-bristle-abdomen-chain",
+      "src": "fauna-trap-jaw-bristle-abdomen-chain.png",
+      "sourceCrop": {
+        "x": 260,
+        "y": 340,
+        "width": 520,
+        "height": 300
+      },
+      "size": {
+        "width": 520,
+        "height": 300
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.0,
+        "drag": 0.84,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 1.0,
+        "mobilityFactor": 0.68
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.4,
+        "frequency": 1.18,
+        "phase": 0.55,
+        "lag": 0.32
+      },
+      "damagedSrc": "fauna-trap-jaw-bristle-abdomen-chain-damaged.png",
+      "damagedKey": "fauna-trap-jaw-bristle-abdomen-chain-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "tail-anchor",
+      "key": "fauna-trap-jaw-bristle-tail-anchor",
+      "src": "fauna-trap-jaw-bristle-tail-anchor.png",
+      "sourceCrop": {
+        "x": 90,
+        "y": 430,
+        "width": 310,
+        "height": 250
+      },
+      "size": {
+        "width": 310,
+        "height": 250
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.74,
+        "drag": 1.08,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.8,
+        "frequency": 1.55,
+        "phase": 1.05,
+        "lag": 0.62
+      }
+    },
+    {
+      "id": "front-collar",
+      "key": "fauna-trap-jaw-bristle-front-collar",
+      "src": "fauna-trap-jaw-bristle-front-collar.png",
+      "sourceCrop": {
+        "x": 890,
+        "y": 250,
+        "width": 330,
+        "height": 330
+      },
+      "size": {
+        "width": 330,
+        "height": 330
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 1.5,
+        "drag": 0.84,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 1.08,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.9,
+        "frequency": 1.22,
+        "phase": 0.22,
+        "lag": 0.16
+      },
+      "damagedSrc": "fauna-trap-jaw-bristle-front-collar-damaged.png",
+      "damagedKey": "fauna-trap-jaw-bristle-front-collar-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "head-shield",
+      "key": "fauna-trap-jaw-bristle-head-shield",
+      "src": "fauna-trap-jaw-bristle-head-shield.png",
+      "sourceCrop": {
+        "x": 1050,
+        "y": 250,
+        "width": 340,
+        "height": 350
+      },
+      "size": {
+        "width": 340,
+        "height": 350
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.55,
+        "drag": 0.84,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 1.2,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.4,
+        "frequency": 1.36,
+        "phase": 0.34,
+        "lag": 0.12
+      }
+    },
+    {
+      "id": "throat-piston",
+      "key": "fauna-trap-jaw-bristle-throat-piston",
+      "src": "fauna-trap-jaw-bristle-throat-piston.png",
+      "sourceCrop": {
+        "x": 1120,
+        "y": 335,
+        "width": 310,
+        "height": 200
+      },
+      "size": {
+        "width": 310,
+        "height": 200
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.35,
+        "drag": 1.08,
+        "angularDrag": 0.58,
+        "severable": false,
+        "breakThreshold": 0.52,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 6.0,
+        "frequency": 2.4,
+        "phase": 0.6,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "upper-mandible",
+      "key": "fauna-trap-jaw-bristle-upper-mandible",
+      "src": "fauna-trap-jaw-bristle-upper-mandible.png",
+      "sourceCrop": {
+        "x": 1210,
+        "y": 220,
+        "width": 390,
+        "height": 250
+      },
+      "size": {
+        "width": 390,
+        "height": 250
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.44,
+        "drag": 1.08,
+        "angularDrag": 0.58,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.96
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 18.0,
+        "frequency": 3.2,
+        "phase": 0.04,
+        "lag": 0.06
+      }
+    },
+    {
+      "id": "lower-mandible",
+      "key": "fauna-trap-jaw-bristle-lower-mandible",
+      "src": "fauna-trap-jaw-bristle-lower-mandible.png",
+      "sourceCrop": {
+        "x": 1200,
+        "y": 410,
+        "width": 390,
+        "height": 280
+      },
+      "size": {
+        "width": 390,
+        "height": 280
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.44,
+        "drag": 1.08,
+        "angularDrag": 0.58,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.96
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 18.0,
+        "frequency": 3.2,
+        "phase": 0.18,
+        "lag": 0.06
+      }
+    },
+    {
+      "id": "bristle-fan-upper",
+      "key": "fauna-trap-jaw-bristle-bristle-fan-upper",
+      "src": "fauna-trap-jaw-bristle-bristle-fan-upper.png",
+      "sourceCrop": {
+        "x": 420,
+        "y": 230,
+        "width": 650,
+        "height": 190
+      },
+      "size": {
+        "width": 650,
+        "height": 190
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.28,
+        "drag": 1.08,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.48,
+        "mobilityFactor": 0.94
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 7.2,
+        "frequency": 2.0,
+        "phase": 1.2,
+        "lag": 0.26
+      }
+    },
+    {
+      "id": "bristle-fan-lower",
+      "key": "fauna-trap-jaw-bristle-bristle-fan-lower",
+      "src": "fauna-trap-jaw-bristle-bristle-fan-lower.png",
+      "sourceCrop": {
+        "x": 420,
+        "y": 495,
+        "width": 760,
+        "height": 195
+      },
+      "size": {
+        "width": 760,
+        "height": 195
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.3,
+        "drag": 1.08,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.5,
+        "mobilityFactor": 0.94
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 7.8,
+        "frequency": 2.05,
+        "phase": 1.65,
+        "lag": 0.3
+      }
+    },
+    {
+      "id": "lateral-bristle-collar",
+      "key": "fauna-trap-jaw-bristle-lateral-bristle-collar",
+      "src": "fauna-trap-jaw-bristle-lateral-bristle-collar.png",
+      "sourceCrop": {
+        "x": 900,
+        "y": 350,
+        "width": 410,
+        "height": 230
+      },
+      "size": {
+        "width": 410,
+        "height": 230
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.28,
+        "drag": 1.08,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.48,
+        "mobilityFactor": 0.98
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 8.6,
+        "frequency": 2.35,
+        "phase": 1.9,
+        "lag": 0.22
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "abdomen-chain-socket",
+      "src": "fauna-trap-jaw-bristle-abdomen-chain-socket.png",
+      "parentId": "thorax-chain",
+      "childId": "abdomen-chain",
+      "sourcePartId": "thorax-chain",
+      "sourceCrop": {
+        "x": 0,
+        "y": 84,
+        "width": 154,
+        "height": 174
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "tail-anchor-socket",
+      "src": "fauna-trap-jaw-bristle-tail-anchor-socket.png",
+      "parentId": "abdomen-chain",
+      "childId": "tail-anchor",
+      "sourcePartId": "abdomen-chain",
+      "sourceCrop": {
+        "x": 0,
+        "y": 112,
+        "width": 120,
+        "height": 136
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "front-collar-socket",
+      "src": "fauna-trap-jaw-bristle-front-collar-socket.png",
+      "parentId": "thorax-chain",
+      "childId": "front-collar",
+      "sourcePartId": "thorax-chain",
+      "sourceCrop": {
+        "x": 452,
+        "y": 88,
+        "width": 128,
+        "height": 178
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "head-shield-socket",
+      "src": "fauna-trap-jaw-bristle-head-shield-socket.png",
+      "parentId": "front-collar",
+      "childId": "head-shield",
+      "sourcePartId": "front-collar",
+      "sourceCrop": {
+        "x": 198,
+        "y": 78,
+        "width": 118,
+        "height": 160
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "throat-piston-socket",
+      "src": "fauna-trap-jaw-bristle-throat-piston-socket.png",
+      "parentId": "head-shield",
+      "childId": "throat-piston",
+      "sourcePartId": "head-shield",
+      "sourceCrop": {
+        "x": 110,
+        "y": 144,
+        "width": 110,
+        "height": 94
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "upper-mandible-socket",
+      "src": "fauna-trap-jaw-bristle-upper-mandible-socket.png",
+      "parentId": "head-shield",
+      "childId": "upper-mandible",
+      "sourcePartId": "head-shield",
+      "sourceCrop": {
+        "x": 204,
+        "y": 20,
+        "width": 112,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "lower-mandible-socket",
+      "src": "fauna-trap-jaw-bristle-lower-mandible-socket.png",
+      "parentId": "head-shield",
+      "childId": "lower-mandible",
+      "sourcePartId": "head-shield",
+      "sourceCrop": {
+        "x": 198,
+        "y": 226,
+        "width": 118,
+        "height": 106
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "bristle-fan-upper-socket",
+      "src": "fauna-trap-jaw-bristle-bristle-fan-upper-socket.png",
+      "parentId": "thorax-chain",
+      "childId": "bristle-fan-upper",
+      "sourcePartId": "thorax-chain",
+      "sourceCrop": {
+        "x": 204,
+        "y": 0,
+        "width": 164,
+        "height": 110
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.45,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "bristle-fan-lower-socket",
+      "src": "fauna-trap-jaw-bristle-bristle-fan-lower-socket.png",
+      "parentId": "thorax-chain",
+      "childId": "bristle-fan-lower",
+      "sourcePartId": "thorax-chain",
+      "sourceCrop": {
+        "x": 214,
+        "y": 236,
+        "width": 166,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.45,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "lateral-bristle-collar-socket",
+      "src": "fauna-trap-jaw-bristle-lateral-bristle-collar-socket.png",
+      "parentId": "front-collar",
+      "childId": "lateral-bristle-collar",
+      "sourcePartId": "front-collar",
+      "sourceCrop": {
+        "x": 122,
+        "y": 172,
+        "width": 138,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.45,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    }
+  ],
+  "notes": "Prototype built from one magenta-background Trap-Jaw Bristle source: segmented ambush worm with trap mandibles, throat piston, bristle fans, front collar, abdomen chain, and tail anchor. The crop plan deliberately preserves overlap from the whole source so the assembled silhouette can be judged against the original art before any acceptance.",
+  "murkTint": {
+    "color": 10403502,
+    "intensity": 0.1,
+    "stunnedIntensity": 0.17
+  },
+  "socketStyle": {
+    "alpha": 0.54,
+    "bridgeColor": 462869,
+    "bridgeAlpha": 0.17,
+    "bridgeStunnedAlpha": 0.1,
+    "bridgeCoreColor": 14084296,
+    "bridgeCoreAlpha": 0.075,
+    "bridgeCoreStunnedAlpha": 0.04,
+    "bridgeWidthScale": 0.9,
+    "bridgeSleeveScale": 0.34
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "acceptanceNote": "Prototype generated from one magenta-background Trap-Jaw Bristle source. Needs source, contact-sheet, phase-strip, and sandbox visual acceptance before counting toward the 20-threat goal.",
+    "visualChecklist": {},
+    "reviewEvidence": {}
+  }
+}

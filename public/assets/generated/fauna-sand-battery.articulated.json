@@ -1,0 +1,616 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-sand-battery",
+  "runtimeCreatureId": "sand-battery",
+  "displayName": "Sand Battery",
+  "kind": "articulated-creature",
+  "depthBand": "deep",
+  "source": "public/assets/generated/fauna-sand-battery-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "root-body",
+      "key": "fauna-sand-battery-root-body",
+      "src": "fauna-sand-battery-root-body.png",
+      "sourceCrop": {
+        "x": 95,
+        "y": 55,
+        "width": 690,
+        "height": 420
+      },
+      "size": {
+        "width": 690,
+        "height": 420
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.7,
+        "drag": 0.84,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 1.6,
+        "mobilityFactor": 0.62
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.1,
+        "frequency": 1.08,
+        "phase": 0.0,
+        "lag": 0.08
+      },
+      "damagedSrc": "fauna-sand-battery-root-body-damaged.png",
+      "damagedKey": "fauna-sand-battery-root-body-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "tail-stub",
+      "key": "fauna-sand-battery-tail-stub",
+      "src": "fauna-sand-battery-tail-stub.png",
+      "sourceCrop": {
+        "x": 20,
+        "y": 150,
+        "width": 250,
+        "height": 260
+      },
+      "size": {
+        "width": 250,
+        "height": 260
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.62,
+        "drag": 1.12,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.8,
+        "frequency": 1.65,
+        "phase": 1.1,
+        "lag": 0.58
+      }
+    },
+    {
+      "id": "pectoral-frill-far",
+      "key": "fauna-sand-battery-pectoral-frill-far",
+      "src": "fauna-sand-battery-pectoral-frill-far.png",
+      "sourceCrop": {
+        "x": 115,
+        "y": 295,
+        "width": 320,
+        "height": 210
+      },
+      "size": {
+        "width": 320,
+        "height": 210
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.72,
+        "drag": 1.12,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 5.2,
+        "frequency": 1.8,
+        "phase": 1.55,
+        "lag": 0.4
+      }
+    },
+    {
+      "id": "sand-skirt",
+      "key": "fauna-sand-battery-sand-skirt",
+      "src": "fauna-sand-battery-sand-skirt.png",
+      "sourceCrop": {
+        "x": 95,
+        "y": 360,
+        "width": 760,
+        "height": 165
+      },
+      "size": {
+        "width": 760,
+        "height": 165
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.5,
+        "drag": 1.12,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.58,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 2.6,
+        "frequency": 2.05,
+        "phase": 1.25,
+        "lag": 0.24
+      }
+    },
+    {
+      "id": "pectoral-frill-near",
+      "key": "fauna-sand-battery-pectoral-frill-near",
+      "src": "fauna-sand-battery-pectoral-frill-near.png",
+      "sourceCrop": {
+        "x": 515,
+        "y": 305,
+        "width": 310,
+        "height": 210
+      },
+      "size": {
+        "width": 310,
+        "height": 210
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.72,
+        "drag": 1.12,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.84
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 6.0,
+        "frequency": 1.85,
+        "phase": 1.9,
+        "lag": 0.42
+      }
+    },
+    {
+      "id": "far-electrode-pad",
+      "key": "fauna-sand-battery-far-electrode-pad",
+      "src": "fauna-sand-battery-far-electrode-pad.png",
+      "sourceCrop": {
+        "x": 380,
+        "y": 45,
+        "width": 260,
+        "height": 180
+      },
+      "size": {
+        "width": 260,
+        "height": 180
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.44,
+        "drag": 1.12,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.58,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 3.8,
+        "frequency": 2.35,
+        "phase": 0.75,
+        "lag": 0.16
+      }
+    },
+    {
+      "id": "head-plate",
+      "key": "fauna-sand-battery-head-plate",
+      "src": "fauna-sand-battery-head-plate.png",
+      "sourceCrop": {
+        "x": 560,
+        "y": 35,
+        "width": 320,
+        "height": 330
+      },
+      "size": {
+        "width": 320,
+        "height": 330
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.7,
+        "drag": 0.84,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 1.22,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.7,
+        "frequency": 1.28,
+        "phase": 0.18,
+        "lag": 0.12
+      }
+    },
+    {
+      "id": "eye-bank",
+      "key": "fauna-sand-battery-eye-bank",
+      "src": "fauna-sand-battery-eye-bank.png",
+      "sourceCrop": {
+        "x": 520,
+        "y": 20,
+        "width": 330,
+        "height": 120
+      },
+      "size": {
+        "width": 330,
+        "height": 120
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.24,
+        "drag": 1.12,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.46,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.2,
+        "frequency": 2.3,
+        "phase": 0.4,
+        "lag": 0.18
+      }
+    },
+    {
+      "id": "near-electrode-pad",
+      "key": "fauna-sand-battery-near-electrode-pad",
+      "src": "fauna-sand-battery-near-electrode-pad.png",
+      "sourceCrop": {
+        "x": 615,
+        "y": 110,
+        "width": 240,
+        "height": 210
+      },
+      "size": {
+        "width": 240,
+        "height": 210
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.44,
+        "drag": 1.12,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.58,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.8,
+        "frequency": 2.55,
+        "phase": 1.05,
+        "lag": 0.2
+      }
+    },
+    {
+      "id": "dorsal-venom-spine",
+      "key": "fauna-sand-battery-dorsal-venom-spine",
+      "src": "fauna-sand-battery-dorsal-venom-spine.png",
+      "sourceCrop": {
+        "x": 650,
+        "y": 0,
+        "width": 290,
+        "height": 150
+      },
+      "size": {
+        "width": 290,
+        "height": 150
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.3,
+        "drag": 1.12,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 0.52,
+        "mobilityFactor": 0.92
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 8.4,
+        "frequency": 2.05,
+        "phase": 1.35,
+        "lag": 0.34
+      }
+    },
+    {
+      "id": "jaw-lip",
+      "key": "fauna-sand-battery-jaw-lip",
+      "src": "fauna-sand-battery-jaw-lip.png",
+      "sourceCrop": {
+        "x": 690,
+        "y": 120,
+        "width": 240,
+        "height": 260
+      },
+      "size": {
+        "width": 240,
+        "height": 260
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.44,
+        "drag": 1.12,
+        "angularDrag": 0.56,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.94
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 17.0,
+        "frequency": 3.0,
+        "phase": 0.1,
+        "lag": 0.08
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-stub-socket",
+      "src": "fauna-sand-battery-tail-stub-socket.png",
+      "parentId": "root-body",
+      "childId": "tail-stub",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 0,
+        "y": 150,
+        "width": 120,
+        "height": 112
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "pectoral-frill-far-socket",
+      "src": "fauna-sand-battery-pectoral-frill-far-socket.png",
+      "parentId": "root-body",
+      "childId": "pectoral-frill-far",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 0,
+        "y": 260,
+        "width": 142,
+        "height": 112
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "sand-skirt-socket",
+      "src": "fauna-sand-battery-sand-skirt-socket.png",
+      "parentId": "root-body",
+      "childId": "sand-skirt",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 218,
+        "y": 304,
+        "width": 190,
+        "height": 100
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "pectoral-frill-near-socket",
+      "src": "fauna-sand-battery-pectoral-frill-near-socket.png",
+      "parentId": "root-body",
+      "childId": "pectoral-frill-near",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 420,
+        "y": 264,
+        "width": 140,
+        "height": 118
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "far-electrode-pad-socket",
+      "src": "fauna-sand-battery-far-electrode-pad-socket.png",
+      "parentId": "root-body",
+      "childId": "far-electrode-pad",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 288,
+        "y": 0,
+        "width": 126,
+        "height": 110
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "head-plate-socket",
+      "src": "fauna-sand-battery-head-plate-socket.png",
+      "parentId": "root-body",
+      "childId": "head-plate",
+      "sourcePartId": "root-body",
+      "sourceCrop": {
+        "x": 500,
+        "y": 34,
+        "width": 142,
+        "height": 132
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "eye-bank-socket",
+      "src": "fauna-sand-battery-eye-bank-socket.png",
+      "parentId": "head-plate",
+      "childId": "eye-bank",
+      "sourcePartId": "head-plate",
+      "sourceCrop": {
+        "x": 40,
+        "y": 0,
+        "width": 120,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "near-electrode-pad-socket",
+      "src": "fauna-sand-battery-near-electrode-pad-socket.png",
+      "parentId": "head-plate",
+      "childId": "near-electrode-pad",
+      "sourcePartId": "head-plate",
+      "sourceCrop": {
+        "x": 76,
+        "y": 98,
+        "width": 118,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "dorsal-venom-spine-socket",
+      "src": "fauna-sand-battery-dorsal-venom-spine-socket.png",
+      "parentId": "head-plate",
+      "childId": "dorsal-venom-spine",
+      "sourcePartId": "head-plate",
+      "sourceCrop": {
+        "x": 150,
+        "y": 0,
+        "width": 104,
+        "height": 82
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    },
+    {
+      "id": "jaw-lip-socket",
+      "src": "fauna-sand-battery-jaw-lip-socket.png",
+      "parentId": "head-plate",
+      "childId": "jaw-lip",
+      "sourcePartId": "head-plate",
+      "sourceCrop": {
+        "x": 170,
+        "y": 134,
+        "width": 112,
+        "height": 98
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.17,
+      "bridgeCoreAlpha": 0.075,
+      "bridgeWidthScale": 0.88,
+      "bridgeSleeveScale": 0.32
+    }
+  ],
+  "notes": "Prototype built from one magenta-background Sand Battery source: flattened stargazer-inspired electric ambusher with head plate, mouth hinge, electrode pads, venom spine, shovel fins, tail stub, and burial skirt. Motion emphasizes buried idle, charge pulse, discharge flare, and rebury sifting.",
+  "murkTint": {
+    "color": 10338222,
+    "intensity": 0.1,
+    "stunnedIntensity": 0.17
+  },
+  "socketStyle": {
+    "alpha": 0.54,
+    "bridgeColor": 659476,
+    "bridgeAlpha": 0.17,
+    "bridgeStunnedAlpha": 0.1,
+    "bridgeCoreColor": 11924223,
+    "bridgeCoreAlpha": 0.075,
+    "bridgeCoreStunnedAlpha": 0.04,
+    "bridgeWidthScale": 0.88,
+    "bridgeSleeveScale": 0.32
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Prototype generated from one magenta-background Sand Battery source. Needs sandbox/contact-sheet acceptance before counting toward the 20-threat goal."
+  }
+}

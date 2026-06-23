@@ -1,0 +1,1397 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water9 Promote Approved Threats</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061014; --panel:#0a1b21; --line:#28444f; --text:#e5f6f8; --muted:#9bb8c1; --warn:#e8c06f; --ok:#76e0bb; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1360px; margin:0 auto; padding:28px 18px 48px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); letter-spacing:0; }
+    h2 { margin:0; font-size:1.1rem; }
+    h3 { margin:12px 0 8px; color:var(--muted); font-size:.8rem; text-transform:uppercase; }
+    p { color:var(--muted); }
+    a { color:#7ee8ff; text-decoration:none; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; overflow-wrap:anywhere; }
+    pre { margin:0; padding:10px; border:1px solid var(--line); background:#040c0f; white-space:pre-wrap; }
+    textarea { width:100%; min-height:340px; border:1px solid var(--line); background:#040c0f; color:var(--text); border-radius:6px; padding:10px; font:12px/1.45 "SFMono-Regular",Consolas,monospace; }
+    .notice { border:1px solid #6f5b2b; background:#1c170d; color:#efd99b; border-radius:6px; padding:12px; margin:16px 0; }
+    .summary, .badges, .links { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .summary span, .badges span, .links a { border:1px solid var(--line); background:#081820; border-radius:5px; padding:8px 10px; color:var(--muted); }
+    .workspace, .card { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:12px; margin-top:14px; }
+    .card header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    .card header strong { color:var(--warn); }
+    .card[data-ready="true"] header strong { color:var(--ok); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water9 Promote Approved Threats</h1>
+    <p>Target-only promotion runway for the 20-threat goal. This excludes non-target prototype rigs and prepares strict human-authored threat acceptance decisions for the mapped 20 target threats.</p>
+    <div class="notice">This page does not accept threats. It exports a 20-item decision file that must pass <code>content:threat-decisions-apply --strict</code>.</div>
+    <div class="summary">
+      <span>target rows <strong>20</strong></span>
+      <span>source approved <strong>0</strong></span>
+      <span>ready for decision <strong>0</strong></span>
+      <span>excluded non-target rigs <strong>0</strong></span>
+    </div>
+    <section class="workspace" data-promote-approved-threats-workspace>
+      <h2>Target Threat Decision File</h2>
+      <pre><code>npm run content:promote-approved-threats
+npm run content:promote-approved-threats-check
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict
+npm run content:goal-gate</code></pre>
+      <textarea data-promote-threat-decisions spellcheck="false">{
+  &quot;schema&quot;: &quot;water9/content-threat-acceptance-decisions@1&quot;,
+  &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+  &quot;reviewedAt&quot;: &quot;&lt;ISO-8601 timestamp&gt;&quot;,
+  &quot;policy&quot;: {
+    &quot;humanAuthored&quot;: true,
+    &quot;automationCannotAcceptThreats&quot;: true,
+    &quot;inspectSourceContactPhaseParityAndSandbox&quot;: true,
+    &quot;targetOnlyThreatGoal&quot;: true
+  },
+  &quot;decisions&quot;: [
+    {
+      &quot;id&quot;: &quot;abyssal-lantern-mantis&quot;,
+      &quot;species&quot;: &quot;Abyssal Lantern Mantis&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;abyssal-lantern-mantis&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;black-coral-gate&quot;,
+      &quot;species&quot;: &quot;Black Coral Gate&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;black-coral-gate&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;brine-crown&quot;,
+      &quot;species&quot;: &quot;Brine Crown&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;brine-crown&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;brine-mycelium-shelf&quot;,
+      &quot;species&quot;: &quot;Brine Mycelium Shelf&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;brine-mycelium-shelf&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;chain-vein-siphonophore&quot;,
+      &quot;species&quot;: &quot;Chain Vein Siphonophore&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;chain-vein-siphonophore&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;coronate-sting-crown&quot;,
+      &quot;species&quot;: &quot;Coronate Sting Crown&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;coronate-sting-crown&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;glass-sponge-sentinel&quot;,
+      &quot;species&quot;: &quot;Glass Sponge Sentinel&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;glass-sponge-sentinel&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;gulper-eel-maw&quot;,
+      &quot;species&quot;: &quot;Gulper Eel Maw&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;gulper-eel-maw&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;hadal-trencher-isopod&quot;,
+      &quot;species&quot;: &quot;Hadal Trencher Isopod&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;hadal-trencher-isopod&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;lantern-anemone-pit&quot;,
+      &quot;species&quot;: &quot;Lantern Anemone Pit&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;lantern-anemone-pit&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;predatory-tunicate-maw&quot;,
+      &quot;species&quot;: &quot;Predatory Tunicate Maw&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;predatory-tunicate-maw&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;razor-kelp-harp&quot;,
+      &quot;species&quot;: &quot;Razor Kelp Harp&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;razor-kelp-harp&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;reef-lion-moray&quot;,
+      &quot;species&quot;: &quot;Reef Lion Moray&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;reef-lion-moray&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;reliquary-siphonophore&quot;,
+      &quot;species&quot;: &quot;Reliquary Siphonophore&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;reliquary-siphonophore&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;saber-viperfish&quot;,
+      &quot;species&quot;: &quot;Saber Viperfish&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;saber-viperfish&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;thorn-fan-coralline&quot;,
+      &quot;species&quot;: &quot;Thorn Fan Coralline&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;thorn-fan-coralline&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;trench-harvest-sea-spider&quot;,
+      &quot;species&quot;: &quot;Trench Harvest Sea Spider&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;trench-harvest-sea-spider&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;tripod-stilt-stalker&quot;,
+      &quot;species&quot;: &quot;Tripod Stilt Stalker&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;tripod-stilt-stalker&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;vampire-cloak-squid&quot;,
+      &quot;species&quot;: &quot;Vampire Cloak Squid&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;vampire-cloak-squid&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;vent-claw-yeti&quot;,
+      &quot;species&quot;: &quot;Vent-Claw Yeti&quot;,
+      &quot;status&quot;: &quot;needs-review&quot;,
+      &quot;reviewer&quot;: &quot;&lt;human-reviewer&gt;&quot;,
+      &quot;sourceCandidateId&quot;: &quot;vent-claw-yeti&quot;,
+      &quot;overallNote&quot;: &quot;&quot;,
+      &quot;visualChecks&quot;: {
+        &quot;single-source-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;readable-silhouette&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;anatomy-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;production-visual-cohesion&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;socket-seams&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;motion-stability&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        },
+        &quot;sandbox-behavior&quot;: {
+          &quot;score&quot;: null,
+          &quot;note&quot;: &quot;&quot;
+        }
+      }
+    }
+  ]
+}</textarea>
+      <p><a href="#" data-promote-threat-decisions-download download="water9-target-threat-acceptance-decisions.json">Download target-only threat decisions</a></p>
+    </section>
+    <section class="grid"><article class="card" data-promote-threat="abyssal-lantern-mantis">
+    <header>
+      <div><h2>Abyssal Lantern Mantis</h2><code>abyssal-lantern-mantis</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/abyssal-lantern-mantis.html">cockpit</a>
+      <a href="/?sandbox=abyssal-lantern-mantis&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/abyssal-lantern-mantis.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual
+npm run content:accept -- --id abyssal-lantern-mantis --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate abyssal-lantern-mantis \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="black-coral-gate">
+    <header>
+      <div><h2>Black Coral Gate</h2><code>black-coral-gate</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/black-coral-gate.html">cockpit</a>
+      <a href="/?sandbox=black-coral-gate&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/black-coral-gate.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual
+npm run content:accept -- --id black-coral-gate --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate black-coral-gate \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="brine-crown">
+    <header>
+      <div><h2>Brine Crown</h2><code>brine-crown</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/brine-crown.html">cockpit</a>
+      <a href="/?sandbox=brine-crown&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/brine-crown.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual
+npm run content:accept -- --id brine-crown --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate brine-crown \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="brine-mycelium-shelf">
+    <header>
+      <div><h2>Brine Mycelium Shelf</h2><code>brine-mycelium-shelf</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/brine-mycelium-shelf.html">cockpit</a>
+      <a href="/?sandbox=brine-mycelium-shelf&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/brine-mycelium-shelf.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual
+npm run content:accept -- --id brine-mycelium-shelf --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate brine-mycelium-shelf \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="chain-vein-siphonophore">
+    <header>
+      <div><h2>Chain Vein Siphonophore</h2><code>chain-vein-siphonophore</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/chain-vein-siphonophore.html">cockpit</a>
+      <a href="/?sandbox=chain-vein-siphonophore&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/chain-vein-siphonophore.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual
+npm run content:accept -- --id chain-vein-siphonophore --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate chain-vein-siphonophore \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="coronate-sting-crown">
+    <header>
+      <div><h2>Coronate Sting Crown</h2><code>coronate-sting-crown</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/coronate-sting-crown.html">cockpit</a>
+      <a href="/?sandbox=coronate-sting-crown&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/coronate-sting-crown.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual
+npm run content:accept -- --id coronate-sting-crown --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate coronate-sting-crown \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="glass-sponge-sentinel">
+    <header>
+      <div><h2>Glass Sponge Sentinel</h2><code>glass-sponge-sentinel</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/glass-sponge-sentinel.html">cockpit</a>
+      <a href="/?sandbox=glass-sponge-sentinel&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/glass-sponge-sentinel.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual
+npm run content:accept -- --id glass-sponge-sentinel --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate glass-sponge-sentinel \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="gulper-eel-maw">
+    <header>
+      <div><h2>Gulper Eel Maw</h2><code>gulper-eel-maw</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/gulper-eel-maw.html">cockpit</a>
+      <a href="/?sandbox=gulper-eel-maw&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/gulper-eel-maw.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual
+npm run content:accept -- --id gulper-eel-maw --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate gulper-eel-maw \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="hadal-trencher-isopod">
+    <header>
+      <div><h2>Hadal Trencher Isopod</h2><code>hadal-trencher-isopod</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/hadal-trencher-isopod.html">cockpit</a>
+      <a href="/?sandbox=hadal-trencher-isopod&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/hadal-trencher-isopod.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual
+npm run content:accept -- --id hadal-trencher-isopod --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate hadal-trencher-isopod \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="lantern-anemone-pit">
+    <header>
+      <div><h2>Lantern Anemone Pit</h2><code>lantern-anemone-pit</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/lantern-anemone-pit.html">cockpit</a>
+      <a href="/?sandbox=lantern-anemone-pit&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/lantern-anemone-pit.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual
+npm run content:accept -- --id lantern-anemone-pit --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate lantern-anemone-pit \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="predatory-tunicate-maw">
+    <header>
+      <div><h2>Predatory Tunicate Maw</h2><code>predatory-tunicate-maw</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/predatory-tunicate-maw.html">cockpit</a>
+      <a href="/?sandbox=predatory-tunicate-maw&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/predatory-tunicate-maw.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual
+npm run content:accept -- --id predatory-tunicate-maw --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate predatory-tunicate-maw \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="razor-kelp-harp">
+    <header>
+      <div><h2>Razor Kelp Harp</h2><code>razor-kelp-harp</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/razor-kelp-harp.html">cockpit</a>
+      <a href="/?sandbox=razor-kelp-harp&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/razor-kelp-harp.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual
+npm run content:accept -- --id razor-kelp-harp --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate razor-kelp-harp \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="reef-lion-moray">
+    <header>
+      <div><h2>Reef Lion Moray</h2><code>reef-lion-moray</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/reef-lion-moray.html">cockpit</a>
+      <a href="/?sandbox=reef-lion-moray&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/reef-lion-moray.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual
+npm run content:accept -- --id reef-lion-moray --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate reef-lion-moray \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="reliquary-siphonophore">
+    <header>
+      <div><h2>Reliquary Siphonophore</h2><code>reliquary-siphonophore</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/reliquary-siphonophore.html">cockpit</a>
+      <a href="/?sandbox=reliquary-siphonophore&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/reliquary-siphonophore.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual
+npm run content:accept -- --id reliquary-siphonophore --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate reliquary-siphonophore \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="saber-viperfish">
+    <header>
+      <div><h2>Saber Viperfish</h2><code>saber-viperfish</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/saber-viperfish.html">cockpit</a>
+      <a href="/?sandbox=saber-viperfish&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/saber-viperfish.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual
+npm run content:accept -- --id saber-viperfish --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate saber-viperfish \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="thorn-fan-coralline">
+    <header>
+      <div><h2>Thorn Fan Coralline</h2><code>thorn-fan-coralline</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/thorn-fan-coralline.html">cockpit</a>
+      <a href="/?sandbox=thorn-fan-coralline&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/thorn-fan-coralline.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual
+npm run content:accept -- --id thorn-fan-coralline --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate thorn-fan-coralline \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="trench-harvest-sea-spider">
+    <header>
+      <div><h2>Trench Harvest Sea Spider</h2><code>trench-harvest-sea-spider</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/trench-harvest-sea-spider.html">cockpit</a>
+      <a href="/?sandbox=trench-harvest-sea-spider&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/trench-harvest-sea-spider.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual
+npm run content:accept -- --id trench-harvest-sea-spider --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate trench-harvest-sea-spider \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="tripod-stilt-stalker">
+    <header>
+      <div><h2>Tripod Stilt Stalker</h2><code>tripod-stilt-stalker</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/tripod-stilt-stalker.html">cockpit</a>
+      <a href="/?sandbox=tripod-stilt-stalker&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/tripod-stilt-stalker.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual
+npm run content:accept -- --id tripod-stilt-stalker --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate tripod-stilt-stalker \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="vampire-cloak-squid">
+    <header>
+      <div><h2>Vampire Cloak Squid</h2><code>vampire-cloak-squid</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/vampire-cloak-squid.html">cockpit</a>
+      <a href="/?sandbox=vampire-cloak-squid&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/vampire-cloak-squid.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual
+npm run content:accept -- --id vampire-cloak-squid --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate vampire-cloak-squid \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article>
+<article class="card" data-promote-threat="vent-claw-yeti">
+    <header>
+      <div><h2>Vent-Claw Yeti</h2><code>vent-claw-yeti</code></div>
+      <strong>blocked</strong>
+    </header>
+    <div class="badges">
+      <span>source approved <strong>false</strong></span>
+      <span>threat ready <strong>false</strong></span>
+      <span>media <strong>10/10</strong></span>
+      <span>production proof <strong>prototype-only</strong></span>
+    </div>
+    <p>human source approval missing; threat evidence route is incomplete; runtime proof is still prototype-only</p>
+    <div class="links">
+      <a href="/review/content-review-cockpit/vent-claw-yeti.html">cockpit</a>
+      <a href="/?sandbox=vent-claw-yeti&amp;companion=diver">runtime sandbox</a>
+      <a href="/review/content-acceptance-audits/vent-claw-yeti.html">audit</a>
+    </div>
+    <h3>Target-Only Commands</h3>
+    <pre><code>npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual
+npm run content:accept -- --id vent-claw-yeti --status accepted --reviewed-by &lt;human-reviewer&gt; \
+  --source-candidate vent-claw-yeti \
+  --note '&lt;specific rig approval note&gt;' \
+  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \
+  --score single-source-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score anatomy-cohesion=&lt;4-5&gt; --score production-visual-cohesion=&lt;4-5&gt; --score socket-seams=&lt;4-5&gt; --score motion-stability=&lt;4-5&gt; --score sandbox-behavior=&lt;4-5&gt; \
+  --visual-note single-source-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note anatomy-cohesion='&lt;specific rationale&gt;' --visual-note production-visual-cohesion='&lt;specific rationale&gt;' --visual-note socket-seams='&lt;specific rationale&gt;' --visual-note motion-stability='&lt;specific rationale&gt;' --visual-note sandbox-behavior='&lt;specific rationale&gt;' \
+  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run
+npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict</code></pre>
+  </article></section>
+  </main>
+  <script>
+    const output = document.querySelector('[data-promote-threat-decisions]');
+    const download = document.querySelector('[data-promote-threat-decisions-download]');
+    function syncDownload() {
+      const previous = download.dataset.objectUrl;
+      if (previous) URL.revokeObjectURL(previous);
+      const href = URL.createObjectURL(new Blob([output.value + '\n'], { type: 'application/json' }));
+      download.href = href;
+      download.dataset.objectUrl = href;
+    }
+    output.addEventListener('input', syncDownload);
+    syncDownload();
+  </script>
+</body>
+</html>

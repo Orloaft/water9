@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Content Workbench</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0c1c21; --line:#24424a; --text:#e2f5f6; --muted:#94adb2; --accent:#74ddf5; --warn:#e7bd6d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1340px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0 0 8px; font-size:17px; }
+    p { margin:0 0 12px; color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    code { color:var(--muted); }
+    pre { margin:10px 0 0; padding:10px; border:1px solid var(--line); background:#050b0d; overflow:auto; white-space:pre-wrap; }
+    .summary { display:flex; flex-wrap:wrap; gap:9px; margin:18px 0 24px; }
+    .summary span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .summary strong { color:var(--text); margin-left:4px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:14px; margin-bottom:24px; }
+    .card, .target { border:1px solid var(--line); background:var(--panel); border-radius:6px; padding:14px; }
+    .target header { display:flex; justify-content:space-between; gap:10px; }
+    .target header span { color:var(--warn); }
+    .previews { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:8px; padding:0; margin:0 0 24px; list-style:none; }
+    .previews a { display:block; border:1px solid var(--line); background:#09171b; border-radius:5px; padding:10px; }
+    .previews span { display:block; color:var(--muted); margin-top:2px; }
+    .warning { color:#f0c477; }
+    .section-title { margin:28px 0 10px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Content Workbench</h1>
+    <p>One generated entry point for previewing entities, moving source art through the magenta-background pipeline, and checking the strict 20-threat acceptance gate.</p>
+    <pre><code>npm run content:workbench:preview
+npm run content:workbench:preview-check
+npm run sandbox:preview -- --id gulper --kind articulated --with diver --serve --open --visual</code></pre>
+    <div class="summary">
+      <span>accepted threats <strong>0/20</strong></span>
+      <span>registered prototypes <strong>33</strong></span>
+      <span>source candidates <strong>20</strong></span>
+      <span>source images <strong>20</strong></span>
+      <span>active imagegen blockers <strong>0</strong></span>
+      <span>historical imagegen misses <strong>18</strong></span>
+      <span>sandbox entries <strong>125</strong></span>
+      <span>rigging plans staged <strong>0/0</strong></span>
+      <span>next bottleneck <strong>prototype-needs-approved-source</strong></span>
+    </div>
+    <div class="summary"><span>prototype-needs-approved-source <strong>20</strong></span></div>
+    <section class="grid"><article class="card">
+    <h2><a href="sandbox/index.html">Entity Sandbox Index</a></h2>
+    <p>Open any registered preview entity. 125 entries, 33 articulated threats.</p>
+    <pre><code>npm run sandbox:index &amp;&amp; npm run sandbox:index:check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="sandbox/quickstart.html">Sandbox Quickstart</a></h2>
+    <p>Canonical direct, paired-diver, and visual-check commands for every registered sandbox entity, including gulper and diver scale previews.</p>
+    <pre><code>npm run sandbox:quickstart &amp;&amp; npm run sandbox:quickstart-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="sandbox/lab.html?id=abyssal-gulper&amp;with=diver">Entity Sandbox Lab</a></h2>
+    <p>Embedded single-page preview station for quickly switching between entities, paired diver scale checks, and visual-check commands.</p>
+    <pre><code>npm run sandbox:lab -- --id abyssal-gulper --with diver</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-stage-board.html">Content Stage Board</a></h2>
+    <p>Current production queue and exact next commands. Bottleneck: prototype-needs-approved-source.</p>
+    <pre><code>npm run content:stage-board &amp;&amp; npm run content:stage-board-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-readiness.html">Content Readiness Dossier</a></h2>
+    <p>Strict gate dossier: 0/20 accepted, 20 source candidates approval-ready, 0 require critic regeneration, next blocker is approve 20 source candidates (20 approval-ready).</p>
+    <pre><code>npm run content:readiness &amp;&amp; npm run content:readiness-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-acceptance-runway.html">Acceptance Runway</a></h2>
+    <p>20 candidates and 13 unmapped prototypes have packetized paths to source review, rigging, sandbox preview, and final acceptance decisions.</p>
+    <pre><code>npm run content:acceptance-runway &amp;&amp; npm run content:acceptance-runway-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-acceptance-audits/index.html">Batch Acceptance Audit</a></h2>
+    <p>20/20 mapped threats have strict per-threat audits; 20 source packages and 20 threat rigs are mechanically ready, with 0 counting toward the final gate. Next gate: human-source-review.</p>
+    <pre><code>npm run content:acceptance-audit-index &amp;&amp; npm run content:acceptance-audit-index-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-review-evidence-matrix.html">Review Evidence Matrix</a></h2>
+    <p>20/20 source candidates have mapped runtime rigs; 13 prototype rigs are explicitly marked unmapped, and 0/20 threats are human-accepted.</p>
+    <pre><code>npm run content:review-evidence &amp;&amp; npm run content:review-evidence-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-review-cockpit/index.html">Candidate Review Cockpit</a></h2>
+    <p>20 candidate pages compose source art, key preview, source preview, plan preview, parity overlays, and sandbox state screenshots for one-threat review.</p>
+    <pre><code>npm run content:review-cockpit &amp;&amp; npm run content:review-cockpit-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-acceptance-doctor.html">Acceptance Doctor</a></h2>
+    <p>20 source-blocked, 0 runtime-blocked, and 20 acceptance-blocked rows. Next blocker: prototype-needs-approved-source.</p>
+    <pre><code>npm run content:acceptance-doctor &amp;&amp; npm run content:acceptance-doctor-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-threat-acceptance-decision-template.html">Threat Acceptance Decisions</a></h2>
+    <p>20 registered articulated rigs have structured final threat-decision fields; latest run has 20 pending, 0 accepted, and 0 prototype decisions.</p>
+    <pre><code>npm run content:threat-decisions &amp;&amp; npm run content:threat-decisions-check
+npm run content:threat-decisions-workspace-smoke
+npm run content:threat-decisions-apply</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-approved-runtime-handoff.html">Approved Source Runtime Handoff</a></h2>
+    <p>0 approved sources are rigging-eligible only; 0 missing-runtime candidates are still source-blocked.</p>
+    <pre><code>npm run content:approved-runtime-handoff &amp;&amp; npm run content:approved-runtime-handoff-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-plan-coverage.html">Plan Coverage</a></h2>
+    <p>20/20 starter plans and 20/20 plan previews are staged across all source candidates.</p>
+    <pre><code>npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-vertical-slice-runway.html">Vertical Slice Runway</a></h2>
+    <p>20/20 threats have a complete contract-source-key-plan-rig-quality-runtime-visual-audit route; 20 include contact, phase, source-parity, and cohesion evidence. Next blocker is awaiting-human-source-approval.</p>
+    <pre><code>npm run content:vertical-slice &amp;&amp; npm run content:vertical-slice-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-human-signoff-queue.html">Human Sign-Off Queue</a></h2>
+    <p>20 candidates are ready for human source sign-off, 0 require critic regeneration first, and 0 are ready for final threat sign-off; 0/20 count toward the gate. Next gate: human-source-signoff.</p>
+    <pre><code>npm run content:human-signoff &amp;&amp; npm run content:human-signoff-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-human-adjudication-board.html">Human Adjudication Board</a></h2>
+    <p>20/20 source-ready after 0 critic-regeneration blockers, and 0/20 threat-ready rows expose all media, paired sandbox links, preview-boundary claims, and dry-run-only decision commands for human review.</p>
+    <pre><code>npm run content:human-adjudication-board &amp;&amp; npm run content:human-adjudication-board-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-review-session.html">Content Review Session</a></h2>
+    <p>20 target threats are available in one session workspace with source and threat decision-file exports plus source/runtime preview-boundary claims for strict human review.</p>
+    <pre><code>npm run content:review-session &amp;&amp; npm run content:review-session-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-production-proof.html">Production Proof</a></h2>
+    <p>0/20 threats are production-accepted; 20 remain prototype-only and 20 require human review before they can count.</p>
+    <pre><code>npm run content:production-proof &amp;&amp; npm run content:production-proof-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-promote-approved-threats.html">Promote Approved Threats</a></h2>
+    <p>0/20 target threats are ready for final threat-decision authoring; 0 non-target prototype rigs are excluded from this runway.</p>
+    <pre><code>npm run content:promote-approved-threats &amp;&amp; npm run content:promote-approved-threats-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-goal-audit.html">Content Goal Audit</a></h2>
+    <p>Objective hard stop: 4/6 requirements passed, 0/20 accepted threats, complete: false.</p>
+    <pre><code>npm run content:goal-readiness &amp;&amp; npm run content:goal-readiness-check
+npm run content:goal-audit:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-runtime-cohesion-review.html">Runtime Cohesion Review</a></h2>
+    <p>Focused in-game cohesion packet for Brine Crown (brine-crown); 10/10 media present, next gate human-source-approval.</p>
+    <pre><code>npm run content:runtime-cohesion-review &amp;&amp; npm run content:runtime-cohesion-review-check
+npm run content:runtime-cohesion-review:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-cohort-cohesion-board.html">Cohort Cohesion Board</a></h2>
+    <p>20/20 target threats are visible with source and runtime evidence together; 0 accepted, 1 open visual blockers, 6 high-risk and 1 medium-risk source rows.</p>
+    <pre><code>npm run content:cohort-cohesion-board &amp;&amp; npm run content:cohort-cohesion-board-check
+npm run content:cohort-cohesion-board:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-sandbox-roster.html">Content Sandbox Roster</a></h2>
+    <p>20/20 target threats have source, runtime, paired-diver preview, and visual-check commands staged for quick review.</p>
+    <pre><code>npm run content:sandbox-roster &amp;&amp; npm run content:sandbox-roster-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-articulation-roster.html">Content Articulation Roster</a></h2>
+    <p>20/20 target threats have source-to-articulation evidence staged, including magenta-key source, plan, extract dry-run, parity/cohesion, and paired-diver sandbox routes.</p>
+    <pre><code>npm run content:articulation-roster &amp;&amp; npm run content:articulation-roster-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-reproducibility.html">Content Reproducibility</a></h2>
+    <p>20/20 target threats have a repeatable magenta-source to articulated runtime preview path. Reproducible still does not mean visually approved.</p>
+    <pre><code>npm run content:reproducibility &amp;&amp; npm run content:reproducibility-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-rigging-sprint.html">Rigging Sprint</a></h2>
+    <p>0/0 missing-runtime candidates are queued; 0/0 starter plans and 0/0 plan previews are staged.</p>
+    <pre><code>npm run content:rigging-sprint &amp;&amp; npm run content:rigging-sprint-check
+npm run content:rigging-sprint:preview</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-inbox/index.html">Source Inbox Review</a></h2>
+    <p>0 inbox images ready, 0 still missing.</p>
+    <pre><code>npm run source:inbox-review &amp;&amp; npm run source:inbox-review-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-intake-runway.html">Source Intake Runway</a></h2>
+    <p>0/0 sprint images ready; 0 still need recoverable source files.</p>
+    <pre><code>npm run source:intake-runway &amp;&amp; npm run source:intake-runway-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-intake-doctor.html">Source Intake Doctor</a></h2>
+    <p>Focused diagnosis for brine-crown: source-present.</p>
+    <pre><code>npm run source:intake-doctor &amp;&amp; npm run source:intake-doctor-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-workstation.html">Source Workstation</a></h2>
+    <p>Single-target generation workspace for brine-crown, with 0 rejection records and full prompt context.</p>
+    <pre><code>npm run source:workstation &amp;&amp; npm run source:workstation-check
+npm run source:workstation:preview</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/research-subagent-pack.html">Research Subagent Pack</a></h2>
+    <p>3 parallel research lanes covering 20 candidate threats.</p>
+    <pre><code>npm run research:subagent-pack &amp;&amp; npm run research:subagent-pack-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/research-dispatch-board.html">Research Dispatch Board</a></h2>
+    <p>20/20 candidate packets are ready for focused read-only subagent review; 20 already have audit evidence.</p>
+    <pre><code>npm run research:dispatch &amp;&amp; npm run research:dispatch-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/research-source-trace.html">Research Source Trace</a></h2>
+    <p>0/0 queued source prompts carry subagent audit guidance.</p>
+    <pre><code>npm run research:source-trace &amp;&amp; npm run research:source-trace-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-generation-queue.html">Source Acquisition Board</a></h2>
+    <p>0 missing-source candidates with copyable prompts, inbox targets, capture commands, and validation commands.</p>
+    <pre><code>npm run source:generation-queue &amp;&amp; npm run source:generation-queue:check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-generation-sprint.html">Source Generation Sprint</a></h2>
+    <p>Focused first batch for the missing source-image bottleneck, including prompts, inbox targets, and ingest commands.</p>
+    <pre><code>npm run source:sprint:preview</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-generation-sprint.html">Source Imagegen Health</a></h2>
+    <p>The active imagegen marker for lantern-anemone-pit is historical; continue with current missing-source target none.</p>
+    <pre><code>npm run source:imagegen-health</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-next-review.html">Next Source Review</a></h2>
+    <p>Review Brine Crown next: source, magenta key, sandbox screenshot, plan preview, contract checks, and dry-run approve/reject commands in one focused packet.</p>
+    <pre><code>npm run source:next-review &amp;&amp; npm run source:next-review-check
+npm run source:next-review:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-next-decision-draft.html">Next Source Decision Draft</a></h2>
+    <p>Focused reviewed-only decision draft for Brine Crown (brine-crown); status needs-review.</p>
+    <pre><code>npm run source:next-decision-draft &amp;&amp; npm run source:next-decision-draft-check
+npm run source:next-decision-draft:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-review-dossier.html">Source Review Dossier</a></h2>
+    <p>20 source images await human approval; 20 have packetized evidence, contract checks, preview commands, and accept/reject commands.</p>
+    <pre><code>npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-approval-runway.html">Source Approval Runway</a></h2>
+    <p>20/20 candidates are approval-ready after 0 critic-regeneration blockers; 20 are mechanically ready with source, key, sandbox, and plan-preview evidence.</p>
+    <pre><code>npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:approval-runway:preview</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-approval-session.html">Source Approval Session</a></h2>
+    <p>20/20 source candidates are ready for human-authored batch decisions; next target Brine Crown (brine-crown) routes through the strict reviewed-decision apply command.</p>
+    <pre><code>npm run source:approval-session &amp;&amp; npm run source:approval-session-check &amp;&amp; npm run source:approval-session:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-approval-marathon.html">Source Approval Marathon</a></h2>
+    <p>20/20 approval-ready sources are staged in one pass with 20 reviewed-only decision starters; risk triage shows 6 high-risk and 1 medium-risk rows.</p>
+    <pre><code>npm run source:approval-marathon &amp;&amp; npm run source:approval-marathon-check &amp;&amp; npm run source:approval-marathon:serve-smoke
+npm run source:approval-marathon-workspace-smoke
+npm run source:approval-marathon-full-batch-smoke
+npm run content:synthetic-decision-guards-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-replace-runway.html">Source Replace Runway</a></h2>
+    <p>20/20 source-present candidates can be regenerated through an explicit --overwrite replacement loop before returning to human approval.</p>
+    <pre><code>npm run source:replace-runway &amp;&amp; npm run source:replace-runway-check &amp;&amp; npm run source:replace-runway:preview</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-visual-board.html">Source Visual Board</a></h2>
+    <p>20 candidates are shown with source, magenta key, sandbox preview, and articulation plan preview. This is the dense cohesion review board before source approval.</p>
+    <pre><code>npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:visual-board:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-critic-board.html">Source Critic Board</a></h2>
+    <p>20 candidates have lane-specific advisory risks, with 9 regenerate calls, 9 caution calls, and 2 ready calls before any source can be approved.</p>
+    <pre><code>npm run source:critic-board &amp;&amp; npm run source:critic-board-check &amp;&amp; npm run source:critic-board:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-critic-regeneration-queue.html#next-regeneration-target">Critic Regeneration Queue</a></h2>
+    <p>9 critic-rejected source candidates have focused replacement prompts and OpenAI/imagegen commands before returning to source approval. Next: Black Coral Gate (black-coral-gate).</p>
+    <pre><code>npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check &amp;&amp; npm run source:critic-regeneration:serve-smoke &amp;&amp; npm run source:critic-regeneration-openai-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-critic-regeneration-doctor.html">Critic Regeneration Doctor</a></h2>
+    <p>Next replacement target Black Coral Gate (black-coral-gate) is replacement-matches-current-source; replacement ingest ready: false; matches current source: true.</p>
+    <pre><code>npm run source:critic-regeneration-doctor &amp;&amp; npm run source:critic-regeneration-doctor-check &amp;&amp; npm run source:critic-regeneration-doctor:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-critic-regeneration-health.html">Critic Regeneration Health</a></h2>
+    <p>0/9 critic-blocked candidates have distinct replacements ready; 0 are valid no-op inbox files and 0 are missing replacements. Next action target: none.</p>
+    <pre><code>npm run source:critic-regeneration-health &amp;&amp; npm run source:critic-regeneration-health-check &amp;&amp; npm run source:critic-regeneration-health:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-review-sequencer.html">Source Review Sequencer</a></h2>
+    <p>20 source candidates are routed into deterministic lanes; next target brine-crown is in approval-ready. This page keeps no-op regeneration, approval-ready review, and dry-run-only source decisions separate.</p>
+    <pre><code>npm run source:review-sequencer &amp;&amp; npm run source:review-sequencer-check &amp;&amp; npm run source:review-sequencer:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-review-target-packet.html">Source Review Target Packet</a></h2>
+    <p>One focused packet for Brine Crown (brine-crown) in approval-ready; status: approval-ready; human source review required.</p>
+    <pre><code>npm run source:review-target-packet &amp;&amp; npm run source:review-target-packet-check &amp;&amp; npm run source:review-target-packet:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-regeneration-workspace.html">Source Regeneration Workspace</a></h2>
+    <p>Focused replacement workspace for Brine Crown (brine-crown) in approval-ready; no-op replacement: true, distinct ready: false.</p>
+    <pre><code>npm run source:regeneration-workspace &amp;&amp; npm run source:regeneration-workspace-check &amp;&amp; npm run source:regeneration-workspace:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="content-visual-regeneration-queue.html">Visual Regeneration Queue</a></h2>
+    <p>1 blocked runtime prototypes have source-first regeneration prompts; next target abyssal-serpent remains preview-only and contributes 0 strict-gate credit.</p>
+    <pre><code>npm run content:visual-regeneration &amp;&amp; npm run content:visual-regeneration-check &amp;&amp; npm run content:visual-regeneration:serve-smoke</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-cohesion-review.html">Source Cohesion Review</a></h2>
+    <p>20/20 candidates are ready for human cohesion review; 20 remain prototype-locked until approved.</p>
+    <pre><code>npm run source:cohesion-review &amp;&amp; npm run source:cohesion-review-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/source-cohesion-decision-template.html">Source Cohesion Batch Decisions</a></h2>
+    <p>20 source candidates have structured source approval batch-decision fields; latest dry-run report has 20 pending, 0 approved, and 0 rejected decisions.</p>
+    <pre><code>npm run source:approval-decisions &amp;&amp; npm run source:approval-decisions-check
+npm run source:approval-decisions-workspace-smoke
+npm run source:approval-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/quick-reviews/index.html">Source Quick Reviews</a></h2>
+    <p>20/20 ready source images have focused quick-review pages with source art, key preview, sandbox screenshot, checklist, and accept/reject commands.</p>
+    <pre><code>npm run source:quick-review-all &amp;&amp; npm run source:quick-review-all-check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="source-candidates/index.html">Source Candidate Gallery</a></h2>
+    <p>Review whole-source images, chroma previews, prompt risks, and approval state.</p>
+    <pre><code>npm run source:gallery</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="articulated/index.html">Articulated Review Gallery</a></h2>
+    <p>Inspect contact sheets, phase strips, source parity, and sandbox links for rigs.</p>
+    <pre><code>npm run review:articulated:quick &amp;&amp; npm run review:check</code></pre>
+  </article>
+<article class="card">
+    <h2><a href="rigging-packs/index.md">Rigging Packs</a></h2>
+    <p>Use approved source candidates to prepare extraction and articulation work.</p>
+    <pre><code>npm run content:rigging-pack &amp;&amp; npm run content:rigging-pack-check</code></pre>
+  </article></section>
+    <h2 class="section-title">Quick Entity Previews</h2>
+    <ul class="previews"><li><a href="/?entity=diver"><strong>Diver</strong><span>diver · diver · player-reference</span></a><pre><code>npm run sandbox:preview -- --id diver --serve --open --visual</code></pre></li>
+<li><a href="/?sandbox=abyssal-gulper&amp;companion=diver"><strong>Abyssal Gulper</strong><span>abyssal-gulper · articulated · prototype-preview-only</span></a><p class="warning">Prototype preview only: do not treat this screenshot as cohesive accepted content until human source, motion, and sandbox review passes.</p><pre><code>npm run sandbox:preview -- --id abyssal-gulper --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?entity=source-brine-crown&amp;companion=diver"><strong>Brine Crown Source</strong><span>source-brine-crown · source · source-review-needed</span></a><p class="warning">Source preview only: inspect the whole image, chroma key, and contract checklist before rigging.</p><pre><code>npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?sandbox=abyssal-crownmaw&amp;companion=diver"><strong>Abyssal Crownmaw</strong><span>abyssal-crownmaw · articulated · prototype-preview-only</span></a><p class="warning">Prototype preview only: do not treat this screenshot as cohesive accepted content until human source, motion, and sandbox review passes.</p><pre><code>npm run sandbox:preview -- --id abyssal-crownmaw --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?sandbox=abyssal-lantern-mantis&amp;companion=diver"><strong>Abyssal Lantern Mantis</strong><span>abyssal-lantern-mantis · articulated · prototype-preview-only</span></a><p class="warning">Prototype preview only: do not treat this screenshot as cohesive accepted content until human source, motion, and sandbox review passes.</p><pre><code>npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?sandbox=abyssal-serpent&amp;companion=diver"><strong>Abyssal Serpent</strong><span>abyssal-serpent · articulated · prototype-preview-only</span></a><p class="warning">Prototype preview only: do not treat this screenshot as cohesive accepted content until human source, motion, and sandbox review passes.</p><pre><code>npm run sandbox:preview -- --id abyssal-serpent --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?sandbox=black-coral-gate&amp;companion=diver"><strong>Black Coral Gate</strong><span>black-coral-gate · articulated · prototype-preview-only</span></a><p class="warning">Prototype preview only: do not treat this screenshot as cohesive accepted content until human source, motion, and sandbox review passes.</p><pre><code>npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?sandbox=brine-crown&amp;companion=diver"><strong>Brine Crown</strong><span>brine-crown · articulated · prototype-preview-only</span></a><p class="warning">Prototype preview only: do not treat this screenshot as cohesive accepted content until human source, motion, and sandbox review passes.</p><pre><code>npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?entity=source-abyssal-lantern-mantis&amp;companion=diver"><strong>Abyssal Lantern Mantis Source</strong><span>source-abyssal-lantern-mantis · source · source-review-needed</span></a><p class="warning">Source preview only: inspect the whole image, chroma key, and contract checklist before rigging.</p><pre><code>npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?entity=source-black-coral-gate&amp;companion=diver"><strong>Black Coral Gate Source</strong><span>source-black-coral-gate · source · source-review-needed</span></a><p class="warning">Source preview only: inspect the whole image, chroma key, and contract checklist before rigging.</p><pre><code>npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual</code></pre></li>
+<li><a href="/?entity=source-brine-mycelium-shelf&amp;companion=diver"><strong>Brine Mycelium Shelf Source</strong><span>source-brine-mycelium-shelf · source · source-review-needed</span></a><p class="warning">Source preview only: inspect the whole image, chroma key, and contract checklist before rigging.</p><pre><code>npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual</code></pre></li></ul>
+    <h2 class="section-title">Next Production Targets</h2>
+    <section class="grid"><article class="target">
+    <header><strong>Abyssal Lantern Mantis</strong><span>prototype-needs-approved-source</span></header>
+    <code>abyssal-lantern-mantis</code>
+    <p class="warning">Not accepted: this target cannot count toward the 20-threat goal until the source-first gate, rigging evidence, paired diver sandbox, and human acceptance review all pass.</p>
+    <p><a href="/?sandbox=source-abyssal-lantern-mantis&amp;companion=diver">source preview</a> <a href="/?sandbox=abyssal-lantern-mantis&amp;companion=diver">rig sandbox</a></p>
+    <pre><code>npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual
+npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual
+npm run source:image-check -- --id abyssal-lantern-mantis
+npm run source:preview-check
+npm run source:gallery
+npm run source:accept -- --id abyssal-lantern-mantis --status approved --reviewed-by &lt;human-reviewer&gt; --note '&lt;specific source approval note&gt;' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --dry-run</code></pre>
+  </article>
+<article class="target">
+    <header><strong>Black Coral Gate</strong><span>prototype-needs-approved-source</span></header>
+    <code>black-coral-gate</code>
+    <p class="warning">Not accepted: this target cannot count toward the 20-threat goal until the source-first gate, rigging evidence, paired diver sandbox, and human acceptance review all pass.</p>
+    <p><a href="/?sandbox=source-black-coral-gate&amp;companion=diver">source preview</a> <a href="/?sandbox=black-coral-gate&amp;companion=diver">rig sandbox</a></p>
+    <pre><code>npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual
+npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual
+npm run source:image-check -- --id black-coral-gate
+npm run source:preview-check
+npm run source:gallery
+npm run source:accept -- --id black-coral-gate --status approved --reviewed-by &lt;human-reviewer&gt; --note '&lt;specific source approval note&gt;' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --dry-run</code></pre>
+  </article>
+<article class="target">
+    <header><strong>Brine Crown</strong><span>prototype-needs-approved-source</span></header>
+    <code>brine-crown</code>
+    <p class="warning">Not accepted: this target cannot count toward the 20-threat goal until the source-first gate, rigging evidence, paired diver sandbox, and human acceptance review all pass.</p>
+    <p><a href="/?sandbox=source-brine-crown&amp;companion=diver">source preview</a> <a href="/?sandbox=brine-crown&amp;companion=diver">rig sandbox</a></p>
+    <pre><code>npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual
+npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual
+npm run source:image-check -- --id brine-crown
+npm run source:preview-check
+npm run source:gallery
+npm run source:accept -- --id brine-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note '&lt;specific source approval note&gt;' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --dry-run</code></pre>
+  </article>
+<article class="target">
+    <header><strong>Brine Mycelium Shelf</strong><span>prototype-needs-approved-source</span></header>
+    <code>brine-mycelium-shelf</code>
+    <p class="warning">Not accepted: this target cannot count toward the 20-threat goal until the source-first gate, rigging evidence, paired diver sandbox, and human acceptance review all pass.</p>
+    <p><a href="/?sandbox=source-brine-mycelium-shelf&amp;companion=diver">source preview</a> <a href="/?sandbox=brine-mycelium-shelf&amp;companion=diver">rig sandbox</a></p>
+    <pre><code>npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual
+npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual
+npm run source:image-check -- --id brine-mycelium-shelf
+npm run source:preview-check
+npm run source:gallery
+npm run source:accept -- --id brine-mycelium-shelf --status approved --reviewed-by &lt;human-reviewer&gt; --note '&lt;specific source approval note&gt;' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --dry-run</code></pre>
+  </article>
+<article class="target">
+    <header><strong>Chain Vein Siphonophore</strong><span>prototype-needs-approved-source</span></header>
+    <code>chain-vein-siphonophore</code>
+    <p class="warning">Not accepted: this target cannot count toward the 20-threat goal until the source-first gate, rigging evidence, paired diver sandbox, and human acceptance review all pass.</p>
+    <p><a href="/?sandbox=source-chain-vein-siphonophore&amp;companion=diver">source preview</a> <a href="/?sandbox=chain-vein-siphonophore&amp;companion=diver">rig sandbox</a></p>
+    <pre><code>npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual
+npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual
+npm run source:image-check -- --id chain-vein-siphonophore
+npm run source:preview-check
+npm run source:gallery
+npm run source:accept -- --id chain-vein-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note '&lt;specific source approval note&gt;' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --dry-run</code></pre>
+  </article>
+<article class="target">
+    <header><strong>Coronate Sting Crown</strong><span>prototype-needs-approved-source</span></header>
+    <code>coronate-sting-crown</code>
+    <p class="warning">Not accepted: this target cannot count toward the 20-threat goal until the source-first gate, rigging evidence, paired diver sandbox, and human acceptance review all pass.</p>
+    <p><a href="/?sandbox=source-coronate-sting-crown&amp;companion=diver">source preview</a> <a href="/?sandbox=coronate-sting-crown&amp;companion=diver">rig sandbox</a></p>
+    <pre><code>npm run sandbox:preview -- --id source-coronate-sting-crown --with diver --serve --open --visual
+npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual
+npm run source:image-check -- --id coronate-sting-crown
+npm run source:preview-check
+npm run source:gallery
+npm run source:accept -- --id coronate-sting-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note '&lt;specific source approval note&gt;' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --dry-run</code></pre>
+  </article></section>
+    <h2 class="section-title">Gate Commands</h2>
+    <pre><code>npm run sandbox:index &amp;&amp; npm run sandbox:index:check
+npm run content:readiness &amp;&amp; npm run content:readiness-check
+npm run content:acceptance-runway &amp;&amp; npm run content:acceptance-runway-check
+npm run content:acceptance-audit-index &amp;&amp; npm run content:acceptance-audit-index-check
+npm run content:acceptance-doctor &amp;&amp; npm run content:acceptance-doctor-check
+npm run content:threat-decisions &amp;&amp; npm run content:threat-decisions-check
+npm run content:threat-decisions-apply
+npm run content:approved-runtime-handoff &amp;&amp; npm run content:approved-runtime-handoff-check
+npm run content:vertical-slice &amp;&amp; npm run content:vertical-slice-check
+npm run content:human-adjudication-board &amp;&amp; npm run content:human-adjudication-board-check
+npm run content:review-session &amp;&amp; npm run content:review-session-check
+npm run content:production-proof &amp;&amp; npm run content:production-proof-check
+npm run content:promote-approved-threats &amp;&amp; npm run content:promote-approved-threats-check
+npm run content:goal-readiness &amp;&amp; npm run content:goal-readiness-check
+npm run content:runtime-cohesion-review &amp;&amp; npm run content:runtime-cohesion-review-check &amp;&amp; npm run content:runtime-cohesion-review:serve-smoke
+npm run content:sandbox-roster &amp;&amp; npm run content:sandbox-roster-check
+npm run content:articulation-roster &amp;&amp; npm run content:articulation-roster-check
+npm run content:reproducibility &amp;&amp; npm run content:reproducibility-check
+npm run content:rigging-sprint &amp;&amp; npm run content:rigging-sprint-check
+npm run source:intake-runway &amp;&amp; npm run source:intake-runway-check
+npm run source:intake-doctor &amp;&amp; npm run source:intake-doctor-check
+npm run source:workstation &amp;&amp; npm run source:workstation-check
+npm run research:source-trace &amp;&amp; npm run research:source-trace-check
+npm run source:generation-queue &amp;&amp; npm run source:generation-queue:check
+npm run source:next-review &amp;&amp; npm run source:next-review-check
+npm run source:next-decision-draft &amp;&amp; npm run source:next-decision-draft-check &amp;&amp; npm run source:next-decision-draft:serve-smoke
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check
+npm run source:approval-session &amp;&amp; npm run source:approval-session-check &amp;&amp; npm run source:approval-session:serve-smoke
+npm run source:approval-marathon &amp;&amp; npm run source:approval-marathon-check &amp;&amp; npm run source:approval-marathon-workspace-smoke &amp;&amp; npm run source:approval-marathon-full-batch-smoke
+npm run content:synthetic-decision-guards-check
+npm run source:quick-review-all &amp;&amp; npm run source:quick-review-all-check
+npm run source:approval-decisions &amp;&amp; npm run source:approval-decisions-check &amp;&amp; npm run source:approval-decisions-workspace-smoke
+npm run source:approval-decisions-apply -- --decisions water9-source-cohesion-reviewed-decisions.json --strict
+npm run source:critic-board &amp;&amp; npm run source:critic-board-check
+npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check &amp;&amp; npm run source:critic-regeneration:serve-smoke &amp;&amp; npm run source:critic-regeneration-openai-smoke
+npm run content:visual-regeneration &amp;&amp; npm run content:visual-regeneration-check &amp;&amp; npm run content:visual-regeneration:serve-smoke
+npm run source:check
+npm run source:preview-check
+npm run content:stage-board &amp;&amp; npm run content:stage-board-check
+npm run content:gate:smoke
+npm run content:gate</code></pre>
+  </main>
+</body>
+</html>

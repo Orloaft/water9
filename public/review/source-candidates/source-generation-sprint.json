@@ -1,0 +1,29 @@
+{
+  "schema": "water9/source-generation-sprint@1",
+  "generatedAt": "2026-06-18T04:12:38.101Z",
+  "queue": "public/review/source-candidates/source-generation-queue.json",
+  "manifest": "public/review/source-candidates/source-candidates.json",
+  "inboxDir": "tools/source-inbox",
+  "limit": 5,
+  "offset": 0,
+  "ids": [],
+  "candidates": [],
+  "commands": {
+    "rebuildQueue": "npm run source:generation-queue",
+    "firstRecommended": null,
+    "firstFallback": null,
+    "firstRecoveryScout": null,
+    "firstDataUrlRecovery": null,
+    "firstBase64Recovery": null,
+    "startFirstSession": null,
+    "checkFirstSession": null,
+    "autoIngestFirstSession": null,
+    "inboxCheck": null,
+    "inboxIngestDryRun": null,
+    "inboxIngest": null,
+    "sourceCheck": "npm run source:check",
+    "sourceGallery": "npm run source:gallery",
+    "status": "npm run content:status -- --json"
+  },
+  "commandsById": {}
+}

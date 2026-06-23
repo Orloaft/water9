@@ -1,0 +1,92 @@
+{
+  "schema": "water9/research-regeneration-handoff@1",
+  "generatedAt": "2026-06-18T18:32:29.396Z",
+  "generatedFrom": {
+    "workspace": "public/review/source-candidates/source-regeneration-workspace.json",
+    "dispatch": "public/review/source-candidates/research-dispatch-board.json",
+    "auditsSummary": "public/review/source-candidates/research-subagent-audits-summary.json",
+    "auditFile": "public/review/source-candidates/research-subagent-audits/02-sessile-ambush-hazards.json"
+  },
+  "artifacts": {
+    "json": "public/review/source-candidates/research-regeneration-handoff.json",
+    "markdown": "public/review/source-candidates/research-regeneration-handoff.md",
+    "html": "public/review/source-candidates/research-regeneration-handoff.html"
+  },
+  "policy": {
+    "readOnlyHandoff": true,
+    "doesNotApproveSources": true,
+    "doesNotAcceptThreats": true,
+    "previewOnlyDoesNotCountTowardGate": true,
+    "noOverwriteIngestOutsideDistinctReady": true
+  },
+  "target": {
+    "id": "brine-crown",
+    "species": "Brine Crown",
+    "lane": "sessile-ambush-hazards",
+    "regenerationLane": "approval-ready",
+    "healthStatus": "replacement-applied",
+    "replacementMatchesCurrentSource": true,
+    "distinctReplacementReady": false,
+    "auditFile": "public/review/source-candidates/research-subagent-audits/02-sessile-ambush-hazards.json",
+    "dispatchPacket": "public/review/source-candidates/research-dispatch-packets/brine-crown.md",
+    "workspacePage": "/review/source-candidates/source-regeneration-workspace.html"
+  },
+  "finding": {
+    "id": "brine-crown",
+    "strengths": [
+      "Strong rooted radial hazard concept with central toxic throat, basal mat, blisters, and spine halo supporting a clear stationary area-control read.",
+      "Articulatable part list separates crown, fronds, blister bank, spines, and root skirt well for swelling and spine-raise phases."
+    ],
+    "sourceGenerationRisks": [
+      "Mixed anchors of coral, starfish, vent chimneys, and mats may generate a collage instead of one organism.",
+      "Perfect radial symmetry could flatten the sprite into an emblem and reduce readable hinge zones for fronds.",
+      "Corrosive brine cues risk becoming baked puddles, clouds, or environmental floor effects rather than riggable anatomy."
+    ],
+    "suggestedResearchPatch": {
+      "biologicalAnchors": [
+        "Emphasize one mat-grown radial animal with vent-mineralized crown cup and blister sacs fused into the same basal tissue."
+      ],
+      "requiredRead": [
+        "All rays, spines, and blisters must visibly grow from the low basal mat with no separate vent props."
+      ],
+      "promptRisks": [
+        "Watch for coral reef decoration, detached chimney tubes, baked brine pools, and logo-like symmetry."
+      ],
+      "motionPhases": [
+        "idle low mat with throat closed",
+        "swelling blister telegraph",
+        "spine halo lift",
+        "brine patch VFX emitted separately"
+      ]
+    },
+    "referenceSearchTerms": [
+      "hydrothermal vent microbial mat mineral crust",
+      "deep sea brine pool edge",
+      "toxic coral polyps",
+      "starfish radial anatomy",
+      "hydrothermal chimney black smoker"
+    ]
+  },
+  "promptAlignment": {
+    "includesSourceGenerationRisk": false,
+    "includesSuggestedBiologicalAnchor": false,
+    "includesSuggestedRequiredRead": false,
+    "includesSuggestedPromptRisk": false,
+    "includesSuggestedMotionPhase": false
+  },
+  "commands": [
+    "npm run research:regeneration-handoff",
+    "npm run research:regeneration-handoff-check",
+    "npm run research:regeneration-handoff:serve-smoke",
+    "npm run research:dispatch && npm run research:dispatch-check",
+    "npm run research:audits",
+    "npm run source:regeneration-workspace && npm run source:regeneration-workspace-check",
+    "npm run source:critic-regeneration-health && npm run source:critic-regeneration-health-check",
+    "npm run source:approval-runway && npm run source:approval-runway-check",
+    "npm run source:review-sequencer && npm run source:review-sequencer-check",
+    "npm run source:review-target-packet && npm run source:review-target-packet-check",
+    "npm run source:visual-board && npm run source:visual-board-check",
+    "npm run content:review-session && npm run content:review-session-check",
+    "npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual"
+  ]
+}

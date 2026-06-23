@@ -1,0 +1,135 @@
+{
+  "schema": "water9/source-art-contract@1",
+  "generatedFrom": "source-candidates.json",
+  "id": "gulper-eel-maw",
+  "species": "Gulper Eel Maw",
+  "rank": null,
+  "status": "needs-review",
+  "depthBand": "bathypelagic abyss / open blackwater lanes",
+  "gameplayVerb": "Inhale ambusher that blooms a huge mouth pouch, pulls the diver into a short suction cone, then snaps shut before a deflated recovery window.",
+  "expectedOutput": "public/assets/generated/fauna-gulper-eel-maw-whole-source.png",
+  "source": "public/assets/generated/fauna-gulper-eel-maw-whole-source.png",
+  "sourceCohesion": "single-source",
+  "backgroundKey": "magenta",
+  "requiredRead": [
+    "One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.",
+    "Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.",
+    "Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.",
+    "Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.",
+    "Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.",
+    "Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.",
+    "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+    "No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source."
+  ],
+  "articulatableParts": [
+    "upper hinged jaw hoop",
+    "lower hinged jaw hoop",
+    "expandable throat pouch membrane",
+    "small skull hinge collar",
+    "dark inner mouth plate",
+    "narrow eel neck segment",
+    "front ribbon body segment",
+    "rear whip tail segment",
+    "tail-tip lure bulb",
+    "left tiny pectoral fin",
+    "right tiny pectoral fin",
+    "gill slit seam plates"
+  ],
+  "promptRisks": [
+    "Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.",
+    "Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.",
+    "Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.",
+    "Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.",
+    "Avoid making suction currents part of the base sprite; pull effects should be separate VFX.",
+    "Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.",
+    "Avoid over-detailing the black body so the hinge zones and lure remain readable."
+  ],
+  "contractReviewChecklist": [
+    "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+    "Spatial ratio read: mouth pouch occupies roughly the front 35-45% while connected body and tail occupy the rear 55-65%, preventing a detached maw or portal-creature read.",
+    "Rig crop read: jaw hoops, pouch membrane, pectoral fins, tail base, and tail lure have visible magenta negative space around their outer edges while remaining connected at the roots."
+  ],
+  "auditGuidance": {
+    "lane": "mobile-predator-motion",
+    "strengths": [
+      "Oversized hinged mouth pouch and long whip body make the inhale verb immediately legible.",
+      "Inflate-collapse recovery window maps well to jaw hoop and throat membrane articulation."
+    ],
+    "sourceGenerationRisks": [
+      "Huge mouth focus can generate a detached maw or worm-like monster without eel vertebrate continuity.",
+      "Black flexible body may lose hinge, fin, and lure readability at sprite scale."
+    ],
+    "suggestedResearchPatch": {
+      "biologicalAnchors": [
+        "Pelican eel expandable buccal cavity, tiny skull, loose throat pouch, and whip tail."
+      ],
+      "requiredRead": [
+        "Show jaw hoops, skull hinge collar, pouch membrane, neck, body, and tail lure as one continuous animal."
+      ],
+      "promptRisks": [
+        "Avoid suction vortices, prey silhouettes, or floating-mouth horror imagery in the source."
+      ],
+      "motionPhases": [
+        "tail lure bait, mouth pouch bloom, suction hold, snap shut, deflated recovery"
+      ]
+    },
+    "referenceSearchTerms": [
+      "pelican eel mouth open",
+      "gulper eel buccal cavity",
+      "Eurypharynx pelecanoides anatomy",
+      "pelican eel tail lure"
+    ]
+  },
+  "sourcePoseRules": [
+    "Generate a neutral riggable source pose, not the peak attack impact frame.",
+    "Attack direction must still be obvious from species-appropriate anatomy: jaws, oral disc, osculum, spines, fins, lures, eyes, claws, or body aim.",
+    "Primary pivots and crop zones must be visible: jaw pivots, limb roots, fin roots, tail base, stalk base, rim folds, throat valves, or equivalent anatomy.",
+    "Major appendages, valves, rims, plates, or tentacles must be separated enough for later cropping, with small overlaps allowed only where anatomy connects.",
+    "Default pose must show both the idle read and the attack telegraph read without baking in trails, particles, prey, or damage effects."
+  ],
+  "cohesionLock": [
+    "One-source proof: render one continuous organism in one neutral source pose, not a parts board, variants sheet, or disconnected thumbnails.",
+    "Connection proof: every crop-intended appendage must visibly grow from or overlap the same body with a readable hinge, socket, root, or skin transition.",
+    "Style proof: all body regions and crop-intended organs must share one palette, line weight, lighting direction, material language, and shadow logic.",
+    "Proportion proof: body parts must look like they belong to the same animal when articulated; reject mismatched copied fragments or arbitrary size jumps.",
+    "Production proof: reject outputs that read as placeholder shapes, collage kitbash, props, UI icons, environmental rocks, duplicate creatures, or loose weapons."
+  ],
+  "globalRejects": [
+    "collage of unrelated animal parts instead of one physically coherent creature",
+    "detached mouth, detached limbs, duplicate bodies, loose props, bubbles, prey, water vortex, floor plane, cast shadow, or text",
+    "black, white, transparent, textured, gradient, or shadowed background instead of flat #ff00ff magenta",
+    "silhouette that fails to communicate the gameplay verb at small sprite scale",
+    "parts too thin, overlapped, hidden, or ambiguous to crop into articulated sprites",
+    "lighting, palette, or rendering style that changes between body regions",
+    "full attack impact pose, motion smear, or VFX-heavy action frame that hides the neutral riggable anatomy"
+  ],
+  "generationPrompt": "Flat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy\n\nResearch audit hardening:\n- Lane: mobile-predator-motion\n- Biological anchor: Pelican eel expandable buccal cavity, tiny skull, loose throat pouch, and whip tail.\n- Extra required read: Show jaw hoops, skull hinge collar, pouch membrane, neck, body, and tail lure as one continuous animal.\n- Avoid: Huge mouth focus can generate a detached maw or worm-like monster without eel vertebrate continuity.\n- Avoid: Black flexible body may lose hinge, fin, and lure readability at sprite scale.\n- Avoid: Avoid suction vortices, prey silhouettes, or floating-mouth horror imagery in the source.\n- Preserve motion phase readability: tail lure bait, mouth pouch bloom, suction hold, snap shut, deflated recovery\n- Reference search term: pelican eel mouth open\n- Reference search term: gulper eel buccal cavity\n- Reference search term: Eurypharynx pelecanoides anatomy\n- Reference search term: pelican eel tail lure\n\nSource pose contract:\n- Generate a neutral riggable source pose, not the peak attack impact frame.\n- Attack direction must still be obvious from species-appropriate anatomy: jaws, oral disc, osculum, spines, fins, lures, eyes, claws, or body aim.\n- Primary pivots and crop zones must be visible: jaw pivots, limb roots, fin roots, tail base, stalk base, rim folds, throat valves, or equivalent anatomy.\n- Major appendages, valves, rims, plates, or tentacles must be separated enough for later cropping, with small overlaps allowed only where anatomy connects.\n- Default pose must show both the idle read and the attack telegraph read without baking in trails, particles, prey, or damage effects.\n\nCohesion lock:\n- One-source proof: render one continuous organism in one neutral source pose, not a parts board, variants sheet, or disconnected thumbnails.\n- Connection proof: every crop-intended appendage must visibly grow from or overlap the same body with a readable hinge, socket, root, or skin transition.\n- Style proof: all body regions and crop-intended organs must share one palette, line weight, lighting direction, material language, and shadow logic.\n- Proportion proof: body parts must look like they belong to the same animal when articulated; reject mismatched copied fragments or arbitrary size jumps.\n- Production proof: reject outputs that read as placeholder shapes, collage kitbash, props, UI icons, environmental rocks, duplicate creatures, or loose weapons.\n\nNon-negotiable pass/fail requirements:\n- One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.\n- Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.\n- Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.\n- Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.\n- Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.\n- Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.\n- Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.\n- No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source.\n\nCandidate-specific contract checks:\n- Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.\n- Spatial ratio read: mouth pouch occupies roughly the front 35-45% while connected body and tail occupy the rear 55-65%, preventing a detached maw or portal-creature read.\n- Rig crop read: jaw hoops, pouch membrane, pectoral fins, tail base, and tail lure have visible magenta negative space around their outer edges while remaining connected at the roots.\n\nReject immediately if:\n- Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.\n- Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.\n- Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.\n- Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.\n- Avoid making suction currents part of the base sprite; pull effects should be separate VFX.\n- Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.\n- Avoid over-detailing the black body so the hinge zones and lure remain readable.\n- collage of unrelated animal parts instead of one physically coherent creature\n- detached mouth, detached limbs, duplicate bodies, loose props, bubbles, prey, water vortex, floor plane, cast shadow, or text\n- black, white, transparent, textured, gradient, or shadowed background instead of flat #ff00ff magenta\n- silhouette that fails to communicate the gameplay verb at small sprite scale\n- parts too thin, overlapped, hidden, or ambiguous to crop into articulated sprites\n- lighting, palette, or rendering style that changes between body regions\n- full attack impact pose, motion smear, or VFX-heavy action frame that hides the neutral riggable anatomy",
+  "reviewChecklist": [
+    "Single creature: every visible part belongs to one connected anatomy.",
+    "Part continuity: all crop-intended appendages have compatible proportions, visible connection zones, and one lighting/material treatment.",
+    "Design read: the silhouette and largest features match the gameplay verb.",
+    "Extraction read: required articulated parts are visible, separated, and thick enough for clean crops.",
+    "Pose read: neutral source pose preserves visible pivots, attack direction, and crop-safe appendages.",
+    "Source hygiene: flat #ff00ff background, no baked environment, no cast shadow, no text.",
+    "Style cohesion: one palette, one lighting model, one rendering style across the full creature.",
+    "Small-sprite read: the creature remains recognizable when scaled down in the sandbox.",
+    "Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.",
+    "Spatial ratio read: mouth pouch occupies roughly the front 35-45% while connected body and tail occupy the rear 55-65%, preventing a detached maw or portal-creature read.",
+    "Rig crop read: jaw hoops, pouch membrane, pectoral fins, tail base, and tail lure have visible magenta negative space around their outer edges while remaining connected at the roots."
+  ],
+  "commands": {
+    "markBeforeGeneration": "npm run source:imagegen-mark -- --id gulper-eel-maw",
+    "checkGeneratedFile": "npm run source:imagegen-status -- --id gulper-eel-maw",
+    "autoIngestGeneratedFile": "npm run source:imagegen-status -- --id gulper-eel-maw --ingest",
+    "ingestGeneratedFile": "npm run source:ingest -- --id gulper-eel-maw --image <image-path> --copy",
+    "rejectGeneratedFile": "npm run source:reject-attempt -- --id gulper-eel-maw --attempt-kind visual-failure --image <bad-output-path> --reason \"<specific visual failure after inspecting the generated source image>\"",
+    "rejectMissingGeneratedFile": "npm run source:imagegen-status -- --reject-missing",
+    "validateImage": "npm run source:image-check -- --id gulper-eel-maw",
+    "buildGallery": "npm run source:gallery",
+    "validateSources": "npm run source:check"
+  },
+  "files": {
+    "markdown": "public/review/source-candidates/art-contracts/gulper-eel-maw.md",
+    "json": "public/review/source-candidates/art-contracts/gulper-eel-maw.json"
+  }
+}

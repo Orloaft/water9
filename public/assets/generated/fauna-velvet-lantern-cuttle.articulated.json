@@ -1,0 +1,619 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-velvet-lantern-cuttle",
+  "runtimeCreatureId": "velvet-lantern-cuttle",
+  "displayName": "Velvet Lantern Cuttle",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-velvet-lantern-cuttle-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "mantle-core",
+      "key": "fauna-velvet-lantern-cuttle-mantle-core",
+      "src": "fauna-velvet-lantern-cuttle-mantle-core.png",
+      "sourceCrop": {
+        "x": 230,
+        "y": 128,
+        "width": 700,
+        "height": 510
+      },
+      "size": {
+        "width": 700,
+        "height": 510
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.5,
+        "drag": 0.82,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.55,
+        "mobilityFactor": 0.68
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.0,
+        "frequency": 1.0,
+        "phase": 0.0,
+        "lag": 0.08
+      },
+      "damagedSrc": "fauna-velvet-lantern-cuttle-mantle-core-damaged.png",
+      "damagedKey": "fauna-velvet-lantern-cuttle-mantle-core-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "mantle-tip",
+      "key": "fauna-velvet-lantern-cuttle-mantle-tip",
+      "src": "fauna-velvet-lantern-cuttle-mantle-tip.png",
+      "sourceCrop": {
+        "x": 55,
+        "y": 250,
+        "width": 300,
+        "height": 260
+      },
+      "size": {
+        "width": 300,
+        "height": 260
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.6,
+        "drag": 1.1,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.6,
+        "frequency": 1.62,
+        "phase": 1.1,
+        "lag": 0.48
+      }
+    },
+    {
+      "id": "fin-skirt-upper",
+      "key": "fauna-velvet-lantern-cuttle-fin-skirt-upper",
+      "src": "fauna-velvet-lantern-cuttle-fin-skirt-upper.png",
+      "sourceCrop": {
+        "x": 250,
+        "y": 125,
+        "width": 720,
+        "height": 250
+      },
+      "size": {
+        "width": 720,
+        "height": 250
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.42,
+        "drag": 1.1,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 0.52,
+        "mobilityFactor": 0.96
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 8.4,
+        "frequency": 1.82,
+        "phase": 1.2,
+        "lag": 0.36
+      }
+    },
+    {
+      "id": "fin-skirt-lower",
+      "key": "fauna-velvet-lantern-cuttle-fin-skirt-lower",
+      "src": "fauna-velvet-lantern-cuttle-fin-skirt-lower.png",
+      "sourceCrop": {
+        "x": 300,
+        "y": 470,
+        "width": 820,
+        "height": 270
+      },
+      "size": {
+        "width": 820,
+        "height": 270
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.44,
+        "drag": 1.1,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 0.54,
+        "mobilityFactor": 0.96
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 9.0,
+        "frequency": 1.9,
+        "phase": 1.55,
+        "lag": 0.38
+      }
+    },
+    {
+      "id": "head-mask",
+      "key": "fauna-velvet-lantern-cuttle-head-mask",
+      "src": "fauna-velvet-lantern-cuttle-head-mask.png",
+      "sourceCrop": {
+        "x": 820,
+        "y": 170,
+        "width": 360,
+        "height": 430
+      },
+      "size": {
+        "width": 360,
+        "height": 430
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.45,
+        "drag": 0.82,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.15,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.8,
+        "frequency": 1.25,
+        "phase": 0.18,
+        "lag": 0.12
+      }
+    },
+    {
+      "id": "lantern-siphon",
+      "key": "fauna-velvet-lantern-cuttle-lantern-siphon",
+      "src": "fauna-velvet-lantern-cuttle-lantern-siphon.png",
+      "sourceCrop": {
+        "x": 760,
+        "y": 130,
+        "width": 320,
+        "height": 210
+      },
+      "size": {
+        "width": 320,
+        "height": 210
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.26,
+        "drag": 1.1,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 0.46,
+        "mobilityFactor": 0.94
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.0,
+        "frequency": 2.25,
+        "phase": 0.55,
+        "lag": 0.18
+      }
+    },
+    {
+      "id": "beak-jaw",
+      "key": "fauna-velvet-lantern-cuttle-beak-jaw",
+      "src": "fauna-velvet-lantern-cuttle-beak-jaw.png",
+      "sourceCrop": {
+        "x": 1000,
+        "y": 360,
+        "width": 280,
+        "height": 210
+      },
+      "size": {
+        "width": 280,
+        "height": 210
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.32,
+        "drag": 1.1,
+        "angularDrag": 0.56,
+        "severable": false,
+        "breakThreshold": 0.54,
+        "mobilityFactor": 0.98
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 8.5,
+        "frequency": 3.0,
+        "phase": 0.15,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "arm-crown-upper",
+      "key": "fauna-velvet-lantern-cuttle-arm-crown-upper",
+      "src": "fauna-velvet-lantern-cuttle-arm-crown-upper.png",
+      "sourceCrop": {
+        "x": 980,
+        "y": 300,
+        "width": 420,
+        "height": 260
+      },
+      "size": {
+        "width": 420,
+        "height": 260
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.46,
+        "drag": 1.1,
+        "angularDrag": 0.56,
+        "severable": false,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.98
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 11.0,
+        "frequency": 2.7,
+        "phase": 0.4,
+        "lag": 0.12
+      }
+    },
+    {
+      "id": "arm-crown-lower",
+      "key": "fauna-velvet-lantern-cuttle-arm-crown-lower",
+      "src": "fauna-velvet-lantern-cuttle-arm-crown-lower.png",
+      "sourceCrop": {
+        "x": 970,
+        "y": 500,
+        "width": 460,
+        "height": 270
+      },
+      "size": {
+        "width": 460,
+        "height": 270
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.48,
+        "drag": 1.1,
+        "angularDrag": 0.56,
+        "severable": false,
+        "breakThreshold": 0.64,
+        "mobilityFactor": 0.98
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 11.5,
+        "frequency": 2.75,
+        "phase": 0.82,
+        "lag": 0.16
+      }
+    },
+    {
+      "id": "strike-tentacle-near",
+      "key": "fauna-velvet-lantern-cuttle-strike-tentacle-near",
+      "src": "fauna-velvet-lantern-cuttle-strike-tentacle-near.png",
+      "sourceCrop": {
+        "x": 1110,
+        "y": 340,
+        "width": 530,
+        "height": 220
+      },
+      "size": {
+        "width": 530,
+        "height": 220
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.3,
+        "drag": 1.1,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 0.54,
+        "mobilityFactor": 1.0
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 12.5,
+        "frequency": 2.35,
+        "phase": 1.05,
+        "lag": 0.28
+      }
+    },
+    {
+      "id": "strike-tentacle-far",
+      "key": "fauna-velvet-lantern-cuttle-strike-tentacle-far",
+      "src": "fauna-velvet-lantern-cuttle-strike-tentacle-far.png",
+      "sourceCrop": {
+        "x": 1080,
+        "y": 520,
+        "width": 500,
+        "height": 230
+      },
+      "size": {
+        "width": 500,
+        "height": 230
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.3,
+        "drag": 1.1,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 0.54,
+        "mobilityFactor": 1.0
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 11.5,
+        "frequency": 2.25,
+        "phase": 1.4,
+        "lag": 0.34
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "mantle-tip-socket",
+      "src": "fauna-velvet-lantern-cuttle-mantle-tip-socket.png",
+      "parentId": "mantle-core",
+      "childId": "mantle-tip",
+      "sourcePartId": "mantle-core",
+      "sourceCrop": {
+        "x": 0,
+        "y": 154,
+        "width": 125,
+        "height": 130
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "head-mask-socket",
+      "src": "fauna-velvet-lantern-cuttle-head-mask-socket.png",
+      "parentId": "mantle-core",
+      "childId": "head-mask",
+      "sourcePartId": "mantle-core",
+      "sourceCrop": {
+        "x": 560,
+        "y": 126,
+        "width": 118,
+        "height": 150
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "fin-skirt-upper-socket",
+      "src": "fauna-velvet-lantern-cuttle-fin-skirt-upper-socket.png",
+      "parentId": "mantle-core",
+      "childId": "fin-skirt-upper",
+      "sourcePartId": "mantle-core",
+      "sourceCrop": {
+        "x": 105,
+        "y": 0,
+        "width": 185,
+        "height": 96
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "fin-skirt-lower-socket",
+      "src": "fauna-velvet-lantern-cuttle-fin-skirt-lower-socket.png",
+      "parentId": "mantle-core",
+      "childId": "fin-skirt-lower",
+      "sourcePartId": "mantle-core",
+      "sourceCrop": {
+        "x": 150,
+        "y": 384,
+        "width": 210,
+        "height": 100
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "lantern-siphon-socket",
+      "src": "fauna-velvet-lantern-cuttle-lantern-siphon-socket.png",
+      "parentId": "mantle-core",
+      "childId": "lantern-siphon",
+      "sourcePartId": "mantle-core",
+      "sourceCrop": {
+        "x": 456,
+        "y": 0,
+        "width": 120,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "beak-jaw-socket",
+      "src": "fauna-velvet-lantern-cuttle-beak-jaw-socket.png",
+      "parentId": "head-mask",
+      "childId": "beak-jaw",
+      "sourcePartId": "head-mask",
+      "sourceCrop": {
+        "x": 170,
+        "y": 170,
+        "width": 98,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "arm-crown-upper-socket",
+      "src": "fauna-velvet-lantern-cuttle-arm-crown-upper-socket.png",
+      "parentId": "head-mask",
+      "childId": "arm-crown-upper",
+      "sourcePartId": "head-mask",
+      "sourceCrop": {
+        "x": 190,
+        "y": 176,
+        "width": 112,
+        "height": 100
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "arm-crown-lower-socket",
+      "src": "fauna-velvet-lantern-cuttle-arm-crown-lower-socket.png",
+      "parentId": "head-mask",
+      "childId": "arm-crown-lower",
+      "sourcePartId": "head-mask",
+      "sourceCrop": {
+        "x": 182,
+        "y": 286,
+        "width": 118,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "strike-tentacle-near-socket",
+      "src": "fauna-velvet-lantern-cuttle-strike-tentacle-near-socket.png",
+      "parentId": "head-mask",
+      "childId": "strike-tentacle-near",
+      "sourcePartId": "head-mask",
+      "sourceCrop": {
+        "x": 212,
+        "y": 188,
+        "width": 112,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "strike-tentacle-far-socket",
+      "src": "fauna-velvet-lantern-cuttle-strike-tentacle-far-socket.png",
+      "parentId": "head-mask",
+      "childId": "strike-tentacle-far",
+      "sourcePartId": "head-mask",
+      "sourceCrop": {
+        "x": 202,
+        "y": 312,
+        "width": 116,
+        "height": 90
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.9,
+      "bridgeSleeveScale": 0.34
+    }
+  ],
+  "notes": "Prototype built from one magenta-background Velvet Lantern Cuttle source: compact cuttlefish-like mantle, velvet fin skirt, head mask, beak, arm crowns, two strike tentacles, rear mantle tip, and lantern siphon. Crop overlap is intentionally generous so the assembled idle silhouette can be judged against the whole-source art before any acceptance.",
+  "murkTint": {
+    "color": 9161408,
+    "intensity": 0.1,
+    "stunnedIntensity": 0.17
+  },
+  "socketStyle": {
+    "alpha": 0.54,
+    "bridgeColor": 462868,
+    "bridgeAlpha": 0.16,
+    "bridgeStunnedAlpha": 0.1,
+    "bridgeCoreColor": 15909995,
+    "bridgeCoreAlpha": 0.07,
+    "bridgeCoreStunnedAlpha": 0.04,
+    "bridgeWidthScale": 0.9,
+    "bridgeSleeveScale": 0.34
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "acceptanceNote": "Prototype generated from one magenta-background Velvet Lantern Cuttle source. Needs source, contact-sheet, phase-strip, and sandbox visual acceptance before counting toward the 20-threat goal.",
+    "visualChecklist": {},
+    "reviewEvidence": {}
+  }
+}

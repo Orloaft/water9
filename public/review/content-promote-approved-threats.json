@@ -1,0 +1,1414 @@
+{
+  "schema": "water9/content-promote-approved-threats@1",
+  "generatedAt": "2026-06-18T17:07:22.535Z",
+  "generatedFrom": {
+    "board": "public/review/content-human-adjudication-board.json",
+    "threatDecisions": "public/review/content-threat-acceptance-decision-template.json",
+    "productionProof": "public/review/content-production-proof.json"
+  },
+  "policy": {
+    "targetOnly": true,
+    "excludesNonTargetRuntimePrototypes": true,
+    "humanAuthoredDecisionsRequired": true,
+    "strictThreatDecisionApplyRequired": true
+  },
+  "commands": [
+    "npm run content:promote-approved-threats",
+    "npm run content:promote-approved-threats-check",
+    "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict",
+    "npm run content:goal-gate"
+  ],
+  "summary": {
+    "targetThreats": 20,
+    "items": 20,
+    "sourceApproved": 0,
+    "readyForThreatDecision": 0,
+    "acceptedThreats": 0,
+    "excludedNonTargetRigs": 0,
+    "runtimeMappedTargets": 20
+  },
+  "requiredChecks": [
+    "single-source-cohesion",
+    "readable-silhouette",
+    "anatomy-cohesion",
+    "production-visual-cohesion",
+    "socket-seams",
+    "motion-stability",
+    "sandbox-behavior"
+  ],
+  "decisionFileTemplate": {
+    "schema": "water9/content-threat-acceptance-decisions@1",
+    "reviewer": "<human-reviewer>",
+    "reviewedAt": "<ISO-8601 timestamp>",
+    "policy": {
+      "humanAuthored": true,
+      "automationCannotAcceptThreats": true,
+      "inspectSourceContactPhaseParityAndSandbox": true,
+      "targetOnlyThreatGoal": true
+    },
+    "decisions": [
+      {
+        "id": "abyssal-lantern-mantis",
+        "species": "Abyssal Lantern Mantis",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "abyssal-lantern-mantis",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "black-coral-gate",
+        "species": "Black Coral Gate",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "black-coral-gate",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "brine-crown",
+        "species": "Brine Crown",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "brine-crown",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "brine-mycelium-shelf",
+        "species": "Brine Mycelium Shelf",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "brine-mycelium-shelf",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "chain-vein-siphonophore",
+        "species": "Chain Vein Siphonophore",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "chain-vein-siphonophore",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "coronate-sting-crown",
+        "species": "Coronate Sting Crown",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "coronate-sting-crown",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "glass-sponge-sentinel",
+        "species": "Glass Sponge Sentinel",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "glass-sponge-sentinel",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "gulper-eel-maw",
+        "species": "Gulper Eel Maw",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "gulper-eel-maw",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "hadal-trencher-isopod",
+        "species": "Hadal Trencher Isopod",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "hadal-trencher-isopod",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "lantern-anemone-pit",
+        "species": "Lantern Anemone Pit",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "lantern-anemone-pit",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "predatory-tunicate-maw",
+        "species": "Predatory Tunicate Maw",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "predatory-tunicate-maw",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "razor-kelp-harp",
+        "species": "Razor Kelp Harp",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "razor-kelp-harp",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "reef-lion-moray",
+        "species": "Reef Lion Moray",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "reef-lion-moray",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "reliquary-siphonophore",
+        "species": "Reliquary Siphonophore",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "reliquary-siphonophore",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "saber-viperfish",
+        "species": "Saber Viperfish",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "saber-viperfish",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "thorn-fan-coralline",
+        "species": "Thorn Fan Coralline",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "thorn-fan-coralline",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "trench-harvest-sea-spider",
+        "species": "Trench Harvest Sea Spider",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "trench-harvest-sea-spider",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "tripod-stilt-stalker",
+        "species": "Tripod Stilt Stalker",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "tripod-stilt-stalker",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "vampire-cloak-squid",
+        "species": "Vampire Cloak Squid",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "vampire-cloak-squid",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      },
+      {
+        "id": "vent-claw-yeti",
+        "species": "Vent-Claw Yeti",
+        "status": "needs-review",
+        "reviewer": "<human-reviewer>",
+        "sourceCandidateId": "vent-claw-yeti",
+        "overallNote": "",
+        "visualChecks": {
+          "single-source-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "readable-silhouette": {
+            "score": null,
+            "note": ""
+          },
+          "anatomy-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "production-visual-cohesion": {
+            "score": null,
+            "note": ""
+          },
+          "socket-seams": {
+            "score": null,
+            "note": ""
+          },
+          "motion-stability": {
+            "score": null,
+            "note": ""
+          },
+          "sandbox-behavior": {
+            "score": null,
+            "note": ""
+          }
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "abyssal-lantern-mantis",
+      "species": "Abyssal Lantern Mantis",
+      "rank": 1,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/abyssal-lantern-mantis.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/abyssal-lantern-mantis.html",
+        "sourceSandbox": "/?entity=source-abyssal-lantern-mantis&companion=diver",
+        "runtimeSandbox": "/?sandbox=abyssal-lantern-mantis&companion=diver",
+        "audit": "/review/content-acceptance-audits/abyssal-lantern-mantis.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id abyssal-lantern-mantis --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate abyssal-lantern-mantis \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "black-coral-gate",
+      "species": "Black Coral Gate",
+      "rank": 2,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/black-coral-gate.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/black-coral-gate.html",
+        "sourceSandbox": "/?entity=source-black-coral-gate&companion=diver",
+        "runtimeSandbox": "/?sandbox=black-coral-gate&companion=diver",
+        "audit": "/review/content-acceptance-audits/black-coral-gate.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id black-coral-gate --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate black-coral-gate \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "brine-crown",
+      "species": "Brine Crown",
+      "rank": 3,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/brine-crown.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/brine-crown.html",
+        "sourceSandbox": "/?entity=source-brine-crown&companion=diver",
+        "runtimeSandbox": "/?sandbox=brine-crown&companion=diver",
+        "audit": "/review/content-acceptance-audits/brine-crown.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id brine-crown --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate brine-crown \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "brine-mycelium-shelf",
+      "species": "Brine Mycelium Shelf",
+      "rank": 4,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/brine-mycelium-shelf.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/brine-mycelium-shelf.html",
+        "sourceSandbox": "/?entity=source-brine-mycelium-shelf&companion=diver",
+        "runtimeSandbox": "/?sandbox=brine-mycelium-shelf&companion=diver",
+        "audit": "/review/content-acceptance-audits/brine-mycelium-shelf.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id brine-mycelium-shelf --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate brine-mycelium-shelf \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "chain-vein-siphonophore",
+      "species": "Chain Vein Siphonophore",
+      "rank": 5,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/chain-vein-siphonophore.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/chain-vein-siphonophore.html",
+        "sourceSandbox": "/?entity=source-chain-vein-siphonophore&companion=diver",
+        "runtimeSandbox": "/?sandbox=chain-vein-siphonophore&companion=diver",
+        "audit": "/review/content-acceptance-audits/chain-vein-siphonophore.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id chain-vein-siphonophore --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate chain-vein-siphonophore \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "coronate-sting-crown",
+      "species": "Coronate Sting Crown",
+      "rank": 6,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/coronate-sting-crown.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/coronate-sting-crown.html",
+        "sourceSandbox": "/?entity=source-coronate-sting-crown&companion=diver",
+        "runtimeSandbox": "/?sandbox=coronate-sting-crown&companion=diver",
+        "audit": "/review/content-acceptance-audits/coronate-sting-crown.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id coronate-sting-crown --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate coronate-sting-crown \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "glass-sponge-sentinel",
+      "species": "Glass Sponge Sentinel",
+      "rank": 7,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/glass-sponge-sentinel.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/glass-sponge-sentinel.html",
+        "sourceSandbox": "/?entity=source-glass-sponge-sentinel&companion=diver",
+        "runtimeSandbox": "/?sandbox=glass-sponge-sentinel&companion=diver",
+        "audit": "/review/content-acceptance-audits/glass-sponge-sentinel.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id glass-sponge-sentinel --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate glass-sponge-sentinel \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "rank": 8,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/gulper-eel-maw.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/gulper-eel-maw.html",
+        "sourceSandbox": "/?entity=source-gulper-eel-maw&companion=diver",
+        "runtimeSandbox": "/?sandbox=gulper-eel-maw&companion=diver",
+        "audit": "/review/content-acceptance-audits/gulper-eel-maw.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id gulper-eel-maw --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate gulper-eel-maw \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "hadal-trencher-isopod",
+      "species": "Hadal Trencher Isopod",
+      "rank": 9,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/hadal-trencher-isopod.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/hadal-trencher-isopod.html",
+        "sourceSandbox": "/?entity=source-hadal-trencher-isopod&companion=diver",
+        "runtimeSandbox": "/?sandbox=hadal-trencher-isopod&companion=diver",
+        "audit": "/review/content-acceptance-audits/hadal-trencher-isopod.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id hadal-trencher-isopod --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate hadal-trencher-isopod \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "lantern-anemone-pit",
+      "species": "Lantern Anemone Pit",
+      "rank": 10,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/lantern-anemone-pit.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/lantern-anemone-pit.html",
+        "sourceSandbox": "/?entity=source-lantern-anemone-pit&companion=diver",
+        "runtimeSandbox": "/?sandbox=lantern-anemone-pit&companion=diver",
+        "audit": "/review/content-acceptance-audits/lantern-anemone-pit.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id lantern-anemone-pit --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate lantern-anemone-pit \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "predatory-tunicate-maw",
+      "species": "Predatory Tunicate Maw",
+      "rank": 11,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/predatory-tunicate-maw.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/predatory-tunicate-maw.html",
+        "sourceSandbox": "/?entity=source-predatory-tunicate-maw&companion=diver",
+        "runtimeSandbox": "/?sandbox=predatory-tunicate-maw&companion=diver",
+        "audit": "/review/content-acceptance-audits/predatory-tunicate-maw.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id predatory-tunicate-maw --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate predatory-tunicate-maw \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "razor-kelp-harp",
+      "species": "Razor Kelp Harp",
+      "rank": 12,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/razor-kelp-harp.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/razor-kelp-harp.html",
+        "sourceSandbox": "/?entity=source-razor-kelp-harp&companion=diver",
+        "runtimeSandbox": "/?sandbox=razor-kelp-harp&companion=diver",
+        "audit": "/review/content-acceptance-audits/razor-kelp-harp.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id razor-kelp-harp --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate razor-kelp-harp \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "reef-lion-moray",
+      "species": "Reef Lion Moray",
+      "rank": 13,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/reef-lion-moray.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/reef-lion-moray.html",
+        "sourceSandbox": "/?entity=source-reef-lion-moray&companion=diver",
+        "runtimeSandbox": "/?sandbox=reef-lion-moray&companion=diver",
+        "audit": "/review/content-acceptance-audits/reef-lion-moray.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id reef-lion-moray --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate reef-lion-moray \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "reliquary-siphonophore",
+      "species": "Reliquary Siphonophore",
+      "rank": 14,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/reliquary-siphonophore.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/reliquary-siphonophore.html",
+        "sourceSandbox": "/?entity=source-reliquary-siphonophore&companion=diver",
+        "runtimeSandbox": "/?sandbox=reliquary-siphonophore&companion=diver",
+        "audit": "/review/content-acceptance-audits/reliquary-siphonophore.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id reliquary-siphonophore --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate reliquary-siphonophore \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "saber-viperfish",
+      "species": "Saber Viperfish",
+      "rank": 15,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/saber-viperfish.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/saber-viperfish.html",
+        "sourceSandbox": "/?entity=source-saber-viperfish&companion=diver",
+        "runtimeSandbox": "/?sandbox=saber-viperfish&companion=diver",
+        "audit": "/review/content-acceptance-audits/saber-viperfish.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id saber-viperfish --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate saber-viperfish \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "thorn-fan-coralline",
+      "species": "Thorn Fan Coralline",
+      "rank": 16,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/thorn-fan-coralline.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/thorn-fan-coralline.html",
+        "sourceSandbox": "/?entity=source-thorn-fan-coralline&companion=diver",
+        "runtimeSandbox": "/?sandbox=thorn-fan-coralline&companion=diver",
+        "audit": "/review/content-acceptance-audits/thorn-fan-coralline.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id thorn-fan-coralline --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate thorn-fan-coralline \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "trench-harvest-sea-spider",
+      "species": "Trench Harvest Sea Spider",
+      "rank": 17,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/trench-harvest-sea-spider.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/trench-harvest-sea-spider.html",
+        "sourceSandbox": "/?entity=source-trench-harvest-sea-spider&companion=diver",
+        "runtimeSandbox": "/?sandbox=trench-harvest-sea-spider&companion=diver",
+        "audit": "/review/content-acceptance-audits/trench-harvest-sea-spider.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id trench-harvest-sea-spider --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate trench-harvest-sea-spider \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "tripod-stilt-stalker",
+      "species": "Tripod Stilt Stalker",
+      "rank": 18,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/tripod-stilt-stalker.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/tripod-stilt-stalker.html",
+        "sourceSandbox": "/?entity=source-tripod-stilt-stalker&companion=diver",
+        "runtimeSandbox": "/?sandbox=tripod-stilt-stalker&companion=diver",
+        "audit": "/review/content-acceptance-audits/tripod-stilt-stalker.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id tripod-stilt-stalker --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate tripod-stilt-stalker \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "vampire-cloak-squid",
+      "species": "Vampire Cloak Squid",
+      "rank": 19,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/vampire-cloak-squid.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/vampire-cloak-squid.html",
+        "sourceSandbox": "/?entity=source-vampire-cloak-squid&companion=diver",
+        "runtimeSandbox": "/?sandbox=vampire-cloak-squid&companion=diver",
+        "audit": "/review/content-acceptance-audits/vampire-cloak-squid.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id vampire-cloak-squid --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate vampire-cloak-squid \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    },
+    {
+      "id": "vent-claw-yeti",
+      "species": "Vent-Claw Yeti",
+      "rank": 20,
+      "sourceApproved": false,
+      "threatAccepted": false,
+      "threatReady": false,
+      "runtimeMapped": true,
+      "productionStatus": "prototype-only",
+      "readyForDecision": false,
+      "blockers": [
+        "human source approval missing",
+        "threat evidence route is incomplete",
+        "runtime proof is still prototype-only"
+      ],
+      "mediaPresent": 10,
+      "mediaTotal": 10,
+      "links": {
+        "cockpit": "/review/content-review-cockpit/vent-claw-yeti.html",
+        "sourceQuickReview": "/review/source-candidates/quick-reviews/vent-claw-yeti.html",
+        "sourceSandbox": "/?entity=source-vent-claw-yeti&companion=diver",
+        "runtimeSandbox": "/?sandbox=vent-claw-yeti&companion=diver",
+        "audit": "/review/content-acceptance-audits/vent-claw-yeti.html"
+      },
+      "commands": {
+        "runtimePreview": "npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual",
+        "threatAcceptanceDryRun": "npm run content:accept -- --id vent-claw-yeti --status accepted --reviewed-by <human-reviewer> \\\n  --source-candidate vent-claw-yeti \\\n  --note '<specific rig approval note>' \\\n  --visual-check single-source-cohesion --visual-check readable-silhouette --visual-check anatomy-cohesion --visual-check production-visual-cohesion --visual-check socket-seams --visual-check motion-stability --visual-check sandbox-behavior \\\n  --score single-source-cohesion=<4-5> --score readable-silhouette=<4-5> --score anatomy-cohesion=<4-5> --score production-visual-cohesion=<4-5> --score socket-seams=<4-5> --score motion-stability=<4-5> --score sandbox-behavior=<4-5> \\\n  --visual-note single-source-cohesion='<specific rationale>' --visual-note readable-silhouette='<specific rationale>' --visual-note anatomy-cohesion='<specific rationale>' --visual-note production-visual-cohesion='<specific rationale>' --visual-note socket-seams='<specific rationale>' --visual-note motion-stability='<specific rationale>' --visual-note sandbox-behavior='<specific rationale>' \\\n  --source-reviewed --contact-reviewed --phase-reviewed --parity-reviewed --sandbox-reviewed --dry-run",
+        "applyTargetDecisionsStrict": "npm run content:threat-decisions-apply -- --decisions water9-target-threat-acceptance-decisions.json --strict"
+      }
+    }
+  ]
+}

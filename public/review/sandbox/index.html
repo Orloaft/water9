@@ -1,0 +1,2110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Water 9 Sandbox Index</title>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #081318; color: #dbeaf0; }
+      body { margin: 0; min-height: 100vh; background: linear-gradient(#081318, #051014); }
+      main { max-width: 1180px; margin: 0 auto; padding: 28px 18px 48px; }
+      h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 4.5rem); letter-spacing: 0; }
+      p { margin: 0 0 18px; color: #9fb7c1; line-height: 1.5; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0; }
+      input { flex: 1 1 260px; min-width: 0; border: 1px solid #294653; border-radius: 6px; background: #0d2028; color: #e7f7fb; padding: 10px 12px; font: inherit; }
+      button { border: 1px solid #315262; border-radius: 6px; background: #102934; color: #dbeaf0; padding: 9px 12px; font: inherit; cursor: pointer; }
+      button[aria-pressed="true"] { background: #1a5667; border-color: #55aec3; }
+	      .summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 20px; }
+	      .summary span { border: 1px solid #243f4a; border-radius: 6px; padding: 8px 10px; background: #0c1d24; color: #b8d4dd; }
+	      .notice { border: 1px solid #6a5230; border-radius: 6px; background: #1d1710; color: #f0d9aa; padding: 10px 12px; margin: 0 0 16px; }
+      table { width: 100%; border-collapse: collapse; background: #09191f; border: 1px solid #223c47; }
+      th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #18303a; vertical-align: top; }
+      th { position: sticky; top: 0; background: #10242c; color: #e7f7fb; z-index: 1; }
+      td { color: #c7dbe2; }
+      code { font-family: "SFMono-Regular", Consolas, monospace; color: #cfeef6; overflow-wrap: anywhere; }
+      a { color: #7ee8ff; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .muted { color: #79939d; font-size: 0.92rem; }
+      @media (max-width: 760px) {
+        main { padding: 18px 10px 32px; }
+        table { font-size: 0.82rem; }
+        th, td { padding: 7px 6px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+	      <h1>Sandbox Index</h1>
+	      <p>Open any registered preview entity in the Water 9 sandbox. Run the dev server, then use these links to inspect scale, textures, frame alignment, and articulated motion without a full dive.</p>
+	      <div class="notice">Previewable does not mean accepted. Prototype and source-review rows are review aids only; only rows marked Gate Accepted count toward the strict content gate.</div>
+	      <p class="muted">Generated from src/content.ts, src/scene-sandbox.ts, public/review/articulated/review-manifest.json, public/assets/generated/articulated-creatures.parts.json, public/review/source-candidates/source-candidates.json, public/review/content-runtime-coverage.json, public/review/content-stage-board.json.</p>
+      <div class="summary">
+        <span>125 entries</span>
+        <span>33 articulated threats</span>
+        <span>73 hostile previews</span>
+        <span>prototype <strong>33</strong></span><span>reference <strong>72</strong></span><span>source-review <strong>20</strong></span>
+      </div>
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Filter by id, name, kind, biome, notes">
+        <button type="button" data-kind-filter="all">all</button><button type="button" data-kind-filter="articulated">articulated</button><button type="button" data-kind-filter="diver">diver</button><button type="button" data-kind-filter="fish">fish</button><button type="button" data-kind-filter="flora">flora</button><button type="button" data-kind-filter="item">item</button><button type="button" data-kind-filter="object">object</button><button type="button" data-kind-filter="ore">ore</button><button type="button" data-kind-filter="source">source</button>
+      </div>
+      <div class="toolbar" aria-label="Gate stage filters">
+        <button type="button" data-stage-filter="all">all</button><button type="button" data-stage-filter="prototype">prototype</button><button type="button" data-stage-filter="reference">reference</button><button type="button" data-stage-filter="source-review">source-review</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Kind</th>
+	            <th>Review Stage</th>
+            <th>Gate Accepted</th>
+            <th>Review Banner</th>
+            <th>Production Boundary</th>
+            <th>Biome</th>
+            <th>Rarity</th>
+            <th>Hostile</th>
+            <th>Open</th>
+            <th>Preview Command</th>
+            <th>Paired Visual Check</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr data-kind="articulated" data-stage="prototype" data-query="abyssal-crownmaw abyssal crownmaw articulated prototype  quality: prototype; 9 parts">
+            <td><a href="/?sandbox=abyssal-crownmaw">abyssal-crownmaw</a></td>
+            <td>Abyssal Crownmaw</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>legendary</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=abyssal-crownmaw">open</a> / <a href="/?sandbox=abyssal-crownmaw&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id abyssal-crownmaw --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids abyssal-crownmaw --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 9 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="abyssal-gulper abyssal gulper articulated prototype  quality: prototype; 10 parts">
+            <td><a href="/?sandbox=abyssal-gulper">abyssal-gulper</a></td>
+            <td>Abyssal Gulper</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>legendary</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=abyssal-gulper">open</a> / <a href="/?sandbox=abyssal-gulper&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id abyssal-gulper --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids abyssal-gulper --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 10 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="abyssal-lantern-mantis abyssal lantern mantis articulated prototype  quality: prototype; 5 parts; source candidate: abyssal-lantern-mantis">
+            <td><a href="/?sandbox=abyssal-lantern-mantis">abyssal-lantern-mantis</a></td>
+            <td>Abyssal Lantern Mantis</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=abyssal-lantern-mantis">open</a> / <a href="/?sandbox=abyssal-lantern-mantis&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id abyssal-lantern-mantis --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids abyssal-lantern-mantis --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: abyssal-lantern-mantis</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="abyssal-serpent abyssal serpent articulated prototype  quality: prototype; 8 parts">
+            <td><a href="/?sandbox=abyssal-serpent">abyssal-serpent</a></td>
+            <td>Abyssal Serpent</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>legendary</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=abyssal-serpent">open</a> / <a href="/?sandbox=abyssal-serpent&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id abyssal-serpent --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids abyssal-serpent --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 8 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="black-coral-gate black coral gate articulated prototype  quality: prototype; 5 parts; source candidate: black-coral-gate">
+            <td><a href="/?sandbox=black-coral-gate">black-coral-gate</a></td>
+            <td>Black Coral Gate</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=black-coral-gate">open</a> / <a href="/?sandbox=black-coral-gate&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id black-coral-gate --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids black-coral-gate --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: black-coral-gate</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="brine-crown brine crown articulated prototype  quality: prototype; 5 parts; source candidate: brine-crown">
+            <td><a href="/?sandbox=brine-crown">brine-crown</a></td>
+            <td>Brine Crown</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=brine-crown">open</a> / <a href="/?sandbox=brine-crown&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id brine-crown --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids brine-crown --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: brine-crown</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="brine-mycelium-shelf brine mycelium shelf articulated prototype  quality: prototype; 5 parts; source candidate: brine-mycelium-shelf">
+            <td><a href="/?sandbox=brine-mycelium-shelf">brine-mycelium-shelf</a></td>
+            <td>Brine Mycelium Shelf</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=brine-mycelium-shelf">open</a> / <a href="/?sandbox=brine-mycelium-shelf&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id brine-mycelium-shelf --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids brine-mycelium-shelf --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: brine-mycelium-shelf</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="cavitation-boxer cavitation boxer articulated prototype  quality: prototype; 13 parts">
+            <td><a href="/?sandbox=cavitation-boxer">cavitation-boxer</a></td>
+            <td>Cavitation Boxer</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=cavitation-boxer">open</a> / <a href="/?sandbox=cavitation-boxer&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id cavitation-boxer --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids cavitation-boxer --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 13 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="chain-vein-siphonophore chain vein siphonophore articulated prototype  quality: prototype; 5 parts; source candidate: chain-vein-siphonophore">
+            <td><a href="/?sandbox=chain-vein-siphonophore">chain-vein-siphonophore</a></td>
+            <td>Chain Vein Siphonophore</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=chain-vein-siphonophore">open</a> / <a href="/?sandbox=chain-vein-siphonophore&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id chain-vein-siphonophore --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids chain-vein-siphonophore --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: chain-vein-siphonophore</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="chainmaw-eel chainmaw eel articulated prototype  quality: prototype; 8 parts">
+            <td><a href="/?sandbox=chainmaw-eel">chainmaw-eel</a></td>
+            <td>Chainmaw Eel</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>epic</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=chainmaw-eel">open</a> / <a href="/?sandbox=chainmaw-eel&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id chainmaw-eel --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids chainmaw-eel --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 8 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="coronate-sting-crown coronate sting crown articulated prototype  quality: prototype; 5 parts; source candidate: coronate-sting-crown">
+            <td><a href="/?sandbox=coronate-sting-crown">coronate-sting-crown</a></td>
+            <td>Coronate Sting Crown</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=coronate-sting-crown">open</a> / <a href="/?sandbox=coronate-sting-crown&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id coronate-sting-crown --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids coronate-sting-crown --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: coronate-sting-crown</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="glass-sponge-sentinel glass sponge sentinel articulated prototype  quality: prototype; 5 parts; source candidate: glass-sponge-sentinel">
+            <td><a href="/?sandbox=glass-sponge-sentinel">glass-sponge-sentinel</a></td>
+            <td>Glass Sponge Sentinel</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=glass-sponge-sentinel">open</a> / <a href="/?sandbox=glass-sponge-sentinel&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id glass-sponge-sentinel --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids glass-sponge-sentinel --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: glass-sponge-sentinel</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="gulper-eel-maw gulper eel maw articulated prototype  quality: prototype; 5 parts; source candidate: gulper-eel-maw">
+            <td><a href="/?sandbox=gulper-eel-maw">gulper-eel-maw</a></td>
+            <td>Gulper Eel Maw</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=gulper-eel-maw">open</a> / <a href="/?sandbox=gulper-eel-maw&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id gulper-eel-maw --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids gulper-eel-maw --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: gulper-eel-maw</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="hadal-trencher-isopod hadal trencher isopod articulated prototype  quality: prototype; 5 parts; source candidate: hadal-trencher-isopod">
+            <td><a href="/?sandbox=hadal-trencher-isopod">hadal-trencher-isopod</a></td>
+            <td>Hadal Trencher Isopod</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=hadal-trencher-isopod">open</a> / <a href="/?sandbox=hadal-trencher-isopod&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id hadal-trencher-isopod --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids hadal-trencher-isopod --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: hadal-trencher-isopod</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="harpoon-cone harpoon cone articulated prototype  quality: prototype; 9 parts">
+            <td><a href="/?sandbox=harpoon-cone">harpoon-cone</a></td>
+            <td>Harpoon Cone</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>epic</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=harpoon-cone">open</a> / <a href="/?sandbox=harpoon-cone&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id harpoon-cone --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids harpoon-cone --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 9 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="hookjaw-isopod hookjaw isopod articulated prototype  quality: prototype; 13 parts">
+            <td><a href="/?sandbox=hookjaw-isopod">hookjaw-isopod</a></td>
+            <td>Hookjaw Isopod</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>epic</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=hookjaw-isopod">open</a> / <a href="/?sandbox=hookjaw-isopod&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id hookjaw-isopod --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids hookjaw-isopod --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 13 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="lantern-anemone-pit lantern anemone pit articulated prototype  quality: prototype; 5 parts; source candidate: lantern-anemone-pit">
+            <td><a href="/?sandbox=lantern-anemone-pit">lantern-anemone-pit</a></td>
+            <td>Lantern Anemone Pit</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=lantern-anemone-pit">open</a> / <a href="/?sandbox=lantern-anemone-pit&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id lantern-anemone-pit --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids lantern-anemone-pit --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: lantern-anemone-pit</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="predatory-tunicate-maw predatory tunicate maw articulated prototype  quality: prototype; 5 parts; source candidate: predatory-tunicate-maw">
+            <td><a href="/?sandbox=predatory-tunicate-maw">predatory-tunicate-maw</a></td>
+            <td>Predatory Tunicate Maw</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=predatory-tunicate-maw">open</a> / <a href="/?sandbox=predatory-tunicate-maw&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id predatory-tunicate-maw --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids predatory-tunicate-maw --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: predatory-tunicate-maw</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="razor-kelp-harp razor kelp harp articulated prototype  quality: prototype; 5 parts; source candidate: razor-kelp-harp">
+            <td><a href="/?sandbox=razor-kelp-harp">razor-kelp-harp</a></td>
+            <td>Razor Kelp Harp</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=razor-kelp-harp">open</a> / <a href="/?sandbox=razor-kelp-harp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id razor-kelp-harp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids razor-kelp-harp --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: razor-kelp-harp</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="reef-lion-moray reef lion moray articulated prototype  quality: prototype; 5 parts; source candidate: reef-lion-moray">
+            <td><a href="/?sandbox=reef-lion-moray">reef-lion-moray</a></td>
+            <td>Reef Lion Moray</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=reef-lion-moray">open</a> / <a href="/?sandbox=reef-lion-moray&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id reef-lion-moray --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids reef-lion-moray --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: reef-lion-moray</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="reliquary-siphonophore reliquary siphonophore articulated prototype  quality: prototype; 5 parts; source candidate: reliquary-siphonophore">
+            <td><a href="/?sandbox=reliquary-siphonophore">reliquary-siphonophore</a></td>
+            <td>Reliquary Siphonophore</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=reliquary-siphonophore">open</a> / <a href="/?sandbox=reliquary-siphonophore&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id reliquary-siphonophore --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids reliquary-siphonophore --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: reliquary-siphonophore</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="saber-viperfish saber viperfish articulated prototype  quality: prototype; 5 parts; source candidate: saber-viperfish">
+            <td><a href="/?sandbox=saber-viperfish">saber-viperfish</a></td>
+            <td>Saber Viperfish</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=saber-viperfish">open</a> / <a href="/?sandbox=saber-viperfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id saber-viperfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids saber-viperfish --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: saber-viperfish</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="sand-battery sand battery articulated prototype  quality: prototype; 11 parts">
+            <td><a href="/?sandbox=sand-battery">sand-battery</a></td>
+            <td>Sand Battery</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=sand-battery">open</a> / <a href="/?sandbox=sand-battery&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id sand-battery --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids sand-battery --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 11 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="sawback-ray sawback ray articulated prototype  quality: prototype; 10 parts">
+            <td><a href="/?sandbox=sawback-ray">sawback-ray</a></td>
+            <td>Sawback Ray</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=sawback-ray">open</a> / <a href="/?sandbox=sawback-ray&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id sawback-ray --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids sawback-ray --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 10 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="siphon-lily siphon lily articulated prototype  quality: prototype; 13 parts">
+            <td><a href="/?sandbox=siphon-lily">siphon-lily</a></td>
+            <td>Siphon Lily</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>epic</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=siphon-lily">open</a> / <a href="/?sandbox=siphon-lily&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id siphon-lily --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids siphon-lily --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 13 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="thorn-fan-coralline thorn fan coralline articulated prototype  quality: prototype; 5 parts; source candidate: thorn-fan-coralline">
+            <td><a href="/?sandbox=thorn-fan-coralline">thorn-fan-coralline</a></td>
+            <td>Thorn Fan Coralline</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=thorn-fan-coralline">open</a> / <a href="/?sandbox=thorn-fan-coralline&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id thorn-fan-coralline --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids thorn-fan-coralline --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: thorn-fan-coralline</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="thornhalo-urchin thornhalo urchin articulated prototype  quality: prototype; 11 parts">
+            <td><a href="/?sandbox=thornhalo-urchin">thornhalo-urchin</a></td>
+            <td>Thornhalo Urchin</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=thornhalo-urchin">open</a> / <a href="/?sandbox=thornhalo-urchin&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id thornhalo-urchin --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids thornhalo-urchin --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 11 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="trap-jaw-bristle trap-jaw bristle articulated prototype  quality: prototype; 11 parts">
+            <td><a href="/?sandbox=trap-jaw-bristle">trap-jaw-bristle</a></td>
+            <td>Trap-Jaw Bristle</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>epic</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=trap-jaw-bristle">open</a> / <a href="/?sandbox=trap-jaw-bristle&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id trap-jaw-bristle --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids trap-jaw-bristle --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 11 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="trench-harvest-sea-spider trench harvest sea spider articulated prototype  quality: prototype; 5 parts; source candidate: trench-harvest-sea-spider">
+            <td><a href="/?sandbox=trench-harvest-sea-spider">trench-harvest-sea-spider</a></td>
+            <td>Trench Harvest Sea Spider</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=trench-harvest-sea-spider">open</a> / <a href="/?sandbox=trench-harvest-sea-spider&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id trench-harvest-sea-spider --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids trench-harvest-sea-spider --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: trench-harvest-sea-spider</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="tripod-stilt-stalker tripod stilt stalker articulated prototype  quality: prototype; 5 parts; source candidate: tripod-stilt-stalker">
+            <td><a href="/?sandbox=tripod-stilt-stalker">tripod-stilt-stalker</a></td>
+            <td>Tripod Stilt Stalker</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=tripod-stilt-stalker">open</a> / <a href="/?sandbox=tripod-stilt-stalker&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id tripod-stilt-stalker --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids tripod-stilt-stalker --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: tripod-stilt-stalker</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="vampire-cloak-squid vampire cloak squid articulated prototype  quality: prototype; 5 parts; source candidate: vampire-cloak-squid">
+            <td><a href="/?sandbox=vampire-cloak-squid">vampire-cloak-squid</a></td>
+            <td>Vampire Cloak Squid</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=vampire-cloak-squid">open</a> / <a href="/?sandbox=vampire-cloak-squid&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id vampire-cloak-squid --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids vampire-cloak-squid --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: vampire-cloak-squid</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="velvet-lantern-cuttle velvet lantern cuttle articulated prototype  quality: prototype; 11 parts">
+            <td><a href="/?sandbox=velvet-lantern-cuttle">velvet-lantern-cuttle</a></td>
+            <td>Velvet Lantern Cuttle</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>epic</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=velvet-lantern-cuttle">open</a> / <a href="/?sandbox=velvet-lantern-cuttle&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id velvet-lantern-cuttle --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids velvet-lantern-cuttle --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 11 parts</td>
+          </tr>
+          <tr data-kind="articulated" data-stage="prototype" data-query="vent-claw-yeti vent-claw yeti articulated prototype  quality: prototype; 5 parts; source candidate: vent-claw-yeti">
+            <td><a href="/?sandbox=vent-claw-yeti">vent-claw-yeti</a></td>
+            <td>Vent-Claw Yeti</td>
+            <td>articulated</td>
+            <td>prototype</td>
+            <td>no</td>
+            <td>PREVIEW ONLY PROTOTYPE - NOT ACCEPTED / quality: prototype / needs human source, contact, phase, and sandbox review</td>
+            <td>preview-only prototype; render/visual pass is not human acceptance</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?sandbox=vent-claw-yeti">open</a> / <a href="/?sandbox=vent-claw-yeti&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id vent-claw-yeti --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids vent-claw-yeti --states idle,lunge,stunned --with diver</code></td>
+            <td>quality: prototype; 5 parts; source candidate: vent-claw-yeti</td>
+          </tr>
+          <tr data-kind="diver" data-stage="reference" data-query="diver diver diver reference  player animation preview">
+            <td><a href="/?entity=diver">diver</a></td>
+            <td>Diver</td>
+            <td>diver</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=diver">open</a></td>
+            <td><code>npm run sandbox:preview -- --id diver --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids diver --with diver</code></td>
+            <td>player animation preview</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-vampire-squid abyss vampire squid fish reference 4 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-vampire-squid">fauna-abyss-vampire-squid</a></td>
+            <td>Abyss Vampire Squid</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-vampire-squid">open</a> / <a href="/?entity=fauna-abyss-vampire-squid&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-vampire-squid --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-vampire-squid --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-hatchet-school abyssal hatchet school fish reference 4 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-hatchet-school">fauna-abyss-hatchet-school</a></td>
+            <td>Abyssal Hatchet School</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-hatchet-school">open</a> / <a href="/?entity=fauna-abyss-hatchet-school&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-hatchet-school --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-hatchet-school --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-abyss-jelly abyssal jelly fish reference 3 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-abyss-jelly">fauna-abyss-abyss-jelly</a></td>
+            <td>Abyssal Jelly</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-abyss-jelly">open</a> / <a href="/?entity=fauna-abyss-abyss-jelly&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-abyss-jelly --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-abyss-jelly --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-medusa abyssal medusa fish reference 4 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-medusa">fauna-abyss-medusa</a></td>
+            <td>Abyssal Medusa</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-medusa">open</a> / <a href="/?entity=fauna-abyss-medusa&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-medusa --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-medusa --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-viperfish abyssal viperfish fish reference 3 hostile fauna">
+            <td><a href="/?entity=fauna-abyss-viperfish">fauna-abyss-viperfish</a></td>
+            <td>Abyssal Viperfish</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-abyss-viperfish">open</a> / <a href="/?entity=fauna-abyss-viperfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-viperfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-viperfish --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-anglerfish anglerfish fish reference 4 hostile fauna">
+            <td><a href="/?entity=fauna-abyss-anglerfish">fauna-abyss-anglerfish</a></td>
+            <td>Anglerfish</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-abyss-anglerfish">open</a> / <a href="/?entity=fauna-abyss-anglerfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-anglerfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-anglerfish --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-ash-minnow ash minnow fish reference 2 neutral fauna">
+            <td><a href="/?entity=fauna-deep-ash-minnow">fauna-deep-ash-minnow</a></td>
+            <td>Ash Minnow</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-deep-ash-minnow">open</a> / <a href="/?entity=fauna-deep-ash-minnow&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-ash-minnow --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-ash-minnow --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-barreleye barreleye fish reference 2 neutral fauna">
+            <td><a href="/?entity=fauna-deep-barreleye">fauna-deep-barreleye</a></td>
+            <td>Barreleye</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-deep-barreleye">open</a> / <a href="/?entity=fauna-deep-barreleye&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-barreleye --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-barreleye --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-bigfin-squid bigfin squid fish reference 3 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-bigfin-squid">fauna-abyss-bigfin-squid</a></td>
+            <td>Bigfin Squid</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-bigfin-squid">open</a> / <a href="/?entity=fauna-abyss-bigfin-squid&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-bigfin-squid --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-bigfin-squid --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-black-swallower black swallower fish reference 3 hostile fauna">
+            <td><a href="/?entity=fauna-abyss-black-swallower">fauna-abyss-black-swallower</a></td>
+            <td>Black Swallower</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-abyss-black-swallower">open</a> / <a href="/?entity=fauna-abyss-black-swallower&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-black-swallower --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-black-swallower --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-blue-ring-octopus blue-ring octopus fish reference 1 hostile fauna">
+            <td><a href="/?entity=fauna-shallow-blue-ring-octopus">fauna-shallow-blue-ring-octopus</a></td>
+            <td>Blue-ring Octopus</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-shallow-blue-ring-octopus">open</a> / <a href="/?entity=fauna-shallow-blue-ring-octopus&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-blue-ring-octopus --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-blue-ring-octopus --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-comb-jelly comb jelly fish reference 1 neutral fauna">
+            <td><a href="/?entity=fauna-shallow-comb-jelly">fauna-shallow-comb-jelly</a></td>
+            <td>Comb Jelly</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-shallow-comb-jelly">open</a> / <a href="/?entity=fauna-shallow-comb-jelly&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-comb-jelly --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-comb-jelly --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-deep-shrimp deep sea shrimp fish reference 2 neutral fauna">
+            <td><a href="/?entity=fauna-deep-deep-shrimp">fauna-deep-deep-shrimp</a></td>
+            <td>Deep Sea Shrimp</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-deep-deep-shrimp">open</a> / <a href="/?entity=fauna-deep-deep-shrimp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-deep-shrimp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-deep-shrimp --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-frilled-shark frilled shark fish reference 3 hostile fauna">
+            <td><a href="/?entity=fauna-abyss-frilled-shark">fauna-abyss-frilled-shark</a></td>
+            <td>Frilled Shark</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-abyss-frilled-shark">open</a> / <a href="/?entity=fauna-abyss-frilled-shark&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-frilled-shark --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-frilled-shark --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-glass-ray glass ray fish reference 1 neutral fauna">
+            <td><a href="/?entity=fauna-shallow-glass-ray">fauna-shallow-glass-ray</a></td>
+            <td>Glass Ray</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-shallow-glass-ray">open</a> / <a href="/?entity=fauna-shallow-glass-ray&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-glass-ray --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-glass-ray --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-glass-squid glass squid fish reference 2 neutral fauna">
+            <td><a href="/?entity=fauna-deep-glass-squid">fauna-deep-glass-squid</a></td>
+            <td>Glass Squid</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-deep-glass-squid">open</a> / <a href="/?entity=fauna-deep-glass-squid&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-glass-squid --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-glass-squid --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-goblin-shark goblin shark fish reference 3 hostile fauna">
+            <td><a href="/?entity=fauna-abyss-goblin-shark">fauna-abyss-goblin-shark</a></td>
+            <td>Goblin Shark</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-abyss-goblin-shark">open</a> / <a href="/?entity=fauna-abyss-goblin-shark&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-goblin-shark --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-goblin-shark --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-gulper-eel gulper eel fish reference 2 hostile fauna">
+            <td><a href="/?entity=fauna-deep-gulper-eel">fauna-deep-gulper-eel</a></td>
+            <td>Gulper Eel</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-deep-gulper-eel">open</a> / <a href="/?entity=fauna-deep-gulper-eel&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-gulper-eel --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-gulper-eel --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-microfish hadopelagic microfish fish reference 4 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-microfish">fauna-abyss-microfish</a></td>
+            <td>Hadopelagic Microfish</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-microfish">open</a> / <a href="/?entity=fauna-abyss-microfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-microfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-microfish --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-hadal-shrimp hadopelagic shrimp fish reference 3 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-hadal-shrimp">fauna-abyss-hadal-shrimp</a></td>
+            <td>Hadopelagic Shrimp</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-hadal-shrimp">open</a> / <a href="/?entity=fauna-abyss-hadal-shrimp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-hadal-shrimp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-hadal-shrimp --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-hatchetfish hatchetfish fish reference 2 neutral fauna">
+            <td><a href="/?entity=fauna-deep-hatchetfish">fauna-deep-hatchetfish</a></td>
+            <td>Hatchetfish</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-deep-hatchetfish">open</a> / <a href="/?entity=fauna-deep-hatchetfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-hatchetfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-hatchetfish --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-lantern-fry lantern fry fish reference 1 neutral fauna">
+            <td><a href="/?entity=fauna-shallow-lantern-fry">fauna-shallow-lantern-fry</a></td>
+            <td>Lantern Fry</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-shallow-lantern-fry">open</a> / <a href="/?entity=fauna-shallow-lantern-fry&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-lantern-fry --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-lantern-fry --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-lantern-swarm lantern swarm fish reference 3 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-lantern-swarm">fauna-abyss-lantern-swarm</a></td>
+            <td>Lantern Swarm</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-lantern-swarm">open</a> / <a href="/?entity=fauna-abyss-lantern-swarm&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-lantern-swarm --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-lantern-swarm --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-lanternfish lanternfish fish reference 2 neutral fauna">
+            <td><a href="/?entity=fauna-deep-lanternfish">fauna-deep-lanternfish</a></td>
+            <td>Lanternfish</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-deep-lanternfish">open</a> / <a href="/?entity=fauna-deep-lanternfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-lanternfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-lanternfish --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-mantis-shrimp mantis shrimp fish reference 1 hostile fauna">
+            <td><a href="/?entity=fauna-shallow-mantis-shrimp">fauna-shallow-mantis-shrimp</a></td>
+            <td>Mantis Shrimp</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-shallow-mantis-shrimp">open</a> / <a href="/?entity=fauna-shallow-mantis-shrimp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-mantis-shrimp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-mantis-shrimp --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-mirror-fry mirror fry fish reference 3 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-mirror-fry">fauna-abyss-mirror-fry</a></td>
+            <td>Mirror Fry</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-mirror-fry">open</a> / <a href="/?entity=fauna-abyss-mirror-fry&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-mirror-fry --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-mirror-fry --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-jellyfish moon jelly fish reference 1 neutral fauna">
+            <td><a href="/?entity=fauna-shallow-jellyfish">fauna-shallow-jellyfish</a></td>
+            <td>Moon Jelly</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-shallow-jellyfish">open</a> / <a href="/?entity=fauna-shallow-jellyfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-jellyfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-jellyfish --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-nautilus nautilus fish reference 1 neutral fauna">
+            <td><a href="/?entity=fauna-shallow-nautilus">fauna-shallow-nautilus</a></td>
+            <td>Nautilus</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-shallow-nautilus">open</a> / <a href="/?entity=fauna-shallow-nautilus&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-nautilus --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-nautilus --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-squid reef squid fish reference 1 neutral fauna">
+            <td><a href="/?entity=fauna-shallow-squid">fauna-shallow-squid</a></td>
+            <td>Reef Squid</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-shallow-squid">open</a> / <a href="/?entity=fauna-shallow-squid&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-squid --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-squid --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-sea-spider sea spider fish reference 2 hostile fauna">
+            <td><a href="/?entity=fauna-deep-sea-spider">fauna-deep-sea-spider</a></td>
+            <td>Sea Spider</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-deep-sea-spider">open</a> / <a href="/?entity=fauna-deep-sea-spider&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-sea-spider --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-sea-spider --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-snap-shrimp snapping shrimp fish reference 1 neutral fauna">
+            <td><a href="/?entity=fauna-shallow-snap-shrimp">fauna-shallow-snap-shrimp</a></td>
+            <td>Snapping Shrimp</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-shallow-snap-shrimp">open</a> / <a href="/?entity=fauna-shallow-snap-shrimp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-snap-shrimp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-snap-shrimp --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-static-fry static fry fish reference 4 neutral fauna">
+            <td><a href="/?entity=fauna-abyss-static-fry">fauna-abyss-static-fry</a></td>
+            <td>Static Fry</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-abyss-static-fry">open</a> / <a href="/?entity=fauna-abyss-static-fry&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-static-fry --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-static-fry --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-shallow-octopus tidepool octopus fish reference 1 neutral fauna">
+            <td><a href="/?entity=fauna-shallow-octopus">fauna-shallow-octopus</a></td>
+            <td>Tidepool Octopus</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-shallow-octopus">open</a> / <a href="/?entity=fauna-shallow-octopus&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-shallow-octopus --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-shallow-octopus --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-tripodfish tripodfish fish reference 2 neutral fauna">
+            <td><a href="/?entity=fauna-deep-tripodfish">fauna-deep-tripodfish</a></td>
+            <td>Tripodfish</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=fauna-deep-tripodfish">open</a> / <a href="/?entity=fauna-deep-tripodfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-tripodfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-tripodfish --with diver</code></td>
+            <td>neutral fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-deep-vampire-squid vampire squid fish reference 2 hostile fauna">
+            <td><a href="/?entity=fauna-deep-vampire-squid">fauna-deep-vampire-squid</a></td>
+            <td>Vampire Squid</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-deep-vampire-squid">open</a> / <a href="/?entity=fauna-deep-vampire-squid&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-deep-vampire-squid --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-deep-vampire-squid --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="fish" data-stage="reference" data-query="fauna-abyss-snipe-eel viperfish fish reference 4 hostile fauna">
+            <td><a href="/?entity=fauna-abyss-snipe-eel">fauna-abyss-snipe-eel</a></td>
+            <td>Viperfish</td>
+            <td>fish</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=fauna-abyss-snipe-eel">open</a> / <a href="/?entity=fauna-abyss-snipe-eel&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fauna-abyss-snipe-eel --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fauna-abyss-snipe-eel --with diver</code></td>
+            <td>hostile fauna</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-black-fan black fan flora reference 3 scannable flora">
+            <td><a href="/?entity=flora-black-fan">flora-black-fan</a></td>
+            <td>Black Fan</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=flora-black-fan">open</a> / <a href="/?entity=flora-black-fan&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-black-fan --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-black-fan --with diver</code></td>
+            <td>scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-brine-grass brine grass flora reference 2 scannable flora">
+            <td><a href="/?entity=flora-brine-grass">flora-brine-grass</a></td>
+            <td>Brine Grass</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=flora-brine-grass">open</a> / <a href="/?entity=flora-brine-grass&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-brine-grass --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-brine-grass --with diver</code></td>
+            <td>scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-circuit-kelp circuit kelp flora reference 4 scannable flora">
+            <td><a href="/?entity=flora-circuit-kelp">flora-circuit-kelp</a></td>
+            <td>Circuit Kelp</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=flora-circuit-kelp">open</a> / <a href="/?entity=flora-circuit-kelp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-circuit-kelp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-circuit-kelp --with diver</code></td>
+            <td>scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-crown-polyp crown polyp flora reference 3 hazardous scannable flora">
+            <td><a href="/?entity=flora-crown-polyp">flora-crown-polyp</a></td>
+            <td>Crown Polyp</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=flora-crown-polyp">open</a> / <a href="/?entity=flora-crown-polyp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-crown-polyp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-crown-polyp --with diver</code></td>
+            <td>hazardous scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-ember-bloom ember bloom flora reference 2 hazardous scannable flora">
+            <td><a href="/?entity=flora-ember-bloom">flora-ember-bloom</a></td>
+            <td>Ember Bloom</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=flora-ember-bloom">open</a> / <a href="/?entity=flora-ember-bloom&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-ember-bloom --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-ember-bloom --with diver</code></td>
+            <td>hazardous scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-glass-kelp glass kelp flora reference 1 scannable flora">
+            <td><a href="/?entity=flora-glass-kelp">flora-glass-kelp</a></td>
+            <td>Glass Kelp</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=flora-glass-kelp">open</a> / <a href="/?entity=flora-glass-kelp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-glass-kelp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-glass-kelp --with diver</code></td>
+            <td>scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-glass-obelisk glass obelisk flora reference 4 hazardous scannable flora">
+            <td><a href="/?entity=flora-glass-obelisk">flora-glass-obelisk</a></td>
+            <td>Glass Obelisk</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>uncommon</td>
+            <td>yes</td>
+            <td><a href="/?entity=flora-glass-obelisk">open</a> / <a href="/?entity=flora-glass-obelisk&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-glass-obelisk --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-glass-obelisk --with diver</code></td>
+            <td>hazardous scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-moon-sponge moon sponge flora reference 1 scannable flora">
+            <td><a href="/?entity=flora-moon-sponge">flora-moon-sponge</a></td>
+            <td>Moon Sponge</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>common</td>
+            <td></td>
+            <td><a href="/?entity=flora-moon-sponge">open</a> / <a href="/?entity=flora-moon-sponge&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-moon-sponge --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-moon-sponge --with diver</code></td>
+            <td>scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-needle-garden needle garden flora reference 3 hazardous scannable flora">
+            <td><a href="/?entity=flora-needle-garden">flora-needle-garden</a></td>
+            <td>Needle Garden</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>3</td>
+            <td>uncommon</td>
+            <td>yes</td>
+            <td><a href="/?entity=flora-needle-garden">open</a> / <a href="/?entity=flora-needle-garden&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-needle-garden --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-needle-garden --with diver</code></td>
+            <td>hazardous scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-oracle-polyp oracle polyp flora reference 4 hazardous scannable flora">
+            <td><a href="/?entity=flora-oracle-polyp">flora-oracle-polyp</a></td>
+            <td>Oracle Polyp</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>4</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=flora-oracle-polyp">open</a> / <a href="/?entity=flora-oracle-polyp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-oracle-polyp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-oracle-polyp --with diver</code></td>
+            <td>hazardous scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-sting-anemone sting anemone flora reference 1 hazardous scannable flora">
+            <td><a href="/?entity=flora-sting-anemone">flora-sting-anemone</a></td>
+            <td>Sting Anemone</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>1</td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=flora-sting-anemone">open</a> / <a href="/?entity=flora-sting-anemone&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-sting-anemone --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-sting-anemone --with diver</code></td>
+            <td>hazardous scannable flora</td>
+          </tr>
+          <tr data-kind="flora" data-stage="reference" data-query="flora-vent-coral vent coral flora reference 2 hazardous scannable flora">
+            <td><a href="/?entity=flora-vent-coral">flora-vent-coral</a></td>
+            <td>Vent Coral</td>
+            <td>flora</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td>2</td>
+            <td>uncommon</td>
+            <td>yes</td>
+            <td><a href="/?entity=flora-vent-coral">open</a> / <a href="/?entity=flora-vent-coral&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flora-vent-coral --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flora-vent-coral --with diver</code></td>
+            <td>hazardous scannable flora</td>
+          </tr>
+          <tr data-kind="item" data-stage="reference" data-query="antivenom antivenom item reference  icon: item-icon-antivenom">
+            <td><a href="/?entity=antivenom">antivenom</a></td>
+            <td>Antivenom</td>
+            <td>item</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=antivenom">open</a> / <a href="/?entity=antivenom&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id antivenom --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids antivenom --with diver</code></td>
+            <td>icon: item-icon-antivenom</td>
+          </tr>
+          <tr data-kind="item" data-stage="reference" data-query="dynamite dynamite item reference  icon: item-icon-dynamite">
+            <td><a href="/?entity=dynamite">dynamite</a></td>
+            <td>Dynamite</td>
+            <td>item</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=dynamite">open</a> / <a href="/?entity=dynamite&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id dynamite --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids dynamite --with diver</code></td>
+            <td>icon: item-icon-dynamite</td>
+          </tr>
+          <tr data-kind="item" data-stage="reference" data-query="first-aid-kit first aid kit item reference  icon: item-icon-first-aid">
+            <td><a href="/?entity=first-aid-kit">first-aid-kit</a></td>
+            <td>First Aid Kit</td>
+            <td>item</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=first-aid-kit">open</a> / <a href="/?entity=first-aid-kit&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id first-aid-kit --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids first-aid-kit --with diver</code></td>
+            <td>icon: item-icon-first-aid</td>
+          </tr>
+          <tr data-kind="item" data-stage="reference" data-query="flare flare item reference  icon: item-icon-flare">
+            <td><a href="/?entity=flare">flare</a></td>
+            <td>Flare</td>
+            <td>item</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=flare">open</a> / <a href="/?entity=flare&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id flare --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids flare --with diver</code></td>
+            <td>icon: item-icon-flare</td>
+          </tr>
+          <tr data-kind="item" data-stage="reference" data-query="fuel-tank fuel tank item reference  icon: item-icon-fuel-tank">
+            <td><a href="/?entity=fuel-tank">fuel-tank</a></td>
+            <td>Fuel Tank</td>
+            <td>item</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=fuel-tank">open</a> / <a href="/?entity=fuel-tank&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id fuel-tank --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids fuel-tank --with diver</code></td>
+            <td>icon: item-icon-fuel-tank</td>
+          </tr>
+          <tr data-kind="item" data-stage="reference" data-query="injector-knife injector knife item reference  icon: item-icon-stun">
+            <td><a href="/?entity=injector-knife">injector-knife</a></td>
+            <td>Injector Knife</td>
+            <td>item</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>rare</td>
+            <td></td>
+            <td><a href="/?entity=injector-knife">open</a> / <a href="/?entity=injector-knife&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id injector-knife --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids injector-knife --with diver</code></td>
+            <td>icon: item-icon-stun</td>
+          </tr>
+          <tr data-kind="item" data-stage="reference" data-query="oxygen-tank oxygen tank item reference  icon: item-icon-oxygen-tank">
+            <td><a href="/?entity=oxygen-tank">oxygen-tank</a></td>
+            <td>Oxygen Tank</td>
+            <td>item</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=oxygen-tank">open</a> / <a href="/?entity=oxygen-tank&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id oxygen-tank --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids oxygen-tank --with diver</code></td>
+            <td>icon: item-icon-oxygen-tank</td>
+          </tr>
+          <tr data-kind="item" data-stage="reference" data-query="stun-grenade stun grenade item reference  icon: item-icon-stun">
+            <td><a href="/?entity=stun-grenade">stun-grenade</a></td>
+            <td>Stun Grenade</td>
+            <td>item</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=stun-grenade">open</a> / <a href="/?entity=stun-grenade&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id stun-grenade --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids stun-grenade --with diver</code></td>
+            <td>icon: item-icon-stun</td>
+          </tr>
+          <tr data-kind="object" data-stage="reference" data-query="barge-platform barge platform object reference  dock object">
+            <td><a href="/?entity=barge-platform">barge-platform</a></td>
+            <td>Barge Platform</td>
+            <td>object</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>rare</td>
+            <td></td>
+            <td><a href="/?entity=barge-platform">open</a> / <a href="/?entity=barge-platform&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id barge-platform --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids barge-platform --with diver</code></td>
+            <td>dock object</td>
+          </tr>
+          <tr data-kind="object" data-stage="reference" data-query="bobbit bobbit ambusher object reference  latch enemy frames">
+            <td><a href="/?entity=bobbit">bobbit</a></td>
+            <td>Bobbit Ambusher</td>
+            <td>object</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=bobbit">open</a> / <a href="/?entity=bobbit&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id bobbit --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids bobbit --with diver</code></td>
+            <td>latch enemy frames</td>
+          </tr>
+          <tr data-kind="object" data-stage="reference" data-query="sub-tier3 leviathan sub object reference  tier 3 vehicle">
+            <td><a href="/?entity=sub-tier3">sub-tier3</a></td>
+            <td>Leviathan Sub</td>
+            <td>object</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>legendary</td>
+            <td></td>
+            <td><a href="/?entity=sub-tier3">open</a> / <a href="/?entity=sub-tier3&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id sub-tier3 --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids sub-tier3 --with diver</code></td>
+            <td>tier 3 vehicle</td>
+          </tr>
+          <tr data-kind="object" data-stage="reference" data-query="sub-tier2 marlin sub object reference  tier 2 vehicle">
+            <td><a href="/?entity=sub-tier2">sub-tier2</a></td>
+            <td>Marlin Sub</td>
+            <td>object</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>epic</td>
+            <td></td>
+            <td><a href="/?entity=sub-tier2">open</a> / <a href="/?entity=sub-tier2&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id sub-tier2 --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids sub-tier2 --with diver</code></td>
+            <td>tier 2 vehicle</td>
+          </tr>
+          <tr data-kind="object" data-stage="reference" data-query="nest-egg predator nest egg object reference  nest hatch trigger">
+            <td><a href="/?entity=nest-egg">nest-egg</a></td>
+            <td>Predator Nest Egg</td>
+            <td>object</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>epic</td>
+            <td>yes</td>
+            <td><a href="/?entity=nest-egg">open</a> / <a href="/?entity=nest-egg&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id nest-egg --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids nest-egg --with diver</code></td>
+            <td>nest hatch trigger</td>
+          </tr>
+          <tr data-kind="object" data-stage="reference" data-query="sub-tier1 seeker sub object reference  tier 1 vehicle">
+            <td><a href="/?entity=sub-tier1">sub-tier1</a></td>
+            <td>Seeker Sub</td>
+            <td>object</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>rare</td>
+            <td></td>
+            <td><a href="/?entity=sub-tier1">open</a> / <a href="/?entity=sub-tier1&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id sub-tier1 --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids sub-tier1 --with diver</code></td>
+            <td>tier 1 vehicle</td>
+          </tr>
+          <tr data-kind="object" data-stage="reference" data-query="vent-base steam vent object reference  hazard object">
+            <td><a href="/?entity=vent-base">vent-base</a></td>
+            <td>Steam Vent</td>
+            <td>object</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=vent-base">open</a> / <a href="/?entity=vent-base&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id vent-base --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids vent-base --with diver</code></td>
+            <td>hazard object</td>
+          </tr>
+          <tr data-kind="ore" data-stage="reference" data-query="ore-alienalloy alien alloy ore reference  520 credits">
+            <td><a href="/?entity=ore-alienAlloy">ore-alienAlloy</a></td>
+            <td>Alien Alloy</td>
+            <td>ore</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>epic</td>
+            <td></td>
+            <td><a href="/?entity=ore-alienAlloy">open</a> / <a href="/?entity=ore-alienAlloy&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id ore-alienAlloy --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids ore-alienAlloy --with diver</code></td>
+            <td>520 credits</td>
+          </tr>
+          <tr data-kind="ore" data-stage="reference" data-query="ore-cobalt cobalt bloom ore reference  140 credits">
+            <td><a href="/?entity=ore-cobalt">ore-cobalt</a></td>
+            <td>Cobalt Bloom</td>
+            <td>ore</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=ore-cobalt">open</a> / <a href="/?entity=ore-cobalt&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id ore-cobalt --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids ore-cobalt --with diver</code></td>
+            <td>140 credits</td>
+          </tr>
+          <tr data-kind="ore" data-stage="reference" data-query="ore-copper copper ore reference  14 credits">
+            <td><a href="/?entity=ore-copper">ore-copper</a></td>
+            <td>Copper</td>
+            <td>ore</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=ore-copper">open</a> / <a href="/?entity=ore-copper&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id ore-copper --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids ore-copper --with diver</code></td>
+            <td>14 credits</td>
+          </tr>
+          <tr data-kind="ore" data-stage="reference" data-query="ore-quartz quartz ore reference  32 credits">
+            <td><a href="/?entity=ore-quartz">ore-quartz</a></td>
+            <td>Quartz</td>
+            <td>ore</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=ore-quartz">open</a> / <a href="/?entity=ore-quartz&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id ore-quartz --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids ore-quartz --with diver</code></td>
+            <td>32 credits</td>
+          </tr>
+          <tr data-kind="ore" data-stage="reference" data-query="ore-relic relic shard ore reference  180 credits">
+            <td><a href="/?entity=ore-relic">ore-relic</a></td>
+            <td>Relic Shard</td>
+            <td>ore</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=ore-relic">open</a> / <a href="/?entity=ore-relic&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id ore-relic --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids ore-relic --with diver</code></td>
+            <td>180 credits</td>
+          </tr>
+          <tr data-kind="ore" data-stage="reference" data-query="ore-ruby ruby ore reference  78 credits">
+            <td><a href="/?entity=ore-ruby">ore-ruby</a></td>
+            <td>Ruby</td>
+            <td>ore</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>uncommon</td>
+            <td></td>
+            <td><a href="/?entity=ore-ruby">open</a> / <a href="/?entity=ore-ruby&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id ore-ruby --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids ore-ruby --with diver</code></td>
+            <td>78 credits</td>
+          </tr>
+          <tr data-kind="ore" data-stage="reference" data-query="ore-ruincore ruin core ore reference  14500 credits">
+            <td><a href="/?entity=ore-ruinCore">ore-ruinCore</a></td>
+            <td>Ruin Core</td>
+            <td>ore</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>legendary</td>
+            <td></td>
+            <td><a href="/?entity=ore-ruinCore">open</a> / <a href="/?entity=ore-ruinCore&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id ore-ruinCore --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids ore-ruinCore --with diver</code></td>
+            <td>14500 credits</td>
+          </tr>
+          <tr data-kind="ore" data-stage="reference" data-query="ore-sunstone sunstone ore reference  310 credits">
+            <td><a href="/?entity=ore-sunstone">ore-sunstone</a></td>
+            <td>Sunstone</td>
+            <td>ore</td>
+            <td>reference</td>
+            <td>no</td>
+            <td>REFERENCE PREVIEW / not part of the 20-threat production gate</td>
+            <td>reference preview; not counted by the 20-threat content gate</td>
+            <td></td>
+            <td>epic</td>
+            <td></td>
+            <td><a href="/?entity=ore-sunstone">open</a> / <a href="/?entity=ore-sunstone&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id ore-sunstone --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids ore-sunstone --with diver</code></td>
+            <td>310 credits</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-abyssal-lantern-mantis abyssal lantern mantis source source source-review  needs-review; public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png">
+            <td><a href="/?entity=source-abyssal-lantern-mantis">source-abyssal-lantern-mantis</a></td>
+            <td>Abyssal Lantern Mantis Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-abyssal-lantern-mantis">open</a> / <a href="/?entity=source-abyssal-lantern-mantis&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-abyssal-lantern-mantis --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-abyssal-lantern-mantis --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-black-coral-gate black coral gate source source source-review  needs-review; public/assets/generated/fauna-black-coral-gate-whole-source.png">
+            <td><a href="/?entity=source-black-coral-gate">source-black-coral-gate</a></td>
+            <td>Black Coral Gate Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-black-coral-gate">open</a> / <a href="/?entity=source-black-coral-gate&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-black-coral-gate --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-black-coral-gate --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-black-coral-gate-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-brine-crown brine crown source source source-review  needs-review; public/assets/generated/fauna-brine-crown-whole-source.png">
+            <td><a href="/?entity=source-brine-crown">source-brine-crown</a></td>
+            <td>Brine Crown Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-brine-crown">open</a> / <a href="/?entity=source-brine-crown&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-brine-crown --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-brine-crown --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-brine-crown-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-brine-mycelium-shelf brine mycelium shelf source source source-review  needs-review; public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png">
+            <td><a href="/?entity=source-brine-mycelium-shelf">source-brine-mycelium-shelf</a></td>
+            <td>Brine Mycelium Shelf Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-brine-mycelium-shelf">open</a> / <a href="/?entity=source-brine-mycelium-shelf&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-brine-mycelium-shelf --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-brine-mycelium-shelf --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-chain-vein-siphonophore chain vein siphonophore source source source-review  needs-review; public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png">
+            <td><a href="/?entity=source-chain-vein-siphonophore">source-chain-vein-siphonophore</a></td>
+            <td>Chain Vein Siphonophore Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-chain-vein-siphonophore">open</a> / <a href="/?entity=source-chain-vein-siphonophore&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-chain-vein-siphonophore --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-chain-vein-siphonophore --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-coronate-sting-crown coronate sting crown source source source-review  needs-review; public/assets/generated/fauna-coronate-sting-crown-whole-source.png">
+            <td><a href="/?entity=source-coronate-sting-crown">source-coronate-sting-crown</a></td>
+            <td>Coronate Sting Crown Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-coronate-sting-crown">open</a> / <a href="/?entity=source-coronate-sting-crown&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-coronate-sting-crown --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-coronate-sting-crown --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-coronate-sting-crown-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-glass-sponge-sentinel glass sponge sentinel source source source-review  needs-review; public/assets/generated/fauna-glass-sponge-sentinel-whole-source.png">
+            <td><a href="/?entity=source-glass-sponge-sentinel">source-glass-sponge-sentinel</a></td>
+            <td>Glass Sponge Sentinel Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-glass-sponge-sentinel">open</a> / <a href="/?entity=source-glass-sponge-sentinel&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-glass-sponge-sentinel --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-glass-sponge-sentinel --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-glass-sponge-sentinel-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-gulper-eel-maw gulper eel maw source source source-review  needs-review; public/assets/generated/fauna-gulper-eel-maw-whole-source.png">
+            <td><a href="/?entity=source-gulper-eel-maw">source-gulper-eel-maw</a></td>
+            <td>Gulper Eel Maw Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-gulper-eel-maw">open</a> / <a href="/?entity=source-gulper-eel-maw&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-gulper-eel-maw --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-gulper-eel-maw --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-gulper-eel-maw-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-hadal-trencher-isopod hadal trencher isopod source source source-review  needs-review; public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png">
+            <td><a href="/?entity=source-hadal-trencher-isopod">source-hadal-trencher-isopod</a></td>
+            <td>Hadal Trencher Isopod Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-hadal-trencher-isopod">open</a> / <a href="/?entity=source-hadal-trencher-isopod&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-hadal-trencher-isopod --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-hadal-trencher-isopod --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-lantern-anemone-pit lantern anemone pit source source source-review  needs-review; public/assets/generated/fauna-lantern-anemone-pit-whole-source.png">
+            <td><a href="/?entity=source-lantern-anemone-pit">source-lantern-anemone-pit</a></td>
+            <td>Lantern Anemone Pit Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-lantern-anemone-pit">open</a> / <a href="/?entity=source-lantern-anemone-pit&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-lantern-anemone-pit --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-lantern-anemone-pit --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-lantern-anemone-pit-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-predatory-tunicate-maw predatory tunicate maw source source source-review  needs-review; public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png">
+            <td><a href="/?entity=source-predatory-tunicate-maw">source-predatory-tunicate-maw</a></td>
+            <td>Predatory Tunicate Maw Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-predatory-tunicate-maw">open</a> / <a href="/?entity=source-predatory-tunicate-maw&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-predatory-tunicate-maw --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-predatory-tunicate-maw --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-razor-kelp-harp razor kelp harp source source source-review  needs-review; public/assets/generated/fauna-razor-kelp-harp-whole-source.png">
+            <td><a href="/?entity=source-razor-kelp-harp">source-razor-kelp-harp</a></td>
+            <td>Razor Kelp Harp Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-razor-kelp-harp">open</a> / <a href="/?entity=source-razor-kelp-harp&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-razor-kelp-harp --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-razor-kelp-harp --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-razor-kelp-harp-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-reef-lion-moray reef lion moray source source source-review  needs-review; public/assets/generated/fauna-reef-lion-moray-whole-source.png">
+            <td><a href="/?entity=source-reef-lion-moray">source-reef-lion-moray</a></td>
+            <td>Reef Lion Moray Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-reef-lion-moray">open</a> / <a href="/?entity=source-reef-lion-moray&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-reef-lion-moray --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-reef-lion-moray --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-reef-lion-moray-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-reliquary-siphonophore reliquary siphonophore source source source-review  needs-review; public/assets/generated/fauna-reliquary-siphonophore-whole-source.png">
+            <td><a href="/?entity=source-reliquary-siphonophore">source-reliquary-siphonophore</a></td>
+            <td>Reliquary Siphonophore Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-reliquary-siphonophore">open</a> / <a href="/?entity=source-reliquary-siphonophore&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-reliquary-siphonophore --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-reliquary-siphonophore --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-reliquary-siphonophore-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-saber-viperfish saber viperfish source source source-review  needs-review; public/assets/generated/fauna-saber-viperfish-whole-source.png">
+            <td><a href="/?entity=source-saber-viperfish">source-saber-viperfish</a></td>
+            <td>Saber Viperfish Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-saber-viperfish">open</a> / <a href="/?entity=source-saber-viperfish&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-saber-viperfish --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-saber-viperfish --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-saber-viperfish-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-thorn-fan-coralline thorn fan coralline source source source-review  needs-review; public/assets/generated/fauna-thorn-fan-coralline-whole-source.png">
+            <td><a href="/?entity=source-thorn-fan-coralline">source-thorn-fan-coralline</a></td>
+            <td>Thorn Fan Coralline Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-thorn-fan-coralline">open</a> / <a href="/?entity=source-thorn-fan-coralline&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-thorn-fan-coralline --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-thorn-fan-coralline --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-thorn-fan-coralline-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-trench-harvest-sea-spider trench harvest sea spider source source source-review  needs-review; public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png">
+            <td><a href="/?entity=source-trench-harvest-sea-spider">source-trench-harvest-sea-spider</a></td>
+            <td>Trench Harvest Sea Spider Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-trench-harvest-sea-spider">open</a> / <a href="/?entity=source-trench-harvest-sea-spider&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-trench-harvest-sea-spider --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-trench-harvest-sea-spider --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-tripod-stilt-stalker tripod stilt stalker source source source-review  needs-review; public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png">
+            <td><a href="/?entity=source-tripod-stilt-stalker">source-tripod-stilt-stalker</a></td>
+            <td>Tripod Stilt Stalker Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-tripod-stilt-stalker">open</a> / <a href="/?entity=source-tripod-stilt-stalker&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-tripod-stilt-stalker --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-tripod-stilt-stalker --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-vampire-cloak-squid vampire cloak squid source source source-review  needs-review; public/assets/generated/fauna-vampire-cloak-squid-whole-source.png">
+            <td><a href="/?entity=source-vampire-cloak-squid">source-vampire-cloak-squid</a></td>
+            <td>Vampire Cloak Squid Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-vampire-cloak-squid">open</a> / <a href="/?entity=source-vampire-cloak-squid&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-vampire-cloak-squid --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-vampire-cloak-squid --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-vampire-cloak-squid-whole-source.png</td>
+          </tr>
+          <tr data-kind="source" data-stage="source-review" data-query="source-vent-claw-yeti vent-claw yeti source source source-review  needs-review; public/assets/generated/fauna-vent-claw-yeti-whole-source.png">
+            <td><a href="/?entity=source-vent-claw-yeti">source-vent-claw-yeti</a></td>
+            <td>Vent-Claw Yeti Source</td>
+            <td>source</td>
+            <td>source-review</td>
+            <td>no</td>
+            <td>SOURCE REVIEW NEEDED / PREVIEW ONLY SOURCE ART - NOT ACCEPTED / quality: needs-review / needs human full-source concept approval before rigging</td>
+            <td>source-art preview only; source approval and rig acceptance are separate gates</td>
+            <td></td>
+            <td>rare</td>
+            <td>yes</td>
+            <td><a href="/?entity=source-vent-claw-yeti">open</a> / <a href="/?entity=source-vent-claw-yeti&amp;companion=diver">with diver</a></td>
+            <td><code>npm run sandbox:preview -- --id source-vent-claw-yeti --serve --open --visual</code></td>
+            <td><code>npm run sandbox:visual -- --ids source-vent-claw-yeti --with diver</code></td>
+            <td>needs-review; public/assets/generated/fauna-vent-claw-yeti-whole-source.png</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <script>
+      const search = document.querySelector('#search');
+      const kindButtons = [...document.querySelectorAll('[data-kind-filter]')];
+      const stageButtons = [...document.querySelectorAll('[data-stage-filter]')];
+      const rows = [...document.querySelectorAll('tbody tr')];
+      let kind = 'all';
+      let stage = 'all';
+
+      function update() {
+        const query = search.value.trim().toLowerCase();
+        for (const row of rows) {
+          const kindMatches = kind === 'all' || row.dataset.kind === kind;
+          const stageMatches = stage === 'all' || row.dataset.stage === stage;
+          const queryMatches = !query || row.dataset.query.includes(query);
+          row.hidden = !(kindMatches && stageMatches && queryMatches);
+        }
+        for (const button of kindButtons) button.setAttribute('aria-pressed', button.dataset.kindFilter === kind ? 'true' : 'false');
+        for (const button of stageButtons) button.setAttribute('aria-pressed', button.dataset.stageFilter === stage ? 'true' : 'false');
+      }
+
+      search.addEventListener('input', update);
+      for (const button of kindButtons) button.addEventListener('click', () => {
+        kind = button.dataset.kindFilter;
+        update();
+      });
+      for (const button of stageButtons) button.addEventListener('click', () => {
+        stage = button.dataset.stageFilter;
+        update();
+      });
+      update();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gulper Live Preview</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #061016;
+      color: #d7eef4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 16%, rgba(37, 112, 119, 0.28), transparent 34%),
+        linear-gradient(180deg, #09202a 0%, #071620 48%, #040a10 100%);
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .panel {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      width: min(380px, calc(100vw - 32px));
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+      padding: 12px;
+      border: 1px solid rgba(135, 221, 230, 0.22);
+      border-radius: 8px;
+      background: rgba(5, 15, 22, 0.86);
+      box-shadow: 0 18px 52px rgba(0, 0, 0, 0.38);
+      backdrop-filter: blur(10px);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .row.wrap {
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.15;
+      font-weight: 720;
+      letter-spacing: 0;
+    }
+
+    .meta {
+      margin: 0 0 12px;
+      color: #9fb9c3;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    button,
+    select {
+      border: 1px solid rgba(146, 229, 235, 0.28);
+      border-radius: 6px;
+      background: #102832;
+      color: #e8fbff;
+      height: 34px;
+      padding: 0 10px;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button[aria-pressed="true"] {
+      background: #1f6d76;
+      border-color: rgba(152, 245, 255, 0.62);
+    }
+
+    label {
+      display: grid;
+      grid-template-columns: 86px 1fr 40px;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      color: #b9d5dc;
+      font-size: 12px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #6ee7f0;
+    }
+
+    .readout {
+      color: #e8fbff;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: 12px 1fr;
+      gap: 6px 8px;
+      margin-top: 10px;
+      color: #aac5ce;
+      font-size: 12px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      align-self: center;
+    }
+
+    .warn {
+      margin-top: 10px;
+      color: #ffd18a;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 720px) {
+      .panel {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+        width: auto;
+        max-height: 46vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="preview"></canvas>
+  <section class="panel" aria-label="Gulper live preview controls">
+    <h1>Gulper Live Preview</h1>
+    <p class="meta" id="meta">Loading generated articulated parts...</p>
+
+    <div class="row">
+      <select id="creatureSelect" aria-label="Creature">
+        <option value="abyssal-gulper">Abyssal Gulper</option>
+        <option value="abyssal-riftmaw">Abyssal Riftmaw</option>
+        <option value="abyssal-reliquary-wyrm">Abyssal Reliquary Wyrm</option>
+        <option value="abyssal-glasshook-skulk">Abyssal Glasshook Skulk</option>
+        <option value="abyssal-mandible-bobbit">Abyssal Mandible Bobbit</option>
+        <option value="gulper-eel-maw">Gulper Eel Maw</option>
+      </select>
+      <button id="resetBtn" type="button">Reset</button>
+    </div>
+
+    <div class="row wrap" role="group" aria-label="Animation mode">
+      <button class="modeBtn" type="button" data-mode="swim" aria-pressed="true">Swim</button>
+      <button class="modeBtn" type="button" data-mode="turn" aria-pressed="false">Turn</button>
+      <button class="modeBtn" type="button" data-mode="attack" aria-pressed="false">Attack</button>
+      <button class="modeBtn" type="button" data-mode="stunned" aria-pressed="false">Stunned</button>
+      <button class="modeBtn" type="button" data-mode="source" aria-pressed="false">Whole Source</button>
+    </div>
+
+    <div class="row wrap" role="group" aria-label="Art renderer">
+      <button class="artBtn" type="button" data-art="cohesive" aria-pressed="false">Cohesive</button>
+      <button class="artBtn" type="button" data-art="parts" aria-pressed="true">Part Rig</button>
+    </div>
+
+    <div class="row">
+      <label>Speed <input id="speed" type="range" min="0.2" max="2.2" step="0.05" value="1"><span class="readout" id="speedOut">1.00</span></label>
+    </div>
+    <div class="row">
+      <label>Body wave <input id="wave" type="range" min="0" max="2" step="0.05" value="1"><span class="readout" id="waveOut">1.00</span></label>
+    </div>
+    <div class="row">
+      <label>Scale <input id="scale" type="range" min="0.34" max="0.9" step="0.02" value="0.58"><span class="readout" id="scaleOut">0.58</span></label>
+    </div>
+    <div class="row">
+      <label>Diver gap <input id="diverGap" type="range" min="90" max="440" step="5" value="210"><span class="readout" id="diverGapOut">210</span></label>
+    </div>
+    <div class="row">
+      <label>Diver zoom <input id="diverZoom" type="range" min="0.5" max="2.2" step="0.05" value="1"><span class="readout" id="diverZoomOut">1.00</span></label>
+    </div>
+
+    <div class="row wrap" role="group" aria-label="Debug overlays">
+      <button id="diverBtn" type="button" aria-pressed="true">Diver</button>
+      <button id="socketsBtn" type="button" aria-pressed="false">Sockets</button>
+      <button id="bonesBtn" type="button" aria-pressed="false">Bones</button>
+      <button id="hitsBtn" type="button" aria-pressed="false">Hit Zones</button>
+    </div>
+
+    <div class="legend">
+      <span class="swatch" style="background:#72e6ef"></span><span>cyan line: parent-child socket bridge</span>
+      <span class="swatch" style="background:#ff5f78"></span><span>red ring: attack bite target</span>
+      <span class="swatch" style="background:#f2cf70"></span><span>gold line: bite-to-diver distance</span>
+    </div>
+    <p class="warn" id="warn"></p>
+  </section>
+
+  <script type="module">
+    const canvas = document.getElementById('preview');
+    const ctx = canvas.getContext('2d');
+    const meta = document.getElementById('meta');
+    const warn = document.getElementById('warn');
+    const creatureSelect = document.getElementById('creatureSelect');
+    const resetBtn = document.getElementById('resetBtn');
+    const modeButtons = [...document.querySelectorAll('.modeBtn')];
+    const artButtons = [...document.querySelectorAll('.artBtn')];
+    const socketsBtn = document.getElementById('socketsBtn');
+    const bonesBtn = document.getElementById('bonesBtn');
+    const hitsBtn = document.getElementById('hitsBtn');
+    const speed = document.getElementById('speed');
+    const wave = document.getElementById('wave');
+    const scale = document.getElementById('scale');
+    const diverGap = document.getElementById('diverGap');
+    const diverZoom = document.getElementById('diverZoom');
+    const speedOut = document.getElementById('speedOut');
+    const waveOut = document.getElementById('waveOut');
+    const scaleOut = document.getElementById('scaleOut');
+    const diverGapOut = document.getElementById('diverGapOut');
+    const diverZoomOut = document.getElementById('diverZoomOut');
+    const diverBtn = document.getElementById('diverBtn');
+
+    const state = {
+      manifest: null,
+      images: new Map(),
+      sourceImages: [],
+      mode: 'swim',
+      artMode: 'parts',
+      time: 0,
+      x: 0,
+      y: 0,
+      vx: 90,
+      facing: 1,
+      displayFacing: 1,
+      attack: 0,
+      turn: 0,
+      turnPhase: 0,
+      turnHeading: 0,
+      turnStartX: 0,
+      turnStartY: 0,
+      turnStartFacing: 1,
+      turnStartHeading: 0,
+      dpr: 1,
+      diverImage: null,
+      diverRig: null,
+      diverImages: new Map(),
+      diverX: 0,
+      diverY: 0,
+      diverVx: 0,
+      diverVy: 0,
+      diverGrabbed: false,
+      showDiver: true,
+      showSockets: false,
+      showBones: false,
+      showHits: false,
+    };
+
+    const ABYSSAL_GULPER_SOURCE_BOX = {
+      x: 35,
+      y: 105,
+      width: 806,
+      height: 243,
+      centerX: 438,
+      centerY: 226,
+      biteX: 820,
+      biteY: 224,
+      headX: 716,
+      headY: 203,
+      torsoX: 498,
+      torsoY: 204,
+      tailX: 74,
+      tailY: 280,
+    };
+
+    function resize() {
+      state.dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      canvas.width = Math.floor(window.innerWidth * state.dpr);
+      canvas.height = Math.floor(window.innerHeight * state.dpr);
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+      if (!state.x) resetMotion();
+    }
+
+    function resetMotion() {
+      state.x = Math.max(620, window.innerWidth * 0.46);
+      state.y = window.innerHeight * 0.56;
+      state.vx = 96;
+      state.facing = 1;
+      state.displayFacing = 1;
+      state.attack = 0;
+      state.turn = 0;
+      state.turnPhase = 0;
+      state.turnHeading = 0;
+      state.turnStartX = state.x;
+      state.turnStartY = state.y;
+      state.turnStartFacing = state.facing;
+      state.turnStartHeading = 0;
+      state.diverVx = 0;
+      state.diverVy = 0;
+      state.diverGrabbed = false;
+      placeDiverTarget();
+    }
+
+    function isBobbit() {
+      return state.manifest?.id === 'abyssal-mandible-bobbit';
+    }
+
+    function bobbitAmbushActive() {
+      return isBobbit() && state.mode === 'attack';
+    }
+
+    function smoothstep(edge0, edge1, value) {
+      const x = Math.max(0, Math.min(1, (value - edge0) / Math.max(0.0001, edge1 - edge0)));
+      return x * x * (3 - 2 * x);
+    }
+
+    function placeDiverTarget() {
+      const gap = Number(diverGap?.value || 210);
+      if (bobbitAmbushActive()) {
+        state.diverX = Math.max(520, Math.min(window.innerWidth - 170, window.innerWidth * 0.68));
+        state.diverY = Math.max(190, Math.min(window.innerHeight - 280, window.innerHeight * 0.42));
+        if (state.attack < 0.08) {
+          state.x = state.diverX;
+          state.y = state.diverY + gap;
+          state.vx = 0;
+          state.facing = 1;
+          state.displayFacing = 1;
+        }
+        state.diverVx = 0;
+        state.diverVy = 0;
+        state.diverGrabbed = false;
+        return;
+      }
+      const x = state.x + (state.facing || 1) * gap;
+      state.diverX = Math.max(460, Math.min(window.innerWidth - 110, x));
+      state.diverY = Math.max(170, Math.min(window.innerHeight - 110, state.y));
+      state.diverVx = 0;
+      state.diverVy = 0;
+      state.diverGrabbed = false;
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    async function loadDiverImage() {
+      state.diverImage = await loadImage('/assets/generated/diver-articulated-suit-v2-whole-painted.png')
+        || await loadImage('/assets/generated/diver-swim-0.png');
+      try {
+        const response = await fetch('/assets/generated/diver-articulated-suit.parts.json', { cache: 'no-cache' });
+        const rig = await response.json();
+        const images = new Map();
+        await Promise.all((rig.parts || []).map(async (part) => {
+          const img = await loadImage(`/assets/generated/${part.texture}`);
+          if (img) images.set(part.textureKey, img);
+        }));
+        state.diverRig = rig;
+        state.diverImages = images;
+      } catch (_error) {
+        state.diverRig = null;
+        state.diverImages = new Map();
+      }
+    }
+
+    async function loadCreature(id) {
+      warn.textContent = '';
+      meta.textContent = 'Loading generated articulated parts...';
+      const response = await fetch('/assets/generated/articulated-creatures.parts.json', { cache: 'no-cache' });
+      const file = await response.json();
+      const manifest = file.creatures.find((creature) => creature.id === id);
+      if (!manifest) throw new Error(`Missing creature manifest: ${id}`);
+      const imageEntries = manifest.parts.map((part) => [part.textureKey, `/assets/generated/${part.texture}`]);
+      for (const overlay of manifest.socketOverlays || []) imageEntries.push([overlay.textureKey, `/assets/generated/${overlay.texture}`]);
+      const images = new Map();
+      await Promise.all(imageEntries.map(async ([key, src]) => {
+        const img = await loadImage(src);
+        if (img) images.set(key, img);
+        else warn.textContent = `Could not load ${src}`;
+      }));
+      state.manifest = manifest;
+      state.images = images;
+      state.sourceImages = await loadSourceImages(id);
+      meta.textContent = `${manifest.species} / ${manifest.parts.length} parts / ${manifest.socketOverlays?.length || 0} socket overlays`;
+      if (manifest.quality?.status && manifest.quality.status !== 'accepted') {
+        warn.textContent = `Manifest quality: ${manifest.quality.status}. Use this page for motion and art feedback before acceptance.`;
+      }
+      if (id !== 'abyssal-gulper') setArtMode('parts');
+      resetMotion();
+    }
+
+    async function loadSourceImages(id) {
+      const sourceSets = {
+        'abyssal-gulper': [
+          ['current whole source v2', '/assets/generated/fauna-abyssal-gulper-v2-whole-painted.png'],
+          ['current whole source v1', '/assets/generated/fauna-abyssal-gulper-whole-painted.png'],
+          ['new coherent candidate slot', '/assets/generated/fauna-abyssal-gulper-coherent-v1.png'],
+        ],
+        'abyssal-riftmaw': [
+          ['riftmaw whole source', '/assets/generated/fauna-abyssal-riftmaw-whole-painted.png'],
+        ],
+        'abyssal-reliquary-wyrm': [
+          ['reliquary wyrm whole source', '/assets/generated/fauna-abyssal-reliquary-wyrm-whole-painted.png'],
+          ['reliquary wyrm high source', '/assets/generated/fauna-abyssal-reliquary-wyrm-whole-painted-hi.png'],
+          ['reliquary wyrm chroma source', '/assets/generated/fauna-abyssal-reliquary-wyrm-source-chroma.png'],
+        ],
+        'abyssal-glasshook-skulk': [
+          ['glasshook skulk whole source', '/assets/generated/fauna-abyssal-glasshook-skulk-whole-painted.png'],
+          ['glasshook skulk high source', '/assets/generated/fauna-abyssal-glasshook-skulk-whole-painted-hi.png'],
+          ['glasshook skulk chroma source', '/assets/generated/fauna-abyssal-glasshook-skulk-source-chroma.png'],
+        ],
+        'abyssal-mandible-bobbit': [
+          ['mandible bobbit whole source', '/assets/generated/fauna-abyssal-mandible-bobbit-whole-painted.png'],
+          ['mandible bobbit top-down high source', '/assets/generated/fauna-abyssal-mandible-bobbit-topdown-whole-painted-hi.png'],
+          ['mandible bobbit top-down chroma source', '/assets/generated/fauna-abyssal-mandible-bobbit-topdown-source-chroma.png'],
+        ],
+        'gulper-eel-maw': [
+          ['gulper-eel-maw source', '/assets/generated/fauna-gulper-eel-maw-whole-source.png'],
+        ],
+      };
+      const candidates = sourceSets[id] || [];
+      const loaded = [];
+      await Promise.all(candidates.map(async ([label, src]) => {
+        const img = await loadImage(src);
+        if (img) loaded.push({ label, src, img });
+      }));
+      return loaded;
+    }
+
+    function partById(id) {
+      return state.manifest.parts.find((part) => part.id === id);
+    }
+
+    function bobbitMandibleClose(t) {
+      const firstClamp = smoothstep(0.08, 0.75, state.attack);
+      return state.diverGrabbed ? 1 : firstClamp;
+    }
+
+    function partWave(part, t) {
+      const m = part.motion || {};
+      const phase = t * (m.frequency || 1.6) + (m.phase || 0);
+      const amp = (m.amplitude || 0) * Number(wave.value);
+      const kind = m.kind;
+      if (kind === 'jaw' && isBobbit()) {
+        const jawSign = part.id.includes('upper') ? -1 : 1;
+        const close = bobbitMandibleClose(t);
+        const openAngle = 0.82;
+        const closedAngle = -0.24;
+        const angle = openAngle + (closedAngle - openAngle) * close;
+        return jawSign * (angle + Math.sin(phase) * 0.012);
+      }
+      if (kind === 'jaw') return -0.24 + Math.sin(phase) * 0.04 + state.attack * 0.78;
+      if (kind === 'fin') return Math.sin(phase * 1.2) * amp * 0.012;
+      if (kind === 'tail') return Math.sin(phase) * amp * 0.018;
+      if (kind === 'body') return Math.sin(phase) * amp * 0.01;
+      return Math.sin(phase) * amp * 0.006;
+    }
+
+    function renderFacing() {
+      if (state.mode === 'turn') return 1;
+      return Number.isFinite(state.displayFacing) ? state.displayFacing : state.facing;
+    }
+
+    function renderFacingSign() {
+      if (state.mode === 'turn') {
+        const side = Math.cos(state.turnHeading);
+        if (Math.abs(side) < 0.08) return state.turnStartFacing || state.facing || 1;
+        return Math.sign(side);
+      }
+      const facing = renderFacing();
+      if (Math.abs(facing) < 0.08) return state.turnStartFacing || state.facing || 1;
+      return Math.sign(facing);
+    }
+
+    function localToWorld(localX, localY, rootX, rootY, heading) {
+      const s = Number(scale.value);
+      const x = localX * s * renderFacing();
+      const y = localY * s;
+      const cos = Math.cos(heading);
+      const sin = Math.sin(heading);
+      return {
+        x: rootX + x * cos - y * sin,
+        y: rootY + x * sin + y * cos,
+      };
+    }
+
+    function anchorOffset(part, anchorName, rotation) {
+      const local = part.anchors?.[anchorName] || [0, 0];
+      const originX = (part.origin[0] - 0.5) * part.size[0];
+      const originY = (part.origin[1] - 0.5) * part.size[1];
+      const x = (local[0] - originX) * Number(scale.value) * renderFacing();
+      const y = (local[1] - originY) * Number(scale.value);
+      const cos = Math.cos(rotation);
+      const sin = Math.sin(rotation);
+      return {
+        x: x * cos - y * sin,
+        y: x * sin + y * cos,
+      };
+    }
+
+    function anchorPoint(entry, anchorName) {
+      const offset = anchorOffset(entry.part, anchorName, entry.rotation);
+      return {
+        x: entry.x + offset.x,
+        y: entry.y + offset.y,
+      };
+    }
+
+    function composeParts(t) {
+      const manifest = state.manifest;
+      const root = manifest.parts.find((part) => !part.parentId) || manifest.parts[0];
+      const rootOffset = root?.offset || [0, 0];
+      const swimBob = Math.sin(t * 1.35) * 8 * Number(wave.value);
+      const facingSign = renderFacingSign();
+      const ambush = bobbitAmbushActive();
+      const attackLean = ambush ? 0 : state.attack * facingSign * 0.24;
+      const baseHeading = ambush ? -Math.PI / 2 : state.turnHeading;
+      const heading = baseHeading + Math.sin(t * 0.74) * (ambush ? 0.025 : 0.06) + attackLean + state.turn * 0.18;
+      const rootX = state.x;
+      const rootY = state.y + swimBob;
+      const result = new Map();
+      const byId = new Map(manifest.parts.map((part) => [part.id, part]));
+      const placing = new Set();
+
+      function baseEntry(part, parent) {
+        const m = part.motion || {};
+        const lag = m.lag || 0;
+        const bodyS = Number(scale.value);
+        const waveY = Math.sin(t * (m.frequency || 1.7) + (m.phase || 0) - lag) * (m.amplitude || 0) * Number(wave.value) * bodyS;
+        const waveX = m.kind === 'tail' ? Math.cos(t * 1.65 + (m.phase || 0)) * 4 * bodyS * Number(wave.value) : 0;
+        const localX = part.offset[0] - rootOffset[0] + waveX;
+        const localY = part.offset[1] - rootOffset[1] + waveY;
+        const pos = localToWorld(localX, localY, rootX, rootY, heading);
+        const parentRotation = parent?.rotation ?? heading;
+        const rawRotation = heading + partWave(part, t) * facingSign + (m.kind === 'tail' ? state.turn * -0.14 : 0);
+        const rotation = parent && m.kind === 'jaw'
+          ? parentRotation + partWave(part, t) * facingSign
+          : parent && m.kind !== 'body' && m.kind !== 'tail'
+          ? parentRotation * 0.86 + rawRotation * 0.14
+          : rawRotation;
+        return {
+          part,
+          x: pos.x,
+          y: pos.y,
+          rotation,
+          depth: part.depth || 0,
+          scaleX: bodyS * renderFacing(),
+          scaleY: bodyS,
+        };
+      }
+
+      function place(part) {
+        if (result.has(part.id)) return result.get(part.id);
+        if (placing.has(part.id)) return baseEntry(part);
+        placing.add(part.id);
+        const parent = part.parentId ? byId.get(part.parentId) : null;
+        const parentEntry = parent ? place(parent) : null;
+        const entry = baseEntry(part, parentEntry);
+        if (parentEntry && part.parentAnchor && part.anchor) {
+          const parentAnchor = anchorPoint(parentEntry, part.parentAnchor);
+          const rest = part.restOffset || [0, 0];
+          const jawSign = isBobbit() && part.motion?.kind === 'jaw'
+            ? part.id.includes('upper') ? -1 : 1
+            : 0;
+          const mandiblePinch = jawSign ? -jawSign * bobbitMandibleClose(t) * 30 : 0;
+          const restWorld = localToWorld(rest[0], rest[1] + mandiblePinch, 0, 0, parentEntry.rotation);
+          const childAnchor = anchorOffset(part, part.anchor, entry.rotation);
+          entry.x = parentAnchor.x + restWorld.x - childAnchor.x;
+          entry.y = parentAnchor.y + restWorld.y - childAnchor.y;
+        }
+        placing.delete(part.id);
+        result.set(part.id, entry);
+        return entry;
+      }
+
+      for (const part of manifest.parts) {
+        place(part);
+      }
+      return result;
+    }
+
+    function anchorWorld(rendered, anchorName) {
+      if (!rendered || !rendered.part.anchors?.[anchorName]) return null;
+      return anchorPoint(rendered, anchorName);
+    }
+
+    function drawBackground(t) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
+      const g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, '#0a2933');
+      g.addColorStop(0.55, '#071721');
+      g.addColorStop(1, '#03080d');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.globalAlpha = 0.14;
+      for (let i = 0; i < 42; i += 1) {
+        const x = (i * 173 + t * 11) % (w + 120) - 60;
+        const y = (i * 97 + Math.sin(t * 0.4 + i) * 12) % h;
+        ctx.fillStyle = i % 3 === 0 ? '#94e8e3' : '#4fa3ad';
+        ctx.beginPath();
+        ctx.arc(x, y, i % 3 === 0 ? 1.8 : 1.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawDiverTarget(t) {
+      if (!state.showDiver) return;
+      const bait = baitPoint(t);
+      ctx.save();
+      ctx.translate(bait.x, bait.y);
+      const bob = Math.sin(t * 2.1) * 3;
+      ctx.translate(0, bob);
+      const faceMonster = bobbitAmbushActive() ? 1 : state.x < bait.x ? -1 : 1;
+      const diverTilt = state.diverGrabbed
+        ? Math.min(0.55, 0.22 + state.attack * 0.34) + Math.sin(t * 7.5) * 0.05
+        : bobbitAmbushActive()
+        ? Math.sin(t * 1.7) * 0.08
+        : 0;
+      ctx.rotate(diverTilt);
+      if (state.diverImage) {
+        const targetWidth = 92 * Number(diverZoom?.value || 1);
+        const imageScale = targetWidth / state.diverImage.width;
+        const targetHeight = state.diverImage.height * imageScale;
+        if (bobbitAmbushActive() && state.diverRig && state.diverImages.size) {
+          drawArticulatedDiver(t, imageScale, faceMonster);
+        } else {
+          ctx.save();
+          ctx.scale(faceMonster, 1);
+          ctx.globalAlpha = state.mode === 'stunned' ? 0.78 : 1;
+          ctx.shadowColor = 'rgba(0,0,0,0.42)';
+          ctx.shadowBlur = 12;
+          ctx.drawImage(state.diverImage, -targetWidth * 0.5, -targetHeight * 0.5, targetWidth, targetHeight);
+          ctx.restore();
+        }
+      } else {
+        ctx.strokeStyle = 'rgba(242,207,112,0.78)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(242,207,112,0.8)';
+        ctx.fillRect(-3, -9, 6, 18);
+        ctx.beginPath();
+        ctx.arc(0, -15, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(255,95,120,0.34)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, 24 + state.attack * 8, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function diverPartPose(part, t) {
+      const grab = state.diverGrabbed ? 1 : smoothstep(0.28, 0.75, state.attack);
+      const panic = Math.sin(t * 8.5 + part.id.length) * 0.16;
+      const id = part.id;
+      if (id === 'torso') return 0.1 * grab;
+      if (id === 'helmet') return -0.18 * grab + panic * 0.2;
+      if (id === 'backpack') return -0.08 * grab;
+      if (id === 'upper-arm') return (-0.65 * grab) + panic;
+      if (id === 'forearm') return (-0.95 * grab) + panic * 1.25;
+      if (id === 'hand' || id === 'tool') return (-1.05 * grab) + panic * 1.15;
+      if (id === 'front-thigh') return (0.68 * grab) - panic * 0.6;
+      if (id === 'front-shin') return (1.12 * grab) - panic * 0.8;
+      if (id === 'rear-thigh') return (-0.48 * grab) + panic * 0.55;
+      if (id === 'rear-shin') return (-0.92 * grab) + panic * 0.75;
+      return 0;
+    }
+
+    function drawArticulatedDiver(t, imageScale, faceMonster) {
+      const rig = state.diverRig;
+      if (!rig?.parts?.length) return;
+      const sourceCenterX = 887 / 2;
+      const sourceCenterY = 444 / 2;
+      const parts = [...rig.parts].sort((a, b) => (a.depth || 0) - (b.depth || 0));
+      ctx.save();
+      ctx.scale(faceMonster, 1);
+      ctx.globalAlpha = state.mode === 'stunned' ? 0.78 : 1;
+      ctx.shadowColor = 'rgba(0,0,0,0.42)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetY = 5;
+      for (const part of parts) {
+        const img = state.diverImages.get(part.textureKey);
+        if (!img) continue;
+        const x = part.offset[0] * imageScale;
+        const y = part.offset[1] * imageScale;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(diverPartPose(part, t) * faceMonster);
+        ctx.scale(imageScale, imageScale);
+        ctx.drawImage(
+          img,
+          -part.origin[0] * part.size[0],
+          -part.origin[1] * part.size[1],
+          part.size[0],
+          part.size[1],
+        );
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+
+    function baitPoint(t) {
+      if (!state.diverX || !state.diverY) placeDiverTarget();
+      if (bobbitAmbushActive()) {
+        return {
+          x: state.diverX + Math.sin(t * 1.1) * (state.diverGrabbed ? 2 : 5),
+          y: state.diverY + Math.cos(t * 0.9) * (state.diverGrabbed ? 1.5 : 7),
+        };
+      }
+      return {
+        x: state.diverX + Math.sin(t * 0.7) * 8,
+        y: state.diverY + Math.cos(t * 0.9) * 12,
+      };
+    }
+
+    function drawSocketBridges(rendered) {
+      if (!state.showSockets && !state.showBones) return;
+      ctx.save();
+      for (const overlay of state.manifest.socketOverlays || []) {
+        const parentPart = partById(overlay.parentId);
+        const childPart = partById(overlay.childId);
+        const parentAnchor = anchorWorld(rendered.get(overlay.parentId), childPart?.parentAnchor || 'back')
+          || anchorWorld(rendered.get(overlay.parentId), 'back')
+          || rendered.get(overlay.parentId);
+        const childAnchor = anchorWorld(rendered.get(overlay.childId), childPart?.anchor || 'front')
+          || anchorWorld(rendered.get(overlay.childId), 'front')
+          || rendered.get(overlay.childId);
+        if (!parentAnchor || !childAnchor) continue;
+        if (state.showSockets) {
+          ctx.strokeStyle = 'rgba(114,230,239,0.32)';
+          ctx.lineWidth = Math.max(2, 9 * Number(scale.value));
+          ctx.beginPath();
+          ctx.moveTo(parentAnchor.x, parentAnchor.y);
+          ctx.lineTo(childAnchor.x, childAnchor.y);
+          ctx.stroke();
+        }
+        if (state.showBones) {
+          ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(parentAnchor.x, parentAnchor.y);
+          ctx.lineTo(childAnchor.x, childAnchor.y);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawPart(entry) {
+      const img = state.images.get(entry.part.textureKey);
+      if (!img) return;
+      ctx.save();
+      ctx.translate(entry.x, entry.y);
+      ctx.rotate(entry.rotation);
+      ctx.scale(entry.scaleX, entry.scaleY);
+      ctx.globalAlpha = state.mode === 'stunned' ? 0.78 : 1;
+      if (state.mode === 'stunned') {
+        ctx.filter = 'saturate(0.7) hue-rotate(145deg) brightness(1.14)';
+      }
+      const part = entry.part;
+      ctx.drawImage(
+        img,
+        -part.origin[0] * part.size[0],
+        -part.origin[1] * part.size[1],
+        part.size[0],
+        part.size[1],
+      );
+      ctx.restore();
+
+      if (state.showHits) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        const radius = Math.max(8, (entry.part.hitRadius || Math.min(entry.part.size[0], entry.part.size[1]) * 0.25) * Number(scale.value));
+        ctx.arc(entry.x, entry.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function cohesiveSource() {
+      if (state.manifest?.id !== 'abyssal-gulper' || state.artMode !== 'cohesive') return null;
+      return state.sourceImages.find((source) => source.label.includes('current whole source v1'))
+        || state.sourceImages.find((source) => source.label.includes('current whole source v2'))
+        || state.sourceImages[0]
+        || null;
+    }
+
+    function cohesivePoint(sourceX, sourceY, t) {
+      const box = ABYSSAL_GULPER_SOURCE_BOX;
+      const s = Number(scale.value);
+      const n = Math.max(0, Math.min(1, (sourceX - box.x) / box.width));
+      const tailWeight = 1 - n;
+      const facingSign = renderFacingSign();
+      const attackLean = state.mode === 'attack' ? state.attack * facingSign * 0.22 : 0;
+      const heading = state.turnHeading + Math.sin(t * 0.74) * 0.045 + attackLean + state.turn * 0.14;
+      const waveAmp = Number(wave.value) * (6 + tailWeight * 30);
+      const phase = t * 2.1 - n * 5.7;
+      const localX = (sourceX - box.centerX) * s * renderFacing();
+      const localY = (sourceY - box.centerY) * s + Math.sin(phase) * waveAmp * s;
+      const cos = Math.cos(heading);
+      const sin = Math.sin(heading);
+      return {
+        x: state.x + localX * cos - localY * sin,
+        y: state.y + localX * sin + localY * cos,
+        rotation: heading + Math.cos(phase) * tailWeight * 0.16 * Number(wave.value) * facingSign,
+      };
+    }
+
+    function drawCohesiveGulper(t) {
+      const source = cohesiveSource();
+      if (!source) return false;
+      const img = source.img;
+      const box = ABYSSAL_GULPER_SOURCE_BOX;
+      const s = Number(scale.value);
+      const stripWidth = 5;
+
+      ctx.save();
+      ctx.globalAlpha = state.mode === 'stunned' ? 0.82 : 1;
+      if (state.mode === 'stunned') {
+        ctx.filter = 'saturate(0.66) hue-rotate(145deg) brightness(1.12)';
+      }
+      ctx.shadowColor = 'rgba(0,0,0,0.48)';
+      ctx.shadowBlur = 18;
+      ctx.shadowOffsetY = 10;
+
+      for (let sx = box.x; sx < box.x + box.width; sx += stripWidth) {
+        const sw = Math.min(stripWidth, box.x + box.width - sx);
+        const sourceCenterX = sx + sw * 0.5;
+        const sourceCenterY = box.centerY;
+        const point = cohesivePoint(sourceCenterX, sourceCenterY, t);
+        ctx.save();
+        ctx.translate(point.x, point.y);
+        ctx.rotate(point.rotation);
+        ctx.scale(renderFacing(), s);
+        ctx.drawImage(
+          img,
+          sx,
+          box.y,
+          sw,
+          box.height,
+          -sw * 0.5,
+          -(box.centerY - box.y),
+          sw,
+          box.height,
+        );
+        ctx.restore();
+      }
+      ctx.restore();
+
+      if (state.showBones) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.lineWidth = 1;
+        const points = [box.tailX, 190, 320, box.torsoX, 610, box.headX, box.biteX]
+          .map((x) => cohesivePoint(x, x === box.biteX ? box.biteY : box.torsoY, t));
+        ctx.beginPath();
+        points.forEach((point, index) => {
+          if (index === 0) ctx.moveTo(point.x, point.y);
+          else ctx.lineTo(point.x, point.y);
+        });
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      if (state.showSockets) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(114,230,239,0.26)';
+        ctx.lineWidth = Math.max(2, 8 * s);
+        const tail = cohesivePoint(box.tailX, box.tailY, t);
+        const torso = cohesivePoint(box.torsoX, box.torsoY, t);
+        const head = cohesivePoint(box.headX, box.headY, t);
+        ctx.beginPath();
+        ctx.moveTo(tail.x, tail.y);
+        ctx.quadraticCurveTo(torso.x, torso.y, head.x, head.y);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      if (state.showHits) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.lineWidth = 1;
+        for (const [x, y, r] of [
+          [box.tailX, box.tailY, 24],
+          [280, box.torsoY, 34],
+          [box.torsoX, box.torsoY, 42],
+          [box.headX, box.headY, 54],
+        ]) {
+          const point = cohesivePoint(x, y, t);
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, r * s, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+      return true;
+    }
+
+    function bitePointFromRendered(rendered) {
+      if (!rendered) return null;
+      const upper = rendered.get('upper-mandible');
+      const lower = rendered.get('lower-mandible');
+      const upperBite = anchorWorld(upper, 'bite');
+      const lowerBite = anchorWorld(lower, 'bite');
+      if (upperBite && lowerBite) {
+        const headBite = anchorWorld(rendered.get('head'), 'bite');
+        if (isBobbit() && headBite) {
+          return { ...headBite, upper: upperBite, lower: lowerBite };
+        }
+        return {
+          x: (upperBite.x + lowerBite.x) * 0.5,
+          y: (upperBite.y + lowerBite.y) * 0.5,
+          upper: upperBite,
+          lower: lowerBite,
+        };
+      }
+      const jaw = rendered.get('jaw')
+        || rendered.get('upper-mandible')
+        || rendered.get('lower-mandible')
+        || [...rendered.values()].find((entry) => entry.part.motion?.kind === 'jaw')
+        || rendered.get('head');
+      return anchorWorld(jaw, 'bite') || jaw || null;
+    }
+
+    function currentBitePoint() {
+      const source = cohesiveSource();
+      if (source) return cohesivePoint(ABYSSAL_GULPER_SOURCE_BOX.biteX, ABYSSAL_GULPER_SOURCE_BOX.biteY, state.time);
+      return bitePointFromRendered(composeParts(state.time));
+    }
+
+    function drawBite(rendered) {
+      const source = cohesiveSource();
+      if (source) {
+        const bite = cohesivePoint(ABYSSAL_GULPER_SOURCE_BOX.biteX, ABYSSAL_GULPER_SOURCE_BOX.biteY, state.time);
+        const bait = baitPoint(state.time);
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,95,120,0.82)';
+        ctx.fillStyle = 'rgba(255,95,120,0.2)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(bite.x, bite.y, 12 + state.attack * 16, 0, Math.PI * 2);
+        ctx.stroke();
+        if (state.attack > 0.2) ctx.fill();
+        if (state.showDiver) {
+          ctx.strokeStyle = 'rgba(255,209,138,0.46)';
+          ctx.beginPath();
+          ctx.moveTo(bite.x, bite.y);
+          ctx.lineTo(bait.x, bait.y);
+          ctx.stroke();
+        }
+        ctx.restore();
+        return;
+      }
+      const bite = bitePointFromRendered(rendered);
+      if (!bite) return;
+      ctx.save();
+      if (bite.upper && bite.lower && state.attack > 0.1) {
+        ctx.strokeStyle = 'rgba(255,209,138,0.48)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(bite.upper.x, bite.upper.y);
+        ctx.lineTo(bite.lower.x, bite.lower.y);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = 'rgba(255,95,120,0.82)';
+      ctx.fillStyle = 'rgba(255,95,120,0.2)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(bite.x, bite.y, 12 + state.attack * 16, 0, Math.PI * 2);
+      ctx.stroke();
+      if (state.attack > 0.2) ctx.fill();
+      if (state.showDiver) {
+        const bait = baitPoint(state.time);
+        ctx.strokeStyle = 'rgba(255,209,138,0.46)';
+        ctx.beginPath();
+        ctx.moveTo(bite.x, bite.y);
+        ctx.lineTo(bait.x, bait.y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawWholeSource(t) {
+      const sources = state.sourceImages;
+      if (!sources.length) {
+        ctx.save();
+        ctx.fillStyle = '#ffd18a';
+        ctx.font = '15px Inter, sans-serif';
+        ctx.fillText('No whole-source image found for this creature.', 430, 130);
+        ctx.restore();
+        return;
+      }
+      const gap = 32;
+      const availableW = window.innerWidth - 430;
+      const availableH = window.innerHeight - 110;
+      const cellH = Math.max(210, Math.min(320, (availableH - gap * (sources.length - 1)) / sources.length));
+      let y = 72;
+      ctx.save();
+      ctx.font = '13px Inter, sans-serif';
+      ctx.textBaseline = 'top';
+      for (const source of sources) {
+        const maxW = availableW - 40;
+        const maxH = cellH - 28;
+        const fit = Math.min(maxW / source.img.width, maxH / source.img.height, 1.25);
+        const w = source.img.width * fit;
+        const h = source.img.height * fit;
+        const x = 430;
+        ctx.fillStyle = 'rgba(7,18,26,0.72)';
+        ctx.fillRect(x - 14, y - 12, w + 28, h + 46);
+        ctx.strokeStyle = source.label.includes('new coherent') ? 'rgba(255,209,138,0.45)' : 'rgba(114,230,239,0.24)';
+        ctx.strokeRect(x - 14, y - 12, w + 28, h + 46);
+        ctx.drawImage(source.img, x, y + 22, w, h);
+        ctx.fillStyle = source.label.includes('new coherent') ? '#ffd18a' : '#d7eef4';
+        ctx.fillText(source.label, x, y);
+        y += cellH + gap;
+      }
+      ctx.restore();
+    }
+
+    function tickMotion(dt) {
+      const mode = state.mode;
+      const speedScale = Number(speed.value);
+      let turnPositioned = false;
+      if (mode === 'attack') {
+        if (!state.attack) placeDiverTarget();
+        const bait = baitPoint(state.time);
+        const bite = currentBitePoint() || { x: state.x, y: state.y };
+        const dx = bait.x - bite.x;
+        const dy = bait.y - bite.y;
+        const d = Math.max(1, Math.hypot(dx, dy));
+        if (bobbitAmbushActive()) {
+          state.vx = 0;
+          const clamp = smoothstep(0.42, 0.86, state.attack);
+          const biteCorrection = Math.min(0.9, dt * (5.2 + clamp * 14.5) * speedScale);
+          state.x += dx * biteCorrection;
+          state.y += dy * biteCorrection;
+          if ((d < 30 + Number(diverZoom.value) * 12 || state.attack > 0.78) && !state.diverGrabbed) {
+            state.diverGrabbed = true;
+            state.diverVx = 0;
+            state.diverVy = 28;
+          }
+          if (state.diverGrabbed) {
+            state.diverVx += (bite.x - state.diverX) * 5.2 * dt;
+            state.diverVy += 95 * dt;
+            state.diverVx *= Math.exp(-2.4 * dt);
+            state.diverVy *= Math.exp(-1.25 * dt);
+            state.diverVy = Math.min(82, state.diverVy);
+            state.diverX += state.diverVx * dt;
+            state.diverY += state.diverVy * dt;
+            state.diverY = Math.min(window.innerHeight - 185, state.diverY);
+            const settledBite = currentBitePoint() || bite;
+            const settledBait = baitPoint(state.time);
+            state.x += (settledBait.x - settledBite.x) * Math.min(0.82, dt * 18);
+            state.y += (settledBait.y - settledBite.y) * Math.min(0.82, dt * 18);
+          }
+        } else {
+          state.vx += (dx / d) * 260 * dt * speedScale;
+          state.y += (dy / d) * 70 * dt * speedScale;
+          const biteCorrection = Math.min(0.42, dt * (state.attack > 0.48 ? 4.8 : 1.55) * speedScale);
+          state.x += dx * biteCorrection;
+          state.y += dy * biteCorrection * 0.82;
+        }
+        const attackRate = bobbitAmbushActive() ? 0.9 : 2.2;
+        state.attack = Math.min(1, state.attack + dt * attackRate * speedScale);
+      } else {
+        state.attack = Math.max(0, state.attack - dt * 2.6);
+        state.diverGrabbed = false;
+      }
+
+      if (mode === 'turn') {
+        if (!state.turnStartX) state.turnStartX = state.x;
+        if (!state.turnStartY) state.turnStartY = state.y;
+        state.turnStartFacing = state.turnStartFacing || state.facing || 1;
+        const previousTurnPhase = state.turnPhase;
+        state.turnPhase += dt * speedScale;
+        const turnDuration = 2.65;
+        const cycleDuration = 4.25;
+        const startHeading = state.turnStartHeading || 0;
+        if (previousTurnPhase < turnDuration && state.turnPhase >= turnDuration) {
+          state.turnHeading = startHeading + Math.PI;
+          state.facing = Math.cos(state.turnHeading) >= 0 ? 1 : -1;
+          state.displayFacing = 1;
+          state.vx = Math.cos(state.turnHeading) * 96;
+          state.turn = 0;
+        }
+        if (state.turnPhase < turnDuration) {
+          const progress = Math.min(1, state.turnPhase / turnDuration);
+          const theta = progress * Math.PI;
+          const radius = 220 * Number(scale.value);
+          const forwardX = Math.cos(startHeading);
+          const forwardY = Math.sin(startHeading);
+          const normalX = -Math.sin(startHeading);
+          const normalY = Math.cos(startHeading);
+          state.turnHeading = startHeading + theta;
+          state.displayFacing = 1;
+          state.turn = Math.sin(theta) * 1.65;
+          state.x = state.turnStartX + Math.sin(theta) * radius * forwardX + (1 - Math.cos(theta)) * radius * normalX;
+          state.y = state.turnStartY + Math.sin(theta) * radius * forwardY + (1 - Math.cos(theta)) * radius * normalY;
+          state.vx = Math.cos(state.turnHeading) * 88;
+          turnPositioned = true;
+        } else if (state.turnPhase >= cycleDuration) {
+          state.turnPhase = 0;
+          state.turnStartX = state.x;
+          state.turnStartY = state.y;
+          state.turnStartFacing = state.facing;
+          state.turnStartHeading = state.turnHeading;
+        } else {
+          state.turn = 0;
+          state.displayFacing = 1;
+          state.vx += Math.cos(state.turnHeading) * 18 * dt;
+        }
+      } else {
+        state.turn *= Math.exp(-dt * 3);
+        state.turnPhase = 0;
+        state.turnHeading = 0;
+        state.displayFacing += (state.facing - state.displayFacing) * Math.min(1, dt * 8);
+        state.turnStartX = state.x;
+        state.turnStartY = state.y;
+        state.turnStartFacing = state.facing;
+        state.turnStartHeading = state.facing < 0 ? Math.PI : 0;
+      }
+
+      if (mode === 'stunned') {
+        state.vx *= Math.exp(-dt * 1.6);
+        state.y += Math.sin(state.time * 7) * 0.8;
+      } else if (!turnPositioned) {
+        state.x += state.vx * dt * speedScale;
+        state.y += Math.sin(state.time * 1.2) * 12 * dt;
+      }
+
+      const margin = 360 * Number(scale.value);
+      if (state.x > window.innerWidth + margin) {
+        state.facing = -1;
+        state.displayFacing = -1;
+        state.vx = -Math.abs(state.vx || 90);
+      }
+      if (state.x < -margin) {
+        state.facing = 1;
+        state.displayFacing = 1;
+        state.vx = Math.abs(state.vx || 90);
+      }
+      state.vx *= Math.exp(-dt * 0.22);
+      if (Math.abs(state.vx) < 62 && mode !== 'stunned') state.vx += state.facing * 28 * dt;
+    }
+
+    function frame(now) {
+      const last = state.last || now;
+      const dt = Math.min(0.04, (now - last) / 1000);
+      state.last = now;
+      state.time += dt * Number(speed.value);
+      speedOut.textContent = Number(speed.value).toFixed(2);
+      waveOut.textContent = Number(wave.value).toFixed(2);
+      scaleOut.textContent = Number(scale.value).toFixed(2);
+      diverGapOut.textContent = Math.round(Number(diverGap.value));
+      diverZoomOut.textContent = Number(diverZoom.value).toFixed(2);
+
+      drawBackground(state.time);
+      if (state.manifest) {
+        if (state.mode === 'source') {
+          drawWholeSource(state.time);
+        } else {
+          tickMotion(dt);
+          if (cohesiveSource()) {
+            drawCohesiveGulper(state.time);
+            drawDiverTarget(state.time);
+            drawBite(null);
+          } else {
+            const rendered = composeParts(state.time);
+            drawSocketBridges(rendered);
+            if (bobbitAmbushActive()) {
+              drawDiverTarget(state.time);
+            }
+            [...rendered.values()]
+              .sort((a, b) => a.depth - b.depth)
+              .forEach(drawPart);
+            if (!bobbitAmbushActive()) {
+              drawDiverTarget(state.time);
+            }
+            drawBite(rendered);
+          }
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function setArtMode(mode) {
+      state.artMode = mode;
+      artButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.art === mode)));
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      if (mode === 'attack') {
+        placeDiverTarget();
+        state.attack = bobbitAmbushActive() ? 0 : Math.max(state.attack, 0.24);
+      }
+      if (mode === 'turn') {
+        state.turnPhase = 0;
+        state.turnStartX = state.x;
+        state.turnStartY = state.y;
+        state.turnStartFacing = state.facing || 1;
+        state.turnStartHeading = state.facing < 0 ? Math.PI : 0;
+        state.turnHeading = state.turnStartHeading;
+        state.displayFacing = 1;
+      }
+      modeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.mode === mode)));
+    }
+
+    modeButtons.forEach((button) => button.addEventListener('click', () => setMode(button.dataset.mode)));
+    artButtons.forEach((button) => button.addEventListener('click', () => setArtMode(button.dataset.art)));
+    resetBtn.addEventListener('click', resetMotion);
+    diverBtn.addEventListener('click', () => {
+      state.showDiver = !state.showDiver;
+      diverBtn.setAttribute('aria-pressed', String(state.showDiver));
+    });
+    creatureSelect.addEventListener('change', () => loadCreature(creatureSelect.value).catch((error) => {
+      warn.textContent = error.message;
+    }));
+    socketsBtn.addEventListener('click', () => {
+      state.showSockets = !state.showSockets;
+      socketsBtn.setAttribute('aria-pressed', String(state.showSockets));
+    });
+    bonesBtn.addEventListener('click', () => {
+      state.showBones = !state.showBones;
+      bonesBtn.setAttribute('aria-pressed', String(state.showBones));
+    });
+    hitsBtn.addEventListener('click', () => {
+      state.showHits = !state.showHits;
+      hitsBtn.setAttribute('aria-pressed', String(state.showHits));
+    });
+
+    window.addEventListener('resize', resize);
+    resize();
+    loadDiverImage();
+    loadCreature(creatureSelect.value).catch((error) => {
+      warn.textContent = error.message;
+    });
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

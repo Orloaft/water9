@@ -1,0 +1,23 @@
+{
+  "schema": "water9/content-rigging-sprint@1",
+  "generatedAt": "2026-06-18T17:07:20.956Z",
+  "generatedFrom": {
+    "runtimeCoverage": "/mnt/nxt-dev/water9/public/review/content-runtime-coverage.json",
+    "riggingPacks": "/mnt/nxt-dev/water9/public/review/rigging-packs/index.json"
+  },
+  "summary": {
+    "missingRuntimeTotal": 0,
+    "sprintSize": 0,
+    "sourceApprovedInSprint": 0,
+    "productionReadyForPlanPrep": 0,
+    "planArtifactsStagedInSprint": 0,
+    "planPreviewsStagedInSprint": 0
+  },
+  "commands": {
+    "sourceReviewAll": "# source review queue: no missing-runtime candidates; rerun npm run content:rigging-sprint after source approval or new source intake --allow-unapproved",
+    "mechanicalDryRunAll": "# mechanical dry-run queue: no missing-runtime candidates; rerun npm run content:rigging-sprint after source approval or new source intake --allow-unapproved",
+    "productionPrepareApproved": "",
+    "postRegisterCoverage": "npm run articulated:check && npm run sandbox:index && npm run content:runtime-coverage && npm run content:runtime-coverage-check && npm run content:rigging-sprint && npm run content:rigging-sprint-check"
+  },
+  "items": []
+}

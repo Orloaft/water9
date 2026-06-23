@@ -1,0 +1,100 @@
+{
+  "schema": "water9/content-quick-review@1",
+  "generatedAt": "2026-06-17T01:39:12.942Z",
+  "id": "brine-crown",
+  "preview": {
+    "found": true,
+    "id": "brine-crown",
+    "name": "Brine Crown",
+    "kind": "articulated",
+    "rarity": "epic",
+    "hostile": true,
+    "source": "public/review/articulated/review-manifest.json",
+    "notes": "quality: prototype",
+    "relativeUrl": "/?sandbox=brine-crown",
+    "url": "http://127.0.0.1:5177/?sandbox=brine-crown",
+    "devServerCommand": "npm run dev -- --port 5177",
+    "visualCheckCommand": null
+  },
+  "steps": [
+    {
+      "label": "npm run sandbox:index",
+      "startedAt": "2026-06-17T01:37:44.533Z",
+      "durationMs": 124,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 sandbox:index\n> node tools/build_sandbox_index.mjs\n\n{\n  \"outDir\": \"/mnt/nxt-dev/water9/public/review/sandbox\",\n  \"entries\": 86,\n  \"byKind\": {\n    \"articulated\": 14,\n    \"diver\": 1,\n    \"fish\": 36,\n    \"flora\": 12,\n    \"item\": 8,\n    \"object\": 7,\n    \"ore\": 8\n  }\n}",
+      "stderrTail": ""
+    },
+    {
+      "label": "npm run sandbox:preview -- --id brine-crown --json",
+      "startedAt": "2026-06-17T01:37:44.657Z",
+      "durationMs": 111,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 sandbox:preview\n> node tools/preview_sandbox_entity.mjs --id brine-crown --json\n\n{\n  \"found\": true,\n  \"id\": \"brine-crown\",\n  \"name\": \"Brine Crown\",\n  \"kind\": \"articulated\",\n  \"rarity\": \"epic\",\n  \"hostile\": true,\n  \"source\": \"public/review/articulated/review-manifest.json\",\n  \"notes\": \"quality: prototype\",\n  \"relativeUrl\": \"/?sandbox=brine-crown\",\n  \"url\": \"http://127.0.0.1:5177/?sandbox=brine-crown\",\n  \"devServerCommand\": \"npm run dev -- --port 5177\",\n  \"visualCheckCommand\": null\n}",
+      "stderrTail": ""
+    },
+    {
+      "label": "npm run sandbox:visual -- --ids brine-crown --report tools/scratch/quick-review-brine-crown-visual-report.json --out-dir tools/scratch/quick-review-brine-crown-visuals --states idle,lunge,stunned",
+      "startedAt": "2026-06-17T01:37:44.768Z",
+      "durationMs": 5153,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 sandbox:visual\n> node tools/check_sandbox_visuals.mjs --ids brine-crown --report tools/scratch/quick-review-brine-crown-visual-report.json --out-dir tools/scratch/quick-review-brine-crown-visuals --states idle,lunge,stunned\n\n{\n  \"checked\": 1,\n  \"outputDir\": \"/mnt/nxt-dev/water9/tools/scratch/quick-review-brine-crown-visuals\",\n  \"reportPath\": \"/mnt/nxt-dev/water9/tools/scratch/quick-review-brine-crown-visual-report.json\",\n  \"failures\": []\n}",
+      "stderrTail": ""
+    },
+    {
+      "label": "npm run review:articulated:quick",
+      "startedAt": "2026-06-17T01:37:49.922Z",
+      "durationMs": 80884,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 review:articulated:quick\n> npm run articulated:source-parity && node tools/build_review_gallery.mjs --incremental\n\n\n> aqua@1.0.0 articulated:source-parity\n> python3 tools/validate_articulated_source_parity.py\n\nValidated assembled source parity for 14 articulated creatures.\nSource parity report written to /mnt/nxt-dev/water9/tools/scratch/articulated-source-parity.json\n{\n  \"outDir\": \"/mnt/nxt-dev/water9/public/review/articulated\",\n  \"creatures\": [\n    \"abyssal-serpent\",\n    \"abyssal-gulper\",\n    \"abyssal-crownmaw\",\n    \"chainmaw-eel\",\n    \"sawback-ray\",\n    \"thornhalo-urchin\",\n    \"hookjaw-isopod\",\n    \"cavitation-boxer\",\n    \"siphon-lily\",\n    \"harpoon-cone\",\n    \"sand-battery\",\n    \"trap-jaw-bristle\",\n    \"velvet-lantern-cuttle\",\n    \"brine-crown\"\n  ],\n  \"acceptedCount\": 0,\n  \"incremental\": true,\n  \"renderStats\": {\n    \"rendered\": 0,\n    \"skipped\": 14,\n    \"thumbnails\": 14,\n    \"parityImages\": 14\n  }\n}",
+      "stderrTail": ""
+    },
+    {
+      "label": "npm run source:gallery",
+      "startedAt": "2026-06-17T01:39:10.806Z",
+      "durationMs": 1845,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 source:gallery\n> node tools/build_source_candidate_gallery.mjs\n\n{\n  \"outDir\": \"/mnt/nxt-dev/water9/public/review/source-candidates\",\n  \"candidates\": 20,\n  \"approved\": 0,\n  \"thumbnails\": 1,\n  \"rejectedAttempts\": 6\n}",
+      "stderrTail": ""
+    },
+    {
+      "label": "npm run content:acceptance-audit -- --id brine-crown",
+      "startedAt": "2026-06-17T01:39:12.652Z",
+      "durationMs": 146,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 content:acceptance-audit\n> node tools/content_acceptance_audit.mjs --id brine-crown\n\n{\n  \"id\": \"brine-crown\",\n  \"stage\": \"human-source-review-needed\",\n  \"jsonOut\": \"/mnt/nxt-dev/water9/public/review/content-acceptance-audit.json\",\n  \"markdownOut\": \"/mnt/nxt-dev/water9/public/review/content-acceptance-audit.md\",\n  \"sourceBlockers\": 0,\n  \"threatBlockers\": 1,\n  \"sourceWarnings\": 1,\n  \"threatWarnings\": 1\n}",
+      "stderrTail": ""
+    },
+    {
+      "label": "npm run content:exemplar-pack -- --id brine-crown",
+      "startedAt": "2026-06-17T01:39:12.798Z",
+      "durationMs": 143,
+      "exitCode": 0,
+      "ok": true,
+      "stdoutTail": "> aqua@1.0.0 content:exemplar-pack\n> node tools/build_content_exemplar_pack.mjs --id brine-crown\n\n{\n  \"id\": \"brine-crown\",\n  \"jsonOut\": \"/mnt/nxt-dev/water9/public/review/exemplar-packs/brine-crown.json\",\n  \"markdownOut\": \"/mnt/nxt-dev/water9/public/review/exemplar-packs/brine-crown.md\",\n  \"sourceApproved\": false,\n  \"threatAccepted\": false,\n  \"blockers\": 2,\n  \"readyForStrictGate\": false\n}",
+      "stderrTail": ""
+    }
+  ],
+  "artifacts": {
+    "visualReport": "tools/scratch/quick-review-brine-crown-visual-report.json",
+    "visualOutDir": "tools/scratch/quick-review-brine-crown-visuals",
+    "acceptanceAudit": "public/review/content-acceptance-audit.md",
+    "exemplarPack": "public/review/exemplar-packs/brine-crown.md"
+  },
+  "exemplarSummary": {
+    "readyForStrictGate": false,
+    "blockers": [
+      "source candidate brine-crown is not human-approved",
+      "brine-crown is not accepted by the strict threat gate"
+    ],
+    "sourceApproved": false,
+    "threatAccepted": false
+  },
+  "ok": true
+}

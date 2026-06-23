@@ -1,0 +1,749 @@
+{
+  "schema": "water9/content-plan-coverage@1",
+  "generatedAt": "2026-06-18T17:06:59.784Z",
+  "generatedFrom": {
+    "candidates": "/mnt/nxt-dev/water9/public/review/source-candidates/source-candidates.json",
+    "runtimeCoverage": "/mnt/nxt-dev/water9/public/review/content-runtime-coverage.json",
+    "acceptanceRunway": "/mnt/nxt-dev/water9/public/review/content-acceptance-runway.json"
+  },
+  "summary": {
+    "candidates": 20,
+    "sourceImages": 20,
+    "approvedSources": 0,
+    "planArtifacts": 20,
+    "planPreviews": 20,
+    "missingPlanArtifacts": 0,
+    "missingPlanPreviews": 0,
+    "runtimeRegistered": 20,
+    "acceptedThreats": 0
+  },
+  "commands": {
+    "mechanicalPrepareMissing": "",
+    "planCheckExisting": "npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/black-coral-gate-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/vent-claw-yeti-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/coronate-sting-crown-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/razor-kelp-harp-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/gulper-eel-maw-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/saber-viperfish-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json && npm run articulated:plan-check -- --plan tools/scratch/reef-lion-moray-starter-plan.json",
+    "productionPrepareApproved": ""
+  },
+  "missingPlanIds": [],
+  "missingPlanPreviewIds": [],
+  "items": [
+    {
+      "id": "brine-crown",
+      "species": "Brine Crown",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-brine-crown-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "brine-crown",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/brine-crown-starter-plan.json",
+      "planPreview": "public/review/articulated/brine-crown-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/brine-crown-starter-plan.json",
+          "exists": true,
+          "bytes": 6572,
+          "mtimeMs": 1781652764249
+        },
+        "planPreview": {
+          "path": "public/review/articulated/brine-crown-plan-preview.png",
+          "exists": true,
+          "bytes": 2038863,
+          "mtimeMs": 1781652765148
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id brine-crown",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id brine-crown --plan tools/scratch/brine-crown-starter-plan.json --preview public/review/articulated/brine-crown-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id brine-crown --plan tools/scratch/brine-crown-starter-plan.json --preview public/review/articulated/brine-crown-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/brine-crown-starter-plan.json --out public/review/articulated/brine-crown-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/brine-crown-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "glass-sponge-sentinel",
+      "species": "Glass Sponge Sentinel",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-glass-sponge-sentinel-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "glass-sponge-sentinel",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/glass-sponge-sentinel-starter-plan.json",
+      "planPreview": "public/review/articulated/glass-sponge-sentinel-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/glass-sponge-sentinel-starter-plan.json",
+          "exists": true,
+          "bytes": 6614,
+          "mtimeMs": 1781729970969
+        },
+        "planPreview": {
+          "path": "public/review/articulated/glass-sponge-sentinel-plan-preview.png",
+          "exists": true,
+          "bytes": 246081,
+          "mtimeMs": 1781729971252
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id glass-sponge-sentinel",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id glass-sponge-sentinel --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --preview public/review/articulated/glass-sponge-sentinel-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id glass-sponge-sentinel --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --preview public/review/articulated/glass-sponge-sentinel-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --out public/review/articulated/glass-sponge-sentinel-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "black-coral-gate",
+      "species": "Black Coral Gate",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-black-coral-gate-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "black-coral-gate",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/black-coral-gate-starter-plan.json",
+      "planPreview": "public/review/articulated/black-coral-gate-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/black-coral-gate-starter-plan.json",
+          "exists": true,
+          "bytes": 6600,
+          "mtimeMs": 1781790860329
+        },
+        "planPreview": {
+          "path": "public/review/articulated/black-coral-gate-plan-preview.png",
+          "exists": true,
+          "bytes": 453048,
+          "mtimeMs": 1781729971802
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id black-coral-gate",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id black-coral-gate --plan tools/scratch/black-coral-gate-starter-plan.json --preview public/review/articulated/black-coral-gate-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id black-coral-gate --plan tools/scratch/black-coral-gate-starter-plan.json --preview public/review/articulated/black-coral-gate-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/black-coral-gate-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/black-coral-gate-starter-plan.json --out public/review/articulated/black-coral-gate-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/black-coral-gate-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "reliquary-siphonophore",
+      "species": "Reliquary Siphonophore",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-reliquary-siphonophore-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "reliquary-siphonophore",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/reliquary-siphonophore-starter-plan.json",
+      "planPreview": "public/review/articulated/reliquary-siphonophore-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/reliquary-siphonophore-starter-plan.json",
+          "exists": true,
+          "bytes": 6633,
+          "mtimeMs": 1781729971135
+        },
+        "planPreview": {
+          "path": "public/review/articulated/reliquary-siphonophore-plan-preview.png",
+          "exists": true,
+          "bytes": 289434,
+          "mtimeMs": 1781729971462
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id reliquary-siphonophore",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id reliquary-siphonophore --plan tools/scratch/reliquary-siphonophore-starter-plan.json --preview public/review/articulated/reliquary-siphonophore-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id reliquary-siphonophore --plan tools/scratch/reliquary-siphonophore-starter-plan.json --preview public/review/articulated/reliquary-siphonophore-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --out public/review/articulated/reliquary-siphonophore-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "hadal-trencher-isopod",
+      "species": "Hadal Trencher Isopod",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "hadal-trencher-isopod",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/hadal-trencher-isopod-starter-plan.json",
+      "planPreview": "public/review/articulated/hadal-trencher-isopod-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/hadal-trencher-isopod-starter-plan.json",
+          "exists": true,
+          "bytes": 6624,
+          "mtimeMs": 1781729971156
+        },
+        "planPreview": {
+          "path": "public/review/articulated/hadal-trencher-isopod-plan-preview.png",
+          "exists": true,
+          "bytes": 1145140,
+          "mtimeMs": 1781729971760
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id hadal-trencher-isopod",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id hadal-trencher-isopod --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --preview public/review/articulated/hadal-trencher-isopod-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id hadal-trencher-isopod --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --preview public/review/articulated/hadal-trencher-isopod-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --out public/review/articulated/hadal-trencher-isopod-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "vent-claw-yeti",
+      "species": "Vent-Claw Yeti",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-vent-claw-yeti-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "vent-claw-yeti",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/vent-claw-yeti-starter-plan.json",
+      "planPreview": "public/review/articulated/vent-claw-yeti-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/vent-claw-yeti-starter-plan.json",
+          "exists": true,
+          "bytes": 6716,
+          "mtimeMs": 1781748199939
+        },
+        "planPreview": {
+          "path": "public/review/articulated/vent-claw-yeti-plan-preview.png",
+          "exists": true,
+          "bytes": 278666,
+          "mtimeMs": 1781729971582
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id vent-claw-yeti",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id vent-claw-yeti --plan tools/scratch/vent-claw-yeti-starter-plan.json --preview public/review/articulated/vent-claw-yeti-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id vent-claw-yeti --plan tools/scratch/vent-claw-yeti-starter-plan.json --preview public/review/articulated/vent-claw-yeti-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/vent-claw-yeti-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --out public/review/articulated/vent-claw-yeti-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "abyssal-lantern-mantis",
+      "species": "Abyssal Lantern Mantis",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "abyssal-lantern-mantis",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/abyssal-lantern-mantis-starter-plan.json",
+      "planPreview": "public/review/articulated/abyssal-lantern-mantis-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/abyssal-lantern-mantis-starter-plan.json",
+          "exists": true,
+          "bytes": 6629,
+          "mtimeMs": 1781729971244
+        },
+        "planPreview": {
+          "path": "public/review/articulated/abyssal-lantern-mantis-plan-preview.png",
+          "exists": true,
+          "bytes": 288883,
+          "mtimeMs": 1781729971568
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id abyssal-lantern-mantis",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id abyssal-lantern-mantis --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --preview public/review/articulated/abyssal-lantern-mantis-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id abyssal-lantern-mantis --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --preview public/review/articulated/abyssal-lantern-mantis-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --out public/review/articulated/abyssal-lantern-mantis-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "trench-harvest-sea-spider",
+      "species": "Trench Harvest Sea Spider",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "trench-harvest-sea-spider",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/trench-harvest-sea-spider-starter-plan.json",
+      "planPreview": "public/review/articulated/trench-harvest-sea-spider-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/trench-harvest-sea-spider-starter-plan.json",
+          "exists": true,
+          "bytes": 6786,
+          "mtimeMs": 1781748204584
+        },
+        "planPreview": {
+          "path": "public/review/articulated/trench-harvest-sea-spider-plan-preview.png",
+          "exists": true,
+          "bytes": 286423,
+          "mtimeMs": 1781730680761
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id trench-harvest-sea-spider",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id trench-harvest-sea-spider --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --preview public/review/articulated/trench-harvest-sea-spider-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id trench-harvest-sea-spider --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --preview public/review/articulated/trench-harvest-sea-spider-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --out public/review/articulated/trench-harvest-sea-spider-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "coronate-sting-crown",
+      "species": "Coronate Sting Crown",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-coronate-sting-crown-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "coronate-sting-crown",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/coronate-sting-crown-starter-plan.json",
+      "planPreview": "public/review/articulated/coronate-sting-crown-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/coronate-sting-crown-starter-plan.json",
+          "exists": true,
+          "bytes": 6621,
+          "mtimeMs": 1781730680476
+        },
+        "planPreview": {
+          "path": "public/review/articulated/coronate-sting-crown-plan-preview.png",
+          "exists": true,
+          "bytes": 354958,
+          "mtimeMs": 1781730680872
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id coronate-sting-crown",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id coronate-sting-crown --plan tools/scratch/coronate-sting-crown-starter-plan.json --preview public/review/articulated/coronate-sting-crown-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id coronate-sting-crown --plan tools/scratch/coronate-sting-crown-starter-plan.json --preview public/review/articulated/coronate-sting-crown-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/coronate-sting-crown-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --out public/review/articulated/coronate-sting-crown-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "chain-vein-siphonophore",
+      "species": "Chain Vein Siphonophore",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "chain-vein-siphonophore",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/chain-vein-siphonophore-starter-plan.json",
+      "planPreview": "public/review/articulated/chain-vein-siphonophore-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/chain-vein-siphonophore-starter-plan.json",
+          "exists": true,
+          "bytes": 6777,
+          "mtimeMs": 1781748209846
+        },
+        "planPreview": {
+          "path": "public/review/articulated/chain-vein-siphonophore-plan-preview.png",
+          "exists": true,
+          "bytes": 275117,
+          "mtimeMs": 1781730680952
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id chain-vein-siphonophore",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id chain-vein-siphonophore --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --preview public/review/articulated/chain-vein-siphonophore-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id chain-vein-siphonophore --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --preview public/review/articulated/chain-vein-siphonophore-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --out public/review/articulated/chain-vein-siphonophore-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "vampire-cloak-squid",
+      "species": "Vampire Cloak Squid",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-vampire-cloak-squid-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "vampire-cloak-squid",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/vampire-cloak-squid-starter-plan.json",
+      "planPreview": "public/review/articulated/vampire-cloak-squid-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/vampire-cloak-squid-starter-plan.json",
+          "exists": true,
+          "bytes": 6609,
+          "mtimeMs": 1781791310957
+        },
+        "planPreview": {
+          "path": "public/review/articulated/vampire-cloak-squid-plan-preview.png",
+          "exists": true,
+          "bytes": 1120445,
+          "mtimeMs": 1781730681199
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id vampire-cloak-squid",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id vampire-cloak-squid --plan tools/scratch/vampire-cloak-squid-starter-plan.json --preview public/review/articulated/vampire-cloak-squid-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id vampire-cloak-squid --plan tools/scratch/vampire-cloak-squid-starter-plan.json --preview public/review/articulated/vampire-cloak-squid-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --out public/review/articulated/vampire-cloak-squid-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "predatory-tunicate-maw",
+      "species": "Predatory Tunicate Maw",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "predatory-tunicate-maw",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/predatory-tunicate-maw-starter-plan.json",
+      "planPreview": "public/review/articulated/predatory-tunicate-maw-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/predatory-tunicate-maw-starter-plan.json",
+          "exists": true,
+          "bytes": 6767,
+          "mtimeMs": 1781748215615
+        },
+        "planPreview": {
+          "path": "public/review/articulated/predatory-tunicate-maw-plan-preview.png",
+          "exists": true,
+          "bytes": 996773,
+          "mtimeMs": 1781730696843
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id predatory-tunicate-maw",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id predatory-tunicate-maw --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --preview public/review/articulated/predatory-tunicate-maw-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id predatory-tunicate-maw --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --preview public/review/articulated/predatory-tunicate-maw-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --out public/review/articulated/predatory-tunicate-maw-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "razor-kelp-harp",
+      "species": "Razor Kelp Harp",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-razor-kelp-harp-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "razor-kelp-harp",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/razor-kelp-harp-starter-plan.json",
+      "planPreview": "public/review/articulated/razor-kelp-harp-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/razor-kelp-harp-starter-plan.json",
+          "exists": true,
+          "bytes": 6594,
+          "mtimeMs": 1781730696471
+        },
+        "planPreview": {
+          "path": "public/review/articulated/razor-kelp-harp-plan-preview.png",
+          "exists": true,
+          "bytes": 382747,
+          "mtimeMs": 1781730696838
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id razor-kelp-harp",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id razor-kelp-harp --plan tools/scratch/razor-kelp-harp-starter-plan.json --preview public/review/articulated/razor-kelp-harp-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id razor-kelp-harp --plan tools/scratch/razor-kelp-harp-starter-plan.json --preview public/review/articulated/razor-kelp-harp-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/razor-kelp-harp-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --out public/review/articulated/razor-kelp-harp-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "lantern-anemone-pit",
+      "species": "Lantern Anemone Pit",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-lantern-anemone-pit-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "lantern-anemone-pit",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/lantern-anemone-pit-starter-plan.json",
+      "planPreview": "public/review/articulated/lantern-anemone-pit-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/lantern-anemone-pit-starter-plan.json",
+          "exists": true,
+          "bytes": 6602,
+          "mtimeMs": 1781730696638
+        },
+        "planPreview": {
+          "path": "public/review/articulated/lantern-anemone-pit-plan-preview.png",
+          "exists": true,
+          "bytes": 272120,
+          "mtimeMs": 1781730696939
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id lantern-anemone-pit",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id lantern-anemone-pit --plan tools/scratch/lantern-anemone-pit-starter-plan.json --preview public/review/articulated/lantern-anemone-pit-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id lantern-anemone-pit --plan tools/scratch/lantern-anemone-pit-starter-plan.json --preview public/review/articulated/lantern-anemone-pit-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --out public/review/articulated/lantern-anemone-pit-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "brine-mycelium-shelf",
+      "species": "Brine Mycelium Shelf",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "brine-mycelium-shelf",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/brine-mycelium-shelf-starter-plan.json",
+      "planPreview": "public/review/articulated/brine-mycelium-shelf-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/brine-mycelium-shelf-starter-plan.json",
+          "exists": true,
+          "bytes": 6615,
+          "mtimeMs": 1781730696589
+        },
+        "planPreview": {
+          "path": "public/review/articulated/brine-mycelium-shelf-plan-preview.png",
+          "exists": true,
+          "bytes": 361121,
+          "mtimeMs": 1781730696961
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id brine-mycelium-shelf",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id brine-mycelium-shelf --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --preview public/review/articulated/brine-mycelium-shelf-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id brine-mycelium-shelf --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --preview public/review/articulated/brine-mycelium-shelf-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --out public/review/articulated/brine-mycelium-shelf-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "thorn-fan-coralline",
+      "species": "Thorn Fan Coralline",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-thorn-fan-coralline-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "thorn-fan-coralline",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/thorn-fan-coralline-starter-plan.json",
+      "planPreview": "public/review/articulated/thorn-fan-coralline-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/thorn-fan-coralline-starter-plan.json",
+          "exists": true,
+          "bytes": 6618,
+          "mtimeMs": 1781730712524
+        },
+        "planPreview": {
+          "path": "public/review/articulated/thorn-fan-coralline-plan-preview.png",
+          "exists": true,
+          "bytes": 511972,
+          "mtimeMs": 1781730712942
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id thorn-fan-coralline",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id thorn-fan-coralline --plan tools/scratch/thorn-fan-coralline-starter-plan.json --preview public/review/articulated/thorn-fan-coralline-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id thorn-fan-coralline --plan tools/scratch/thorn-fan-coralline-starter-plan.json --preview public/review/articulated/thorn-fan-coralline-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --out public/review/articulated/thorn-fan-coralline-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-gulper-eel-maw-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "gulper-eel-maw",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/gulper-eel-maw-starter-plan.json",
+      "planPreview": "public/review/articulated/gulper-eel-maw-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/gulper-eel-maw-starter-plan.json",
+          "exists": true,
+          "bytes": 6706,
+          "mtimeMs": 1781791300921
+        },
+        "planPreview": {
+          "path": "public/review/articulated/gulper-eel-maw-plan-preview.png",
+          "exists": true,
+          "bytes": 120342,
+          "mtimeMs": 1781730713192
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id gulper-eel-maw",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id gulper-eel-maw --plan tools/scratch/gulper-eel-maw-starter-plan.json --preview public/review/articulated/gulper-eel-maw-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id gulper-eel-maw --plan tools/scratch/gulper-eel-maw-starter-plan.json --preview public/review/articulated/gulper-eel-maw-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/gulper-eel-maw-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --out public/review/articulated/gulper-eel-maw-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "saber-viperfish",
+      "species": "Saber Viperfish",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-saber-viperfish-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "saber-viperfish",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/saber-viperfish-starter-plan.json",
+      "planPreview": "public/review/articulated/saber-viperfish-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/saber-viperfish-starter-plan.json",
+          "exists": true,
+          "bytes": 6588,
+          "mtimeMs": 1781730713074
+        },
+        "planPreview": {
+          "path": "public/review/articulated/saber-viperfish-plan-preview.png",
+          "exists": true,
+          "bytes": 632986,
+          "mtimeMs": 1781730713373
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id saber-viperfish",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id saber-viperfish --plan tools/scratch/saber-viperfish-starter-plan.json --preview public/review/articulated/saber-viperfish-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id saber-viperfish --plan tools/scratch/saber-viperfish-starter-plan.json --preview public/review/articulated/saber-viperfish-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/saber-viperfish-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/saber-viperfish-starter-plan.json --out public/review/articulated/saber-viperfish-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/saber-viperfish-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "tripod-stilt-stalker",
+      "species": "Tripod Stilt Stalker",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "tripod-stilt-stalker",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/tripod-stilt-stalker-starter-plan.json",
+      "planPreview": "public/review/articulated/tripod-stilt-stalker-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/tripod-stilt-stalker-starter-plan.json",
+          "exists": true,
+          "bytes": 6758,
+          "mtimeMs": 1781748225818
+        },
+        "planPreview": {
+          "path": "public/review/articulated/tripod-stilt-stalker-plan-preview.png",
+          "exists": true,
+          "bytes": 202999,
+          "mtimeMs": 1781730713449
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id tripod-stilt-stalker",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id tripod-stilt-stalker --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --preview public/review/articulated/tripod-stilt-stalker-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id tripod-stilt-stalker --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --preview public/review/articulated/tripod-stilt-stalker-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --out public/review/articulated/tripod-stilt-stalker-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual"
+      }
+    },
+    {
+      "id": "reef-lion-moray",
+      "species": "Reef Lion Moray",
+      "hasSource": true,
+      "source": "public/assets/generated/fauna-reef-lion-moray-whole-source.png",
+      "sourceApproved": false,
+      "runtimeRegistered": true,
+      "runtimeId": "reef-lion-moray",
+      "accepted": false,
+      "stage": "prototype-needs-approved-source",
+      "plan": "tools/scratch/reef-lion-moray-starter-plan.json",
+      "planPreview": "public/review/articulated/reef-lion-moray-plan-preview.png",
+      "artifacts": {
+        "plan": {
+          "path": "tools/scratch/reef-lion-moray-starter-plan.json",
+          "exists": true,
+          "bytes": 6582,
+          "mtimeMs": 1781730713170
+        },
+        "planPreview": {
+          "path": "public/review/articulated/reef-lion-moray-plan-preview.png",
+          "exists": true,
+          "bytes": 203188,
+          "mtimeMs": 1781730713456
+        }
+      },
+      "commands": {
+        "sourceReview": "npm run source:review-queue:preview -- --id reef-lion-moray",
+        "mechanicalPrepare": "npm run articulated:prepare-plan -- --id reef-lion-moray --plan tools/scratch/reef-lion-moray-starter-plan.json --preview public/review/articulated/reef-lion-moray-plan-preview.png --allow-unapproved",
+        "productionPrepare": "npm run articulated:prepare-plan -- --id reef-lion-moray --plan tools/scratch/reef-lion-moray-starter-plan.json --preview public/review/articulated/reef-lion-moray-plan-preview.png",
+        "planCheck": "npm run articulated:plan-check -- --plan tools/scratch/reef-lion-moray-starter-plan.json",
+        "planPreview": "npm run articulated:plan-preview -- --plan tools/scratch/reef-lion-moray-starter-plan.json --out public/review/articulated/reef-lion-moray-plan-preview.png",
+        "extractDryRun": "npm run articulated:extract-plan -- --plan tools/scratch/reef-lion-moray-starter-plan.json --dry-run",
+        "runtimePreview": "npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual"
+      }
+    }
+  ]
+}

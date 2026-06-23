@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Cohesion Review</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#29444b; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; --warn:#e7bd6d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1440px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:14px 0 8px; color:var(--muted); font-size:13px; text-transform:uppercase; }
+    p { color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .summary, .badges { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .summary span, .badges span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    strong { color:var(--text); }
+    .policy, .checks, .card { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; }
+    .checks ul { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:8px; padding:0; margin:0; list-style:none; }
+    .checks li { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:10px; }
+    .checks code, .checks span { display:block; margin-top:4px; color:var(--muted); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(430px,1fr)); gap:14px; align-items:start; margin-top:14px; }
+    .card header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    .media { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:12px 0; }
+    .image { display:flex; min-height:120px; flex-direction:column; justify-content:space-between; border:1px solid var(--line); background:#050b0d; overflow:hidden; }
+    .image img { width:100%; height:120px; object-fit:contain; background:#050b0d; }
+    .image span { padding:6px; color:var(--muted); font-size:12px; }
+    .missing { align-items:center; justify-content:center; color:var(--warn); }
+    .warning { color:var(--warn); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Source Cohesion Review</h1>
+    <p>Prototype-vs-production boundary for generated source art. Automation packages evidence; only a human can approve cohesion.</p>
+    <div class="summary">
+      <span>candidates <strong>20</strong></span>
+      <span>ready <strong>20</strong></span>
+      <span>human approved <strong>0</strong></span>
+      <span>prototype locked <strong>20</strong></span>
+      <span>evidence complete <strong>20</strong></span>
+    </div>
+    <section class="policy">
+      <h2>Policy</h2>
+      <p>Prototype screenshots do not count toward the strict 20-threat gate. A passing sandbox preview is evidence, not approval. Production rigging requires human source approval with specific cohesion notes.</p>
+      <pre><code>npm run source:cohesion-review &amp;&amp; npm run source:cohesion-review-check
+npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check</code></pre>
+    </section>
+    <section class="checks">
+      <h2>Cohesion-First Principles</h2>
+      <ul><li><strong>Full-source concept first</strong><code>full-source-concept-first</code><span>Approve the creature only after the intact source image reads as one coherent animal or organism before any limbs, parts, or animation frames are extracted.</span></li>
+<li><strong>Mechanical rig preview is not art approval</strong><code>mechanical-preview-is-not-art-approval</code><span>A sandbox screenshot, contact sheet, or working articulation proves technical readiness only; it cannot rescue source art that lacks a unified silhouette, anatomy, palette, and material language.</span></li>
+<li><strong>Reject placeholder cohesion</strong><code>reject-placeholder-cohesion</code><span>If the design reads as placeholder parts, unrelated pasted fragments, or a proof-of-concept assembly, reject it for regeneration rather than promoting it into the 20-threat gate.</span></li></ul>
+    </section>
+    <section class="checks">
+      <h2>Required Cohesion Checks</h2>
+      <ul><li><strong>Whole creature cohesion</strong><code>whole-creature-cohesion</code><span>The image reads as one designed organism, not a bundle of unrelated shapes.</span></li>
+<li><strong>Part continuity cohesion</strong><code>part-continuity-cohesion</code><span>Limbs, joints, materials, lighting, and proportions remain continuous across riggable parts.</span></li>
+<li><strong>Readable silhouette</strong><code>readable-silhouette</code><span>The creature is identifiable at gameplay scale and has a clear attack profile.</span></li>
+<li><strong>No collage artifacts</strong><code>no-collage-artifacts</code><span>No pasted, mismatched, duplicate, or style-inconsistent fragments are visible.</span></li>
+<li><strong>Non-placeholder art direction</strong><code>non-placeholder-art-direction</code><span>The art looks like production source material, not a temporary technical prototype.</span></li>
+<li><strong>Clean magenta key</strong><code>clean-magenta-key</code><span>The pure magenta background can be removed without white/dark halos or lost anatomy.</span></li>
+<li><strong>Neutral riggable pose</strong><code>neutral-riggable-pose</code><span>The pose exposes pivots, attack parts, and crop-safe margins for articulation.</span></li></ul>
+    </section>
+    <section class="grid"><article class="card" id="brine-crown" data-source-cohesion-candidate="brine-crown">
+    <header>
+      <div><h2>Brine Crown</h2><code>brine-crown</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-brine-crown-whole-source.png"><img src="/assets/generated/fauna-brine-crown-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/brine-crown-key-preview.png"><img src="/review/source-candidates/key-previews/brine-crown-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/brine-crown-source-preview.png"><img src="/review/source-candidates/quick-reviews/brine-crown-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/brine-crown-plan-preview.png"><img src="/review/articulated/brine-crown-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id brine-crown
+npm run source:approval-runway:preview -- --id brine-crown
+npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual
+npm run source:accept -- --id brine-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id brine-crown --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="glass-sponge-sentinel" data-source-cohesion-candidate="glass-sponge-sentinel">
+    <header>
+      <div><h2>Glass Sponge Sentinel</h2><code>glass-sponge-sentinel</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-glass-sponge-sentinel-whole-source.png"><img src="/assets/generated/fauna-glass-sponge-sentinel-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/glass-sponge-sentinel-key-preview.png"><img src="/review/source-candidates/key-previews/glass-sponge-sentinel-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/glass-sponge-sentinel-source-preview.png"><img src="/review/source-candidates/quick-reviews/glass-sponge-sentinel-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/glass-sponge-sentinel-plan-preview.png"><img src="/review/articulated/glass-sponge-sentinel-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id glass-sponge-sentinel
+npm run source:approval-runway:preview -- --id glass-sponge-sentinel
+npm run sandbox:preview -- --id glass-sponge-sentinel --kind source --serve --open --visual
+npm run source:accept -- --id glass-sponge-sentinel --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id glass-sponge-sentinel --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="black-coral-gate" data-source-cohesion-candidate="black-coral-gate">
+    <header>
+      <div><h2>Black Coral Gate</h2><code>black-coral-gate</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-black-coral-gate-whole-source.png"><img src="/assets/generated/fauna-black-coral-gate-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/black-coral-gate-key-preview.png"><img src="/review/source-candidates/key-previews/black-coral-gate-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png"><img src="/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/black-coral-gate-plan-preview.png"><img src="/review/articulated/black-coral-gate-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id black-coral-gate
+npm run source:approval-runway:preview -- --id black-coral-gate
+npm run sandbox:preview -- --id black-coral-gate --kind source --serve --open --visual
+npm run source:accept -- --id black-coral-gate --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id black-coral-gate --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="reliquary-siphonophore" data-source-cohesion-candidate="reliquary-siphonophore">
+    <header>
+      <div><h2>Reliquary Siphonophore</h2><code>reliquary-siphonophore</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-reliquary-siphonophore-whole-source.png"><img src="/assets/generated/fauna-reliquary-siphonophore-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/reliquary-siphonophore-key-preview.png"><img src="/review/source-candidates/key-previews/reliquary-siphonophore-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/reliquary-siphonophore-source-preview.png"><img src="/review/source-candidates/quick-reviews/reliquary-siphonophore-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/reliquary-siphonophore-plan-preview.png"><img src="/review/articulated/reliquary-siphonophore-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id reliquary-siphonophore
+npm run source:approval-runway:preview -- --id reliquary-siphonophore
+npm run sandbox:preview -- --id reliquary-siphonophore --kind source --serve --open --visual
+npm run source:accept -- --id reliquary-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id reliquary-siphonophore --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="hadal-trencher-isopod" data-source-cohesion-candidate="hadal-trencher-isopod">
+    <header>
+      <div><h2>Hadal Trencher Isopod</h2><code>hadal-trencher-isopod</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-hadal-trencher-isopod-whole-source.png"><img src="/assets/generated/fauna-hadal-trencher-isopod-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/hadal-trencher-isopod-key-preview.png"><img src="/review/source-candidates/key-previews/hadal-trencher-isopod-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/hadal-trencher-isopod-source-preview.png"><img src="/review/source-candidates/quick-reviews/hadal-trencher-isopod-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/hadal-trencher-isopod-plan-preview.png"><img src="/review/articulated/hadal-trencher-isopod-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id hadal-trencher-isopod
+npm run source:approval-runway:preview -- --id hadal-trencher-isopod
+npm run sandbox:preview -- --id hadal-trencher-isopod --kind source --serve --open --visual
+npm run source:accept -- --id hadal-trencher-isopod --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id hadal-trencher-isopod --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="vent-claw-yeti" data-source-cohesion-candidate="vent-claw-yeti">
+    <header>
+      <div><h2>Vent-Claw Yeti</h2><code>vent-claw-yeti</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-vent-claw-yeti-whole-source.png"><img src="/assets/generated/fauna-vent-claw-yeti-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png"><img src="/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png"><img src="/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/vent-claw-yeti-plan-preview.png"><img src="/review/articulated/vent-claw-yeti-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id vent-claw-yeti
+npm run source:approval-runway:preview -- --id vent-claw-yeti
+npm run sandbox:preview -- --id vent-claw-yeti --kind source --serve --open --visual
+npm run source:accept -- --id vent-claw-yeti --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id vent-claw-yeti --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="abyssal-lantern-mantis" data-source-cohesion-candidate="abyssal-lantern-mantis">
+    <header>
+      <div><h2>Abyssal Lantern Mantis</h2><code>abyssal-lantern-mantis</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png"><img src="/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/abyssal-lantern-mantis-key-preview.png"><img src="/review/source-candidates/key-previews/abyssal-lantern-mantis-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/abyssal-lantern-mantis-source-preview.png"><img src="/review/source-candidates/quick-reviews/abyssal-lantern-mantis-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/abyssal-lantern-mantis-plan-preview.png"><img src="/review/articulated/abyssal-lantern-mantis-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id abyssal-lantern-mantis
+npm run source:approval-runway:preview -- --id abyssal-lantern-mantis
+npm run sandbox:preview -- --id abyssal-lantern-mantis --kind source --serve --open --visual
+npm run source:accept -- --id abyssal-lantern-mantis --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id abyssal-lantern-mantis --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="trench-harvest-sea-spider" data-source-cohesion-candidate="trench-harvest-sea-spider">
+    <header>
+      <div><h2>Trench Harvest Sea Spider</h2><code>trench-harvest-sea-spider</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png"><img src="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/trench-harvest-sea-spider-key-preview.png"><img src="/review/source-candidates/key-previews/trench-harvest-sea-spider-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/trench-harvest-sea-spider-source-preview.png"><img src="/review/source-candidates/quick-reviews/trench-harvest-sea-spider-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/trench-harvest-sea-spider-plan-preview.png"><img src="/review/articulated/trench-harvest-sea-spider-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id trench-harvest-sea-spider
+npm run source:approval-runway:preview -- --id trench-harvest-sea-spider
+npm run sandbox:preview -- --id trench-harvest-sea-spider --kind source --serve --open --visual
+npm run source:accept -- --id trench-harvest-sea-spider --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id trench-harvest-sea-spider --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="coronate-sting-crown" data-source-cohesion-candidate="coronate-sting-crown">
+    <header>
+      <div><h2>Coronate Sting Crown</h2><code>coronate-sting-crown</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-coronate-sting-crown-whole-source.png"><img src="/assets/generated/fauna-coronate-sting-crown-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/coronate-sting-crown-key-preview.png"><img src="/review/source-candidates/key-previews/coronate-sting-crown-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/coronate-sting-crown-source-preview.png"><img src="/review/source-candidates/quick-reviews/coronate-sting-crown-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/coronate-sting-crown-plan-preview.png"><img src="/review/articulated/coronate-sting-crown-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id coronate-sting-crown
+npm run source:approval-runway:preview -- --id coronate-sting-crown
+npm run sandbox:preview -- --id coronate-sting-crown --kind source --serve --open --visual
+npm run source:accept -- --id coronate-sting-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id coronate-sting-crown --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="chain-vein-siphonophore" data-source-cohesion-candidate="chain-vein-siphonophore">
+    <header>
+      <div><h2>Chain Vein Siphonophore</h2><code>chain-vein-siphonophore</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png"><img src="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/chain-vein-siphonophore-key-preview.png"><img src="/review/source-candidates/key-previews/chain-vein-siphonophore-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/chain-vein-siphonophore-source-preview.png"><img src="/review/source-candidates/quick-reviews/chain-vein-siphonophore-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/chain-vein-siphonophore-plan-preview.png"><img src="/review/articulated/chain-vein-siphonophore-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id chain-vein-siphonophore
+npm run source:approval-runway:preview -- --id chain-vein-siphonophore
+npm run sandbox:preview -- --id chain-vein-siphonophore --kind source --serve --open --visual
+npm run source:accept -- --id chain-vein-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id chain-vein-siphonophore --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="vampire-cloak-squid" data-source-cohesion-candidate="vampire-cloak-squid">
+    <header>
+      <div><h2>Vampire Cloak Squid</h2><code>vampire-cloak-squid</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-vampire-cloak-squid-whole-source.png"><img src="/assets/generated/fauna-vampire-cloak-squid-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/vampire-cloak-squid-key-preview.png"><img src="/review/source-candidates/key-previews/vampire-cloak-squid-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/vampire-cloak-squid-source-preview.png"><img src="/review/source-candidates/quick-reviews/vampire-cloak-squid-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/vampire-cloak-squid-plan-preview.png"><img src="/review/articulated/vampire-cloak-squid-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id vampire-cloak-squid
+npm run source:approval-runway:preview -- --id vampire-cloak-squid
+npm run sandbox:preview -- --id vampire-cloak-squid --kind source --serve --open --visual
+npm run source:accept -- --id vampire-cloak-squid --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id vampire-cloak-squid --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="predatory-tunicate-maw" data-source-cohesion-candidate="predatory-tunicate-maw">
+    <header>
+      <div><h2>Predatory Tunicate Maw</h2><code>predatory-tunicate-maw</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png"><img src="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/predatory-tunicate-maw-key-preview.png"><img src="/review/source-candidates/key-previews/predatory-tunicate-maw-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/predatory-tunicate-maw-source-preview.png"><img src="/review/source-candidates/quick-reviews/predatory-tunicate-maw-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/predatory-tunicate-maw-plan-preview.png"><img src="/review/articulated/predatory-tunicate-maw-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id predatory-tunicate-maw
+npm run source:approval-runway:preview -- --id predatory-tunicate-maw
+npm run sandbox:preview -- --id predatory-tunicate-maw --kind source --serve --open --visual
+npm run source:accept -- --id predatory-tunicate-maw --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id predatory-tunicate-maw --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="razor-kelp-harp" data-source-cohesion-candidate="razor-kelp-harp">
+    <header>
+      <div><h2>Razor Kelp Harp</h2><code>razor-kelp-harp</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-razor-kelp-harp-whole-source.png"><img src="/assets/generated/fauna-razor-kelp-harp-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/razor-kelp-harp-key-preview.png"><img src="/review/source-candidates/key-previews/razor-kelp-harp-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/razor-kelp-harp-source-preview.png"><img src="/review/source-candidates/quick-reviews/razor-kelp-harp-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/razor-kelp-harp-plan-preview.png"><img src="/review/articulated/razor-kelp-harp-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id razor-kelp-harp
+npm run source:approval-runway:preview -- --id razor-kelp-harp
+npm run sandbox:preview -- --id razor-kelp-harp --kind source --serve --open --visual
+npm run source:accept -- --id razor-kelp-harp --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id razor-kelp-harp --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="lantern-anemone-pit" data-source-cohesion-candidate="lantern-anemone-pit">
+    <header>
+      <div><h2>Lantern Anemone Pit</h2><code>lantern-anemone-pit</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-lantern-anemone-pit-whole-source.png"><img src="/assets/generated/fauna-lantern-anemone-pit-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/lantern-anemone-pit-key-preview.png"><img src="/review/source-candidates/key-previews/lantern-anemone-pit-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/lantern-anemone-pit-source-preview.png"><img src="/review/source-candidates/quick-reviews/lantern-anemone-pit-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/lantern-anemone-pit-plan-preview.png"><img src="/review/articulated/lantern-anemone-pit-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id lantern-anemone-pit
+npm run source:approval-runway:preview -- --id lantern-anemone-pit
+npm run sandbox:preview -- --id lantern-anemone-pit --kind source --serve --open --visual
+npm run source:accept -- --id lantern-anemone-pit --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id lantern-anemone-pit --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="brine-mycelium-shelf" data-source-cohesion-candidate="brine-mycelium-shelf">
+    <header>
+      <div><h2>Brine Mycelium Shelf</h2><code>brine-mycelium-shelf</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-brine-mycelium-shelf-whole-source.png"><img src="/assets/generated/fauna-brine-mycelium-shelf-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png"><img src="/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/brine-mycelium-shelf-source-preview.png"><img src="/review/source-candidates/quick-reviews/brine-mycelium-shelf-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/brine-mycelium-shelf-plan-preview.png"><img src="/review/articulated/brine-mycelium-shelf-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id brine-mycelium-shelf
+npm run source:approval-runway:preview -- --id brine-mycelium-shelf
+npm run sandbox:preview -- --id brine-mycelium-shelf --kind source --serve --open --visual
+npm run source:accept -- --id brine-mycelium-shelf --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id brine-mycelium-shelf --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="thorn-fan-coralline" data-source-cohesion-candidate="thorn-fan-coralline">
+    <header>
+      <div><h2>Thorn Fan Coralline</h2><code>thorn-fan-coralline</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-thorn-fan-coralline-whole-source.png"><img src="/assets/generated/fauna-thorn-fan-coralline-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/thorn-fan-coralline-key-preview.png"><img src="/review/source-candidates/key-previews/thorn-fan-coralline-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/thorn-fan-coralline-source-preview.png"><img src="/review/source-candidates/quick-reviews/thorn-fan-coralline-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/thorn-fan-coralline-plan-preview.png"><img src="/review/articulated/thorn-fan-coralline-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id thorn-fan-coralline
+npm run source:approval-runway:preview -- --id thorn-fan-coralline
+npm run sandbox:preview -- --id thorn-fan-coralline --kind source --serve --open --visual
+npm run source:accept -- --id thorn-fan-coralline --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id thorn-fan-coralline --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="gulper-eel-maw" data-source-cohesion-candidate="gulper-eel-maw">
+    <header>
+      <div><h2>Gulper Eel Maw</h2><code>gulper-eel-maw</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-gulper-eel-maw-whole-source.png"><img src="/assets/generated/fauna-gulper-eel-maw-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/gulper-eel-maw-key-preview.png"><img src="/review/source-candidates/key-previews/gulper-eel-maw-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/gulper-eel-maw-source-preview.png"><img src="/review/source-candidates/quick-reviews/gulper-eel-maw-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/gulper-eel-maw-plan-preview.png"><img src="/review/articulated/gulper-eel-maw-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id gulper-eel-maw
+npm run source:approval-runway:preview -- --id gulper-eel-maw
+npm run sandbox:preview -- --id gulper-eel-maw --kind source --serve --open --visual
+npm run source:accept -- --id gulper-eel-maw --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id gulper-eel-maw --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="saber-viperfish" data-source-cohesion-candidate="saber-viperfish">
+    <header>
+      <div><h2>Saber Viperfish</h2><code>saber-viperfish</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-saber-viperfish-whole-source.png"><img src="/assets/generated/fauna-saber-viperfish-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/saber-viperfish-key-preview.png"><img src="/review/source-candidates/key-previews/saber-viperfish-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/saber-viperfish-source-preview.png"><img src="/review/source-candidates/quick-reviews/saber-viperfish-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/saber-viperfish-plan-preview.png"><img src="/review/articulated/saber-viperfish-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id saber-viperfish
+npm run source:approval-runway:preview -- --id saber-viperfish
+npm run sandbox:preview -- --id saber-viperfish --kind source --serve --open --visual
+npm run source:accept -- --id saber-viperfish --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id saber-viperfish --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="tripod-stilt-stalker" data-source-cohesion-candidate="tripod-stilt-stalker">
+    <header>
+      <div><h2>Tripod Stilt Stalker</h2><code>tripod-stilt-stalker</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-tripod-stilt-stalker-whole-source.png"><img src="/assets/generated/fauna-tripod-stilt-stalker-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/tripod-stilt-stalker-key-preview.png"><img src="/review/source-candidates/key-previews/tripod-stilt-stalker-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/tripod-stilt-stalker-source-preview.png"><img src="/review/source-candidates/quick-reviews/tripod-stilt-stalker-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/tripod-stilt-stalker-plan-preview.png"><img src="/review/articulated/tripod-stilt-stalker-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id tripod-stilt-stalker
+npm run source:approval-runway:preview -- --id tripod-stilt-stalker
+npm run sandbox:preview -- --id tripod-stilt-stalker --kind source --serve --open --visual
+npm run source:accept -- --id tripod-stilt-stalker --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id tripod-stilt-stalker --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article>
+<article class="card" id="reef-lion-moray" data-source-cohesion-candidate="reef-lion-moray">
+    <header>
+      <div><h2>Reef Lion Moray</h2><code>reef-lion-moray</code></div>
+      <strong>ready for review</strong>
+    </header>
+    <p class="warning">Prototype/source preview only: do not treat screenshots or mechanical previews as cohesive accepted content.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-reef-lion-moray-whole-source.png"><img src="/assets/generated/fauna-reef-lion-moray-whole-source.png" alt="source"><span>source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/reef-lion-moray-key-preview.png"><img src="/review/source-candidates/key-previews/reef-lion-moray-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/reef-lion-moray-source-preview.png"><img src="/review/source-candidates/quick-reviews/reef-lion-moray-source-preview.png" alt="sandbox source preview"><span>sandbox source preview</span></a>
+      <a class="image" href="/review/articulated/reef-lion-moray-plan-preview.png"><img src="/review/articulated/reef-lion-moray-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="badges">
+      <span>ready <strong>true</strong></span>
+      <span>evidence complete <strong>true</strong></span>
+      <span>human cohesion approved <strong>false</strong></span>
+      <span>production eligible <strong>false</strong></span>
+    </div>
+    <h3>Blockers</h3>
+    <ul><li>human source cohesion approval is still missing</li></ul>
+    <h3>Review Commands</h3>
+    <pre><code>npm run source:quick-review -- --id reef-lion-moray
+npm run source:approval-runway:preview -- --id reef-lion-moray
+npm run sandbox:preview -- --id reef-lion-moray --kind source --serve --open --visual
+npm run source:accept -- --id reef-lion-moray --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id reef-lion-moray --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+  </article></section>
+  </main>
+</body>
+</html>

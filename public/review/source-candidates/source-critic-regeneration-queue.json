@@ -1,0 +1,477 @@
+{
+  "schema": "water9/source-critic-regeneration-queue@1",
+  "generatedAt": "2026-06-18T17:06:59.900Z",
+  "generatedFrom": {
+    "sourceCandidates": "/mnt/nxt-dev/water9/public/review/source-candidates/source-candidates.json",
+    "criticBoard": "/mnt/nxt-dev/water9/public/review/source-candidates/source-critic-board.json",
+    "replaceRunway": "/mnt/nxt-dev/water9/public/review/source-candidates/source-replace-runway.json"
+  },
+  "promptDir": "public/review/source-candidates/critic-regeneration-prompts",
+  "policy": {
+    "advisoryOnly": true,
+    "doesNotApproveSources": true,
+    "doesNotAcceptThreats": true,
+    "humanApprovalStillRequired": true,
+    "replacementMustReturnToSourceReview": true
+  },
+  "summary": {
+    "regenerateCandidates": 9,
+    "lanes": 3,
+    "promptFiles": 9,
+    "nextCandidateId": "black-coral-gate",
+    "nextCandidateSpecies": "Black Coral Gate",
+    "nextPromptFile": "public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt"
+  },
+  "nextCandidate": {
+    "rank": 1,
+    "id": "black-coral-gate",
+    "species": "Black Coral Gate",
+    "status": "needs-review",
+    "recommendation": "regenerate",
+    "lane": "complex-colonial-forms",
+    "source": "public/assets/generated/fauna-black-coral-gate-whole-source.png",
+    "promptFile": "public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt",
+    "prompt": "Critic regeneration target: Black Coral Gate (black-coral-gate)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated full-body 2D game creature source art, cohesive underwater threat called Black Coral Gate, living black coral colony grown into an open feeding-arch silhouette, both pillars and crown visibly fused by branching antipatharian tissue, side-facing three-quarter view, two rooted thorny coral pillars connected by an arched crown bridge, central crop-friendly flexible coral-tine trap bars grown from the crown tissue, folding side thorn arms, thick hinge polyp knots, lower clamp teeth and latch spines, dark charcoal black coral skeleton with bone tips, muted teal blue bioluminescent polyps, oxidized green and ivory accents, readable open gate silhouette at 64px, all parts visibly connected as one organism, crop-safe separated bars hinges roots and crown, crisp painterly browser-game sprite, no environment, no stone doorway, no shadow, no haze, no particles, no text\n\nSubagent cohesion failures to fix:\n- Silhouette reads more like a closed dome or creature mask than an open coral arch.\n- Central bars and teeth feel portcullis-like but not clearly grown from left/right pillars.\n\nSubagent animation risk to solve:\n- Phase/contact evidence barely sells a drop/clamp cycle and stays visually closed.\n\nExisting regenerate-if-observed risks:\n- Silhouette reads more like a closed dome or creature mask than an open coral arch.\n- Central bars and teeth feel portcullis-like but not clearly grown from left/right pillars.\n- Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.\n- Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One cohesive whole-source organism on pure magenta, not separate coral chunks glued onto stone ruins.\n- Open arch / portcullis silhouette is the first read, with the bite line clearly visible at game scale.\n- Left and right rooted pillars share one material language and connect through a living crown bridge.\n- Crop-safe thick bars, hinge knots, root mats, and latch jaws have visible margins for later cutting.\n- Danger read comes from closing thorn-bars, glowing hinge polyps, and clamp teeth, not baked-in particles or scenery.\n\nCrop-safe articulatable parts:\n- left root mat\n- right root mat\n- left pillar trunk\n- right pillar trunk\n- upper crown bridge torso\n- central descending portcullis bar cluster\n- near folding thorn gate arm\n- far folding thorn gate arm\n- left hinge polyp knot\n- right hinge polyp knot\n- lower clamp teeth / latch spines\n- glow-polyp warning overlay\n\nPrompt risks to avoid:\n- Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.\n- Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.\n- Avoid thin hairlike coral branches that cannot be cropped or read at game scale.\n- Avoid magenta, hot pink, or purple body values that will conflict with the chroma key.\n- Keep bubbles, slam VFX, rubble, sand, and lighting effects separate from the base source.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+    "expectedInboxImage": "tools/source-inbox/black-coral-gate.png",
+    "critic": {
+      "cohesionRisks": [
+        "Silhouette reads more like a closed dome or creature mask than an open coral arch.",
+        "Central bars and teeth feel portcullis-like but not clearly grown from left/right pillars."
+      ],
+      "animationRisk": "Phase/contact evidence barely sells a drop/clamp cycle and stays visually closed.",
+      "advisoryState": "critic-recommends-regenerate"
+    },
+    "links": {
+      "source": "/assets/generated/fauna-black-coral-gate-whole-source.png",
+      "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#black-coral-gate",
+      "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#black-coral-gate",
+      "quickReview": "/review/source-candidates/quick-reviews/black-coral-gate.html",
+      "planPreview": "/review/articulated/black-coral-gate-plan-preview.png",
+      "sandboxPreview": "/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png",
+      "liveSourceSandbox": "/?entity=source-black-coral-gate&companion=diver"
+    },
+    "commands": {
+      "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt",
+      "markImagegen": "npm run source:imagegen-mark -- --id black-coral-gate",
+      "checkImagegen": "npm run source:imagegen-status -- --id black-coral-gate",
+      "ingestImagegen": "npm run source:imagegen-status -- --id black-coral-gate --ingest",
+      "captureManual": "npm run source:inbox-capture -- --id black-coral-gate --open",
+      "recoverSavedImage": "npm run source:recover-inline -- --id black-coral-gate --image <saved-image-path> --copy --validate",
+      "generateOpenAiDryRun": "npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+      "generateOpenAiApply": "npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+      "validateInbox": "python3 tools/validate_source_candidate_images.py --id black-coral-gate --image tools/source-inbox/black-coral-gate.png",
+      "dryRunReplace": "npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite --dry-run",
+      "applyReplace": "npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite",
+      "imageCheck": "npm run source:image-check -- --id black-coral-gate",
+      "sourcePreview": "npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual",
+      "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+    }
+  },
+  "candidates": [
+    {
+      "rank": 1,
+      "id": "black-coral-gate",
+      "species": "Black Coral Gate",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "complex-colonial-forms",
+      "source": "public/assets/generated/fauna-black-coral-gate-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt",
+      "prompt": "Critic regeneration target: Black Coral Gate (black-coral-gate)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated full-body 2D game creature source art, cohesive underwater threat called Black Coral Gate, living black coral colony grown into an open feeding-arch silhouette, both pillars and crown visibly fused by branching antipatharian tissue, side-facing three-quarter view, two rooted thorny coral pillars connected by an arched crown bridge, central crop-friendly flexible coral-tine trap bars grown from the crown tissue, folding side thorn arms, thick hinge polyp knots, lower clamp teeth and latch spines, dark charcoal black coral skeleton with bone tips, muted teal blue bioluminescent polyps, oxidized green and ivory accents, readable open gate silhouette at 64px, all parts visibly connected as one organism, crop-safe separated bars hinges roots and crown, crisp painterly browser-game sprite, no environment, no stone doorway, no shadow, no haze, no particles, no text\n\nSubagent cohesion failures to fix:\n- Silhouette reads more like a closed dome or creature mask than an open coral arch.\n- Central bars and teeth feel portcullis-like but not clearly grown from left/right pillars.\n\nSubagent animation risk to solve:\n- Phase/contact evidence barely sells a drop/clamp cycle and stays visually closed.\n\nExisting regenerate-if-observed risks:\n- Silhouette reads more like a closed dome or creature mask than an open coral arch.\n- Central bars and teeth feel portcullis-like but not clearly grown from left/right pillars.\n- Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.\n- Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One cohesive whole-source organism on pure magenta, not separate coral chunks glued onto stone ruins.\n- Open arch / portcullis silhouette is the first read, with the bite line clearly visible at game scale.\n- Left and right rooted pillars share one material language and connect through a living crown bridge.\n- Crop-safe thick bars, hinge knots, root mats, and latch jaws have visible margins for later cutting.\n- Danger read comes from closing thorn-bars, glowing hinge polyps, and clamp teeth, not baked-in particles or scenery.\n\nCrop-safe articulatable parts:\n- left root mat\n- right root mat\n- left pillar trunk\n- right pillar trunk\n- upper crown bridge torso\n- central descending portcullis bar cluster\n- near folding thorn gate arm\n- far folding thorn gate arm\n- left hinge polyp knot\n- right hinge polyp knot\n- lower clamp teeth / latch spines\n- glow-polyp warning overlay\n\nPrompt risks to avoid:\n- Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.\n- Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.\n- Avoid thin hairlike coral branches that cannot be cropped or read at game scale.\n- Avoid magenta, hot pink, or purple body values that will conflict with the chroma key.\n- Keep bubbles, slam VFX, rubble, sand, and lighting effects separate from the base source.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/black-coral-gate.png",
+      "critic": {
+        "cohesionRisks": [
+          "Silhouette reads more like a closed dome or creature mask than an open coral arch.",
+          "Central bars and teeth feel portcullis-like but not clearly grown from left/right pillars."
+        ],
+        "animationRisk": "Phase/contact evidence barely sells a drop/clamp cycle and stays visually closed.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-black-coral-gate-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#black-coral-gate",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#black-coral-gate",
+        "quickReview": "/review/source-candidates/quick-reviews/black-coral-gate.html",
+        "planPreview": "/review/articulated/black-coral-gate-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-black-coral-gate&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id black-coral-gate",
+        "checkImagegen": "npm run source:imagegen-status -- --id black-coral-gate",
+        "ingestImagegen": "npm run source:imagegen-status -- --id black-coral-gate --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id black-coral-gate --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id black-coral-gate --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id black-coral-gate --image tools/source-inbox/black-coral-gate.png",
+        "dryRunReplace": "npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id black-coral-gate",
+        "sourcePreview": "npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    },
+    {
+      "rank": 2,
+      "id": "chain-vein-siphonophore",
+      "species": "Chain Vein Siphonophore",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "complex-colonial-forms",
+      "source": "public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/02-chain-vein-siphonophore.txt",
+      "prompt": "Critic regeneration target: Chain Vein Siphonophore (chain-vein-siphonophore)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated whole full-body 2D game sprite source art, cohesive underwater enemy called Chain Vein Siphonophore, deep-sea siphonophore colony, long continuous flexible soft-tissue colony stem with paired translucent nectophore swimming bells, no metal links, protective bracts like glassy fins, compact feeding polyp cluster, four broad hanging stinging tendrils with soft connected tentilla swellings and terminal lure bulb, readable vertical tripwire silhouette with visible safe gaps, cold cyan ivory black deep teal palette with amber lure accent, side-facing three-quarter view, crop-friendly separated bells bracts stem polyps and tendrils, crisp painterly browser-game sprite, no environment, no shadow, no haze, no bubbles, no text\n\nSubagent cohesion failures to fix:\n- Too similar to reliquary-siphonophore.\n- Large dark side bracts read as hard shields, weakening soft colonial anatomy.\n\nSubagent animation risk to solve:\n- Rig evidence reinforces a walking or legged silhouette instead of unfolding tripwire lines.\n\nExisting regenerate-if-observed risks:\n- Too similar to reliquary-siphonophore.\n- Large dark side bracts read as hard shields, weakening soft colonial anatomy.\n- Avoid making it a single jellyfish umbrella; it must read as a siphonophore colony.\n- Avoid detached beads or pearls that do not connect to the central stem.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One continuous colonial organism, not separate beads or loose jellyfish pieces.\n- Continuous soft colony stem, swimming bells, feeding cluster, and stinging lines are all visible.\n- Tripwire tendrils are few, broad, and separated enough to rig.\n- The safe gap between hanging lines remains readable at sprite scale.\n- All anatomy stays isolated on pure magenta with no water haze, shadows, plankton, or baked glow clouds.\n\nCrop-safe articulatable parts:\n- front float bract\n- continuous soft colony stem\n- upper nectophore bell pair\n- middle nectophore bell pair\n- lower nectophore bell pair\n- left shield bract\n- right shield bract\n- feeding polyp cluster\n- four broad stinging tendrils\n- tentilla bead nodes\n- terminal lure bulb\n- sting bead tissue accents\n\nPrompt risks to avoid:\n- Avoid making it a single jellyfish umbrella; it must read as a siphonophore colony.\n- Avoid detached beads or pearls that do not connect to the central stem.\n- Avoid literal chains, wires, hooks, or mechanical trip mines.\n- Avoid overly thin tendrils that disappear at 64px.\n- Keep pure magenta only in the background and avoid magenta internal glow.\n- Keep electric arcs and contact sparks separate from the base sprite.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/chain-vein-siphonophore.png",
+      "critic": {
+        "cohesionRisks": [
+          "Too similar to reliquary-siphonophore.",
+          "Large dark side bracts read as hard shields, weakening soft colonial anatomy."
+        ],
+        "animationRisk": "Rig evidence reinforces a walking or legged silhouette instead of unfolding tripwire lines.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-chain-vein-siphonophore-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#chain-vein-siphonophore",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#chain-vein-siphonophore",
+        "quickReview": "/review/source-candidates/quick-reviews/chain-vein-siphonophore.html",
+        "planPreview": "/review/articulated/chain-vein-siphonophore-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/chain-vein-siphonophore-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-chain-vein-siphonophore&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/02-chain-vein-siphonophore.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id chain-vein-siphonophore",
+        "checkImagegen": "npm run source:imagegen-status -- --id chain-vein-siphonophore",
+        "ingestImagegen": "npm run source:imagegen-status -- --id chain-vein-siphonophore --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id chain-vein-siphonophore --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id chain-vein-siphonophore --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id chain-vein-siphonophore --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id chain-vein-siphonophore --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png",
+        "dryRunReplace": "npm run source:ingest -- --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id chain-vein-siphonophore",
+        "sourcePreview": "npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    },
+    {
+      "rank": 3,
+      "id": "gulper-eel-maw",
+      "species": "Gulper Eel Maw",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "mobile-predator-motion",
+      "source": "public/assets/generated/fauna-gulper-eel-maw-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/03-gulper-eel-maw.txt",
+      "prompt": "Critic regeneration target: Gulper Eel Maw (gulper-eel-maw)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater enemy called Gulper Eel Maw, abyssal pelican eel inspired vertebrate predator, strict flat side-profile creature sheet pose facing right, asymmetrical lateral silhouette, not centered radial composition, one continuous left-to-right eel spine line, open pelican-eel mouth and tiny skull head on the right, one connected ribbon body trailing left into a single whip tail with cyan lure bulb, large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature, connected eel body and tail occupy the rear 55-65%, tiny skull hinge collar, upper and lower jaw hoops as thick biological cartilage crescents connected to the same skull hinge, visible continuous anatomy chain from jaw hoops to skull collar to narrow neck to ribbon body to whip tail, dark inner mouth plate, semi-opaque blue-gray throat pouch membrane with a dark rim readable at 64px, smooth flexible black deep-sea eel skin, sparse gill slits, small pectoral fins, charcoal black deep teal ivory and cold blue palette with no magenta body color, jaw hoops pouch membrane pectoral fins tail lure and tail base have visible magenta negative space around their outer edges while remaining biologically connected at their roots, crop-friendly visually distinct but physically connected jaw hoops pouch membrane neck ribbon body tail lure and fins with visible hinge zones, centered with generous margin, crisp painterly browser-game sprite, no environment, no shadow, no bubbles, no water vortex, no prey, no text, no circular portal mouth, no starburst layout, no repeated curled appendages, no armor plates, no horns, no spikes, no teeth crown, no suction-cup pores, no crab octopus or tentacle anatomy\n\nSubagent cohesion failures to fix:\n- Octagonal maw reads mechanical or portal-like rather than soft pelican-eel pouch.\n- Triangular plates and fins break the continuous eel anatomy chain.\n\nSubagent animation risk to solve:\n- Hard-corner jaw hoop and possible disconnected lure/body components will make inflate-collapse articulation awkward.\n\nExisting regenerate-if-observed risks:\n- Octagonal maw reads mechanical or portal-like rather than soft pelican-eel pouch.\n- Triangular plates and fins break the continuous eel anatomy chain.\n- Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.\n- Avoid a detached monster mouth; all jaw and pouch structures must connect to the body.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.\n- Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.\n- Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.\n- Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.\n- Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.\n- Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.\n- Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.\n- No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source.\n\nCrop-safe articulatable parts:\n- upper hinged jaw hoop\n- lower hinged jaw hoop\n- expandable throat pouch membrane\n- small skull hinge collar\n- dark inner mouth plate\n- narrow eel neck segment\n- front ribbon body segment\n- rear whip tail segment\n- tail-tip lure bulb\n- left tiny pectoral fin\n- right tiny pectoral fin\n- gill slit seam plates\n\nPrompt risks to avoid:\n- Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.\n- Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.\n- Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.\n- Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.\n- Avoid making suction currents part of the base sprite; pull effects should be separate VFX.\n- Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.\n- Avoid over-detailing the black body so the hinge zones and lure remain readable.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/gulper-eel-maw.png",
+      "critic": {
+        "cohesionRisks": [
+          "Octagonal maw reads mechanical or portal-like rather than soft pelican-eel pouch.",
+          "Triangular plates and fins break the continuous eel anatomy chain."
+        ],
+        "animationRisk": "Hard-corner jaw hoop and possible disconnected lure/body components will make inflate-collapse articulation awkward.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-gulper-eel-maw-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#gulper-eel-maw",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#gulper-eel-maw",
+        "quickReview": "/review/source-candidates/quick-reviews/gulper-eel-maw.html",
+        "planPreview": "/review/articulated/gulper-eel-maw-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/gulper-eel-maw-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-gulper-eel-maw&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/03-gulper-eel-maw.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id gulper-eel-maw",
+        "checkImagegen": "npm run source:imagegen-status -- --id gulper-eel-maw",
+        "ingestImagegen": "npm run source:imagegen-status -- --id gulper-eel-maw --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id gulper-eel-maw --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id gulper-eel-maw --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id gulper-eel-maw --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id gulper-eel-maw --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png",
+        "dryRunReplace": "npm run source:ingest -- --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id gulper-eel-maw",
+        "sourcePreview": "npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    },
+    {
+      "rank": 4,
+      "id": "trench-harvest-sea-spider",
+      "species": "Trench Harvest Sea Spider",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "mobile-predator-motion",
+      "source": "public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/04-trench-harvest-sea-spider.txt",
+      "prompt": "Critic regeneration target: Trench Harvest Sea Spider (trench-harvest-sea-spider)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated whole full-body 2D game sprite source art, cohesive underwater threat called Trench Harvest Sea Spider, abyssal pycnogonid sea spider inspired arthropod enemy, side-facing three-quarter view facing right, tiny knuckled central body, small head nub, long forward biological proboscis siphon, eight extremely long jointed legs with thick visible knees and hooked terminal claws, subtle dorsal egg-sac lump, pale translucent gray chitin with charcoal joints, cold cyan and dull ivory accents, eerie readable wide silhouette at 64px, crop-friendly separated legs proboscis body claw hooks and egg sac with visible hinge zones, centered with generous margin, no environment, no web, no shadow, no haze, no particles, no text\n\nSubagent cohesion failures to fix:\n- Reads top-down and radial rather than side-profile sea spider.\n- Forward proboscis reads as a rigid spear or blade.\n\nSubagent animation risk to solve:\n- Small distal leg tips and radial evidence may not support readable side-motion.\n\nExisting regenerate-if-observed risks:\n- Reads top-down and radial rather than side-profile sea spider.\n- Forward proboscis reads as a rigid spear or blade.\n- Avoid a terrestrial spider read; keep pycnogonid tiny-body and marine proboscis anatomy.\n- Avoid making legs hair-thin; every limb needs usable thickness for articulation.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One cohesive sea-spider-inspired arthropod, not a land spider or insect.\n- Tiny central body with long articulated legs is the first silhouette read.\n- Forward proboscis must read as a biological siphon and not a weapon barrel.\n- Legs are separated enough for rigging, with thick joints and clear contact claws.\n- No webbing, carcass, seafloor, drifting particles, shadows, blood clouds, or environmental props baked in.\n\nCrop-safe articulatable parts:\n- tiny knuckled central body\n- small forward head nub\n- soft forward proboscis siphon\n- left long front stepping leg\n- right long front stepping leg\n- left long middle pinning leg\n- right long middle pinning leg\n- left long rear bracing leg\n- right long rear bracing leg\n- hooked terminal claw cluster\n- dorsal rounded egg-sac lump\n- cold siphon glow overlay\n\nPrompt risks to avoid:\n- Avoid a terrestrial spider read; keep pycnogonid tiny-body and marine proboscis anatomy.\n- Avoid making legs hair-thin; every limb needs usable thickness for articulation.\n- Avoid web strands, silk, or horror-web language because sea spiders do not use webs.\n- Avoid a gun-like proboscis; it should be soft biological feeding anatomy.\n- Avoid magenta highlights on joints, eyes, or siphon effects.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/trench-harvest-sea-spider.png",
+      "critic": {
+        "cohesionRisks": [
+          "Reads top-down and radial rather than side-profile sea spider.",
+          "Forward proboscis reads as a rigid spear or blade."
+        ],
+        "animationRisk": "Small distal leg tips and radial evidence may not support readable side-motion.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#trench-harvest-sea-spider",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#trench-harvest-sea-spider",
+        "quickReview": "/review/source-candidates/quick-reviews/trench-harvest-sea-spider.html",
+        "planPreview": "/review/articulated/trench-harvest-sea-spider-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/trench-harvest-sea-spider-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-trench-harvest-sea-spider&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/04-trench-harvest-sea-spider.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id trench-harvest-sea-spider",
+        "checkImagegen": "npm run source:imagegen-status -- --id trench-harvest-sea-spider",
+        "ingestImagegen": "npm run source:imagegen-status -- --id trench-harvest-sea-spider --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id trench-harvest-sea-spider --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id trench-harvest-sea-spider --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id trench-harvest-sea-spider --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id trench-harvest-sea-spider --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png",
+        "dryRunReplace": "npm run source:ingest -- --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id trench-harvest-sea-spider",
+        "sourcePreview": "npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    },
+    {
+      "rank": 5,
+      "id": "vampire-cloak-squid",
+      "species": "Vampire Cloak Squid",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "mobile-predator-motion",
+      "source": "public/assets/generated/fauna-vampire-cloak-squid-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/05-vampire-cloak-squid.txt",
+      "prompt": "Critic regeneration target: Vampire Cloak Squid (vampire-cloak-squid)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated whole full-body 2D game sprite source art, cohesive underwater enemy called Vampire Cloak Squid, vampire squid inspired cephalopod threat, compact dark mantle with small fin pair, two large pale blue eyes, eight arms connected by broad cloak web membrane, no external shell and no suction-cup rows, soft spine and cirri fringe along arm edges, cyan-only photophore tips, inside-out defensive umbrella posture readable as an alternate silhouette, black burgundy charcoal ivory cyan palette, side-facing three-quarter view, crop-friendly separated mantle eyes fin pair arm clusters web membrane and photophore tips, crisp painterly browser-game sprite, centered with margin, no environment, no shadow, no ink cloud, no bubbles, no text\n\nSubagent cohesion failures to fix:\n- External shell or carapace violates the vampire-squid contract.\n- Octopus sucker rows and golden lure bulbs add fantasy organs instead of clean photophores.\n\nSubagent animation risk to solve:\n- Arm bases are tangled, and the cloak mass is too monolithic for a clear umbrella-flare rig.\n\nExisting regenerate-if-observed risks:\n- External shell or carapace violates the vampire-squid contract.\n- Octopus sucker rows and golden lure bulbs add fantasy organs instead of clean photophores.\n- Avoid bat wings, fangs, capes, or humanoid vampire styling; keep it biological.\n- Avoid squid tentacle tangles that obscure the eight-arm cloak structure.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One whole cephalopod with mantle, eyes, arms, and webbing clearly connected.\n- Cloak web and arm crown are the main gameplay read, not loose tentacles.\n- Eight arms are grouped into riggable clusters without becoming a tangled mass.\n- Photophore spots are visible but do not cover the anatomy.\n- No ink cloud, particles, water background, shadows, or cropped-off arms baked into the source.\n\nCrop-safe articulatable parts:\n- compact dark mantle body\n- large pale left eye\n- large pale right eye\n- broad cloak web membrane\n- front webbed arm pair\n- left webbed arm pair\n- right webbed arm pair\n- rear webbed arm pair\n- soft arm spine and cirri fringe\n- cyan photophore tip lights\n- small mantle fin pair\n- central mouth and beak shadow\n\nPrompt risks to avoid:\n- Avoid bat wings, fangs, capes, or humanoid vampire styling; keep it biological.\n- Avoid squid tentacle tangles that obscure the eight-arm cloak structure.\n- Avoid magenta or pink photophores that conflict with the background.\n- Avoid a giant octopus silhouette; compact mantle and webbed arms should identify vampire squid.\n- Keep ink, flash bursts, and stun effects separate from the base anatomy.\n- Reject nautilus shells, beak-like nautilus heads, octopus sucker rows, amber lure organs, and external shell spirals.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/vampire-cloak-squid.png",
+      "critic": {
+        "cohesionRisks": [
+          "External shell or carapace violates the vampire-squid contract.",
+          "Octopus sucker rows and golden lure bulbs add fantasy organs instead of clean photophores."
+        ],
+        "animationRisk": "Arm bases are tangled, and the cloak mass is too monolithic for a clear umbrella-flare rig.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-vampire-cloak-squid-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#vampire-cloak-squid",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#vampire-cloak-squid",
+        "quickReview": "/review/source-candidates/quick-reviews/vampire-cloak-squid.html",
+        "planPreview": "/review/articulated/vampire-cloak-squid-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/vampire-cloak-squid-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-vampire-cloak-squid&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/05-vampire-cloak-squid.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id vampire-cloak-squid",
+        "checkImagegen": "npm run source:imagegen-status -- --id vampire-cloak-squid",
+        "ingestImagegen": "npm run source:imagegen-status -- --id vampire-cloak-squid --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id vampire-cloak-squid --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id vampire-cloak-squid --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id vampire-cloak-squid --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id vampire-cloak-squid --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png",
+        "dryRunReplace": "npm run source:ingest -- --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id vampire-cloak-squid",
+        "sourcePreview": "npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    },
+    {
+      "rank": 6,
+      "id": "vent-claw-yeti",
+      "species": "Vent-Claw Yeti",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "mobile-predator-motion",
+      "source": "public/assets/generated/fauna-vent-claw-yeti-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/06-vent-claw-yeti.txt",
+      "prompt": "Critic regeneration target: Vent-Claw Yeti (vent-claw-yeti)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated whole full-body 2D game sprite source art, cohesive underwater threat called Vent-Claw Yeti, abyssal hydrothermal vent yeti crab inspired arthropod enemy, side-facing three-quarter view facing right, compact pale crab carapace, tucked abdomen, long oversized articulated forelimbs, broad hooked claws covered in dense cream bacterial setae bristles, six smaller walking legs, short sensory antennae, reduced dark eye spots, mineral orange and oxidized teal staining on pale bone shell, crisp readable silhouette at 64px, crop-friendly separated claw arms claw hands legs antennae bristle clusters and carapace with visible hinge zones, centered with generous margin, no environment, no vent chimney, no shadow, no haze, no particles, no text\n\nSubagent cohesion failures to fix:\n- Claws read as flat perforated paddles rather than bristled grasping crab claws.\n- Round joint disks and rod limbs feel assembled or mechanical.\n\nSubagent animation risk to solve:\n- Very thin arms and legs plus disk joints make hook-and-drag motion look non-biological.\n\nExisting regenerate-if-observed risks:\n- Claws read as flat perforated paddles rather than bristled grasping crab claws.\n- Round joint disks and rod limbs feel assembled or mechanical.\n- Avoid mammal-like fur; the bristles are crab setae and bacterial mats.\n- Avoid a normal beach crab silhouette; emphasize deep-sea squat posture and huge farming claws.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One whole crab-like arthropod, not a furry mammal, lobster, or humanoid monster.\n- Oversized bristled claws are the first read and clearly indicate grab range.\n- Main carapace, abdomen tuck, legs, claws, and antennae stay connected as one riggable body.\n- Bristles read as clustered biological setae, not smoke, fur clouds, or flame.\n- No vent chimney, lava plume, bubbles, floor plane, cast shadow, or environmental lighting baked in.\n\nCrop-safe articulatable parts:\n- main carapace torso\n- abdomen tuck\n- left upper claw arm\n- left bristled claw hand\n- right upper claw arm\n- right bristled claw hand\n- front walking leg pair\n- middle walking leg pair\n- rear walking leg pair\n- left antenna\n- right antenna\n- setae glow overlay clusters\n\nPrompt risks to avoid:\n- Avoid mammal-like fur; the bristles are crab setae and bacterial mats.\n- Avoid a normal beach crab silhouette; emphasize deep-sea squat posture and huge farming claws.\n- Avoid making the vent heat or smoke part of the body silhouette.\n- Avoid thin bristles that turn into noise; use readable grouped tufts.\n- Avoid magenta or pink glows inside the creature that could key out.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/vent-claw-yeti.png",
+      "critic": {
+        "cohesionRisks": [
+          "Claws read as flat perforated paddles rather than bristled grasping crab claws.",
+          "Round joint disks and rod limbs feel assembled or mechanical."
+        ],
+        "animationRisk": "Very thin arms and legs plus disk joints make hook-and-drag motion look non-biological.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-vent-claw-yeti-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#vent-claw-yeti",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#vent-claw-yeti",
+        "quickReview": "/review/source-candidates/quick-reviews/vent-claw-yeti.html",
+        "planPreview": "/review/articulated/vent-claw-yeti-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-vent-claw-yeti&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/06-vent-claw-yeti.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id vent-claw-yeti",
+        "checkImagegen": "npm run source:imagegen-status -- --id vent-claw-yeti",
+        "ingestImagegen": "npm run source:imagegen-status -- --id vent-claw-yeti --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id vent-claw-yeti --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id vent-claw-yeti --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id vent-claw-yeti --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id vent-claw-yeti --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png",
+        "dryRunReplace": "npm run source:ingest -- --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id vent-claw-yeti",
+        "sourcePreview": "npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    },
+    {
+      "rank": 7,
+      "id": "brine-crown",
+      "species": "Brine Crown",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "sessile-ambush-hazards",
+      "source": "public/assets/generated/fauna-brine-crown-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/07-brine-crown.txt",
+      "prompt": "Critic regeneration target: Brine Crown (brine-crown)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated full-body 2D game creature source art, cohesive underwater threat called Brine Crown, stationary abyssal vent organism forming one rooted toxic basal mat, inspired by coralline hydrothermal flora without starfish or cephalopod anatomy, central jagged crown cup with dark toxic throat, five to seven short thick radial lobes fused flat into the basal mat, opaque brine blisters glowing sickly green amber, mineral spines around the rim, root-like tendrils, gloomy charcoal deep teal bone oxidized copper palette, crisp readable silhouette, crop-friendly hinge zones, no environment, no shadows, no haze, no duplicate creatures, no detached limbs, no text\n\nSubagent cohesion failures to fix:\n- Curled radial lobes read strongly as cephalopod arms, which the contract rejects.\n- Dense mineral and coral detail makes the basal mat, crown, blister bank, and spines feel kitbashed.\n\nSubagent animation risk to solve:\n- Phase/contact evidence is nearly static; spine raise, blister swelling, and brine-lane growth need heavy deformation or repaint.\n\nExisting regenerate-if-observed risks:\n- Curled radial lobes read strongly as cephalopod arms, which the contract rejects.\n- Dense mineral and coral detail makes the basal mat, crown, blister bank, and spines feel kitbashed.\n- Avoid a decorative reef; the source must read as a dangerous organism.\n- Avoid perfect radial ornament symmetry that feels like a logo.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One rooted radial organism, not a collage of coral, starfish, and vent tubes.\n- Central crown or toxic throat is the first read.\n- Low anchored basal mat with uneven rays/fronds and visible hinge/root zones.\n- Readable toxic blisters, spine halo, and corrosive danger cues at game scale.\n- No loose detached parts, environmental shadows, haze, floor plane, or particles baked into the source.\n\nCrop-safe articulatable parts:\n- basal mat torso\n- central crown cup head\n- dark throat pore\n- front radial frond\n- left radial frond\n- right radial frond\n- rear radial fronds\n- brine blister bank\n- spine halo cluster\n- root tendril skirt\n\nPrompt risks to avoid:\n- Avoid a decorative reef; the source must read as a dangerous organism.\n- Avoid perfect radial ornament symmetry that feels like a logo.\n- Avoid magenta or hot pink body colors that will key out.\n- Avoid loose vent tubes or starfish arms that do not grow from the same mat.\n- Keep toxic clouds, bubbles, and brine puddles as separate VFX rather than baked source art.\n- Reject cephalopod tentacles, curled octopus arms, eyes, free-swimming anatomy, or loose starfish limbs.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/brine-crown.png",
+      "critic": {
+        "cohesionRisks": [
+          "Curled radial lobes read strongly as cephalopod arms, which the contract rejects.",
+          "Dense mineral and coral detail makes the basal mat, crown, blister bank, and spines feel kitbashed."
+        ],
+        "animationRisk": "Phase/contact evidence is nearly static; spine raise, blister swelling, and brine-lane growth need heavy deformation or repaint.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-brine-crown-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#brine-crown",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#brine-crown",
+        "quickReview": "/review/source-candidates/quick-reviews/brine-crown.html",
+        "planPreview": "/review/articulated/brine-crown-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/brine-crown-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-brine-crown&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/07-brine-crown.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id brine-crown",
+        "checkImagegen": "npm run source:imagegen-status -- --id brine-crown",
+        "ingestImagegen": "npm run source:imagegen-status -- --id brine-crown --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id brine-crown --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id brine-crown --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id brine-crown --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id brine-crown --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id brine-crown --image tools/source-inbox/brine-crown.png",
+        "dryRunReplace": "npm run source:ingest -- --id brine-crown --image tools/source-inbox/brine-crown.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id brine-crown --image tools/source-inbox/brine-crown.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id brine-crown",
+        "sourcePreview": "npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    },
+    {
+      "rank": 8,
+      "id": "lantern-anemone-pit",
+      "species": "Lantern Anemone Pit",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "sessile-ambush-hazards",
+      "source": "public/assets/generated/fauna-lantern-anemone-pit-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/08-lantern-anemone-pit.txt",
+      "prompt": "Critic regeneration target: Lantern Anemone Pit (lantern-anemone-pit)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated whole/full-body 2D game sprite source art, cohesive underwater threat called Lantern Anemone Pit, sessile reef cave anemone ambusher with buried column base, wide corallimorph oral-disc silhouette, central dark mouth pit, two rings of thick fleshy petal-tentacles connected to the mouth rim, glowing cyan lure bulbs embedded in tentacle tissue, stinging bead tips, crop-friendly hinge folds around the oral disc and column base, muted coral red ivory teal sea green and charcoal palette with no magenta body color, readable full creature silhouette at 64px, centered with margin, crisp painterly browser-game sprite, no environment, no land-plant leaves, no decorative flower stem, no sand, no shadow, no bubbles, no glow halo, no text\n\nSubagent cohesion failures to fix:\n- Reads too much like a decorative flower icon or coral bloom.\n- Dark purple wedge or rectangular backing looks like baked shadow or detached artifact rather than anatomy.\n\nSubagent animation risk to solve:\n- Parity and phase/contact evidence show blocky rectangular bounds and little clamp/retraction support.\n\nExisting regenerate-if-observed risks:\n- Reads too much like a decorative flower icon or coral bloom.\n- Dark purple wedge or rectangular backing looks like baked shadow or detached artifact rather than anatomy.\n- Avoid a cute decorative flower; it must read as a dangerous sessile predator.\n- Avoid making the tentacles hair-thin or too numerous for articulation.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One anchored anemone organism, not a decorative coral flower cluster.\n- Central mouth pit is the first danger read when open.\n- Two rings of thick petal-tentacles are broad enough for sprite-scale articulation.\n- Lure bulbs, mouth rim, column base, and outer petals are visually connected.\n- Danger is communicated through clamp posture, stinging bulbs, and mouth depth rather than gore or particles.\n\nCrop-safe articulatable parts:\n- buried column base\n- outer pedal disc skirt\n- central mouth pit\n- upper lip ring\n- left outer petal-tentacle\n- right outer petal-tentacle\n- front inner petal-tentacle\n- rear inner petal-tentacle\n- lure bulb cluster\n- stinging bead tips\n- integrated retraction fold ridges\n\nPrompt risks to avoid:\n- Avoid a cute decorative flower; it must read as a dangerous sessile predator.\n- Avoid making the tentacles hair-thin or too numerous for articulation.\n- Avoid literal teeth, metal jaws, or land-plant leaves.\n- Avoid magenta or pink glow that conflicts with the chroma key background.\n- Keep lure halos, sting sparks, and digestive clouds separate from the base source.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/lantern-anemone-pit.png",
+      "critic": {
+        "cohesionRisks": [
+          "Reads too much like a decorative flower icon or coral bloom.",
+          "Dark purple wedge or rectangular backing looks like baked shadow or detached artifact rather than anatomy."
+        ],
+        "animationRisk": "Parity and phase/contact evidence show blocky rectangular bounds and little clamp/retraction support.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-lantern-anemone-pit-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#lantern-anemone-pit",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#lantern-anemone-pit",
+        "quickReview": "/review/source-candidates/quick-reviews/lantern-anemone-pit.html",
+        "planPreview": "/review/articulated/lantern-anemone-pit-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/lantern-anemone-pit-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-lantern-anemone-pit&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/08-lantern-anemone-pit.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id lantern-anemone-pit",
+        "checkImagegen": "npm run source:imagegen-status -- --id lantern-anemone-pit",
+        "ingestImagegen": "npm run source:imagegen-status -- --id lantern-anemone-pit --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id lantern-anemone-pit --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id lantern-anemone-pit --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id lantern-anemone-pit --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id lantern-anemone-pit --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png",
+        "dryRunReplace": "npm run source:ingest -- --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id lantern-anemone-pit",
+        "sourcePreview": "npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    },
+    {
+      "rank": 9,
+      "id": "predatory-tunicate-maw",
+      "species": "Predatory Tunicate Maw",
+      "status": "needs-review",
+      "recommendation": "regenerate",
+      "lane": "sessile-ambush-hazards",
+      "source": "public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png",
+      "promptFile": "public/review/source-candidates/critic-regeneration-prompts/09-predatory-tunicate-maw.txt",
+      "prompt": "Critic regeneration target: Predatory Tunicate Maw (predatory-tunicate-maw)\n\nRegenerate this source image because a lane critic explicitly found it below the source-approval bar.\nCreate one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.\nDo not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.\nPreserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.\n\nFlat pure #ff00ff magenta background, isolated whole full-body 2D game sprite source art, cohesive underwater enemy called Predatory Tunicate Maw, deep-sea predatory tunicate inspired soft-bodied sessile threat, flexible stalk rising from anchor foot pad, translucent gelatin tunic body, huge paired siphon mouth with thick soft upper and lower siphon lips, ridged gelatin rim folds, rounded rim papillae, visible inner filter fold fan and muted organ sac, small side siphon, pale ghost ivory amber olive and cold blue palette, side-facing three-quarter view, crop-friendly separated stalk anchor body mouth lobes lip ridges folds organ sac and side siphon, crisp painterly browser-game sprite, centered with generous margin, no environment, no rock, no shadow, no haze, no bubbles, no text\n\nSubagent cohesion failures to fix:\n- Angler-like lure and trailing tentacle strands violate the prompt's reject cues.\n- Body reads more like a fantasy flytrap or sea-monster plant than a soft paired-siphon tunicate.\n\nSubagent animation risk to solve:\n- Phase sheet is essentially static, and the maw/tendrils do not set up a clean soft clamp cycle.\n\nExisting regenerate-if-observed risks:\n- Angler-like lure and trailing tentacle strands violate the prompt's reject cues.\n- Body reads more like a fantasy flytrap or sea-monster plant than a soft paired-siphon tunicate.\n- Avoid making it a clam, venus flytrap plant, or fantasy mouth monster; preserve tunicate softness and siphon anatomy.\n- Avoid hard teeth, bones, metal jaws, or mechanical hinges.\n- human source approval missing\n- human source cohesion approval is still missing\n\nRequired biological read:\n- One rooted soft-bodied tunicate creature, not a plant, clam, or anemone.\n- Large open siphon mouth is the first danger read.\n- Upper and lower mouth lobes are thick and separated for hinge animation.\n- Stalk, anchor foot, tunic body, and internal folds remain connected as one organism.\n- No surrounding rock wall, sediment, prey fish, particles, or shadows baked into the source.\n\nCrop-safe articulatable parts:\n- anchor foot pad\n- flexible stalk\n- main translucent tunic body\n- upper siphon jaw lobe\n- lower siphon jaw lobe\n- left lip ridge\n- right lip ridge\n- inner filter fold fan\n- internal organ sac\n- small side siphon\n- rim toothlike papillae\n- soft siphon lip membrane\n\nPrompt risks to avoid:\n- Avoid making it a clam, venus flytrap plant, or fantasy mouth monster; preserve tunicate softness and siphon anatomy.\n- Avoid hard teeth, bones, metal jaws, or mechanical hinges.\n- Avoid transparency so faint that the silhouette disappears at game scale.\n- Avoid magenta, hot pink, or purple body tones that interfere with chroma keying.\n- Keep mucus strands, bite impacts, and prey silhouettes as separate VFX.\n- Reject teeth, angler lures, tentacles, plant petals, clam shells, and pink or magenta tissue near the key color.\n\nHard acceptance bar:\n- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.\n- Strong readable silhouette at small sprite scale.\n- Obvious attack lane and neutral riggable pose.\n- Clean magenta key, no white/black baked background, no particles, no prey, no text.\n- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.",
+      "expectedInboxImage": "tools/source-inbox/predatory-tunicate-maw.png",
+      "critic": {
+        "cohesionRisks": [
+          "Angler-like lure and trailing tentacle strands violate the prompt's reject cues.",
+          "Body reads more like a fantasy flytrap or sea-monster plant than a soft paired-siphon tunicate."
+        ],
+        "animationRisk": "Phase sheet is essentially static, and the maw/tendrils do not set up a clean soft clamp cycle.",
+        "advisoryState": "critic-recommends-regenerate"
+      },
+      "links": {
+        "source": "/assets/generated/fauna-predatory-tunicate-maw-whole-source.png",
+        "sourceCriticBoard": "/review/source-candidates/source-critic-board.html#predatory-tunicate-maw",
+        "sourceReplaceRunway": "/review/source-candidates/source-replace-runway.html#predatory-tunicate-maw",
+        "quickReview": "/review/source-candidates/quick-reviews/predatory-tunicate-maw.html",
+        "planPreview": "/review/articulated/predatory-tunicate-maw-plan-preview.png",
+        "sandboxPreview": "/review/source-candidates/quick-reviews/predatory-tunicate-maw-source-preview.png",
+        "liveSourceSandbox": "/?entity=source-predatory-tunicate-maw&companion=diver"
+      },
+      "commands": {
+        "openPrompt": "sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/09-predatory-tunicate-maw.txt",
+        "markImagegen": "npm run source:imagegen-mark -- --id predatory-tunicate-maw",
+        "checkImagegen": "npm run source:imagegen-status -- --id predatory-tunicate-maw",
+        "ingestImagegen": "npm run source:imagegen-status -- --id predatory-tunicate-maw --ingest",
+        "captureManual": "npm run source:inbox-capture -- --id predatory-tunicate-maw --open",
+        "recoverSavedImage": "npm run source:recover-inline -- --id predatory-tunicate-maw --image <saved-image-path> --copy --validate",
+        "generateOpenAiDryRun": "npm run source:generate-openai -- --id predatory-tunicate-maw --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite",
+        "generateOpenAiApply": "npm run source:generate-openai -- --id predatory-tunicate-maw --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite",
+        "validateInbox": "python3 tools/validate_source_candidate_images.py --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png",
+        "dryRunReplace": "npm run source:ingest -- --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png --copy --overwrite --dry-run",
+        "applyReplace": "npm run source:ingest -- --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png --copy --overwrite",
+        "imageCheck": "npm run source:image-check -- --id predatory-tunicate-maw",
+        "sourcePreview": "npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual",
+        "rebuildEvidence": "npm run source:gallery && npm run source:preview-check && npm run content:plan-coverage && npm run content:plan-coverage-check && npm run source:review-dossier && npm run source:review-dossier-check && npm run source:approval-runway && npm run source:approval-runway-check && npm run source:visual-board && npm run source:visual-board-check && npm run source:critic-board && npm run source:critic-regeneration && npm run source:critic-regeneration-check"
+      }
+    }
+  ]
+}

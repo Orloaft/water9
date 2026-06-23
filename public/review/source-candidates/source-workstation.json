@@ -1,0 +1,121 @@
+{
+  "schema": "water9/source-workstation@1",
+  "generatedAt": "2026-06-18T17:06:58.063Z",
+  "generatedFrom": {
+    "sourceCandidates": "public/review/source-candidates/source-candidates.json",
+    "sourceQueue": "public/review/source-candidates/source-generation-queue.json",
+    "sourceDoctor": "public/review/source-candidates/source-intake-doctor.json",
+    "nextAction": "public/review/content-next-action.json",
+    "rejections": "public/review/source-candidates/rejected-attempts.json"
+  },
+  "target": {
+    "id": "brine-crown",
+    "species": "Brine Crown",
+    "status": "needs-review",
+    "doctorStatus": "source-present",
+    "queueRank": null,
+    "expectedOutput": "public/assets/generated/fauna-brine-crown-whole-source.png",
+    "promptFile": null,
+    "expectedInboxFiles": [
+      "tools/source-inbox/brine-crown.png",
+      "tools/source-inbox/fauna-brine-crown-whole-source.png"
+    ],
+    "captureCommand": "npm run source:inbox-capture -- --id brine-crown --open",
+    "captureUrl": "http://127.0.0.1:5188/?id=brine-crown",
+    "captureEscalation": {
+      "schema": "water9/source-capture-escalation@1",
+      "candidateId": "brine-crown",
+      "threshold": 5,
+      "missingArtifactAttempts": 0,
+      "manualCaptureRequired": false,
+      "noMoreInlineRetries": false,
+      "reason": "Manual capture escalation starts at 5 missing-artifact attempts.",
+      "primaryCommand": "npm run source:inbox-capture -- --id brine-crown --open",
+      "expectedInboxFile": "tools/source-inbox/brine-crown.png",
+      "recoveryCommands": [
+        "npm run source:recover-inline -- --id brine-crown --image <saved-image-path> --copy --validate",
+        "npm run source:recover-inline -- --id brine-crown --data-url-stdin --copy --validate",
+        "npm run source:recover-inline -- --id brine-crown --stdin-base64 --stdin-filename brine-crown.png --copy --validate"
+      ],
+      "validationCommands": [
+        "npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown",
+        "npm run source:ingest-current -- --id brine-crown --dry-run",
+        "npm run source:ingest-current -- --id brine-crown --apply"
+      ]
+    },
+    "commands": [
+      "npm run source:next-prompt -- --id brine-crown",
+      "npm run source:inbox-capture -- --id brine-crown --open",
+      "npm run source:inbox-capture",
+      "npm run source:recover-inline -- --id brine-crown --image <saved-image-path> --copy --validate",
+      "npm run source:recover-inline -- --id brine-crown --data-url-stdin --copy --validate",
+      "npm run source:recover-inline -- --id brine-crown --stdin-base64 --stdin-filename brine-crown.png --copy --validate",
+      "npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown",
+      "npm run source:ingest-current -- --id brine-crown --dry-run",
+      "npm run source:ingest-current -- --id brine-crown --apply",
+      "npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown --dry-run",
+      "npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids brine-crown",
+      "npm run source:image-check -- --id brine-crown",
+      "npm run source:preview-check",
+      "npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual",
+      "npm run source:review-dossier",
+      "npm run source:review-dossier-check",
+      "npm run source:quick-review-all -- --no-build",
+      "npm run source:check",
+      "npm run source:gallery"
+    ],
+    "operatorSequence": [
+      "Open the current prompt with npm run source:next-prompt -- --id brine-crown.",
+      "Generate one cohesive whole-source creature on pure #ff00ff and save it as tools/source-inbox/brine-crown.png.",
+      "If the image is only available inline, use source:recover-inline instead of attempting more unrecoverable generations.",
+      "Run npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown; do not ingest until it passes.",
+      "Run npm run source:ingest-current -- --id brine-crown --dry-run, then apply with --apply if the dry run is clean.",
+      "Run npm run source:image-check -- --id brine-crown, npm run source:preview-check, and the source sandbox preview before human review.",
+      "Reject outputs with weak silhouette, detached parts, non-magenta background, crop-hostile anatomy, or non-riggable pose."
+    ],
+    "qualityGateCommands": [
+      "npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown",
+      "npm run source:ingest-current -- --id brine-crown --dry-run",
+      "npm run source:image-check -- --id brine-crown",
+      "npm run source:preview-check",
+      "npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual",
+      "npm run source:review-dossier && npm run source:review-dossier-check",
+      "npm run source:check",
+      "npm run content:status -- --json"
+    ],
+    "requiredRead": [
+      "One rooted radial organism, not a collage of coral, starfish, and vent tubes.",
+      "Central crown or toxic throat is the first read.",
+      "Low anchored basal mat with uneven rays/fronds and visible hinge/root zones.",
+      "Readable toxic blisters, spine halo, and corrosive danger cues at game scale.",
+      "No loose detached parts, environmental shadows, haze, floor plane, or particles baked into the source."
+    ],
+    "promptRisks": [
+      "Avoid a decorative reef; the source must read as a dangerous organism.",
+      "Avoid perfect radial ornament symmetry that feels like a logo.",
+      "Avoid magenta or hot pink body colors that will key out.",
+      "Avoid loose vent tubes or starfish arms that do not grow from the same mat.",
+      "Keep toxic clouds, bubbles, and brine puddles as separate VFX rather than baked source art.",
+      "Reject cephalopod tentacles, curled octopus arms, eyes, free-swimming anatomy, or loose starfish limbs."
+    ],
+    "contractReviewChecklist": [
+      "Short radial lobes are fused flat into one basal mat and do not read as tentacles, octopus arms, or free limbs.",
+      "Central crown cup, toxic throat, brine blisters, roots, and mineral spines share one rooted vent-organism anatomy.",
+      "The creature remains stationary and low to the seafloor, not a free-swimming cephalopod or decorative starfish."
+    ],
+    "articulatableParts": [
+      "basal mat torso",
+      "central crown cup head",
+      "dark throat pore",
+      "front radial frond",
+      "left radial frond",
+      "right radial frond",
+      "rear radial fronds",
+      "brine blister bank",
+      "spine halo cluster",
+      "root tendril skirt"
+    ],
+    "prompt": "Flat pure #ff00ff magenta background, isolated full-body 2D game creature source art, cohesive underwater threat called Brine Crown, stationary abyssal vent organism forming one rooted toxic basal mat, inspired by coralline hydrothermal flora without starfish or cephalopod anatomy, central jagged crown cup with dark toxic throat, five to seven short thick radial lobes fused flat into the basal mat, opaque brine blisters glowing sickly green amber, mineral spines around the rim, root-like tendrils, gloomy charcoal deep teal bone oxidized copper palette, crisp readable silhouette, crop-friendly hinge zones, no environment, no shadows, no haze, no duplicate creatures, no detached limbs, no text"
+  },
+  "rejections": []
+}

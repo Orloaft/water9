@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Source Quick Review: Brine Mycelium Shelf</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061114; --panel:#0d1e24; --line:#294751; --text:#e7f7f8; --muted:#9eb7bd; --accent:#83e8ff; --warn:#f0c66e; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1320px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 6px; font-size:32px; }
+    h2 { margin:24px 0 8px; font-size:18px; }
+    p { color:var(--muted); }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    button, input, select, textarea { font:inherit; }
+    input, select, textarea { width:100%; border:1px solid var(--line); border-radius:5px; background:#050b0d; color:var(--text); padding:8px; }
+    textarea { resize:vertical; }
+    button { border:1px solid var(--line); border-radius:5px; background:#12313a; color:var(--text); padding:9px 12px; cursor:pointer; }
+    button:hover { border-color:var(--accent); }
+    .status { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+    .status span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .status strong { color:var(--text); margin-left:5px; }
+    .images { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; margin:18px 0; }
+    figure { margin:0; border:1px solid var(--line); background:#050b0d; border-radius:5px; overflow:hidden; }
+    img { display:block; width:100%; max-height:360px; object-fit:contain; background:#050b0d; }
+    figcaption { color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); }
+    .missing { display:flex; min-height:180px; align-items:center; justify-content:center; border:1px dashed var(--line); color:var(--muted); border-radius:5px; }
+    section { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; margin:14px 0; }
+    dl { display:grid; grid-template-columns:160px 1fr; gap:7px 10px; }
+    dt { color:var(--muted); }
+    dd { margin:0; overflow-wrap:anywhere; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { border-top:1px solid var(--line); padding:8px; text-align:left; vertical-align:top; }
+    th { color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .review-builder p { margin-top:0; }
+    .builder-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+    .builder-checks { display:grid; gap:10px; margin:12px 0; }
+    .builder-check { display:grid; grid-template-columns:minmax(180px,240px) minmax(160px,200px) 1fr; gap:10px; align-items:start; border-top:1px solid var(--line); padding-top:10px; }
+    label { display:grid; gap:5px; color:var(--muted); }
+    label input, label select, label textarea { color:var(--text); }
+    .builder-actions { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0; }
+    .builder-warning { color:var(--warn); min-height:1.4em; }
+    [data-command-output] { font-family:"SFMono-Regular",Consolas,monospace; }
+    @media (max-width: 720px) { .builder-check { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Brine Mycelium Shelf</h1>
+    <p><code>brine-mycelium-shelf</code> source quick review. This page is evidence for a human reviewer; it does not approve the source.</p>
+    <div class="status">
+      <span>review status <strong>ready-for-human-review</strong></span>
+      <span>ready for human review <strong>true</strong></span>
+      <span>approved <strong>false</strong></span>
+      <span>generated <strong>2026-06-18T17:06:58.338Z</strong></span>
+    </div>
+    <div class="images">
+      <figure><img src="/assets/generated/fauna-brine-mycelium-shelf-whole-source.png" alt="Brine Mycelium Shelf whole source"><figcaption>whole source</figcaption></figure>
+      <figure><img src="/review/source-candidates/thumbs/brine-mycelium-shelf-source-thumb.png" alt="Brine Mycelium Shelf source thumbnail"><figcaption>source thumbnail</figcaption></figure>
+      <figure><img src="/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png" alt="Brine Mycelium Shelf key preview"><figcaption>magenta key preview</figcaption></figure>
+      <figure><img src="/review/source-candidates/quick-reviews/brine-mycelium-shelf-source-preview.png" alt="Brine Mycelium Shelf sandbox screenshot"><figcaption>sandbox screenshot</figcaption></figure>
+      <figure><img src="/review/articulated/brine-mycelium-shelf-plan-preview.png" alt="Brine Mycelium Shelf articulation plan preview"><figcaption>articulation plan preview</figcaption></figure>
+    </div>
+    <section>
+      <h2>Evidence</h2>
+      <dl>
+        <dt>source</dt><dd><code>public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png</code></dd>
+        <dt>contract</dt><dd><code>public/review/source-candidates/art-contracts/brine-mycelium-shelf.md</code></dd>
+        <dt>image validation</dt><dd>pass</dd>
+        <dt>source preview</dt><dd>pass</dd>
+        <dt>source size</dt><dd>1536x1024</dd>
+        <dt>subject size</dt><dd>1070x572</dd>
+        <dt>background ratio</dt><dd>0.6966</dd>
+      </dl>
+    </section>
+    <section>
+      <h2>Blockers</h2>
+      <ul><li>human source approval is still missing</li></ul>
+    </section>
+    <section>
+      <h2>Approval Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Visual Flag</th><th>Score</th><th>Visual Note</th></tr></thead>
+        <tbody><tr>
+    <td>whole-creature-cohesion</td>
+    <td>yes</td>
+    <td><code>--score whole-creature-cohesion=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note whole-creature-cohesion='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>part-continuity-cohesion</td>
+    <td>yes</td>
+    <td><code>--score part-continuity-cohesion=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note part-continuity-cohesion='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>readable-silhouette</td>
+    <td>yes</td>
+    <td><code>--score readable-silhouette=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note readable-silhouette='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>no-collage-artifacts</td>
+    <td>yes</td>
+    <td><code>--score no-collage-artifacts=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note no-collage-artifacts='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>non-placeholder-art-direction</td>
+    <td>yes</td>
+    <td><code>--score non-placeholder-art-direction=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note non-placeholder-art-direction='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>crop-safe-anatomy</td>
+    <td>yes</td>
+    <td><code>--score crop-safe-anatomy=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note crop-safe-anatomy='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>clean-magenta-key</td>
+    <td>yes</td>
+    <td><code>--score clean-magenta-key=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note clean-magenta-key='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>gameplay-read</td>
+    <td>yes</td>
+    <td><code>--score gameplay-read=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note gameplay-read='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>neutral-riggable-pose</td>
+    <td>yes</td>
+    <td><code>--score neutral-riggable-pose=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note neutral-riggable-pose='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr>
+<tr>
+    <td>visible-attack-lane</td>
+    <td>yes</td>
+    <td><code>--score visible-attack-lane=&lt;4-5&gt;</code></td>
+    <td><code>--visual-note visible-attack-lane='&lt;specific rationale citing source evidence&gt;'</code></td>
+  </tr></tbody>
+      </table>
+    </section>
+    <section class="review-builder" data-review-command-builder>
+      <h2>Human Review Command Builder</h2>
+      <p>Fill this out after inspecting the source, key preview, sandbox screenshot, articulation plan preview, and source visual board. The page generates a command only; source approval still requires a human to run it.</p>
+      <div class="builder-grid">
+        <label>Reviewer
+          <input data-reviewer type="text" placeholder="human reviewer name">
+        </label>
+        <label>Status
+          <select data-status>
+            <option value="approved">approved</option>
+            <option value="rejected">rejected</option>
+            <option value="needs-review">needs-review</option>
+          </select>
+        </label>
+      </div>
+      <label>Overall note
+        <textarea data-overall-note rows="3" placeholder="Specific source-level rationale."></textarea>
+      </label>
+      <div class="builder-checks"><div class="builder-check" data-check="whole-creature-cohesion">
+        <label>whole-creature-cohesion score
+          <select data-score="whole-creature-cohesion">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>whole-creature-cohesion failed for rejection
+          <input data-failed-check="whole-creature-cohesion" type="checkbox">
+        </label>
+        <label>whole-creature-cohesion evidence note
+          <textarea data-note="whole-creature-cohesion" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="part-continuity-cohesion">
+        <label>part-continuity-cohesion score
+          <select data-score="part-continuity-cohesion">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>part-continuity-cohesion failed for rejection
+          <input data-failed-check="part-continuity-cohesion" type="checkbox">
+        </label>
+        <label>part-continuity-cohesion evidence note
+          <textarea data-note="part-continuity-cohesion" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="readable-silhouette">
+        <label>readable-silhouette score
+          <select data-score="readable-silhouette">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>readable-silhouette failed for rejection
+          <input data-failed-check="readable-silhouette" type="checkbox">
+        </label>
+        <label>readable-silhouette evidence note
+          <textarea data-note="readable-silhouette" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="no-collage-artifacts">
+        <label>no-collage-artifacts score
+          <select data-score="no-collage-artifacts">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>no-collage-artifacts failed for rejection
+          <input data-failed-check="no-collage-artifacts" type="checkbox">
+        </label>
+        <label>no-collage-artifacts evidence note
+          <textarea data-note="no-collage-artifacts" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="non-placeholder-art-direction">
+        <label>non-placeholder-art-direction score
+          <select data-score="non-placeholder-art-direction">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>non-placeholder-art-direction failed for rejection
+          <input data-failed-check="non-placeholder-art-direction" type="checkbox">
+        </label>
+        <label>non-placeholder-art-direction evidence note
+          <textarea data-note="non-placeholder-art-direction" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="crop-safe-anatomy">
+        <label>crop-safe-anatomy score
+          <select data-score="crop-safe-anatomy">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>crop-safe-anatomy failed for rejection
+          <input data-failed-check="crop-safe-anatomy" type="checkbox">
+        </label>
+        <label>crop-safe-anatomy evidence note
+          <textarea data-note="crop-safe-anatomy" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="clean-magenta-key">
+        <label>clean-magenta-key score
+          <select data-score="clean-magenta-key">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>clean-magenta-key failed for rejection
+          <input data-failed-check="clean-magenta-key" type="checkbox">
+        </label>
+        <label>clean-magenta-key evidence note
+          <textarea data-note="clean-magenta-key" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="gameplay-read">
+        <label>gameplay-read score
+          <select data-score="gameplay-read">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>gameplay-read failed for rejection
+          <input data-failed-check="gameplay-read" type="checkbox">
+        </label>
+        <label>gameplay-read evidence note
+          <textarea data-note="gameplay-read" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="neutral-riggable-pose">
+        <label>neutral-riggable-pose score
+          <select data-score="neutral-riggable-pose">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>neutral-riggable-pose failed for rejection
+          <input data-failed-check="neutral-riggable-pose" type="checkbox">
+        </label>
+        <label>neutral-riggable-pose evidence note
+          <textarea data-note="neutral-riggable-pose" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div>
+<div class="builder-check" data-check="visible-attack-lane">
+        <label>visible-attack-lane score
+          <select data-score="visible-attack-lane">
+            <option value="4">4 - passes</option>
+            <option value="5">5 - strong pass</option>
+          </select>
+        </label>
+        <label>visible-attack-lane failed for rejection
+          <input data-failed-check="visible-attack-lane" type="checkbox">
+        </label>
+        <label>visible-attack-lane evidence note
+          <textarea data-note="visible-attack-lane" rows="2" placeholder="Specific visual evidence from the source art."></textarea>
+        </label>
+      </div></div>
+      <div class="builder-actions">
+        <button type="button" data-build-command>Build Command</button>
+        <button type="button" data-copy-command>Copy Command</button>
+      </div>
+      <textarea data-command-output rows="8" spellcheck="false" aria-label="Generated source review command"></textarea>
+      <p class="builder-warning" data-builder-warning></p>
+      <script type="application/json" data-review-command-data>{"id":"brine-mycelium-shelf","checks":["whole-creature-cohesion","part-continuity-cohesion","readable-silhouette","no-collage-artifacts","non-placeholder-art-direction","crop-safe-anatomy","clean-magenta-key","gameplay-read","neutral-riggable-pose","visible-attack-lane"]}</script>
+    </section>
+    <section>
+      <h2>Candidate Contract Checks</h2>
+      <ul><li>Shelf plates grow from one low mycelial root mat through visible hinge-root webs; no individual mushroom caps or stems.</li><li>Spore sac, plates, pores, and filament fringe read as one underwater biofilm organism, not a rock or coral slab.</li><li>Plate lips are thick enough for crop-safe articulation and are not hidden by fuzzy texture or baked spore clouds.</li></ul>
+      <h2>Reject Risks</h2>
+      <ul><li>Avoid terrestrial mushroom caps with stems; keep the form encrusting and underwater-adapted.</li><li>Avoid making the source look like an inert rock or coral slab.</li><li>Avoid dense fuzzy texture that hides the main plates and hinge zones.</li><li>Avoid baked spore clouds or fog covering the anatomy.</li><li>Avoid magenta, hot pink, or purple fungal tissue near the key color.</li></ul>
+    </section>
+    <section>
+      <h2>Commands</h2>
+      <pre><code>npm run sandbox:preview -- --id brine-mycelium-shelf --kind source --serve --open --visual
+npm run source:image-check
+npm run source:preview-check
+npm run source:accept -- --id brine-mycelium-shelf --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json
+npm run source:accept -- --id brine-mycelium-shelf --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const root = document.querySelector('[data-review-command-builder]');
+      if (!root) return;
+      const dataNode = root.querySelector('[data-review-command-data]');
+      const data = JSON.parse(dataNode.textContent);
+      const output = root.querySelector('[data-command-output]');
+      const warning = root.querySelector('[data-builder-warning]');
+      const shellQuote = (value) => "'" + String(value ?? '').replaceAll("'", "'\\''") + "'";
+      const build = () => {
+        const reviewer = root.querySelector('[data-reviewer]').value.trim();
+        const status = root.querySelector('[data-status]').value;
+        const note = root.querySelector('[data-overall-note]').value.trim();
+        const missing = [];
+        if (!reviewer) missing.push('reviewer');
+        if (!note) missing.push('overall note');
+        const command = [
+          'npm run source:accept --',
+          '--id', data.id,
+          '--status', status,
+          '--reviewed-by', shellQuote(reviewer || '<human-reviewer>'),
+          '--note', shellQuote(note || '<specific source approval note>'),
+        ];
+        if (status === 'approved') {
+          for (const check of data.checks) {
+            const score = root.querySelector(`[data-score="${check}"]`)?.value || '4';
+            const visualNote = root.querySelector(`[data-note="${check}"]`)?.value.trim() || '';
+            if (!visualNote) missing.push(`${check} note`);
+            command.push('--visual-check', check);
+            command.push('--score', `${check}=${score}`);
+            command.push('--visual-note', shellQuote(`${check}=${visualNote || '<specific rationale citing source evidence>'}`));
+          }
+          command.push('--source-reviewed');
+          command.push('--source-visual-board', 'public/review/source-visual-board.json');
+        } else if (status === 'rejected') {
+          let failedCount = 0;
+          for (const check of data.checks) {
+            const failed = root.querySelector(`[data-failed-check="${check}"]`)?.checked === true;
+            if (!failed) continue;
+            failedCount += 1;
+            const visualNote = root.querySelector(`[data-note="${check}"]`)?.value.trim() || '';
+            if (!visualNote) missing.push(`${check} failure note`);
+            command.push('--failed-check', check);
+            command.push('--visual-note', shellQuote(`${check}=${visualNote || '<specific failure rationale citing source evidence>'}`));
+          }
+          if (!failedCount) missing.push('at least one failed check');
+          command.push('--source-rejected');
+          command.push('--source-visual-board', 'public/review/source-visual-board.json');
+        }
+        output.value = command.join(' ');
+        warning.textContent = missing.length ? `Missing: ${missing.join(', ')}` : 'Command ready. Run it in a terminal after completing the review.';
+      };
+      root.querySelector('[data-build-command]').addEventListener('click', build);
+      root.querySelector('[data-copy-command]').addEventListener('click', async () => {
+        if (!output.value.trim()) build();
+        await navigator.clipboard?.writeText(output.value);
+        warning.textContent = 'Command copied.';
+      });
+      build();
+    })();
+  </script>
+</body>
+</html>

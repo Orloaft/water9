@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Visual Regeneration Queue</title>
+  <style>
+    :root { color-scheme: dark; background:#061014; color:#d9edf0; font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    body { margin:0; padding:28px; background:#061014; }
+    main { max-width:1120px; margin:0 auto; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); letter-spacing:0; }
+    h2 { margin:0; font-size:1.1rem; }
+    h3 { margin:14px 0 8px; color:#9fb4b9; font-size:.8rem; text-transform:uppercase; }
+    p, li, dd { color:#c3d9de; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { border:1px solid #294653; background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .notice, .card, .summary { border:1px solid #294653; background:#0b1d24; border-radius:6px; padding:14px; }
+    .notice { border-color:#704747; background:#1d1012; color:#f0b5aa; margin:14px 0; }
+    .summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:8px; margin:18px 0; }
+    .summary span { border:1px solid #203b46; background:#07171d; border-radius:5px; padding:8px 10px; }
+    .card { margin:12px 0; }
+    .card header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    dl { display:grid; grid-template-columns:150px 1fr; gap:5px 10px; margin:12px 0; }
+    dt { color:#8fa8ae; }
+    dd { margin:0; }
+  </style>
+</head>
+<body>
+  <main data-content-visual-regeneration-queue>
+    <h1>Visual Regeneration Queue</h1>
+    <p>Source-first regeneration briefs for blocked runtime prototypes.</p>
+    <div class="notice">These prompts do not approve art. They restart the creature at the full-source concept stage.</div>
+    <section class="summary">
+      <span>items <strong>1</strong></span>
+      <span>blocking <strong>1</strong></span>
+      <span>unmapped prototypes <strong>1</strong></span>
+      <span>strict gate credit <strong>0</strong></span>
+    </section>
+    <article class="card" data-visual-regeneration-target="abyssal-serpent">
+    <header>
+      <div><h2>Abyssal Serpent</h2><code>abyssal-serpent</code></div>
+      <strong>rejected-needs-cohesion-regeneration</strong>
+    </header>
+    <p>The preview lacks visual cohesion and should be treated as a mechanical rig proof-of-concept, not production-ready creature art or evidence of final capability.</p>
+    <dl>
+      <dt>prompt</dt><dd><code>public/review/content-visual-regeneration-prompts/01-abyssal-serpent.txt</code></dd>
+      <dt>preview-only</dt><dd>yes</dd>
+      <dt>target gate candidate</dt><dd>no</dd>
+      <dt>strict gate</dt><dd>does not count</dd>
+    </dl>
+    <h3>Failed Checks</h3>
+    <ul><li>whole-creature-cohesion</li><li>part-continuity-cohesion</li><li>non-placeholder-art-direction</li></ul>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,260p' public/review/content-visual-regeneration-prompts/01-abyssal-serpent.txt
+npm run sandbox:preview -- --id abyssal-serpent --serve --open --visual
+npm run sandbox:preview -- --id abyssal-serpent --with diver --serve --open --visual
+npm run content:visual-feedback &amp;&amp; npm run content:visual-feedback-check
+npm run content:visual-regeneration &amp;&amp; npm run content:visual-regeneration-check</code></pre>
+  </article>
+  </main>
+</body>
+</html>

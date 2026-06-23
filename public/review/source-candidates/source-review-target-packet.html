@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Review Target Packet</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background:#061014; color:#e6f7fb; }
+    body { margin:0; background:#061014; }
+    main { max-width:1360px; margin:0 auto; padding:28px 18px 48px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); letter-spacing:0; }
+    h2 { margin:22px 0 10px; color:#d9eef3; }
+    p, li, td { color:#bdd4dc; line-height:1.45; }
+    a { color:#8fe5ff; }
+    code, pre { color:#d8f5fb; overflow-wrap:anywhere; font-family:"SFMono-Regular", Consolas, monospace; }
+    pre { border:1px solid #203b46; border-radius:6px; background:#041014; padding:12px; white-space:pre-wrap; }
+    .notice { border:1px solid #6a5230; border-radius:6px; background:#1d1710; color:#f0d9aa; padding:10px 12px; margin:16px 0; }
+    .summary { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+    .summary span { border:1px solid #294653; border-radius:6px; background:#0b1d24; padding:8px 10px; color:#bdd6df; }
+    .media-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .media { display:flex; min-height:180px; flex-direction:column; justify-content:space-between; border:1px solid #203b46; border-radius:6px; background:#081920; padding:10px; text-decoration:none; }
+    .media span { color:#bcd8df; }
+    .media img { width:100%; max-height:260px; object-fit:contain; image-rendering:auto; background:#02070a; }
+    .missing { align-items:center; justify-content:center; color:#d9adad; }
+    table { width:100%; border-collapse:collapse; border:1px solid #203b46; background:#081920; }
+    th, td { padding:8px 9px; border-bottom:1px solid #18303a; text-align:left; vertical-align:top; }
+    th { background:#10242c; color:#e7f7fb; }
+  </style>
+</head>
+<body>
+  <main data-source-review-target-packet data-source-review-target="brine-crown">
+    <h1>Source Review Target Packet</h1>
+    <p>Focused packet for the current source-review sequencer target.</p>
+    <div class="notice">This packet does not approve source art, does not accept threats, and does not count preview-only work toward the 20-threat gate.</div>
+    <div class="summary">
+      <span>brine-crown</span>
+      <span>Brine Crown</span>
+      <span>lane approval-ready</span>
+      <span>status approval-ready; human source review required</span>
+      <span>health replacement-applied</span>
+      <span>gate count no</span>
+    </div>
+    <h2>Command Boundary</h2>
+    <p>This approval lane may expose dry-run source approval commands only. Real approval requires human inspection.</p>
+    <h2>Evidence</h2>
+    <div class="media-grid">
+      <a class="media" href="/assets/generated/fauna-brine-crown-whole-source.png"><span>Source image</span><img src="/assets/generated/fauna-brine-crown-whole-source.png" alt="Source image"></a>
+      <a class="media" href="/review/source-candidates/thumbs/brine-crown-source-thumb.png"><span>Thumbnail</span><img src="/review/source-candidates/thumbs/brine-crown-source-thumb.png" alt="Thumbnail"></a>
+      <a class="media" href="/review/source-candidates/key-previews/brine-crown-key-preview.png"><span>Key preview</span><img src="/review/source-candidates/key-previews/brine-crown-key-preview.png" alt="Key preview"></a>
+      <a class="media" href="/?entity=source-brine-crown&amp;companion=diver"><span>Source preview</span><img src="/?entity=source-brine-crown&amp;companion=diver" alt="Source preview"></a>
+      <a class="media" href="/review/articulated/brine-crown-plan-preview.png"><span>Plan preview</span><img src="/review/articulated/brine-crown-plan-preview.png" alt="Plan preview"></a>
+    </div>
+    <table>
+      <tbody>
+        <tr><th>Sequencer</th><td><a href="/review/source-candidates/source-review-sequencer.html">/review/source-candidates/source-review-sequencer.html</a></td></tr>
+        <tr><th>Quick review</th><td><a href="/review/source-candidates/quick-reviews/brine-crown.html">/review/source-candidates/quick-reviews/brine-crown.html</a></td></tr>
+        <tr><th>Review packet</th><td>public/review/source-candidates/source-review-packets/brine-crown.md</td></tr>
+        <tr><th>Critic health</th><td><a href="/review/source-candidates/source-critic-regeneration-health.html">/review/source-candidates/source-critic-regeneration-health.html</a></td></tr>
+        <tr><th>Approval runway</th><td><a href="/review/source-approval-runway.html">/review/source-approval-runway.html</a></td></tr>
+      </tbody>
+    </table>
+    <h2>Critic Prompt</h2>
+    <p>Prompt file: <code>public/review/source-candidates/critic-regeneration-prompts/07-brine-crown.txt</code></p>
+    <pre><code>Critic regeneration target: Brine Crown (brine-crown)
+
+Regenerate this source image because a lane critic explicitly found it below the source-approval bar.
+Create one cohesive whole-source underwater threat on a flat pure #ff00ff magenta background.
+Do not create a parts sheet, animation strip, screenshot, UI icon, environmental prop, or collage.
+Preserve the gameplay verb and biological anchors, but redesign weak anatomy so it reads as one living organism.
+
+Flat pure #ff00ff magenta background, isolated full-body 2D game creature source art, cohesive underwater threat called Brine Crown, stationary abyssal vent organism forming one rooted toxic basal mat, inspired by coralline hydrothermal flora without starfish or cephalopod anatomy, central jagged crown cup with dark toxic throat, five to seven short thick radial lobes fused flat into the basal mat, opaque brine blisters glowing sickly green amber, mineral spines around the rim, root-like tendrils, gloomy charcoal deep teal bone oxidized copper palette, crisp readable silhouette, crop-friendly hinge zones, no environment, no shadows, no haze, no duplicate creatures, no detached limbs, no text
+
+Subagent cohesion failures to fix:
+- Curled radial lobes read strongly as cephalopod arms, which the contract rejects.
+- Dense mineral and coral detail makes the basal mat, crown, blister bank, and spines feel kitbashed.
+
+Subagent animation risk to solve:
+- Phase/contact evidence is nearly static; spine raise, blister swelling, and brine-lane growth need heavy deformation or repaint.
+
+Existing regenerate-if-observed risks:
+- Curled radial lobes read strongly as cephalopod arms, which the contract rejects.
+- Dense mineral and coral detail makes the basal mat, crown, blister bank, and spines feel kitbashed.
+- Avoid a decorative reef; the source must read as a dangerous organism.
+- Avoid perfect radial ornament symmetry that feels like a logo.
+- human source approval missing
+- human source cohesion approval is still missing
+
+Required biological read:
+- One rooted radial organism, not a collage of coral, starfish, and vent tubes.
+- Central crown or toxic throat is the first read.
+- Low anchored basal mat with uneven rays/fronds and visible hinge/root zones.
+- Readable toxic blisters, spine halo, and corrosive danger cues at game scale.
+- No loose detached parts, environmental shadows, haze, floor plane, or particles baked into the source.
+
+Crop-safe articulatable parts:
+- basal mat torso
+- central crown cup head
+- dark throat pore
+- front radial frond
+- left radial frond
+- right radial frond
+- rear radial fronds
+- brine blister bank
+- spine halo cluster
+- root tendril skirt
+
+Prompt risks to avoid:
+- Avoid a decorative reef; the source must read as a dangerous organism.
+- Avoid perfect radial ornament symmetry that feels like a logo.
+- Avoid magenta or hot pink body colors that will key out.
+- Avoid loose vent tubes or starfish arms that do not grow from the same mat.
+- Keep toxic clouds, bubbles, and brine puddles as separate VFX rather than baked source art.
+- Reject cephalopod tentacles, curled octopus arms, eyes, free-swimming anatomy, or loose starfish limbs.
+
+Hard acceptance bar:
+- One continuous organism with connected anatomy and consistent lighting, palette, scale, and material language.
+- Strong readable silhouette at small sprite scale.
+- Obvious attack lane and neutral riggable pose.
+- Clean magenta key, no white/black baked background, no particles, no prey, no text.
+- Every later-cropped part must have a visible root, hinge, socket, membrane, stalk, or soft tissue transition.
+</code></pre>
+    <h2>Commands</h2>
+    <pre><code>npm run source:quick-review -- --id brine-crown
+npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual
+npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual
+npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json
+npm run source:accept -- --id brine-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json --dry-run</code></pre>
+    <h2>Quality Gate Boundary</h2>
+    <ul>
+      <li>Human-approved sources: <code>0</code></li>
+      <li>Accepted threats: <code>0</code></li>
+      <li>Approval-ready sources: <code>20</code></li>
+      <li>Critic regeneration required: <code>0</code></li>
+    </ul>
+  </main>
+</body>
+</html>

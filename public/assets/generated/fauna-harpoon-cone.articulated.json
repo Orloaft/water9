@@ -1,0 +1,508 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-harpoon-cone",
+  "runtimeCreatureId": "harpoon-cone",
+  "displayName": "Harpoon Cone",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-harpoon-cone-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "shell-body",
+      "key": "fauna-harpoon-cone-shell-body",
+      "src": "fauna-harpoon-cone-shell-body.png",
+      "sourceCrop": {
+        "x": 30,
+        "y": 20,
+        "width": 575,
+        "height": 420
+      },
+      "size": {
+        "width": 575,
+        "height": 420
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.5,
+        "drag": 0.86,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 1.55,
+        "mobilityFactor": 0.72
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.0,
+        "frequency": 1.05,
+        "phase": 0.0,
+        "lag": 0.08
+      },
+      "damagedSrc": "fauna-harpoon-cone-shell-body-damaged.png",
+      "damagedKey": "fauna-harpoon-cone-shell-body-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "foot-skirt",
+      "key": "fauna-harpoon-cone-foot-skirt",
+      "src": "fauna-harpoon-cone-foot-skirt.png",
+      "sourceCrop": {
+        "x": 45,
+        "y": 300,
+        "width": 610,
+        "height": 180
+      },
+      "size": {
+        "width": 610,
+        "height": 180
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.1,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 0.9,
+        "mobilityFactor": 0.68
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 2.4,
+        "frequency": 1.2,
+        "phase": 1.3,
+        "lag": 0.34
+      }
+    },
+    {
+      "id": "aperture-lip",
+      "key": "fauna-harpoon-cone-aperture-lip",
+      "src": "fauna-harpoon-cone-aperture-lip.png",
+      "sourceCrop": {
+        "x": 500,
+        "y": 150,
+        "width": 185,
+        "height": 220
+      },
+      "size": {
+        "width": 185,
+        "height": 220
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.3,
+        "drag": 0.86,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 1.05,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.6,
+        "frequency": 1.25,
+        "phase": 0.3,
+        "lag": 0.12
+      }
+    },
+    {
+      "id": "siphon-feeler",
+      "key": "fauna-harpoon-cone-siphon-feeler",
+      "src": "fauna-harpoon-cone-siphon-feeler.png",
+      "sourceCrop": {
+        "x": 565,
+        "y": 90,
+        "width": 145,
+        "height": 180
+      },
+      "size": {
+        "width": 145,
+        "height": 180
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.26,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 0.5,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 6.0,
+        "frequency": 2.0,
+        "phase": 1.1,
+        "lag": 0.24
+      }
+    },
+    {
+      "id": "proboscis-base",
+      "key": "fauna-harpoon-cone-proboscis-base",
+      "src": "fauna-harpoon-cone-proboscis-base.png",
+      "sourceCrop": {
+        "x": 575,
+        "y": 210,
+        "width": 170,
+        "height": 190
+      },
+      "size": {
+        "width": 170,
+        "height": 190
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.62,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.82
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.8,
+        "frequency": 1.65,
+        "phase": 0.5,
+        "lag": 0.28
+      }
+    },
+    {
+      "id": "proboscis-mid",
+      "key": "fauna-harpoon-cone-proboscis-mid",
+      "src": "fauna-harpoon-cone-proboscis-mid.png",
+      "sourceCrop": {
+        "x": 675,
+        "y": 295,
+        "width": 175,
+        "height": 150
+      },
+      "size": {
+        "width": 175,
+        "height": 150
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.48,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.9
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 7.4,
+        "frequency": 1.85,
+        "phase": 0.92,
+        "lag": 0.52
+      }
+    },
+    {
+      "id": "proboscis-tip",
+      "key": "fauna-harpoon-cone-proboscis-tip",
+      "src": "fauna-harpoon-cone-proboscis-tip.png",
+      "sourceCrop": {
+        "x": 795,
+        "y": 345,
+        "width": 150,
+        "height": 145
+      },
+      "size": {
+        "width": 150,
+        "height": 145
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.38,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 0.58,
+        "mobilityFactor": 0.94
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 9.6,
+        "frequency": 2.15,
+        "phase": 1.25,
+        "lag": 0.74
+      }
+    },
+    {
+      "id": "harpoon-tooth",
+      "key": "fauna-harpoon-cone-harpoon-tooth",
+      "src": "fauna-harpoon-cone-harpoon-tooth.png",
+      "sourceCrop": {
+        "x": 875,
+        "y": 400,
+        "width": 95,
+        "height": 95
+      },
+      "size": {
+        "width": 95,
+        "height": 95
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.22,
+        "drag": 1.1,
+        "angularDrag": 0.52,
+        "severable": false,
+        "breakThreshold": 0.48,
+        "mobilityFactor": 1.0
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 14.0,
+        "frequency": 3.1,
+        "phase": 0.1,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "venom-glow",
+      "key": "fauna-harpoon-cone-venom-glow",
+      "src": "fauna-harpoon-cone-venom-glow.png",
+      "sourceCrop": {
+        "x": 850,
+        "y": 370,
+        "width": 100,
+        "height": 100
+      },
+      "size": {
+        "width": 100,
+        "height": 100
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.16,
+        "drag": 1.1,
+        "angularDrag": 0.4,
+        "severable": false,
+        "breakThreshold": 0.42,
+        "mobilityFactor": 1.0
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 3.6,
+        "frequency": 2.8,
+        "phase": 1.7,
+        "lag": 0.12
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "foot-skirt-socket",
+      "src": "fauna-harpoon-cone-foot-skirt-socket.png",
+      "parentId": "shell-body",
+      "childId": "foot-skirt",
+      "sourcePartId": "shell-body",
+      "sourceCrop": {
+        "x": 70,
+        "y": 300,
+        "width": 130,
+        "height": 105
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.94,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "aperture-lip-socket",
+      "src": "fauna-harpoon-cone-aperture-lip-socket.png",
+      "parentId": "shell-body",
+      "childId": "aperture-lip",
+      "sourcePartId": "shell-body",
+      "sourceCrop": {
+        "x": 438,
+        "y": 156,
+        "width": 120,
+        "height": 120
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.94,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "siphon-feeler-socket",
+      "src": "fauna-harpoon-cone-siphon-feeler-socket.png",
+      "parentId": "aperture-lip",
+      "childId": "siphon-feeler",
+      "sourcePartId": "aperture-lip",
+      "sourceCrop": {
+        "x": 62,
+        "y": 0,
+        "width": 86,
+        "height": 84
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.94,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "proboscis-base-socket",
+      "src": "fauna-harpoon-cone-proboscis-base-socket.png",
+      "parentId": "aperture-lip",
+      "childId": "proboscis-base",
+      "sourcePartId": "aperture-lip",
+      "sourceCrop": {
+        "x": 70,
+        "y": 106,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.94,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "proboscis-mid-socket",
+      "src": "fauna-harpoon-cone-proboscis-mid-socket.png",
+      "parentId": "proboscis-base",
+      "childId": "proboscis-mid",
+      "sourcePartId": "proboscis-base",
+      "sourceCrop": {
+        "x": 82,
+        "y": 92,
+        "width": 82,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.94,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "proboscis-tip-socket",
+      "src": "fauna-harpoon-cone-proboscis-tip-socket.png",
+      "parentId": "proboscis-mid",
+      "childId": "proboscis-tip",
+      "sourcePartId": "proboscis-mid",
+      "sourceCrop": {
+        "x": 88,
+        "y": 54,
+        "width": 80,
+        "height": 80
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.94,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "harpoon-tooth-socket",
+      "src": "fauna-harpoon-cone-harpoon-tooth-socket.png",
+      "parentId": "proboscis-tip",
+      "childId": "harpoon-tooth",
+      "sourcePartId": "proboscis-tip",
+      "sourceCrop": {
+        "x": 76,
+        "y": 72,
+        "width": 70,
+        "height": 70
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.94,
+      "bridgeSleeveScale": 0.34
+    },
+    {
+      "id": "venom-glow-socket",
+      "src": "fauna-harpoon-cone-venom-glow-socket.png",
+      "parentId": "proboscis-tip",
+      "childId": "venom-glow",
+      "sourcePartId": "proboscis-tip",
+      "sourceCrop": {
+        "x": 56,
+        "y": 42,
+        "width": 70,
+        "height": 70
+      },
+      "alphaFeather": {
+        "all": 10,
+        "curve": 1.45,
+        "minimum": 0.12
+      },
+      "alpha": 0.44,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.07,
+      "bridgeWidthScale": 0.94,
+      "bridgeSleeveScale": 0.34
+    }
+  ],
+  "notes": "Prototype built from one magenta-background Harpoon Cone source: patterned cone shell, foot skirt, aperture, siphon feeler, segmented proboscis, chitin barb, and venom glow. The forward chain is rigged for aim/strike/retract style motion while preserving the whole-source silhouette for review.",
+  "murkTint": {
+    "color": 8832950,
+    "intensity": 0.11,
+    "stunnedIntensity": 0.18
+  },
+  "socketStyle": {
+    "alpha": 0.56,
+    "bridgeColor": 528408,
+    "bridgeAlpha": 0.18,
+    "bridgeStunnedAlpha": 0.1,
+    "bridgeCoreColor": 7925458,
+    "bridgeCoreAlpha": 0.07,
+    "bridgeCoreStunnedAlpha": 0.04,
+    "bridgeWidthScale": 0.94,
+    "bridgeSleeveScale": 0.34
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Prototype generated from one magenta-background Harpoon Cone source. Needs sandbox/contact-sheet acceptance before counting toward the 20-threat goal."
+  }
+}

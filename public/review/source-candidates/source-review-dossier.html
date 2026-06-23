@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Review Dossier</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#29444b; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; --warn:#f0bd6b; --bad:#f07878; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1320px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2, h3 { margin:0 0 8px; }
+    h2 { font-size:20px; }
+    h3 { margin-top:14px; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+    p { color:var(--muted); margin:0 0 14px; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:8px 0 0; padding:10px; border:1px solid var(--line); background:#050b0d; overflow:auto; white-space:pre-wrap; }
+    .summary { display:flex; flex-wrap:wrap; gap:9px; margin:18px 0 24px; }
+    .summary span, .evidence span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .summary strong { color:var(--text); margin-left:4px; }
+    .commands { margin-bottom:24px; }
+    .grid { display:grid; gap:16px; }
+    .candidate { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:16px; }
+    .candidate header { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin-bottom:14px; }
+    .candidate header strong { color:var(--warn); }
+    .candidate.approved header strong { color:var(--accent); }
+    .images { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-bottom:12px; }
+    figure { margin:0; border:1px solid var(--line); background:#050b0d; border-radius:5px; overflow:hidden; }
+    img { display:block; width:100%; max-height:300px; object-fit:contain; background:#050b0d; }
+    figcaption { color:var(--muted); padding:8px 10px; border-top:1px solid var(--line); }
+    .missing { display:flex; min-height:180px; align-items:center; justify-content:center; border:1px dashed var(--line); color:var(--muted); border-radius:5px; }
+    .evidence { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 14px; }
+    dl { display:grid; grid-template-columns:130px 1fr; gap:6px 10px; margin:0; }
+    dt { color:var(--muted); }
+    dd { margin:0; min-width:0; overflow-wrap:anywhere; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { border-top:1px solid var(--line); padding:8px; text-align:left; vertical-align:top; }
+    th { color:var(--muted); }
+    .contract { margin-top:14px; padding:12px; border:1px solid var(--line); border-radius:5px; background:#09171b; }
+    .contract-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .contract h4 { margin:0 0 6px; color:var(--accent); font-size:13px; }
+    .contract ul { margin:0; padding-left:18px; }
+    li { margin-bottom:4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Source Review Dossier</h1>
+    <p>Human-facing evidence for approving source art before extraction or rigging. Automated checks prove technical readiness only; approval still requires a cohesive whole-creature visual review.</p>
+    <div class="summary">
+      <span>candidates <strong>20</strong></span>
+      <span>source images <strong>20</strong></span>
+      <span>approved sources <strong>0</strong></span>
+      <span>pending review <strong>20</strong></span>
+      <span>missing source images <strong>0</strong></span>
+      <span>clean image checks <strong>20</strong></span>
+      <span>clean source previews <strong>20</strong></span>
+    </div>
+    <section class="commands">
+      <pre><code>npm run source:gallery
+npm run source:image-check
+npm run source:preview-check
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check
+npm run source:accept -- --id &lt;candidate-id&gt; --status approved --reviewed-by &lt;human-reviewer&gt; ...</code></pre>
+    </section>
+    <section class="candidate">
+      <header><div><h2>Recommended Review</h2><p>Next source image to review before rigging.</p></div><strong>ready-for-human-review</strong></header>
+      <dl>
+        <dt>candidate</dt><dd><code>brine-crown</code> Brine Crown</dd>
+        <dt>source</dt><dd>public/assets/generated/fauna-brine-crown-whole-source.png</dd>
+        <dt>contract</dt><dd><a href="art-contracts/brine-crown.md">public/review/source-candidates/art-contracts/brine-crown.md</a></dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <h3>Accept Command</h3>
+      <pre><code>npm run source:accept -- --id brine-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id brine-crown --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+    </section>
+    <section class="candidate">
+      <header><div><h2>Ready Review Queue</h2><p>All source images that have passed technical checks and need human approval.</p></div><strong>20</strong></header>
+      <table>
+        <thead><tr><th>Rank</th><th>Candidate</th><th>Packet</th><th>Source Preview</th><th>Accept</th></tr></thead>
+        <tbody><tr>
+        <td>1</td>
+        <td><code>brine-crown</code><br>Brine Crown</td>
+        <td><a href="source-review-packets/brine-crown.md">public/review/source-candidates/source-review-packets/brine-crown.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id brine-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>2</td>
+        <td><code>glass-sponge-sentinel</code><br>Glass Sponge Sentinel</td>
+        <td><a href="source-review-packets/glass-sponge-sentinel.md">public/review/source-candidates/source-review-packets/glass-sponge-sentinel.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id glass-sponge-sentinel --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id glass-sponge-sentinel --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>3</td>
+        <td><code>black-coral-gate</code><br>Black Coral Gate</td>
+        <td><a href="source-review-packets/black-coral-gate.md">public/review/source-candidates/source-review-packets/black-coral-gate.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id black-coral-gate --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id black-coral-gate --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>4</td>
+        <td><code>reliquary-siphonophore</code><br>Reliquary Siphonophore</td>
+        <td><a href="source-review-packets/reliquary-siphonophore.md">public/review/source-candidates/source-review-packets/reliquary-siphonophore.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id reliquary-siphonophore --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id reliquary-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>5</td>
+        <td><code>hadal-trencher-isopod</code><br>Hadal Trencher Isopod</td>
+        <td><a href="source-review-packets/hadal-trencher-isopod.md">public/review/source-candidates/source-review-packets/hadal-trencher-isopod.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id hadal-trencher-isopod --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id hadal-trencher-isopod --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>6</td>
+        <td><code>vent-claw-yeti</code><br>Vent-Claw Yeti</td>
+        <td><a href="source-review-packets/vent-claw-yeti.md">public/review/source-candidates/source-review-packets/vent-claw-yeti.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id vent-claw-yeti --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id vent-claw-yeti --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>7</td>
+        <td><code>abyssal-lantern-mantis</code><br>Abyssal Lantern Mantis</td>
+        <td><a href="source-review-packets/abyssal-lantern-mantis.md">public/review/source-candidates/source-review-packets/abyssal-lantern-mantis.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id abyssal-lantern-mantis --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id abyssal-lantern-mantis --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>8</td>
+        <td><code>trench-harvest-sea-spider</code><br>Trench Harvest Sea Spider</td>
+        <td><a href="source-review-packets/trench-harvest-sea-spider.md">public/review/source-candidates/source-review-packets/trench-harvest-sea-spider.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id trench-harvest-sea-spider --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id trench-harvest-sea-spider --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>9</td>
+        <td><code>coronate-sting-crown</code><br>Coronate Sting Crown</td>
+        <td><a href="source-review-packets/coronate-sting-crown.md">public/review/source-candidates/source-review-packets/coronate-sting-crown.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id coronate-sting-crown --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id coronate-sting-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>10</td>
+        <td><code>chain-vein-siphonophore</code><br>Chain Vein Siphonophore</td>
+        <td><a href="source-review-packets/chain-vein-siphonophore.md">public/review/source-candidates/source-review-packets/chain-vein-siphonophore.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id chain-vein-siphonophore --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id chain-vein-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>11</td>
+        <td><code>vampire-cloak-squid</code><br>Vampire Cloak Squid</td>
+        <td><a href="source-review-packets/vampire-cloak-squid.md">public/review/source-candidates/source-review-packets/vampire-cloak-squid.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id vampire-cloak-squid --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id vampire-cloak-squid --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>12</td>
+        <td><code>predatory-tunicate-maw</code><br>Predatory Tunicate Maw</td>
+        <td><a href="source-review-packets/predatory-tunicate-maw.md">public/review/source-candidates/source-review-packets/predatory-tunicate-maw.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id predatory-tunicate-maw --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id predatory-tunicate-maw --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>13</td>
+        <td><code>razor-kelp-harp</code><br>Razor Kelp Harp</td>
+        <td><a href="source-review-packets/razor-kelp-harp.md">public/review/source-candidates/source-review-packets/razor-kelp-harp.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id razor-kelp-harp --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id razor-kelp-harp --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>14</td>
+        <td><code>lantern-anemone-pit</code><br>Lantern Anemone Pit</td>
+        <td><a href="source-review-packets/lantern-anemone-pit.md">public/review/source-candidates/source-review-packets/lantern-anemone-pit.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id lantern-anemone-pit --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id lantern-anemone-pit --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>15</td>
+        <td><code>brine-mycelium-shelf</code><br>Brine Mycelium Shelf</td>
+        <td><a href="source-review-packets/brine-mycelium-shelf.md">public/review/source-candidates/source-review-packets/brine-mycelium-shelf.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id brine-mycelium-shelf --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id brine-mycelium-shelf --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>16</td>
+        <td><code>thorn-fan-coralline</code><br>Thorn Fan Coralline</td>
+        <td><a href="source-review-packets/thorn-fan-coralline.md">public/review/source-candidates/source-review-packets/thorn-fan-coralline.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id thorn-fan-coralline --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id thorn-fan-coralline --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>17</td>
+        <td><code>gulper-eel-maw</code><br>Gulper Eel Maw</td>
+        <td><a href="source-review-packets/gulper-eel-maw.md">public/review/source-candidates/source-review-packets/gulper-eel-maw.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id gulper-eel-maw --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id gulper-eel-maw --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>18</td>
+        <td><code>saber-viperfish</code><br>Saber Viperfish</td>
+        <td><a href="source-review-packets/saber-viperfish.md">public/review/source-candidates/source-review-packets/saber-viperfish.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id saber-viperfish --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id saber-viperfish --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>19</td>
+        <td><code>tripod-stilt-stalker</code><br>Tripod Stilt Stalker</td>
+        <td><a href="source-review-packets/tripod-stilt-stalker.md">public/review/source-candidates/source-review-packets/tripod-stilt-stalker.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id tripod-stilt-stalker --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id tripod-stilt-stalker --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr><tr>
+        <td>20</td>
+        <td><code>reef-lion-moray</code><br>Reef Lion Moray</td>
+        <td><a href="source-review-packets/reef-lion-moray.md">public/review/source-candidates/source-review-packets/reef-lion-moray.md</a></td>
+        <td><pre><code>npm run sandbox:preview -- --id reef-lion-moray --kind source --serve --open --visual</code></pre></td>
+        <td><pre><code>npm run source:accept -- --id reef-lion-moray --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre></td>
+      </tr></tbody>
+      </table>
+    </section>
+    <section class="candidate">
+      <header><div><h2>Missing Source Images</h2><p>These candidates still need recoverable magenta-background source art before human visual review.</p></div><strong>0</strong></header>
+      <ul><li>none</li></ul>
+    </section>
+    <section class="grid"><article class="candidate pending">
+      <header>
+        <div>
+          <h2>Brine Crown</h2>
+          <code>brine-crown</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/brine-crown-source-thumb.png" alt="Brine Crown source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/brine-crown-key-preview.png" alt="Brine Crown key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-brine-crown__source-review__idle.png" alt="Brine Crown source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-brine-crown-whole-source.png">public/assets/generated/fauna-brine-crown-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/brine-crown.md">public/review/source-candidates/source-review-packets/brine-crown.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1498x945, background 0.5244, inner magenta 0.00203</dd>
+        <dt>detail metrics</dt><dd>entropy 7.1131, color bins 1117, edge density 0.5315, local contrast 34.1198</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 53, luma 242.97</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/brine-crown.md">public/review/source-candidates/art-contracts/brine-crown.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One rooted radial organism, not a collage of coral, starfish, and vent tubes.</li><li>Central crown or toxic throat is the first read.</li><li>Low anchored basal mat with uneven rays/fronds and visible hinge/root zones.</li><li>Readable toxic blisters, spine halo, and corrosive danger cues at game scale.</li><li>No loose detached parts, environmental shadows, haze, floor plane, or particles baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Short radial lobes are fused flat into one basal mat and do not read as tentacles, octopus arms, or free limbs.</li><li>Central crown cup, toxic throat, brine blisters, roots, and mineral spines share one rooted vent-organism anatomy.</li><li>The creature remains stationary and low to the seafloor, not a free-swimming cephalopod or decorative starfish.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>basal mat torso</li><li>central crown cup head</li><li>dark throat pore</li><li>front radial frond</li><li>left radial frond</li><li>right radial frond</li><li>rear radial fronds</li><li>brine blister bank</li><li>spine halo cluster</li><li>root tendril skirt</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a decorative reef; the source must read as a dangerous organism.</li><li>Avoid perfect radial ornament symmetry that feels like a logo.</li><li>Avoid magenta or hot pink body colors that will key out.</li><li>Avoid loose vent tubes or starfish arms that do not grow from the same mat.</li><li>Keep toxic clouds, bubbles, and brine puddles as separate VFX rather than baked source art.</li><li>Reject cephalopod tentacles, curled octopus arms, eyes, free-swimming anatomy, or loose starfish limbs.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id brine-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id brine-crown --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id brine-crown --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Glass Sponge Sentinel</h2>
+          <code>glass-sponge-sentinel</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/glass-sponge-sentinel-source-thumb.png" alt="Glass Sponge Sentinel source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/glass-sponge-sentinel-key-preview.png" alt="Glass Sponge Sentinel key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-glass-sponge-sentinel__source-review__idle.png" alt="Glass Sponge Sentinel source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-glass-sponge-sentinel-whole-source.png">public/assets/generated/fauna-glass-sponge-sentinel-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/glass-sponge-sentinel.md">public/review/source-candidates/source-review-packets/glass-sponge-sentinel.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 519x667, background 0.8542, inner magenta 0.00081</dd>
+        <dt>detail metrics</dt><dd>entropy 4.4184, color bins 232, edge density 0.1299, local contrast 8.4353</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 28, luma 229.97</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/glass-sponge-sentinel.md">public/review/source-candidates/art-contracts/glass-sponge-sentinel.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One vase-like glass sponge organism, not a generic coral fan or separate sponge colony.</li><li>Large central osculum throat is the first danger read.</li><li>Bold cross-braced lattice ribs remain readable at game scale rather than dissolving into lace noise.</li><li>Needle-cone petals and rim spicules are thick enough to crop and articulate.</li><li>Anchored base, throat, rim, and needle petals share one lighting and material language.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Sessile sponge read: reject if the output reads as a crystal turret, cannon, coral fan, or free-floating weapon instead of one anchored vase-like sponge.</li><li>Rim attachment read: needle-petal shutters and spicule crown must visibly grow from the flared rim with no detached shards or projectile pieces in the source.</li><li>Lattice readability read: cross-braced ribs must be bold enough to survive 64px preview without dissolving into lace noise.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>root rock/base anchor</li><li>lower stalk or foot collar</li><li>main vase body torso</li><li>front lattice rib group</li><li>rear lattice rib group</li><li>left rim plate</li><li>right rim plate</li><li>central osculum/throat valve head</li><li>three brittle needle-cone petals</li><li>outer spicule crown</li><li>integrated cracked rim plates</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a generic coral fan or sea plant; it must read as one vase-like glass sponge organism.</li><li>Avoid metal turrets, guns, cannons, crystals, or sci-fi machinery; needles are biological silica spicules.</li><li>Avoid dense lace detail that becomes noise at sprite scale; use bold crop-safe ribs and a few large needle petals.</li><li>Avoid multiple separate sponge colonies; generate one cohesive whole-source creature with one clear silhouette.</li><li>Keep pure magenta only in the background and keep all anatomy fully inside the crop.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id glass-sponge-sentinel --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id glass-sponge-sentinel --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id glass-sponge-sentinel --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Black Coral Gate</h2>
+          <code>black-coral-gate</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/black-coral-gate-source-thumb.png" alt="Black Coral Gate source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/black-coral-gate-key-preview.png" alt="Black Coral Gate key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-black-coral-gate__source-review__idle.png" alt="Black Coral Gate source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-black-coral-gate-whole-source.png">public/assets/generated/fauna-black-coral-gate-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/black-coral-gate.md">public/review/source-candidates/source-review-packets/black-coral-gate.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1383x923, background 0.6127, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 3.4392, color bins 224, edge density 0.1138, local contrast 8.0896</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 24, luma 225.77</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/black-coral-gate.md">public/review/source-candidates/art-contracts/black-coral-gate.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One cohesive whole-source organism on pure magenta, not separate coral chunks glued onto stone ruins.</li><li>Open arch / portcullis silhouette is the first read, with the bite line clearly visible at game scale.</li><li>Left and right rooted pillars share one material language and connect through a living crown bridge.</li><li>Crop-safe thick bars, hinge knots, root mats, and latch jaws have visible margins for later cutting.</li><li>Danger read comes from closing thorn-bars, glowing hinge polyps, and clamp teeth, not baked-in particles or scenery.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Both side pillars and crown bridge are visibly fused by living branching coral tissue, not stone architecture.</li><li>Trap bars grow from the same crown with soft polyp hinge knots; no detached prop bars or portcullis hardware.</li><li>Thorn arms, roots, crown, and clamp spines share one black-coral palette and lighting direction.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>left root mat</li><li>right root mat</li><li>left pillar trunk</li><li>right pillar trunk</li><li>upper crown bridge torso</li><li>central descending portcullis bar cluster</li><li>near folding thorn gate arm</li><li>far folding thorn gate arm</li><li>left hinge polyp knot</li><li>right hinge polyp knot</li><li>lower clamp teeth / latch spines</li><li>glow-polyp warning overlay</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.</li><li>Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.</li><li>Avoid thin hairlike coral branches that cannot be cropped or read at game scale.</li><li>Avoid magenta, hot pink, or purple body values that will conflict with the chroma key.</li><li>Keep bubbles, slam VFX, rubble, sand, and lighting effects separate from the base source.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id black-coral-gate --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id black-coral-gate --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id black-coral-gate --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Reliquary Siphonophore</h2>
+          <code>reliquary-siphonophore</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/reliquary-siphonophore-source-thumb.png" alt="Reliquary Siphonophore source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/reliquary-siphonophore-key-preview.png" alt="Reliquary Siphonophore key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-reliquary-siphonophore__source-review__idle.png" alt="Reliquary Siphonophore source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-reliquary-siphonophore-whole-source.png">public/assets/generated/fauna-reliquary-siphonophore-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/reliquary-siphonophore.md">public/review/source-candidates/source-review-packets/reliquary-siphonophore.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 781x928, background 0.8017, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.5383, color bins 288, edge density 0.1257, local contrast 7.7537</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 32, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/reliquary-siphonophore.md">public/review/source-candidates/art-contracts/reliquary-siphonophore.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One cohesive whole-source organism on pure #ff00ff magenta, centered with generous crop margin.</li><li>Vertical chandelier or reliquary colony with a clear top, spine, bell clusters, and dangling hazard zone.</li><li>Tripwire tendrils are broad enough to crop, rig, and see at 64px; avoid hair-thin jelly threads.</li><li>Safe gap is visually plausible: tendrils hang in separate arcs rather than one opaque curtain.</li><li>Ruin/reliquary flavor stays organic shell, glass, and pearl shapes, not a literal lantern, cage, or metal object.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Top float, nectophores, zooids, polyps, and tendrils are joined by translucent soft membranes into one colony.</li><li>No chandelier, cage, reliquary, pearl necklace, candle, metal, or jewelry read remains in the silhouette.</li><li>Broad tripwire tendrils are crop-safe and biologically attached, not loose strings or bead chains.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>top gas float / crest</li><li>central colony spine torso</li><li>stacked nectophore bell clusters</li><li>left lateral bell fin</li><li>right lateral bell fin</li><li>connected zooid/bract chain with visible membranes</li><li>front feeding polyp cluster</li><li>rear feeding polyp cluster</li><li>four broad tripwire tendrils with bulb tips</li><li>anatomical lure bead</li><li>sting-tip bead anatomy</li><li>separate tripwire pulse / contact spark VFX</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a generic jellyfish umbrella; require siphonophore colony structure with float, bells, zooids, and tendrils.</li><li>Avoid loose collage parts; all visible anatomy must belong to one continuous whole-source organism.</li><li>Avoid hair-thin tentacles that cannot be cropped or socketed; use a few broad readable tripwire tendrils.</li><li>Avoid literal metal chandeliers, cages, church relics, candles, or jewelry.</li><li>Keep glow, sting pulses, and contact sparks as separate VFX so they do not cover the base anatomy.</li><li>Keep pure magenta only in the background; avoid magenta internal glow that breaks chroma keying.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id reliquary-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id reliquary-siphonophore --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id reliquary-siphonophore --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Hadal Trencher Isopod</h2>
+          <code>hadal-trencher-isopod</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/hadal-trencher-isopod-source-thumb.png" alt="Hadal Trencher Isopod source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/hadal-trencher-isopod-key-preview.png" alt="Hadal Trencher Isopod key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-hadal-trencher-isopod__source-review__idle.png" alt="Hadal Trencher Isopod source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-hadal-trencher-isopod-whole-source.png">public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/hadal-trencher-isopod.md">public/review/source-candidates/source-review-packets/hadal-trencher-isopod.md</a></dd>
+        <dt>image metrics</dt><dd>1822x935, subject 1683x638, background 0.6148, inner magenta 0.00001</dd>
+        <dt>detail metrics</dt><dd>entropy 5.8302, color bins 651, edge density 0.2979, local contrast 19.1614</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 37, luma 228.42</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/hadal-trencher-isopod.md">public/review/source-candidates/art-contracts/hadal-trencher-isopod.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One cohesive full-body isopod-like threat, not a generic beetle, trilobite, or crab.</li><li>Segmented armored back is the first read, with the head and shove direction clearly visible.</li><li>Legs, antennae, plates, and mouthparts are thick enough to crop and rig at sprite scale.</li><li>Defensive curl and forward lunge shapes must be visually plausible from the same anatomy.</li><li>No sand clouds, seafloor, burrow hole, shadows, haze, or loose debris baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Trencher silhouette read: reject if the output reads as a generic crab, beetle, or submarine drone instead of one low isopod with a broad armored body.</li><li>Burrow-latch read: head shield, digging claws, leg banks, and rear plates must visibly connect to the same body with crop-safe hinge roots.</li><li>Scale and armor read: dorsal plates and trenching claws must share one palette and lighting style without mismatched pasted shell fragments.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>broad forward head shield</li><li>central overlapping thorax plate stack</li><li>rear curled abdomen plate stack</li><li>left heavy sensory antenna</li><li>right heavy sensory antenna</li><li>left blunt mandible plate</li><li>right blunt mandible plate</li><li>front compact walking leg pair</li><li>middle compact walking leg pair</li><li>rear anchoring walking leg pair</li><li>left and right side shield flanges</li><li>rear curled tail fan plate</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid making it look like a land beetle; keep marine isopod proportions and flattened body logic.</li><li>Avoid overly tiny legs hidden under the shell; they need to rig clearly.</li><li>Avoid perfect trilobite symmetry or fossil styling that reads as extinct decoration.</li><li>Avoid magenta, hot pink, or purple body colors that conflict with the chroma key.</li><li>Keep sand burst, impact dust, and burrow opening as separate VFX rather than source art.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id hadal-trencher-isopod --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id hadal-trencher-isopod --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id hadal-trencher-isopod --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Vent-Claw Yeti</h2>
+          <code>vent-claw-yeti</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/vent-claw-yeti-source-thumb.png" alt="Vent-Claw Yeti source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/vent-claw-yeti-key-preview.png" alt="Vent-Claw Yeti key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-vent-claw-yeti__source-review__idle.png" alt="Vent-Claw Yeti source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-vent-claw-yeti-whole-source.png">public/assets/generated/fauna-vent-claw-yeti-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/vent-claw-yeti.md">public/review/source-candidates/source-review-packets/vent-claw-yeti.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1136x675, background 0.8646, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.23, color bins 307, edge density 0.1719, local contrast 13.9823</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 23, luma 222.18</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/vent-claw-yeti.md">public/review/source-candidates/art-contracts/vent-claw-yeti.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One whole crab-like arthropod, not a furry mammal, lobster, or humanoid monster.</li><li>Oversized bristled claws are the first read and clearly indicate grab range.</li><li>Main carapace, abdomen tuck, legs, claws, and antennae stay connected as one riggable body.</li><li>Bristles read as clustered biological setae, not smoke, fur clouds, or flame.</li><li>No vent chimney, lava plume, bubbles, floor plane, cast shadow, or environmental lighting baked in.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Oversized claws attach to the squat-lobster carapace through visible shoulder and elbow joints.</li><li>Bacterial setae are grouped rows on claw surfaces, not mammal fur, cloud fluff, or a white monster silhouette.</li><li>Reject humanoid arms, vent chimney props, beach-crab proportions, or loose bristle noise hiding crop zones.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>main carapace torso</li><li>abdomen tuck</li><li>left upper claw arm</li><li>left bristled claw hand</li><li>right upper claw arm</li><li>right bristled claw hand</li><li>front walking leg pair</li><li>middle walking leg pair</li><li>rear walking leg pair</li><li>left antenna</li><li>right antenna</li><li>setae glow overlay clusters</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid mammal-like fur; the bristles are crab setae and bacterial mats.</li><li>Avoid a normal beach crab silhouette; emphasize deep-sea squat posture and huge farming claws.</li><li>Avoid making the vent heat or smoke part of the body silhouette.</li><li>Avoid thin bristles that turn into noise; use readable grouped tufts.</li><li>Avoid magenta or pink glows inside the creature that could key out.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id vent-claw-yeti --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id vent-claw-yeti --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id vent-claw-yeti --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Abyssal Lantern Mantis</h2>
+          <code>abyssal-lantern-mantis</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/abyssal-lantern-mantis-source-thumb.png" alt="Abyssal Lantern Mantis source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/abyssal-lantern-mantis-key-preview.png" alt="Abyssal Lantern Mantis key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-abyssal-lantern-mantis__source-review__idle.png" alt="Abyssal Lantern Mantis source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png">public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/abyssal-lantern-mantis.md">public/review/source-candidates/source-review-packets/abyssal-lantern-mantis.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1345x556, background 0.8072, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.7651, color bins 301, edge density 0.1547, local contrast 9.5669</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 33, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/abyssal-lantern-mantis.md">public/review/source-candidates/art-contracts/abyssal-lantern-mantis.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One full-body mantis-shrimp-like predator with clear head, torso, abdomen, and tail fan.</li><li>Coiled raptorial arms are the first danger read and must show punch direction.</li><li>Eye stalks, antennae, strike arms, walking limbs, and tail fan need crop-safe separation.</li><li>The creature should feel biological and crustacean, not a robot, gun, or armored fish.</li><li>No punch streaks, shock rings, cave wall, bubbles, shadows, or light cones baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Strike-arm read: reject if the raptorial appendages become spear tips, drills, guns, or mismatched weapon arms instead of paired blunt smasher clubs.</li><li>Crustacean anatomy read: head, thorax, abdomen, walking limbs, eye stalks, and tail fan must remain one continuous mantis-shrimp body.</li><li>Glow restraint read: cyan lantern spots must be small biological eye-stalk markings, not neon armor panels or baked aim beams.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>plated forward head carapace</li><li>left raised compound eye stalk</li><li>right raised compound eye stalk</li><li>left long antenna whip</li><li>right long antenna whip</li><li>compressed thorax torso plates</li><li>left folded blunt-club raptorial strike arm</li><li>right folded blunt-club raptorial strike arm</li><li>small underside walking limb cluster</li><li>rear segmented abdomen chain</li><li>broad stabilizing tail fan</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid robotic boxing gloves, cannons, drills, or mechanical pistons.</li><li>Avoid spearer-style needle arms; this candidate uses blunt smasher clubs for a single clear attack read.</li><li>Avoid tropical rainbow saturation that fights the abyssal threat tone.</li><li>Avoid fish-like fins replacing the crustacean legs and plated abdomen.</li><li>Avoid making the eye glow magenta or hot pink.</li><li>Keep punch trails, shock rings, and aim beams as separate VFX.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id abyssal-lantern-mantis --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id abyssal-lantern-mantis --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id abyssal-lantern-mantis --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Trench Harvest Sea Spider</h2>
+          <code>trench-harvest-sea-spider</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/trench-harvest-sea-spider-source-thumb.png" alt="Trench Harvest Sea Spider source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/trench-harvest-sea-spider-key-preview.png" alt="Trench Harvest Sea Spider key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-trench-harvest-sea-spider__source-review__idle.png" alt="Trench Harvest Sea Spider source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png">public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/trench-harvest-sea-spider.md">public/review/source-candidates/source-review-packets/trench-harvest-sea-spider.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1114x819, background 0.9147, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 5.0502, color bins 248, edge density 0.2568, local contrast 22.029</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 27, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/trench-harvest-sea-spider.md">public/review/source-candidates/art-contracts/trench-harvest-sea-spider.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One cohesive sea-spider-inspired arthropod, not a land spider or insect.</li><li>Tiny central body with long articulated legs is the first silhouette read.</li><li>Forward proboscis must read as a biological siphon and not a weapon barrel.</li><li>Legs are separated enough for rigging, with thick joints and clear contact claws.</li><li>No webbing, carcass, seafloor, drifting particles, shadows, blood clouds, or environmental props baked in.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Six to eight crop-safe legs remain visibly rooted in a tiny central pycnogonid body with marine joint anatomy.</li><li>Forward proboscis is soft and tapered biological feeding tissue, not a rigid gun barrel, stinger, or weapon.</li><li>Reject spider eyes, fangs, webbing, terrestrial abdomen bulb, hair-thin limbs, or disconnected leg fragments.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>tiny knuckled central body</li><li>small forward head nub</li><li>soft forward proboscis siphon</li><li>left long front stepping leg</li><li>right long front stepping leg</li><li>left long middle pinning leg</li><li>right long middle pinning leg</li><li>left long rear bracing leg</li><li>right long rear bracing leg</li><li>hooked terminal claw cluster</li><li>dorsal rounded egg-sac lump</li><li>cold siphon glow overlay</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a terrestrial spider read; keep pycnogonid tiny-body and marine proboscis anatomy.</li><li>Avoid making legs hair-thin; every limb needs usable thickness for articulation.</li><li>Avoid web strands, silk, or horror-web language because sea spiders do not use webs.</li><li>Avoid a gun-like proboscis; it should be soft biological feeding anatomy.</li><li>Avoid magenta highlights on joints, eyes, or siphon effects.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id trench-harvest-sea-spider --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id trench-harvest-sea-spider --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id trench-harvest-sea-spider --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Coronate Sting Crown</h2>
+          <code>coronate-sting-crown</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/coronate-sting-crown-source-thumb.png" alt="Coronate Sting Crown source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/coronate-sting-crown-key-preview.png" alt="Coronate Sting Crown key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-coronate-sting-crown__source-review__idle.png" alt="Coronate Sting Crown source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-coronate-sting-crown-whole-source.png">public/assets/generated/fauna-coronate-sting-crown-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/coronate-sting-crown.md">public/review/source-candidates/source-review-packets/coronate-sting-crown.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 728x918, background 0.733, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.4544, color bins 345, edge density 0.1003, local contrast 5.7621</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 30, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/coronate-sting-crown.md">public/review/source-candidates/art-contracts/coronate-sting-crown.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One cohesive jellyfish organism, not a swarm or decorative cluster.</li><li>Crown-shaped lappet rim and domed bell are the first read at game scale.</li><li>Oral arms are thick, separated, and crop-safe for articulation.</li><li>Tentacle danger zone is visible without becoming a hair-thin curtain.</li><li>Bioluminescent sting cues stay on anatomy, with no baked bubbles, haze, water column, or impact particles.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Deep bell groove and chunky coronate lappet rim are visible; reject smooth generic umbrella jellyfish.</li><li>Exactly four thick readable tentacles trail from the bell with visible underside roots; no hair curtain, swarm, or many-thread noise.</li><li>Oral arms, lappets, bell skirt, and tentacles remain one cnidarian body with clear crop-safe hinge zones.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>domed bell cap</li><li>lower bell skirt</li><li>segmented crown lappets</li><li>central oral trunk</li><li>front oral arm</li><li>left oral arm</li><li>right oral arm</li><li>rear oral arms</li><li>four thick trailing tentacles</li><li>sting bead tip cluster</li><li>subtle translucent bell rim anatomy</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a generic umbrella jellyfish; crown lappets and deep bell groove must be obvious.</li><li>Avoid hair-thin tentacle noise that cannot be cut or rigged.</li><li>Avoid magenta, pink, or purple body colors that conflict with chroma keying.</li><li>Avoid multiple jellyfish or a decorative swarm.</li><li>Keep sting flashes, shock rings, and bubbles as separate VFX rather than baked source art.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id coronate-sting-crown --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id coronate-sting-crown --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id coronate-sting-crown --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Chain Vein Siphonophore</h2>
+          <code>chain-vein-siphonophore</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/chain-vein-siphonophore-source-thumb.png" alt="Chain Vein Siphonophore source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/chain-vein-siphonophore-key-preview.png" alt="Chain Vein Siphonophore key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-chain-vein-siphonophore__source-review__idle.png" alt="Chain Vein Siphonophore source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png">public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/chain-vein-siphonophore.md">public/review/source-candidates/source-review-packets/chain-vein-siphonophore.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 875x889, background 0.8064, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.7272, color bins 289, edge density 0.1365, local contrast 8.4526</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 26, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/chain-vein-siphonophore.md">public/review/source-candidates/art-contracts/chain-vein-siphonophore.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One continuous colonial organism, not separate beads or loose jellyfish pieces.</li><li>Continuous soft colony stem, swimming bells, feeding cluster, and stinging lines are all visible.</li><li>Tripwire tendrils are few, broad, and separated enough to rig.</li><li>The safe gap between hanging lines remains readable at sprite scale.</li><li>All anatomy stays isolated on pure magenta with no water haze, shadows, plankton, or baked glow clouds.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>All bells, bracts, polyps, and tendrils attach to one continuous soft colony stem; no literal chain links or wire.</li><li>Tentilla swellings remain organic tissue on broad tendrils, not pearl beads, jewelry, hooks, or detached ornaments.</li><li>The vertical tripwire silhouette keeps visible safe gaps while preserving one connected siphonophore organism.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>front float bract</li><li>continuous soft colony stem</li><li>upper nectophore bell pair</li><li>middle nectophore bell pair</li><li>lower nectophore bell pair</li><li>left shield bract</li><li>right shield bract</li><li>feeding polyp cluster</li><li>four broad stinging tendrils</li><li>tentilla bead nodes</li><li>terminal lure bulb</li><li>sting bead tissue accents</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid making it a single jellyfish umbrella; it must read as a siphonophore colony.</li><li>Avoid detached beads or pearls that do not connect to the central stem.</li><li>Avoid literal chains, wires, hooks, or mechanical trip mines.</li><li>Avoid overly thin tendrils that disappear at 64px.</li><li>Keep pure magenta only in the background and avoid magenta internal glow.</li><li>Keep electric arcs and contact sparks separate from the base sprite.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id chain-vein-siphonophore --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id chain-vein-siphonophore --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id chain-vein-siphonophore --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Vampire Cloak Squid</h2>
+          <code>vampire-cloak-squid</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/vampire-cloak-squid-source-thumb.png" alt="Vampire Cloak Squid source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/vampire-cloak-squid-key-preview.png" alt="Vampire Cloak Squid key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-vampire-cloak-squid__source-review__idle.png" alt="Vampire Cloak Squid source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-vampire-cloak-squid-whole-source.png">public/assets/generated/fauna-vampire-cloak-squid-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/vampire-cloak-squid.md">public/review/source-candidates/source-review-packets/vampire-cloak-squid.md</a></dd>
+        <dt>image metrics</dt><dd>1741x977, subject 1558x642, background 0.7091, inner magenta 0.00001</dd>
+        <dt>detail metrics</dt><dd>entropy 5.6661, color bins 823, edge density 0.4007, local contrast 24.5176</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 33, luma 234.55</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/vampire-cloak-squid.md">public/review/source-candidates/art-contracts/vampire-cloak-squid.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One whole cephalopod with mantle, eyes, arms, and webbing clearly connected.</li><li>Cloak web and arm crown are the main gameplay read, not loose tentacles.</li><li>Eight arms are grouped into riggable clusters without becoming a tangled mass.</li><li>Photophore spots are visible but do not cover the anatomy.</li><li>No ink cloud, particles, water background, shadows, or cropped-off arms baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Compact mantle, two large blue eyes, fin pair, eight webbed arms, cirri fringe, and cyan photophores read as vampire squid anatomy.</li><li>Reject external shell, nautilus head, octopus sucker rows, fantasy lure organs, bat cape, fangs, or humanoid vampire styling.</li><li>The cloak membrane remains one connected webbed arm structure with crop-safe arm clusters and no tangles hiding pivots.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>compact dark mantle body</li><li>large pale left eye</li><li>large pale right eye</li><li>broad cloak web membrane</li><li>front webbed arm pair</li><li>left webbed arm pair</li><li>right webbed arm pair</li><li>rear webbed arm pair</li><li>soft arm spine and cirri fringe</li><li>cyan photophore tip lights</li><li>small mantle fin pair</li><li>central mouth and beak shadow</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid bat wings, fangs, capes, or humanoid vampire styling; keep it biological.</li><li>Avoid squid tentacle tangles that obscure the eight-arm cloak structure.</li><li>Avoid magenta or pink photophores that conflict with the background.</li><li>Avoid a giant octopus silhouette; compact mantle and webbed arms should identify vampire squid.</li><li>Keep ink, flash bursts, and stun effects separate from the base anatomy.</li><li>Reject nautilus shells, beak-like nautilus heads, octopus sucker rows, amber lure organs, and external shell spirals.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id vampire-cloak-squid --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id vampire-cloak-squid --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id vampire-cloak-squid --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Predatory Tunicate Maw</h2>
+          <code>predatory-tunicate-maw</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/predatory-tunicate-maw-source-thumb.png" alt="Predatory Tunicate Maw source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/predatory-tunicate-maw-key-preview.png" alt="Predatory Tunicate Maw key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-predatory-tunicate-maw__source-review__idle.png" alt="Predatory Tunicate Maw source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png">public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/predatory-tunicate-maw.md">public/review/source-candidates/source-review-packets/predatory-tunicate-maw.md</a></dd>
+        <dt>image metrics</dt><dd>1584x1072, subject 924x888, background 0.7719, inner magenta 0.00006</dd>
+        <dt>detail metrics</dt><dd>entropy 9.3245, color bins 1536, edge density 0.3999, local contrast 24.6597</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 42, luma 223.27</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/predatory-tunicate-maw.md">public/review/source-candidates/art-contracts/predatory-tunicate-maw.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One rooted soft-bodied tunicate creature, not a plant, clam, or anemone.</li><li>Large open siphon mouth is the first danger read.</li><li>Upper and lower mouth lobes are thick and separated for hinge animation.</li><li>Stalk, anchor foot, tunic body, and internal folds remain connected as one organism.</li><li>No surrounding rock wall, sediment, prey fish, particles, or shadows baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>The mouth reads as soft paired siphon lips with rounded rim papillae, not hard jaws, teeth, beak, clam shell, or flytrap petals.</li><li>Flexible stalk, anchor foot, tunic body, mouth lips, side siphon, and organ sac remain one soft tunicate organism.</li><li>Translucency preserves a readable silhouette at game scale and avoids pink or magenta tissue near the chroma key.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>anchor foot pad</li><li>flexible stalk</li><li>main translucent tunic body</li><li>upper siphon jaw lobe</li><li>lower siphon jaw lobe</li><li>left lip ridge</li><li>right lip ridge</li><li>inner filter fold fan</li><li>internal organ sac</li><li>small side siphon</li><li>rim toothlike papillae</li><li>soft siphon lip membrane</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid making it a clam, venus flytrap plant, or fantasy mouth monster; preserve tunicate softness and siphon anatomy.</li><li>Avoid hard teeth, bones, metal jaws, or mechanical hinges.</li><li>Avoid transparency so faint that the silhouette disappears at game scale.</li><li>Avoid magenta, hot pink, or purple body tones that interfere with chroma keying.</li><li>Keep mucus strands, bite impacts, and prey silhouettes as separate VFX.</li><li>Reject teeth, angler lures, tentacles, plant petals, clam shells, and pink or magenta tissue near the key color.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id predatory-tunicate-maw --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id predatory-tunicate-maw --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id predatory-tunicate-maw --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Razor Kelp Harp</h2>
+          <code>razor-kelp-harp</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/razor-kelp-harp-source-thumb.png" alt="Razor Kelp Harp source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/razor-kelp-harp-key-preview.png" alt="Razor Kelp Harp key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-razor-kelp-harp__source-review__idle.png" alt="Razor Kelp Harp source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-razor-kelp-harp-whole-source.png">public/assets/generated/fauna-razor-kelp-harp-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/razor-kelp-harp.md">public/review/source-candidates/source-review-packets/razor-kelp-harp.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1273x890, background 0.7518, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.5362, color bins 234, edge density 0.1765, local contrast 10.3508</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 28, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/razor-kelp-harp.md">public/review/source-candidates/art-contracts/razor-kelp-harp.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One cohesive kelp-like ambusher, not a loose pile of seaweed strips.</li><li>Root holdfast and central crown are visible so the entity reads as anchored and sessile.</li><li>Five to seven broad serrated blade-fronds create clear danger lanes at sprite scale.</li><li>Gas bladders, hinge knots, and curled blade tips remain crop-safe for later articulation.</li><li>No water column, sand floor, bubbles, shadows, or detached plant debris baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>A single holdfast root and central crown node are visible as the shared origin for the whole creature.</li><li>Every serrated blade grows from the crown node with a readable hinge knot; no loose seaweed strips or debris.</li><li>Blade lanes form a crop-safe kelp ambush fan with no literal harp strings, floor, current streaks, or slash VFX baked in.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>single organic bull-kelp holdfast tissue pad</li><li>central crown node</li><li>left outer blade-frond</li><li>left inner blade-frond</li><li>front cutting blade-frond</li><li>right inner blade-frond</li><li>right outer blade-frond</li><li>gas bladder cluster</li><li>integrated serrated blade edges</li><li>curling tip hooks</li><li>root tendril skirt</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid thin spaghetti seaweed that cannot be cropped or rigged.</li><li>Avoid a generic plant clump; the holdfast, crown, and blade lanes must define one creature.</li><li>Avoid magenta, hot pink, or purple body colors that may key out with the background.</li><li>Avoid loose detached strips or floating debris that look like separate props.</li><li>Keep slash trails, bubbles, and water distortion as separate VFX rather than baked art.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id razor-kelp-harp --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id razor-kelp-harp --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id razor-kelp-harp --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Lantern Anemone Pit</h2>
+          <code>lantern-anemone-pit</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/lantern-anemone-pit-source-thumb.png" alt="Lantern Anemone Pit source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/lantern-anemone-pit-key-preview.png" alt="Lantern Anemone Pit key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-lantern-anemone-pit__source-review__idle.png" alt="Lantern Anemone Pit source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-lantern-anemone-pit-whole-source.png">public/assets/generated/fauna-lantern-anemone-pit-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/lantern-anemone-pit.md">public/review/source-candidates/source-review-packets/lantern-anemone-pit.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 630x608, background 0.828, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.9748, color bins 446, edge density 0.1033, local contrast 5.7662</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 26, luma 224.56</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/lantern-anemone-pit.md">public/review/source-candidates/art-contracts/lantern-anemone-pit.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One anchored anemone organism, not a decorative coral flower cluster.</li><li>Central mouth pit is the first danger read when open.</li><li>Two rings of thick petal-tentacles are broad enough for sprite-scale articulation.</li><li>Lure bulbs, mouth rim, column base, and outer petals are visually connected.</li><li>Danger is communicated through clamp posture, stinging bulbs, and mouth depth rather than gore or particles.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Predator read: reject if the output reads as a cute flower, plant icon, or decorative coral instead of one anchored cnidarian ambusher.</li><li>Mouth-depth read: central pit, lip ring, column base, and petal-tentacle roots must remain visible and physically connected.</li><li>VFX separation read: reject baked halos, sting sparks, digestive clouds, or detached shadow inserts in the source image.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>buried column base</li><li>outer pedal disc skirt</li><li>central mouth pit</li><li>upper lip ring</li><li>left outer petal-tentacle</li><li>right outer petal-tentacle</li><li>front inner petal-tentacle</li><li>rear inner petal-tentacle</li><li>lure bulb cluster</li><li>stinging bead tips</li><li>integrated retraction fold ridges</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a cute decorative flower; it must read as a dangerous sessile predator.</li><li>Avoid making the tentacles hair-thin or too numerous for articulation.</li><li>Avoid literal teeth, metal jaws, or land-plant leaves.</li><li>Avoid magenta or pink glow that conflicts with the chroma key background.</li><li>Keep lure halos, sting sparks, and digestive clouds separate from the base source.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id lantern-anemone-pit --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id lantern-anemone-pit --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id lantern-anemone-pit --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Brine Mycelium Shelf</h2>
+          <code>brine-mycelium-shelf</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/brine-mycelium-shelf-source-thumb.png" alt="Brine Mycelium Shelf source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/brine-mycelium-shelf-key-preview.png" alt="Brine Mycelium Shelf key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-brine-mycelium-shelf__source-review__idle.png" alt="Brine Mycelium Shelf source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-brine-mycelium-shelf-whole-source.png">public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/brine-mycelium-shelf.md">public/review/source-candidates/source-review-packets/brine-mycelium-shelf.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1070x572, background 0.6966, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.9046, color bins 281, edge density 0.1301, local contrast 8.2597</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 33, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/brine-mycelium-shelf.md">public/review/source-candidates/art-contracts/brine-mycelium-shelf.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One living encrusting shelf organism, not a pile of land mushrooms dropped underwater.</li><li>Layered shelf plates and central spore pores are readable before surface texture detail.</li><li>Mycelial root web visibly ties the plates into one anchored threat.</li><li>Several large plates have clear hinge zones for extension and recoil animation.</li><li>No wreck wall, cave surface, fog, spore cloud, or environmental substrate baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Shelf plates grow from one low mycelial root mat through visible hinge-root webs; no individual mushroom caps or stems.</li><li>Spore sac, plates, pores, and filament fringe read as one underwater biofilm organism, not a rock or coral slab.</li><li>Plate lips are thick enough for crop-safe articulation and are not hidden by fuzzy texture or baked spore clouds.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>mycelial root mat</li><li>central swollen spore sac</li><li>upper shelf plate</li><li>lower shelf plate</li><li>left feeding plate</li><li>right feeding plate</li><li>front brittle plate lip</li><li>spore pore cluster</li><li>filament whisker fringe</li><li>cracked crust overlays</li><li>integrated warning-color tissue patches</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid terrestrial mushroom caps with stems; keep the form encrusting and underwater-adapted.</li><li>Avoid making the source look like an inert rock or coral slab.</li><li>Avoid dense fuzzy texture that hides the main plates and hinge zones.</li><li>Avoid baked spore clouds or fog covering the anatomy.</li><li>Avoid magenta, hot pink, or purple fungal tissue near the key color.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id brine-mycelium-shelf --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id brine-mycelium-shelf --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id brine-mycelium-shelf --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Thorn Fan Coralline</h2>
+          <code>thorn-fan-coralline</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/thorn-fan-coralline-source-thumb.png" alt="Thorn Fan Coralline source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/thorn-fan-coralline-key-preview.png" alt="Thorn Fan Coralline key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-thorn-fan-coralline__source-review__idle.png" alt="Thorn Fan Coralline source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-thorn-fan-coralline-whole-source.png">public/assets/generated/fauna-thorn-fan-coralline-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/thorn-fan-coralline.md">public/review/source-candidates/source-review-packets/thorn-fan-coralline.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1270x899, background 0.6601, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.5446, color bins 310, edge density 0.2066, local contrast 13.3703</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 29, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/thorn-fan-coralline.md">public/review/source-candidates/art-contracts/thorn-fan-coralline.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One rooted fan-shaped reef organism, not background coral decoration.</li><li>Thick thorn ribs and central stalk define the first silhouette at game scale.</li><li>Left and right fan lobes have separable branch groups for folding and lashing.</li><li>Stinging polyp beads sit on the ribs without becoming noisy dotted texture.</li><li>No reef wall, seabed, lighting shaft, fish, bubbles, or baked current lines in the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Thick primary ribs dominate the silhouette; fine branches remain secondary and do not become lace noise.</li><li>Left and right fan lobes grow from one rooted stalk spine with visible hinge knots and shared coralline plates.</li><li>Raised stinging polyps are sparse anatomy on the ribs, not dotted texture or detached bead rows.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>rooted reef foot</li><li>central stalk spine</li><li>left fan lobe</li><li>right fan lobe</li><li>upper rib cluster</li><li>lower rib cluster</li><li>front thorn rake</li><li>rear support ribs</li><li>stinging polyp bead rows</li><li>armored coralline plates</li><li>fold hinge knots</li><li>integrated warning-color wall tissue</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid background reef scenery; the fan must read as an enemy entity.</li><li>Avoid thin lace branches that disappear at small sprite size.</li><li>Avoid perfect ornamental symmetry that feels like a decorative logo.</li><li>Avoid detached coral chunks or separate fan colonies.</li><li>Keep current streaks, sting flashes, and impact sparks as separate VFX assets.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id thorn-fan-coralline --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id thorn-fan-coralline --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id thorn-fan-coralline --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Gulper Eel Maw</h2>
+          <code>gulper-eel-maw</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/gulper-eel-maw-source-thumb.png" alt="Gulper Eel Maw source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/gulper-eel-maw-key-preview.png" alt="Gulper Eel Maw key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-gulper-eel-maw__source-review__idle.png" alt="Gulper Eel Maw source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-gulper-eel-maw-whole-source.png">public/assets/generated/fauna-gulper-eel-maw-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/gulper-eel-maw.md">public/review/source-candidates/source-review-packets/gulper-eel-maw.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1435x418, background 0.8711, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.0073, color bins 261, edge density 0.0556, local contrast 4.2321</dd>
+        <dt>connectivity</dt><dd>largest component 0.979, significant components 2</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 19, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/gulper-eel-maw.md">public/review/source-candidates/art-contracts/gulper-eel-maw.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One cohesive whole eel-like vertebrate, not a worm, snake, or loose floating mouth.</li><li>Strict flat side-profile creature sheet pose: one continuous left-to-right eel spine line, mouth and head on the right, single whip tail on the left.</li><li>Large lateral pelican-eel gape and throat pouch occupy the front 35-45% of the creature; connected eel body and tail occupy the rear 55-65%.</li><li>Long whip tail, tiny head hinges, throat membrane, and lure tip remain connected as one riggable body.</li><li>Jaw hoops and pouch membrane are thick enough to crop and animate at sprite scale.</li><li>Visible continuous anatomy chain: upper jaw hoop and lower jaw hoop pivot on the same tiny skull collar, skull collar connects to narrow neck, neck connects to ribbon body, ribbon body tapers into one whip tail with cyan lure bulb.</li><li>Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.</li><li>No water vortex, prey fish, bubbles, blackwater haze, floor plane, or cast shadow baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Lateral-axis read: all major anatomy follows one side-profile eel axis from mouth/right to tail/left; reject if the image reads as radial, front-facing, mirrored, or multi-limbed.</li><li>Spatial ratio read: mouth pouch occupies roughly the front 35-45% while connected body and tail occupy the rear 55-65%, preventing a detached maw or portal-creature read.</li><li>Rig crop read: jaw hoops, pouch membrane, pectoral fins, tail base, and tail lure have visible magenta negative space around their outer edges while remaining connected at the roots.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>upper hinged jaw hoop</li><li>lower hinged jaw hoop</li><li>expandable throat pouch membrane</li><li>small skull hinge collar</li><li>dark inner mouth plate</li><li>narrow eel neck segment</li><li>front ribbon body segment</li><li>rear whip tail segment</li><li>tail-tip lure bulb</li><li>left tiny pectoral fin</li><li>right tiny pectoral fin</li><li>gill slit seam plates</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.</li><li>Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.</li><li>Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.</li><li>Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.</li><li>Avoid making suction currents part of the base sprite; pull effects should be separate VFX.</li><li>Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.</li><li>Avoid over-detailing the black body so the hinge zones and lure remain readable.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id gulper-eel-maw --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id gulper-eel-maw --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id gulper-eel-maw --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Saber Viperfish</h2>
+          <code>saber-viperfish</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/saber-viperfish-source-thumb.png" alt="Saber Viperfish source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/saber-viperfish-key-preview.png" alt="Saber Viperfish key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-saber-viperfish__source-review__idle.png" alt="Saber Viperfish source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-saber-viperfish-whole-source.png">public/assets/generated/fauna-saber-viperfish-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/saber-viperfish.md">public/review/source-candidates/source-review-packets/saber-viperfish.md</a></dd>
+        <dt>image metrics</dt><dd>2220x772, subject 1999x490, background 0.7365, inner magenta 0.00214</dd>
+        <dt>detail metrics</dt><dd>entropy 6.639, color bins 839, edge density 0.3182, local contrast 18.6377</dd>
+        <dt>connectivity</dt><dd>largest component 0.9996, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 31, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/saber-viperfish.md">public/review/source-candidates/art-contracts/saber-viperfish.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One whole viperfish-like vertebrate, not a barracuda, dragon, or metal spear device.</li><li>Oversized saber teeth and unhinged jaw are the first danger read.</li><li>Photophore belly chain, dorsal lure spine, fins, tail, and skull share one biological material language.</li><li>Teeth are large readable fang shapes rather than many tiny noisy needles.</li><li>No motion streaks, target reticle, bubbles, prey fish, lighting beams, or shadow baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Dash predator read: reject if the output reads as a decorative eel or generic fish without an obvious forward bite/lunge axis.</li><li>Jaw crop read: saber teeth, upper and lower jaw plates, skull hinge, body, fins, and tail must remain connected while leaving magenta negative space around crop edges.</li><li>Small-scale silhouette read: long body, oversized mouth, saber teeth, and tail must remain readable at sprite scale without excess fins, duplicate heads, or loose tooth props.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>armored skull wedge</li><li>upper saber tooth row</li><li>lower hinged jaw plate</li><li>dark throat cavity plate</li><li>left reflective eye plate</li><li>right reflective eye plate</li><li>dorsal lure spine</li><li>photophore belly chain</li><li>segmented body trunk</li><li>left pectoral fin blade</li><li>right pectoral fin blade</li><li>forked tail fin</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a generic toothy fish; the jaw hinge, saber teeth, photophore chain, and dorsal lure must define it.</li><li>Avoid too many tiny teeth that become visual noise; use fewer large crop-safe fangs.</li><li>Avoid metal blades, harpoons, armor plating, or sci-fi weapon cues.</li><li>Avoid baked dash trails or impact sparks that should be generated separately.</li><li>Avoid magenta or hot pink light sources inside the creature.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id saber-viperfish --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id saber-viperfish --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id saber-viperfish --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Tripod Stilt Stalker</h2>
+          <code>tripod-stilt-stalker</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/tripod-stilt-stalker-source-thumb.png" alt="Tripod Stilt Stalker source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/tripod-stilt-stalker-key-preview.png" alt="Tripod Stilt Stalker key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-tripod-stilt-stalker__source-review__idle.png" alt="Tripod Stilt Stalker source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-tripod-stilt-stalker-whole-source.png">public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/tripod-stilt-stalker.md">public/review/source-candidates/source-review-packets/tripod-stilt-stalker.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1222x745, background 0.9031, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.9595, color bins 303, edge density 0.1585, local contrast 12.1479</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 23, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/tripod-stilt-stalker.md">public/review/source-candidates/art-contracts/tripod-stilt-stalker.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One whole tripodfish-like vertebrate, not a crab, spider, or walking machine.</li><li>Three long stilt fin rays are the first silhouette read and clearly support the body.</li><li>Upturned head, sensory pectoral rays, dorsal fin, body trunk, and tail stilt connect as one fish.</li><li>Stilts and sensory rays are thick and separated enough for crop-safe articulation.</li><li>No seabed, sand cloud, planted shadow, bubbles, particles, or floor contact marks baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Three supports are translucent tapered fin rays with subtle membranes, not feet, knees, insect legs, or metal rods.</li><li>The body remains a fish axis above the rays with readable head, trunk, dorsal fin, pectoral rays, and tail membrane.</li><li>No seabed, floor contact marks, sediment mound, or prop supports are baked into the isolated source art.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>narrow head capsule</li><li>upturned mouth plate</li><li>left glassy eye spot</li><li>right glassy eye spot</li><li>slender body torso</li><li>small dorsal sail fin</li><li>left pectoral sensory ray</li><li>right pectoral sensory ray</li><li>left pelvic tripod stilt</li><li>right pelvic tripod stilt</li><li>rear caudal tripod stilt</li><li>thin tail membrane flag</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid making the stilts look like insect legs or metal rods; they are elongated fish fin rays.</li><li>Avoid including a floor plane or sediment mound because the source must remain isolated.</li><li>Avoid hair-thin rays that cannot be selected, cropped, or animated cleanly.</li><li>Avoid turning the fish into a spider silhouette; keep the head, trunk, fins, and tail readable.</li><li>Avoid magenta, hot pink, or purple tissue near the background key color.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id tripod-stilt-stalker --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id tripod-stilt-stalker --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id tripod-stilt-stalker --kind source --serve --open --visual</code></pre>
+    </article>
+<article class="candidate pending">
+      <header>
+        <div>
+          <h2>Reef Lion Moray</h2>
+          <code>reef-lion-moray</code>
+        </div>
+        <strong>needs human review</strong>
+      </header>
+      <div class="images">
+        <figure><img src="thumbs/reef-lion-moray-source-thumb.png" alt="Reef Lion Moray source thumbnail"><figcaption>whole source thumbnail</figcaption></figure>
+        <figure><img src="key-previews/reef-lion-moray-key-preview.png" alt="Reef Lion Moray key preview"><figcaption>magenta key preview</figcaption></figure>
+        <figure><img src="/mnt/nxt-dev/water9/tools/scratch/source-preview-visuals/source-reef-lion-moray__source-review__idle.png" alt="Reef Lion Moray source sandbox preview"><figcaption>sandbox screenshot</figcaption></figure>
+      </div>
+      <div class="evidence"><span>thumbnail</span><span>key preview</span><span>image validation passed</span><span>source preview rendered (not approval)</span><span>not approved</span></div>
+      <dl>
+        <dt>source</dt><dd><a href="/assets/generated/fauna-reef-lion-moray-whole-source.png">public/assets/generated/fauna-reef-lion-moray-whole-source.png</a></dd>
+        <dt>review packet</dt><dd><a href="source-review-packets/reef-lion-moray.md">public/review/source-candidates/source-review-packets/reef-lion-moray.md</a></dd>
+        <dt>image metrics</dt><dd>1536x1024, subject 1438x408, background 0.8064, inner magenta 0</dd>
+        <dt>detail metrics</dt><dd>entropy 4.4241, color bins 405, edge density 0.0801, local contrast 4.5085</dd>
+        <dt>connectivity</dt><dd>largest component 1, significant components 1</dd>
+        <dt>preview canvas</dt><dd>960x640, varied 27, luma 220.34</dd>
+      </dl>
+      <h3>Blockers</h3>
+      <ul><li>human source approval is still missing</li></ul>
+      <section class="contract">
+    <h3>Contract Snapshot</h3>
+    <p><a href="art-contracts/reef-lion-moray.md">public/review/source-candidates/art-contracts/reef-lion-moray.md</a></p>
+    <div class="contract-grid">
+      <div><h4>Required Read</h4><ul><li>One cohesive vertebrate hybrid, not a separate eel wrapped in decorative lionfish fins.</li><li>Moray head and flared venom spine fan are the first reads at game scale.</li><li>Eel torso, jaws, pectoral fans, dorsal spines, tail coil, and cheek frills remain visibly connected.</li><li>Spines and fin membranes are broad enough to crop and animate without becoming noisy feathers.</li><li>No reef wall, cave hole, coral scenery, sand plume, shadow, bubbles, or poison cloud baked into the source.</li></ul></div>
+      <div><h4>Candidate Checks</h4><ul><li>Attachment read: pectoral fans must root behind the gill pouch and dorsal spines must root along the eel back; reject loose pasted fin sheets.</li><li>Vertebrate continuity read: head, throat, torso coil, tail, jaws, cheek frills, and fins must share one continuous eel body axis.</li><li>Fin readability read: venom rays must be broad crop-safe biological fins, not feathers, wings, ornamental dragon frills, or noisy hairlines.</li></ul></div>
+      <div><h4>Riggable Parts</h4><ul><li>blunt moray head plate</li><li>upper hooked jaw plate</li><li>lower hinged jaw plate</li><li>inner bite mouth plate</li><li>throat gill pouch</li><li>sinuous eel torso coil</li><li>folding dorsal venom spine fan</li><li>left striped pectoral fan</li><li>right striped pectoral fan</li><li>cheek frill whisker cluster</li><li>banded tail coil segment</li><li>tail blade fin</li></ul></div>
+      <div><h4>Reject Risks</h4><ul><li>Avoid a collage of eel plus loose lionfish fins; the hybrid must read as one continuous vertebrate.</li><li>Avoid thin hairlike spines that disappear at sprite scale; use broad crop-safe venom rays.</li><li>Avoid including reef scenery, cave darkness, or coral props in the isolated source.</li><li>Avoid making the fins look like decorative wings instead of biological pectoral and dorsal fins.</li><li>Avoid magenta, hot pink, or purple warning stripes that could interfere with keying.</li></ul></div>
+    </div>
+  </section>
+      <h3>Approval Command</h3>
+      <pre><code>npm run source:accept -- --id reef-lion-moray --status approved --reviewed-by &lt;human-reviewer&gt; --note 'Approved after inspecting the whole source before any rigging.' --visual-check whole-creature-cohesion --visual-check part-continuity-cohesion --visual-check readable-silhouette --visual-check no-collage-artifacts --visual-check non-placeholder-art-direction --visual-check crop-safe-anatomy --visual-check clean-magenta-key --visual-check gameplay-read --visual-check neutral-riggable-pose --visual-check visible-attack-lane --score whole-creature-cohesion=&lt;4-5&gt; --score part-continuity-cohesion=&lt;4-5&gt; --score readable-silhouette=&lt;4-5&gt; --score no-collage-artifacts=&lt;4-5&gt; --score non-placeholder-art-direction=&lt;4-5&gt; --score crop-safe-anatomy=&lt;4-5&gt; --score clean-magenta-key=&lt;4-5&gt; --score gameplay-read=&lt;4-5&gt; --score neutral-riggable-pose=&lt;4-5&gt; --score visible-attack-lane=&lt;4-5&gt; --visual-note whole-creature-cohesion='&lt;specific rationale&gt;' --visual-note part-continuity-cohesion='&lt;specific rationale&gt;' --visual-note readable-silhouette='&lt;specific rationale&gt;' --visual-note no-collage-artifacts='&lt;specific rationale&gt;' --visual-note non-placeholder-art-direction='&lt;specific rationale&gt;' --visual-note crop-safe-anatomy='&lt;specific rationale&gt;' --visual-note clean-magenta-key='&lt;specific rationale&gt;' --visual-note gameplay-read='&lt;specific rationale&gt;' --visual-note neutral-riggable-pose='&lt;specific rationale&gt;' --visual-note visible-attack-lane='&lt;specific rationale&gt;' --source-reviewed --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Reject Command</h3>
+      <pre><code>npm run source:accept -- --id reef-lion-moray --status rejected --reviewed-by &lt;human-reviewer&gt; --note 'Rejected after inspecting the source, magenta key, sandbox preview, visual board, and plan preview because the whole source does not read as one cohesive creature.' --failed-check whole-creature-cohesion --visual-note whole-creature-cohesion='&lt;specific failure rationale citing source, key preview, sandbox screenshot, visual board, and plan preview&gt;' --source-rejected --source-visual-board public/review/source-visual-board.json</code></pre>
+      <h3>Source Preview Command</h3>
+      <pre><code>npm run sandbox:preview -- --id reef-lion-moray --kind source --serve --open --visual</code></pre>
+    </article></section>
+  </main>
+</body>
+</html>

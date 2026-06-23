@@ -5,21 +5,8 @@
   "displayName": "Abyssal Gulper",
   "kind": "articulated-creature",
   "depthBand": "abyss",
-  "source": "public/assets/generated/fauna-abyss-black-swallower-2.png",
-  "sourceTransform": {
-    "flipX": true,
-    "scale": 3,
-    "resample": "lanczos",
-    "postProcess": {
-      "contrast": 1.08,
-      "sharpness": 1.7,
-      "unsharpMask": {
-        "radius": 1,
-        "percent": 110,
-        "threshold": 8
-      }
-    }
-  },
+  "source": "public/assets/generated/fauna-abyssal-gulper-whole-painted.png",
+  "sourceTransform": {},
   "coordinateSpace": {
     "units": "pixels",
     "origin": "center"
@@ -30,14 +17,123 @@
       "key": "fauna-abyssal-gulper-tail",
       "src": "fauna-abyssal-gulper-tail.png",
       "sourceCrop": {
-        "x": 0,
-        "y": 5,
-        "width": 54,
-        "height": 45
+        "x": 22,
+        "y": 190,
+        "width": 210,
+        "height": 150
+      },
+      "size": {
+        "width": 210,
+        "height": 150
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.72,
+        "drag": 1.08,
+        "angularDrag": 0.38,
+        "severable": true,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.55
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.8,
+        "frequency": 1.62,
+        "phase": 1.04,
+        "lag": 0.62
+      }
+    },
+    {
+      "id": "tail-base",
+      "key": "fauna-abyssal-gulper-tail-base",
+      "src": "fauna-abyssal-gulper-tail-base.png",
+      "sourceCrop": {
+        "x": 142,
+        "y": 172,
+        "width": 195,
+        "height": 133
+      },
+      "size": {
+        "width": 195,
+        "height": 133
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.86,
+        "drag": 1.08,
+        "angularDrag": 0.38,
+        "severable": true,
+        "breakThreshold": 0.78,
+        "mobilityFactor": 0.62
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 4.2,
+        "frequency": 1.6,
+        "phase": 0.86,
+        "lag": 0.5
+      }
+    },
+    {
+      "id": "body-4",
+      "key": "fauna-abyssal-gulper-body-4",
+      "src": "fauna-abyssal-gulper-body-4.png",
+      "sourceCrop": {
+        "x": 262,
+        "y": 160,
+        "width": 158,
+        "height": 125
+      },
+      "size": {
+        "width": 158,
+        "height": 125
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.22,
+        "drag": 1.08,
+        "angularDrag": 0.38,
+        "severable": true,
+        "breakThreshold": 0.86,
+        "mobilityFactor": 0.7
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 3.4,
+        "frequency": 1.58,
+        "phase": 0.64,
+        "lag": 0.36
+      }
+    },
+    {
+      "id": "body-3",
+      "key": "fauna-abyssal-gulper-body-3",
+      "src": "fauna-abyssal-gulper-body-3.png",
+      "sourceCrop": {
+        "x": 382,
+        "y": 150,
+        "width": 162,
+        "height": 140
       },
       "size": {
         "width": 162,
-        "height": 135
+        "height": 140
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.2,
+        "drag": 0.84,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.4,
+        "mobilityFactor": 0.84
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 3.4,
+        "frequency": 1.66,
+        "phase": 0.68,
+        "lag": 0.48
       }
     },
     {
@@ -45,29 +141,197 @@
       "key": "fauna-abyssal-gulper-body-2",
       "src": "fauna-abyssal-gulper-body-2.png",
       "sourceCrop": {
-        "x": 20,
-        "y": 0,
-        "width": 66,
-        "height": 54
+        "x": 500,
+        "y": 142,
+        "width": 166,
+        "height": 155
       },
       "size": {
-        "width": 198,
-        "height": 162
-      }
+        "width": 166,
+        "height": 155
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.65,
+        "drag": 0.84,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.45,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 2.1,
+        "frequency": 1.6,
+        "phase": 0.36,
+        "lag": 0.28
+      },
+      "damagedSrc": "fauna-abyssal-gulper-body-2-damaged.png",
+      "damagedKey": "fauna-abyssal-gulper-body-2-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
     },
     {
       "id": "body-1",
       "key": "fauna-abyssal-gulper-body-1",
       "src": "fauna-abyssal-gulper-body-1.png",
       "sourceCrop": {
-        "x": 50,
-        "y": 0,
-        "width": 62,
-        "height": 54
+        "x": 520,
+        "y": 105,
+        "width": 180,
+        "height": 205
       },
       "size": {
-        "width": 186,
-        "height": 162
+        "width": 180,
+        "height": 205
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.05,
+        "drag": 0.84,
+        "angularDrag": 0.38,
+        "severable": false,
+        "breakThreshold": 1.5,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 0.9,
+        "frequency": 1.54,
+        "phase": 0.12,
+        "lag": 0.1
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              130,
+              72
+            ],
+            [
+              180,
+              68
+            ],
+            [
+              180,
+              205
+            ],
+            [
+              118,
+              205
+            ],
+            [
+              100,
+              142
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dorsal-fin",
+      "key": "fauna-abyssal-gulper-dorsal-fin",
+      "src": "fauna-abyssal-gulper-dorsal-fin.png",
+      "sourceCrop": {
+        "x": 492,
+        "y": 88,
+        "width": 180,
+        "height": 105
+      },
+      "size": {
+        "width": 180,
+        "height": 105
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.38,
+        "drag": 1.08,
+        "angularDrag": 0.74,
+        "severable": true,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.76
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 0.45,
+        "frequency": 1.45,
+        "phase": 0.18,
+        "lag": 0.04
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              0,
+              64
+            ],
+            [
+              180,
+              56
+            ],
+            [
+              180,
+              105
+            ],
+            [
+              0,
+              105
+            ]
+          ]
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              32,
+              0
+            ],
+            [
+              18,
+              105
+            ],
+            [
+              0,
+              105
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pectoral-fin",
+      "key": "fauna-abyssal-gulper-pectoral-fin",
+      "src": "fauna-abyssal-gulper-pectoral-fin.png",
+      "sourceCrop": {
+        "x": 507,
+        "y": 228,
+        "width": 170,
+        "height": 130
+      },
+      "size": {
+        "width": 170,
+        "height": 130
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.42,
+        "drag": 1.08,
+        "angularDrag": 0.74,
+        "severable": true,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.4,
+        "frequency": 2.05,
+        "phase": 0.24,
+        "lag": 0.3
       }
     },
     {
@@ -75,80 +339,29 @@
       "key": "fauna-abyssal-gulper-head",
       "src": "fauna-abyssal-gulper-head.png",
       "sourceCrop": {
-        "x": 72,
-        "y": 0,
-        "width": 58,
-        "height": 54
+        "x": 650,
+        "y": 110,
+        "width": 205,
+        "height": 132
       },
-      "alphaCutouts": [
-        {
-          "kind": "polygon",
-          "maskSourcePartId": "jaw",
-          "maskOffset": [18, 63],
-          "points": [
-            [38, 115],
-            [43, 96],
-            [61, 91],
-            [78, 98],
-            [92, 108],
-            [104, 116],
-            [114, 126],
-            [144, 121],
-            [154, 129],
-            [151, 138],
-            [132, 142],
-            [91, 138],
-            [57, 131]
-          ]
-        },
-        {
-          "kind": "polygon",
-          "maskSourcePartId": "jaw",
-          "maskOffset": [18, 63],
-          "points": [
-            [62, 101],
-            [67, 93],
-            [80, 99],
-            [77, 112]
-          ]
-        },
-        {
-          "kind": "polygon",
-          "maskSourcePartId": "jaw",
-          "maskOffset": [18, 63],
-          "points": [
-            [85, 118],
-            [91, 102],
-            [105, 110],
-            [101, 125]
-          ]
-        },
-        {
-          "kind": "polygon",
-          "maskSourcePartId": "jaw",
-          "maskOffset": [18, 63],
-          "points": [
-            [105, 123],
-            [114, 110],
-            [129, 116],
-            [123, 129]
-          ]
-        },
-        {
-          "kind": "polygon",
-          "maskSourcePartId": "jaw",
-          "maskOffset": [18, 63],
-          "points": [
-            [131, 120],
-            [138, 106],
-            [154, 112],
-            [151, 125]
-          ]
-        }
-      ],
       "size": {
-        "width": 174,
-        "height": 162
+        "width": 205,
+        "height": 132
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 3.3,
+        "drag": 0.84,
+        "angularDrag": 0.44,
+        "severable": false,
+        "breakThreshold": 1.65,
+        "mobilityFactor": 0.58
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 2.0,
+        "frequency": 1.25,
+        "phase": 0.0
       }
     },
     {
@@ -156,34 +369,168 @@
       "key": "fauna-abyssal-gulper-jaw",
       "src": "fauna-abyssal-gulper-jaw.png",
       "sourceCrop": {
-        "x": 78,
-        "y": 21,
-        "width": 52,
-        "height": 33
+        "x": 640,
+        "y": 205,
+        "width": 212,
+        "height": 135
       },
       "size": {
-        "width": 156,
-        "height": 99
-      }
+        "width": 212,
+        "height": 135
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.58,
+        "drag": 1.08,
+        "angularDrag": 0.74,
+        "severable": true,
+        "breakThreshold": 0.8,
+        "mobilityFactor": 0.88
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 11.6,
+        "frequency": 1.82,
+        "phase": 0.0,
+        "lag": 0.06
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              212,
+              0
+            ],
+            [
+              212,
+              28
+            ],
+            [
+              112,
+              26
+            ],
+            [
+              62,
+              48
+            ],
+            [
+              0,
+              64
+            ]
+          ]
+        }
+      ]
     }
   ],
   "socketOverlays": [
     {
       "id": "tail-socket",
       "src": "fauna-abyssal-gulper-tail-socket.png",
-      "parentId": "body-2",
+      "parentId": "tail-base",
       "childId": "tail",
+      "sourcePartId": "tail-base",
+      "sourceCrop": {
+        "x": 0,
+        "y": 42,
+        "width": 78,
+        "height": 70
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.12,
+      "bridgeSleeveScale": 0.48,
+      "severedSrc": "fauna-abyssal-gulper-tail-wound.png",
+      "severedKey": "fauna-abyssal-gulper-tail-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-socket"
+    },
+    {
+      "id": "tail-base-socket",
+      "src": "fauna-abyssal-gulper-tail-base-socket.png",
+      "parentId": "body-4",
+      "childId": "tail-base",
+      "sourcePartId": "body-4",
+      "sourceCrop": {
+        "x": 0,
+        "y": 35,
+        "width": 82,
+        "height": 74
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.6,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.08,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-gulper-tail-base-wound.png",
+      "severedKey": "fauna-abyssal-gulper-tail-base-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-base-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-base-socket"
+    },
+    {
+      "id": "body-4-socket",
+      "src": "fauna-abyssal-gulper-body-4-socket.png",
+      "parentId": "body-3",
+      "childId": "body-4",
+      "sourcePartId": "body-3",
+      "sourceCrop": {
+        "x": 0,
+        "y": 43,
+        "width": 84,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.34,
+      "severedSrc": "fauna-abyssal-gulper-body-4-wound.png",
+      "severedKey": "fauna-abyssal-gulper-body-4-wound",
+      "severedProcess": "deterministic sever wound overlay:body-4-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-4-socket"
+    },
+    {
+      "id": "body-3-socket",
+      "src": "fauna-abyssal-gulper-body-3-socket.png",
+      "parentId": "body-2",
+      "childId": "body-3",
       "sourcePartId": "body-2",
       "sourceCrop": {
         "x": 0,
-        "y": 34,
-        "width": 92,
-        "height": 90
+        "y": 50,
+        "width": 88,
+        "height": 84
       },
-      "offset": {
-        "x": -44,
-        "y": 0
-      }
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.36,
+      "severedSrc": "fauna-abyssal-gulper-body-3-wound.png",
+      "severedKey": "fauna-abyssal-gulper-body-3-wound",
+      "severedProcess": "deterministic sever wound overlay:body-3-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-3-socket"
     },
     {
       "id": "body-2-socket",
@@ -193,14 +540,75 @@
       "sourcePartId": "body-1",
       "sourceCrop": {
         "x": 0,
-        "y": 28,
-        "width": 92,
-        "height": 102
+        "y": 55,
+        "width": 88,
+        "height": 86
       },
-      "offset": {
-        "x": -45,
-        "y": 0
-      }
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.24,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.38,
+      "severedSrc": "fauna-abyssal-gulper-body-2-wound.png",
+      "severedKey": "fauna-abyssal-gulper-body-2-wound",
+      "severedProcess": "deterministic sever wound overlay:body-2-socket",
+      "socketProcess": "deterministic organic socket occlusion:body-2-socket"
+    },
+    {
+      "id": "dorsal-fin-socket",
+      "src": "fauna-abyssal-gulper-dorsal-fin-socket.png",
+      "parentId": "body-1",
+      "childId": "dorsal-fin",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 42,
+        "y": 0,
+        "width": 92,
+        "height": 60
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.56,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.34,
+      "severedSrc": "fauna-abyssal-gulper-dorsal-fin-wound.png",
+      "severedKey": "fauna-abyssal-gulper-dorsal-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:dorsal-fin-socket",
+      "socketProcess": "deterministic organic socket occlusion:dorsal-fin-socket"
+    },
+    {
+      "id": "pectoral-fin-socket",
+      "src": "fauna-abyssal-gulper-pectoral-fin-socket.png",
+      "parentId": "body-1",
+      "childId": "pectoral-fin",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 38,
+        "y": 106,
+        "width": 90,
+        "height": 62
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.54,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-gulper-pectoral-fin-wound.png",
+      "severedKey": "fauna-abyssal-gulper-pectoral-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:pectoral-fin-socket",
+      "socketProcess": "deterministic organic socket occlusion:pectoral-fin-socket"
     },
     {
       "id": "head-socket",
@@ -209,15 +617,24 @@
       "childId": "head",
       "sourcePartId": "body-1",
       "sourceCrop": {
-        "x": 86,
-        "y": 26,
-        "width": 94,
-        "height": 106
+        "x": 94,
+        "y": 48,
+        "width": 80,
+        "height": 92
       },
-      "offset": {
-        "x": 48,
-        "y": 0
-      }
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.24,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.04,
+      "bridgeSleeveScale": 0.42,
+      "severedSrc": "fauna-abyssal-gulper-head-wound.png",
+      "severedKey": "fauna-abyssal-gulper-head-wound",
+      "severedProcess": "deterministic sever wound overlay:head-socket",
+      "socketProcess": "deterministic organic socket occlusion:head-socket"
     },
     {
       "id": "jaw-socket",
@@ -226,16 +643,48 @@
       "childId": "jaw",
       "sourcePartId": "head",
       "sourceCrop": {
-        "x": 68,
-        "y": 70,
-        "width": 88,
-        "height": 70
+        "x": 42,
+        "y": 76,
+        "width": 74,
+        "height": 54
       },
-      "offset": {
-        "x": 34,
-        "y": 22
-      }
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.25,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.08,
+      "bridgeSleeveScale": 0.5,
+      "severedSrc": "fauna-abyssal-gulper-jaw-wound.png",
+      "severedKey": "fauna-abyssal-gulper-jaw-wound",
+      "severedProcess": "deterministic sever wound overlay:jaw-socket",
+      "socketProcess": "deterministic organic socket occlusion:jaw-socket"
     }
   ],
-  "notes": "Second articulated proof creature cut from one existing black swallower frame, flipped to the runtime right-facing convention, then Lanczos-upscaled with a restrained contrast/sharpen pass to reduce thumbnail blockiness while preserving silhouette. The head declares jaw-alpha-intersected mandible and fang cutouts so the lower jaw is carried by the hinged jaw part instead of being duplicated in the skull. It is assembled with parent-body socket overlays on every anchored joint to prove the rig supports more than one cohesive segmented predator."
+  "notes": "Rebuilt from a purpose-generated high-resolution side-view source image with a removable chroma key, then downsampled and cut into ten overlapping anatomical pieces. This v2 source replaces the old tiny black-swallower upscale so the gulper reads as a cohesive segmented abyss predator with fins, armor folds, a long tail, and a large expandable jaw pouch.",
+  "murkTint": {
+    "color": 8562616,
+    "intensity": 0.16,
+    "stunnedIntensity": 0.2
+  },
+  "socketStyle": {
+    "alpha": 0.76,
+    "bridgeColor": 1319994,
+    "bridgeAlpha": 0.44,
+    "bridgeStunnedAlpha": 0.2,
+    "bridgeCoreColor": 7977161,
+    "bridgeCoreAlpha": 0.2,
+    "bridgeCoreStunnedAlpha": 0.05,
+    "bridgeWidthScale": 1.18,
+    "bridgeSleeveScale": 0.52
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Needs explicit visual acceptance from sandbox/contact-sheet review before counting toward the 20-threat goal."
+  }
 }

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Critic Regeneration Queue</title>
+  <style>
+    :root { color-scheme: dark; --bg:#050b0d; --panel:#0d171b; --line:#28434a; --text:#e8f6f5; --muted:#95aaad; --accent:#74d8f1; --warn:#f0bd68; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1320px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:16px 0 8px; color:var(--muted); font-size:12px; text-transform:uppercase; }
+    p { color:var(--muted); }
+    article { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; margin:12px 0; }
+    .next { border:1px solid var(--warn); background:#15120a; border-radius:7px; padding:14px; margin:18px 0; }
+    article header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    .next header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; border:1px solid var(--line); background:#030708; padding:10px; overflow:auto; white-space:pre-wrap; }
+    strong { color:var(--warn); }
+    .summary, .links { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .summary span, .links a { border:1px solid var(--line); background:#071216; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .media { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin:14px 0; }
+    .image { display:block; border:1px solid var(--line); background:#020506; min-height:120px; overflow:hidden; }
+    .image img { display:block; width:100%; height:160px; object-fit:contain; image-rendering:auto; }
+    .image span { display:block; padding:7px 9px; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Critic Regeneration Queue</h1>
+    <p>Focused replacement queue for source candidates with explicit regenerate findings. This does not approve any source art.</p>
+    <pre><code>npm run source:critic-regeneration
+npm run source:critic-regeneration-check</code></pre>
+    <div class="summary">
+      <span>regenerate candidates <strong>9</strong></span>
+      <span>lanes <strong>3</strong></span>
+      <span>next target <strong>black-coral-gate</strong></span>
+      <span>human approval still required <strong>true</strong></span>
+    </div>
+    <section class="next" id="next-regeneration-target">
+    <header>
+      <div><h2>Next Regeneration Target</h2><code>black-coral-gate</code></div>
+      <strong>Black Coral Gate</strong>
+    </header>
+    <p>complex-colonial-forms · execute this target first, then rebuild evidence and return it to source approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-black-coral-gate-whole-source.png"><img src="/assets/generated/fauna-black-coral-gate-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png"><img src="/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/black-coral-gate-plan-preview.png"><img src="/review/articulated/black-coral-gate-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <h3>Focused Command Loop</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt
+# Imagegen/manual branch:
+npm run source:imagegen-mark -- --id black-coral-gate
+npm run source:imagegen-status -- --id black-coral-gate
+npm run source:imagegen-status -- --id black-coral-gate --ingest
+npm run source:inbox-capture -- --id black-coral-gate --open
+npm run source:recover-inline -- --id black-coral-gate --image &lt;saved-image-path&gt; --copy --validate
+# OpenAI branch:
+npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+# Shared replacement/evidence branch:
+python3 tools/validate_source_candidate_images.py --id black-coral-gate --image tools/source-inbox/black-coral-gate.png
+npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite --dry-run
+npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite
+npm run source:image-check -- --id black-coral-gate
+npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </section>
+    <article id="black-coral-gate" data-critic-regeneration="black-coral-gate">
+    <header>
+      <div><h2>Black Coral Gate</h2><code>black-coral-gate</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>complex-colonial-forms · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-black-coral-gate-whole-source.png"><img src="/assets/generated/fauna-black-coral-gate-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png"><img src="/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/black-coral-gate-plan-preview.png"><img src="/review/articulated/black-coral-gate-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#black-coral-gate">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#black-coral-gate">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/black-coral-gate.html">quick review</a>
+      <a href="/?entity=source-black-coral-gate&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>Silhouette reads more like a closed dome or creature mask than an open coral arch.</li><li>Central bars and teeth feel portcullis-like but not clearly grown from left/right pillars.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Phase/contact evidence barely sells a drop/clamp cycle and stays visually closed.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt
+npm run source:imagegen-mark -- --id black-coral-gate
+npm run source:imagegen-status -- --id black-coral-gate
+npm run source:imagegen-status -- --id black-coral-gate --ingest
+npm run source:inbox-capture -- --id black-coral-gate --open
+npm run source:recover-inline -- --id black-coral-gate --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id black-coral-gate --image tools/source-inbox/black-coral-gate.png
+npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite --dry-run
+npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite
+npm run source:image-check -- --id black-coral-gate
+npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+<article id="chain-vein-siphonophore" data-critic-regeneration="chain-vein-siphonophore">
+    <header>
+      <div><h2>Chain Vein Siphonophore</h2><code>chain-vein-siphonophore</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>complex-colonial-forms · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png"><img src="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/chain-vein-siphonophore-source-preview.png"><img src="/review/source-candidates/quick-reviews/chain-vein-siphonophore-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/chain-vein-siphonophore-plan-preview.png"><img src="/review/articulated/chain-vein-siphonophore-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#chain-vein-siphonophore">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#chain-vein-siphonophore">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/chain-vein-siphonophore.html">quick review</a>
+      <a href="/?entity=source-chain-vein-siphonophore&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/02-chain-vein-siphonophore.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>Too similar to reliquary-siphonophore.</li><li>Large dark side bracts read as hard shields, weakening soft colonial anatomy.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Rig evidence reinforces a walking or legged silhouette instead of unfolding tripwire lines.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/02-chain-vein-siphonophore.txt
+npm run source:imagegen-mark -- --id chain-vein-siphonophore
+npm run source:imagegen-status -- --id chain-vein-siphonophore
+npm run source:imagegen-status -- --id chain-vein-siphonophore --ingest
+npm run source:inbox-capture -- --id chain-vein-siphonophore --open
+npm run source:recover-inline -- --id chain-vein-siphonophore --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id chain-vein-siphonophore --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id chain-vein-siphonophore --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png
+npm run source:ingest -- --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png --copy --overwrite --dry-run
+npm run source:ingest -- --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png --copy --overwrite
+npm run source:image-check -- --id chain-vein-siphonophore
+npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+<article id="gulper-eel-maw" data-critic-regeneration="gulper-eel-maw">
+    <header>
+      <div><h2>Gulper Eel Maw</h2><code>gulper-eel-maw</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>mobile-predator-motion · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-gulper-eel-maw-whole-source.png"><img src="/assets/generated/fauna-gulper-eel-maw-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/gulper-eel-maw-source-preview.png"><img src="/review/source-candidates/quick-reviews/gulper-eel-maw-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/gulper-eel-maw-plan-preview.png"><img src="/review/articulated/gulper-eel-maw-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#gulper-eel-maw">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#gulper-eel-maw">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/gulper-eel-maw.html">quick review</a>
+      <a href="/?entity=source-gulper-eel-maw&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/03-gulper-eel-maw.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>Octagonal maw reads mechanical or portal-like rather than soft pelican-eel pouch.</li><li>Triangular plates and fins break the continuous eel anatomy chain.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Hard-corner jaw hoop and possible disconnected lure/body components will make inflate-collapse articulation awkward.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/03-gulper-eel-maw.txt
+npm run source:imagegen-mark -- --id gulper-eel-maw
+npm run source:imagegen-status -- --id gulper-eel-maw
+npm run source:imagegen-status -- --id gulper-eel-maw --ingest
+npm run source:inbox-capture -- --id gulper-eel-maw --open
+npm run source:recover-inline -- --id gulper-eel-maw --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id gulper-eel-maw --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id gulper-eel-maw --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png
+npm run source:ingest -- --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png --copy --overwrite --dry-run
+npm run source:ingest -- --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png --copy --overwrite
+npm run source:image-check -- --id gulper-eel-maw
+npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+<article id="trench-harvest-sea-spider" data-critic-regeneration="trench-harvest-sea-spider">
+    <header>
+      <div><h2>Trench Harvest Sea Spider</h2><code>trench-harvest-sea-spider</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>mobile-predator-motion · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png"><img src="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/trench-harvest-sea-spider-source-preview.png"><img src="/review/source-candidates/quick-reviews/trench-harvest-sea-spider-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/trench-harvest-sea-spider-plan-preview.png"><img src="/review/articulated/trench-harvest-sea-spider-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#trench-harvest-sea-spider">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#trench-harvest-sea-spider">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/trench-harvest-sea-spider.html">quick review</a>
+      <a href="/?entity=source-trench-harvest-sea-spider&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/04-trench-harvest-sea-spider.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>Reads top-down and radial rather than side-profile sea spider.</li><li>Forward proboscis reads as a rigid spear or blade.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Small distal leg tips and radial evidence may not support readable side-motion.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/04-trench-harvest-sea-spider.txt
+npm run source:imagegen-mark -- --id trench-harvest-sea-spider
+npm run source:imagegen-status -- --id trench-harvest-sea-spider
+npm run source:imagegen-status -- --id trench-harvest-sea-spider --ingest
+npm run source:inbox-capture -- --id trench-harvest-sea-spider --open
+npm run source:recover-inline -- --id trench-harvest-sea-spider --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id trench-harvest-sea-spider --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id trench-harvest-sea-spider --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png
+npm run source:ingest -- --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png --copy --overwrite --dry-run
+npm run source:ingest -- --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png --copy --overwrite
+npm run source:image-check -- --id trench-harvest-sea-spider
+npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+<article id="vampire-cloak-squid" data-critic-regeneration="vampire-cloak-squid">
+    <header>
+      <div><h2>Vampire Cloak Squid</h2><code>vampire-cloak-squid</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>mobile-predator-motion · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-vampire-cloak-squid-whole-source.png"><img src="/assets/generated/fauna-vampire-cloak-squid-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/vampire-cloak-squid-source-preview.png"><img src="/review/source-candidates/quick-reviews/vampire-cloak-squid-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/vampire-cloak-squid-plan-preview.png"><img src="/review/articulated/vampire-cloak-squid-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#vampire-cloak-squid">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#vampire-cloak-squid">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/vampire-cloak-squid.html">quick review</a>
+      <a href="/?entity=source-vampire-cloak-squid&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/05-vampire-cloak-squid.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>External shell or carapace violates the vampire-squid contract.</li><li>Octopus sucker rows and golden lure bulbs add fantasy organs instead of clean photophores.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Arm bases are tangled, and the cloak mass is too monolithic for a clear umbrella-flare rig.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/05-vampire-cloak-squid.txt
+npm run source:imagegen-mark -- --id vampire-cloak-squid
+npm run source:imagegen-status -- --id vampire-cloak-squid
+npm run source:imagegen-status -- --id vampire-cloak-squid --ingest
+npm run source:inbox-capture -- --id vampire-cloak-squid --open
+npm run source:recover-inline -- --id vampire-cloak-squid --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id vampire-cloak-squid --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id vampire-cloak-squid --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png
+npm run source:ingest -- --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png --copy --overwrite --dry-run
+npm run source:ingest -- --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png --copy --overwrite
+npm run source:image-check -- --id vampire-cloak-squid
+npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+<article id="vent-claw-yeti" data-critic-regeneration="vent-claw-yeti">
+    <header>
+      <div><h2>Vent-Claw Yeti</h2><code>vent-claw-yeti</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>mobile-predator-motion · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-vent-claw-yeti-whole-source.png"><img src="/assets/generated/fauna-vent-claw-yeti-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png"><img src="/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/vent-claw-yeti-plan-preview.png"><img src="/review/articulated/vent-claw-yeti-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#vent-claw-yeti">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#vent-claw-yeti">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/vent-claw-yeti.html">quick review</a>
+      <a href="/?entity=source-vent-claw-yeti&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/06-vent-claw-yeti.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>Claws read as flat perforated paddles rather than bristled grasping crab claws.</li><li>Round joint disks and rod limbs feel assembled or mechanical.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Very thin arms and legs plus disk joints make hook-and-drag motion look non-biological.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/06-vent-claw-yeti.txt
+npm run source:imagegen-mark -- --id vent-claw-yeti
+npm run source:imagegen-status -- --id vent-claw-yeti
+npm run source:imagegen-status -- --id vent-claw-yeti --ingest
+npm run source:inbox-capture -- --id vent-claw-yeti --open
+npm run source:recover-inline -- --id vent-claw-yeti --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id vent-claw-yeti --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id vent-claw-yeti --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png
+npm run source:ingest -- --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png --copy --overwrite --dry-run
+npm run source:ingest -- --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png --copy --overwrite
+npm run source:image-check -- --id vent-claw-yeti
+npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+<article id="brine-crown" data-critic-regeneration="brine-crown">
+    <header>
+      <div><h2>Brine Crown</h2><code>brine-crown</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>sessile-ambush-hazards · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-brine-crown-whole-source.png"><img src="/assets/generated/fauna-brine-crown-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/brine-crown-source-preview.png"><img src="/review/source-candidates/quick-reviews/brine-crown-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/brine-crown-plan-preview.png"><img src="/review/articulated/brine-crown-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#brine-crown">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#brine-crown">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/brine-crown.html">quick review</a>
+      <a href="/?entity=source-brine-crown&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/07-brine-crown.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>Curled radial lobes read strongly as cephalopod arms, which the contract rejects.</li><li>Dense mineral and coral detail makes the basal mat, crown, blister bank, and spines feel kitbashed.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Phase/contact evidence is nearly static; spine raise, blister swelling, and brine-lane growth need heavy deformation or repaint.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/07-brine-crown.txt
+npm run source:imagegen-mark -- --id brine-crown
+npm run source:imagegen-status -- --id brine-crown
+npm run source:imagegen-status -- --id brine-crown --ingest
+npm run source:inbox-capture -- --id brine-crown --open
+npm run source:recover-inline -- --id brine-crown --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id brine-crown --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id brine-crown --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id brine-crown --image tools/source-inbox/brine-crown.png
+npm run source:ingest -- --id brine-crown --image tools/source-inbox/brine-crown.png --copy --overwrite --dry-run
+npm run source:ingest -- --id brine-crown --image tools/source-inbox/brine-crown.png --copy --overwrite
+npm run source:image-check -- --id brine-crown
+npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+<article id="lantern-anemone-pit" data-critic-regeneration="lantern-anemone-pit">
+    <header>
+      <div><h2>Lantern Anemone Pit</h2><code>lantern-anemone-pit</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>sessile-ambush-hazards · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-lantern-anemone-pit-whole-source.png"><img src="/assets/generated/fauna-lantern-anemone-pit-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/lantern-anemone-pit-source-preview.png"><img src="/review/source-candidates/quick-reviews/lantern-anemone-pit-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/lantern-anemone-pit-plan-preview.png"><img src="/review/articulated/lantern-anemone-pit-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#lantern-anemone-pit">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#lantern-anemone-pit">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/lantern-anemone-pit.html">quick review</a>
+      <a href="/?entity=source-lantern-anemone-pit&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/08-lantern-anemone-pit.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>Reads too much like a decorative flower icon or coral bloom.</li><li>Dark purple wedge or rectangular backing looks like baked shadow or detached artifact rather than anatomy.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Parity and phase/contact evidence show blocky rectangular bounds and little clamp/retraction support.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/08-lantern-anemone-pit.txt
+npm run source:imagegen-mark -- --id lantern-anemone-pit
+npm run source:imagegen-status -- --id lantern-anemone-pit
+npm run source:imagegen-status -- --id lantern-anemone-pit --ingest
+npm run source:inbox-capture -- --id lantern-anemone-pit --open
+npm run source:recover-inline -- --id lantern-anemone-pit --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id lantern-anemone-pit --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id lantern-anemone-pit --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png
+npm run source:ingest -- --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png --copy --overwrite --dry-run
+npm run source:ingest -- --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png --copy --overwrite
+npm run source:image-check -- --id lantern-anemone-pit
+npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+<article id="predatory-tunicate-maw" data-critic-regeneration="predatory-tunicate-maw">
+    <header>
+      <div><h2>Predatory Tunicate Maw</h2><code>predatory-tunicate-maw</code></div>
+      <strong>regenerate</strong>
+    </header>
+    <p>sessile-ambush-hazards · source replacement must return to human approval.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png"><img src="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/predatory-tunicate-maw-source-preview.png"><img src="/review/source-candidates/quick-reviews/predatory-tunicate-maw-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/predatory-tunicate-maw-plan-preview.png"><img src="/review/articulated/predatory-tunicate-maw-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-candidates/source-critic-board.html#predatory-tunicate-maw">critic board</a>
+      <a href="/review/source-candidates/source-replace-runway.html#predatory-tunicate-maw">replace runway</a>
+      <a href="/review/source-candidates/quick-reviews/predatory-tunicate-maw.html">quick review</a>
+      <a href="/?entity=source-predatory-tunicate-maw&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/critic-regeneration-prompts/09-predatory-tunicate-maw.txt">prompt</a>
+    </div>
+    <h3>Cohesion Failures To Fix</h3>
+    <ul><li>Angler-like lure and trailing tentacle strands violate the prompt's reject cues.</li><li>Body reads more like a fantasy flytrap or sea-monster plant than a soft paired-siphon tunicate.</li></ul>
+    <h3>Animation Risk</h3>
+    <p>Phase sheet is essentially static, and the maw/tendrils do not set up a clean soft clamp cycle.</p>
+    <h3>Commands</h3>
+    <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/09-predatory-tunicate-maw.txt
+npm run source:imagegen-mark -- --id predatory-tunicate-maw
+npm run source:imagegen-status -- --id predatory-tunicate-maw
+npm run source:imagegen-status -- --id predatory-tunicate-maw --ingest
+npm run source:inbox-capture -- --id predatory-tunicate-maw --open
+npm run source:recover-inline -- --id predatory-tunicate-maw --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id predatory-tunicate-maw --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id predatory-tunicate-maw --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite
+python3 tools/validate_source_candidate_images.py --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png
+npm run source:ingest -- --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png --copy --overwrite --dry-run
+npm run source:ingest -- --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png --copy --overwrite
+npm run source:image-check -- --id predatory-tunicate-maw
+npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual
+npm run source:gallery &amp;&amp; npm run source:preview-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check &amp;&amp; npm run source:critic-board &amp;&amp; npm run source:critic-regeneration &amp;&amp; npm run source:critic-regeneration-check</code></pre>
+  </article>
+  </main>
+</body>
+</html>

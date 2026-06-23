@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Critic Regeneration Doctor</title>
+  <style>
+    :root { color-scheme: dark; --bg:#050b0d; --panel:#0c171b; --line:#28464f; --text:#e8f6f5; --muted:#93aaad; --accent:#7bdff2; --warn:#f0bd68; --good:#79d9a2; --bad:#e07c72; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1180px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:18px 0 8px; font-size:16px; color:var(--muted); text-transform:uppercase; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { border:1px solid var(--line); background:#030708; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .panel { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; margin:14px 0; }
+    .status { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .status span { border:1px solid var(--line); background:#071216; padding:7px 9px; border-radius:5px; color:var(--muted); }
+    .ready { color:var(--good); }
+    .blocked { color:var(--bad); }
+    table { width:100%; border-collapse:collapse; border:1px solid var(--line); background:#071216; }
+    th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    .links { display:flex; flex-wrap:wrap; gap:8px; }
+    .links a { border:1px solid var(--line); border-radius:5px; padding:7px 9px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Critic Regeneration Doctor</h1>
+    <p>This doctor focuses on the next critic-blocked source replacement. It does not approve source art or accept threats.</p>
+    <section class="panel" data-critic-regeneration-doctor="black-coral-gate">
+      <h2>Target</h2>
+      <div class="status">
+        <span>candidate <strong>black-coral-gate</strong></span>
+        <span>species <strong>Black Coral Gate</strong></span>
+        <span>status <strong class="blocked">replacement-matches-current-source</strong></span>
+        <span>ready for replacement ingest <strong>false</strong></span>
+        <span>matches current source <strong>true</strong></span>
+      </div>
+      <p>Prompt: <code>public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt</code></p>
+    </section>
+    <section class="panel">
+      <h2>Expected Replacement Files</h2>
+      <ul><li><code>tools/source-inbox/black-coral-gate.png</code></li><li><code>tools/source-inbox/fauna-black-coral-gate-whole-source.png</code></li></ul>
+    </section>
+    <section class="panel">
+      <h2>Inbox Files</h2>
+      <table>
+        <thead><tr><th>File</th><th>Bytes</th><th>Validation</th><th>Failures</th></tr></thead>
+        <tbody><tr>
+    <td><code>tools/source-inbox/black-coral-gate.png</code></td>
+    <td>437428</td>
+    <td>pass / matches current source</td>
+    <td>none</td>
+  </tr></tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Next Commands</h2>
+      <pre><code>sed -n '1,280p' public/review/source-candidates/critic-regeneration-prompts/01-black-coral-gate.txt
+npm run source:imagegen-mark -- --id black-coral-gate
+npm run source:imagegen-status -- --id black-coral-gate
+npm run source:imagegen-status -- --id black-coral-gate --ingest
+npm run source:inbox-capture -- --id black-coral-gate --open
+npm run source:recover-inline -- --id black-coral-gate --image &lt;saved-image-path&gt; --copy --validate
+npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --overwrite
+npm run source:generate-openai -- --id black-coral-gate --queue public/review/source-candidates/source-critic-regeneration-queue.json --apply --overwrite</code></pre>
+    </section>
+    <section class="panel">
+      <h2>Evidence Links</h2>
+      <div class="links">
+        <a href="/review/source-candidates/source-critic-regeneration-queue.html#next-regeneration-target">queue</a>
+        <a href="/review/source-candidates/source-critic-board.html#black-coral-gate">critic board</a>
+        <a href="/review/source-candidates/source-replace-runway.html#black-coral-gate">replace runway</a>
+        <a href="/review/source-candidates/quick-reviews/black-coral-gate.html">quick review</a>
+        <a href="/?entity=source-black-coral-gate&amp;companion=diver">source + diver</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

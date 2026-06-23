@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Replace Runway</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061012; --panel:#0d1b20; --line:#29444b; --text:#e6f5f5; --muted:#91a9ae; --accent:#7adff6; --warn:#e7bd6d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1440px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    h3 { margin:16px 0 8px; color:var(--muted); font-size:13px; text-transform:uppercase; }
+    p, li { color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { margin:0; border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    .summary, .links { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .summary span { border:1px solid var(--line); background:#09171b; border-radius:5px; padding:7px 9px; color:var(--muted); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(430px,1fr)); gap:14px; align-items:start; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:7px; padding:14px; }
+    .card header { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    .media { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:12px 0; }
+    .image { display:flex; min-height:120px; flex-direction:column; justify-content:space-between; border:1px solid var(--line); background:#050b0d; color:var(--accent); text-decoration:none; overflow:hidden; }
+    .image img { width:100%; height:120px; object-fit:contain; background:#050b0d; }
+    .image span { padding:6px; color:var(--muted); font-size:12px; }
+    .missing { align-items:center; justify-content:center; color:var(--warn); }
+    .warning { color:var(--warn); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Source Replace Runway</h1>
+    <p>Regenerate weak existing source art with intentional overwrite, then rebuild evidence for human approval. This page does not approve source art.</p>
+    <div class="summary">
+      <span>candidates <strong>20</strong></span>
+      <span>existing sources <strong>20</strong></span>
+      <span>replaceable <strong>20</strong></span>
+      <span>approved <strong>0</strong></span>
+      <span>approval <a href="/review/source-approval-runway.html">runway</a></span>
+      <span>visual <a href="/review/source-visual-board.html">board</a></span>
+    </div>
+    <section class="warning">
+      <h2>Replacement Boundary</h2>
+      <p>Every replacement command includes <code>--overwrite</code>, starts with a dry run, and rejects byte-identical no-op replacements. Use <code>--allow-identical-overwrite</code> only for an intentional metadata repair. Human approval still happens only in the source approval runway after regenerated evidence is reviewed.</p>
+    </section>
+    <section>
+      <h2>Safe Replacement Loop</h2>
+      <p>Inspect current evidence, generate a better cohesive whole-source organism, save it to the source inbox, dry-run the overwrite, apply only after validation confirms the image is distinct, then rebuild approval evidence.</p>
+    </section>
+    <section class="grid"><article class="card" id="brine-crown" data-source-replace-candidate="brine-crown" data-prompt-file="public/review/source-candidates/replace-runway-prompts/01-brine-crown.txt">
+    <header>
+      <div><h2>Brine Crown</h2><code>brine-crown</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-brine-crown-whole-source.png"><img src="/assets/generated/fauna-brine-crown-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/brine-crown-key-preview.png"><img src="/review/source-candidates/key-previews/brine-crown-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/brine-crown-source-preview.png"><img src="/review/source-candidates/quick-reviews/brine-crown-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/brine-crown-plan-preview.png"><img src="/review/articulated/brine-crown-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#brine-crown">approval runway</a>
+      <a href="/review/source-visual-board.html#brine-crown">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/brine-crown.html">quick review</a>
+      <a href="/?entity=source-brine-crown&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/01-brine-crown.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/01-brine-crown.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id brine-crown --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown
+npm run source:ingest -- --id brine-crown --image tools/source-inbox/brine-crown.png --copy --overwrite --dry-run
+npm run source:ingest -- --id brine-crown --image tools/source-inbox/brine-crown.png --copy --overwrite
+npm run source:image-check -- --id brine-crown
+npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-crown &amp;&amp; npm run source:ingest -- --id brine-crown --image tools/source-inbox/brine-crown.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id brine-crown --image tools/source-inbox/brine-crown.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id brine-crown &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a decorative reef; the source must read as a dangerous organism.</li><li>Avoid perfect radial ornament symmetry that feels like a logo.</li><li>Avoid magenta or hot pink body colors that will key out.</li><li>Avoid loose vent tubes or starfish arms that do not grow from the same mat.</li><li>Keep toxic clouds, bubbles, and brine puddles as separate VFX rather than baked source art.</li><li>Reject cephalopod tentacles, curled octopus arms, eyes, free-swimming anatomy, or loose starfish limbs.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="glass-sponge-sentinel" data-source-replace-candidate="glass-sponge-sentinel" data-prompt-file="public/review/source-candidates/replace-runway-prompts/02-glass-sponge-sentinel.txt">
+    <header>
+      <div><h2>Glass Sponge Sentinel</h2><code>glass-sponge-sentinel</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-glass-sponge-sentinel-whole-source.png"><img src="/assets/generated/fauna-glass-sponge-sentinel-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/glass-sponge-sentinel-key-preview.png"><img src="/review/source-candidates/key-previews/glass-sponge-sentinel-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/glass-sponge-sentinel-source-preview.png"><img src="/review/source-candidates/quick-reviews/glass-sponge-sentinel-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/glass-sponge-sentinel-plan-preview.png"><img src="/review/articulated/glass-sponge-sentinel-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#glass-sponge-sentinel">approval runway</a>
+      <a href="/review/source-visual-board.html#glass-sponge-sentinel">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/glass-sponge-sentinel.html">quick review</a>
+      <a href="/?entity=source-glass-sponge-sentinel&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/02-glass-sponge-sentinel.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/02-glass-sponge-sentinel.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id glass-sponge-sentinel --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids glass-sponge-sentinel
+npm run source:ingest -- --id glass-sponge-sentinel --image tools/source-inbox/glass-sponge-sentinel.png --copy --overwrite --dry-run
+npm run source:ingest -- --id glass-sponge-sentinel --image tools/source-inbox/glass-sponge-sentinel.png --copy --overwrite
+npm run source:image-check -- --id glass-sponge-sentinel
+npm run sandbox:preview -- --id source-glass-sponge-sentinel --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids glass-sponge-sentinel &amp;&amp; npm run source:ingest -- --id glass-sponge-sentinel --image tools/source-inbox/glass-sponge-sentinel.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id glass-sponge-sentinel --image tools/source-inbox/glass-sponge-sentinel.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id glass-sponge-sentinel &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a generic coral fan or sea plant; it must read as one vase-like glass sponge organism.</li><li>Avoid metal turrets, guns, cannons, crystals, or sci-fi machinery; needles are biological silica spicules.</li><li>Avoid dense lace detail that becomes noise at sprite scale; use bold crop-safe ribs and a few large needle petals.</li><li>Avoid multiple separate sponge colonies; generate one cohesive whole-source creature with one clear silhouette.</li><li>Keep pure magenta only in the background and keep all anatomy fully inside the crop.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>2026-06-17T15:53:26.354Z: Built-in image generation rendered a Glass Sponge Sentinel candidate inline, but no new recoverable image file appeared under CODEX_HOME/generated_images for project ingestion.</li><li>2026-06-17T14:25:36.509Z: Built-in image generation rendered inline for glass-sponge-sentinel, but no repository-visible image file appeared under /home/orlovboros/.codex/generated_images for automatic ingest.</li><li>2026-06-17T13:33:35.374Z: Built-in image generation produced only inline chat output; no recoverable file appeared under /home/orlovboros/.codex/generated_images after the marker.</li></ul>
+    </details>
+  </article>
+<article class="card" id="black-coral-gate" data-source-replace-candidate="black-coral-gate" data-prompt-file="public/review/source-candidates/replace-runway-prompts/03-black-coral-gate.txt">
+    <header>
+      <div><h2>Black Coral Gate</h2><code>black-coral-gate</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-black-coral-gate-whole-source.png"><img src="/assets/generated/fauna-black-coral-gate-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/black-coral-gate-key-preview.png"><img src="/review/source-candidates/key-previews/black-coral-gate-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png"><img src="/review/source-candidates/quick-reviews/black-coral-gate-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/black-coral-gate-plan-preview.png"><img src="/review/articulated/black-coral-gate-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#black-coral-gate">approval runway</a>
+      <a href="/review/source-visual-board.html#black-coral-gate">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/black-coral-gate.html">quick review</a>
+      <a href="/?entity=source-black-coral-gate&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/03-black-coral-gate.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/03-black-coral-gate.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id black-coral-gate --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids black-coral-gate
+npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite --dry-run
+npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite
+npm run source:image-check -- --id black-coral-gate
+npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids black-coral-gate &amp;&amp; npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id black-coral-gate --image tools/source-inbox/black-coral-gate.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id black-coral-gate &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.</li><li>Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.</li><li>Avoid thin hairlike coral branches that cannot be cropped or read at game scale.</li><li>Avoid magenta, hot pink, or purple body values that will conflict with the chroma key.</li><li>Keep bubbles, slam VFX, rubble, sand, and lighting effects separate from the base source.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="reliquary-siphonophore" data-source-replace-candidate="reliquary-siphonophore" data-prompt-file="public/review/source-candidates/replace-runway-prompts/04-reliquary-siphonophore.txt">
+    <header>
+      <div><h2>Reliquary Siphonophore</h2><code>reliquary-siphonophore</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-reliquary-siphonophore-whole-source.png"><img src="/assets/generated/fauna-reliquary-siphonophore-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/reliquary-siphonophore-key-preview.png"><img src="/review/source-candidates/key-previews/reliquary-siphonophore-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/reliquary-siphonophore-source-preview.png"><img src="/review/source-candidates/quick-reviews/reliquary-siphonophore-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/reliquary-siphonophore-plan-preview.png"><img src="/review/articulated/reliquary-siphonophore-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#reliquary-siphonophore">approval runway</a>
+      <a href="/review/source-visual-board.html#reliquary-siphonophore">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/reliquary-siphonophore.html">quick review</a>
+      <a href="/?entity=source-reliquary-siphonophore&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/04-reliquary-siphonophore.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/04-reliquary-siphonophore.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id reliquary-siphonophore --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids reliquary-siphonophore
+npm run source:ingest -- --id reliquary-siphonophore --image tools/source-inbox/reliquary-siphonophore.png --copy --overwrite --dry-run
+npm run source:ingest -- --id reliquary-siphonophore --image tools/source-inbox/reliquary-siphonophore.png --copy --overwrite
+npm run source:image-check -- --id reliquary-siphonophore
+npm run sandbox:preview -- --id source-reliquary-siphonophore --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids reliquary-siphonophore &amp;&amp; npm run source:ingest -- --id reliquary-siphonophore --image tools/source-inbox/reliquary-siphonophore.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id reliquary-siphonophore --image tools/source-inbox/reliquary-siphonophore.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id reliquary-siphonophore &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a generic jellyfish umbrella; require siphonophore colony structure with float, bells, zooids, and tendrils.</li><li>Avoid loose collage parts; all visible anatomy must belong to one continuous whole-source organism.</li><li>Avoid hair-thin tentacles that cannot be cropped or socketed; use a few broad readable tripwire tendrils.</li><li>Avoid literal metal chandeliers, cages, church relics, candles, or jewelry.</li><li>Keep glow, sting pulses, and contact sparks as separate VFX so they do not cover the base anatomy.</li><li>Keep pure magenta only in the background; avoid magenta internal glow that breaks chroma keying.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="hadal-trencher-isopod" data-source-replace-candidate="hadal-trencher-isopod" data-prompt-file="public/review/source-candidates/replace-runway-prompts/05-hadal-trencher-isopod.txt">
+    <header>
+      <div><h2>Hadal Trencher Isopod</h2><code>hadal-trencher-isopod</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-hadal-trencher-isopod-whole-source.png"><img src="/assets/generated/fauna-hadal-trencher-isopod-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/hadal-trencher-isopod-key-preview.png"><img src="/review/source-candidates/key-previews/hadal-trencher-isopod-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/hadal-trencher-isopod-source-preview.png"><img src="/review/source-candidates/quick-reviews/hadal-trencher-isopod-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/hadal-trencher-isopod-plan-preview.png"><img src="/review/articulated/hadal-trencher-isopod-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#hadal-trencher-isopod">approval runway</a>
+      <a href="/review/source-visual-board.html#hadal-trencher-isopod">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/hadal-trencher-isopod.html">quick review</a>
+      <a href="/?entity=source-hadal-trencher-isopod&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/05-hadal-trencher-isopod.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/05-hadal-trencher-isopod.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id hadal-trencher-isopod --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids hadal-trencher-isopod
+npm run source:ingest -- --id hadal-trencher-isopod --image tools/source-inbox/hadal-trencher-isopod.png --copy --overwrite --dry-run
+npm run source:ingest -- --id hadal-trencher-isopod --image tools/source-inbox/hadal-trencher-isopod.png --copy --overwrite
+npm run source:image-check -- --id hadal-trencher-isopod
+npm run sandbox:preview -- --id source-hadal-trencher-isopod --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids hadal-trencher-isopod &amp;&amp; npm run source:ingest -- --id hadal-trencher-isopod --image tools/source-inbox/hadal-trencher-isopod.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id hadal-trencher-isopod --image tools/source-inbox/hadal-trencher-isopod.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id hadal-trencher-isopod &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid making it look like a land beetle; keep marine isopod proportions and flattened body logic.</li><li>Avoid overly tiny legs hidden under the shell; they need to rig clearly.</li><li>Avoid perfect trilobite symmetry or fossil styling that reads as extinct decoration.</li><li>Avoid magenta, hot pink, or purple body colors that conflict with the chroma key.</li><li>Keep sand burst, impact dust, and burrow opening as separate VFX rather than source art.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="vent-claw-yeti" data-source-replace-candidate="vent-claw-yeti" data-prompt-file="public/review/source-candidates/replace-runway-prompts/06-vent-claw-yeti.txt">
+    <header>
+      <div><h2>Vent-Claw Yeti</h2><code>vent-claw-yeti</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-vent-claw-yeti-whole-source.png"><img src="/assets/generated/fauna-vent-claw-yeti-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png"><img src="/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png"><img src="/review/source-candidates/quick-reviews/vent-claw-yeti-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/vent-claw-yeti-plan-preview.png"><img src="/review/articulated/vent-claw-yeti-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#vent-claw-yeti">approval runway</a>
+      <a href="/review/source-visual-board.html#vent-claw-yeti">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/vent-claw-yeti.html">quick review</a>
+      <a href="/?entity=source-vent-claw-yeti&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/06-vent-claw-yeti.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/06-vent-claw-yeti.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id vent-claw-yeti --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids vent-claw-yeti
+npm run source:ingest -- --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png --copy --overwrite --dry-run
+npm run source:ingest -- --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png --copy --overwrite
+npm run source:image-check -- --id vent-claw-yeti
+npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids vent-claw-yeti &amp;&amp; npm run source:ingest -- --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id vent-claw-yeti --image tools/source-inbox/vent-claw-yeti.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id vent-claw-yeti &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid mammal-like fur; the bristles are crab setae and bacterial mats.</li><li>Avoid a normal beach crab silhouette; emphasize deep-sea squat posture and huge farming claws.</li><li>Avoid making the vent heat or smoke part of the body silhouette.</li><li>Avoid thin bristles that turn into noise; use readable grouped tufts.</li><li>Avoid magenta or pink glows inside the creature that could key out.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="abyssal-lantern-mantis" data-source-replace-candidate="abyssal-lantern-mantis" data-prompt-file="public/review/source-candidates/replace-runway-prompts/07-abyssal-lantern-mantis.txt">
+    <header>
+      <div><h2>Abyssal Lantern Mantis</h2><code>abyssal-lantern-mantis</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png"><img src="/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/abyssal-lantern-mantis-key-preview.png"><img src="/review/source-candidates/key-previews/abyssal-lantern-mantis-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/abyssal-lantern-mantis-source-preview.png"><img src="/review/source-candidates/quick-reviews/abyssal-lantern-mantis-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/abyssal-lantern-mantis-plan-preview.png"><img src="/review/articulated/abyssal-lantern-mantis-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#abyssal-lantern-mantis">approval runway</a>
+      <a href="/review/source-visual-board.html#abyssal-lantern-mantis">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/abyssal-lantern-mantis.html">quick review</a>
+      <a href="/?entity=source-abyssal-lantern-mantis&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/07-abyssal-lantern-mantis.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/07-abyssal-lantern-mantis.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id abyssal-lantern-mantis --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids abyssal-lantern-mantis
+npm run source:ingest -- --id abyssal-lantern-mantis --image tools/source-inbox/abyssal-lantern-mantis.png --copy --overwrite --dry-run
+npm run source:ingest -- --id abyssal-lantern-mantis --image tools/source-inbox/abyssal-lantern-mantis.png --copy --overwrite
+npm run source:image-check -- --id abyssal-lantern-mantis
+npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids abyssal-lantern-mantis &amp;&amp; npm run source:ingest -- --id abyssal-lantern-mantis --image tools/source-inbox/abyssal-lantern-mantis.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id abyssal-lantern-mantis --image tools/source-inbox/abyssal-lantern-mantis.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id abyssal-lantern-mantis &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid robotic boxing gloves, cannons, drills, or mechanical pistons.</li><li>Avoid spearer-style needle arms; this candidate uses blunt smasher clubs for a single clear attack read.</li><li>Avoid tropical rainbow saturation that fights the abyssal threat tone.</li><li>Avoid fish-like fins replacing the crustacean legs and plated abdomen.</li><li>Avoid making the eye glow magenta or hot pink.</li><li>Keep punch trails, shock rings, and aim beams as separate VFX.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>2026-06-17T03:42:47.227Z: Rejected cache match: cohesive mantis shrimp anatomy, but tropical rainbow saturation and bright reef palette violate the abyssal threat contract.</li></ul>
+    </details>
+  </article>
+<article class="card" id="trench-harvest-sea-spider" data-source-replace-candidate="trench-harvest-sea-spider" data-prompt-file="public/review/source-candidates/replace-runway-prompts/08-trench-harvest-sea-spider.txt">
+    <header>
+      <div><h2>Trench Harvest Sea Spider</h2><code>trench-harvest-sea-spider</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png"><img src="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/trench-harvest-sea-spider-key-preview.png"><img src="/review/source-candidates/key-previews/trench-harvest-sea-spider-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/trench-harvest-sea-spider-source-preview.png"><img src="/review/source-candidates/quick-reviews/trench-harvest-sea-spider-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/trench-harvest-sea-spider-plan-preview.png"><img src="/review/articulated/trench-harvest-sea-spider-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#trench-harvest-sea-spider">approval runway</a>
+      <a href="/review/source-visual-board.html#trench-harvest-sea-spider">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/trench-harvest-sea-spider.html">quick review</a>
+      <a href="/?entity=source-trench-harvest-sea-spider&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/08-trench-harvest-sea-spider.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/08-trench-harvest-sea-spider.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id trench-harvest-sea-spider --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids trench-harvest-sea-spider
+npm run source:ingest -- --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png --copy --overwrite --dry-run
+npm run source:ingest -- --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png --copy --overwrite
+npm run source:image-check -- --id trench-harvest-sea-spider
+npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids trench-harvest-sea-spider &amp;&amp; npm run source:ingest -- --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id trench-harvest-sea-spider --image tools/source-inbox/trench-harvest-sea-spider.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id trench-harvest-sea-spider &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a terrestrial spider read; keep pycnogonid tiny-body and marine proboscis anatomy.</li><li>Avoid making legs hair-thin; every limb needs usable thickness for articulation.</li><li>Avoid web strands, silk, or horror-web language because sea spiders do not use webs.</li><li>Avoid a gun-like proboscis; it should be soft biological feeding anatomy.</li><li>Avoid magenta highlights on joints, eyes, or siphon effects.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="coronate-sting-crown" data-source-replace-candidate="coronate-sting-crown" data-prompt-file="public/review/source-candidates/replace-runway-prompts/09-coronate-sting-crown.txt">
+    <header>
+      <div><h2>Coronate Sting Crown</h2><code>coronate-sting-crown</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-coronate-sting-crown-whole-source.png"><img src="/assets/generated/fauna-coronate-sting-crown-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/coronate-sting-crown-key-preview.png"><img src="/review/source-candidates/key-previews/coronate-sting-crown-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/coronate-sting-crown-source-preview.png"><img src="/review/source-candidates/quick-reviews/coronate-sting-crown-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/coronate-sting-crown-plan-preview.png"><img src="/review/articulated/coronate-sting-crown-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#coronate-sting-crown">approval runway</a>
+      <a href="/review/source-visual-board.html#coronate-sting-crown">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/coronate-sting-crown.html">quick review</a>
+      <a href="/?entity=source-coronate-sting-crown&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/09-coronate-sting-crown.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/09-coronate-sting-crown.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id coronate-sting-crown --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids coronate-sting-crown
+npm run source:ingest -- --id coronate-sting-crown --image tools/source-inbox/coronate-sting-crown.png --copy --overwrite --dry-run
+npm run source:ingest -- --id coronate-sting-crown --image tools/source-inbox/coronate-sting-crown.png --copy --overwrite
+npm run source:image-check -- --id coronate-sting-crown
+npm run sandbox:preview -- --id source-coronate-sting-crown --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids coronate-sting-crown &amp;&amp; npm run source:ingest -- --id coronate-sting-crown --image tools/source-inbox/coronate-sting-crown.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id coronate-sting-crown --image tools/source-inbox/coronate-sting-crown.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id coronate-sting-crown &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a generic umbrella jellyfish; crown lappets and deep bell groove must be obvious.</li><li>Avoid hair-thin tentacle noise that cannot be cut or rigged.</li><li>Avoid magenta, pink, or purple body colors that conflict with chroma keying.</li><li>Avoid multiple jellyfish or a decorative swarm.</li><li>Keep sting flashes, shock rings, and bubbles as separate VFX rather than baked source art.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="chain-vein-siphonophore" data-source-replace-candidate="chain-vein-siphonophore" data-prompt-file="public/review/source-candidates/replace-runway-prompts/10-chain-vein-siphonophore.txt">
+    <header>
+      <div><h2>Chain Vein Siphonophore</h2><code>chain-vein-siphonophore</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png"><img src="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/chain-vein-siphonophore-key-preview.png"><img src="/review/source-candidates/key-previews/chain-vein-siphonophore-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/chain-vein-siphonophore-source-preview.png"><img src="/review/source-candidates/quick-reviews/chain-vein-siphonophore-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/chain-vein-siphonophore-plan-preview.png"><img src="/review/articulated/chain-vein-siphonophore-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#chain-vein-siphonophore">approval runway</a>
+      <a href="/review/source-visual-board.html#chain-vein-siphonophore">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/chain-vein-siphonophore.html">quick review</a>
+      <a href="/?entity=source-chain-vein-siphonophore&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/10-chain-vein-siphonophore.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/10-chain-vein-siphonophore.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id chain-vein-siphonophore --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids chain-vein-siphonophore
+npm run source:ingest -- --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png --copy --overwrite --dry-run
+npm run source:ingest -- --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png --copy --overwrite
+npm run source:image-check -- --id chain-vein-siphonophore
+npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids chain-vein-siphonophore &amp;&amp; npm run source:ingest -- --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id chain-vein-siphonophore --image tools/source-inbox/chain-vein-siphonophore.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id chain-vein-siphonophore &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid making it a single jellyfish umbrella; it must read as a siphonophore colony.</li><li>Avoid detached beads or pearls that do not connect to the central stem.</li><li>Avoid literal chains, wires, hooks, or mechanical trip mines.</li><li>Avoid overly thin tendrils that disappear at 64px.</li><li>Keep pure magenta only in the background and avoid magenta internal glow.</li><li>Keep electric arcs and contact sparks separate from the base sprite.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="vampire-cloak-squid" data-source-replace-candidate="vampire-cloak-squid" data-prompt-file="public/review/source-candidates/replace-runway-prompts/11-vampire-cloak-squid.txt">
+    <header>
+      <div><h2>Vampire Cloak Squid</h2><code>vampire-cloak-squid</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-vampire-cloak-squid-whole-source.png"><img src="/assets/generated/fauna-vampire-cloak-squid-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/vampire-cloak-squid-key-preview.png"><img src="/review/source-candidates/key-previews/vampire-cloak-squid-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/vampire-cloak-squid-source-preview.png"><img src="/review/source-candidates/quick-reviews/vampire-cloak-squid-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/vampire-cloak-squid-plan-preview.png"><img src="/review/articulated/vampire-cloak-squid-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#vampire-cloak-squid">approval runway</a>
+      <a href="/review/source-visual-board.html#vampire-cloak-squid">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/vampire-cloak-squid.html">quick review</a>
+      <a href="/?entity=source-vampire-cloak-squid&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/11-vampire-cloak-squid.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/11-vampire-cloak-squid.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id vampire-cloak-squid --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids vampire-cloak-squid
+npm run source:ingest -- --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png --copy --overwrite --dry-run
+npm run source:ingest -- --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png --copy --overwrite
+npm run source:image-check -- --id vampire-cloak-squid
+npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids vampire-cloak-squid &amp;&amp; npm run source:ingest -- --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id vampire-cloak-squid --image tools/source-inbox/vampire-cloak-squid.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id vampire-cloak-squid &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid bat wings, fangs, capes, or humanoid vampire styling; keep it biological.</li><li>Avoid squid tentacle tangles that obscure the eight-arm cloak structure.</li><li>Avoid magenta or pink photophores that conflict with the background.</li><li>Avoid a giant octopus silhouette; compact mantle and webbed arms should identify vampire squid.</li><li>Keep ink, flash bursts, and stun effects separate from the base anatomy.</li><li>Reject nautilus shells, beak-like nautilus heads, octopus sucker rows, amber lure organs, and external shell spirals.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="predatory-tunicate-maw" data-source-replace-candidate="predatory-tunicate-maw" data-prompt-file="public/review/source-candidates/replace-runway-prompts/12-predatory-tunicate-maw.txt">
+    <header>
+      <div><h2>Predatory Tunicate Maw</h2><code>predatory-tunicate-maw</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png"><img src="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/predatory-tunicate-maw-key-preview.png"><img src="/review/source-candidates/key-previews/predatory-tunicate-maw-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/predatory-tunicate-maw-source-preview.png"><img src="/review/source-candidates/quick-reviews/predatory-tunicate-maw-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/predatory-tunicate-maw-plan-preview.png"><img src="/review/articulated/predatory-tunicate-maw-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#predatory-tunicate-maw">approval runway</a>
+      <a href="/review/source-visual-board.html#predatory-tunicate-maw">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/predatory-tunicate-maw.html">quick review</a>
+      <a href="/?entity=source-predatory-tunicate-maw&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/12-predatory-tunicate-maw.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/12-predatory-tunicate-maw.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id predatory-tunicate-maw --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids predatory-tunicate-maw
+npm run source:ingest -- --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png --copy --overwrite --dry-run
+npm run source:ingest -- --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png --copy --overwrite
+npm run source:image-check -- --id predatory-tunicate-maw
+npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids predatory-tunicate-maw &amp;&amp; npm run source:ingest -- --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id predatory-tunicate-maw --image tools/source-inbox/predatory-tunicate-maw.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id predatory-tunicate-maw &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid making it a clam, venus flytrap plant, or fantasy mouth monster; preserve tunicate softness and siphon anatomy.</li><li>Avoid hard teeth, bones, metal jaws, or mechanical hinges.</li><li>Avoid transparency so faint that the silhouette disappears at game scale.</li><li>Avoid magenta, hot pink, or purple body tones that interfere with chroma keying.</li><li>Keep mucus strands, bite impacts, and prey silhouettes as separate VFX.</li><li>Reject teeth, angler lures, tentacles, plant petals, clam shells, and pink or magenta tissue near the key color.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="razor-kelp-harp" data-source-replace-candidate="razor-kelp-harp" data-prompt-file="public/review/source-candidates/replace-runway-prompts/13-razor-kelp-harp.txt">
+    <header>
+      <div><h2>Razor Kelp Harp</h2><code>razor-kelp-harp</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-razor-kelp-harp-whole-source.png"><img src="/assets/generated/fauna-razor-kelp-harp-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/razor-kelp-harp-key-preview.png"><img src="/review/source-candidates/key-previews/razor-kelp-harp-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/razor-kelp-harp-source-preview.png"><img src="/review/source-candidates/quick-reviews/razor-kelp-harp-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/razor-kelp-harp-plan-preview.png"><img src="/review/articulated/razor-kelp-harp-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#razor-kelp-harp">approval runway</a>
+      <a href="/review/source-visual-board.html#razor-kelp-harp">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/razor-kelp-harp.html">quick review</a>
+      <a href="/?entity=source-razor-kelp-harp&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/13-razor-kelp-harp.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/13-razor-kelp-harp.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id razor-kelp-harp --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids razor-kelp-harp
+npm run source:ingest -- --id razor-kelp-harp --image tools/source-inbox/razor-kelp-harp.png --copy --overwrite --dry-run
+npm run source:ingest -- --id razor-kelp-harp --image tools/source-inbox/razor-kelp-harp.png --copy --overwrite
+npm run source:image-check -- --id razor-kelp-harp
+npm run sandbox:preview -- --id source-razor-kelp-harp --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids razor-kelp-harp &amp;&amp; npm run source:ingest -- --id razor-kelp-harp --image tools/source-inbox/razor-kelp-harp.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id razor-kelp-harp --image tools/source-inbox/razor-kelp-harp.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id razor-kelp-harp &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid thin spaghetti seaweed that cannot be cropped or rigged.</li><li>Avoid a generic plant clump; the holdfast, crown, and blade lanes must define one creature.</li><li>Avoid magenta, hot pink, or purple body colors that may key out with the background.</li><li>Avoid loose detached strips or floating debris that look like separate props.</li><li>Keep slash trails, bubbles, and water distortion as separate VFX rather than baked art.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="lantern-anemone-pit" data-source-replace-candidate="lantern-anemone-pit" data-prompt-file="public/review/source-candidates/replace-runway-prompts/14-lantern-anemone-pit.txt">
+    <header>
+      <div><h2>Lantern Anemone Pit</h2><code>lantern-anemone-pit</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-lantern-anemone-pit-whole-source.png"><img src="/assets/generated/fauna-lantern-anemone-pit-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/lantern-anemone-pit-key-preview.png"><img src="/review/source-candidates/key-previews/lantern-anemone-pit-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/lantern-anemone-pit-source-preview.png"><img src="/review/source-candidates/quick-reviews/lantern-anemone-pit-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/lantern-anemone-pit-plan-preview.png"><img src="/review/articulated/lantern-anemone-pit-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#lantern-anemone-pit">approval runway</a>
+      <a href="/review/source-visual-board.html#lantern-anemone-pit">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/lantern-anemone-pit.html">quick review</a>
+      <a href="/?entity=source-lantern-anemone-pit&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/14-lantern-anemone-pit.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/14-lantern-anemone-pit.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id lantern-anemone-pit --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids lantern-anemone-pit
+npm run source:ingest -- --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png --copy --overwrite --dry-run
+npm run source:ingest -- --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png --copy --overwrite
+npm run source:image-check -- --id lantern-anemone-pit
+npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids lantern-anemone-pit &amp;&amp; npm run source:ingest -- --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id lantern-anemone-pit --image tools/source-inbox/lantern-anemone-pit.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id lantern-anemone-pit &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a cute decorative flower; it must read as a dangerous sessile predator.</li><li>Avoid making the tentacles hair-thin or too numerous for articulation.</li><li>Avoid literal teeth, metal jaws, or land-plant leaves.</li><li>Avoid magenta or pink glow that conflicts with the chroma key background.</li><li>Keep lure halos, sting sparks, and digestive clouds separate from the base source.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="brine-mycelium-shelf" data-source-replace-candidate="brine-mycelium-shelf" data-prompt-file="public/review/source-candidates/replace-runway-prompts/15-brine-mycelium-shelf.txt">
+    <header>
+      <div><h2>Brine Mycelium Shelf</h2><code>brine-mycelium-shelf</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-brine-mycelium-shelf-whole-source.png"><img src="/assets/generated/fauna-brine-mycelium-shelf-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png"><img src="/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/brine-mycelium-shelf-source-preview.png"><img src="/review/source-candidates/quick-reviews/brine-mycelium-shelf-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/brine-mycelium-shelf-plan-preview.png"><img src="/review/articulated/brine-mycelium-shelf-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#brine-mycelium-shelf">approval runway</a>
+      <a href="/review/source-visual-board.html#brine-mycelium-shelf">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/brine-mycelium-shelf.html">quick review</a>
+      <a href="/?entity=source-brine-mycelium-shelf&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/15-brine-mycelium-shelf.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/15-brine-mycelium-shelf.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id brine-mycelium-shelf --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-mycelium-shelf
+npm run source:ingest -- --id brine-mycelium-shelf --image tools/source-inbox/brine-mycelium-shelf.png --copy --overwrite --dry-run
+npm run source:ingest -- --id brine-mycelium-shelf --image tools/source-inbox/brine-mycelium-shelf.png --copy --overwrite
+npm run source:image-check -- --id brine-mycelium-shelf
+npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids brine-mycelium-shelf &amp;&amp; npm run source:ingest -- --id brine-mycelium-shelf --image tools/source-inbox/brine-mycelium-shelf.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id brine-mycelium-shelf --image tools/source-inbox/brine-mycelium-shelf.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id brine-mycelium-shelf &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid terrestrial mushroom caps with stems; keep the form encrusting and underwater-adapted.</li><li>Avoid making the source look like an inert rock or coral slab.</li><li>Avoid dense fuzzy texture that hides the main plates and hinge zones.</li><li>Avoid baked spore clouds or fog covering the anatomy.</li><li>Avoid magenta, hot pink, or purple fungal tissue near the key color.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="thorn-fan-coralline" data-source-replace-candidate="thorn-fan-coralline" data-prompt-file="public/review/source-candidates/replace-runway-prompts/16-thorn-fan-coralline.txt">
+    <header>
+      <div><h2>Thorn Fan Coralline</h2><code>thorn-fan-coralline</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-thorn-fan-coralline-whole-source.png"><img src="/assets/generated/fauna-thorn-fan-coralline-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/thorn-fan-coralline-key-preview.png"><img src="/review/source-candidates/key-previews/thorn-fan-coralline-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/thorn-fan-coralline-source-preview.png"><img src="/review/source-candidates/quick-reviews/thorn-fan-coralline-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/thorn-fan-coralline-plan-preview.png"><img src="/review/articulated/thorn-fan-coralline-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#thorn-fan-coralline">approval runway</a>
+      <a href="/review/source-visual-board.html#thorn-fan-coralline">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/thorn-fan-coralline.html">quick review</a>
+      <a href="/?entity=source-thorn-fan-coralline&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/16-thorn-fan-coralline.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/16-thorn-fan-coralline.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id thorn-fan-coralline --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids thorn-fan-coralline
+npm run source:ingest -- --id thorn-fan-coralline --image tools/source-inbox/thorn-fan-coralline.png --copy --overwrite --dry-run
+npm run source:ingest -- --id thorn-fan-coralline --image tools/source-inbox/thorn-fan-coralline.png --copy --overwrite
+npm run source:image-check -- --id thorn-fan-coralline
+npm run sandbox:preview -- --id source-thorn-fan-coralline --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids thorn-fan-coralline &amp;&amp; npm run source:ingest -- --id thorn-fan-coralline --image tools/source-inbox/thorn-fan-coralline.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id thorn-fan-coralline --image tools/source-inbox/thorn-fan-coralline.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id thorn-fan-coralline &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid background reef scenery; the fan must read as an enemy entity.</li><li>Avoid thin lace branches that disappear at small sprite size.</li><li>Avoid perfect ornamental symmetry that feels like a decorative logo.</li><li>Avoid detached coral chunks or separate fan colonies.</li><li>Keep current streaks, sting flashes, and impact sparks as separate VFX assets.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="gulper-eel-maw" data-source-replace-candidate="gulper-eel-maw" data-prompt-file="public/review/source-candidates/replace-runway-prompts/17-gulper-eel-maw.txt">
+    <header>
+      <div><h2>Gulper Eel Maw</h2><code>gulper-eel-maw</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-gulper-eel-maw-whole-source.png"><img src="/assets/generated/fauna-gulper-eel-maw-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/gulper-eel-maw-key-preview.png"><img src="/review/source-candidates/key-previews/gulper-eel-maw-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/gulper-eel-maw-source-preview.png"><img src="/review/source-candidates/quick-reviews/gulper-eel-maw-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/gulper-eel-maw-plan-preview.png"><img src="/review/articulated/gulper-eel-maw-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#gulper-eel-maw">approval runway</a>
+      <a href="/review/source-visual-board.html#gulper-eel-maw">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/gulper-eel-maw.html">quick review</a>
+      <a href="/?entity=source-gulper-eel-maw&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/17-gulper-eel-maw.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/17-gulper-eel-maw.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id gulper-eel-maw --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids gulper-eel-maw
+npm run source:ingest -- --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png --copy --overwrite --dry-run
+npm run source:ingest -- --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png --copy --overwrite
+npm run source:image-check -- --id gulper-eel-maw
+npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids gulper-eel-maw &amp;&amp; npm run source:ingest -- --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id gulper-eel-maw --image tools/source-inbox/gulper-eel-maw.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id gulper-eel-maw &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a generic snake or leech; keep the tiny skull, huge mouth pouch, and long eel body visible.</li><li>Avoid a detached monster mouth, front-facing circular portal mouth, extra eel heads, duplicated body segments, or tentacled radial creature; all jaw and pouch structures must connect to the body.</li><li>Avoid centered radial composition, mirrored front-facing views, circular portal mouths, starburst layouts, repeated curled appendages, or any multi-limbed silhouette.</li><li>Avoid armor plates, horns, spikes, teeth crowns, suction-cup pores, crab anatomy, octopus anatomy, or tentacle anatomy; keep plain soft pelican-eel biology.</li><li>Avoid making suction currents part of the base sprite; pull effects should be separate VFX.</li><li>Avoid bright magenta, hot pink, or purple anatomy that conflicts with chroma keying.</li><li>Avoid over-detailing the black body so the hinge zones and lure remain readable.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>2026-06-17T12:45:34.200Z: Built-in image generation rendered an inline Gulper Eel Maw candidate, but no new or modified recoverable file appeared under /home/orlovboros/.codex/generated_images after the handoff marker, so it cannot be validated or ingested without manual capture.</li><li>2026-06-17T10:54:50.100Z: Built-in image generation displayed a promising inline Gulper Eel Maw source image, but no new or modified recoverable file appeared under /home/orlovboros/.codex/generated_images after the marker, so it cannot be validated or ingested.</li><li>2026-06-17T09:57:21.492Z: Built-in image generation rendered an inline Gulper Eel Maw image in the client, but no new or modified project-recoverable image file appeared under CODEX_HOME or the workspace for ingestion.</li></ul>
+    </details>
+  </article>
+<article class="card" id="saber-viperfish" data-source-replace-candidate="saber-viperfish" data-prompt-file="public/review/source-candidates/replace-runway-prompts/18-saber-viperfish.txt">
+    <header>
+      <div><h2>Saber Viperfish</h2><code>saber-viperfish</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-saber-viperfish-whole-source.png"><img src="/assets/generated/fauna-saber-viperfish-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/saber-viperfish-key-preview.png"><img src="/review/source-candidates/key-previews/saber-viperfish-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/saber-viperfish-source-preview.png"><img src="/review/source-candidates/quick-reviews/saber-viperfish-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/saber-viperfish-plan-preview.png"><img src="/review/articulated/saber-viperfish-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#saber-viperfish">approval runway</a>
+      <a href="/review/source-visual-board.html#saber-viperfish">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/saber-viperfish.html">quick review</a>
+      <a href="/?entity=source-saber-viperfish&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/18-saber-viperfish.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/18-saber-viperfish.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id saber-viperfish --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids saber-viperfish
+npm run source:ingest -- --id saber-viperfish --image tools/source-inbox/saber-viperfish.png --copy --overwrite --dry-run
+npm run source:ingest -- --id saber-viperfish --image tools/source-inbox/saber-viperfish.png --copy --overwrite
+npm run source:image-check -- --id saber-viperfish
+npm run sandbox:preview -- --id source-saber-viperfish --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids saber-viperfish &amp;&amp; npm run source:ingest -- --id saber-viperfish --image tools/source-inbox/saber-viperfish.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id saber-viperfish --image tools/source-inbox/saber-viperfish.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id saber-viperfish &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a generic toothy fish; the jaw hinge, saber teeth, photophore chain, and dorsal lure must define it.</li><li>Avoid too many tiny teeth that become visual noise; use fewer large crop-safe fangs.</li><li>Avoid metal blades, harpoons, armor plating, or sci-fi weapon cues.</li><li>Avoid baked dash trails or impact sparks that should be generated separately.</li><li>Avoid magenta or hot pink light sources inside the creature.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="tripod-stilt-stalker" data-source-replace-candidate="tripod-stilt-stalker" data-prompt-file="public/review/source-candidates/replace-runway-prompts/19-tripod-stilt-stalker.txt">
+    <header>
+      <div><h2>Tripod Stilt Stalker</h2><code>tripod-stilt-stalker</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-tripod-stilt-stalker-whole-source.png"><img src="/assets/generated/fauna-tripod-stilt-stalker-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/tripod-stilt-stalker-key-preview.png"><img src="/review/source-candidates/key-previews/tripod-stilt-stalker-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/tripod-stilt-stalker-source-preview.png"><img src="/review/source-candidates/quick-reviews/tripod-stilt-stalker-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/tripod-stilt-stalker-plan-preview.png"><img src="/review/articulated/tripod-stilt-stalker-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#tripod-stilt-stalker">approval runway</a>
+      <a href="/review/source-visual-board.html#tripod-stilt-stalker">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/tripod-stilt-stalker.html">quick review</a>
+      <a href="/?entity=source-tripod-stilt-stalker&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/19-tripod-stilt-stalker.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/19-tripod-stilt-stalker.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id tripod-stilt-stalker --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids tripod-stilt-stalker
+npm run source:ingest -- --id tripod-stilt-stalker --image tools/source-inbox/tripod-stilt-stalker.png --copy --overwrite --dry-run
+npm run source:ingest -- --id tripod-stilt-stalker --image tools/source-inbox/tripod-stilt-stalker.png --copy --overwrite
+npm run source:image-check -- --id tripod-stilt-stalker
+npm run sandbox:preview -- --id source-tripod-stilt-stalker --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids tripod-stilt-stalker &amp;&amp; npm run source:ingest -- --id tripod-stilt-stalker --image tools/source-inbox/tripod-stilt-stalker.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id tripod-stilt-stalker --image tools/source-inbox/tripod-stilt-stalker.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id tripod-stilt-stalker &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid making the stilts look like insect legs or metal rods; they are elongated fish fin rays.</li><li>Avoid including a floor plane or sediment mound because the source must remain isolated.</li><li>Avoid hair-thin rays that cannot be selected, cropped, or animated cleanly.</li><li>Avoid turning the fish into a spider silhouette; keep the head, trunk, fins, and tail readable.</li><li>Avoid magenta, hot pink, or purple tissue near the background key color.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>none</li></ul>
+    </details>
+  </article>
+<article class="card" id="reef-lion-moray" data-source-replace-candidate="reef-lion-moray" data-prompt-file="public/review/source-candidates/replace-runway-prompts/20-reef-lion-moray.txt">
+    <header>
+      <div><h2>Reef Lion Moray</h2><code>reef-lion-moray</code></div>
+      <strong>replaceable</strong>
+    </header>
+    <p>Source exists and still awaits human approval; weak art can be intentionally regenerated and overwritten through this lane.</p>
+    <div class="media">
+      <a class="image" href="/assets/generated/fauna-reef-lion-moray-whole-source.png"><img src="/assets/generated/fauna-reef-lion-moray-whole-source.png" alt="current source"><span>current source</span></a>
+      <a class="image" href="/review/source-candidates/key-previews/reef-lion-moray-key-preview.png"><img src="/review/source-candidates/key-previews/reef-lion-moray-key-preview.png" alt="magenta key"><span>magenta key</span></a>
+      <a class="image" href="/review/source-candidates/quick-reviews/reef-lion-moray-source-preview.png"><img src="/review/source-candidates/quick-reviews/reef-lion-moray-source-preview.png" alt="sandbox preview"><span>sandbox preview</span></a>
+      <a class="image" href="/review/articulated/reef-lion-moray-plan-preview.png"><img src="/review/articulated/reef-lion-moray-plan-preview.png" alt="plan preview"><span>plan preview</span></a>
+    </div>
+    <div class="links">
+      <a href="/review/source-approval-runway.html#reef-lion-moray">approval runway</a>
+      <a href="/review/source-visual-board.html#reef-lion-moray">visual board</a>
+      <a href="/review/source-candidates/quick-reviews/reef-lion-moray.html">quick review</a>
+      <a href="/?entity=source-reef-lion-moray&amp;companion=diver">source + diver</a>
+      <a href="/review/source-candidates/replace-runway-prompts/20-reef-lion-moray.txt">replacement prompt</a>
+    </div>
+    <p><strong>Prompt file:</strong> <code>public/review/source-candidates/replace-runway-prompts/20-reef-lion-moray.txt</code></p>
+    <h3>Replacement Commands</h3>
+    <pre><code>npm run source:inbox-capture -- --id reef-lion-moray --open
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids reef-lion-moray
+npm run source:ingest -- --id reef-lion-moray --image tools/source-inbox/reef-lion-moray.png --copy --overwrite --dry-run
+npm run source:ingest -- --id reef-lion-moray --image tools/source-inbox/reef-lion-moray.png --copy --overwrite
+npm run source:image-check -- --id reef-lion-moray
+npm run sandbox:preview -- --id source-reef-lion-moray --with diver --serve --open --visual
+npm run source:review-dossier &amp;&amp; npm run source:review-dossier-check &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:approval-runway-check &amp;&amp; npm run source:visual-board &amp;&amp; npm run source:visual-board-check</code></pre>
+    <h3>Full Loop</h3>
+    <pre><code>npm run source:inbox-check -- --dir tools/source-inbox --strict --ids reef-lion-moray &amp;&amp; npm run source:ingest -- --id reef-lion-moray --image tools/source-inbox/reef-lion-moray.png --copy --overwrite --dry-run &amp;&amp; npm run source:ingest -- --id reef-lion-moray --image tools/source-inbox/reef-lion-moray.png --copy --overwrite &amp;&amp; npm run source:image-check -- --id reef-lion-moray &amp;&amp; npm run source:preview-check &amp;&amp; npm run source:review-dossier &amp;&amp; npm run source:approval-runway &amp;&amp; npm run source:visual-board</code></pre>
+    <details>
+      <summary>Prompt risks</summary>
+      <ul><li>Avoid a collage of eel plus loose lionfish fins; the hybrid must read as one continuous vertebrate.</li><li>Avoid thin hairlike spines that disappear at sprite scale; use broad crop-safe venom rays.</li><li>Avoid including reef scenery, cave darkness, or coral props in the isolated source.</li><li>Avoid making the fins look like decorative wings instead of biological pectoral and dorsal fins.</li><li>Avoid magenta, hot pink, or purple warning stripes that could interfere with keying.</li></ul>
+    </details>
+    <details>
+      <summary>Latest rejection notes</summary>
+      <ul><li>2026-06-17T03:42:47.306Z: Rejected cache match: reads as armored deep fish/eel, but lacks the connected moray head plus broad lionfish pectoral and dorsal venom fan required by contract.</li></ul>
+    </details>
+  </article></section>
+  </main>
+</body>
+</html>

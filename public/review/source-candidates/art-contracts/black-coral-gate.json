@@ -1,0 +1,134 @@
+{
+  "schema": "water9/source-art-contract@1",
+  "generatedFrom": "source-candidates.json",
+  "id": "black-coral-gate",
+  "species": "Black Coral Gate",
+  "rank": null,
+  "status": "needs-review",
+  "depthBand": "bathyal ruins / biome 3+",
+  "gameplayVerb": "Passage-control ambusher that holds an open arch, telegraphs with glowing hinge polyps, then drops and clamps a living portcullis around the diver.",
+  "expectedOutput": "public/assets/generated/fauna-black-coral-gate-whole-source.png",
+  "source": "public/assets/generated/fauna-black-coral-gate-whole-source.png",
+  "sourceCohesion": "single-source",
+  "backgroundKey": "magenta",
+  "requiredRead": [
+    "One cohesive whole-source organism on pure magenta, not separate coral chunks glued onto stone ruins.",
+    "Open arch / portcullis silhouette is the first read, with the bite line clearly visible at game scale.",
+    "Left and right rooted pillars share one material language and connect through a living crown bridge.",
+    "Crop-safe thick bars, hinge knots, root mats, and latch jaws have visible margins for later cutting.",
+    "Danger read comes from closing thorn-bars, glowing hinge polyps, and clamp teeth, not baked-in particles or scenery."
+  ],
+  "articulatableParts": [
+    "left root mat",
+    "right root mat",
+    "left pillar trunk",
+    "right pillar trunk",
+    "upper crown bridge torso",
+    "central descending portcullis bar cluster",
+    "near folding thorn gate arm",
+    "far folding thorn gate arm",
+    "left hinge polyp knot",
+    "right hinge polyp knot",
+    "lower clamp teeth / latch spines",
+    "glow-polyp warning overlay"
+  ],
+  "promptRisks": [
+    "Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.",
+    "Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.",
+    "Avoid thin hairlike coral branches that cannot be cropped or read at game scale.",
+    "Avoid magenta, hot pink, or purple body values that will conflict with the chroma key.",
+    "Keep bubbles, slam VFX, rubble, sand, and lighting effects separate from the base source."
+  ],
+  "contractReviewChecklist": [
+    "Both side pillars and crown bridge are visibly fused by living branching coral tissue, not stone architecture.",
+    "Trap bars grow from the same crown with soft polyp hinge knots; no detached prop bars or portcullis hardware.",
+    "Thorn arms, roots, crown, and clamp spines share one black-coral palette and lighting direction."
+  ],
+  "auditGuidance": {
+    "lane": "complex-colonial-forms",
+    "strengths": [
+      "The gate verb is well supported by antipatharian branching rods, hinge polyp knots, root mats, and a living crown bridge.",
+      "Prompt risks correctly defend against the biggest failure mode: a stone ruin prop with coral pasted onto it."
+    ],
+    "sourceGenerationRisks": [
+      "Arch and portcullis language can still bias source generation toward architectural symmetry, detached bars, or a built object rather than a grown colony.",
+      "Black coral and sea fan branches may generate hair-thin rods that are not crop-safe for folding arms or clamp teeth."
+    ],
+    "suggestedResearchPatch": {
+      "biologicalAnchors": [
+        "Emphasize antipatharian thorny axial skeletons with living tissue/polyps coating one continuous colony.",
+        "Use brittle-star-like curling only as motion logic, not as visible starfish anatomy."
+      ],
+      "requiredRead": [
+        "The upper bridge and side pillars should visibly fuse through branching tissue so the portcullis reads as one living colony."
+      ],
+      "promptRisks": [
+        "Avoid 'ruin gate', 'portcullis prop', 'iron bars', or 'symmetrical ornament' language in source prompts."
+      ],
+      "motionPhases": [
+        "open feeding arch",
+        "hinge polyps brighten and retract",
+        "thorn bars fold inward/down",
+        "clamp teeth close and reset"
+      ]
+    },
+    "referenceSearchTerms": [
+      "Antipatharia black coral thorny skeleton",
+      "black coral polyps close up",
+      "gorgonian sea fan branching colony",
+      "brittle star arm curling motion"
+    ]
+  },
+  "sourcePoseRules": [
+    "Generate a neutral riggable source pose, not the peak attack impact frame.",
+    "Attack direction must still be obvious from species-appropriate anatomy: jaws, oral disc, osculum, spines, fins, lures, eyes, claws, or body aim.",
+    "Primary pivots and crop zones must be visible: jaw pivots, limb roots, fin roots, tail base, stalk base, rim folds, throat valves, or equivalent anatomy.",
+    "Major appendages, valves, rims, plates, or tentacles must be separated enough for later cropping, with small overlaps allowed only where anatomy connects.",
+    "Default pose must show both the idle read and the attack telegraph read without baking in trails, particles, prey, or damage effects."
+  ],
+  "cohesionLock": [
+    "One-source proof: render one continuous organism in one neutral source pose, not a parts board, variants sheet, or disconnected thumbnails.",
+    "Connection proof: every crop-intended appendage must visibly grow from or overlap the same body with a readable hinge, socket, root, or skin transition.",
+    "Style proof: all body regions and crop-intended organs must share one palette, line weight, lighting direction, material language, and shadow logic.",
+    "Proportion proof: body parts must look like they belong to the same animal when articulated; reject mismatched copied fragments or arbitrary size jumps.",
+    "Production proof: reject outputs that read as placeholder shapes, collage kitbash, props, UI icons, environmental rocks, duplicate creatures, or loose weapons."
+  ],
+  "globalRejects": [
+    "collage of unrelated animal parts instead of one physically coherent creature",
+    "detached mouth, detached limbs, duplicate bodies, loose props, bubbles, prey, water vortex, floor plane, cast shadow, or text",
+    "black, white, transparent, textured, gradient, or shadowed background instead of flat #ff00ff magenta",
+    "silhouette that fails to communicate the gameplay verb at small sprite scale",
+    "parts too thin, overlapped, hidden, or ambiguous to crop into articulated sprites",
+    "lighting, palette, or rendering style that changes between body regions",
+    "full attack impact pose, motion smear, or VFX-heavy action frame that hides the neutral riggable anatomy"
+  ],
+  "generationPrompt": "Flat pure #ff00ff magenta background, isolated full-body 2D game creature source art, cohesive underwater threat called Black Coral Gate, living black coral colony grown into an open feeding-arch silhouette, both pillars and crown visibly fused by branching antipatharian tissue, side-facing three-quarter view, two rooted thorny coral pillars connected by an arched crown bridge, central crop-friendly flexible coral-tine trap bars grown from the crown tissue, folding side thorn arms, thick hinge polyp knots, lower clamp teeth and latch spines, dark charcoal black coral skeleton with bone tips, muted teal blue bioluminescent polyps, oxidized green and ivory accents, readable open gate silhouette at 64px, all parts visibly connected as one organism, crop-safe separated bars hinges roots and crown, crisp painterly browser-game sprite, no environment, no stone doorway, no shadow, no haze, no particles, no text\n\nResearch audit hardening:\n- Lane: complex-colonial-forms\n- Biological anchor: Emphasize antipatharian thorny axial skeletons with living tissue/polyps coating one continuous colony.\n- Biological anchor: Use brittle-star-like curling only as motion logic, not as visible starfish anatomy.\n- Extra required read: The upper bridge and side pillars should visibly fuse through branching tissue so the portcullis reads as one living colony.\n- Avoid: Arch and portcullis language can still bias source generation toward architectural symmetry, detached bars, or a built object rather than a grown colony.\n- Avoid: Black coral and sea fan branches may generate hair-thin rods that are not crop-safe for folding arms or clamp teeth.\n- Avoid: Avoid 'ruin gate', 'portcullis prop', 'iron bars', or 'symmetrical ornament' language in source prompts.\n- Preserve motion phase readability: open feeding arch\n- Preserve motion phase readability: hinge polyps brighten and retract\n- Preserve motion phase readability: thorn bars fold inward/down\n- Preserve motion phase readability: clamp teeth close and reset\n- Reference search term: Antipatharia black coral thorny skeleton\n- Reference search term: black coral polyps close up\n- Reference search term: gorgonian sea fan branching colony\n- Reference search term: brittle star arm curling motion\n\nSource pose contract:\n- Generate a neutral riggable source pose, not the peak attack impact frame.\n- Attack direction must still be obvious from species-appropriate anatomy: jaws, oral disc, osculum, spines, fins, lures, eyes, claws, or body aim.\n- Primary pivots and crop zones must be visible: jaw pivots, limb roots, fin roots, tail base, stalk base, rim folds, throat valves, or equivalent anatomy.\n- Major appendages, valves, rims, plates, or tentacles must be separated enough for later cropping, with small overlaps allowed only where anatomy connects.\n- Default pose must show both the idle read and the attack telegraph read without baking in trails, particles, prey, or damage effects.\n\nCohesion lock:\n- One-source proof: render one continuous organism in one neutral source pose, not a parts board, variants sheet, or disconnected thumbnails.\n- Connection proof: every crop-intended appendage must visibly grow from or overlap the same body with a readable hinge, socket, root, or skin transition.\n- Style proof: all body regions and crop-intended organs must share one palette, line weight, lighting direction, material language, and shadow logic.\n- Proportion proof: body parts must look like they belong to the same animal when articulated; reject mismatched copied fragments or arbitrary size jumps.\n- Production proof: reject outputs that read as placeholder shapes, collage kitbash, props, UI icons, environmental rocks, duplicate creatures, or loose weapons.\n\nNon-negotiable pass/fail requirements:\n- One cohesive whole-source organism on pure magenta, not separate coral chunks glued onto stone ruins.\n- Open arch / portcullis silhouette is the first read, with the bite line clearly visible at game scale.\n- Left and right rooted pillars share one material language and connect through a living crown bridge.\n- Crop-safe thick bars, hinge knots, root mats, and latch jaws have visible margins for later cutting.\n- Danger read comes from closing thorn-bars, glowing hinge polyps, and clamp teeth, not baked-in particles or scenery.\n\nCandidate-specific contract checks:\n- Both side pillars and crown bridge are visibly fused by living branching coral tissue, not stone architecture.\n- Trap bars grow from the same crown with soft polyp hinge knots; no detached prop bars or portcullis hardware.\n- Thorn arms, roots, crown, and clamp spines share one black-coral palette and lighting direction.\n\nReject immediately if:\n- Avoid a literal stone ruin gate with coral decoration; the gate must be the organism.\n- Avoid detached bars or symmetrical prop pieces that feel assembled instead of grown.\n- Avoid thin hairlike coral branches that cannot be cropped or read at game scale.\n- Avoid magenta, hot pink, or purple body values that will conflict with the chroma key.\n- Keep bubbles, slam VFX, rubble, sand, and lighting effects separate from the base source.\n- collage of unrelated animal parts instead of one physically coherent creature\n- detached mouth, detached limbs, duplicate bodies, loose props, bubbles, prey, water vortex, floor plane, cast shadow, or text\n- black, white, transparent, textured, gradient, or shadowed background instead of flat #ff00ff magenta\n- silhouette that fails to communicate the gameplay verb at small sprite scale\n- parts too thin, overlapped, hidden, or ambiguous to crop into articulated sprites\n- lighting, palette, or rendering style that changes between body regions\n- full attack impact pose, motion smear, or VFX-heavy action frame that hides the neutral riggable anatomy",
+  "reviewChecklist": [
+    "Single creature: every visible part belongs to one connected anatomy.",
+    "Part continuity: all crop-intended appendages have compatible proportions, visible connection zones, and one lighting/material treatment.",
+    "Design read: the silhouette and largest features match the gameplay verb.",
+    "Extraction read: required articulated parts are visible, separated, and thick enough for clean crops.",
+    "Pose read: neutral source pose preserves visible pivots, attack direction, and crop-safe appendages.",
+    "Source hygiene: flat #ff00ff background, no baked environment, no cast shadow, no text.",
+    "Style cohesion: one palette, one lighting model, one rendering style across the full creature.",
+    "Small-sprite read: the creature remains recognizable when scaled down in the sandbox.",
+    "Both side pillars and crown bridge are visibly fused by living branching coral tissue, not stone architecture.",
+    "Trap bars grow from the same crown with soft polyp hinge knots; no detached prop bars or portcullis hardware.",
+    "Thorn arms, roots, crown, and clamp spines share one black-coral palette and lighting direction."
+  ],
+  "commands": {
+    "markBeforeGeneration": "npm run source:imagegen-mark -- --id black-coral-gate",
+    "checkGeneratedFile": "npm run source:imagegen-status -- --id black-coral-gate",
+    "autoIngestGeneratedFile": "npm run source:imagegen-status -- --id black-coral-gate --ingest",
+    "ingestGeneratedFile": "npm run source:ingest -- --id black-coral-gate --image <image-path> --copy",
+    "rejectGeneratedFile": "npm run source:reject-attempt -- --id black-coral-gate --attempt-kind visual-failure --image <bad-output-path> --reason \"<specific visual failure after inspecting the generated source image>\"",
+    "rejectMissingGeneratedFile": "npm run source:imagegen-status -- --reject-missing",
+    "validateImage": "npm run source:image-check -- --id black-coral-gate",
+    "buildGallery": "npm run source:gallery",
+    "validateSources": "npm run source:check"
+  },
+  "files": {
+    "markdown": "public/review/source-candidates/art-contracts/black-coral-gate.md",
+    "json": "public/review/source-candidates/art-contracts/black-coral-gate.json"
+  }
+}

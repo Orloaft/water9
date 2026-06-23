@@ -1,0 +1,603 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-abyssal-crownmaw",
+  "runtimeCreatureId": "abyssal-crownmaw",
+  "displayName": "Abyssal Crownmaw",
+  "kind": "articulated-creature",
+  "depthBand": "abyss",
+  "source": "public/assets/generated/fauna-abyssal-crownmaw-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "tail",
+      "key": "fauna-abyssal-crownmaw-tail",
+      "src": "fauna-abyssal-crownmaw-tail.png",
+      "sourceCrop": {
+        "x": 0,
+        "y": 67,
+        "width": 140,
+        "height": 118
+      },
+      "size": {
+        "width": 140,
+        "height": 118
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.72,
+        "drag": 1.05,
+        "angularDrag": 0.36,
+        "severable": true,
+        "breakThreshold": 0.72,
+        "mobilityFactor": 0.55
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 11.8,
+        "frequency": 2.45,
+        "phase": 1.78,
+        "lag": 1.55
+      }
+    },
+    {
+      "id": "body-4",
+      "key": "fauna-abyssal-crownmaw-body-4",
+      "src": "fauna-abyssal-crownmaw-body-4.png",
+      "sourceCrop": {
+        "x": 76,
+        "y": 58,
+        "width": 164,
+        "height": 128
+      },
+      "size": {
+        "width": 164,
+        "height": 128
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 1.35,
+        "drag": 1.05,
+        "angularDrag": 0.36,
+        "severable": true,
+        "breakThreshold": 0.86,
+        "mobilityFactor": 0.62
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 8.4,
+        "frequency": 2.25,
+        "phase": 1.18,
+        "lag": 1.28
+      }
+    },
+    {
+      "id": "body-3",
+      "key": "fauna-abyssal-crownmaw-body-3",
+      "src": "fauna-abyssal-crownmaw-body-3.png",
+      "sourceCrop": {
+        "x": 190,
+        "y": 42,
+        "width": 172,
+        "height": 152
+      },
+      "size": {
+        "width": 172,
+        "height": 152
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 2.6,
+        "drag": 0.82,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.45,
+        "mobilityFactor": 0.84
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 5.4,
+        "frequency": 1.95,
+        "phase": 0.78,
+        "lag": 0.86
+      }
+    },
+    {
+      "id": "body-2",
+      "key": "fauna-abyssal-crownmaw-body-2",
+      "src": "fauna-abyssal-crownmaw-body-2.png",
+      "sourceCrop": {
+        "x": 315,
+        "y": 28,
+        "width": 182,
+        "height": 170
+      },
+      "size": {
+        "width": 182,
+        "height": 170
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.05,
+        "drag": 0.82,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.5,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 3.5,
+        "frequency": 1.78,
+        "phase": 0.44,
+        "lag": 0.56
+      },
+      "damagedSrc": "fauna-abyssal-crownmaw-body-2-damaged.png",
+      "damagedKey": "fauna-abyssal-crownmaw-body-2-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "body-1",
+      "key": "fauna-abyssal-crownmaw-body-1",
+      "src": "fauna-abyssal-crownmaw-body-1.png",
+      "sourceCrop": {
+        "x": 455,
+        "y": 48,
+        "width": 138,
+        "height": 122
+      },
+      "size": {
+        "width": 138,
+        "height": 122
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.3,
+        "drag": 0.82,
+        "angularDrag": 0.36,
+        "severable": false,
+        "breakThreshold": 1.55,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.5,
+        "frequency": 1.52,
+        "phase": 0.14,
+        "lag": 0.18
+      }
+    },
+    {
+      "id": "dorsal-fin",
+      "key": "fauna-abyssal-crownmaw-dorsal-fin",
+      "src": "fauna-abyssal-crownmaw-dorsal-fin.png",
+      "sourceCrop": {
+        "x": 428,
+        "y": 5,
+        "width": 128,
+        "height": 96
+      },
+      "size": {
+        "width": 128,
+        "height": 96
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.34,
+        "drag": 1.05,
+        "angularDrag": 0.72,
+        "severable": true,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 4.4,
+        "frequency": 2.35,
+        "phase": 1.28,
+        "lag": 0.35
+      },
+      "detachedSrc": "fauna-abyssal-crownmaw-dorsal-fin-detached.png",
+      "detachedKey": "fauna-abyssal-crownmaw-dorsal-fin-detached",
+      "detachedAlphaMask": "tapered dorsal sever mask",
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              76,
+              58
+            ],
+            [
+              128,
+              50
+            ],
+            [
+              128,
+              96
+            ],
+            [
+              56,
+              96
+            ],
+            [
+              64,
+              72
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pectoral-fin",
+      "key": "fauna-abyssal-crownmaw-pectoral-fin",
+      "src": "fauna-abyssal-crownmaw-pectoral-fin.png",
+      "sourceCrop": {
+        "x": 483,
+        "y": 110,
+        "width": 122,
+        "height": 108
+      },
+      "size": {
+        "width": 122,
+        "height": 108
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.38,
+        "drag": 1.05,
+        "angularDrag": 0.72,
+        "severable": true,
+        "breakThreshold": 0.62,
+        "mobilityFactor": 0.78
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 7.2,
+        "frequency": 2.9,
+        "phase": 0.2,
+        "lag": 0.5
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              50,
+              0
+            ],
+            [
+              32,
+              24
+            ],
+            [
+              0,
+              56
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "head",
+      "key": "fauna-abyssal-crownmaw-head",
+      "src": "fauna-abyssal-crownmaw-head.png",
+      "sourceCrop": {
+        "x": 548,
+        "y": 44,
+        "width": 172,
+        "height": 124
+      },
+      "size": {
+        "width": 172,
+        "height": 124
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 3.15,
+        "drag": 0.82,
+        "angularDrag": 0.42,
+        "severable": false,
+        "breakThreshold": 1.7,
+        "mobilityFactor": 0.56
+      },
+      "motion": {
+        "kind": "root",
+        "amplitude": 2.2,
+        "frequency": 1.25,
+        "phase": 0
+      },
+      "alphaCutouts": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              46,
+              86
+            ],
+            [
+              74,
+              76
+            ],
+            [
+              170,
+              82
+            ],
+            [
+              172,
+              124
+            ],
+            [
+              56,
+              124
+            ],
+            [
+              38,
+              106
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jaw",
+      "key": "fauna-abyssal-crownmaw-jaw",
+      "src": "fauna-abyssal-crownmaw-jaw.png",
+      "sourceCrop": {
+        "x": 574,
+        "y": 102,
+        "width": 146,
+        "height": 122
+      },
+      "size": {
+        "width": 146,
+        "height": 122
+      },
+      "anatomy": {
+        "role": "jaw",
+        "mass": 0.62,
+        "drag": 1.05,
+        "angularDrag": 0.72,
+        "severable": true,
+        "breakThreshold": 0.82,
+        "mobilityFactor": 0.86
+      },
+      "motion": {
+        "kind": "jaw",
+        "amplitude": 17.0,
+        "frequency": 3.1,
+        "phase": 0,
+        "lag": 0.2
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "tail-socket",
+      "src": "fauna-abyssal-crownmaw-tail-socket.png",
+      "parentId": "body-4",
+      "childId": "tail",
+      "sourcePartId": "body-4",
+      "sourceCrop": {
+        "x": 0,
+        "y": 32,
+        "width": 78,
+        "height": 64
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.62,
+      "bridgeAlpha": 0.18,
+      "bridgeCoreAlpha": 0.08,
+      "bridgeWidthScale": 1.14,
+      "bridgeSleeveScale": 0.48,
+      "severedSrc": "fauna-abyssal-crownmaw-tail-wound.png",
+      "severedKey": "fauna-abyssal-crownmaw-tail-wound",
+      "severedProcess": "deterministic sever wound overlay:tail-socket",
+      "socketProcess": "deterministic organic socket occlusion:tail-socket"
+    },
+    {
+      "id": "body-4-socket",
+      "src": "fauna-abyssal-crownmaw-body-4-socket.png",
+      "parentId": "body-3",
+      "childId": "body-4",
+      "sourcePartId": "body-3",
+      "sourceCrop": {
+        "x": 0,
+        "y": 38,
+        "width": 88,
+        "height": 78
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.64,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 0.98,
+      "bridgeSleeveScale": 0.28,
+      "socketProcess": "deterministic organic socket occlusion:body-4-socket",
+      "severedSrc": "fauna-abyssal-crownmaw-body-4-wound.png",
+      "severedKey": "fauna-abyssal-crownmaw-body-4-wound",
+      "severedProcess": "deterministic sever wound overlay:body-4-socket"
+    },
+    {
+      "id": "body-3-socket",
+      "src": "fauna-abyssal-crownmaw-body-3-socket.png",
+      "parentId": "body-2",
+      "childId": "body-3",
+      "sourcePartId": "body-2",
+      "sourceCrop": {
+        "x": 0,
+        "y": 44,
+        "width": 92,
+        "height": 86
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.66,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.09,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.32,
+      "socketProcess": "deterministic organic socket occlusion:body-3-socket"
+    },
+    {
+      "id": "body-2-socket",
+      "src": "fauna-abyssal-crownmaw-body-2-socket.png",
+      "parentId": "body-1",
+      "childId": "body-2",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 0,
+        "y": 24,
+        "width": 90,
+        "height": 82
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.66,
+      "bridgeAlpha": 0.23,
+      "bridgeCoreAlpha": 0.095,
+      "bridgeWidthScale": 1.02,
+      "bridgeSleeveScale": 0.36,
+      "socketProcess": "deterministic organic socket occlusion:body-2-socket"
+    },
+    {
+      "id": "dorsal-fin-socket",
+      "src": "fauna-abyssal-crownmaw-dorsal-fin-socket.png",
+      "parentId": "body-1",
+      "childId": "dorsal-fin",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 14,
+        "y": 0,
+        "width": 98,
+        "height": 64
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.58,
+      "bridgeAlpha": 0.22,
+      "bridgeCoreAlpha": 0.095,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.34,
+      "severedSrc": "fauna-abyssal-crownmaw-dorsal-fin-wound.png",
+      "severedKey": "fauna-abyssal-crownmaw-dorsal-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:dorsal-fin-socket"
+    },
+    {
+      "id": "pectoral-fin-socket",
+      "src": "fauna-abyssal-crownmaw-pectoral-fin-socket.png",
+      "parentId": "body-1",
+      "childId": "pectoral-fin",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 48,
+        "y": 58,
+        "width": 82,
+        "height": 58
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.24,
+      "bridgeCoreAlpha": 0.085,
+      "bridgeWidthScale": 1.05,
+      "bridgeSleeveScale": 0.42,
+      "socketProcess": "deterministic organic socket occlusion:pectoral-fin-socket",
+      "severedSrc": "fauna-abyssal-crownmaw-pectoral-fin-wound.png",
+      "severedKey": "fauna-abyssal-crownmaw-pectoral-fin-wound",
+      "severedProcess": "deterministic sever wound overlay:pectoral-fin-socket"
+    },
+    {
+      "id": "head-socket",
+      "src": "fauna-abyssal-crownmaw-head-socket.png",
+      "parentId": "body-1",
+      "childId": "head",
+      "sourcePartId": "body-1",
+      "sourceCrop": {
+        "x": 44,
+        "y": 12,
+        "width": 94,
+        "height": 82
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.66,
+      "bridgeAlpha": 0.24,
+      "bridgeCoreAlpha": 0.095,
+      "bridgeWidthScale": 1.0,
+      "bridgeSleeveScale": 0.44
+    },
+    {
+      "id": "jaw-socket",
+      "src": "fauna-abyssal-crownmaw-jaw-socket.png",
+      "parentId": "head",
+      "childId": "jaw",
+      "sourcePartId": "head",
+      "sourceCrop": {
+        "x": 18,
+        "y": 50,
+        "width": 72,
+        "height": 58
+      },
+      "alphaFeather": {
+        "all": 8,
+        "curve": 1.55
+      },
+      "alpha": 0.52,
+      "bridgeAlpha": 0.25,
+      "bridgeCoreAlpha": 0.11,
+      "bridgeWidthScale": 1.08,
+      "bridgeSleeveScale": 0.5,
+      "severedSrc": "fauna-abyssal-crownmaw-jaw-wound.png",
+      "severedKey": "fauna-abyssal-crownmaw-jaw-wound",
+      "severedProcess": "deterministic sever wound overlay:jaw-socket",
+      "socketProcess": "deterministic organic socket occlusion:jaw-socket"
+    }
+  ],
+  "notes": "Generated from one purpose-built high-resolution Crownmaw source image on chroma key, then cut into overlapping anatomical pieces. This source is intended as the first clean proof that the articulated rig can use cohesive full-creature concept art rather than rescuing a tiny legacy sprite. Socket overlays are parent-source crops with feathered alpha borders so joints read as organic sleeves instead of rectangular patches. Damage parity pass adds deterministic cripple wounds and severed socket stump declarations so damage states read like organic segmented creatures instead of disappearing parts.",
+  "murkTint": {
+    "color": 8825270,
+    "intensity": 0.13,
+    "stunnedIntensity": 0.18
+  },
+  "socketStyle": {
+    "alpha": 0.6,
+    "bridgeColor": 462874,
+    "bridgeAlpha": 0.2,
+    "bridgeStunnedAlpha": 0.12,
+    "bridgeCoreColor": 5270151,
+    "bridgeCoreAlpha": 0.08,
+    "bridgeCoreStunnedAlpha": 0.05,
+    "bridgeWidthScale": 0.88
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Needs explicit visual acceptance from sandbox/contact-sheet review before counting toward the 20-threat goal."
+  }
+}

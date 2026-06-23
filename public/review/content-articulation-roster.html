@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Water9 Content Articulation Roster</title>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background:#061014; color:#e5f6f8; }
+      body { margin:0; background:#061014; }
+      main { max-width:1320px; margin:0 auto; padding:28px 18px 48px; }
+      h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4.2rem); letter-spacing:0; }
+      p { color:#9db7c2; line-height:1.5; }
+      .summary { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }
+      .summary span { border:1px solid #294653; border-radius:6px; background:#0b1d24; padding:8px 10px; color:#bdd6df; }
+      .notice { border:1px solid #6a5230; border-radius:6px; background:#1d1710; color:#f0d9aa; padding:10px 12px; margin:16px 0; }
+      table { width:100%; border-collapse:collapse; border:1px solid #203b46; background:#081920; }
+      th, td { border-bottom:1px solid #18303a; padding:9px 10px; text-align:left; vertical-align:top; }
+      th { position:sticky; top:0; background:#10242c; z-index:1; }
+      code, pre { color:#cfeef6; overflow-wrap:anywhere; font-family:"SFMono-Regular", Consolas, monospace; }
+      pre { white-space:pre-wrap; margin:0; }
+      a { color:#7ee8ff; text-decoration:none; }
+      a:hover { text-decoration:underline; }
+      @media (max-width:760px) { main { padding:18px 10px 32px; } table { font-size:.82rem; } th,td { padding:7px 6px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Content Articulation Roster</h1>
+      <p>Source-to-articulation quality path for all 20 target threats: magenta-key source, art contract, plan, extract dry-run, parity/cohesion evidence, and paired-diver sandbox review.</p>
+      <div class="notice">Previewable and extractable still does not mean accepted. Human source approval and final threat acceptance remain separate gates.</div>
+      <div class="summary">
+        <span>20/20 mechanically ready</span>
+        <span>20 magenta-key sources</span>
+        <span>20 starter plans</span>
+        <span>20 plan previews</span>
+        <span>20 source parity overlays</span>
+        <span>20 visual cohesion passes</span>
+        <span>0 accepted threats</span>
+      </div>
+      <h2>Batch Command</h2>
+      <pre><code>npm run source:contracts &amp;&amp; npm run source:contracts-check &amp;&amp; npm run content:plan-coverage &amp;&amp; npm run content:plan-coverage-check &amp;&amp; npm run content:rigging-pack &amp;&amp; npm run content:rigging-pack-check &amp;&amp; npm run articulated:extract-plan -- --plan &lt;plan.json&gt; --dry-run &amp;&amp; npm run articulated:source-parity &amp;&amp; npm run articulated:visual-cohesion &amp;&amp; npm run sandbox:preview -- --id &lt;entity-id&gt; --with diver --serve --open --visual &amp;&amp; npm run content:articulation-roster &amp;&amp; npm run content:articulation-roster-check</code></pre>
+      <table>
+        <thead><tr><th>Target</th><th>Ready</th><th>Source</th><th>Plan Evidence</th><th>Cohesion</th><th>Sandbox</th><th>Plan Commands</th><th>Review Commands</th></tr></thead>
+        <tbody>
+        <tr data-articulation-roster="abyssal-lantern-mantis" data-ready="yes">
+          <td><code>abyssal-lantern-mantis</code><br>Abyssal Lantern Mantis</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png">source</a><br><code>public/assets/generated/fauna-abyssal-lantern-mantis-whole-source.png</code><br><a href="/review/source-candidates/key-previews/abyssal-lantern-mantis-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/abyssal-lantern-mantis-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/abyssal-lantern-mantis-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=abyssal-lantern-mantis&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-abyssal-lantern-mantis&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id abyssal-lantern-mantis --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --preview public/review/articulated/abyssal-lantern-mantis-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --out public/review/articulated/abyssal-lantern-mantis-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/abyssal-lantern-mantis-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-abyssal-lantern-mantis --with diver --serve --open --visual
+npm run sandbox:visual -- --ids abyssal-lantern-mantis --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="black-coral-gate" data-ready="yes">
+          <td><code>black-coral-gate</code><br>Black Coral Gate</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-black-coral-gate-whole-source.png">source</a><br><code>public/assets/generated/fauna-black-coral-gate-whole-source.png</code><br><a href="/review/source-candidates/key-previews/black-coral-gate-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/black-coral-gate-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/black-coral-gate-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=black-coral-gate&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-black-coral-gate&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id black-coral-gate --plan tools/scratch/black-coral-gate-starter-plan.json --preview public/review/articulated/black-coral-gate-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/black-coral-gate-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/black-coral-gate-starter-plan.json --out public/review/articulated/black-coral-gate-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/black-coral-gate-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-black-coral-gate --with diver --serve --open --visual
+npm run sandbox:visual -- --ids black-coral-gate --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="brine-crown" data-ready="yes">
+          <td><code>brine-crown</code><br>Brine Crown</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-brine-crown-whole-source.png">source</a><br><code>public/assets/generated/fauna-brine-crown-whole-source.png</code><br><a href="/review/source-candidates/key-previews/brine-crown-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/brine-crown-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/brine-crown-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=brine-crown&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-brine-crown&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id brine-crown --plan tools/scratch/brine-crown-starter-plan.json --preview public/review/articulated/brine-crown-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/brine-crown-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/brine-crown-starter-plan.json --out public/review/articulated/brine-crown-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/brine-crown-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-brine-crown --with diver --serve --open --visual
+npm run sandbox:visual -- --ids brine-crown --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="brine-mycelium-shelf" data-ready="yes">
+          <td><code>brine-mycelium-shelf</code><br>Brine Mycelium Shelf</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-brine-mycelium-shelf-whole-source.png">source</a><br><code>public/assets/generated/fauna-brine-mycelium-shelf-whole-source.png</code><br><a href="/review/source-candidates/key-previews/brine-mycelium-shelf-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/brine-mycelium-shelf-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/brine-mycelium-shelf-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=brine-mycelium-shelf&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-brine-mycelium-shelf&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id brine-mycelium-shelf --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --preview public/review/articulated/brine-mycelium-shelf-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --out public/review/articulated/brine-mycelium-shelf-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/brine-mycelium-shelf-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id brine-mycelium-shelf --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-brine-mycelium-shelf --with diver --serve --open --visual
+npm run sandbox:visual -- --ids brine-mycelium-shelf --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="chain-vein-siphonophore" data-ready="yes">
+          <td><code>chain-vein-siphonophore</code><br>Chain Vein Siphonophore</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-chain-vein-siphonophore-whole-source.png">source</a><br><code>public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png</code><br><a href="/review/source-candidates/key-previews/chain-vein-siphonophore-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/chain-vein-siphonophore-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/chain-vein-siphonophore-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=chain-vein-siphonophore&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-chain-vein-siphonophore&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id chain-vein-siphonophore --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --preview public/review/articulated/chain-vein-siphonophore-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --out public/review/articulated/chain-vein-siphonophore-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/chain-vein-siphonophore-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id chain-vein-siphonophore --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-chain-vein-siphonophore --with diver --serve --open --visual
+npm run sandbox:visual -- --ids chain-vein-siphonophore --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="coronate-sting-crown" data-ready="yes">
+          <td><code>coronate-sting-crown</code><br>Coronate Sting Crown</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-coronate-sting-crown-whole-source.png">source</a><br><code>public/assets/generated/fauna-coronate-sting-crown-whole-source.png</code><br><a href="/review/source-candidates/key-previews/coronate-sting-crown-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/coronate-sting-crown-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/coronate-sting-crown-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=coronate-sting-crown&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-coronate-sting-crown&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id coronate-sting-crown --plan tools/scratch/coronate-sting-crown-starter-plan.json --preview public/review/articulated/coronate-sting-crown-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/coronate-sting-crown-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --out public/review/articulated/coronate-sting-crown-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/coronate-sting-crown-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id coronate-sting-crown --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-coronate-sting-crown --with diver --serve --open --visual
+npm run sandbox:visual -- --ids coronate-sting-crown --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="glass-sponge-sentinel" data-ready="yes">
+          <td><code>glass-sponge-sentinel</code><br>Glass Sponge Sentinel</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-glass-sponge-sentinel-whole-source.png">source</a><br><code>public/assets/generated/fauna-glass-sponge-sentinel-whole-source.png</code><br><a href="/review/source-candidates/key-previews/glass-sponge-sentinel-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/glass-sponge-sentinel-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/glass-sponge-sentinel-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=glass-sponge-sentinel&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-glass-sponge-sentinel&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id glass-sponge-sentinel --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --preview public/review/articulated/glass-sponge-sentinel-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --out public/review/articulated/glass-sponge-sentinel-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/glass-sponge-sentinel-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id glass-sponge-sentinel --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-glass-sponge-sentinel --with diver --serve --open --visual
+npm run sandbox:visual -- --ids glass-sponge-sentinel --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="gulper-eel-maw" data-ready="yes">
+          <td><code>gulper-eel-maw</code><br>Gulper Eel Maw</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-gulper-eel-maw-whole-source.png">source</a><br><code>public/assets/generated/fauna-gulper-eel-maw-whole-source.png</code><br><a href="/review/source-candidates/key-previews/gulper-eel-maw-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/gulper-eel-maw-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/gulper-eel-maw-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=gulper-eel-maw&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-gulper-eel-maw&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id gulper-eel-maw --plan tools/scratch/gulper-eel-maw-starter-plan.json --preview public/review/articulated/gulper-eel-maw-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/gulper-eel-maw-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --out public/review/articulated/gulper-eel-maw-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/gulper-eel-maw-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-gulper-eel-maw --with diver --serve --open --visual
+npm run sandbox:visual -- --ids gulper-eel-maw --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="hadal-trencher-isopod" data-ready="yes">
+          <td><code>hadal-trencher-isopod</code><br>Hadal Trencher Isopod</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-hadal-trencher-isopod-whole-source.png">source</a><br><code>public/assets/generated/fauna-hadal-trencher-isopod-whole-source.png</code><br><a href="/review/source-candidates/key-previews/hadal-trencher-isopod-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/hadal-trencher-isopod-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/hadal-trencher-isopod-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=hadal-trencher-isopod&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-hadal-trencher-isopod&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id hadal-trencher-isopod --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --preview public/review/articulated/hadal-trencher-isopod-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --out public/review/articulated/hadal-trencher-isopod-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/hadal-trencher-isopod-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id hadal-trencher-isopod --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-hadal-trencher-isopod --with diver --serve --open --visual
+npm run sandbox:visual -- --ids hadal-trencher-isopod --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="lantern-anemone-pit" data-ready="yes">
+          <td><code>lantern-anemone-pit</code><br>Lantern Anemone Pit</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-lantern-anemone-pit-whole-source.png">source</a><br><code>public/assets/generated/fauna-lantern-anemone-pit-whole-source.png</code><br><a href="/review/source-candidates/key-previews/lantern-anemone-pit-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/lantern-anemone-pit-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/lantern-anemone-pit-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=lantern-anemone-pit&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-lantern-anemone-pit&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id lantern-anemone-pit --plan tools/scratch/lantern-anemone-pit-starter-plan.json --preview public/review/articulated/lantern-anemone-pit-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --out public/review/articulated/lantern-anemone-pit-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/lantern-anemone-pit-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id lantern-anemone-pit --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-lantern-anemone-pit --with diver --serve --open --visual
+npm run sandbox:visual -- --ids lantern-anemone-pit --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="predatory-tunicate-maw" data-ready="yes">
+          <td><code>predatory-tunicate-maw</code><br>Predatory Tunicate Maw</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-predatory-tunicate-maw-whole-source.png">source</a><br><code>public/assets/generated/fauna-predatory-tunicate-maw-whole-source.png</code><br><a href="/review/source-candidates/key-previews/predatory-tunicate-maw-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/predatory-tunicate-maw-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/predatory-tunicate-maw-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=predatory-tunicate-maw&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-predatory-tunicate-maw&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id predatory-tunicate-maw --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --preview public/review/articulated/predatory-tunicate-maw-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --out public/review/articulated/predatory-tunicate-maw-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/predatory-tunicate-maw-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id predatory-tunicate-maw --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-predatory-tunicate-maw --with diver --serve --open --visual
+npm run sandbox:visual -- --ids predatory-tunicate-maw --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="razor-kelp-harp" data-ready="yes">
+          <td><code>razor-kelp-harp</code><br>Razor Kelp Harp</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-razor-kelp-harp-whole-source.png">source</a><br><code>public/assets/generated/fauna-razor-kelp-harp-whole-source.png</code><br><a href="/review/source-candidates/key-previews/razor-kelp-harp-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/razor-kelp-harp-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/razor-kelp-harp-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=razor-kelp-harp&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-razor-kelp-harp&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id razor-kelp-harp --plan tools/scratch/razor-kelp-harp-starter-plan.json --preview public/review/articulated/razor-kelp-harp-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/razor-kelp-harp-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --out public/review/articulated/razor-kelp-harp-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/razor-kelp-harp-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id razor-kelp-harp --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-razor-kelp-harp --with diver --serve --open --visual
+npm run sandbox:visual -- --ids razor-kelp-harp --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="reef-lion-moray" data-ready="yes">
+          <td><code>reef-lion-moray</code><br>Reef Lion Moray</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-reef-lion-moray-whole-source.png">source</a><br><code>public/assets/generated/fauna-reef-lion-moray-whole-source.png</code><br><a href="/review/source-candidates/key-previews/reef-lion-moray-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/reef-lion-moray-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/reef-lion-moray-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=reef-lion-moray&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-reef-lion-moray&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id reef-lion-moray --plan tools/scratch/reef-lion-moray-starter-plan.json --preview public/review/articulated/reef-lion-moray-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/reef-lion-moray-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/reef-lion-moray-starter-plan.json --out public/review/articulated/reef-lion-moray-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/reef-lion-moray-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id reef-lion-moray --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-reef-lion-moray --with diver --serve --open --visual
+npm run sandbox:visual -- --ids reef-lion-moray --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="reliquary-siphonophore" data-ready="yes">
+          <td><code>reliquary-siphonophore</code><br>Reliquary Siphonophore</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-reliquary-siphonophore-whole-source.png">source</a><br><code>public/assets/generated/fauna-reliquary-siphonophore-whole-source.png</code><br><a href="/review/source-candidates/key-previews/reliquary-siphonophore-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/reliquary-siphonophore-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/reliquary-siphonophore-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=reliquary-siphonophore&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-reliquary-siphonophore&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id reliquary-siphonophore --plan tools/scratch/reliquary-siphonophore-starter-plan.json --preview public/review/articulated/reliquary-siphonophore-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --out public/review/articulated/reliquary-siphonophore-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/reliquary-siphonophore-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id reliquary-siphonophore --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-reliquary-siphonophore --with diver --serve --open --visual
+npm run sandbox:visual -- --ids reliquary-siphonophore --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="saber-viperfish" data-ready="yes">
+          <td><code>saber-viperfish</code><br>Saber Viperfish</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-saber-viperfish-whole-source.png">source</a><br><code>public/assets/generated/fauna-saber-viperfish-whole-source.png</code><br><a href="/review/source-candidates/key-previews/saber-viperfish-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/saber-viperfish-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/saber-viperfish-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=saber-viperfish&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-saber-viperfish&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id saber-viperfish --plan tools/scratch/saber-viperfish-starter-plan.json --preview public/review/articulated/saber-viperfish-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/saber-viperfish-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/saber-viperfish-starter-plan.json --out public/review/articulated/saber-viperfish-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/saber-viperfish-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id saber-viperfish --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-saber-viperfish --with diver --serve --open --visual
+npm run sandbox:visual -- --ids saber-viperfish --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="thorn-fan-coralline" data-ready="yes">
+          <td><code>thorn-fan-coralline</code><br>Thorn Fan Coralline</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-thorn-fan-coralline-whole-source.png">source</a><br><code>public/assets/generated/fauna-thorn-fan-coralline-whole-source.png</code><br><a href="/review/source-candidates/key-previews/thorn-fan-coralline-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/thorn-fan-coralline-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/thorn-fan-coralline-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=thorn-fan-coralline&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-thorn-fan-coralline&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id thorn-fan-coralline --plan tools/scratch/thorn-fan-coralline-starter-plan.json --preview public/review/articulated/thorn-fan-coralline-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --out public/review/articulated/thorn-fan-coralline-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/thorn-fan-coralline-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id thorn-fan-coralline --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-thorn-fan-coralline --with diver --serve --open --visual
+npm run sandbox:visual -- --ids thorn-fan-coralline --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="trench-harvest-sea-spider" data-ready="yes">
+          <td><code>trench-harvest-sea-spider</code><br>Trench Harvest Sea Spider</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png">source</a><br><code>public/assets/generated/fauna-trench-harvest-sea-spider-whole-source.png</code><br><a href="/review/source-candidates/key-previews/trench-harvest-sea-spider-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/trench-harvest-sea-spider-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/trench-harvest-sea-spider-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=trench-harvest-sea-spider&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-trench-harvest-sea-spider&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id trench-harvest-sea-spider --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --preview public/review/articulated/trench-harvest-sea-spider-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --out public/review/articulated/trench-harvest-sea-spider-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/trench-harvest-sea-spider-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id trench-harvest-sea-spider --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-trench-harvest-sea-spider --with diver --serve --open --visual
+npm run sandbox:visual -- --ids trench-harvest-sea-spider --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="tripod-stilt-stalker" data-ready="yes">
+          <td><code>tripod-stilt-stalker</code><br>Tripod Stilt Stalker</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-tripod-stilt-stalker-whole-source.png">source</a><br><code>public/assets/generated/fauna-tripod-stilt-stalker-whole-source.png</code><br><a href="/review/source-candidates/key-previews/tripod-stilt-stalker-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/tripod-stilt-stalker-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/tripod-stilt-stalker-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=tripod-stilt-stalker&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-tripod-stilt-stalker&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id tripod-stilt-stalker --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --preview public/review/articulated/tripod-stilt-stalker-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --out public/review/articulated/tripod-stilt-stalker-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/tripod-stilt-stalker-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id tripod-stilt-stalker --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-tripod-stilt-stalker --with diver --serve --open --visual
+npm run sandbox:visual -- --ids tripod-stilt-stalker --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="vampire-cloak-squid" data-ready="yes">
+          <td><code>vampire-cloak-squid</code><br>Vampire Cloak Squid</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-vampire-cloak-squid-whole-source.png">source</a><br><code>public/assets/generated/fauna-vampire-cloak-squid-whole-source.png</code><br><a href="/review/source-candidates/key-previews/vampire-cloak-squid-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/vampire-cloak-squid-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/vampire-cloak-squid-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=vampire-cloak-squid&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-vampire-cloak-squid&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id vampire-cloak-squid --plan tools/scratch/vampire-cloak-squid-starter-plan.json --preview public/review/articulated/vampire-cloak-squid-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --out public/review/articulated/vampire-cloak-squid-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/vampire-cloak-squid-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id vampire-cloak-squid --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-vampire-cloak-squid --with diver --serve --open --visual
+npm run sandbox:visual -- --ids vampire-cloak-squid --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr>
+        <tr data-articulation-roster="vent-claw-yeti" data-ready="yes">
+          <td><code>vent-claw-yeti</code><br>Vent-Claw Yeti</td>
+          <td>yes</td>
+          <td>magenta<br><a href="/assets/generated/fauna-vent-claw-yeti-whole-source.png">source</a><br><code>public/assets/generated/fauna-vent-claw-yeti-whole-source.png</code><br><a href="/review/source-candidates/key-previews/vent-claw-yeti-key-preview.png">key preview</a></td>
+          <td><a href="/review/articulated/vent-claw-yeti-plan-preview.png">plan preview</a><br><a href="/review/articulated/source-parity/vent-claw-yeti-source-parity.png">source parity</a></td>
+          <td>pass</td>
+          <td><a href="/?sandbox=vent-claw-yeti&amp;companion=diver">runtime with diver</a><br><a href="/?entity=source-vent-claw-yeti&amp;companion=diver">source with diver</a></td>
+          <td><pre><code>npm run articulated:prepare-plan -- --id vent-claw-yeti --plan tools/scratch/vent-claw-yeti-starter-plan.json --preview public/review/articulated/vent-claw-yeti-plan-preview.png --allow-unapproved
+npm run articulated:plan-check -- --plan tools/scratch/vent-claw-yeti-starter-plan.json
+npm run articulated:plan-preview -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --out public/review/articulated/vent-claw-yeti-plan-preview.png
+npm run articulated:extract-plan -- --plan tools/scratch/vent-claw-yeti-starter-plan.json --dry-run</code></pre></td>
+          <td><pre><code>npm run articulated:source-parity
+npm run articulated:visual-cohesion
+npm run sandbox:preview -- --id vent-claw-yeti --with diver --serve --open --visual
+npm run sandbox:preview -- --id source-vent-claw-yeti --with diver --serve --open --visual
+npm run sandbox:visual -- --ids vent-claw-yeti --states idle,lunge,stunned --with diver</code></pre></td>
+        </tr></tbody>
+      </table>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,616 @@
+{
+  "schema": "asset-forge/articulated-creature@1",
+  "name": "fauna-thornhalo-urchin",
+  "runtimeCreatureId": "thornhalo-urchin",
+  "displayName": "Thornhalo Urchin",
+  "kind": "articulated-creature",
+  "depthBand": "deep",
+  "source": "public/assets/generated/fauna-thornhalo-urchin-whole-painted.png",
+  "sourceTransform": {},
+  "coordinateSpace": {
+    "units": "pixels",
+    "origin": "center"
+  },
+  "parts": [
+    {
+      "id": "body-core",
+      "key": "fauna-thornhalo-urchin-body-core",
+      "src": "fauna-thornhalo-urchin-body-core.png",
+      "sourceCrop": {
+        "x": 330,
+        "y": 310,
+        "width": 540,
+        "height": 570
+      },
+      "size": {
+        "width": 540,
+        "height": 570
+      },
+      "anatomy": {
+        "role": "torso",
+        "mass": 3.4,
+        "drag": 0.92,
+        "angularDrag": 0.48,
+        "severable": false,
+        "breakThreshold": 1.55,
+        "mobilityFactor": 0.55
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 1.4,
+        "frequency": 1.15,
+        "phase": 0.0,
+        "lag": 0.1
+      },
+      "damagedSrc": "fauna-thornhalo-urchin-body-core-damaged.png",
+      "damagedKey": "fauna-thornhalo-urchin-body-core-damaged",
+      "damagedProcess": "deterministic dark wound and crack overlay"
+    },
+    {
+      "id": "top-plate",
+      "key": "fauna-thornhalo-urchin-top-plate",
+      "src": "fauna-thornhalo-urchin-top-plate.png",
+      "sourceCrop": {
+        "x": 396,
+        "y": 250,
+        "width": 420,
+        "height": 310
+      },
+      "size": {
+        "width": 420,
+        "height": 310
+      },
+      "anatomy": {
+        "role": "head",
+        "mass": 1.0,
+        "drag": 0.92,
+        "angularDrag": 0.48,
+        "severable": false,
+        "breakThreshold": 0.9,
+        "mobilityFactor": 0.5
+      },
+      "motion": {
+        "kind": "body",
+        "amplitude": 0.9,
+        "frequency": 1.05,
+        "phase": 0.3,
+        "lag": 0.08
+      }
+    },
+    {
+      "id": "tube-feet-ring",
+      "key": "fauna-thornhalo-urchin-tube-feet-ring",
+      "src": "fauna-thornhalo-urchin-tube-feet-ring.png",
+      "sourceCrop": {
+        "x": 285,
+        "y": 625,
+        "width": 590,
+        "height": 315
+      },
+      "size": {
+        "width": 590,
+        "height": 315
+      },
+      "anatomy": {
+        "role": "fin",
+        "mass": 0.55,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.58,
+        "mobilityFactor": 0.68
+      },
+      "motion": {
+        "kind": "fin",
+        "amplitude": 3.2,
+        "frequency": 2.2,
+        "phase": 1.0,
+        "lag": 0.28
+      }
+    },
+    {
+      "id": "spine-n",
+      "key": "fauna-thornhalo-urchin-spine-n",
+      "src": "fauna-thornhalo-urchin-spine-n.png",
+      "sourceCrop": {
+        "x": 455,
+        "y": 20,
+        "width": 310,
+        "height": 405
+      },
+      "size": {
+        "width": 310,
+        "height": 405
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.2,
+        "frequency": 1.85,
+        "phase": 0.0,
+        "lag": 0.65
+      }
+    },
+    {
+      "id": "spine-ne",
+      "key": "fauna-thornhalo-urchin-spine-ne",
+      "src": "fauna-thornhalo-urchin-spine-ne.png",
+      "sourceCrop": {
+        "x": 690,
+        "y": 95,
+        "width": 390,
+        "height": 380
+      },
+      "size": {
+        "width": 390,
+        "height": 380
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.2,
+        "frequency": 1.85,
+        "phase": 0.45,
+        "lag": 0.65
+      }
+    },
+    {
+      "id": "spine-e",
+      "key": "fauna-thornhalo-urchin-spine-e",
+      "src": "fauna-thornhalo-urchin-spine-e.png",
+      "sourceCrop": {
+        "x": 760,
+        "y": 390,
+        "width": 410,
+        "height": 270
+      },
+      "size": {
+        "width": 410,
+        "height": 270
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.2,
+        "frequency": 1.85,
+        "phase": 0.9,
+        "lag": 0.65
+      }
+    },
+    {
+      "id": "spine-se",
+      "key": "fauna-thornhalo-urchin-spine-se",
+      "src": "fauna-thornhalo-urchin-spine-se.png",
+      "sourceCrop": {
+        "x": 660,
+        "y": 640,
+        "width": 385,
+        "height": 430
+      },
+      "size": {
+        "width": 385,
+        "height": 430
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.2,
+        "frequency": 1.85,
+        "phase": 1.35,
+        "lag": 0.65
+      }
+    },
+    {
+      "id": "spine-s",
+      "key": "fauna-thornhalo-urchin-spine-s",
+      "src": "fauna-thornhalo-urchin-spine-s.png",
+      "sourceCrop": {
+        "x": 410,
+        "y": 750,
+        "width": 390,
+        "height": 455
+      },
+      "size": {
+        "width": 390,
+        "height": 455
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.2,
+        "frequency": 1.85,
+        "phase": 1.8,
+        "lag": 0.65
+      }
+    },
+    {
+      "id": "spine-sw",
+      "key": "fauna-thornhalo-urchin-spine-sw",
+      "src": "fauna-thornhalo-urchin-spine-sw.png",
+      "sourceCrop": {
+        "x": 112,
+        "y": 620,
+        "width": 420,
+        "height": 415
+      },
+      "size": {
+        "width": 420,
+        "height": 415
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.2,
+        "frequency": 1.85,
+        "phase": 2.25,
+        "lag": 0.65
+      }
+    },
+    {
+      "id": "spine-w",
+      "key": "fauna-thornhalo-urchin-spine-w",
+      "src": "fauna-thornhalo-urchin-spine-w.png",
+      "sourceCrop": {
+        "x": 20,
+        "y": 390,
+        "width": 430,
+        "height": 290
+      },
+      "size": {
+        "width": 430,
+        "height": 290
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.2,
+        "frequency": 1.85,
+        "phase": 2.7,
+        "lag": 0.65
+      }
+    },
+    {
+      "id": "spine-nw",
+      "key": "fauna-thornhalo-urchin-spine-nw",
+      "src": "fauna-thornhalo-urchin-spine-nw.png",
+      "sourceCrop": {
+        "x": 110,
+        "y": 92,
+        "width": 410,
+        "height": 395
+      },
+      "size": {
+        "width": 410,
+        "height": 395
+      },
+      "anatomy": {
+        "role": "tail",
+        "mass": 0.42,
+        "drag": 1.18,
+        "angularDrag": 0.7,
+        "severable": false,
+        "breakThreshold": 0.7,
+        "mobilityFactor": 0.74
+      },
+      "motion": {
+        "kind": "tail",
+        "amplitude": 5.2,
+        "frequency": 1.85,
+        "phase": 3.15,
+        "lag": 0.65
+      }
+    }
+  ],
+  "socketOverlays": [
+    {
+      "id": "top-plate-socket",
+      "src": "fauna-thornhalo-urchin-top-plate-socket.png",
+      "parentId": "body-core",
+      "childId": "top-plate",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 206,
+        "y": 0,
+        "width": 128,
+        "height": 100
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.48,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "tube-feet-socket",
+      "src": "fauna-thornhalo-urchin-tube-feet-socket.png",
+      "parentId": "body-core",
+      "childId": "tube-feet-ring",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 180,
+        "y": 438,
+        "width": 170,
+        "height": 104
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.46,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "spine-n-socket",
+      "src": "fauna-thornhalo-urchin-spine-n-socket.png",
+      "parentId": "body-core",
+      "childId": "spine-n",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 230,
+        "y": 148,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "spine-ne-socket",
+      "src": "fauna-thornhalo-urchin-spine-ne-socket.png",
+      "parentId": "body-core",
+      "childId": "spine-ne",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 305,
+        "y": 175,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "spine-e-socket",
+      "src": "fauna-thornhalo-urchin-spine-e-socket.png",
+      "parentId": "body-core",
+      "childId": "spine-e",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 338,
+        "y": 250,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "spine-se-socket",
+      "src": "fauna-thornhalo-urchin-spine-se-socket.png",
+      "parentId": "body-core",
+      "childId": "spine-se",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 305,
+        "y": 325,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "spine-s-socket",
+      "src": "fauna-thornhalo-urchin-spine-s-socket.png",
+      "parentId": "body-core",
+      "childId": "spine-s",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 230,
+        "y": 355,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "spine-sw-socket",
+      "src": "fauna-thornhalo-urchin-spine-sw-socket.png",
+      "parentId": "body-core",
+      "childId": "spine-sw",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 155,
+        "y": 325,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "spine-w-socket",
+      "src": "fauna-thornhalo-urchin-spine-w-socket.png",
+      "parentId": "body-core",
+      "childId": "spine-w",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 122,
+        "y": 250,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    },
+    {
+      "id": "spine-nw-socket",
+      "src": "fauna-thornhalo-urchin-spine-nw-socket.png",
+      "parentId": "body-core",
+      "childId": "spine-nw",
+      "sourcePartId": "body-core",
+      "sourceCrop": {
+        "x": 155,
+        "y": 175,
+        "width": 92,
+        "height": 92
+      },
+      "alphaFeather": {
+        "all": 12,
+        "curve": 1.4,
+        "minimum": 0.1
+      },
+      "alpha": 0.5,
+      "bridgeAlpha": 0.16,
+      "bridgeCoreAlpha": 0.06,
+      "bridgeWidthScale": 0.78,
+      "bridgeSleeveScale": 0.24
+    }
+  ],
+  "notes": "Prototype built from one magenta-background Thornhalo Urchin source. The rig emphasizes a heavy central test with eight dominant socketed spines and a tube-foot fringe for radial zone-denial motion.",
+  "murkTint": {
+    "color": 7781289,
+    "intensity": 0.11,
+    "stunnedIntensity": 0.18
+  },
+  "socketStyle": {
+    "alpha": 0.52,
+    "bridgeColor": 528408,
+    "bridgeAlpha": 0.16,
+    "bridgeStunnedAlpha": 0.09,
+    "bridgeCoreColor": 8112564,
+    "bridgeCoreAlpha": 0.06,
+    "bridgeCoreStunnedAlpha": 0.04,
+    "bridgeWidthScale": 0.78,
+    "bridgeSleeveScale": 0.24
+  },
+  "quality": {
+    "status": "prototype",
+    "sourceCohesion": "single-source",
+    "backgroundKey": "magenta",
+    "reviewedBy": null,
+    "acceptanceNote": "Prototype generated from one magenta-background Thornhalo Urchin source. Needs sandbox/contact-sheet acceptance before counting toward the 20-threat goal."
+  }
+}

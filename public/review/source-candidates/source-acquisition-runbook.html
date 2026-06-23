@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water 9 Source Acquisition Runbook</title>
+  <style>
+    :root { color-scheme: dark; --bg:#061114; --panel:#0d1e24; --line:#294751; --text:#e7f7f8; --muted:#9eb7bd; --accent:#83e8ff; --warn:#f0c66e; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1320px; margin:0 auto; padding:28px; }
+    h1 { margin:0 0 8px; font-size:32px; }
+    h2 { margin:0; font-size:18px; }
+    p { color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code, pre { font-family:"SFMono-Regular",Consolas,monospace; }
+    pre { border:1px solid var(--line); background:#050b0d; padding:10px; overflow:auto; white-space:pre-wrap; }
+    table { width:100%; border-collapse:collapse; margin:18px 0 24px; border:1px solid var(--line); background:var(--panel); }
+    th, td { text-align:left; border-bottom:1px solid var(--line); padding:8px 10px; vertical-align:top; }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:14px; }
+    .card { border:1px solid var(--line); background:var(--panel); border-radius:6px; padding:14px; }
+    .warn { color:var(--warn); }
+    dl { display:grid; gap:7px; }
+    dt { color:var(--muted); font-size:11px; text-transform:uppercase; }
+    dd { margin:0; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Water 9 Source Acquisition Runbook</h1>
+    <p>Batch execution sheet for the current source-generation sprint. Capture/manual-save keeps inline image generation recoverable inside the repo.</p>
+    <h2>Batch Procedure</h2>
+    <ol>
+      <li>Open the first target workstation or capture URL.</li>
+      <li>Generate one cohesive whole-creature image on pure <code>#ff00ff</code> magenta.</li>
+      <li>Save or capture it to one of the listed inbox filenames.</li>
+      <li>Run focused inbox validation before ingesting.</li>
+      <li>Run the batch dry-run, then apply only when every selected image passes.</li>
+      <li>Rebuild source previews and review dossiers after ingestion.</li>
+    </ol>
+    <h2>Batch Commands</h2>
+    <pre><code>npm run source:sprint
+npm run source:inbox-review
+npm run source:imagegen-health
+npm run source:recovery-scout-check
+npm run source:inbox-capture -- --ids  --open
+npm run source:generate-openai-batch -- --ids 
+npm run source:generate-openai-batch -- --ids  --apply
+npm run source:advance-inbox -- --ids 
+npm run source:advance-inbox -- --ids  --apply
+npm run source:inbox-capture
+npm run source:inbox-check -- --dir tools/source-inbox --strict --ids 
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids  --dry-run
+npm run source:ingest-batch -- --dir tools/source-inbox --strict --ids 
+npm run source:image-check
+npm run source:preview-check
+npm run source:review-dossier
+npm run content:goal-readiness</code></pre>
+    <h2>Acquisition Targets</h2>
+    <table>
+      <thead><tr><th>Rank</th><th>Candidate</th><th>Mode</th><th>Inbox</th><th>Expected Files</th><th>Capture</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <section class="cards"></section>
+  </main>
+</body>
+</html>
