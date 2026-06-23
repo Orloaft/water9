@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import math
 import random
 from pathlib import Path
@@ -8,7 +9,47 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "public" / "assets" / "generated"
+GENERATED = ROOT / "public" / "assets" / "generated"
+SOURCE_DIR = ROOT / "public" / "assets" / "source"
+INBOX_SOURCE = ROOT / "tools" / "source-inbox" / "environment-cave-wall-source.png"
+FALLBACK_SOURCE = SOURCE_DIR / "environment-cave-wall-source-fallback.png"
+CURRENT_SOURCE = SOURCE_DIR / "environment-cave-wall-source-current.png"
+MANIFEST = SOURCE_DIR / "environment-cave-wall-source-manifest.json"
+HANDOFF = ROOT / "tools" / "source-inbox" / "ENVIRONMENT_HANDOFF.md"
+KEY = (255, 0, 255)
+
+ASSETS = [
+    ("env-rock-floor-lip-0", "rock", "jagged lower cave edge slab"),
+    ("env-rock-floor-lip-1", "rock", "wide broken lower cave shelf"),
+    ("env-rock-ceiling-lip-0", "rock", "hanging upper cave edge"),
+    ("env-rock-wall-left-0", "rock", "vertical left cave wall curtain"),
+    ("env-rock-wall-right-0", "rock", "vertical right cave wall curtain"),
+    ("env-ore-copper", "ore", "dull copper mineral fused into host rock"),
+    ("env-ore-quartz", "ore", "cold quartz cluster embedded in stone"),
+    ("env-ore-ruby", "ore", "deep red mineral pocket"),
+    ("env-ore-cobalt", "ore", "blue cobalt mineral seam"),
+    ("env-ore-sunstone", "ore", "warm thermal mineral cluster"),
+    ("env-ore-relic", "ore", "pale alien relic mineral growth"),
+    ("env-ore-idol", "ore", "small ruined idol mineral node"),
+    ("env-ore-alien-alloy", "ore", "green alien alloy seam"),
+    ("env-ore-ruin-core", "ore", "bright ruin-core mineral node"),
+    ("env-flora-glass-kelp", "flora", "wall-rooted glass kelp tendrils"),
+    ("env-flora-moon-sponge", "flora", "pale tube sponge colony"),
+    ("env-flora-sting-anemone", "flora", "dangerous wall anemone ring"),
+    ("env-flora-brine-grass", "flora", "thin brine grass clump"),
+    ("env-flora-vent-coral", "flora", "thermal vent coral fan"),
+    ("env-flora-ember-bloom", "flora", "orange ember bloom polyp"),
+    ("env-flora-black-fan", "flora", "dark fan coral silhouette"),
+    ("env-flora-needle-garden", "flora", "needle coral hazard cluster"),
+    ("env-flora-crown-polyp", "flora", "crowned wall polyp"),
+    ("env-flora-circuit-kelp", "flora", "segmented circuit kelp"),
+    ("env-flora-glass-obelisk", "flora", "hard glass obelisk sponge"),
+    ("env-flora-oracle-polyp", "flora", "purple oracle polyp"),
+    ("env-flora-oxygen-bloom", "flora", "pale oxygen bloom"),
+    ("env-flora-lumen-fern", "flora", "luminous fern growth"),
+    ("env-flora-lumen-nodule", "flora", "small luminous wall nodule"),
+    ("env-hazard-ice-spike", "hazard", "sharp brittle cave spike"),
+]
 
 
 def rgba(hex_color: str, alpha: int = 255) -> tuple[int, int, int, int]:
@@ -21,177 +62,355 @@ def rgba(hex_color: str, alpha: int = 255) -> tuple[int, int, int, int]:
     )
 
 
-def save(name: str, img: Image.Image) -> None:
-    OUT.mkdir(parents=True, exist_ok=True)
-    img.save(OUT / f"{name}.png")
-
-
-def rock_poly(width: int, height: int, seed: int, ceiling: bool = False) -> list[tuple[float, float]]:
+def jittered_blob(cx: float, cy: float, rx: float, ry: float, seed: int, points: int = 18) -> list[tuple[float, float]]:
     rng = random.Random(seed)
-    top = []
-    bottom = []
-    for i in range(8):
-        x = i / 7 * width
-        top.append((x, rng.uniform(4, height * 0.34)))
-        bottom.append((width - x, rng.uniform(height * 0.62, height - 3)))
-    pts = top + bottom
-    if ceiling:
-        pts = [(x, height - y) for x, y in pts]
-    return pts
+    out = []
+    for i in range(points):
+        angle = i / points * math.tau
+        scale = rng.uniform(0.72, 1.18)
+        out.append((cx + math.cos(angle) * rx * scale, cy + math.sin(angle) * ry * scale))
+    return out
 
 
-def make_rock_lip(name: str, seed: int, size: tuple[int, int], ceiling: bool = False, vertical: bool = False) -> None:
+def draw_cracks(draw: ImageDraw.ImageDraw, seed: int, box: tuple[int, int, int, int], count: int) -> None:
+    rng = random.Random(seed)
+    x0, y0, x1, y1 = box
+    for _ in range(count):
+        x = rng.uniform(x0, x1)
+        y = rng.uniform(y0, y1)
+        pts = [(x, y)]
+        for _ in range(rng.randrange(2, 5)):
+            x += rng.uniform(-18, 18)
+            y += rng.uniform(-8, 12)
+            pts.append((x, y))
+        draw.line(pts, fill=rgba(rng.choice(["#061016", "#334651", "#6d858e"]), rng.randrange(45, 120)), width=1)
+
+
+def draw_stone_texture(img: Image.Image, seed: int, mask: Image.Image) -> None:
+    rng = random.Random(seed)
+    draw = ImageDraw.Draw(img)
+    for _ in range(160):
+        x = rng.randrange(0, img.width)
+        y = rng.randrange(0, img.height)
+        if mask.getpixel((x, y)) < 10:
+            continue
+        color = rng.choice(["#0b141b", "#13212a", "#22333c", "#435760", "#6c838a"])
+        a = rng.randrange(16, 58)
+        r = rng.randrange(1, 4)
+        draw.ellipse((x - r, y - r, x + r, y + r), fill=rgba(color, a))
+    img.alpha_composite(Image.composite(Image.new("RGBA", img.size, rgba("#081016", 80)), Image.new("RGBA", img.size, (0, 0, 0, 0)), mask).filter(ImageFilter.GaussianBlur(8)))
+
+
+def rock_patch(size: tuple[int, int], seed: int, cx: float, cy: float, rx: float, ry: float) -> Image.Image:
+    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    mask = Image.new("L", size, 0)
+    md = ImageDraw.Draw(mask)
+    md.polygon(jittered_blob(cx, cy, rx, ry, seed, 22), fill=255)
+    draw = ImageDraw.Draw(img)
+    draw.bitmap((0, 0), mask, fill=rgba("#15232b", 246))
+    draw_stone_texture(img, seed + 200, mask)
+    edge = mask.filter(ImageFilter.FIND_EDGES).filter(ImageFilter.GaussianBlur(0.6))
+    img.alpha_composite(Image.composite(Image.new("RGBA", size, rgba("#83a0a7", 95)), Image.new("RGBA", size, (0, 0, 0, 0)), edge))
+    draw_cracks(draw, seed + 500, (0, 0, size[0], size[1]), 12)
+    return img
+
+
+def rock_cell(name: str, cell: int, size: tuple[int, int]) -> Image.Image:
+    w, h = size
+    rng = random.Random(1000 + cell)
+    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    mask = Image.new("L", size, 0)
+    md = ImageDraw.Draw(mask)
+    if "wall-left" in name or "wall-right" in name:
+        base = jittered_blob(w * 0.5, h * 0.5, w * 0.22, h * 0.45, cell, 20)
+        if "wall-left" in name:
+            base = [(min(x, w * 0.74), y) for x, y in base]
+            base += [(0, h), (0, 0)]
+        else:
+            base = [(max(x, w * 0.26), y) for x, y in base]
+            base += [(w, 0), (w, h)]
+    elif "ceiling" in name:
+        base = [(0, 0), (w, 0)]
+        for i in range(9):
+            x = w - i / 8 * w
+            base.append((x, rng.uniform(h * 0.28, h * 0.74)))
+    else:
+        base = [(0, h), (w, h)]
+        for i in range(10):
+            x = w - i / 9 * w
+            base.append((x, rng.uniform(h * 0.2, h * 0.68)))
+    md.polygon(base, fill=255)
+    body = Image.new("RGBA", size, (0, 0, 0, 0))
+    bd = ImageDraw.Draw(body)
+    bd.bitmap((0, 0), mask, fill=rgba("#16252d", 245))
+    draw_stone_texture(body, 2000 + cell, mask)
+    edge = mask.filter(ImageFilter.FIND_EDGES)
+    body.alpha_composite(Image.composite(Image.new("RGBA", size, rgba("#8fa7ac", 90)), Image.new("RGBA", size, (0, 0, 0, 0)), edge.filter(ImageFilter.GaussianBlur(0.7))))
+    draw = ImageDraw.Draw(body)
+    draw_cracks(draw, 3000 + cell, (4, 4, w - 4, h - 4), 18)
+    for _ in range(5):
+        x = rng.uniform(w * 0.15, w * 0.85)
+        y = rng.uniform(h * 0.2, h * 0.82)
+        draw.ellipse((x - 5, y - 2, x + 10, y + 3), fill=rgba("#395542", 70))
+    img.alpha_composite(body)
+    return img.filter(ImageFilter.UnsharpMask(radius=1.1, percent=140, threshold=3))
+
+
+def ore_cell(name: str, cell: int, size: tuple[int, int]) -> Image.Image:
+    palettes = {
+        "copper": ["#a85d3a", "#d48956", "#4a281f"],
+        "quartz": ["#b7fff5", "#79cfd4", "#eefcff"],
+        "ruby": ["#d33d5b", "#7e1530", "#ff9ab0"],
+        "cobalt": ["#4a78d8", "#1b2d72", "#9bbcff"],
+        "sunstone": ["#e98d38", "#ffbf62", "#6e331e"],
+        "relic": ["#9bd56a", "#4f6a44", "#d9ffb0"],
+        "idol": ["#bbfff0", "#d4a65f", "#f7ffd8"],
+        "alloy": ["#67e8c3", "#1d766f", "#d5fff3"],
+        "core": ["#f7edff", "#ca6cff", "#68f0d2"],
+    }
+    key = next((k for k in palettes if k in name), "copper")
+    colors = palettes[key]
+    w, h = size
+    rng = random.Random(4000 + cell)
+    img = rock_patch(size, cell + 100, w * 0.52, h * 0.58, w * 0.42, h * 0.34)
+    draw = ImageDraw.Draw(img)
+    cx, cy = w * 0.52, h * 0.55
+    for i in range(12):
+        a = rng.uniform(0, math.tau)
+        d = rng.uniform(0, min(w, h) * 0.19)
+        x = cx + math.cos(a) * d
+        y = cy + math.sin(a) * d
+        r = rng.uniform(8, 19)
+        pts = []
+        for j in range(rng.randrange(5, 8)):
+            aa = a + j / 6 * math.tau + rng.uniform(-0.2, 0.2)
+            pts.append((x + math.cos(aa) * r * rng.uniform(0.55, 1.2), y + math.sin(aa) * r * rng.uniform(0.55, 1.1)))
+        draw.polygon(pts, fill=rgba(colors[i % len(colors)], 230))
+        draw.line(pts + [pts[0]], fill=rgba("#f7fff7", 80), width=1)
+    glow = Image.new("RGBA", size, (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse((cx - 42, cy - 30, cx + 42, cy + 30), fill=rgba(colors[0], 35))
+    img = Image.alpha_composite(glow.filter(ImageFilter.GaussianBlur(8)), img)
+    return img.filter(ImageFilter.UnsharpMask(radius=1.0, percent=130, threshold=3))
+
+
+def flora_cell(name: str, cell: int, size: tuple[int, int]) -> Image.Image:
+    w, h = size
+    rng = random.Random(6000 + cell)
+    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    img.alpha_composite(rock_patch(size, cell + 200, w * 0.5, h * 0.74, w * 0.36, h * 0.15))
+    draw = ImageDraw.Draw(img)
+    palette = {
+        "moon": ["#88cfd0", "#d4fff8", "#48636b"],
+        "sting": ["#d55b70", "#ffd1d8", "#2a0914"],
+        "black": ["#7f79b5", "#25233c", "#d8d4ff"],
+        "needle": ["#cc3e73", "#ffd0df", "#3f0f27"],
+        "ember": ["#ff9a4c", "#ffd166", "#41180d"],
+        "vent": ["#d97648", "#ffcc65", "#3b1f21"],
+        "circuit": ["#52dbba", "#195e5d", "#d3fff7"],
+        "glass": ["#9ee7eb", "#d8fffb", "#46707a"],
+        "oracle": ["#d482ff", "#7ff0d5", "#f9f6ff"],
+        "oxygen": ["#a8fff1", "#79d7e0", "#ffffff"],
+        "lumen": ["#7be9c8", "#c4ff90", "#264c43"],
+    }
+    colors = palette[next((k for k in palette if k in name), "lumen")]
+    base = (w * 0.5, h * 0.72)
+    if "sponge" in name or "obelisk" in name:
+        for i in range(8):
+            x = rng.uniform(w * 0.28, w * 0.72)
+            y = rng.uniform(h * 0.42, h * 0.74)
+            rw = rng.uniform(7, 15)
+            rh = rng.uniform(22, 50)
+            draw.rounded_rectangle((x - rw, y - rh, x + rw, y + 4), radius=5, fill=rgba(colors[i % len(colors)], 215))
+            draw.ellipse((x - rw * 0.55, y - rh - 3, x + rw * 0.55, y - rh + 8), outline=rgba("#efffff", 110), width=1)
+    elif "anemone" in name or "polyp" in name or "bloom" in name:
+        cx, cy = base
+        for i in range(28):
+            a = i / 28 * math.tau
+            length = rng.uniform(26, 55)
+            draw.line((cx, cy, cx + math.cos(a) * length, cy + math.sin(a) * length * 0.62), fill=rgba(colors[i % len(colors)], 180), width=2)
+        draw.ellipse((cx - 23, cy - 14, cx + 23, cy + 14), fill=rgba(colors[0], 230))
+        draw.ellipse((cx - 10, cy - 6, cx + 10, cy + 6), fill=rgba("#05070c", 235))
+    else:
+        branches = 18 if ("fan" in name or "needle" in name or "fern" in name) else 8
+        for i in range(branches):
+            angle = -math.pi / 2 + (i - branches / 2) * (0.11 if branches > 10 else 0.08)
+            length = rng.uniform(h * 0.34, h * 0.58)
+            x2 = base[0] + math.cos(angle) * length * rng.uniform(0.45, 1.05)
+            y2 = base[1] + math.sin(angle) * length
+            draw.line((base[0], base[1], x2, y2), fill=rgba(colors[i % len(colors)], 205), width=2)
+            if "kelp" in name or "grass" in name:
+                for t in (0.35, 0.55, 0.76):
+                    bx = base[0] + (x2 - base[0]) * t
+                    by = base[1] + (y2 - base[1]) * t
+                    side = -1 if rng.random() < 0.5 else 1
+                    lx = bx + side * rng.uniform(12, 24)
+                    draw.ellipse((min(bx, lx), by - 7, max(bx, lx), by + 5), fill=rgba(colors[(i + 1) % len(colors)], 115))
+    draw.ellipse((w * 0.28, h * 0.68, w * 0.72, h * 0.82), fill=rgba("#071016", 115))
+    return img.filter(ImageFilter.UnsharpMask(radius=1.0, percent=125, threshold=3))
+
+
+def hazard_cell(cell: int, size: tuple[int, int]) -> Image.Image:
     w, h = size
     img = Image.new("RGBA", size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
-    if vertical:
-        pts = rock_poly(h, w, seed)
-        pts = [(y, x) for x, y in pts]
-    else:
-        pts = rock_poly(w, h, seed, ceiling)
-    draw.polygon(pts, fill=rgba("#17202a", 238))
-    draw.line(pts + [pts[0]], fill=rgba("#4c6472", 150), width=2)
-    rng = random.Random(seed + 99)
-    for _ in range(18):
-        x = rng.randrange(2, w - 2)
-        y = rng.randrange(2, h - 2)
-        c = rng.choice(["#0a1118", "#263640", "#6f8790", "#31434b"])
-        draw.line((x, y, x + rng.randrange(-8, 9), y + rng.randrange(-3, 4)), fill=rgba(c, rng.randrange(70, 135)), width=1)
-    img = img.filter(ImageFilter.UnsharpMask(radius=1.2, percent=120, threshold=3))
-    save(name, img)
-
-
-def make_ore(name: str, colors: list[str], seed: int, size: int = 74) -> None:
-    rng = random.Random(seed)
-    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
-    cx = cy = size // 2
-    for i in range(13):
-        r = rng.uniform(size * 0.08, size * 0.18)
-        a = rng.uniform(0, math.tau)
-        d = rng.uniform(0, size * 0.24)
-        x = cx + math.cos(a) * d
-        y = cy + math.sin(a) * d
-        pts = []
-        sides = rng.randrange(5, 8)
-        for j in range(sides):
-            aa = a + j / sides * math.tau + rng.uniform(-0.18, 0.18)
-            rr = r * rng.uniform(0.72, 1.22)
-            pts.append((x + math.cos(aa) * rr, y + math.sin(aa) * rr))
-        base = rgba(colors[i % len(colors)], 235)
-        draw.polygon(pts, fill=base)
-        draw.line(pts + [pts[0]], fill=rgba("#fff6d7", 80), width=1)
-    glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
-    g = ImageDraw.Draw(glow)
-    for i in range(5):
-        g.ellipse((cx - 14 - i * 5, cy - 11 - i * 5, cx + 14 + i * 5, cy + 11 + i * 5), fill=rgba(colors[0], max(8, 38 - i * 7)))
-    img = Image.alpha_composite(glow.filter(ImageFilter.GaussianBlur(4)), img)
-    save(name, img)
-
-
-def make_branching_flora(name: str, seed: int, colors: list[str], w: int = 92, h: int = 124, fan: bool = False) -> None:
-    rng = random.Random(seed)
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
-    base = (w * 0.5, h - 10)
-    branches = 14 if fan else 9
-    for i in range(branches):
-        angle = -math.pi / 2 + (i - branches / 2) * (0.13 if fan else 0.09)
-        length = rng.uniform(h * 0.44, h * 0.76)
-        x2 = base[0] + math.cos(angle) * length * rng.uniform(0.55, 1.05)
-        y2 = base[1] + math.sin(angle) * length
-        color = rgba(colors[i % len(colors)], 220)
-        draw.line((base[0], base[1], x2, y2), fill=color, width=2)
-        for j in range(3):
-            t = (j + 1) / 4
-            bx = base[0] + (x2 - base[0]) * t
-            by = base[1] + (y2 - base[1]) * t
-            side = -1 if j % 2 else 1
-            draw.line((bx, by, bx + side * rng.uniform(5, 13), by - rng.uniform(3, 11)), fill=rgba(colors[(i + j) % len(colors)], 170), width=1)
-    draw.ellipse((base[0] - 20, h - 18, base[0] + 20, h - 4), fill=rgba("#1b2428", 220))
-    save(name, img.filter(ImageFilter.UnsharpMask(radius=1.0, percent=130, threshold=2)))
-
-
-def make_kelp(name: str, seed: int, colors: list[str], w: int = 72, h: int = 128) -> None:
-    rng = random.Random(seed)
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
-    for stem in range(4):
-        x = w * (0.28 + stem * 0.15)
-        pts = []
-        for i in range(10):
-            y = h - 8 - i * (h - 24) / 9
-            pts.append((x + math.sin(i * 0.9 + stem) * 7, y))
-        draw.line(pts, fill=rgba(colors[stem % len(colors)], 220), width=3)
-        for x0, y0 in pts[2:9:2]:
-            side = -1 if rng.random() < 0.5 else 1
-            x1 = x0 + side * rng.uniform(12, 22)
-            draw.ellipse((min(x0, x1), y0 - 8, max(x0, x1), y0 + 4), fill=rgba(colors[(stem + 1) % len(colors)], 125))
-    save(name, img.filter(ImageFilter.UnsharpMask(radius=1, percent=120, threshold=2)))
-
-
-def make_sponge(name: str, seed: int, colors: list[str], w: int = 84, h: int = 96) -> None:
-    rng = random.Random(seed)
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
+    img.alpha_composite(rock_patch(size, cell + 500, w * 0.52, h * 0.76, w * 0.38, h * 0.14))
     for i in range(7):
-        x = rng.uniform(w * 0.22, w * 0.78)
-        y = rng.uniform(h * 0.32, h * 0.82)
-        rw = rng.uniform(8, 18)
-        rh = rng.uniform(18, 36)
-        draw.rectangle((x - rw / 2, y - rh, x + rw / 2, y), fill=rgba(colors[i % len(colors)], 210))
-        draw.ellipse((x - rw / 2, y - rh - rw * 0.34, x + rw / 2, y - rh + rw * 0.34), fill=rgba(colors[i % len(colors)], 220))
-        draw.ellipse((x - rw * 0.34, y - rh - 2, x + rw * 0.34, y - rh * 0.72), outline=rgba("#d7fff8", 110), width=1)
-    draw.ellipse((w * 0.2, h - 18, w * 0.8, h - 4), fill=rgba("#182227", 210))
-    save(name, img)
+        x = w * (0.22 + i * 0.09)
+        height = 42 + (i % 3) * 15
+        pts = [(x - 8, h * 0.68), (x + 8, h * 0.68), (x + random.Random(cell + i).uniform(-6, 6), h * 0.68 - height)]
+        draw.polygon(pts, fill=rgba("#9fe6ee", 205))
+        draw.line(pts + [pts[0]], fill=rgba("#f2ffff", 90), width=1)
+    return img.filter(ImageFilter.UnsharpMask(radius=1.0, percent=130, threshold=3))
 
 
-def make_anemone(name: str, seed: int, colors: list[str], w: int = 100, h: int = 100) -> None:
-    rng = random.Random(seed)
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
-    cx, cy = w / 2, h * 0.66
-    for i in range(22):
-        a = i / 22 * math.tau
-        length = rng.uniform(24, 42)
-        draw.line((cx, cy, cx + math.cos(a) * length, cy + math.sin(a) * length * 0.72), fill=rgba(colors[i % len(colors)], 180), width=2)
-    draw.ellipse((cx - 18, cy - 13, cx + 18, cy + 13), fill=rgba(colors[0], 235))
-    draw.ellipse((cx - 9, cy - 6, cx + 9, cy + 6), fill=rgba("#150711", 230))
-    save(name, img.filter(ImageFilter.UnsharpMask(radius=1, percent=120, threshold=2)))
+def make_fallback_source() -> None:
+    SOURCE_DIR.mkdir(parents=True, exist_ok=True)
+    cell_w, cell_h = 180, 160
+    cols = 5
+    rows = math.ceil(len(ASSETS) / cols)
+    sheet = Image.new("RGBA", (cols * cell_w, rows * cell_h), (*KEY, 255))
+    for index, (name, kind, _description) in enumerate(ASSETS):
+        if kind == "rock":
+            asset = rock_cell(name, index, (cell_w - 28, cell_h - 32))
+        elif kind == "ore":
+            asset = ore_cell(name, index, (cell_w - 34, cell_h - 34))
+        elif kind == "hazard":
+            asset = hazard_cell(index, (cell_w - 30, cell_h - 26))
+        else:
+            asset = flora_cell(name, index, (cell_w - 34, cell_h - 26))
+        asset = flatten_subject_alpha(asset)
+        x = (index % cols) * cell_w + (cell_w - asset.width) // 2
+        y = (index // cols) * cell_h + (cell_h - asset.height) // 2
+        sheet.alpha_composite(asset, (x, y))
+    sheet.convert("RGB").save(FALLBACK_SOURCE)
+
+
+def flatten_subject_alpha(img: Image.Image) -> Image.Image:
+    img = img.convert("RGBA")
+    pixels = img.load()
+    for y in range(img.height):
+        for x in range(img.width):
+            r, g, b, a = pixels[x, y]
+            if a > 10:
+                pixels[x, y] = (r, g, b, 255)
+            else:
+                pixels[x, y] = (0, 0, 0, 0)
+    return img
+
+
+def chroma_to_alpha(crop: Image.Image) -> Image.Image:
+    crop = crop.convert("RGBA")
+    pixels = crop.load()
+    for y in range(crop.height):
+        for x in range(crop.width):
+            r, g, b, a = pixels[x, y]
+            dist = abs(r - KEY[0]) + abs(g - KEY[1]) + abs(b - KEY[2])
+            if dist < 86:
+                pixels[x, y] = (0, 0, 0, 0)
+            elif r > 150 and b > 150 and g < 80:
+                pixels[x, y] = (max(0, r - 95), min(120, g + 25), max(0, b - 95), a)
+    return crop
+
+
+def trim_alpha(img: Image.Image) -> Image.Image:
+    alpha = img.getchannel("A")
+    bbox = alpha.getbbox()
+    if not bbox:
+        return Image.new("RGBA", (4, 4), (0, 0, 0, 0))
+    left, top, right, bottom = bbox
+    pad = 4
+    left = max(0, left - pad)
+    top = max(0, top - pad)
+    right = min(img.width, right + pad)
+    bottom = min(img.height, bottom + pad)
+    return img.crop((left, top, right, bottom))
+
+
+def write_handoff() -> None:
+    HANDOFF.parent.mkdir(parents=True, exist_ok=True)
+    HANDOFF.write_text(
+        """# Environment Imagegen Handoff
+
+Target inbox file:
+
+`tools/source-inbox/environment-cave-wall-source.png`
+
+Generate or paste a 5-column by 6-row source sheet on a perfectly flat `#ff00ff`
+background. Each cell should contain one isolated, cutout-ready painted asset in
+the order listed by `public/assets/source/environment-cave-wall-source-manifest.json`.
+
+Prompt:
+
+Use case: stylized-concept
+Asset type: 2D underwater cave environment source sheet for Water9
+Primary request: Create an original source sheet of dark painted cave wall
+fragments, embedded ore clusters, wall-rooted alien flora, and one sharp cave
+hazard for a side-scrolling underwater survival-horror game. Use Barotrauma only
+as general inspiration for mood: continuous cave rock, diver-scale darkness,
+minerals fused into rock faces, and harvestable flora growing from cavern walls.
+Do not copy Barotrauma assets.
+Scene/backdrop: perfectly flat solid #ff00ff chroma-key background.
+Composition: 5 columns by 6 rows, one isolated asset per cell, generous padding,
+no labels, no text, no shadows on the background.
+Style: high-quality hand-painted 2D sprite art, muted cyan/green/grey rock,
+gloomy survival-horror lighting, restrained bioluminescent accents, dense
+texture, readable silhouettes.
+Avoid: square tiles, checkerboard terrain, clean vector icons, sticker-like
+props, bright candy colors, duplicated cells, UI frames, watermarks, screenshots.
+
+After placing the image at the target path, run:
+
+`npm run assets:environment-rework`
+""",
+        encoding="utf8",
+    )
+
+
+def active_source() -> Path:
+    make_fallback_source()
+    write_handoff()
+    return INBOX_SOURCE if INBOX_SOURCE.exists() else FALLBACK_SOURCE
+
+
+def slice_source(source: Path) -> None:
+    GENERATED.mkdir(parents=True, exist_ok=True)
+    SOURCE_DIR.mkdir(parents=True, exist_ok=True)
+    sheet = Image.open(source).convert("RGBA")
+    sheet.save(CURRENT_SOURCE)
+    cols = 5
+    rows = math.ceil(len(ASSETS) / cols)
+    cell_w = sheet.width // cols
+    cell_h = sheet.height // rows
+    manifest = {
+        "schema": "water9/environment-source-sheet@1",
+        "source": str(source.relative_to(ROOT) if source.is_relative_to(ROOT) else source),
+        "currentSource": str(CURRENT_SOURCE.relative_to(ROOT)),
+        "fallbackSource": str(FALLBACK_SOURCE.relative_to(ROOT)),
+        "inboxSource": str(INBOX_SOURCE.relative_to(ROOT)),
+        "backgroundKey": "#ff00ff",
+        "columns": cols,
+        "rows": rows,
+        "assets": [],
+    }
+    for index, (name, kind, description) in enumerate(ASSETS):
+        col = index % cols
+        row = index // cols
+        crop = sheet.crop((col * cell_w, row * cell_h, (col + 1) * cell_w, (row + 1) * cell_h))
+        sprite = trim_alpha(chroma_to_alpha(crop))
+        sprite.save(GENERATED / f"{name}.png")
+        manifest["assets"].append({
+            "name": name,
+            "kind": kind,
+            "description": description,
+            "cell": {"column": col, "row": row},
+            "file": f"public/assets/generated/{name}.png",
+        })
+    MANIFEST.write_text(f"{json.dumps(manifest, indent=2)}\n", encoding="utf8")
 
 
 def main() -> None:
-    make_rock_lip("env-rock-floor-lip-0", 10, (80, 42))
-    make_rock_lip("env-rock-floor-lip-1", 11, (72, 38))
-    make_rock_lip("env-rock-ceiling-lip-0", 12, (76, 34), ceiling=True)
-    make_rock_lip("env-rock-wall-left-0", 13, (38, 84), vertical=True)
-    make_rock_lip("env-rock-wall-right-0", 14, (38, 84), vertical=True)
-
-    make_ore("env-ore-copper", ["#b9673d", "#e09152", "#5b2d21"], 21)
-    make_ore("env-ore-quartz", ["#b7fff5", "#75d8e4", "#eafcff"], 22)
-    make_ore("env-ore-ruby", ["#ff5f78", "#9d183a", "#ffd0dc"], 23)
-    make_ore("env-ore-cobalt", ["#4f8df7", "#233d9a", "#a8ccff"], 24)
-    make_ore("env-ore-sunstone", ["#ffb347", "#ff7438", "#ffe8a8"], 25)
-    make_ore("env-ore-relic", ["#b9f27c", "#5a7d49", "#eaffc9"], 26)
-    make_ore("env-ore-idol", ["#d6fff8", "#ffd166", "#8ee7f4"], 27, 84)
-    make_ore("env-ore-alien-alloy", ["#73fbd3", "#2a8c84", "#d1fff4"], 28, 80)
-    make_ore("env-ore-ruin-core", ["#ffffff", "#f48cff", "#73fbd3"], 29, 92)
-
-    make_kelp("env-flora-glass-kelp", 40, ["#77dba0", "#b9f27c", "#74e6ef"])
-    make_sponge("env-flora-moon-sponge", 41, ["#94e8e3", "#c8fff9", "#537b83"])
-    make_anemone("env-flora-sting-anemone", 42, ["#ff6f7f", "#ffd0d7", "#98304c"])
-    make_kelp("env-flora-brine-grass", 43, ["#b9f27c", "#789d5a", "#d9ff9b"], 82, 116)
-    make_branching_flora("env-flora-vent-coral", 44, ["#ff8a5c", "#ffc857", "#6d3240"])
-    make_anemone("env-flora-ember-bloom", 45, ["#ffd166", "#ff8a5c", "#7a2d1e"])
-    make_branching_flora("env-flora-black-fan", 46, ["#9a8cff", "#3a315e", "#d2caff"], fan=True)
-    make_branching_flora("env-flora-needle-garden", 47, ["#ff5d8f", "#bc245f", "#ffd0df"], fan=True)
-    make_anemone("env-flora-crown-polyp", 48, ["#ffd166", "#f48cff", "#2b1439"], 108, 112)
-    make_kelp("env-flora-circuit-kelp", 49, ["#73fbd3", "#1f7b77", "#d3fff7"])
-    make_sponge("env-flora-glass-obelisk", 50, ["#b8f7ff", "#8ee7f4", "#ffffff"], 88, 120)
-    make_anemone("env-flora-oracle-polyp", 51, ["#f48cff", "#73fbd3", "#ffffff"], 112, 112)
-    make_kelp("env-flora-oxygen-bloom", 52, ["#8ee7f4", "#d6fff8", "#73fbd3"], 80, 118)
-    make_branching_flora("env-flora-lumen-fern", 53, ["#b9f27c", "#73fbd3", "#375d53"], 86, 116, fan=True)
-    make_ore("env-flora-lumen-nodule", ["#73fbd3", "#1bcbd8", "#d7fff7"], 54, 64)
+    slice_source(active_source())
 
 
 if __name__ == "__main__":

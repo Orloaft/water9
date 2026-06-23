@@ -504,6 +504,7 @@ export function environmentTextureKeys() {
     'env-flora-oxygen-bloom',
     'env-flora-lumen-fern',
     'env-flora-lumen-nodule',
+    'env-hazard-ice-spike',
   ];
 }
 

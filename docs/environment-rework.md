@@ -3,20 +3,41 @@
 Water9 now separates environment collision from environment presentation.
 
 The terrain grid remains the collision, mining, and sonar substrate. The visible
-environment adds object-layer props for cave edges and ore clusters, plus
-species-specific flora sprites. This moves the read away from colored square
-mining tiles and toward Barotrauma-style cave walls with attached resources.
+environment adds source-sheet-derived object props for cave edges, ore clusters,
+wall flora, and cave hazards. This moves the read away from colored square
+mining tiles and toward dark continuous cave walls with attached resources.
 
 ## Current Implementation
 
 - Collision and mining still use `Tile` cells.
 - Ore cells render as host rock through `tileTextureKey`, then receive an
   `EnvironmentProp` mineral cluster overlay.
-- Rock edge props are generated from water-adjacent solid cells in worldgen.
+- Rock edge props are generated from water-adjacent solid cells in worldgen and
+  are denser/larger than the old decal pass.
 - Flora uses species-specific environment sprite keys instead of four generic
   shallow/deep sprites.
 - Preview: `/review/environment-rework-preview.html`.
 - Asset builder: `npm run assets:environment-rework`.
+- Source manifest:
+  `public/assets/source/environment-cave-wall-source-manifest.json`.
+- Imagegen/manual capture target:
+  `tools/source-inbox/environment-cave-wall-source.png`.
+- Handoff instructions:
+  `tools/source-inbox/ENVIRONMENT_HANDOFF.md`.
+
+## Source Sheet Lane
+
+`npm run assets:environment-rework` prefers an Imagegen/manual-capture sheet at
+`tools/source-inbox/environment-cave-wall-source.png`. If that file is absent,
+it builds a marked fallback source sheet at
+`public/assets/source/environment-cave-wall-source-fallback.png`, copies the
+active source to `public/assets/source/environment-cave-wall-source-current.png`,
+then slices every environment runtime PNG from the same 5x6 source grid.
+
+This keeps environment art on the same source-first path as creature art:
+generate or capture one coherent sheet, validate it visually, then slice it into
+runtime props. The fallback is a committed implementation artifact, not the final
+human-approved art target.
 
 ## Visual Target
 
@@ -27,7 +48,6 @@ mining tiles and toward Barotrauma-style cave walls with attached resources.
 
 ## Next Art Pass
 
-The included assets are deterministic project-local sprites. They establish the
-runtime architecture and art direction, but the final production pass should
-replace the deterministic sprites with approved Imagegen cutouts using the same
-asset names and dimensions.
+Replace the fallback source sheet with a captured/approved Imagegen sheet at the
+inbox path, rerun `npm run assets:environment-rework`, and inspect the preview.
+The runtime filenames stay stable, so the art can improve without code churn.

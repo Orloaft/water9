@@ -10,8 +10,8 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #061017;
-      color: #d7eef4;
+      background: #02070b;
+      color: #d8eef2;
       font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     }
     canvas {
@@ -23,12 +23,12 @@
       position: fixed;
       left: 16px;
       top: 16px;
-      width: min(360px, calc(100vw - 32px));
+      width: min(370px, calc(100vw - 32px));
       padding: 14px;
-      background: rgba(3, 10, 15, 0.82);
-      border: 1px solid rgba(114, 230, 239, 0.28);
+      background: rgba(2, 8, 12, 0.86);
+      border: 1px solid rgba(117, 220, 225, 0.24);
       border-radius: 8px;
-      box-shadow: 0 18px 52px rgba(0,0,0,0.35);
+      box-shadow: 0 18px 56px rgba(0, 0, 0, 0.45);
     }
     h1 {
       margin: 0 0 6px;
@@ -37,26 +37,27 @@
     }
     .meta {
       margin: 0 0 12px;
-      color: #a9c8d0;
+      color: #a7c4c9;
       font-size: 12px;
+      line-height: 1.35;
     }
     .row {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
-      margin-top: 8px;
     }
     button {
-      border: 1px solid rgba(114, 230, 239, 0.38);
+      min-height: 32px;
+      border: 1px solid rgba(117, 220, 225, 0.34);
       border-radius: 6px;
-      background: rgba(12, 48, 58, 0.82);
-      color: #e8fbff;
+      background: rgba(8, 39, 47, 0.86);
+      color: #e9fbff;
       padding: 7px 10px;
       cursor: pointer;
     }
     button[aria-pressed="true"] {
-      background: rgba(49, 142, 155, 0.9);
-      border-color: rgba(142, 231, 244, 0.78);
+      background: rgba(42, 128, 141, 0.94);
+      border-color: rgba(151, 241, 248, 0.74);
     }
   </style>
 </head>
@@ -64,26 +65,28 @@
   <canvas id="preview"></canvas>
   <section class="panel">
     <h1>Environment Rework Preview</h1>
-    <p class="meta">Left: legacy tile-read. Right: collision grid hidden under rock lips, ore clusters, and distinct flora.</p>
+    <p class="meta">Collision tiles are hidden by default. The visible scene is built from source-sheet wall, ore, flora, and hazard fragments at diver scale.</p>
     <div class="row">
       <button type="button" data-biome="reef" aria-pressed="true">Reef</button>
       <button type="button" data-biome="thermal" aria-pressed="false">Thermal</button>
       <button type="button" data-biome="abyssal" aria-pressed="false">Abyssal</button>
+      <button type="button" data-debug aria-pressed="false">Grid</button>
     </div>
   </section>
   <script type="module">
     const canvas = document.getElementById('preview');
     const ctx = canvas.getContext('2d');
-    const buttons = [...document.querySelectorAll('button[data-biome]')];
+    const biomeButtons = [...document.querySelectorAll('button[data-biome]')];
+    const debugButton = document.querySelector('button[data-debug]');
     let biome = 'reef';
+    let debugGrid = false;
     const assets = [
-      'tile-reef-stone-0', 'tile-reef-stone-1', 'tile-reef-sand-0',
-      'tile-thermal-stone-0', 'tile-thermal-stone-1', 'tile-thermal-sand-0',
-      'tile-abyssal-stone-0', 'tile-abyssal-stone-1', 'tile-abyssal-sand-0',
-      'tile-copper', 'tile-quartz', 'tile-ruby',
       'env-rock-floor-lip-0', 'env-rock-floor-lip-1', 'env-rock-ceiling-lip-0', 'env-rock-wall-left-0', 'env-rock-wall-right-0',
-      'env-ore-copper', 'env-ore-quartz', 'env-ore-ruby', 'env-ore-cobalt', 'env-ore-sunstone',
-      'env-flora-glass-kelp', 'env-flora-vent-coral', 'env-flora-black-fan', 'env-flora-glass-obelisk',
+      'env-ore-copper', 'env-ore-quartz', 'env-ore-ruby', 'env-ore-cobalt', 'env-ore-sunstone', 'env-ore-ruin-core',
+      'env-flora-glass-kelp', 'env-flora-moon-sponge', 'env-flora-sting-anemone', 'env-flora-brine-grass',
+      'env-flora-vent-coral', 'env-flora-ember-bloom', 'env-flora-black-fan', 'env-flora-needle-garden',
+      'env-flora-circuit-kelp', 'env-flora-lumen-fern', 'env-hazard-ice-spike',
+      'diver-articulated-suit-v2-whole-painted', 'diver-swim'
     ];
     const images = new Map();
     function loadImage(key) {
@@ -94,62 +97,153 @@
         img.src = `/assets/generated/${key}.png`;
       });
     }
-    function tileKey(role, i = 0) {
-      if (role === 'ore') return ['tile-copper', 'tile-quartz', 'tile-ruby'][i % 3];
-      return `tile-${biome}-${role}-${i % 2}`;
+    function hash(n) {
+      return (Math.sin(n * 127.1 + 311.7) * 43758.5453123) % 1;
     }
-    function drawTile(key, x, y, size) {
+    function rand(n) {
+      return Math.abs(hash(n));
+    }
+    function drawCaveMass(pointsTop, pointsBottom, scale, ox, oy, palette, t) {
+      const path = new Path2D();
+      path.moveTo(ox + pointsTop[0][0] * scale, oy + pointsTop[0][1] * scale);
+      pointsTop.forEach(([x, y]) => path.lineTo(ox + x * scale, oy + y * scale));
+      pointsBottom.slice().reverse().forEach(([x, y]) => path.lineTo(ox + x * scale, oy + y * scale));
+      path.closePath();
+      const grad = ctx.createLinearGradient(0, oy, 0, oy + 560 * scale);
+      grad.addColorStop(0, palette.rockTop);
+      grad.addColorStop(1, palette.rockDeep);
+      ctx.fillStyle = grad;
+      ctx.fill(path);
+      ctx.save();
+      ctx.clip(path);
+      for (let i = 0; i < 340; i += 1) {
+        const x = ox + rand(i + 1) * 1180 * scale;
+        const y = oy + (rand(i + 18) * 560 - 20) * scale;
+        const r = (1 + rand(i + 41) * 7) * scale;
+        ctx.fillStyle = i % 3 === 0 ? 'rgba(105,135,139,0.12)' : 'rgba(0,4,8,0.18)';
+        ctx.beginPath();
+        ctx.ellipse(x, y, r * 1.8, r, rand(i + 55) * Math.PI, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(165,211,214,0.16)';
+      ctx.lineWidth = Math.max(1, 1.2 * scale);
+      for (let i = 0; i < 42; i += 1) {
+        const x = ox + rand(i + 90) * 1180 * scale;
+        const y = oy + rand(i + 120) * 540 * scale;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + (rand(i + 6) - 0.5) * 80 * scale, y + (rand(i + 7) - 0.5) * 42 * scale);
+        ctx.lineTo(x + (rand(i + 8) - 0.5) * 120 * scale, y + (rand(i + 9) - 0.5) * 76 * scale);
+        ctx.stroke();
+      }
+      for (let i = 0; i < 30; i += 1) {
+        const pulse = 0.4 + Math.sin(t * 0.0012 + i) * 0.18;
+        ctx.fillStyle = palette.mote(pulse);
+        ctx.beginPath();
+        ctx.ellipse(ox + rand(i + 300) * 1180 * scale, oy + rand(i + 360) * 560 * scale, 6 * scale, 2 * scale, rand(i) * Math.PI, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    function drawImageKey(key, x, y, w, h, rot = 0, flip = false, alpha = 1) {
       const img = images.get(key);
-      if (img) ctx.drawImage(img, x, y, size, size);
-      else {
-        ctx.fillStyle = '#2b3440';
-        ctx.fillRect(x, y, size, size);
-      }
+      if (!img) return;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.scale(flip ? -1 : 1, 1);
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(img, -w / 2, -h / 2, w, h);
+      ctx.restore();
     }
-    function drawLegacy(x0, y0, cols, rows, size) {
-      for (let y = 0; y < rows; y += 1) {
-        for (let x = 0; x < cols; x += 1) {
-          const edge = y < 2 || x < 2 || x > cols - 4 || y > rows - 3 || Math.sin(x * 0.9 + y * 0.7) > 0.72;
-          if (!edge && y < rows * 0.64) continue;
-          const ore = (x + y * 3) % 23 === 0;
-          drawTile(ore ? tileKey('ore', x + y) : tileKey(y > rows * 0.72 ? 'stone' : 'sand', x + y), x0 + x * size, y0 + y * size, size);
-          ctx.strokeStyle = 'rgba(2,7,10,0.45)';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(x0 + x * size, y0 + y * size, size, size);
-        }
-      }
-    }
-    function drawRework(x0, y0, cols, rows, size, t) {
-      for (let y = 0; y < rows; y += 1) {
-        for (let x = 0; x < cols; x += 1) {
-          const edge = y < 2 || x < 2 || x > cols - 4 || y > rows - 3 || Math.sin(x * 0.9 + y * 0.7) > 0.72;
-          if (!edge && y < rows * 0.64) continue;
-          drawTile(tileKey(y > rows * 0.72 ? 'stone' : 'sand', x + y), x0 + x * size, y0 + y * size, size);
-        }
-      }
-      const props = [
-        ['env-rock-floor-lip-0', 5, 11, 74, 36, 0],
-        ['env-rock-floor-lip-1', 13, 9, 66, 32, 0.04],
-        ['env-rock-ceiling-lip-0', 20, 4, 76, 34, Math.PI],
-        ['env-rock-wall-left-0', 2, 9, 28, 78, 0],
-        ['env-rock-wall-right-0', 27, 12, 28, 78, Math.PI],
-        ['env-ore-copper', 8, 12, 54, 54, 0.08],
-        ['env-ore-quartz', 18, 9, 58, 58, -0.08],
-        ['env-ore-ruby', 24, 15, 54, 54, 0.16],
-        ['env-ore-cobalt', 11, 17, 58, 58, -0.12],
-        ['env-flora-glass-kelp', 6, 10, 54, 96, 0],
-        ['env-flora-vent-coral', 16, 13, 72, 94, Math.sin(t * 0.001) * 0.03],
-        ['env-flora-black-fan', 22, 10, 72, 98, 0],
+    function drawFragmentSet(scale, ox, oy, t, palette) {
+      const topAnchors = [
+        ['env-rock-ceiling-lip-0', 120, 60, 160, 78, Math.PI],
+        ['env-rock-ceiling-lip-0', 380, 38, 190, 88, Math.PI + 0.04],
+        ['env-rock-wall-left-0', 36, 260, 82, 210, -0.05],
+        ['env-rock-wall-right-0', 1118, 278, 82, 220, Math.PI + 0.03],
+        ['env-rock-floor-lip-0', 232, 454, 190, 96, 0.02],
+        ['env-rock-floor-lip-1', 734, 468, 220, 112, -0.04],
       ];
-      for (const [key, gx, gy, w, h, rot] of props) {
-        const img = images.get(key);
-        if (!img) continue;
-        ctx.save();
-        ctx.translate(x0 + gx * size, y0 + gy * size);
-        ctx.rotate(rot);
-        ctx.drawImage(img, -w / 2, -h, w, h);
-        ctx.restore();
+      topAnchors.forEach(([key, x, y, w, h, r], i) => drawImageKey(key, ox + x * scale, oy + y * scale, w * scale, h * scale, r, i % 2 === 0, 0.96));
+      const ore = biome === 'thermal'
+        ? [['env-ore-sunstone', 850, 366], ['env-ore-cobalt', 584, 118], ['env-ore-copper', 228, 404]]
+        : biome === 'abyssal'
+          ? [['env-ore-ruin-core', 844, 352], ['env-ore-quartz', 252, 402], ['env-ore-cobalt', 520, 106]]
+          : [['env-ore-copper', 246, 402], ['env-ore-quartz', 544, 102], ['env-ore-ruby', 858, 358]];
+      ore.forEach(([key, x, y], i) => {
+        drawImageKey(key, ox + x * scale, oy + y * scale, 104 * scale, 88 * scale, (rand(i + 700) - 0.5) * 0.22, i % 2 === 1);
+      });
+      const flora = biome === 'thermal'
+        ? [['env-flora-vent-coral', 668, 430, 122, 132], ['env-flora-ember-bloom', 970, 330, 126, 92], ['env-flora-brine-grass', 300, 420, 116, 116]]
+        : biome === 'abyssal'
+          ? [['env-flora-black-fan', 662, 434, 134, 136], ['env-flora-needle-garden', 984, 330, 124, 120], ['env-flora-lumen-fern', 302, 424, 116, 116]]
+          : [['env-flora-glass-kelp', 305, 420, 112, 140], ['env-flora-moon-sponge', 972, 332, 124, 116], ['env-flora-circuit-kelp', 662, 434, 116, 132]];
+      flora.forEach(([key, x, y, w, h], i) => drawImageKey(key, ox + x * scale, oy + y * scale + Math.sin(t * 0.001 + i) * 3 * scale, w * scale, h * scale, Math.sin(t * 0.0013 + i) * 0.025, i === 1, 0.95));
+      if (biome === 'abyssal') {
+        drawImageKey('env-hazard-ice-spike', ox + 500 * scale, oy + 430 * scale, 128 * scale, 130 * scale, 0.02, false, 0.94);
       }
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = palette.glow;
+      ore.forEach(([, x, y], i) => {
+        ctx.beginPath();
+        ctx.ellipse(ox + x * scale, oy + y * scale, (44 + i * 6) * scale, 24 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+    function drawDiver(x, y, scale, t) {
+      const img = images.get('diver-articulated-suit-v2-whole-painted') || images.get('diver-swim');
+      ctx.save();
+      ctx.translate(x, y + Math.sin(t * 0.002) * 4 * scale);
+      ctx.rotate(Math.sin(t * 0.0018) * 0.05);
+      if (img) ctx.drawImage(img, -36 * scale, -32 * scale, 72 * scale, 64 * scale);
+      ctx.restore();
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const cone = ctx.createRadialGradient(x + 10 * scale, y - 10 * scale, 12 * scale, x + 230 * scale, y - 40 * scale, 300 * scale);
+      cone.addColorStop(0, 'rgba(180,246,255,0.28)');
+      cone.addColorStop(0.35, 'rgba(113,206,222,0.13)');
+      cone.addColorStop(1, 'rgba(113,206,222,0)');
+      ctx.fillStyle = cone;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 9 * scale);
+      ctx.lineTo(x + 330 * scale, y - 132 * scale);
+      ctx.lineTo(x + 348 * scale, y + 48 * scale);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(130,238,255,0.42)';
+      ctx.lineWidth = Math.max(1, 2 * scale);
+      ctx.beginPath();
+      ctx.moveTo(x + 12 * scale, y + 12 * scale);
+      ctx.lineTo(x + 170 * scale, y + 102 * scale);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,196,104,0.36)';
+      ctx.beginPath();
+      ctx.moveTo(x + 16 * scale, y + 15 * scale);
+      ctx.lineTo(x + 196 * scale, y + 122 * scale);
+      ctx.stroke();
+    }
+    function drawDebugGrid(ox, oy, scale) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,78,98,0.20)';
+      ctx.lineWidth = 1;
+      const tile = 32 * scale;
+      for (let x = 0; x <= 1180 * scale; x += tile) {
+        ctx.beginPath();
+        ctx.moveTo(ox + x, oy - 24 * scale);
+        ctx.lineTo(ox + x, oy + 580 * scale);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= 580 * scale; y += tile) {
+        ctx.beginPath();
+        ctx.moveTo(ox, oy + y);
+        ctx.lineTo(ox + 1180 * scale, oy + y);
+        ctx.stroke();
+      }
+      ctx.restore();
     }
     function frame(t) {
       const dpr = window.devicePixelRatio || 1;
@@ -162,24 +256,42 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const g = ctx.createLinearGradient(0, 0, 0, vh);
-      g.addColorStop(0, '#082631');
-      g.addColorStop(0.58, '#07151e');
-      g.addColorStop(1, '#03070c');
-      ctx.fillStyle = g;
+      const bg = ctx.createLinearGradient(0, 0, 0, vh);
+      bg.addColorStop(0, biome === 'thermal' ? '#171015' : '#04171f');
+      bg.addColorStop(0.55, biome === 'abyssal' ? '#03080f' : '#061219');
+      bg.addColorStop(1, '#010306');
+      ctx.fillStyle = bg;
       ctx.fillRect(0, 0, vw, vh);
-      const size = Math.max(16, Math.min(24, Math.floor((vw - 180) / 64)));
-      const rows = 22;
-      const cols = 30;
-      const y0 = Math.max(140, (vh - rows * size) * 0.56);
-      drawLegacy(Math.max(32, vw * 0.08), y0, cols, rows, size);
-      drawRework(Math.max(vw * 0.52, 32), y0, cols, rows, size, t);
+      const scale = Math.min(vw / 1320, vh / 720);
+      const ox = (vw - 1180 * scale) / 2;
+      const oy = Math.max(104, (vh - 580 * scale) / 2 + 40);
+      const palette = biome === 'thermal'
+        ? { rockTop: '#241e20', rockDeep: '#07080b', glow: 'rgba(255,132,72,0.12)', mote: (a) => `rgba(255,132,72,${0.05 + a * 0.06})` }
+        : biome === 'abyssal'
+          ? { rockTop: '#101821', rockDeep: '#03050a', glow: 'rgba(128,120,255,0.10)', mote: (a) => `rgba(128,120,255,${0.04 + a * 0.05})` }
+          : { rockTop: '#12232a', rockDeep: '#04090d', glow: 'rgba(116,230,239,0.10)', mote: (a) => `rgba(116,230,239,${0.04 + a * 0.06})` };
+      const top = [[0, 0], [150, 32], [270, 15], [410, 72], [560, 26], [720, 66], [860, 30], [1030, 70], [1180, 18]];
+      const bottom = [[0, 525], [180, 474], [320, 525], [475, 455], [650, 528], [810, 476], [980, 525], [1180, 482]];
+      drawCaveMass(top, bottom, scale, ox, oy, palette, t);
+      drawFragmentSet(scale, ox, oy, t, palette);
+      if (debugGrid) drawDebugGrid(ox, oy, scale);
+      drawDiver(ox + 585 * scale, oy + 278 * scale, scale * 1.35, t);
+      const shade = ctx.createRadialGradient(ox + 600 * scale, oy + 280 * scale, 120 * scale, ox + 600 * scale, oy + 280 * scale, 660 * scale);
+      shade.addColorStop(0, 'rgba(0,0,0,0)');
+      shade.addColorStop(0.58, 'rgba(0,0,0,0.28)');
+      shade.addColorStop(1, 'rgba(0,0,0,0.78)');
+      ctx.fillStyle = shade;
+      ctx.fillRect(0, 0, vw, vh);
       requestAnimationFrame(frame);
     }
-    buttons.forEach((button) => button.addEventListener('click', () => {
+    biomeButtons.forEach((button) => button.addEventListener('click', () => {
       biome = button.dataset.biome;
-      buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+      biomeButtons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
     }));
+    debugButton.addEventListener('click', () => {
+      debugGrid = !debugGrid;
+      debugButton.setAttribute('aria-pressed', String(debugGrid));
+    });
     Promise.all(assets.map(loadImage)).then((loaded) => {
       loaded.forEach(([key, img]) => { if (img) images.set(key, img); });
       requestAnimationFrame(frame);

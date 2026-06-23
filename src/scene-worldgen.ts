@@ -332,7 +332,7 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
           const angle = waterBias?.angle ?? (hash(x, y, rng.seed) * Math.PI * 2);
           const normalX = Math.cos(angle);
           const normalY = Math.sin(angle);
-          const size = 28 + variant * 5 + (tile === 'ruinCore' || tile === 'abyssalCrown' ? 12 : 0);
+          const size = 42 + variant * 7 + (tile === 'ruinCore' || tile === 'abyssalCrown' ? 16 : 0);
           props.push({
             id: `ore-${x}-${y}`,
             kind: 'ore',
@@ -345,8 +345,8 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
             width: size,
             height: size,
             rotation: (hash(x * 5, y * 7, rng.seed) - 0.5) * 0.52,
-            alpha: 0.96,
-            depth: 1.24,
+            alpha: 0.98,
+            depth: 1.28,
             flipX: hash(x, y, rng.seed + 19) > 0.5,
           });
         }
@@ -355,25 +355,25 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
         const southWater = this.getTile(x, y + 1) === 'water';
         const westWater = this.getTile(x - 1, y) === 'water';
         const eastWater = this.getTile(x + 1, y) === 'water';
-        if (northWater && hash(x * 29, y * 31, rng.seed) > 0.82) {
+        if (northWater && hash(x * 29, y * 31, rng.seed) > 0.55) {
           const variant = Math.floor(hash(x, y, rng.seed) * 2);
           props.push({
             id: `floor-rock-${x}-${y}`,
             kind: 'rock',
             assetKey: `env-rock-floor-lip-${variant}`,
             x: x * TILE + TILE * 0.5,
-            y: y * TILE + 1,
+            y: y * TILE + 4,
             tileX: x,
             tileY: y,
-            width: 42 + hash(y, x, rng.seed) * 18,
-            height: 22 + hash(x, y, rng.seed + 3) * 8,
-            rotation: (hash(x, y, rng.seed + 5) - 0.5) * 0.12,
-            alpha: 0.86,
-            depth: 1.02,
+            width: 64 + hash(y, x, rng.seed) * 32,
+            height: 38 + hash(x, y, rng.seed + 3) * 20,
+            rotation: (hash(x, y, rng.seed + 5) - 0.5) * 0.18,
+            alpha: 0.94,
+            depth: 1.04,
             flipX: hash(x, y, rng.seed + 7) > 0.5,
           });
         }
-        if (southWater && hash(x * 37, y * 41, rng.seed) > 0.9) {
+        if (southWater && hash(x * 37, y * 41, rng.seed) > 0.62) {
           props.push({
             id: `ceiling-rock-${x}-${y}`,
             kind: 'rock',
@@ -382,15 +382,15 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
             y: (y + 1) * TILE - 1,
             tileX: x,
             tileY: y,
-            width: 38 + hash(x, y, rng.seed + 11) * 16,
-            height: 18 + hash(y, x, rng.seed + 13) * 8,
+            width: 62 + hash(x, y, rng.seed + 11) * 28,
+            height: 34 + hash(y, x, rng.seed + 13) * 18,
             rotation: Math.PI + (hash(x, y, rng.seed + 17) - 0.5) * 0.12,
-            alpha: 0.72,
+            alpha: 0.88,
             depth: 0.98,
             flipX: hash(y, x, rng.seed + 23) > 0.5,
           });
         }
-        if ((westWater || eastWater) && hash(x * 43, y * 47, rng.seed) > 0.9) {
+        if ((westWater || eastWater) && hash(x * 43, y * 47, rng.seed) > 0.58) {
           const left = westWater;
           props.push({
             id: `wall-rock-${x}-${y}`,
@@ -400,11 +400,28 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
             y: y * TILE + TILE * 0.5,
             tileX: x,
             tileY: y,
-            width: 20 + hash(x, y, rng.seed + 29) * 9,
-            height: 42 + hash(y, x, rng.seed + 31) * 16,
-            rotation: (left ? 0 : Math.PI) + (hash(x, y, rng.seed + 37) - 0.5) * 0.12,
-            alpha: 0.7,
+            width: 34 + hash(x, y, rng.seed + 29) * 18,
+            height: 72 + hash(y, x, rng.seed + 31) * 42,
+            rotation: (left ? 0 : Math.PI) + (hash(x, y, rng.seed + 37) - 0.5) * 0.16,
+            alpha: 0.86,
             depth: 0.99,
+          });
+        }
+        if (northWater && state.biome >= 3 && hash(x * 53, y * 59, rng.seed) > 0.94) {
+          props.push({
+            id: `ice-spike-${x}-${y}`,
+            kind: 'rock',
+            assetKey: 'env-hazard-ice-spike',
+            x: x * TILE + TILE * 0.5,
+            y: y * TILE + 3,
+            tileX: x,
+            tileY: y,
+            width: 58 + hash(x, y, rng.seed + 41) * 22,
+            height: 72 + hash(y, x, rng.seed + 43) * 34,
+            rotation: (hash(x, y, rng.seed + 47) - 0.5) * 0.12,
+            alpha: 0.9,
+            depth: 1.08,
+            flipX: hash(y, x, rng.seed + 49) > 0.5,
           });
         }
       }

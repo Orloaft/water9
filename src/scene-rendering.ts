@@ -108,12 +108,14 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         tileSprite
           .setTexture(textureKey)
           .setVisible(true)
-          .setAlpha(1)
+          .setAlpha(tile === 'anchorstone' ? 1 : 0.92)
           .setPosition(x * TILE, y * TILE)
           .setDisplaySize(TILE, TILE);
         tileSpriteIndex += 1;
-	        this.terrain.lineStyle(tile === 'anchorstone' ? 2 : 1, tile === 'anchorstone' ? 0xb9c2d0 : 0x071016, tile === 'anchorstone' ? 0.32 : 0.14);
-	        this.terrain.strokeRect(x * TILE, y * TILE, TILE, TILE);
+        if (tile === 'anchorstone') {
+          this.terrain.lineStyle(2, 0xb9c2d0, 0.32);
+          this.terrain.strokeRect(x * TILE, y * TILE, TILE, TILE);
+        }
         if (tile === 'anchorstone') {
           this.terrain.lineStyle(1, 0x11141c, 0.4);
           this.terrain.lineBetween(x * TILE + 4, y * TILE + 7, x * TILE + 20, y * TILE + 7);
