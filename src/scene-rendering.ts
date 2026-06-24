@@ -94,6 +94,7 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     this.terrainEdges.clear();
 
     drawTerrainRuns(this, startX, endX, startY, endY);
+    let terrainBrushIndex = drawTerrainBrushLayer(this, startX, endX, startY, endY, 0);
     for (let y = startY; y <= endY; y += 1) {
       for (let x = startX; x <= endX; x += 1) {
         const tile = this.getTile(x, y);
@@ -111,7 +112,10 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         const exposed = exposedToWater(this, x, y);
         drawTerrainDetail(this, x, y, tile, fracture);
         if (exposed) drawTerrainContour(this, x, y, tile);
-        if (isOreTile(tile)) drawEmbeddedOre(this, x, y, tile, exposed);
+        if (isOreTile(tile)) {
+          drawEmbeddedOre(this, x, y, tile, exposed);
+          if (exposed) terrainBrushIndex = drawOreBrush(this, x, y, tile, terrainBrushIndex);
+        }
         if (tile === 'anchorstone') {
           this.terrainEdges.lineStyle(1, 0xb9c2d0, 0.18);
           this.terrainEdges.strokeRect(wx + 1, wy + 1, TILE - 2, TILE - 2);
@@ -132,6 +136,9 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     }
 	    for (let i = 0; i < this.tileSprites.length; i += 1) {
 	      this.tileSprites[i].setVisible(false);
+	    }
+	    for (let i = terrainBrushIndex; i < this.terrainBrushSprites.length; i += 1) {
+	      this.terrainBrushSprites[i].setVisible(false);
 	    }
 	  }
 
@@ -211,6 +218,103 @@ function drawTerrainRuns(scene: DeepdiveScene, startX: number, endX: number, sta
     }
   }
 
+function drawTerrainBrushLayer(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number, spriteIndex: number) {
+    let index = spriteIndex;
+    for (let y = startY; y <= endY; y += 1) {
+      index = drawHorizontalBrushRuns(scene, startX, endX, y, true, index);
+      index = drawHorizontalBrushRuns(scene, startX, endX, y, false, index);
+    }
+    for (let x = startX; x <= endX; x += 1) {
+      index = drawVerticalBrushRuns(scene, x, startY, endY, true, index);
+      index = drawVerticalBrushRuns(scene, x, startY, endY, false, index);
+    }
+    return index;
+  }
+
+function drawHorizontalBrushRuns(scene: DeepdiveScene, startX: number, endX: number, y: number, north: boolean, spriteIndex: number) {
+    let index = spriteIndex;
+    let runStart = -1;
+    for (let x = startX; x <= endX + 1; x += 1) {
+      const tile = x <= endX ? scene.getTile(x, y) : 'water';
+      const exposed = tile !== 'water' && (north ? scene.getTile(x, y - 1) === 'water' : scene.getTile(x, y + 1) === 'water');
+      if (exposed && runStart < 0) {
+        runStart = x;
+        continue;
+      }
+      if (exposed) continue;
+      if (runStart >= 0) {
+        const runEnd = x - 1;
+        if (runEnd - runStart >= 1) {
+          index = stampLedgeBrush(scene, runStart, runEnd, y, north, index);
+        }
+      }
+      runStart = -1;
+    }
+    return index;
+  }
+
+function drawVerticalBrushRuns(scene: DeepdiveScene, x: number, startY: number, endY: number, west: boolean, spriteIndex: number) {
+    let index = spriteIndex;
+    let runStart = -1;
+    for (let y = startY; y <= endY + 1; y += 1) {
+      const tile = y <= endY ? scene.getTile(x, y) : 'water';
+      const exposed = tile !== 'water' && (west ? scene.getTile(x - 1, y) === 'water' : scene.getTile(x + 1, y) === 'water');
+      if (exposed && runStart < 0) {
+        runStart = y;
+        continue;
+      }
+      if (exposed) continue;
+      if (runStart >= 0) {
+        const runEnd = y - 1;
+        if (runEnd - runStart >= 1) {
+          index = stampWallBrush(scene, x, runStart, runEnd, west, index);
+        }
+      }
+      runStart = -1;
+    }
+    return index;
+  }
+
+function stampLedgeBrush(scene: DeepdiveScene, startX: number, endX: number, y: number, north: boolean, spriteIndex: number) {
+    const variant = Math.floor(hash(startX * 11, y * 13 + endX, rng.seed) * 4) % 4;
+    const sprite = scene.terrainBrushSpriteAt(spriteIndex, `terrain-brush-ledge-${variant}`);
+    const width = (endX - startX + 1) * TILE + 20;
+    const height = Phaser.Math.Clamp(width * 0.34, 36, 82);
+    const x = (startX + endX + 1) * TILE * 0.5;
+    const yPos = north ? y * TILE + 4 : (y + 1) * TILE - 4;
+    sprite
+      .setTexture(`terrain-brush-ledge-${variant}`)
+      .setVisible(true)
+      .setPosition(x, yPos)
+      .setOrigin(0.5, north ? 0.2 : 0.8)
+      .setDisplaySize(width, height)
+      .setFlipX(hash(endX, y, rng.seed + 101) > 0.5)
+      .setFlipY(!north)
+      .setAlpha(0.9)
+      .setDepth(0.78);
+    return spriteIndex + 1;
+  }
+
+function stampWallBrush(scene: DeepdiveScene, x: number, startY: number, endY: number, west: boolean, spriteIndex: number) {
+    const variant = Math.floor(hash(x * 17, startY * 19 + endY, rng.seed) * 4) % 4;
+    const sprite = scene.terrainBrushSpriteAt(spriteIndex, `terrain-brush-wall-${variant}`);
+    const height = (endY - startY + 1) * TILE + 22;
+    const width = Phaser.Math.Clamp(height * 0.45, 44, 82);
+    const xPos = west ? x * TILE + 3 : (x + 1) * TILE - 3;
+    const y = (startY + endY + 1) * TILE * 0.5;
+    sprite
+      .setTexture(`terrain-brush-wall-${variant}`)
+      .setVisible(true)
+      .setPosition(xPos, y)
+      .setOrigin(west ? 0.24 : 0.76, 0.5)
+      .setDisplaySize(width, height)
+      .setFlipX(!west)
+      .setFlipY(hash(x, endY, rng.seed + 103) > 0.5)
+      .setAlpha(0.82)
+      .setDepth(0.77);
+    return spriteIndex + 1;
+  }
+
 function drawTerrainDetail(scene: DeepdiveScene, x: number, y: number, tile: Tile, fracture: number) {
     const wx = x * TILE;
     const wy = y * TILE;
@@ -247,31 +351,10 @@ function drawTerrainContour(scene: DeepdiveScene, x: number, y: number, tile: Ti
     const edgeColor = tile === 'sand' ? 0x57716d : 0x435f68;
     const shadowColor = 0x071018;
 
-    drawEdgeRockLumps(scene, x, y, tile, northWater, southWater, westWater, eastWater);
-    drawEdgeWaterBites(scene, x, y, northWater, southWater, westWater, eastWater);
-    scene.terrainEdges.lineStyle(2, shadowColor, 0.38);
+    scene.terrainEdges.lineStyle(2, shadowColor, 0.22);
     drawContourLines(scene.terrainEdges, wx, wy, northWater, southWater, westWater, eastWater, 0);
-    scene.terrainEdges.lineStyle(1, edgeColor, 0.44);
+    scene.terrainEdges.lineStyle(1, edgeColor, 0.22);
     drawContourLines(scene.terrainEdges, wx, wy, northWater, southWater, westWater, eastWater, -1);
-  }
-
-function drawEdgeRockLumps(scene: DeepdiveScene, x: number, y: number, tile: Tile, northWater: boolean, southWater: boolean, westWater: boolean, eastWater: boolean) {
-    const wx = x * TILE;
-    const wy = y * TILE;
-    const bodyColor = terrainBodyColor(tile, y);
-    scene.terrainEdges.fillStyle(bodyColor, 0.96);
-    for (let i = 0; i < 2; i += 1) {
-      const a = hash(x * 47 + i * 13, y * 53, rng.seed);
-      if (a < 0.32) continue;
-      const b = hash(y * 59, x * 61 + i * 17, rng.seed);
-      const length = 7 + a * 8;
-      const breadth = 3 + b * 5;
-      const along = (i + 0.5 + (a - 0.5) * 0.42) * (TILE / 2);
-      if (northWater) scene.terrainEdges.fillEllipse(wx + along, wy - breadth * 0.2, length, breadth);
-      if (southWater) scene.terrainEdges.fillEllipse(wx + along, wy + TILE + breadth * 0.2, length, breadth);
-      if (westWater) scene.terrainEdges.fillEllipse(wx - breadth * 0.2, wy + along, breadth, length);
-      if (eastWater) scene.terrainEdges.fillEllipse(wx + TILE + breadth * 0.2, wy + along, breadth, length);
-    }
   }
 
 function drawContourLines(graphics: Phaser.GameObjects.Graphics, wx: number, wy: number, north: boolean, south: boolean, west: boolean, east: boolean, inset: number) {
@@ -279,23 +362,6 @@ function drawContourLines(graphics: Phaser.GameObjects.Graphics, wx: number, wy:
     if (south) graphics.lineBetween(wx, wy + TILE - inset, wx + TILE, wy + TILE - inset);
     if (west) graphics.lineBetween(wx + inset, wy, wx + inset, wy + TILE);
     if (east) graphics.lineBetween(wx + TILE - inset, wy, wx + TILE - inset, wy + TILE);
-  }
-
-function drawEdgeWaterBites(scene: DeepdiveScene, x: number, y: number, northWater: boolean, southWater: boolean, westWater: boolean, eastWater: boolean) {
-    const wx = x * TILE;
-    const wy = y * TILE;
-    scene.terrainEdges.fillStyle(terrainWaterColor(), 0.18);
-    for (let i = 0; i < 2; i += 1) {
-      const a = hash(x * 31 + i * 7, y * 37, rng.seed);
-      const b = hash(y * 41, x * 43 + i * 11, rng.seed);
-      const length = 4 + a * 6;
-      const breadth = 2 + b * 3;
-      const along = (i + 0.5 + (a - 0.5) * 0.35) * (TILE / 2);
-      if (northWater) scene.terrainEdges.fillEllipse(wx + along, wy + breadth * 0.25, length, breadth);
-      if (southWater) scene.terrainEdges.fillEllipse(wx + along, wy + TILE - breadth * 0.25, length, breadth);
-      if (westWater) scene.terrainEdges.fillEllipse(wx + breadth * 0.25, wy + along, breadth, length);
-      if (eastWater) scene.terrainEdges.fillEllipse(wx + TILE - breadth * 0.25, wy + along, breadth, length);
-    }
   }
 
 function drawEmbeddedOre(scene: DeepdiveScene, x: number, y: number, tile: Tile, exposed: boolean) {
@@ -319,6 +385,35 @@ function drawEmbeddedOre(scene: DeepdiveScene, x: number, y: number, tile: Tile,
     }
   }
 
+function drawOreBrush(scene: DeepdiveScene, x: number, y: number, tile: Tile, spriteIndex: number) {
+    const variant = oreBrushVariant(tile);
+    const key = `terrain-brush-ore-${variant}`;
+    const sprite = scene.terrainBrushSpriteAt(spriteIndex, key);
+    const size = tile === 'ruinCore' || tile === 'abyssalCrown' ? 34 : 28;
+    const offsetX = (hash(x * 31, y * 37, rng.seed) - 0.5) * 7;
+    const offsetY = (hash(y * 41, x * 43, rng.seed) - 0.5) * 7;
+    sprite
+      .setTexture(key)
+      .setVisible(true)
+      .setPosition(x * TILE + TILE * 0.5 + offsetX, y * TILE + TILE * 0.5 + offsetY)
+      .setOrigin(0.5)
+      .setDisplaySize(size * 1.25, size)
+      .setFlipX(hash(x, y, rng.seed + 211) > 0.5)
+      .setFlipY(false)
+      .setAlpha(0.92)
+      .setDepth(0.86);
+    return spriteIndex + 1;
+  }
+
+function oreBrushVariant(tile: Tile) {
+    if (tile === 'copper') return 0;
+    if (tile === 'quartz') return 1;
+    if (tile === 'ruby') return 2;
+    if (tile === 'cobalt') return 3;
+    if (tile === 'sunstone') return 4;
+    return 5;
+  }
+
 function orePixelColor(tile: Tile) {
     if (tile === 'copper') return 0xc47a42;
     if (tile === 'quartz') return 0xd7f6f0;
@@ -337,13 +432,6 @@ function oreGlowColor(tile: Tile) {
     if (tile === 'alienAlloy') return 0x73fbd3;
     if (tile === 'ruinCore') return 0xd06bff;
     return orePixelColor(tile);
-  }
-
-function terrainWaterColor() {
-    if (state.biome === 4) return state.depth < 440 ? 0x12242b : state.depth < 1120 ? 0x101923 : 0x06070d;
-    if (state.biome === 3) return state.depth < 440 ? 0x161d32 : state.depth < 1120 ? 0x111424 : 0x090913;
-    if (state.biome === 2) return state.depth < 440 ? 0x102a36 : state.depth < 1120 ? 0x0b1d29 : 0x07111b;
-    return state.depth < 440 ? 0x0b3741 : state.depth < 1120 ? 0x082631 : 0x06131d;
   }
 
 function drawFractureMarks(scene: DeepdiveScene, x: number, y: number, tile: Tile, fracture: number) {

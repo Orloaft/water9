@@ -39,6 +39,7 @@ export class DeepdiveScene extends Phaser.Scene {
   world: Tile[][] = [];
   damage: number[][] = [];
   tileSprites: Phaser.GameObjects.Image[] = [];
+  terrainBrushSprites: Phaser.GameObjects.Image[] = [];
   environmentSprites: Phaser.GameObjects.Image[] = [];
   environmentProps: EnvironmentProp[] = [];
   fish: Fish[] = [];
@@ -91,6 +92,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, WORLD_W * TILE, WORLD_H * TILE);
     this.cameras.main.setRoundPixels(true);
     this.tileSprites = [];
+    this.terrainBrushSprites = [];
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -278,6 +280,16 @@ export class DeepdiveScene extends Phaser.Scene {
       .setDisplaySize(TILE, TILE);
     this.tileSprites[index] = tileSprite;
     return tileSprite;
+  }
+
+  terrainBrushSpriteAt(index: number, textureKey: string) {
+    const cached = this.terrainBrushSprites[index];
+    const sprite = cached?.scene ? cached : this.add.image(0, 0, textureKey)
+      .setDepth(0.78)
+      .setOrigin(0.5)
+      .setVisible(false);
+    this.terrainBrushSprites[index] = sprite;
+    return sprite;
   }
 
   environmentSpriteAt(index: number, textureKey: string) {
@@ -752,6 +764,7 @@ export interface DeepdiveScene {
   drawParallax: OmitThisParameter<typeof renderingNs.drawParallax>;
   drawGameOver: OmitThisParameter<typeof renderingNs.drawGameOver>;
   drawWorld: OmitThisParameter<typeof renderingNs.drawWorld>;
+  terrainBrushSpriteAt: (index: number, textureKey: string) => Phaser.GameObjects.Image;
   drawTerrainBreakEffects: OmitThisParameter<typeof renderingNs.drawTerrainBreakEffects>;
   drawEnvironmentProps: OmitThisParameter<typeof renderingNs.drawEnvironmentProps>;
   drawBoat: OmitThisParameter<typeof renderingNs.drawBoat>;

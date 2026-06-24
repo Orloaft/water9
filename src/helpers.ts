@@ -491,6 +491,7 @@ export function environmentTextureKeys() {
     'env-ore-idol',
     'env-ore-alien-alloy',
     'env-ore-ruin-core',
+    ...terrainBrushTextureKeys(),
     'env-flora-glass-kelp',
     'env-flora-moon-sponge',
     'env-flora-sting-anemone',
@@ -507,6 +508,17 @@ export function environmentTextureKeys() {
     'env-flora-lumen-fern',
     'env-flora-lumen-nodule',
     'env-hazard-ice-spike',
+  ];
+}
+
+export function terrainBrushTextureKeys() {
+  return [
+    ...Array.from({ length: 4 }, (_, index) => `terrain-brush-ledge-${index}`),
+    ...Array.from({ length: 4 }, (_, index) => `terrain-brush-wall-${index}`),
+    ...Array.from({ length: 6 }, (_, index) => `terrain-brush-corner-${index}`),
+    ...Array.from({ length: 4 }, (_, index) => `terrain-brush-fill-${index}`),
+    ...Array.from({ length: 6 }, (_, index) => `terrain-brush-ore-${index}`),
+    ...Array.from({ length: 8 }, (_, index) => `terrain-brush-flora-${index}`),
   ];
 }
 
