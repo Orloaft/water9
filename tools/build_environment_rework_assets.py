@@ -306,11 +306,92 @@ def chroma_to_alpha(crop: Image.Image) -> Image.Image:
         for x in range(crop.width):
             r, g, b, a = pixels[x, y]
             dist = abs(r - KEY[0]) + abs(g - KEY[1]) + abs(b - KEY[2])
-            if dist < 86:
+            if dist < 128:
                 pixels[x, y] = (0, 0, 0, 0)
-            elif r > 150 and b > 150 and g < 80:
-                pixels[x, y] = (max(0, r - 95), min(120, g + 25), max(0, b - 95), a)
-    return crop
+    return remove_border_scraps(despill_magenta_edges(crop))
+
+
+def despill_magenta_edges(img: Image.Image) -> Image.Image:
+    img = img.convert("RGBA")
+    original_alpha = img.getchannel("A")
+    pixels = img.load()
+    for y in range(img.height):
+        for x in range(img.width):
+            r, g, b, a = pixels[x, y]
+            if a == 0:
+                continue
+            edge = False
+            for yy in range(max(0, y - 2), min(img.height, y + 3)):
+                for xx in range(max(0, x - 2), min(img.width, x + 3)):
+                    if original_alpha.getpixel((xx, yy)) == 0:
+                        edge = True
+                        break
+                if edge:
+                    break
+            magenta_spill = r > 70 and b > 70 and g < max(r, b) * 0.5 and abs(r - b) < 120
+            if edge and magenta_spill:
+                neutral = max(g, min(118, (r + b) // 5))
+                pixels[x, y] = (min(r, neutral + 18), neutral, min(b, neutral + 28), a)
+    return img
+
+
+def remove_border_scraps(img: Image.Image) -> Image.Image:
+    img = img.convert("RGBA")
+    alpha = img.getchannel("A")
+    seen: set[tuple[int, int]] = set()
+    components: list[list[tuple[int, int]]] = []
+    for y in range(img.height):
+        for x in range(img.width):
+            if (x, y) in seen or alpha.getpixel((x, y)) == 0:
+                continue
+            stack = [(x, y)]
+            seen.add((x, y))
+            component = []
+            while stack:
+                px, py = stack.pop()
+                component.append((px, py))
+                for nx, ny in ((px - 1, py), (px + 1, py), (px, py - 1), (px, py + 1)):
+                    if nx < 0 or ny < 0 or nx >= img.width or ny >= img.height:
+                        continue
+                    if (nx, ny) in seen or alpha.getpixel((nx, ny)) == 0:
+                        continue
+                    seen.add((nx, ny))
+                    stack.append((nx, ny))
+            components.append(component)
+    if not components:
+        return img
+    largest = max(len(component) for component in components)
+    keep = set()
+    for component in components:
+        xs = [point[0] for point in component]
+        ys = [point[1] for point in component]
+        touches_top = min(ys) <= 2
+        touches_bottom = max(ys) >= img.height - 3
+        touches_left = min(xs) <= 2
+        touches_right = max(xs) >= img.width - 3
+        border_sliver = (
+            (touches_top and max(ys) <= 34)
+            or (touches_bottom and min(ys) >= img.height - 35)
+            or (touches_left and max(xs) <= 34)
+            or (touches_right and min(xs) >= img.width - 35)
+        )
+        shallow = max(ys) - min(ys) <= 10
+        upper_sliver = min(ys) <= 60 and (max(ys) - min(ys)) <= 14
+        side_sliver = (
+            (min(xs) <= 60 or max(xs) >= img.width - 61)
+            and (max(xs) - min(xs)) <= 14
+        )
+        tiny = len(component) < max(32, largest * 0.025)
+        secondary = len(component) < largest * 0.4
+        if (tiny and (touches_top or shallow)) or (secondary and (border_sliver or upper_sliver or side_sliver)):
+            continue
+        keep.update(component)
+    pixels = img.load()
+    for component in components:
+        for x, y in component:
+            if (x, y) not in keep:
+                pixels[x, y] = (0, 0, 0, 0)
+    return img
 
 
 def trim_alpha(img: Image.Image) -> Image.Image:
@@ -325,6 +406,24 @@ def trim_alpha(img: Image.Image) -> Image.Image:
     right = min(img.width, right + pad)
     bottom = min(img.height, bottom + pad)
     return img.crop((left, top, right, bottom))
+
+
+def clear_cell_bleed(crop: Image.Image, row: int, col: int) -> Image.Image:
+    crop = crop.convert("RGBA")
+    pixels = crop.load()
+    if row > 0:
+        for y in range(min(24, crop.height)):
+            for x in range(crop.width):
+                pixels[x, y] = (*KEY, 255)
+    if col > 0:
+        for y in range(crop.height):
+            for x in range(min(4, crop.width)):
+                pixels[x, y] = (*KEY, 255)
+    if col < 4:
+        for y in range(crop.height):
+            for x in range(max(0, crop.width - 4), crop.width):
+                pixels[x, y] = (*KEY, 255)
+    return crop
 
 
 def write_handoff() -> None:
@@ -362,6 +461,17 @@ props, bright candy colors, duplicated cells, UI frames, watermarks, screenshots
 After placing the image at the target path, run:
 
 `npm run assets:environment-rework`
+
+If Codex Imagegen returns the sheet inline through CLI auth, recover the latest
+matching generated PNG directly from the Codex session log:
+
+`npm run environment:recover-codex-imagegen -- --dry-run`
+
+`npm run environment:recover-codex-imagegen`
+
+Then rebuild the sliced assets:
+
+`npm run assets:environment-rework`
 """,
         encoding="utf8",
     )
@@ -397,7 +507,7 @@ def slice_source(source: Path) -> None:
         col = index % cols
         row = index // cols
         crop = sheet.crop((col * cell_w, row * cell_h, (col + 1) * cell_w, (row + 1) * cell_h))
-        sprite = trim_alpha(chroma_to_alpha(crop))
+        sprite = trim_alpha(chroma_to_alpha(clear_cell_bleed(crop, row, col)))
         sprite.save(GENERATED / f"{name}.png")
         manifest["assets"].append({
             "name": name,

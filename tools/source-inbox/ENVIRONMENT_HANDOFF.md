@@ -30,3 +30,14 @@ props, bright candy colors, duplicated cells, UI frames, watermarks, screenshots
 After placing the image at the target path, run:
 
 `npm run assets:environment-rework`
+
+If Codex Imagegen returns the sheet inline through CLI auth, recover the latest
+matching generated PNG directly from the Codex session log:
+
+`npm run environment:recover-codex-imagegen -- --dry-run`
+
+`npm run environment:recover-codex-imagegen`
+
+Then rebuild the sliced assets:
+
+`npm run assets:environment-rework`
