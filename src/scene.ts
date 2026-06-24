@@ -18,6 +18,7 @@ import * as audioNs from './scene-audio';
 import * as articulatedNs from './scene-articulated';
 import { ensureArticulatedTextures } from './articulated';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
+import { syncTerrainMaskTile } from './terrain-mask';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
@@ -38,6 +39,7 @@ export class DeepdiveScene extends Phaser.Scene {
   keys!: Record<string, Phaser.Input.Keyboard.Key>;
   world: Tile[][] = [];
   damage: number[][] = [];
+  terrainMask = new Uint8Array();
   tileSprites: Phaser.GameObjects.Image[] = [];
   terrainBrushSprites: Phaser.GameObjects.Image[] = [];
   terrainBrushSpritesByKey = new Map<string, Phaser.GameObjects.Image>();
@@ -720,6 +722,7 @@ export class DeepdiveScene extends Phaser.Scene {
   setTile(x: number, y: number, tile: Tile) {
     if (x < 0 || x >= WORLD_W || y < 0 || y >= WORLD_H) return;
     this.world[y][x] = tile;
+    syncTerrainMaskTile(this, x, y);
     this.markTerrainVisualDirty(x, y);
     this.terrainDirty = true;
   }

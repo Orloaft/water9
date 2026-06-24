@@ -6,6 +6,7 @@ import { state } from './state';
 import { rng } from './rng';
 import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,scaledDepthPx,scaledEntity,veinRuleAt,veinRulesForBiome } from './helpers';
 import type { DeepdiveScene } from './scene';
+import { rebuildTerrainMask } from './terrain-mask';
 
 export function generateWorld(this: DeepdiveScene, ) {
     this.world = [];
@@ -52,6 +53,7 @@ export function generateWorld(this: DeepdiveScene, ) {
       state.activeQuestId = '';
     this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
     this.bobbits = state.biome >= 2 ? this.makeBobbits() : [];
+    rebuildTerrainMask(this);
   }
 
 export function makeVentFields(this: DeepdiveScene, ): Hazard[] {

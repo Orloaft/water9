@@ -33,6 +33,8 @@
     "assets:magenta": "python3 tools/prepare_magenta_assets.py",
     "assets:strip-matte": "python3 tools/strip_sprite_matte.py",
     "assets:environment-rework": "python3 tools/build_environment_rework_assets.py",
+    "terrain:visual-gate": "node tools/review_terrain_visual_gate.mjs",
+    "terrain:progressive-mining-review": "node tools/review_terrain_progressive_mining.mjs",
     "sandbox": "vite --host 0.0.0.0",
     "content:gate": "node tools/validate_content_gate.mjs --min-threats 20",
     "content:strict-gate-negative-smoke": "node tools/test_content_strict_gate_negative_smoke.mjs",

@@ -112,6 +112,7 @@ export interface TerrainBrushPlacement {
   flipY: boolean;
   alpha: number;
   depth: number;
+  rotation?: number;
 }
 
 export interface TerrainVisualChunk {

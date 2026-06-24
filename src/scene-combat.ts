@@ -7,6 +7,7 @@ import { rng } from './rng';
 import { cargoCapacity,cargoIconForTile,cargoKindForTile,clampSelectedCargoIndex,clearBleed,clearVenom,fuelMax,hash,hullMax,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenMax,resetOxygenWarnings,scaledEntity,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
+import { subtractTerrainMaskBrush } from './terrain-mask';
 
 export function mineFromSub(this: DeepdiveScene, sub: SubVehicle) {
     if (sub.tier < 2) {
@@ -87,6 +88,13 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
       const def = tiles[tile];
       if (!def.solid || tile === 'bedrock' || tile === 'anchorstone') continue;
       this.damage[target.y][target.x] += power;
+      subtractTerrainMaskBrush(
+        this,
+        target.x * TILE + TILE * 0.5,
+        target.y * TILE + TILE * 0.5,
+        TILE * (0.34 + miningUpgradeBonus() * 0.035),
+        0.22,
+      );
       if (this.damage[target.y][target.x] >= def.hp) {
         this.breakTile(target.x, target.y, tile, def);
       }
@@ -277,6 +285,7 @@ export function mineTargets(this: DeepdiveScene, tx: number, ty: number) {
 export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Tile, def: TileDef) {
     const x = tx * TILE + TILE * 0.5;
     const y = ty * TILE + TILE * 0.5;
+    subtractTerrainMaskBrush(this, x, y, TILE * 0.82, 1.18);
     this.setTile(tx, ty, 'water');
     this.damage[ty][tx] = 0;
     this.refreshEnvironmentPropsAround(tx, ty);
