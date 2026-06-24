@@ -124,9 +124,6 @@ def main():
             candidates = sorted(candidates, key=lambda b: b[0])
         for index, box in enumerate(candidates):
             asset = crop_with_alpha(source, box)
-            if group == "fill":
-                # Fill plates should stay opaque rectangles with their own painted edge cropped away.
-                asset = source.crop((box[0], box[1], box[2], box[3])).convert("RGBA")
             key = f"terrain-brush-{group}-{index}"
             path = OUT_DIR / f"{key}.png"
             asset.save(path)

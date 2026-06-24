@@ -18,6 +18,95 @@ function clearPlaytestFloatingText(scene: DeepdiveScene) {
   scene.floatingTexts = [];
 }
 
+type TerrainReviewStage = 'intact' | 'damage' | 'break' | 'after';
+
+function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'intact') {
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const floorY = Math.floor((SURFACE_Y + 780) / TILE);
+  const left = centerX - 42;
+  const right = centerX + 42;
+  const top = floorY - 8;
+  const bottom = floorY + 8;
+  const surfaceAt = (x: number) => {
+    const wave = Math.sin((x - left) * 0.22) * 2.2 + Math.sin((x - left) * 0.09 + 1.8) * 1.3;
+    return floorY + Math.round(wave);
+  };
+  for (let y = top; y <= bottom; y += 1) {
+    for (let x = left; x <= right; x += 1) {
+      const surface = surfaceAt(x);
+      const orePocket = x >= centerX + 7 && x <= centerX + 13 && y >= surface && y <= surface + 2;
+      const undercut = x >= centerX - 15 && x <= centerX - 10 && y >= surface && y <= surface + 1 && hash(x, y, rng.seed + 233) > 0.72;
+      const tile: Tile = y < surface || undercut
+        ? 'water'
+        : orePocket
+          ? (x + y) % 3 === 0 ? 'quartz' : 'copper'
+          : y < surface + 4 ? 'stone' : 'sand';
+      scene.setTile(x, y, tile);
+      if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+    }
+  }
+
+  const targetX = centerX;
+  const targetY = surfaceAt(centerX);
+  const targetTile = scene.getTile(targetX, targetY);
+  const targetDef = tiles[targetTile];
+  scene.terrainBreakEffects = [];
+  if (stage === 'damage' && scene.damage[targetY]?.[targetX] !== undefined) {
+    scene.damage[targetY][targetX] = targetDef.hp * 0.72;
+  } else if (stage === 'break' || stage === 'after') {
+    scene.setTile(targetX, targetY, 'water');
+    if (scene.damage[targetY]?.[targetX] !== undefined) scene.damage[targetY][targetX] = 0;
+    if (stage === 'break') {
+      scene.terrainBreakEffects.push({
+        x: targetX * TILE + TILE * 0.5,
+        y: targetY * TILE + TILE * 0.5,
+        age: 0.08,
+        life: 0.62,
+        color: targetDef.color,
+        seed: hash(targetX, targetY, rng.seed),
+      });
+    }
+  }
+
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.radioOpen = false;
+  state.depth = Math.max(0, Math.round((targetY * TILE - SURFACE_Y) / 6));
+  state.fuel = Math.max(state.fuel, 60);
+  state.oxygen = Math.max(state.oxygen, 80);
+  scene.player.x = centerX * TILE;
+  scene.player.y = targetY * TILE - 24;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.mineCooldown = 0;
+  scene.player.facing.set(0.38, 0.92);
+  scene.player.facingSign = 1;
+  scene.fish = [];
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  scene.bobbits = [];
+  scene.hazards = [];
+  scene.larvae = [];
+  scene.nestEggs = [];
+  scene.looseItems = [];
+  clearPlaytestFloatingText(scene);
+  scene.populateEnvironmentProps();
+  scene.terrainBreakEffects = stage === 'after' ? [] : scene.terrainBreakEffects.slice(-12);
+  scene.terrainBoundsKey = '';
+  scene.terrainDirty = true;
+  state.status = stage === 'intact'
+    ? 'Terrain mining review: intact rock face.'
+    : stage === 'damage'
+      ? 'Terrain mining review: damaged rock wound.'
+      : stage === 'break'
+        ? 'Terrain mining review: fresh break event.'
+        : 'Terrain mining review: settled mined opening.';
+  renderHud();
+}
+
 export function playtestSnapshot(this: DeepdiveScene, ) {
     refreshPlaytestCamera(this);
     const camera = this.cameras.main;
@@ -383,60 +472,15 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.carrierSub.vx = 0;
         state.carrierSub.vy = 0;
       }
-    } else if (command === 'terrainReview') {
-      const centerX = Math.floor(WORLD_W * 0.5);
-      const floorY = Math.floor((SURFACE_Y + 780) / TILE);
-      const left = centerX - 42;
-      const right = centerX + 42;
-      const top = floorY - 8;
-      const bottom = floorY + 8;
-      const surfaceAt = (x: number) => {
-        const wave = Math.sin((x - left) * 0.22) * 2.2 + Math.sin((x - left) * 0.09 + 1.8) * 1.3;
-        return floorY + Math.round(wave);
-      };
-      for (let y = top; y <= bottom; y += 1) {
-        for (let x = left; x <= right; x += 1) {
-          const surface = surfaceAt(x);
-          const orePocket = x >= centerX + 7 && x <= centerX + 13 && y >= surface && y <= surface + 2;
-          const undercut = x >= centerX - 15 && x <= centerX - 10 && y >= surface && y <= surface + 1 && hash(x, y, rng.seed + 233) > 0.72;
-          const tile: Tile = y < surface || undercut
-            ? 'water'
-            : orePocket
-              ? (x + y) % 3 === 0 ? 'quartz' : 'copper'
-              : y < surface + 4 ? 'stone' : 'sand';
-          this.setTile(x, y, tile);
-          if (this.damage[y]?.[x] !== undefined) this.damage[y][x] = 0;
-        }
-      }
-      state.started = true;
-      state.docked = false;
-      state.atBoat = false;
-      state.paused = false;
-      state.lost = false;
-      state.radioOpen = false;
-      const playerSurface = surfaceAt(centerX);
-      state.depth = Math.max(0, Math.round((playerSurface * TILE - SURFACE_Y) / 6));
-      this.player.x = centerX * TILE;
-      this.player.y = playerSurface * TILE - 24;
-      this.player.vx = 0;
-      this.player.vy = 0;
-      this.player.facing.set(0, 1);
-      this.player.facingSign = 1;
-      this.fish = [];
-      this.flora = [];
-      this.articulatedCreatures = [];
-      this.bobbits = [];
-      this.hazards = [];
-      this.larvae = [];
-      this.nestEggs = [];
-      this.looseItems = [];
-      clearPlaytestFloatingText(this);
-      this.populateEnvironmentProps();
-      this.terrainBoundsKey = '';
-      this.terrainDirty = true;
-      state.status = 'Terrain review: irregular destructible cave face and embedded ore.';
-      renderHud();
-    } else if (command === 'teleportToArticulated') {
+	    } else if (command === 'terrainReview') {
+	      stageTerrainReview(this, 'intact');
+	    } else if (command === 'terrainMiningReview') {
+	      const payload = typeof value === 'object' && value !== null ? value as { stage?: TerrainReviewStage } : {};
+	      const stage = payload.stage === 'damage' || payload.stage === 'break' || payload.stage === 'after'
+	        ? payload.stage
+	        : 'intact';
+	      stageTerrainReview(this, stage);
+	    } else if (command === 'teleportToArticulated') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string } : {};
       const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
       if (creature) {

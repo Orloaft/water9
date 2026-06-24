@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature,AuxSub,Biome,Bobbit,CargoItem,ControlState,EnvironmentProp,Fish,FishSpecies,Flare,FloatingText,Flora,FloraSpecies,Hazard,Larva,LooseItem,NestEgg,PlaytestCommand,Quest,ScanTarget,ShopItem,SonarContact,SpecialRoom,SubTier,SubVehicle,ThrownUtility,Tile,TileDef,UpgradeId,VeinRule } from './types';
+import type { ArticulatedCreature,AuxSub,Biome,Bobbit,CargoItem,ControlState,EnvironmentProp,Fish,FishSpecies,Flare,FloatingText,Flora,FloraSpecies,Hazard,Larva,LooseItem,NestEgg,PlaytestCommand,Quest,ScanTarget,ShopItem,SonarContact,SpecialRoom,SubTier,SubVehicle,TerrainVisualChunk,ThrownUtility,Tile,TileDef,UpgradeId,VeinRule } from './types';
 import { audioKeys,audioVolumes,BARGE_DOCKING_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_ENTRY_HALF_WIDTH,BARGE_ENTRY_Y,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BIOLUME_CAVERN_CHANCE,BLEED_DURATION,BLEED_HULL_DRAIN,BLEED_RECENT_WINDOW,BLEED_TRIGGER_BITES,BOBBIT_DETECT_RADIUS,BOBBIT_ESCAPE_SECONDS,BOBBIT_LATCH_RADIUS,CAMERA_ZOOM_MULTIPLIER,deepScale,DYNAMITE_LAND_FUSE,DYNAMITE_LIFE_DAMAGE,DYNAMITE_RADIUS_TILES,EGG_CUTTER_FUEL_COST,EGG_DETECTION_RADIUS,EGG_HATCH_SECONDS,EGG_HP,ENTITY_SCALE,FIRST_AID_REPAIR,FISH_BITE_SFX_GAP_MS,FLARE_DURATION,FLARE_LIGHT_RADIUS,FUEL_REFILL_AMOUNT,FUEL_TANK_REFILL,INJECTOR_KNIFE_DAMAGE,INJECTOR_KNIFE_RANGE,LIFE_CUTTER_DAMAGE,LIFE_CUTTER_FUEL_COST,NEST_CHAMBER_CHANCE,NEST_CLEAR_REWARD,OASIS_OXYGEN_REFILL,OXYGEN_TANK_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_CONTACT_RADIUS,PLAYER_DRAW_SCALE,PLAYER_FORWARD_REACH,PLAYER_PICKUP_RADIUS,SONAR_ATTRACT_RADIUS,SONAR_COOLDOWN,SONAR_FUEL_COST,SONAR_REVEAL_RADIUS_TILES,STUN_GRENADE_DURATION,STUN_GRENADE_RADIUS,SUB_BOARD_SECONDS,SUB_FUEL_CELL,SUB_FUEL_COST,SUB_OXYGEN_CELL,SUB_OXYGEN_COST,SURFACE_Y,TARGET_DEPTH,THROWN_ITEM_GRAVITY,THROWN_ITEM_MAX_FALL_SPEED,THROWN_ITEM_SPEED,TILE,VENOM_HULL_DRAIN,VENOM_TICK_SECONDS,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state,ui } from './state';
@@ -40,6 +40,7 @@ export class DeepdiveScene extends Phaser.Scene {
   damage: number[][] = [];
   tileSprites: Phaser.GameObjects.Image[] = [];
   terrainBrushSprites: Phaser.GameObjects.Image[] = [];
+  terrainBrushSpritesByKey = new Map<string, Phaser.GameObjects.Image>();
   environmentSprites: Phaser.GameObjects.Image[] = [];
   environmentProps: EnvironmentProp[] = [];
   fish: Fish[] = [];
@@ -64,6 +65,8 @@ export class DeepdiveScene extends Phaser.Scene {
   lastFishBiteSfxAt = -Infinity;
   terrainBoundsKey = '';
   terrainDirty = true;
+  terrainVisualChunks = new Map<string, TerrainVisualChunk>();
+  terrainVisualDirtyChunks = new Set<string>();
   gamepadButtonsDown = new Set<number>();
   menuNavCooldown = 0;
   player = {
@@ -93,6 +96,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.cameras.main.setRoundPixels(true);
     this.tileSprites = [];
     this.terrainBrushSprites = [];
+    this.terrainBrushSpritesByKey.clear();
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -263,6 +267,8 @@ export class DeepdiveScene extends Phaser.Scene {
     this.floatingTexts = [];
     this.terrainBoundsKey = '';
     this.terrainDirty = true;
+    this.terrainVisualChunks.clear();
+    this.terrainVisualDirtyChunks.clear();
   }
 
   createEntitySprite(x: number, y: number, key: string) {
@@ -289,6 +295,20 @@ export class DeepdiveScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setVisible(false);
     this.terrainBrushSprites[index] = sprite;
+    return sprite;
+  }
+
+  terrainBrushSpriteForKey(stableKey: string, textureKey: string) {
+    const cached = this.terrainBrushSpritesByKey.get(stableKey);
+    if (cached?.scene) {
+      cached.setTexture(textureKey);
+      return cached;
+    }
+    const sprite = this.add.image(0, 0, textureKey)
+      .setDepth(0.78)
+      .setOrigin(0.5)
+      .setVisible(false);
+    this.terrainBrushSpritesByKey.set(stableKey, sprite);
     return sprite;
   }
 
@@ -700,7 +720,21 @@ export class DeepdiveScene extends Phaser.Scene {
   setTile(x: number, y: number, tile: Tile) {
     if (x < 0 || x >= WORLD_W || y < 0 || y >= WORLD_H) return;
     this.world[y][x] = tile;
+    this.markTerrainVisualDirty(x, y);
     this.terrainDirty = true;
+  }
+
+  markTerrainVisualDirty(x: number, y: number) {
+    const chunkSize = 12;
+    const minChunkX = Math.floor((x - 4) / chunkSize);
+    const maxChunkX = Math.floor((x + 4) / chunkSize);
+    const minChunkY = Math.floor((y - 4) / chunkSize);
+    const maxChunkY = Math.floor((y + 4) / chunkSize);
+    for (let cy = minChunkY; cy <= maxChunkY; cy += 1) {
+      for (let cx = minChunkX; cx <= maxChunkX; cx += 1) {
+        this.terrainVisualDirtyChunks.add(`${cx}:${cy}`);
+      }
+    }
   }
 
 }

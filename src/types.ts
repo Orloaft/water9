@@ -50,6 +50,7 @@ export type PlaytestCommand =
   | 'refill'
   | 'teleportDepth'
   | 'terrainReview'
+  | 'terrainMiningReview'
   | 'teleportToArticulated'
   | 'liveArticulatedReview'
   | 'advanceLiveArticulatedReview'
@@ -96,6 +97,28 @@ export interface VeinRule {
   minSize: number;
   maxSize: number;
   salt: number;
+}
+
+export interface TerrainBrushPlacement {
+  key: string;
+  textureKey: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  originX: number;
+  originY: number;
+  flipX: boolean;
+  flipY: boolean;
+  alpha: number;
+  depth: number;
+}
+
+export interface TerrainVisualChunk {
+  key: string;
+  chunkX: number;
+  chunkY: number;
+  placements: TerrainBrushPlacement[];
 }
 
 export interface Upgrade {

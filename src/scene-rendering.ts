@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { Fish,Flora,Tile } from './types';
+import type { Fish,Flora,TerrainBrushPlacement,TerrainVisualChunk,Tile } from './types';
 import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FLARE_LIGHT_RADIUS,PLAYER_DRAW_SCALE,SONAR_ATTRACT_RADIUS,SONAR_REVEAL_RADIUS_TILES,SUB_BOARD_SECONDS,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
@@ -93,18 +93,13 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     this.terrain.clear();
     this.terrainEdges.clear();
 
-    drawTerrainRuns(this, startX, endX, startY, endY);
-    drawVisualMaskSmoothing(this, startX, endX, startY, endY);
-    let terrainBrushIndex = drawTerrainFillPlates(this, startX, endX, startY, endY, 0);
-    terrainBrushIndex = drawTerrainBrushLayer(this, startX, endX, startY, endY, terrainBrushIndex);
+    drawTerrainMaskBody(this, startX, endX, startY, endY);
+    const activeTerrainBrushKeys = new Set<string>();
+    drawTerrainVisualBrushes(this, startX, endX, startY, endY, activeTerrainBrushKeys);
     for (let y = startY; y <= endY; y += 1) {
       for (let x = startX; x <= endX; x += 1) {
         const tile = this.getTile(x, y);
         if (tile === 'water') {
-          if (hash(x, y, rng.seed) > 0.985) {
-            this.terrainEdges.lineStyle(1, 0x84dce6, 0.22);
-            this.terrainEdges.strokeCircle(x * TILE + 8, y * TILE + 8, 2 + hash(y, x, rng.seed) * 4);
-          }
           continue;
         }
         const def = tiles[tile];
@@ -113,10 +108,11 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         const fracture = this.damage[y][x] / def.hp;
         const exposed = exposedToWater(this, x, y);
         drawTerrainDetail(this, x, y, tile, fracture);
+        if (exposed) drawOrganicEdgeFeather(this, x, y, tile);
         if (exposed) drawTerrainContour(this, x, y, tile);
         if (isOreTile(tile)) {
           drawEmbeddedOre(this, x, y, tile, exposed);
-          if (exposed) terrainBrushIndex = drawOreBrush(this, x, y, tile, terrainBrushIndex);
+          if (exposed) drawOreBrush(this, x, y, tile, activeTerrainBrushKeys);
         }
         if (tile === 'anchorstone') {
           this.terrainEdges.lineStyle(1, 0xb9c2d0, 0.18);
@@ -139,9 +135,12 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
 	    for (let i = 0; i < this.tileSprites.length; i += 1) {
 	      this.tileSprites[i].setVisible(false);
 	    }
-	    for (let i = terrainBrushIndex; i < this.terrainBrushSprites.length; i += 1) {
+	    for (let i = 0; i < this.terrainBrushSprites.length; i += 1) {
 	      this.terrainBrushSprites[i].setVisible(false);
 	    }
+      for (const [key, sprite] of this.terrainBrushSpritesByKey) {
+        if (!activeTerrainBrushKeys.has(key)) sprite.setVisible(false);
+      }
 	  }
 
 export function drawTerrainBreakEffects(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
@@ -196,50 +195,23 @@ function exposedToWater(scene: DeepdiveScene, x: number, y: number) {
       || scene.getTile(x + 1, y) === 'water';
   }
 
-function drawTerrainRuns(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number) {
-    for (let y = startY; y <= endY; y += 1) {
-      let runStart = -1;
-      let runColor = 0;
-      for (let x = startX; x <= endX + 1; x += 1) {
-        const tile = x <= endX ? scene.getTile(x, y) : 'water';
-        const solid = tile !== 'water';
-        const color = solid ? terrainBodyColor(tile, y) : -1;
-        if (solid && runStart < 0) {
-          runStart = x;
-          runColor = color;
-          continue;
-        }
-        if (solid && color === runColor) continue;
-        if (runStart >= 0) {
-          scene.terrain.fillStyle(runColor, 1);
-          scene.terrain.fillRect(runStart * TILE, y * TILE, (x - runStart) * TILE, TILE);
-        }
-        runStart = solid ? x : -1;
-        runColor = color;
-      }
-    }
-  }
-
-function drawVisualMaskSmoothing(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number) {
-    const water = terrainWaterColor();
-    scene.terrain.fillStyle(water, 0.92);
+function drawTerrainMaskBody(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number) {
     for (let y = startY; y <= endY; y += 1) {
       for (let x = startX; x <= endX; x += 1) {
-        if (scene.getTile(x, y) !== 'water') continue;
+        const tile = scene.getTile(x, y);
+        if (tile === 'water') continue;
         const wx = x * TILE;
         const wy = y * TILE;
-        const north = scene.getTile(x, y - 1) !== 'water';
-        const south = scene.getTile(x, y + 1) !== 'water';
-        const west = scene.getTile(x - 1, y) !== 'water';
-        const east = scene.getTile(x + 1, y) !== 'water';
-        if (north && west) scene.terrain.fillCircle(wx, wy, 9);
-        if (north && east) scene.terrain.fillCircle(wx + TILE, wy, 9);
-        if (south && west) scene.terrain.fillCircle(wx, wy + TILE, 9);
-        if (south && east) scene.terrain.fillCircle(wx + TILE, wy + TILE, 9);
-        if (north) scene.terrain.fillEllipse(wx + TILE * 0.5, wy, TILE * 0.7, 5);
-        if (south) scene.terrain.fillEllipse(wx + TILE * 0.5, wy + TILE, TILE * 0.7, 5);
-        if (west) scene.terrain.fillEllipse(wx, wy + TILE * 0.5, 5, TILE * 0.7);
-        if (east) scene.terrain.fillEllipse(wx + TILE, wy + TILE * 0.5, 5, TILE * 0.7);
+        const color = terrainBodyColor(tile, y);
+        const exposed = exposedToWater(scene, x, y);
+        scene.terrain.fillStyle(color, exposed ? 0.1 : 0.14);
+        scene.terrain.fillCircle(wx + TILE * 0.5, wy + TILE * 0.5, exposed ? TILE * 0.74 : TILE * 0.82);
+        if (scene.getTile(x + 1, y) !== 'water') {
+          scene.terrain.fillRect(wx + TILE * 0.5, wy + 2, TILE, TILE - 4);
+        }
+        if (scene.getTile(x, y + 1) !== 'water') {
+          scene.terrain.fillRect(wx + 2, wy + TILE * 0.5, TILE - 4, TILE);
+        }
       }
     }
   }
@@ -251,57 +223,133 @@ function terrainWaterColor() {
     return state.depth < 440 ? 0x0b3741 : state.depth < 1040 ? 0x092430 : 0x06111d;
   }
 
-function drawTerrainBrushLayer(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number, spriteIndex: number) {
-    let index = spriteIndex;
-    const segmentStartX = Math.floor((startX - 4) / 3) * 3;
-    const segmentEndX = Math.ceil((endX + 4) / 3) * 3;
-    const segmentStartY = Math.floor((startY - 4) / 3) * 3;
-    const segmentEndY = Math.ceil((endY + 4) / 3) * 3;
-    for (let y = startY - 1; y <= endY + 1; y += 1) {
-      for (let sx = segmentStartX; sx <= segmentEndX; sx += 3) {
-        if (horizontalSegmentExposed(scene, sx, y, true)) index = stampLedgeSegment(scene, sx, y, true, index);
-        if (horizontalSegmentExposed(scene, sx, y, false)) index = stampLedgeSegment(scene, sx, y, false, index);
+const TERRAIN_VISUAL_CHUNK_SIZE = 12;
+const TERRAIN_VISUAL_MARGIN_TILES = 6;
+const TERRAIN_EDGE_SEGMENT_TILES = 5;
+
+function drawTerrainVisualBrushes(
+  scene: DeepdiveScene,
+  startX: number,
+  endX: number,
+  startY: number,
+  endY: number,
+  activeKeys: Set<string>,
+) {
+    const chunk = TERRAIN_VISUAL_CHUNK_SIZE;
+    const chunkStartX = Math.floor((startX - TERRAIN_VISUAL_MARGIN_TILES) / chunk);
+    const chunkEndX = Math.floor((endX + TERRAIN_VISUAL_MARGIN_TILES) / chunk);
+    const chunkStartY = Math.floor((startY - TERRAIN_VISUAL_MARGIN_TILES) / chunk);
+    const chunkEndY = Math.floor((endY + TERRAIN_VISUAL_MARGIN_TILES) / chunk);
+    const minPxX = (startX - TERRAIN_VISUAL_MARGIN_TILES) * TILE;
+    const maxPxX = (endX + TERRAIN_VISUAL_MARGIN_TILES + 1) * TILE;
+    const minPxY = (startY - TERRAIN_VISUAL_MARGIN_TILES) * TILE;
+    const maxPxY = (endY + TERRAIN_VISUAL_MARGIN_TILES + 1) * TILE;
+
+    for (let cy = chunkStartY; cy <= chunkEndY; cy += 1) {
+      for (let cx = chunkStartX; cx <= chunkEndX; cx += 1) {
+        const visualChunk = terrainVisualChunk(scene, cx, cy);
+        for (const placement of visualChunk.placements) {
+          if (!placementIntersects(placement, minPxX, maxPxX, minPxY, maxPxY)) continue;
+          drawTerrainPlacement(scene, placement, activeKeys);
+        }
       }
     }
-    for (let x = startX - 1; x <= endX + 1; x += 1) {
-      for (let sy = segmentStartY; sy <= segmentEndY; sy += 3) {
-        if (verticalSegmentExposed(scene, x, sy, true)) index = stampWallSegment(scene, x, sy, true, index);
-        if (verticalSegmentExposed(scene, x, sy, false)) index = stampWallSegment(scene, x, sy, false, index);
-      }
-    }
-    return index;
   }
 
-function drawTerrainFillPlates(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number, spriteIndex: number) {
-    let index = spriteIndex;
-    const chunk = 8;
-    const chunkStartX = Math.floor((startX - 2) / chunk) * chunk;
-    const chunkEndX = Math.ceil((endX + 2) / chunk) * chunk;
-    const chunkStartY = Math.floor((startY - 2) / chunk) * chunk;
-    const chunkEndY = Math.ceil((endY + 2) / chunk) * chunk;
-    for (let cy = chunkStartY; cy <= chunkEndY; cy += chunk) {
-      for (let cx = chunkStartX; cx <= chunkEndX; cx += chunk) {
-        const score = solidChunkScore(scene, cx, cy, chunk);
-        if (score.solidRatio < 0.78 || score.edgeRatio > 0.22) continue;
-        const variant = Math.floor(hash(cx * 23, cy * 29, rng.seed) * 4) % 4;
-        const key = `terrain-brush-fill-${variant}`;
-        const sprite = scene.terrainBrushSpriteAt(index, key);
-        const width = chunk * TILE * (1.08 + hash(cx, cy, rng.seed + 501) * 0.16);
-        const height = chunk * TILE * (0.96 + hash(cy, cx, rng.seed + 503) * 0.16);
-        sprite
-          .setTexture(key)
-          .setVisible(true)
-          .setPosition((cx + chunk * 0.5) * TILE, (cy + chunk * 0.5) * TILE)
-          .setOrigin(0.5)
-          .setDisplaySize(width, height)
-          .setFlipX(hash(cx, cy, rng.seed + 505) > 0.5)
-          .setFlipY(hash(cy, cx, rng.seed + 507) > 0.5)
-          .setAlpha(0.2)
-          .setDepth(0.35);
-        index += 1;
+function terrainVisualChunk(scene: DeepdiveScene, chunkX: number, chunkY: number): TerrainVisualChunk {
+    const key = `${chunkX}:${chunkY}`;
+    const cached = scene.terrainVisualChunks.get(key);
+    if (cached && !scene.terrainVisualDirtyChunks.has(key)) return cached;
+    const chunk = buildTerrainVisualChunk(scene, chunkX, chunkY);
+    scene.terrainVisualChunks.set(key, chunk);
+    scene.terrainVisualDirtyChunks.delete(key);
+    return chunk;
+  }
+
+function buildTerrainVisualChunk(scene: DeepdiveScene, chunkX: number, chunkY: number): TerrainVisualChunk {
+    const key = `${chunkX}:${chunkY}`;
+    const placements: TerrainBrushPlacement[] = [];
+    const size = TERRAIN_VISUAL_CHUNK_SIZE;
+    const startX = chunkX * size;
+    const startY = chunkY * size;
+    appendFillPlacement(scene, placements, chunkX, chunkY, startX, startY, size);
+
+    const segmentStartX = Math.floor((startX - TERRAIN_EDGE_SEGMENT_TILES) / TERRAIN_EDGE_SEGMENT_TILES) * TERRAIN_EDGE_SEGMENT_TILES;
+    const segmentEndX = startX + size + TERRAIN_EDGE_SEGMENT_TILES;
+    for (let y = startY - 2; y <= startY + size + 2; y += 1) {
+      for (let sx = segmentStartX; sx <= segmentEndX; sx += TERRAIN_EDGE_SEGMENT_TILES) {
+        if (!anchorBelongsToChunk(sx, y, chunkX, chunkY)) continue;
+        if (horizontalSegmentExposed(scene, sx, y, true)) placements.push(ledgePlacement(sx, y, true));
+        if (horizontalSegmentExposed(scene, sx, y, false)) placements.push(ledgePlacement(sx, y, false));
       }
     }
-    return index;
+
+    const segmentStartY = Math.floor((startY - TERRAIN_EDGE_SEGMENT_TILES) / TERRAIN_EDGE_SEGMENT_TILES) * TERRAIN_EDGE_SEGMENT_TILES;
+    const segmentEndY = startY + size + TERRAIN_EDGE_SEGMENT_TILES;
+    for (let x = startX - 2; x <= startX + size + 2; x += 1) {
+      for (let sy = segmentStartY; sy <= segmentEndY; sy += TERRAIN_EDGE_SEGMENT_TILES) {
+        if (!anchorBelongsToChunk(x, sy, chunkX, chunkY)) continue;
+        if (verticalSegmentExposed(scene, x, sy, true)) placements.push(wallPlacement(x, sy, true));
+        if (verticalSegmentExposed(scene, x, sy, false)) placements.push(wallPlacement(x, sy, false));
+      }
+    }
+
+    for (let y = startY; y < startY + size; y += 1) {
+      for (let x = startX; x < startX + size; x += 1) {
+        appendCornerPlacements(scene, placements, x, y);
+      }
+    }
+
+    placements.sort((a, b) => a.depth - b.depth || a.key.localeCompare(b.key));
+    return { key, chunkX, chunkY, placements };
+  }
+
+function appendFillPlacement(
+  scene: DeepdiveScene,
+  placements: TerrainBrushPlacement[],
+  chunkX: number,
+  chunkY: number,
+  startX: number,
+  startY: number,
+  size: number,
+) {
+    // Deepdive-style terrain reads as a dark silhouette; interior rock plates made square backing visible.
+    void scene;
+    void placements;
+    void chunkX;
+    void chunkY;
+    void startX;
+    void startY;
+    void size;
+  }
+
+function anchorBelongsToChunk(x: number, y: number, chunkX: number, chunkY: number) {
+    return Math.floor(x / TERRAIN_VISUAL_CHUNK_SIZE) === chunkX
+      && Math.floor(y / TERRAIN_VISUAL_CHUNK_SIZE) === chunkY;
+  }
+
+function placementIntersects(placement: TerrainBrushPlacement, minX: number, maxX: number, minY: number, maxY: number) {
+    const halfW = placement.width * Math.max(placement.originX, 1 - placement.originX);
+    const halfH = placement.height * Math.max(placement.originY, 1 - placement.originY);
+    return placement.x + halfW >= minX
+      && placement.x - halfW <= maxX
+      && placement.y + halfH >= minY
+      && placement.y - halfH <= maxY;
+  }
+
+function drawTerrainPlacement(scene: DeepdiveScene, placement: TerrainBrushPlacement, activeKeys: Set<string>) {
+    activeKeys.add(placement.key);
+    const sprite = scene.terrainBrushSpriteForKey(placement.key, placement.textureKey);
+    sprite
+      .setTexture(placement.textureKey)
+      .setVisible(true)
+      .setPosition(placement.x, placement.y)
+      .setOrigin(placement.originX, placement.originY)
+      .setDisplaySize(placement.width, placement.height)
+      .setFlipX(placement.flipX)
+      .setFlipY(placement.flipY)
+      .setAlpha(placement.alpha)
+      .setDepth(placement.depth);
   }
 
 function solidChunkScore(scene: DeepdiveScene, startX: number, startY: number, size: number) {
@@ -326,62 +374,100 @@ function solidChunkScore(scene: DeepdiveScene, startX: number, startY: number, s
 
 function horizontalSegmentExposed(scene: DeepdiveScene, sx: number, y: number, north: boolean) {
     let exposed = 0;
-    for (let x = sx; x < sx + 3; x += 1) {
+    for (let x = sx; x < sx + TERRAIN_EDGE_SEGMENT_TILES; x += 1) {
       const tile = scene.getTile(x, y);
       if (tile === 'water') continue;
       if ((north ? scene.getTile(x, y - 1) : scene.getTile(x, y + 1)) === 'water') exposed += 1;
     }
-    return exposed >= 2;
+    return exposed >= 3;
   }
 
 function verticalSegmentExposed(scene: DeepdiveScene, x: number, sy: number, west: boolean) {
     let exposed = 0;
-    for (let y = sy; y < sy + 3; y += 1) {
+    for (let y = sy; y < sy + TERRAIN_EDGE_SEGMENT_TILES; y += 1) {
       const tile = scene.getTile(x, y);
       if (tile === 'water') continue;
       if ((west ? scene.getTile(x - 1, y) : scene.getTile(x + 1, y)) === 'water') exposed += 1;
     }
-    return exposed >= 2;
+    return exposed >= 4;
   }
 
-function stampLedgeSegment(scene: DeepdiveScene, sx: number, y: number, north: boolean, spriteIndex: number) {
+function ledgePlacement(sx: number, y: number, north: boolean): TerrainBrushPlacement {
     const variant = Math.floor(hash(sx * 11, y * 13 + (north ? 0 : 101), rng.seed) * 4) % 4;
-    const sprite = scene.terrainBrushSpriteAt(spriteIndex, `terrain-brush-ledge-${variant}`);
-    const width = 108 + hash(sx, y, rng.seed + 401) * 18;
-    const height = 44 + hash(y, sx, rng.seed + 403) * 12;
-    const x = (sx + 1.5) * TILE + (hash(sx * 5, y * 7, rng.seed + 405) - 0.5) * 10;
+    const width = 142 + hash(sx, y, rng.seed + 401) * 22;
+    const height = 42 + hash(y, sx, rng.seed + 403) * 10;
+    const x = (sx + TERRAIN_EDGE_SEGMENT_TILES * 0.5) * TILE + (hash(sx * 5, y * 7, rng.seed + 405) - 0.5) * 8;
     const yPos = north ? y * TILE + 4 : (y + 1) * TILE - 4;
-    sprite
-      .setTexture(`terrain-brush-ledge-${variant}`)
-      .setVisible(true)
-      .setPosition(x, yPos)
-      .setOrigin(0.5, north ? 0.2 : 0.8)
-      .setDisplaySize(width, height)
-      .setFlipX(hash(sx, y, rng.seed + 101) > 0.5)
-      .setFlipY(!north)
-      .setAlpha(0.86)
-      .setDepth(0.78);
-    return spriteIndex + 1;
+    return {
+      key: `terrain:ledge:${sx}:${y}:${north ? 'n' : 's'}`,
+      textureKey: `terrain-brush-ledge-${variant}`,
+      x,
+      y: yPos,
+      width,
+      height,
+      originX: 0.5,
+      originY: north ? 0.2 : 0.8,
+      flipX: hash(sx, y, rng.seed + 101) > 0.5,
+      flipY: !north,
+      alpha: 0.62,
+      depth: 0.78,
+    };
   }
 
-function stampWallSegment(scene: DeepdiveScene, x: number, sy: number, west: boolean, spriteIndex: number) {
+function wallPlacement(x: number, sy: number, west: boolean): TerrainBrushPlacement {
     const variant = Math.floor(hash(x * 17, sy * 19 + (west ? 0 : 103), rng.seed) * 4) % 4;
-    const sprite = scene.terrainBrushSpriteAt(spriteIndex, `terrain-brush-wall-${variant}`);
-    const height = 104 + hash(x, sy, rng.seed + 411) * 20;
-    const width = 52 + hash(sy, x, rng.seed + 413) * 14;
+    const height = 148 + hash(x, sy, rng.seed + 411) * 24;
+    const width = 48 + hash(sy, x, rng.seed + 413) * 12;
     const xPos = west ? x * TILE + 3 : (x + 1) * TILE - 3;
-    const y = (sy + 1.5) * TILE + (hash(x * 7, sy * 5, rng.seed + 415) - 0.5) * 10;
-    sprite
-      .setTexture(`terrain-brush-wall-${variant}`)
-      .setVisible(true)
-      .setPosition(xPos, y)
-      .setOrigin(west ? 0.24 : 0.76, 0.5)
-      .setDisplaySize(width, height)
-      .setFlipX(!west)
-      .setFlipY(hash(x, sy, rng.seed + 103) > 0.5)
-      .setAlpha(0.76)
-      .setDepth(0.77);
-    return spriteIndex + 1;
+    const y = (sy + TERRAIN_EDGE_SEGMENT_TILES * 0.5) * TILE + (hash(x * 7, sy * 5, rng.seed + 415) - 0.5) * 8;
+    return {
+      key: `terrain:wall:${x}:${sy}:${west ? 'w' : 'e'}`,
+      textureKey: `terrain-brush-wall-${variant}`,
+      x: xPos,
+      y,
+      width,
+      height,
+      originX: west ? 0.24 : 0.76,
+      originY: 0.5,
+      flipX: !west,
+      flipY: hash(x, sy, rng.seed + 103) > 0.5,
+      alpha: 0.34,
+      depth: 0.72,
+    };
+  }
+
+function appendCornerPlacements(scene: DeepdiveScene, placements: TerrainBrushPlacement[], x: number, y: number) {
+    if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H || scene.getTile(x, y) === 'water') return;
+    const northWater = scene.getTile(x, y - 1) === 'water';
+    const southWater = scene.getTile(x, y + 1) === 'water';
+    const westWater = scene.getTile(x - 1, y) === 'water';
+    const eastWater = scene.getTile(x + 1, y) === 'water';
+    if (hash(x * 61, y * 67, rng.seed + 641) < 0.38) return;
+    if (northWater && westWater && scene.getTile(x - 1, y - 1) === 'water') placements.push(cornerPlacement(x, y, 'nw'));
+    if (northWater && eastWater && scene.getTile(x + 1, y - 1) === 'water') placements.push(cornerPlacement(x, y, 'ne'));
+    if (southWater && westWater && scene.getTile(x - 1, y + 1) === 'water') placements.push(cornerPlacement(x, y, 'sw'));
+    if (southWater && eastWater && scene.getTile(x + 1, y + 1) === 'water') placements.push(cornerPlacement(x, y, 'se'));
+  }
+
+function cornerPlacement(x: number, y: number, corner: 'nw' | 'ne' | 'sw' | 'se'): TerrainBrushPlacement {
+    const variant = Math.floor(hash(x * 43 + corner.charCodeAt(0), y * 47 + corner.charCodeAt(1), rng.seed + 601) * 6) % 6;
+    const size = 56 + hash(x * 53, y * 59, rng.seed + 603) * 12;
+    const west = corner === 'nw' || corner === 'sw';
+    const north = corner === 'nw' || corner === 'ne';
+    return {
+      key: `terrain:corner:${x}:${y}:${corner}`,
+      textureKey: `terrain-brush-corner-${variant}`,
+      x: x * TILE + (west ? 2 : TILE - 2),
+      y: y * TILE + (north ? 2 : TILE - 2),
+      width: size,
+      height: size,
+      originX: west ? 0.18 : 0.82,
+      originY: north ? 0.18 : 0.82,
+      flipX: !west,
+      flipY: !north,
+      alpha: 0.26,
+      depth: 0.8,
+    };
   }
 
 function drawTerrainDetail(scene: DeepdiveScene, x: number, y: number, tile: Tile, fracture: number) {
@@ -389,25 +475,72 @@ function drawTerrainDetail(scene: DeepdiveScene, x: number, y: number, tile: Til
     const wy = y * TILE;
     const patch = hash(Math.floor(x / 3) * 17, Math.floor(y / 3) * 19, rng.seed);
     const fleck = hash(x * 29, y * 31, rng.seed);
-    if (fleck > 0.42) {
+    if (fleck > 0.58) {
       const tone = patch > 0.6 ? 0x314650 : 0x0b1820;
-      const alpha = patch > 0.6 ? 0.05 : 0.08;
+      const alpha = patch > 0.6 ? 0.035 : 0.05;
       const px = wx + 3 + hash(x, y, rng.seed + 3) * 16;
       const py = wy + 3 + hash(y, x, rng.seed + 5) * 16;
       scene.terrain.fillStyle(tone, alpha);
       scene.terrain.fillRect(Math.floor(px), Math.floor(py), fleck > 0.78 ? 8 : 4, fleck > 0.82 ? 2 : 3);
     }
     if (fracture > 0) {
-      scene.terrain.fillStyle(0x98b8bc, 0.05 + fracture * 0.08);
-      scene.terrain.fillCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * (0.18 + fracture * 0.14));
+      const cx = wx + TILE * (0.48 + (hash(x, y, rng.seed + 29) - 0.5) * 0.16);
+      const cy = wy + TILE * (0.52 + (hash(y, x, rng.seed + 31) - 0.5) * 0.16);
+      scene.terrain.fillStyle(0x050b10, 0.18 + fracture * 0.24);
+      scene.terrain.fillEllipse(cx, cy, TILE * (0.38 + fracture * 0.42), TILE * (0.22 + fracture * 0.26));
+      scene.terrain.lineStyle(2, 0xbbe8e3, 0.14 + fracture * 0.28);
+      for (let i = 0; i < 4; i += 1) {
+        const angle = hash(x * 17 + i, y * 19 - i, rng.seed + 33) * Math.PI * 2;
+        const inner = TILE * (0.08 + fracture * 0.06);
+        const outer = TILE * (0.22 + fracture * (0.28 + i * 0.03));
+        scene.terrain.lineBetween(
+          cx + Math.cos(angle) * inner,
+          cy + Math.sin(angle) * inner,
+          cx + Math.cos(angle) * outer,
+          cy + Math.sin(angle) * outer,
+        );
+      }
     }
   }
 
 function terrainBodyColor(tile: Tile, y: number) {
-    if (tile === 'anchorstone') return 0x18202d;
-    if (tile === 'bedrock') return 0x0d151e;
-    if (tile === 'sand') return y < WORLD_H * 0.34 ? 0x203139 : 0x17242d;
-    return y < WORLD_H * 0.58 ? 0x142632 : 0x101b26;
+    if (tile === 'anchorstone') return 0x070b10;
+    if (tile === 'bedrock') return 0x020407;
+    if (tile === 'sand') return y < WORLD_H * 0.34 ? 0x061015 : 0x04090e;
+    return y < WORLD_H * 0.58 ? 0x050b10 : 0x03070c;
+  }
+
+function drawOrganicEdgeFeather(scene: DeepdiveScene, x: number, y: number, tile: Tile) {
+    const wx = x * TILE;
+    const wy = y * TILE;
+    const northWater = scene.getTile(x, y - 1) === 'water';
+    const southWater = scene.getTile(x, y + 1) === 'water';
+    const westWater = scene.getTile(x - 1, y) === 'water';
+    const eastWater = scene.getTile(x + 1, y) === 'water';
+    const color = tile === 'sand' ? 0x071217 : 0x020509;
+    const glow = tile === 'sand' ? 0x153036 : 0x0a1f25;
+    const seed = hash(x * 73, y * 79, rng.seed + 733);
+    scene.terrainEdges.fillStyle(color, 0.08);
+    if (northWater) {
+      scene.terrainEdges.fillEllipse(wx + TILE * (0.5 + (seed - 0.5) * 0.18), wy + 1, TILE * 0.82, TILE * 0.22);
+    }
+    if (southWater) {
+      scene.terrainEdges.fillEllipse(wx + TILE * (0.5 - (seed - 0.5) * 0.18), wy + TILE - 1, TILE * 0.82, TILE * 0.22);
+    }
+    if (westWater) {
+      scene.terrainEdges.fillEllipse(wx + 1, wy + TILE * (0.5 + (seed - 0.5) * 0.18), TILE * 0.22, TILE * 0.82);
+    }
+    if (eastWater) {
+      scene.terrainEdges.fillEllipse(wx + TILE - 1, wy + TILE * (0.5 - (seed - 0.5) * 0.18), TILE * 0.22, TILE * 0.82);
+    }
+    if (seed > 0.7 && (northWater || southWater || westWater || eastWater)) {
+      scene.terrainEdges.fillStyle(glow, 0.06);
+      scene.terrainEdges.fillCircle(
+        wx + TILE * (0.3 + hash(x, y, rng.seed + 735) * 0.4),
+        wy + TILE * (0.3 + hash(y, x, rng.seed + 737) * 0.4),
+        TILE * (0.12 + hash(x + y, y - x, rng.seed + 739) * 0.1),
+      );
+    }
   }
 
 function drawTerrainContour(scene: DeepdiveScene, x: number, y: number, tile: Tile) {
@@ -420,9 +553,9 @@ function drawTerrainContour(scene: DeepdiveScene, x: number, y: number, tile: Ti
     const edgeColor = tile === 'sand' ? 0x57716d : 0x435f68;
     const shadowColor = 0x071018;
 
-    scene.terrainEdges.lineStyle(2, shadowColor, 0.22);
+    scene.terrainEdges.lineStyle(3, shadowColor, 0.14);
     drawContourLines(scene.terrainEdges, wx, wy, northWater, southWater, westWater, eastWater, 0);
-    scene.terrainEdges.lineStyle(1, edgeColor, 0.22);
+    scene.terrainEdges.lineStyle(1, edgeColor, 0.06);
     drawContourLines(scene.terrainEdges, wx, wy, northWater, southWater, westWater, eastWater, -1);
   }
 
@@ -454,10 +587,12 @@ function drawEmbeddedOre(scene: DeepdiveScene, x: number, y: number, tile: Tile,
     }
   }
 
-function drawOreBrush(scene: DeepdiveScene, x: number, y: number, tile: Tile, spriteIndex: number) {
+function drawOreBrush(scene: DeepdiveScene, x: number, y: number, tile: Tile, activeKeys: Set<string>) {
     const variant = oreBrushVariant(tile);
     const key = `terrain-brush-ore-${variant}`;
-    const sprite = scene.terrainBrushSpriteAt(spriteIndex, key);
+    const stableKey = `terrain:ore:${x}:${y}:${tile}`;
+    activeKeys.add(stableKey);
+    const sprite = scene.terrainBrushSpriteForKey(stableKey, key);
     const size = tile === 'ruinCore' || tile === 'abyssalCrown' ? 34 : 28;
     const offsetX = (hash(x * 31, y * 37, rng.seed) - 0.5) * 7;
     const offsetY = (hash(y * 41, x * 43, rng.seed) - 0.5) * 7;
@@ -471,7 +606,6 @@ function drawOreBrush(scene: DeepdiveScene, x: number, y: number, tile: Tile, sp
       .setFlipY(false)
       .setAlpha(0.92)
       .setDepth(0.86);
-    return spriteIndex + 1;
   }
 
 function oreBrushVariant(tile: Tile) {
