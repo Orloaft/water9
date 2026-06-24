@@ -4,7 +4,7 @@ import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGH
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,swimTopSpeed,tileTextureKey } from './helpers';
+import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,swimTopSpeed } from './helpers';
 import type { DeepdiveScene } from './scene';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 
@@ -93,42 +93,28 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     this.terrain.clear();
     this.terrainEdges.clear();
 
-    let tileSpriteIndex = 0;
+    drawTerrainRuns(this, startX, endX, startY, endY);
     for (let y = startY; y <= endY; y += 1) {
       for (let x = startX; x <= endX; x += 1) {
         const tile = this.getTile(x, y);
         if (tile === 'water') {
           if (hash(x, y, rng.seed) > 0.985) {
-            this.terrain.lineStyle(1, 0x84dce6, 0.28);
-            this.terrain.strokeCircle(x * TILE + 8, y * TILE + 8, 2 + hash(y, x, rng.seed) * 4);
+            this.terrainEdges.lineStyle(1, 0x84dce6, 0.22);
+            this.terrainEdges.strokeCircle(x * TILE + 8, y * TILE + 8, 2 + hash(y, x, rng.seed) * 4);
           }
           continue;
         }
         const def = tiles[tile];
         const wx = x * TILE;
         const wy = y * TILE;
-        this.terrain.fillStyle(terrainMassColor(tile, y), terrainMassAlpha(tile));
-        this.terrain.fillRect(wx, wy, TILE, TILE);
-        drawTerrainEdgeBands(this, x, y, tile);
         const fracture = this.damage[y][x] / def.hp;
-        const textureKey = tileTextureKey(tile, x, y);
-        const tileSprite = this.tileSpriteAt(tileSpriteIndex, textureKey);
-        const baseAlpha = terrainTileAlpha(tile, fracture);
-        tileSprite
-          .setTexture(textureKey)
-          .setVisible(true)
-          .setAlpha(baseAlpha)
-          .setPosition(wx, wy)
-          .setDisplaySize(TILE, TILE);
-        tileSpriteIndex += 1;
+        const exposed = exposedToWater(this, x, y);
+        drawTerrainDetail(this, x, y, tile, fracture);
+        if (exposed) drawTerrainContour(this, x, y, tile);
+        if (isOreTile(tile)) drawEmbeddedOre(this, x, y, tile, exposed);
         if (tile === 'anchorstone') {
-          this.terrain.lineStyle(2, 0xb9c2d0, 0.32);
-          this.terrain.strokeRect(wx, wy, TILE, TILE);
-        }
-        if (tile === 'anchorstone') {
-          this.terrain.lineStyle(1, 0x11141c, 0.4);
-          this.terrain.lineBetween(wx + 4, wy + 7, wx + 20, wy + 7);
-          this.terrain.lineBetween(wx + 6, wy + 16, wx + 18, wy + 16);
+          this.terrainEdges.lineStyle(1, 0xb9c2d0, 0.18);
+          this.terrainEdges.strokeRect(wx + 1, wy + 1, TILE - 2, TILE - 2);
         }
         if (fracture > 0) {
           drawFractureMarks(this, x, y, tile, fracture);
@@ -144,7 +130,7 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         }
       }
     }
-	    for (let i = tileSpriteIndex; i < this.tileSprites.length; i += 1) {
+	    for (let i = 0; i < this.tileSprites.length; i += 1) {
 	      this.tileSprites[i].setVisible(false);
 	    }
 	  }
@@ -194,79 +180,163 @@ export function drawEnvironmentProps(this: DeepdiveScene, camera: Phaser.Cameras
     }
   }
 
-function terrainTileAlpha(tile: string, fracture: number) {
-    if (tile === 'anchorstone') return 0.62;
-    if (tile === 'bedrock') return 0.46;
-    if (tile === 'sand' || tile === 'stone') return Phaser.Math.Clamp(0.22 + fracture * 0.18, 0.22, 0.46);
-    return Phaser.Math.Clamp(0.2 + fracture * 0.2, 0.2, 0.5);
+function exposedToWater(scene: DeepdiveScene, x: number, y: number) {
+    return scene.getTile(x, y - 1) === 'water'
+      || scene.getTile(x, y + 1) === 'water'
+      || scene.getTile(x - 1, y) === 'water'
+      || scene.getTile(x + 1, y) === 'water';
   }
 
-function terrainMassColor(tile: string, y: number) {
-    if (tile === 'anchorstone') return 0x1b2231;
-    if (tile === 'bedrock') return 0x101822;
-    if (tile === 'sand') return y < WORLD_H * 0.36 ? 0x203035 : 0x17242c;
-    if (tile === 'stone') return y < WORLD_H * 0.58 ? 0x162531 : 0x101b26;
-    if (isOreTile(tile as Tile)) return 0x121d28;
-    return 0x101923;
+function drawTerrainRuns(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number) {
+    for (let y = startY; y <= endY; y += 1) {
+      let runStart = -1;
+      let runColor = 0;
+      for (let x = startX; x <= endX + 1; x += 1) {
+        const tile = x <= endX ? scene.getTile(x, y) : 'water';
+        const solid = tile !== 'water';
+        const color = solid ? terrainBodyColor(tile, y) : -1;
+        if (solid && runStart < 0) {
+          runStart = x;
+          runColor = color;
+          continue;
+        }
+        if (solid && color === runColor) continue;
+        if (runStart >= 0) {
+          scene.terrain.fillStyle(runColor, 1);
+          scene.terrain.fillRect(runStart * TILE, y * TILE, (x - runStart) * TILE, TILE);
+        }
+        runStart = solid ? x : -1;
+        runColor = color;
+      }
+    }
   }
 
-function terrainMassAlpha(tile: string) {
-    if (tile === 'anchorstone') return 0.82;
-    if (tile === 'bedrock') return 0.72;
-    if (tile === 'sand') return 0.62;
-    if (tile === 'stone') return 0.68;
-    return 0.7;
-  }
-
-function drawTerrainEdgeBands(scene: DeepdiveScene, x: number, y: number, tile: Tile) {
+function drawTerrainDetail(scene: DeepdiveScene, x: number, y: number, tile: Tile, fracture: number) {
     const wx = x * TILE;
     const wy = y * TILE;
-    const edge = tile === 'sand' ? 5 : 4;
-    const bright = tile === 'sand' ? 0x8aa494 : 0x6f8791;
-    const shadow = 0x071018;
-    const alpha = tile === 'anchorstone' ? 0.24 : 0.16;
+    const patch = hash(Math.floor(x / 3) * 17, Math.floor(y / 3) * 19, rng.seed);
+    const fleck = hash(x * 29, y * 31, rng.seed);
+    if (fleck > 0.42) {
+      const tone = patch > 0.6 ? 0x314650 : 0x0b1820;
+      const alpha = patch > 0.6 ? 0.05 : 0.08;
+      const px = wx + 3 + hash(x, y, rng.seed + 3) * 16;
+      const py = wy + 3 + hash(y, x, rng.seed + 5) * 16;
+      scene.terrain.fillStyle(tone, alpha);
+      scene.terrain.fillRect(Math.floor(px), Math.floor(py), fleck > 0.78 ? 8 : 4, fleck > 0.82 ? 2 : 3);
+    }
+    if (fracture > 0) {
+      scene.terrain.fillStyle(0x98b8bc, 0.05 + fracture * 0.08);
+      scene.terrain.fillCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * (0.18 + fracture * 0.14));
+    }
+  }
+
+function terrainBodyColor(tile: Tile, y: number) {
+    if (tile === 'anchorstone') return 0x18202d;
+    if (tile === 'bedrock') return 0x0d151e;
+    if (tile === 'sand') return y < WORLD_H * 0.34 ? 0x203139 : 0x17242d;
+    return y < WORLD_H * 0.58 ? 0x142632 : 0x101b26;
+  }
+
+function drawTerrainContour(scene: DeepdiveScene, x: number, y: number, tile: Tile) {
+    const wx = x * TILE;
+    const wy = y * TILE;
     const northWater = scene.getTile(x, y - 1) === 'water';
     const southWater = scene.getTile(x, y + 1) === 'water';
     const westWater = scene.getTile(x - 1, y) === 'water';
     const eastWater = scene.getTile(x + 1, y) === 'water';
-    const exposed = northWater || southWater || westWater || eastWater;
-    if (!exposed) return;
+    const edgeColor = tile === 'sand' ? 0x57716d : 0x435f68;
+    const shadowColor = 0x071018;
 
-    drawEdgeNotches(scene, x, y, northWater, southWater, westWater, eastWater);
-    if (isOreTile(tile)) {
-      scene.terrainEdges.fillStyle(0x07131a, 0.22);
-      scene.terrainEdges.fillCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * 0.48);
-      scene.terrainEdges.lineStyle(1, 0xb8edf0, 0.12);
-      scene.terrainEdges.strokeCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * 0.36);
-    }
-    scene.terrainEdges.fillStyle(bright, alpha);
-    if (northWater) scene.terrainEdges.fillRect(wx, wy, TILE, edge);
-    if (southWater) scene.terrainEdges.fillRect(wx, wy + TILE - edge, TILE, edge);
-    if (westWater) scene.terrainEdges.fillRect(wx, wy, edge, TILE);
-    if (eastWater) scene.terrainEdges.fillRect(wx + TILE - edge, wy, edge, TILE);
-    scene.terrainEdges.lineStyle(1, shadow, 0.28);
-    if (northWater) scene.terrainEdges.lineBetween(wx, wy, wx + TILE, wy);
-    if (southWater) scene.terrainEdges.lineBetween(wx, wy + TILE, wx + TILE, wy + TILE);
-    if (westWater) scene.terrainEdges.lineBetween(wx, wy, wx, wy + TILE);
-    if (eastWater) scene.terrainEdges.lineBetween(wx + TILE, wy, wx + TILE, wy + TILE);
+    drawEdgeRockLumps(scene, x, y, tile, northWater, southWater, westWater, eastWater);
+    drawEdgeWaterBites(scene, x, y, northWater, southWater, westWater, eastWater);
+    scene.terrainEdges.lineStyle(2, shadowColor, 0.38);
+    drawContourLines(scene.terrainEdges, wx, wy, northWater, southWater, westWater, eastWater, 0);
+    scene.terrainEdges.lineStyle(1, edgeColor, 0.44);
+    drawContourLines(scene.terrainEdges, wx, wy, northWater, southWater, westWater, eastWater, -1);
   }
 
-function drawEdgeNotches(scene: DeepdiveScene, x: number, y: number, northWater: boolean, southWater: boolean, westWater: boolean, eastWater: boolean) {
+function drawEdgeRockLumps(scene: DeepdiveScene, x: number, y: number, tile: Tile, northWater: boolean, southWater: boolean, westWater: boolean, eastWater: boolean) {
     const wx = x * TILE;
     const wy = y * TILE;
-    const waterColor = terrainWaterColor();
-    scene.terrainEdges.fillStyle(waterColor, 0.44);
-    for (let i = 0; i < 3; i += 1) {
+    const bodyColor = terrainBodyColor(tile, y);
+    scene.terrainEdges.fillStyle(bodyColor, 0.96);
+    for (let i = 0; i < 2; i += 1) {
+      const a = hash(x * 47 + i * 13, y * 53, rng.seed);
+      if (a < 0.32) continue;
+      const b = hash(y * 59, x * 61 + i * 17, rng.seed);
+      const length = 7 + a * 8;
+      const breadth = 3 + b * 5;
+      const along = (i + 0.5 + (a - 0.5) * 0.42) * (TILE / 2);
+      if (northWater) scene.terrainEdges.fillEllipse(wx + along, wy - breadth * 0.2, length, breadth);
+      if (southWater) scene.terrainEdges.fillEllipse(wx + along, wy + TILE + breadth * 0.2, length, breadth);
+      if (westWater) scene.terrainEdges.fillEllipse(wx - breadth * 0.2, wy + along, breadth, length);
+      if (eastWater) scene.terrainEdges.fillEllipse(wx + TILE + breadth * 0.2, wy + along, breadth, length);
+    }
+  }
+
+function drawContourLines(graphics: Phaser.GameObjects.Graphics, wx: number, wy: number, north: boolean, south: boolean, west: boolean, east: boolean, inset: number) {
+    if (north) graphics.lineBetween(wx, wy + inset, wx + TILE, wy + inset);
+    if (south) graphics.lineBetween(wx, wy + TILE - inset, wx + TILE, wy + TILE - inset);
+    if (west) graphics.lineBetween(wx + inset, wy, wx + inset, wy + TILE);
+    if (east) graphics.lineBetween(wx + TILE - inset, wy, wx + TILE - inset, wy + TILE);
+  }
+
+function drawEdgeWaterBites(scene: DeepdiveScene, x: number, y: number, northWater: boolean, southWater: boolean, westWater: boolean, eastWater: boolean) {
+    const wx = x * TILE;
+    const wy = y * TILE;
+    scene.terrainEdges.fillStyle(terrainWaterColor(), 0.18);
+    for (let i = 0; i < 2; i += 1) {
       const a = hash(x * 31 + i * 7, y * 37, rng.seed);
       const b = hash(y * 41, x * 43 + i * 11, rng.seed);
-      const length = 5 + a * 8;
-      const breadth = 3 + b * 5;
-      const along = (i + 0.5 + (a - 0.5) * 0.28) * (TILE / 3);
-      if (northWater) scene.terrainEdges.fillEllipse(wx + along, wy + breadth * 0.4, length, breadth);
-      if (southWater) scene.terrainEdges.fillEllipse(wx + along, wy + TILE - breadth * 0.4, length, breadth);
-      if (westWater) scene.terrainEdges.fillEllipse(wx + breadth * 0.4, wy + along, breadth, length);
-      if (eastWater) scene.terrainEdges.fillEllipse(wx + TILE - breadth * 0.4, wy + along, breadth, length);
+      const length = 4 + a * 6;
+      const breadth = 2 + b * 3;
+      const along = (i + 0.5 + (a - 0.5) * 0.35) * (TILE / 2);
+      if (northWater) scene.terrainEdges.fillEllipse(wx + along, wy + breadth * 0.25, length, breadth);
+      if (southWater) scene.terrainEdges.fillEllipse(wx + along, wy + TILE - breadth * 0.25, length, breadth);
+      if (westWater) scene.terrainEdges.fillEllipse(wx + breadth * 0.25, wy + along, breadth, length);
+      if (eastWater) scene.terrainEdges.fillEllipse(wx + TILE - breadth * 0.25, wy + along, breadth, length);
     }
+  }
+
+function drawEmbeddedOre(scene: DeepdiveScene, x: number, y: number, tile: Tile, exposed: boolean) {
+    if (!exposed && hash(x * 13, y * 17, rng.seed) < 0.84) return;
+    const wx = x * TILE;
+    const wy = y * TILE;
+    const color = orePixelColor(tile);
+    const glow = oreGlowColor(tile);
+    const cx = wx + TILE * (0.45 + (hash(x, y, rng.seed + 71) - 0.5) * 0.24);
+    const cy = wy + TILE * (0.48 + (hash(y, x, rng.seed + 73) - 0.5) * 0.24);
+    scene.terrainEdges.fillStyle(0x041019, exposed ? 0.6 : 0.34);
+    scene.terrainEdges.fillCircle(cx, cy, exposed ? 8 : 5);
+    scene.terrainEdges.fillStyle(glow, exposed ? 0.2 : 0.1);
+    scene.terrainEdges.fillCircle(cx, cy, exposed ? 11 : 7);
+    for (let i = 0; i < 5; i += 1) {
+      const angle = hash(x * 23 + i, y * 29, rng.seed) * Math.PI * 2;
+      const radius = hash(y * 31, x * 37 + i, rng.seed) * (exposed ? 7 : 4);
+      const size = i === 0 ? 4 : 2 + hash(i, x + y, rng.seed) * 2;
+      scene.terrainEdges.fillStyle(i === 0 ? 0xe6fbff : color, i === 0 ? 0.86 : 0.72);
+      scene.terrainEdges.fillRect(Math.floor(cx + Math.cos(angle) * radius), Math.floor(cy + Math.sin(angle) * radius), size, size);
+    }
+  }
+
+function orePixelColor(tile: Tile) {
+    if (tile === 'copper') return 0xc47a42;
+    if (tile === 'quartz') return 0xd7f6f0;
+    if (tile === 'ruby') return 0xd94b68;
+    if (tile === 'cobalt') return 0x5f95ff;
+    if (tile === 'sunstone') return 0xffc857;
+    if (tile === 'alienAlloy') return 0x73fbd3;
+    if (tile === 'ruinCore') return 0xb48cff;
+    return 0xb9f27c;
+  }
+
+function oreGlowColor(tile: Tile) {
+    if (tile === 'ruby') return 0xff4f64;
+    if (tile === 'cobalt') return 0x6dd6ff;
+    if (tile === 'sunstone') return 0xffd166;
+    if (tile === 'alienAlloy') return 0x73fbd3;
+    if (tile === 'ruinCore') return 0xd06bff;
+    return orePixelColor(tile);
   }
 
 function terrainWaterColor() {

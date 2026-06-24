@@ -4,7 +4,7 @@ import { ENTITY_SCALE,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { cargoCapacity,clearBleed,clearVenom,createConsumableItem,fuelMax,oxygenMax,refillAtBoat,restart,scaledDepthPx,shopItem,subDef,upgradeMax } from './helpers';
+import { cargoCapacity,clearBleed,clearVenom,createConsumableItem,fuelMax,hash,oxygenMax,refillAtBoat,restart,scaledDepthPx,shopItem,subDef,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { articulatedManifestInfo,articulatedPlaceholderTextureKeys,partManifest } from './articulated';
 import type { DeepdiveScene } from './scene';
@@ -386,19 +386,24 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
     } else if (command === 'terrainReview') {
       const centerX = Math.floor(WORLD_W * 0.5);
       const floorY = Math.floor((SURFACE_Y + 780) / TILE);
-      const left = centerX - 18;
-      const right = centerX + 18;
+      const left = centerX - 42;
+      const right = centerX + 42;
       const top = floorY - 8;
       const bottom = floorY + 8;
+      const surfaceAt = (x: number) => {
+        const wave = Math.sin((x - left) * 0.22) * 2.2 + Math.sin((x - left) * 0.09 + 1.8) * 1.3;
+        return floorY + Math.round(wave);
+      };
       for (let y = top; y <= bottom; y += 1) {
         for (let x = left; x <= right; x += 1) {
-          const tile: Tile = y < floorY
+          const surface = surfaceAt(x);
+          const orePocket = x >= centerX + 7 && x <= centerX + 13 && y >= surface && y <= surface + 2;
+          const undercut = x >= centerX - 15 && x <= centerX - 10 && y >= surface && y <= surface + 1 && hash(x, y, rng.seed + 233) > 0.72;
+          const tile: Tile = y < surface || undercut
             ? 'water'
-            : y === floorY && x >= centerX + 7 && x <= centerX + 11
-              ? x % 2 === 0 ? 'copper' : 'quartz'
-              : y === floorY + 1 && x >= centerX + 9 && x <= centerX + 12
-                ? 'copper'
-                : y < floorY + 3 ? 'stone' : 'sand';
+            : orePocket
+              ? (x + y) % 3 === 0 ? 'quartz' : 'copper'
+              : y < surface + 4 ? 'stone' : 'sand';
           this.setTile(x, y, tile);
           if (this.damage[y]?.[x] !== undefined) this.damage[y][x] = 0;
         }
@@ -409,9 +414,10 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       state.paused = false;
       state.lost = false;
       state.radioOpen = false;
-      state.depth = Math.max(0, Math.round((floorY * TILE - SURFACE_Y) / 6));
+      const playerSurface = surfaceAt(centerX);
+      state.depth = Math.max(0, Math.round((playerSurface * TILE - SURFACE_Y) / 6));
       this.player.x = centerX * TILE;
-      this.player.y = floorY * TILE - 22;
+      this.player.y = playerSurface * TILE - 24;
       this.player.vx = 0;
       this.player.vy = 0;
       this.player.facing.set(0, 1);
@@ -428,7 +434,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       this.populateEnvironmentProps();
       this.terrainBoundsKey = '';
       this.terrainDirty = true;
-      state.status = 'Terrain review: clean cave face and exposed ore seam.';
+      state.status = 'Terrain review: irregular destructible cave face and embedded ore.';
       renderHud();
     } else if (command === 'teleportToArticulated') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string } : {};
