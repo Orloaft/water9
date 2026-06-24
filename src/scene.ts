@@ -22,7 +22,6 @@ import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
   terrain!: Phaser.GameObjects.Graphics;
-  terrainEdges!: Phaser.GameObjects.Graphics;
   articulatedBridges!: Phaser.GameObjects.Graphics;
   actors!: Phaser.GameObjects.Graphics;
   darkness!: Phaser.GameObjects.Graphics;
@@ -101,7 +100,6 @@ export class DeepdiveScene extends Phaser.Scene {
       .setDepth(-12 + index)
       .setScrollFactor(1));
     this.terrain = this.add.graphics().setDepth(0);
-    this.terrainEdges = this.add.graphics().setDepth(0.85);
     this.bargeSprite = this.add.image(WORLD_W * TILE * 0.5, SURFACE_Y + 24, 'barge-platform')
       .setDepth(2.6)
       .setOrigin(0.5, 0);

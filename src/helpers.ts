@@ -572,7 +572,9 @@ export function biomeTerrainPrefixes() {
 }
 
 export function terrainTileVariant(x: number, y: number) {
-  return Math.floor(hash(x * 19, y * 23, rng.seed) * 5) % 5;
+  const patchX = Math.floor(x / 3);
+  const patchY = Math.floor(y / 3);
+  return Math.floor(hash(patchX * 19, patchY * 23, rng.seed) * 5) % 5;
 }
 
 export function tileVariant(x: number, y: number) {

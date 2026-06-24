@@ -321,7 +321,13 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
         const def = tiles[tile];
         if (!def.solid) continue;
 
-        if (isOreTile(tile)) {
+        const northWater = this.getTile(x, y - 1) === 'water';
+        const southWater = this.getTile(x, y + 1) === 'water';
+        const westWater = this.getTile(x - 1, y) === 'water';
+        const eastWater = this.getTile(x + 1, y) === 'water';
+        const exposedToWater = northWater || southWater || westWater || eastWater;
+
+        if (isOreTile(tile) && exposedToWater && hash(x * 17, y * 19, rng.seed) > 0.28) {
           const variant = Math.floor(hash(x * 13, y * 17, rng.seed) * 3);
           const waterBias = [
             { dx: 0, dy: -1, angle: -Math.PI / 2 },
@@ -332,7 +338,7 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
           const angle = waterBias?.angle ?? (hash(x, y, rng.seed) * Math.PI * 2);
           const normalX = Math.cos(angle);
           const normalY = Math.sin(angle);
-          const size = 42 + variant * 7 + (tile === 'ruinCore' || tile === 'abyssalCrown' ? 16 : 0);
+          const size = 20 + variant * 3 + (tile === 'ruinCore' || tile === 'abyssalCrown' ? 8 : 0);
           props.push({
             id: `ore-${x}-${y}`,
             kind: 'ore',
@@ -345,17 +351,13 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
             width: size,
             height: size,
             rotation: (hash(x * 5, y * 7, rng.seed) - 0.5) * 0.52,
-            alpha: 0.98,
-            depth: 1.28,
+            alpha: 0.9,
+            depth: 1.18,
             flipX: hash(x, y, rng.seed + 19) > 0.5,
           });
         }
 
-        const northWater = this.getTile(x, y - 1) === 'water';
-        const southWater = this.getTile(x, y + 1) === 'water';
-        const westWater = this.getTile(x - 1, y) === 'water';
-        const eastWater = this.getTile(x + 1, y) === 'water';
-        if (northWater && hash(x * 29, y * 31, rng.seed) > 0.26) {
+        if (northWater && hash(x * 29, y * 31, rng.seed) > 0.985) {
           const variant = Math.floor(hash(x, y, rng.seed) * 2);
           props.push({
             id: `floor-rock-${x}-${y}`,
@@ -366,15 +368,15 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
             tileX: x,
             tileY: y,
             tile,
-            width: 78 + hash(y, x, rng.seed) * 42,
-            height: 44 + hash(x, y, rng.seed + 3) * 24,
-            rotation: (hash(x, y, rng.seed + 5) - 0.5) * 0.18,
-            alpha: 0.98,
-            depth: 1.04,
+            width: 54 + hash(y, x, rng.seed) * 32,
+            height: 28 + hash(x, y, rng.seed + 3) * 14,
+            rotation: (hash(x, y, rng.seed + 5) - 0.5) * 0.1,
+            alpha: 0.54,
+            depth: 0.82,
             flipX: hash(x, y, rng.seed + 7) > 0.5,
           });
         }
-        if (southWater && hash(x * 37, y * 41, rng.seed) > 0.34) {
+        if (southWater && hash(x * 37, y * 41, rng.seed) > 0.99) {
           props.push({
             id: `ceiling-rock-${x}-${y}`,
             kind: 'rock',
@@ -384,15 +386,15 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
             tileX: x,
             tileY: y,
             tile,
-            width: 74 + hash(x, y, rng.seed + 11) * 38,
-            height: 40 + hash(y, x, rng.seed + 13) * 22,
-            rotation: Math.PI + (hash(x, y, rng.seed + 17) - 0.5) * 0.12,
-            alpha: 0.94,
-            depth: 0.98,
+            width: 50 + hash(x, y, rng.seed + 11) * 30,
+            height: 26 + hash(y, x, rng.seed + 13) * 14,
+            rotation: Math.PI + (hash(x, y, rng.seed + 17) - 0.5) * 0.08,
+            alpha: 0.5,
+            depth: 0.82,
             flipX: hash(y, x, rng.seed + 23) > 0.5,
           });
         }
-        if ((westWater || eastWater) && hash(x * 43, y * 47, rng.seed) > 0.32) {
+        if ((westWater || eastWater) && hash(x * 43, y * 47, rng.seed) > 0.992) {
           const left = westWater;
           props.push({
             id: `wall-rock-${x}-${y}`,
@@ -403,11 +405,11 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
             tileX: x,
             tileY: y,
             tile,
-            width: 42 + hash(x, y, rng.seed + 29) * 24,
-            height: 90 + hash(y, x, rng.seed + 31) * 56,
-            rotation: (left ? 0 : Math.PI) + (hash(x, y, rng.seed + 37) - 0.5) * 0.16,
-            alpha: 0.93,
-            depth: 0.99,
+            width: 30 + hash(x, y, rng.seed + 29) * 18,
+            height: 56 + hash(y, x, rng.seed + 31) * 36,
+            rotation: (left ? 0 : Math.PI) + (hash(x, y, rng.seed + 37) - 0.5) * 0.1,
+            alpha: 0.48,
+            depth: 0.82,
           });
         }
         if (northWater && state.biome >= 3 && hash(x * 53, y * 59, rng.seed) > 0.94) {
@@ -430,7 +432,7 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
         }
       }
     }
-    this.environmentProps = props.slice(0, 1800);
+    this.environmentProps = props.slice(0, 700);
   }
 
 export function makeBobbits(this: DeepdiveScene, ): Bobbit[] {

@@ -383,6 +383,53 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.carrierSub.vx = 0;
         state.carrierSub.vy = 0;
       }
+    } else if (command === 'terrainReview') {
+      const centerX = Math.floor(WORLD_W * 0.5);
+      const floorY = Math.floor((SURFACE_Y + 780) / TILE);
+      const left = centerX - 18;
+      const right = centerX + 18;
+      const top = floorY - 8;
+      const bottom = floorY + 8;
+      for (let y = top; y <= bottom; y += 1) {
+        for (let x = left; x <= right; x += 1) {
+          const tile: Tile = y < floorY
+            ? 'water'
+            : y === floorY && x >= centerX + 7 && x <= centerX + 11
+              ? x % 2 === 0 ? 'copper' : 'quartz'
+              : y === floorY + 1 && x >= centerX + 9 && x <= centerX + 12
+                ? 'copper'
+                : y < floorY + 3 ? 'stone' : 'sand';
+          this.setTile(x, y, tile);
+          if (this.damage[y]?.[x] !== undefined) this.damage[y][x] = 0;
+        }
+      }
+      state.started = true;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.lost = false;
+      state.radioOpen = false;
+      state.depth = Math.max(0, Math.round((floorY * TILE - SURFACE_Y) / 6));
+      this.player.x = centerX * TILE;
+      this.player.y = floorY * TILE - 22;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      this.player.facing.set(0, 1);
+      this.player.facingSign = 1;
+      this.fish = [];
+      this.flora = [];
+      this.articulatedCreatures = [];
+      this.bobbits = [];
+      this.hazards = [];
+      this.larvae = [];
+      this.nestEggs = [];
+      this.looseItems = [];
+      clearPlaytestFloatingText(this);
+      this.populateEnvironmentProps();
+      this.terrainBoundsKey = '';
+      this.terrainDirty = true;
+      state.status = 'Terrain review: clean cave face and exposed ore seam.';
+      renderHud();
     } else if (command === 'teleportToArticulated') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string } : {};
       const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));

@@ -49,6 +49,7 @@ export type PlaytestCommand =
   | 'buySub'
   | 'refill'
   | 'teleportDepth'
+  | 'terrainReview'
   | 'teleportToArticulated'
   | 'liveArticulatedReview'
   | 'advanceLiveArticulatedReview'

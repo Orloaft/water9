@@ -91,15 +91,6 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     this.terrainDirty = false;
     this.terrainBoundsKey = boundsKey;
     this.terrain.clear();
-    this.terrainEdges.clear();
-
-    for (let y = startY; y <= endY; y += 1) {
-      for (let x = startX; x <= endX; x += 1) {
-        const tile = this.getTile(x, y);
-        if (tile === 'water') continue;
-        drawCaveMassCell(this, x, y, tile);
-      }
-    }
 
     let tileSpriteIndex = 0;
     for (let y = startY; y <= endY; y += 1) {
@@ -116,7 +107,7 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         const fracture = this.damage[y][x] / def.hp;
         const textureKey = tileTextureKey(tile, x, y);
         const tileSprite = this.tileSpriteAt(tileSpriteIndex, textureKey);
-        const baseAlpha = terrainTileAlpha(tile, fracture) * (touchesWater(this, x, y) ? 0.08 : 1);
+        const baseAlpha = terrainTileAlpha(tile, fracture);
         tileSprite
           .setTexture(textureKey)
           .setVisible(true)
@@ -133,7 +124,6 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
           this.terrain.lineBetween(x * TILE + 4, y * TILE + 7, x * TILE + 20, y * TILE + 7);
           this.terrain.lineBetween(x * TILE + 6, y * TILE + 16, x * TILE + 18, y * TILE + 16);
         }
-        drawCaveEdgeDetail(this, x, y, tile, fracture);
         if (fracture > 0) {
           drawFractureMarks(this, x, y, tile, fracture);
         }
@@ -201,121 +191,16 @@ export function drawEnvironmentProps(this: DeepdiveScene, camera: Phaser.Cameras
 function terrainTileAlpha(tile: string, fracture: number) {
     if (tile === 'anchorstone') return 0.78;
     if (tile === 'bedrock') return 0.62;
-    if (tile === 'sand' || tile === 'stone') return Phaser.Math.Clamp(0.14 + fracture * 0.2, 0.14, 0.48);
-    return Phaser.Math.Clamp(0.24 + fracture * 0.24, 0.24, 0.54);
-  }
-
-function touchesWater(scene: DeepdiveScene, x: number, y: number) {
-    return !tiles[scene.getTile(x, y - 1)].solid
-      || !tiles[scene.getTile(x + 1, y)].solid
-      || !tiles[scene.getTile(x, y + 1)].solid
-      || !tiles[scene.getTile(x - 1, y)].solid;
-  }
-
-function drawCaveMassCell(scene: DeepdiveScene, x: number, y: number, tile: Tile) {
-    const base = caveMassColor(tile, x, y);
-    const vein = hash(x * 5 + 11, y * 7 - 3, rng.seed);
-    const wx = x * TILE;
-    const wy = y * TILE;
-    scene.terrain.fillStyle(base, tile === 'anchorstone' ? 0.9 : 0.82);
-    scene.terrain.fillRect(wx, wy, TILE, TILE);
-    if (tile !== 'anchorstone' && tile !== 'bedrock' && vein > 0.58) {
-      scene.terrain.lineStyle(1, vein > 0.78 ? 0xdcefe9 : 0x06141b, vein > 0.78 ? 0.075 : 0.08);
-      const offset = 4 + hash(y + 17, x - 9, rng.seed) * 13;
-      scene.terrain.lineBetween(wx + 2, wy + offset, wx + TILE * 0.45, wy + offset + (hash(x - 3, y + 6, rng.seed) - 0.5) * 4);
-      scene.terrain.lineBetween(wx + TILE * 0.45, wy + offset + (hash(x - 3, y + 6, rng.seed) - 0.5) * 4, wx + TILE - 2, wy + offset + (hash(x + 9, y - 2, rng.seed) - 0.5) * 4);
-    }
-  }
-
-function drawCaveEdgeDetail(scene: DeepdiveScene, x: number, y: number, tile: Tile, fracture: number) {
-    const wx = x * TILE;
-    const wy = y * TILE;
-    const edgeAlpha = tile === 'anchorstone' || tile === 'bedrock' ? 0.34 : 0.48;
-    const sides: Array<[number, number, string]> = [
-      [0, -1, 'top'],
-      [1, 0, 'right'],
-      [0, 1, 'bottom'],
-      [-1, 0, 'left'],
-    ];
-    for (const [dx, dy, side] of sides) {
-      if (tiles[scene.getTile(x + dx, y + dy)].solid) continue;
-      const roughA = (hash(x + dx * 19, y + dy * 23, rng.seed) - 0.5) * 18;
-      const roughB = (hash(x + dx * 31 + 7, y + dy * 13 - 5, rng.seed) - 0.5) * 16;
-      drawEdgeLip(scene.terrainEdges, wx, wy, side, caveMassColor(tile, x, y), roughA, roughB, hash(x + dx * 41, y + dy * 37, rng.seed));
-      const outerInset = side === 'top' || side === 'left' ? -8 : 8;
-      scene.terrainEdges.lineStyle(5, 0x031018, 0.22);
-      drawEdgeLine(scene.terrainEdges, wx, wy, side, roughA, roughB, outerInset);
-      if (fracture > 0.1 || tile === 'anchorstone') {
-        scene.terrainEdges.lineStyle(2, 0xbfe3dc, edgeAlpha * 0.35 + fracture * 0.2);
-        drawEdgeLine(scene.terrainEdges, wx, wy, side, roughA, roughB, outerInset + (side === 'top' || side === 'left' ? 1 : -1));
-      }
-    }
-  }
-
-function drawEdgeLip(graphics: Phaser.GameObjects.Graphics, wx: number, wy: number, side: string, color: number, roughA: number, roughB: number, seed: number) {
-    const reachA = 14 + seed * 16 + Math.max(0, roughA);
-    const reachB = 16 + (1 - seed) * 18 + Math.max(0, roughB);
-    const reachC = 12 + Math.abs(roughA - roughB) * 2.1;
-    graphics.fillStyle(0x031018, 0.68);
-    fillEdgePolygon(graphics, wx, wy, side, reachA + 6, reachB + 6, reachC + 6);
-    graphics.fillStyle(color, 0.98);
-    fillEdgePolygon(graphics, wx, wy, side, reachA, reachB, reachC);
-  }
-
-function fillEdgePolygon(graphics: Phaser.GameObjects.Graphics, wx: number, wy: number, side: string, reachA: number, reachB: number, reachC: number) {
-    graphics.beginPath();
-    if (side === 'top') {
-      graphics.moveTo(wx, wy + 1);
-      graphics.lineTo(wx + TILE, wy + 1);
-      graphics.lineTo(wx + TILE, wy - reachB);
-      graphics.lineTo(wx + TILE * 0.52, wy - reachC);
-      graphics.lineTo(wx, wy - reachA);
-    } else if (side === 'bottom') {
-      graphics.moveTo(wx, wy + TILE - 1);
-      graphics.lineTo(wx, wy + TILE + reachA);
-      graphics.lineTo(wx + TILE * 0.48, wy + TILE + reachC);
-      graphics.lineTo(wx + TILE, wy + TILE + reachB);
-      graphics.lineTo(wx + TILE, wy + TILE - 1);
-    } else if (side === 'left') {
-      graphics.moveTo(wx + 1, wy);
-      graphics.lineTo(wx - reachA, wy);
-      graphics.lineTo(wx - reachC, wy + TILE * 0.48);
-      graphics.lineTo(wx - reachB, wy + TILE);
-      graphics.lineTo(wx + 1, wy + TILE);
-    } else {
-      graphics.moveTo(wx + TILE - 1, wy);
-      graphics.lineTo(wx + TILE, wy);
-      graphics.lineTo(wx + TILE + reachA, wy);
-      graphics.lineTo(wx + TILE + reachC, wy + TILE * 0.52);
-      graphics.lineTo(wx + TILE + reachB, wy + TILE);
-      graphics.lineTo(wx + TILE - 1, wy + TILE);
-    }
-    graphics.closePath();
-    graphics.fillPath();
-  }
-
-function drawEdgeLine(graphics: Phaser.GameObjects.Graphics, wx: number, wy: number, side: string, roughA: number, roughB: number, inset: number) {
-    if (side === 'top') {
-      graphics.lineBetween(wx, wy + inset + roughA, wx + TILE * 0.5, wy + inset + roughB);
-      graphics.lineBetween(wx + TILE * 0.5, wy + inset + roughB, wx + TILE, wy + inset - roughA * 0.5);
-    } else if (side === 'bottom') {
-      graphics.lineBetween(wx, wy + TILE + inset + roughA, wx + TILE * 0.5, wy + TILE + inset + roughB);
-      graphics.lineBetween(wx + TILE * 0.5, wy + TILE + inset + roughB, wx + TILE, wy + TILE + inset - roughA * 0.5);
-    } else if (side === 'left') {
-      graphics.lineBetween(wx + inset + roughA, wy, wx + inset + roughB, wy + TILE * 0.5);
-      graphics.lineBetween(wx + inset + roughB, wy + TILE * 0.5, wx + inset - roughA * 0.5, wy + TILE);
-    } else {
-      graphics.lineBetween(wx + TILE + inset + roughA, wy, wx + TILE + inset + roughB, wy + TILE * 0.5);
-      graphics.lineBetween(wx + TILE + inset + roughB, wy + TILE * 0.5, wx + TILE + inset - roughA * 0.5, wy + TILE);
-    }
+    if (tile === 'sand' || tile === 'stone') return Phaser.Math.Clamp(0.42 + fracture * 0.22, 0.42, 0.66);
+    return Phaser.Math.Clamp(0.34 + fracture * 0.26, 0.34, 0.64);
   }
 
 function drawFractureMarks(scene: DeepdiveScene, x: number, y: number, tile: Tile, fracture: number) {
     const wx = x * TILE;
     const wy = y * TILE;
     const count = fracture > 0.65 ? 4 : fracture > 0.32 ? 3 : 2;
-    scene.terrainEdges.fillStyle(0xe9f4ef, 0.05 + fracture * 0.08);
-    scene.terrainEdges.fillCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * (0.22 + fracture * 0.2));
+    scene.terrain.fillStyle(0xe9f4ef, 0.04 + fracture * 0.06);
+    scene.terrain.fillCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * (0.18 + fracture * 0.16));
     for (let i = 0; i < count; i += 1) {
       const seedA = hash(x + i * 13, y - i * 7, rng.seed);
       const seedB = hash(y + i * 17, x + i * 5, rng.seed);
@@ -323,35 +208,13 @@ function drawFractureMarks(scene: DeepdiveScene, x: number, y: number, tile: Til
       const sy = wy + 5 + seedB * 14;
       const length = 6 + fracture * 11 + (i % 2) * 4;
       const angle = seedA * Math.PI * 1.6 + i * 0.7;
-      scene.terrainEdges.lineStyle(i === 0 ? 2 : 1, tile === 'sand' ? 0xfff2cc : 0xeef9f7, 0.22 + fracture * 0.42);
-      scene.terrainEdges.lineBetween(sx, sy, sx + Math.cos(angle) * length, sy + Math.sin(angle) * length);
+      scene.terrain.lineStyle(i === 0 ? 2 : 1, tile === 'sand' ? 0xfff2cc : 0xeef9f7, 0.18 + fracture * 0.34);
+      scene.terrain.lineBetween(sx, sy, sx + Math.cos(angle) * length, sy + Math.sin(angle) * length);
       if (fracture > 0.5) {
-        scene.terrainEdges.lineStyle(1, 0x071018, 0.3);
-        scene.terrainEdges.lineBetween(sx + 1, sy + 1, sx + Math.cos(angle) * length + 1, sy + Math.sin(angle) * length + 1);
+        scene.terrain.lineStyle(1, 0x071018, 0.28);
+        scene.terrain.lineBetween(sx + 1, sy + 1, sx + Math.cos(angle) * length + 1, sy + Math.sin(angle) * length + 1);
       }
     }
-  }
-
-function caveMassColor(tile: Tile, x: number, y: number) {
-    if (tile === 'sand') return blendRgb(116, 95, 71, 58, 50, 46, hash(x, y, rng.seed));
-    if (tile === 'stone') return blendRgb(72, 83, 96, 27, 35, 46, hash(x + 4, y - 2, rng.seed));
-    if (tile === 'bedrock') return 0x151b24;
-    if (tile === 'anchorstone') return 0x30394b;
-    if (isArtifactTile(tile)) return blendRgb(40, 52, 62, 8, 20, 26, 0.48);
-    const def = tiles[tile];
-    const mix = Phaser.Math.Clamp(0.24 + hash(x - 8, y + 12, rng.seed) * 0.32, 0.18, 0.58);
-    const r = (def.color >> 16) & 255;
-    const g = (def.color >> 8) & 255;
-    const b = def.color & 255;
-    return blendRgb(34, 43, 52, r, g, b, mix);
-  }
-
-function blendRgb(r1: number, g1: number, b1: number, r2: number, g2: number, b2: number, t: number) {
-    const blend = Phaser.Math.Clamp(t, 0, 1);
-    const r = Math.round(Phaser.Math.Linear(r1, r2, blend));
-    const g = Math.round(Phaser.Math.Linear(g1, g2, blend));
-    const b = Math.round(Phaser.Math.Linear(b1, b2, blend));
-    return Phaser.Display.Color.GetColor(r, g, b);
   }
 
 export function drawBoat(this: DeepdiveScene, ) {
