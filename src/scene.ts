@@ -22,6 +22,7 @@ import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
   terrain!: Phaser.GameObjects.Graphics;
+  terrainEdges!: Phaser.GameObjects.Graphics;
   articulatedBridges!: Phaser.GameObjects.Graphics;
   actors!: Phaser.GameObjects.Graphics;
   darkness!: Phaser.GameObjects.Graphics;
@@ -52,6 +53,7 @@ export class DeepdiveScene extends Phaser.Scene {
   floatingTexts: FloatingText[] = [];
   flares: Flare[] = [];
   sonarPings: Array<{ x: number; y: number; age: number; life: number }> = [];
+  terrainBreakEffects: Array<{ x: number; y: number; age: number; life: number; color: number; seed: number }> = [];
   menuLoop?: Phaser.Sound.BaseSound;
   ambientLoop?: Phaser.Sound.BaseSound;
   miningLoop?: Phaser.Sound.BaseSound;
@@ -99,6 +101,7 @@ export class DeepdiveScene extends Phaser.Scene {
       .setDepth(-12 + index)
       .setScrollFactor(1));
     this.terrain = this.add.graphics().setDepth(0);
+    this.terrainEdges = this.add.graphics().setDepth(0.85);
     this.bargeSprite = this.add.image(WORLD_W * TILE * 0.5, SURFACE_Y + 24, 'barge-platform')
       .setDepth(2.6)
       .setOrigin(0.5, 0);
@@ -252,6 +255,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.player.scanTarget = null;
     state.docked = true;
     this.sonarPings = [];
+    this.terrainBreakEffects = [];
     this.hudTimer = 0;
     this.floatingTexts.forEach((entry) => entry.label.destroy());
     this.floatingTexts = [];
@@ -600,6 +604,9 @@ export class DeepdiveScene extends Phaser.Scene {
       }
     }
     checkOxygenWarnings();
+    this.terrainBreakEffects = this.terrainBreakEffects
+      .map((effect) => ({ ...effect, age: effect.age + delta }))
+      .filter((effect) => effect.age < effect.life);
 
     const apexSpecies = currentApexSpecies();
     if (state.depth > 1520 && !state.scannedSpecies.has(apexSpecies)) {
@@ -744,6 +751,7 @@ export interface DeepdiveScene {
   drawParallax: OmitThisParameter<typeof renderingNs.drawParallax>;
   drawGameOver: OmitThisParameter<typeof renderingNs.drawGameOver>;
   drawWorld: OmitThisParameter<typeof renderingNs.drawWorld>;
+  drawTerrainBreakEffects: OmitThisParameter<typeof renderingNs.drawTerrainBreakEffects>;
   drawEnvironmentProps: OmitThisParameter<typeof renderingNs.drawEnvironmentProps>;
   drawBoat: OmitThisParameter<typeof renderingNs.drawBoat>;
   drawSpecialRooms: OmitThisParameter<typeof renderingNs.drawSpecialRooms>;
