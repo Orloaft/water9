@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import type { Fish,Tile } from './types';
+import type { Fish,Flora,Tile } from './types';
 import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FLARE_LIGHT_RADIUS,PLAYER_DRAW_SCALE,SONAR_ATTRACT_RADIUS,SONAR_REVEAL_RADIUS_TILES,SUB_BOARD_SECONDS,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,swimTopSpeed,tileTextureKey } from './helpers';
+import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,swimTopSpeed,tileTextureKey } from './helpers';
 import type { DeepdiveScene } from './scene';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 
@@ -91,6 +91,7 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     this.terrainDirty = false;
     this.terrainBoundsKey = boundsKey;
     this.terrain.clear();
+    this.terrainEdges.clear();
 
     let tileSpriteIndex = 0;
     for (let y = startY; y <= endY; y += 1) {
@@ -104,6 +105,11 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
           continue;
         }
         const def = tiles[tile];
+        const wx = x * TILE;
+        const wy = y * TILE;
+        this.terrain.fillStyle(terrainMassColor(tile, y), terrainMassAlpha(tile));
+        this.terrain.fillRect(wx, wy, TILE, TILE);
+        drawTerrainEdgeBands(this, x, y, tile);
         const fracture = this.damage[y][x] / def.hp;
         const textureKey = tileTextureKey(tile, x, y);
         const tileSprite = this.tileSpriteAt(tileSpriteIndex, textureKey);
@@ -112,17 +118,17 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
           .setTexture(textureKey)
           .setVisible(true)
           .setAlpha(baseAlpha)
-          .setPosition(x * TILE, y * TILE)
+          .setPosition(wx, wy)
           .setDisplaySize(TILE, TILE);
         tileSpriteIndex += 1;
         if (tile === 'anchorstone') {
           this.terrain.lineStyle(2, 0xb9c2d0, 0.32);
-          this.terrain.strokeRect(x * TILE, y * TILE, TILE, TILE);
+          this.terrain.strokeRect(wx, wy, TILE, TILE);
         }
         if (tile === 'anchorstone') {
           this.terrain.lineStyle(1, 0x11141c, 0.4);
-          this.terrain.lineBetween(x * TILE + 4, y * TILE + 7, x * TILE + 20, y * TILE + 7);
-          this.terrain.lineBetween(x * TILE + 6, y * TILE + 16, x * TILE + 18, y * TILE + 16);
+          this.terrain.lineBetween(wx + 4, wy + 7, wx + 20, wy + 7);
+          this.terrain.lineBetween(wx + 6, wy + 16, wx + 18, wy + 16);
         }
         if (fracture > 0) {
           drawFractureMarks(this, x, y, tile, fracture);
@@ -130,11 +136,11 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         if (isArtifactTile(tile)) {
           const pulse = 0.48 + Math.sin(performance.now() * 0.004 + x * 0.9 + y * 0.2) * 0.12;
           this.terrain.lineStyle(1, 0xfff7df, pulse);
-          this.terrain.strokeCircle(x * TILE + 12, y * TILE + 12, 5);
-          this.terrain.lineBetween(x * TILE + 12, y * TILE + 5, x * TILE + 17, y * TILE + 12);
-          this.terrain.lineBetween(x * TILE + 17, y * TILE + 12, x * TILE + 12, y * TILE + 19);
-          this.terrain.lineBetween(x * TILE + 12, y * TILE + 19, x * TILE + 7, y * TILE + 12);
-          this.terrain.lineBetween(x * TILE + 7, y * TILE + 12, x * TILE + 12, y * TILE + 5);
+          this.terrain.strokeCircle(wx + 12, wy + 12, 5);
+          this.terrain.lineBetween(wx + 12, wy + 5, wx + 17, wy + 12);
+          this.terrain.lineBetween(wx + 17, wy + 12, wx + 12, wy + 19);
+          this.terrain.lineBetween(wx + 12, wy + 19, wx + 7, wy + 12);
+          this.terrain.lineBetween(wx + 7, wy + 12, wx + 12, wy + 5);
         }
       }
     }
@@ -189,10 +195,85 @@ export function drawEnvironmentProps(this: DeepdiveScene, camera: Phaser.Cameras
   }
 
 function terrainTileAlpha(tile: string, fracture: number) {
-    if (tile === 'anchorstone') return 0.78;
-    if (tile === 'bedrock') return 0.62;
-    if (tile === 'sand' || tile === 'stone') return Phaser.Math.Clamp(0.42 + fracture * 0.22, 0.42, 0.66);
-    return Phaser.Math.Clamp(0.34 + fracture * 0.26, 0.34, 0.64);
+    if (tile === 'anchorstone') return 0.62;
+    if (tile === 'bedrock') return 0.46;
+    if (tile === 'sand' || tile === 'stone') return Phaser.Math.Clamp(0.22 + fracture * 0.18, 0.22, 0.46);
+    return Phaser.Math.Clamp(0.2 + fracture * 0.2, 0.2, 0.5);
+  }
+
+function terrainMassColor(tile: string, y: number) {
+    if (tile === 'anchorstone') return 0x1b2231;
+    if (tile === 'bedrock') return 0x101822;
+    if (tile === 'sand') return y < WORLD_H * 0.36 ? 0x203035 : 0x17242c;
+    if (tile === 'stone') return y < WORLD_H * 0.58 ? 0x162531 : 0x101b26;
+    if (isOreTile(tile as Tile)) return 0x121d28;
+    return 0x101923;
+  }
+
+function terrainMassAlpha(tile: string) {
+    if (tile === 'anchorstone') return 0.82;
+    if (tile === 'bedrock') return 0.72;
+    if (tile === 'sand') return 0.62;
+    if (tile === 'stone') return 0.68;
+    return 0.7;
+  }
+
+function drawTerrainEdgeBands(scene: DeepdiveScene, x: number, y: number, tile: Tile) {
+    const wx = x * TILE;
+    const wy = y * TILE;
+    const edge = tile === 'sand' ? 5 : 4;
+    const bright = tile === 'sand' ? 0x8aa494 : 0x6f8791;
+    const shadow = 0x071018;
+    const alpha = tile === 'anchorstone' ? 0.24 : 0.16;
+    const northWater = scene.getTile(x, y - 1) === 'water';
+    const southWater = scene.getTile(x, y + 1) === 'water';
+    const westWater = scene.getTile(x - 1, y) === 'water';
+    const eastWater = scene.getTile(x + 1, y) === 'water';
+    const exposed = northWater || southWater || westWater || eastWater;
+    if (!exposed) return;
+
+    drawEdgeNotches(scene, x, y, northWater, southWater, westWater, eastWater);
+    if (isOreTile(tile)) {
+      scene.terrainEdges.fillStyle(0x07131a, 0.22);
+      scene.terrainEdges.fillCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * 0.48);
+      scene.terrainEdges.lineStyle(1, 0xb8edf0, 0.12);
+      scene.terrainEdges.strokeCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * 0.36);
+    }
+    scene.terrainEdges.fillStyle(bright, alpha);
+    if (northWater) scene.terrainEdges.fillRect(wx, wy, TILE, edge);
+    if (southWater) scene.terrainEdges.fillRect(wx, wy + TILE - edge, TILE, edge);
+    if (westWater) scene.terrainEdges.fillRect(wx, wy, edge, TILE);
+    if (eastWater) scene.terrainEdges.fillRect(wx + TILE - edge, wy, edge, TILE);
+    scene.terrainEdges.lineStyle(1, shadow, 0.28);
+    if (northWater) scene.terrainEdges.lineBetween(wx, wy, wx + TILE, wy);
+    if (southWater) scene.terrainEdges.lineBetween(wx, wy + TILE, wx + TILE, wy + TILE);
+    if (westWater) scene.terrainEdges.lineBetween(wx, wy, wx, wy + TILE);
+    if (eastWater) scene.terrainEdges.lineBetween(wx + TILE, wy, wx + TILE, wy + TILE);
+  }
+
+function drawEdgeNotches(scene: DeepdiveScene, x: number, y: number, northWater: boolean, southWater: boolean, westWater: boolean, eastWater: boolean) {
+    const wx = x * TILE;
+    const wy = y * TILE;
+    const waterColor = terrainWaterColor();
+    scene.terrainEdges.fillStyle(waterColor, 0.44);
+    for (let i = 0; i < 3; i += 1) {
+      const a = hash(x * 31 + i * 7, y * 37, rng.seed);
+      const b = hash(y * 41, x * 43 + i * 11, rng.seed);
+      const length = 5 + a * 8;
+      const breadth = 3 + b * 5;
+      const along = (i + 0.5 + (a - 0.5) * 0.28) * (TILE / 3);
+      if (northWater) scene.terrainEdges.fillEllipse(wx + along, wy + breadth * 0.4, length, breadth);
+      if (southWater) scene.terrainEdges.fillEllipse(wx + along, wy + TILE - breadth * 0.4, length, breadth);
+      if (westWater) scene.terrainEdges.fillEllipse(wx + breadth * 0.4, wy + along, breadth, length);
+      if (eastWater) scene.terrainEdges.fillEllipse(wx + TILE - breadth * 0.4, wy + along, breadth, length);
+    }
+  }
+
+function terrainWaterColor() {
+    if (state.biome === 4) return state.depth < 440 ? 0x12242b : state.depth < 1120 ? 0x101923 : 0x06070d;
+    if (state.biome === 3) return state.depth < 440 ? 0x161d32 : state.depth < 1120 ? 0x111424 : 0x090913;
+    if (state.biome === 2) return state.depth < 440 ? 0x102a36 : state.depth < 1120 ? 0x0b1d29 : 0x07111b;
+    return state.depth < 440 ? 0x0b3741 : state.depth < 1120 ? 0x082631 : 0x06131d;
   }
 
 function drawFractureMarks(scene: DeepdiveScene, x: number, y: number, tile: Tile, fracture: number) {
@@ -443,13 +524,17 @@ export function drawFlora(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         ? 0.98
         : flora.scanned ? 0.72 : 0.42;
       const sway = Math.sin(flora.phase * 2.1) * scaledEntity(4);
+      const anchor = flora.anchor ?? 'floor';
+      const anchorRotation = floraAnchorRotation(anchor);
+      const swayX = anchor === 'floor' || anchor === 'ceiling' ? sway : 0;
+      const swayY = anchor === 'leftWall' || anchor === 'rightWall' ? sway : 0;
       fitImageHeight(flora.sprite, flora.radius * (flora.rare ? 4.7 : 4));
       flora.sprite
         ?.setTexture(flora.assetKey)
         .setVisible(true)
         .setAlpha(alpha)
-        .setPosition(flora.x + sway, flora.y)
-        .setRotation(Math.sin(flora.phase * 1.4) * 0.035)
+        .setPosition(flora.x + swayX, flora.y + swayY)
+        .setRotation(anchorRotation + Math.sin(flora.phase * 1.4) * 0.035)
         .setOrigin(0.5, 0.82);
       if (flora.hurtFlash > 0) {
         this.actors.lineStyle(2, 0xfff7df, flora.hurtFlash * alpha);
@@ -470,6 +555,13 @@ export function drawFlora(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(7 + (1 - flora.scanPulse) * 14));
       }
     }
+  }
+
+function floraAnchorRotation(anchor: Flora['anchor']) {
+    if (anchor === 'ceiling') return Math.PI;
+    if (anchor === 'leftWall') return Math.PI / 2;
+    if (anchor === 'rightWall') return -Math.PI / 2;
+    return 0;
   }
 
 export function fishVisibilityAlpha(this: DeepdiveScene, fish: Fish, camera: Phaser.Cameras.Scene2D.Camera) {

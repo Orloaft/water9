@@ -327,35 +327,7 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
         const eastWater = this.getTile(x + 1, y) === 'water';
         const exposedToWater = northWater || southWater || westWater || eastWater;
 
-        if (isOreTile(tile) && exposedToWater && hash(x * 17, y * 19, rng.seed) > 0.28) {
-          const variant = Math.floor(hash(x * 13, y * 17, rng.seed) * 3);
-          const waterBias = [
-            { dx: 0, dy: -1, angle: -Math.PI / 2 },
-            { dx: 0, dy: 1, angle: Math.PI / 2 },
-            { dx: -1, dy: 0, angle: Math.PI },
-            { dx: 1, dy: 0, angle: 0 },
-          ].find((side) => this.getTile(x + side.dx, y + side.dy) === 'water');
-          const angle = waterBias?.angle ?? (hash(x, y, rng.seed) * Math.PI * 2);
-          const normalX = Math.cos(angle);
-          const normalY = Math.sin(angle);
-          const size = 20 + variant * 3 + (tile === 'ruinCore' || tile === 'abyssalCrown' ? 8 : 0);
-          props.push({
-            id: `ore-${x}-${y}`,
-            kind: 'ore',
-            assetKey: oreEnvironmentAssetKey(tile),
-            x: x * TILE + TILE * 0.5 + normalX * 3,
-            y: y * TILE + TILE * 0.5 + normalY * 3,
-            tileX: x,
-            tileY: y,
-            tile,
-            width: size,
-            height: size,
-            rotation: (hash(x * 5, y * 7, rng.seed) - 0.5) * 0.52,
-            alpha: 0.9,
-            depth: 1.18,
-            flipX: hash(x, y, rng.seed + 19) > 0.5,
-          });
-        }
+        if (isOreTile(tile) && exposedToWater && hash(x * 17, y * 19, rng.seed) > 0.28) props.push(makeOreEnvironmentProp(this, x, y, tile));
 
         if (northWater && hash(x * 29, y * 31, rng.seed) > 0.985) {
           const variant = Math.floor(hash(x, y, rng.seed) * 2);
@@ -435,6 +407,54 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
     this.environmentProps = props.slice(0, 700);
   }
 
+export function refreshEnvironmentPropsAround(this: DeepdiveScene, cx: number, cy: number) {
+    const existing = new Set(this.environmentProps.map((prop) => prop.id));
+    const additions: EnvironmentProp[] = [];
+    for (let y = Math.max(1, cy - 2); y <= Math.min(WORLD_H - 2, cy + 2); y += 1) {
+      for (let x = Math.max(1, cx - 2); x <= Math.min(WORLD_W - 2, cx + 2); x += 1) {
+        const tile = this.getTile(x, y);
+        if (!isOreTile(tile) || existing.has(`ore-${x}-${y}`)) continue;
+        const exposedToWater = this.getTile(x, y - 1) === 'water'
+          || this.getTile(x, y + 1) === 'water'
+          || this.getTile(x - 1, y) === 'water'
+          || this.getTile(x + 1, y) === 'water';
+        if (exposedToWater) additions.push(makeOreEnvironmentProp(this, x, y, tile));
+      }
+    }
+    if (!additions.length) return;
+    this.environmentProps = [...this.environmentProps, ...additions].slice(-760);
+  }
+
+function makeOreEnvironmentProp(scene: DeepdiveScene, x: number, y: number, tile: Tile): EnvironmentProp {
+    const variant = Math.floor(hash(x * 13, y * 17, rng.seed) * 3);
+    const waterBias = [
+      { dx: 0, dy: -1, angle: -Math.PI / 2 },
+      { dx: 0, dy: 1, angle: Math.PI / 2 },
+      { dx: -1, dy: 0, angle: Math.PI },
+      { dx: 1, dy: 0, angle: 0 },
+    ].find((side) => scene.getTile(x + side.dx, y + side.dy) === 'water');
+    const angle = waterBias?.angle ?? (hash(x, y, rng.seed) * Math.PI * 2);
+    const normalX = Math.cos(angle);
+    const normalY = Math.sin(angle);
+    const size = 22 + variant * 4 + (tile === 'ruinCore' || tile === 'abyssalCrown' ? 8 : 0);
+    return {
+      id: `ore-${x}-${y}`,
+      kind: 'ore',
+      assetKey: oreEnvironmentAssetKey(tile),
+      x: x * TILE + TILE * 0.5 + normalX * 3,
+      y: y * TILE + TILE * 0.5 + normalY * 3,
+      tileX: x,
+      tileY: y,
+      tile,
+      width: size,
+      height: size,
+      rotation: (hash(x * 5, y * 7, rng.seed) - 0.5) * 0.52,
+      alpha: 0.94,
+      depth: 1.18,
+      flipX: hash(x, y, rng.seed + 19) > 0.5,
+    };
+  }
+
 export function makeBobbits(this: DeepdiveScene, ): Bobbit[] {
     const bobbits: Bobbit[] = [];
     const count = state.biome === 4 ? 16 : state.biome === 3 ? 12 : 8;
@@ -507,8 +527,9 @@ export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flor
       patch.push({
         kind: 'flora',
         species: species.species,
-        x: point.x + Phaser.Math.FloatBetween(-5, 5),
-        y: point.y,
+        x: point.x + (point.anchor === 'floor' || point.anchor === 'ceiling' ? Phaser.Math.FloatBetween(-5, 5) : 0),
+        y: point.y + (point.anchor === 'leftWall' || point.anchor === 'rightWall' ? Phaser.Math.FloatBetween(-5, 5) : 0),
+        anchor: point.anchor,
         phase: Math.random() * Math.PI * 2,
         color: species.color,
         hazardous: species.hazardous,
@@ -549,6 +570,7 @@ export function populateBiolumeRoom(this: DeepdiveScene, room: SpecialRoom) {
         species: oxygen ? 'Oxygen Bloom' : 'Lumen Fern',
         x: anchor.x + Phaser.Math.FloatBetween(-4, 4),
         y: anchor.y,
+        anchor: 'floor',
         phase: Math.random() * Math.PI * 2,
         color: oxygen ? 0x8ee7f4 : 0xb9f27c,
         hazardous: false,
@@ -574,6 +596,7 @@ export function populateBiolumeRoom(this: DeepdiveScene, room: SpecialRoom) {
         species: 'Lumen Nodule',
         x: anchor.x + Phaser.Math.FloatBetween(-5, 5),
         y: anchor.y,
+        anchor: 'floor',
         phase: Math.random() * Math.PI * 2,
         color: 0x73fbd3,
         hazardous: false,
@@ -706,12 +729,21 @@ export function findFloraAnchorInBand(this: DeepdiveScene, minY: number, maxY: n
       const ty = Math.floor(Phaser.Math.Between(minY, maxY) / TILE);
       if (ty < 1 || ty >= WORLD_H - 2) continue;
       if (this.getTile(tx, ty) !== 'water') continue;
-      if (!tiles[this.getTile(tx, ty + 1)].solid) continue;
-      if (this.getTile(tx, ty - 1) !== 'water') continue;
-      return { x: tx * TILE + TILE * 0.5, y: (ty + 1) * TILE + 2 };
+      const candidates = [
+        { anchor: 'floor' as const, solid: this.getTile(tx, ty + 1), clear: this.getTile(tx, ty - 1), x: tx * TILE + TILE * 0.5, y: (ty + 1) * TILE + 2 },
+        { anchor: 'ceiling' as const, solid: this.getTile(tx, ty - 1), clear: this.getTile(tx, ty + 1), x: tx * TILE + TILE * 0.5, y: ty * TILE - 2 },
+        { anchor: 'leftWall' as const, solid: this.getTile(tx - 1, ty), clear: this.getTile(tx + 1, ty), x: tx * TILE - 2, y: ty * TILE + TILE * 0.5 },
+        { anchor: 'rightWall' as const, solid: this.getTile(tx + 1, ty), clear: this.getTile(tx - 1, ty), x: (tx + 1) * TILE + 2, y: ty * TILE + TILE * 0.5 },
+      ].filter((candidate) => tiles[candidate.solid].solid && candidate.clear === 'water');
+      if (!candidates.length) continue;
+      const roll = hash(tx * 17 + attempt, ty * 19, rng.seed);
+      const floor = candidates.find((candidate) => candidate.anchor === 'floor');
+      const wall = candidates.find((candidate) => candidate.anchor === 'leftWall' || candidate.anchor === 'rightWall');
+      const ceiling = candidates.find((candidate) => candidate.anchor === 'ceiling');
+      return roll < 0.55 && floor ? floor : roll < 0.82 && wall ? wall : ceiling ?? floor ?? candidates[0];
     }
     const fallback = this.findOpenWaterInBand(minY, maxY);
-    return { x: fallback.x, y: fallback.y + TILE * 0.35 };
+    return { x: fallback.x, y: fallback.y + TILE * 0.35, anchor: 'floor' as const };
   }
 
 export function findRockTopAnchorInBand(this: DeepdiveScene, minY: number, maxY: number) {

@@ -279,6 +279,7 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
     const y = ty * TILE + TILE * 0.5;
     this.setTile(tx, ty, 'water');
     this.damage[ty][tx] = 0;
+    this.refreshEnvironmentPropsAround(tx, ty);
     this.terrainBreakEffects.push({ x, y, age: 0, life: 0.62, color: def.color, seed: hash(tx, ty, rng.seed) });
     if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
     this.spawnLoose(tile, def, x, y);

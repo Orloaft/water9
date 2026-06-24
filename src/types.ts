@@ -143,6 +143,7 @@ export interface Flora {
   species: string;
   x: number;
   y: number;
+  anchor: 'floor' | 'ceiling' | 'leftWall' | 'rightWall';
   phase: number;
   color: number;
   hazardous: boolean;

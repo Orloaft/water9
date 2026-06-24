@@ -22,6 +22,7 @@ import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
   terrain!: Phaser.GameObjects.Graphics;
+  terrainEdges!: Phaser.GameObjects.Graphics;
   articulatedBridges!: Phaser.GameObjects.Graphics;
   actors!: Phaser.GameObjects.Graphics;
   darkness!: Phaser.GameObjects.Graphics;
@@ -100,6 +101,7 @@ export class DeepdiveScene extends Phaser.Scene {
       .setDepth(-12 + index)
       .setScrollFactor(1));
     this.terrain = this.add.graphics().setDepth(0);
+    this.terrainEdges = this.add.graphics().setDepth(0.82);
     this.bargeSprite = this.add.image(WORLD_W * TILE * 0.5, SURFACE_Y + 24, 'barge-platform')
       .setDepth(2.6)
       .setOrigin(0.5, 0);
@@ -706,6 +708,7 @@ Object.assign(DeepdiveScene.prototype, worldgenNs);
 export interface DeepdiveScene {
   generateWorld: OmitThisParameter<typeof worldgenNs.generateWorld>;
   populateEnvironmentProps: OmitThisParameter<typeof worldgenNs.populateEnvironmentProps>;
+  refreshEnvironmentPropsAround: OmitThisParameter<typeof worldgenNs.refreshEnvironmentPropsAround>;
   makeVentFields: OmitThisParameter<typeof worldgenNs.makeVentFields>;
   injectSpecialRooms: OmitThisParameter<typeof worldgenNs.injectSpecialRooms>;
   pickBiolumeCavernCenter: OmitThisParameter<typeof worldgenNs.pickBiolumeCavernCenter>;
