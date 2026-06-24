@@ -5,6 +5,7 @@ import { biomeFish,biomeFlora,shopItems,subDefs,tiles,upgrades } from './content
 import { state,ui } from './state';
 import { rng } from './rng';
 import { articulatedCreatureDefs, loadArticulatedAssets, shouldSpawnArticulatedCreature } from './articulated';
+import { loadArticulatedDiverAssets } from './diver-articulated';
 import { clearFullscreenWarning,meter,renderHud,showFullscreenWarning } from './hud';
 import type { DeepdiveScene } from './scene';
 
@@ -319,6 +320,7 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
   const assetPath = (name: string) => `/assets/generated/${name}.png`;
   const audioPath = (name: string) => `/assets/audio/${name}`;
   loadArticulatedAssets(scene);
+  loadArticulatedDiverAssets(scene);
   for (const [animation, frameCount] of Object.entries(diverFrameCounts)) {
     for (let i = 0; i < frameCount; i += 1) {
       scene.load.image(`diver-${animation}-${i}`, assetPath(`diver-${animation}-${i}`));

@@ -4,8 +4,9 @@ import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGH
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,tileTextureKey } from './helpers';
+import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,swimTopSpeed,tileTextureKey } from './helpers';
 import type { DeepdiveScene } from './scene';
+import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 
 export function draw(this: DeepdiveScene, ) {
     const camera = this.cameras.main;
@@ -105,10 +106,11 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         const fracture = this.damage[y][x] / def.hp;
         const textureKey = tileTextureKey(tile, x, y);
         const tileSprite = this.tileSpriteAt(tileSpriteIndex, textureKey);
+        const baseAlpha = terrainTileAlpha(tile, fracture);
         tileSprite
           .setTexture(textureKey)
           .setVisible(true)
-          .setAlpha(tile === 'anchorstone' ? 1 : 0.92)
+          .setAlpha(baseAlpha)
           .setPosition(x * TILE, y * TILE)
           .setDisplaySize(TILE, TILE);
         tileSpriteIndex += 1;
@@ -162,6 +164,13 @@ export function drawEnvironmentProps(this: DeepdiveScene, camera: Phaser.Cameras
     for (let i = spriteIndex; i < this.environmentSprites.length; i += 1) {
       this.environmentSprites[i].setVisible(false);
     }
+  }
+
+function terrainTileAlpha(tile: string, fracture: number) {
+    if (tile === 'anchorstone') return 0.78;
+    if (tile === 'bedrock') return 0.62;
+    if (tile === 'sand' || tile === 'stone') return Phaser.Math.Clamp(0.42 + fracture * 0.22, 0.42, 0.66);
+    return Phaser.Math.Clamp(0.34 + fracture * 0.26, 0.34, 0.64);
   }
 
 export function drawBoat(this: DeepdiveScene, ) {
@@ -442,26 +451,108 @@ export function fishVisibilityAlpha(this: DeepdiveScene, fish: Fish, camera: Pha
 export function drawPlayer(this: DeepdiveScene, ) {
     if (state.pilotingSub && state.activeSub) {
       this.playerSprite.setVisible(false);
+      for (const sprite of Object.values(this.diverPartSprites)) sprite.setVisible(false);
       return;
     }
     const p = this.player;
     const angle = p.facing.angle();
-    const s = PLAYER_DRAW_SCALE;
     const swimSpeed = Math.hypot(p.vx, p.vy);
     const animation = diverAnimation(p.vx, p.vy, swimSpeed, p.mineCooldown, state.lost);
-    const pose = diverPose(animation, angle, p.facingSign);
-    const origin = diverOrigin(animation, p.facingSign);
-    const frame = diverFrame(animation, performance.now() * 0.001, swimSpeed, p.mineCooldown);
-    this.playerSprite
-      .setTexture(`diver-${animation}-${frame}`)
-      .setVisible(true)
-      .setPosition(p.x, p.y)
-      .setOrigin(origin.x, origin.y)
-      .setFlipX(pose.flipX)
-      .setRotation(pose.rotation)
-      .setAlpha(state.lost ? 0.45 : 1);
-    fitImageWidth(this.playerSprite, diverDisplayWidth(animation) * s);
+    this.playerSprite.setVisible(false);
+    this.drawArticulatedDiver(animation, angle, swimSpeed);
   }
+
+export function drawArticulatedDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {
+    const p = this.player;
+    const time = performance.now() * 0.001;
+    const pose = diverPose(animation, angle, p.facingSign);
+    const flip = pose.flipX;
+    const facing = flip ? -1 : 1;
+    const speedBlend = Phaser.Math.Clamp(swimSpeed / Math.max(1, swimTopSpeed()), 0, 1);
+    const mineBlend = animation === 'mine' ? Phaser.Math.Clamp(p.mineCooldown / Math.max(0.01, mineCooldown()), 0, 1) : 0;
+    const kick = Math.sin(time * Phaser.Math.Linear(2.4, 8.5, Math.max(speedBlend, mineBlend * 0.55)));
+    const bob = Math.sin(time * 2.3) * Phaser.Math.Linear(0.7, 2.1, speedBlend);
+    const rootRotation = state.lost ? pose.rotation + 1.1 * facing : pose.rotation;
+    const scale = PLAYER_DRAW_SCALE * Phaser.Math.Linear(0.176, 0.19, animation === 'boost' ? 1 : speedBlend);
+    const alpha = state.lost ? 0.45 : 1;
+    const rootOffsetX = animation === 'mine' ? 2 * facing : 0;
+    const rootOffsetY = bob + (state.lost ? 8 : 0);
+
+    for (const part of DIVER_ARTICULATED_PART_SPECS) {
+      const sprite = this.diverPartSprites[part.id];
+      if (!sprite) continue;
+      const local = articulatedDiverPartPose(part.role, part.id, animation, kick, speedBlend, mineBlend, facing);
+      const localX = (part.offset[0] + local.x) * scale * facing;
+      const localY = (part.offset[1] + local.y) * scale;
+      const cos = Math.cos(rootRotation);
+      const sin = Math.sin(rootRotation);
+      const x = p.x + rootOffsetX + localX * cos - localY * sin;
+      const y = p.y + rootOffsetY + localX * sin + localY * cos;
+      sprite
+        .setTexture(part.textureKey)
+        .setVisible(true)
+        .setPosition(x, y)
+        .setOrigin(part.origin[0], part.origin[1])
+        .setFlipX(flip)
+        .setRotation(rootRotation + local.rotation * facing)
+        .setScale(scale)
+        .setAlpha(alpha)
+        .setDepth(2 + part.depth);
+    }
+  }
+
+function articulatedDiverPartPose(
+  role: (typeof DIVER_ARTICULATED_PART_SPECS)[number]['role'],
+  id: string,
+  animation: ReturnType<typeof diverAnimation>,
+  kick: number,
+  speedBlend: number,
+  mineBlend: number,
+  facing: number,
+) {
+  let x = 0;
+  let y = 0;
+  let rotation = 0;
+  if (role === 'head') {
+    rotation += kick * 0.035 * speedBlend - mineBlend * 0.05;
+    x += mineBlend * 10;
+  } else if (role === 'pack') {
+    y += kick * 2.5 * speedBlend;
+    rotation -= kick * 0.035 * speedBlend;
+  } else if (role === 'arm' || role === 'tool') {
+    const armSwing = animation === 'mine' ? 1 - mineBlend : speedBlend;
+    x += mineBlend * 22;
+    y += Math.sin(kick) * 2 * speedBlend;
+    rotation += (animation === 'mine' ? -0.36 + mineBlend * 0.42 : kick * 0.11) * armSwing;
+    if (id === 'forearm') rotation += animation === 'mine' ? 0.22 + mineBlend * 0.38 : kick * 0.08;
+    if (id === 'hand' || id === 'tool') {
+      x += mineBlend * 8;
+      rotation += animation === 'mine' ? 0.16 + mineBlend * 0.32 : 0;
+    }
+  } else if (role === 'frontLeg') {
+    y += kick * 8 * speedBlend;
+    x += -kick * 7 * speedBlend;
+    rotation += kick * 0.24 * speedBlend;
+    if (id.includes('shin')) rotation += kick * 0.18 * speedBlend;
+  } else if (role === 'rearLeg') {
+    y -= kick * 7 * speedBlend;
+    x += kick * 8 * speedBlend;
+    rotation -= kick * 0.22 * speedBlend;
+    if (id.includes('shin')) rotation -= kick * 0.16 * speedBlend;
+  } else if (role === 'body') {
+    rotation += kick * 0.025 * speedBlend;
+  }
+  if (animation === 'idle') {
+    rotation *= 0.25;
+    x *= 0.2;
+    y *= 0.2;
+  }
+  if (animation === 'die') {
+    rotation += 0.55 * facing;
+    y += 12;
+  }
+  return { x, y, rotation };
+}
 
 export function drawSub(this: DeepdiveScene, ) {
     const sub = state.activeSub;

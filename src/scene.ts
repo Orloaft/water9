@@ -17,6 +17,7 @@ import * as worldgenNs from './scene-worldgen';
 import * as audioNs from './scene-audio';
 import * as articulatedNs from './scene-articulated';
 import { ensureArticulatedTextures } from './articulated';
+import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
@@ -28,6 +29,7 @@ export class DeepdiveScene extends Phaser.Scene {
   overlay!: Phaser.GameObjects.Graphics;
   bargeSprite!: Phaser.GameObjects.Image;
   playerSprite!: Phaser.GameObjects.Image;
+  diverPartSprites: Record<string, Phaser.GameObjects.Image> = {};
   subSprite?: Phaser.GameObjects.Image;
   cutterBeamSprite?: Phaser.GameObjects.Image;
   auxSub?: AuxSub;
@@ -101,6 +103,13 @@ export class DeepdiveScene extends Phaser.Scene {
       .setDepth(2.6)
       .setOrigin(0.5, 0);
     this.playerSprite = this.add.image(this.player.x, this.player.y, 'diver-swim-0').setDepth(2).setOrigin(0.5);
+    this.diverPartSprites = Object.fromEntries(DIVER_ARTICULATED_PART_SPECS.map((part) => [
+      part.id,
+      this.add.image(this.player.x, this.player.y, part.textureKey)
+        .setDepth(2 + part.depth)
+        .setOrigin(part.origin[0], part.origin[1])
+        .setVisible(false),
+    ]));
     this.subSprite = this.add.image(this.player.x, this.player.y, 'sub-tier1').setDepth(2.25).setOrigin(0.5).setVisible(false);
     this.cutterBeamSprite = this.add.image(this.player.x, this.player.y, 'sub-cutter-beam-0').setDepth(3.25).setOrigin(0, 0.5).setVisible(false);
     this.auxSub = {
@@ -746,6 +755,7 @@ export interface DeepdiveScene {
   drawFlora: OmitThisParameter<typeof renderingNs.drawFlora>;
   fishVisibilityAlpha: OmitThisParameter<typeof renderingNs.fishVisibilityAlpha>;
   drawPlayer: OmitThisParameter<typeof renderingNs.drawPlayer>;
+  drawArticulatedDiver: OmitThisParameter<typeof renderingNs.drawArticulatedDiver>;
   drawSub: OmitThisParameter<typeof renderingNs.drawSub>;
   drawDarkness: OmitThisParameter<typeof renderingNs.drawDarkness>;
   lampIntervalsAtY: OmitThisParameter<typeof renderingNs.lampIntervalsAtY>;
