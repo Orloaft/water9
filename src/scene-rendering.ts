@@ -94,7 +94,9 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     this.terrainEdges.clear();
 
     drawTerrainRuns(this, startX, endX, startY, endY);
-    let terrainBrushIndex = drawTerrainBrushLayer(this, startX, endX, startY, endY, 0);
+    drawVisualMaskSmoothing(this, startX, endX, startY, endY);
+    let terrainBrushIndex = drawTerrainFillPlates(this, startX, endX, startY, endY, 0);
+    terrainBrushIndex = drawTerrainBrushLayer(this, startX, endX, startY, endY, terrainBrushIndex);
     for (let y = startY; y <= endY; y += 1) {
       for (let x = startX; x <= endX; x += 1) {
         const tile = this.getTile(x, y);
@@ -218,69 +220,136 @@ function drawTerrainRuns(scene: DeepdiveScene, startX: number, endX: number, sta
     }
   }
 
+function drawVisualMaskSmoothing(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number) {
+    const water = terrainWaterColor();
+    scene.terrain.fillStyle(water, 0.92);
+    for (let y = startY; y <= endY; y += 1) {
+      for (let x = startX; x <= endX; x += 1) {
+        if (scene.getTile(x, y) !== 'water') continue;
+        const wx = x * TILE;
+        const wy = y * TILE;
+        const north = scene.getTile(x, y - 1) !== 'water';
+        const south = scene.getTile(x, y + 1) !== 'water';
+        const west = scene.getTile(x - 1, y) !== 'water';
+        const east = scene.getTile(x + 1, y) !== 'water';
+        if (north && west) scene.terrain.fillCircle(wx, wy, 9);
+        if (north && east) scene.terrain.fillCircle(wx + TILE, wy, 9);
+        if (south && west) scene.terrain.fillCircle(wx, wy + TILE, 9);
+        if (south && east) scene.terrain.fillCircle(wx + TILE, wy + TILE, 9);
+        if (north) scene.terrain.fillEllipse(wx + TILE * 0.5, wy, TILE * 0.7, 5);
+        if (south) scene.terrain.fillEllipse(wx + TILE * 0.5, wy + TILE, TILE * 0.7, 5);
+        if (west) scene.terrain.fillEllipse(wx, wy + TILE * 0.5, 5, TILE * 0.7);
+        if (east) scene.terrain.fillEllipse(wx + TILE, wy + TILE * 0.5, 5, TILE * 0.7);
+      }
+    }
+  }
+
+function terrainWaterColor() {
+    if (state.biome === 4) return state.depth < 440 ? 0x12242b : state.depth < 1120 ? 0x101923 : 0x06070d;
+    if (state.biome === 3) return state.depth < 440 ? 0x161d32 : state.depth < 1120 ? 0x111424 : 0x090913;
+    if (state.biome === 2) return state.depth < 440 ? 0x18313a : state.depth < 1120 ? 0x171f2b : 0x110f18;
+    return state.depth < 440 ? 0x0b3741 : state.depth < 1040 ? 0x092430 : 0x06111d;
+  }
+
 function drawTerrainBrushLayer(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number, spriteIndex: number) {
     let index = spriteIndex;
-    for (let y = startY; y <= endY; y += 1) {
-      index = drawHorizontalBrushRuns(scene, startX, endX, y, true, index);
-      index = drawHorizontalBrushRuns(scene, startX, endX, y, false, index);
+    const segmentStartX = Math.floor((startX - 4) / 3) * 3;
+    const segmentEndX = Math.ceil((endX + 4) / 3) * 3;
+    const segmentStartY = Math.floor((startY - 4) / 3) * 3;
+    const segmentEndY = Math.ceil((endY + 4) / 3) * 3;
+    for (let y = startY - 1; y <= endY + 1; y += 1) {
+      for (let sx = segmentStartX; sx <= segmentEndX; sx += 3) {
+        if (horizontalSegmentExposed(scene, sx, y, true)) index = stampLedgeSegment(scene, sx, y, true, index);
+        if (horizontalSegmentExposed(scene, sx, y, false)) index = stampLedgeSegment(scene, sx, y, false, index);
+      }
     }
-    for (let x = startX; x <= endX; x += 1) {
-      index = drawVerticalBrushRuns(scene, x, startY, endY, true, index);
-      index = drawVerticalBrushRuns(scene, x, startY, endY, false, index);
+    for (let x = startX - 1; x <= endX + 1; x += 1) {
+      for (let sy = segmentStartY; sy <= segmentEndY; sy += 3) {
+        if (verticalSegmentExposed(scene, x, sy, true)) index = stampWallSegment(scene, x, sy, true, index);
+        if (verticalSegmentExposed(scene, x, sy, false)) index = stampWallSegment(scene, x, sy, false, index);
+      }
     }
     return index;
   }
 
-function drawHorizontalBrushRuns(scene: DeepdiveScene, startX: number, endX: number, y: number, north: boolean, spriteIndex: number) {
+function drawTerrainFillPlates(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number, spriteIndex: number) {
     let index = spriteIndex;
-    let runStart = -1;
-    for (let x = startX; x <= endX + 1; x += 1) {
-      const tile = x <= endX ? scene.getTile(x, y) : 'water';
-      const exposed = tile !== 'water' && (north ? scene.getTile(x, y - 1) === 'water' : scene.getTile(x, y + 1) === 'water');
-      if (exposed && runStart < 0) {
-        runStart = x;
-        continue;
+    const chunk = 8;
+    const chunkStartX = Math.floor((startX - 2) / chunk) * chunk;
+    const chunkEndX = Math.ceil((endX + 2) / chunk) * chunk;
+    const chunkStartY = Math.floor((startY - 2) / chunk) * chunk;
+    const chunkEndY = Math.ceil((endY + 2) / chunk) * chunk;
+    for (let cy = chunkStartY; cy <= chunkEndY; cy += chunk) {
+      for (let cx = chunkStartX; cx <= chunkEndX; cx += chunk) {
+        const score = solidChunkScore(scene, cx, cy, chunk);
+        if (score.solidRatio < 0.78 || score.edgeRatio > 0.22) continue;
+        const variant = Math.floor(hash(cx * 23, cy * 29, rng.seed) * 4) % 4;
+        const key = `terrain-brush-fill-${variant}`;
+        const sprite = scene.terrainBrushSpriteAt(index, key);
+        const width = chunk * TILE * (1.08 + hash(cx, cy, rng.seed + 501) * 0.16);
+        const height = chunk * TILE * (0.96 + hash(cy, cx, rng.seed + 503) * 0.16);
+        sprite
+          .setTexture(key)
+          .setVisible(true)
+          .setPosition((cx + chunk * 0.5) * TILE, (cy + chunk * 0.5) * TILE)
+          .setOrigin(0.5)
+          .setDisplaySize(width, height)
+          .setFlipX(hash(cx, cy, rng.seed + 505) > 0.5)
+          .setFlipY(hash(cy, cx, rng.seed + 507) > 0.5)
+          .setAlpha(0.2)
+          .setDepth(0.35);
+        index += 1;
       }
-      if (exposed) continue;
-      if (runStart >= 0) {
-        const runEnd = x - 1;
-        if (runEnd - runStart >= 1) {
-          index = stampLedgeBrush(scene, runStart, runEnd, y, north, index);
-        }
-      }
-      runStart = -1;
     }
     return index;
   }
 
-function drawVerticalBrushRuns(scene: DeepdiveScene, x: number, startY: number, endY: number, west: boolean, spriteIndex: number) {
-    let index = spriteIndex;
-    let runStart = -1;
-    for (let y = startY; y <= endY + 1; y += 1) {
-      const tile = y <= endY ? scene.getTile(x, y) : 'water';
-      const exposed = tile !== 'water' && (west ? scene.getTile(x - 1, y) === 'water' : scene.getTile(x + 1, y) === 'water');
-      if (exposed && runStart < 0) {
-        runStart = y;
-        continue;
+function solidChunkScore(scene: DeepdiveScene, startX: number, startY: number, size: number) {
+    let solid = 0;
+    let edge = 0;
+    let cells = 0;
+    for (let y = startY; y < startY + size; y += 1) {
+      for (let x = startX; x < startX + size; x += 1) {
+        if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
+        cells += 1;
+        const tile = scene.getTile(x, y);
+        if (tile === 'water') continue;
+        solid += 1;
+        if (exposedToWater(scene, x, y)) edge += 1;
       }
-      if (exposed) continue;
-      if (runStart >= 0) {
-        const runEnd = y - 1;
-        if (runEnd - runStart >= 1) {
-          index = stampWallBrush(scene, x, runStart, runEnd, west, index);
-        }
-      }
-      runStart = -1;
     }
-    return index;
+    return {
+      solidRatio: cells > 0 ? solid / cells : 0,
+      edgeRatio: solid > 0 ? edge / solid : 1,
+    };
   }
 
-function stampLedgeBrush(scene: DeepdiveScene, startX: number, endX: number, y: number, north: boolean, spriteIndex: number) {
-    const variant = Math.floor(hash(startX * 11, y * 13 + endX, rng.seed) * 4) % 4;
+function horizontalSegmentExposed(scene: DeepdiveScene, sx: number, y: number, north: boolean) {
+    let exposed = 0;
+    for (let x = sx; x < sx + 3; x += 1) {
+      const tile = scene.getTile(x, y);
+      if (tile === 'water') continue;
+      if ((north ? scene.getTile(x, y - 1) : scene.getTile(x, y + 1)) === 'water') exposed += 1;
+    }
+    return exposed >= 2;
+  }
+
+function verticalSegmentExposed(scene: DeepdiveScene, x: number, sy: number, west: boolean) {
+    let exposed = 0;
+    for (let y = sy; y < sy + 3; y += 1) {
+      const tile = scene.getTile(x, y);
+      if (tile === 'water') continue;
+      if ((west ? scene.getTile(x - 1, y) : scene.getTile(x + 1, y)) === 'water') exposed += 1;
+    }
+    return exposed >= 2;
+  }
+
+function stampLedgeSegment(scene: DeepdiveScene, sx: number, y: number, north: boolean, spriteIndex: number) {
+    const variant = Math.floor(hash(sx * 11, y * 13 + (north ? 0 : 101), rng.seed) * 4) % 4;
     const sprite = scene.terrainBrushSpriteAt(spriteIndex, `terrain-brush-ledge-${variant}`);
-    const width = (endX - startX + 1) * TILE + 20;
-    const height = Phaser.Math.Clamp(width * 0.34, 36, 82);
-    const x = (startX + endX + 1) * TILE * 0.5;
+    const width = 108 + hash(sx, y, rng.seed + 401) * 18;
+    const height = 44 + hash(y, sx, rng.seed + 403) * 12;
+    const x = (sx + 1.5) * TILE + (hash(sx * 5, y * 7, rng.seed + 405) - 0.5) * 10;
     const yPos = north ? y * TILE + 4 : (y + 1) * TILE - 4;
     sprite
       .setTexture(`terrain-brush-ledge-${variant}`)
@@ -288,20 +357,20 @@ function stampLedgeBrush(scene: DeepdiveScene, startX: number, endX: number, y: 
       .setPosition(x, yPos)
       .setOrigin(0.5, north ? 0.2 : 0.8)
       .setDisplaySize(width, height)
-      .setFlipX(hash(endX, y, rng.seed + 101) > 0.5)
+      .setFlipX(hash(sx, y, rng.seed + 101) > 0.5)
       .setFlipY(!north)
-      .setAlpha(0.9)
+      .setAlpha(0.86)
       .setDepth(0.78);
     return spriteIndex + 1;
   }
 
-function stampWallBrush(scene: DeepdiveScene, x: number, startY: number, endY: number, west: boolean, spriteIndex: number) {
-    const variant = Math.floor(hash(x * 17, startY * 19 + endY, rng.seed) * 4) % 4;
+function stampWallSegment(scene: DeepdiveScene, x: number, sy: number, west: boolean, spriteIndex: number) {
+    const variant = Math.floor(hash(x * 17, sy * 19 + (west ? 0 : 103), rng.seed) * 4) % 4;
     const sprite = scene.terrainBrushSpriteAt(spriteIndex, `terrain-brush-wall-${variant}`);
-    const height = (endY - startY + 1) * TILE + 22;
-    const width = Phaser.Math.Clamp(height * 0.45, 44, 82);
+    const height = 104 + hash(x, sy, rng.seed + 411) * 20;
+    const width = 52 + hash(sy, x, rng.seed + 413) * 14;
     const xPos = west ? x * TILE + 3 : (x + 1) * TILE - 3;
-    const y = (startY + endY + 1) * TILE * 0.5;
+    const y = (sy + 1.5) * TILE + (hash(x * 7, sy * 5, rng.seed + 415) - 0.5) * 10;
     sprite
       .setTexture(`terrain-brush-wall-${variant}`)
       .setVisible(true)
@@ -309,8 +378,8 @@ function stampWallBrush(scene: DeepdiveScene, x: number, startY: number, endY: n
       .setOrigin(west ? 0.24 : 0.76, 0.5)
       .setDisplaySize(width, height)
       .setFlipX(!west)
-      .setFlipY(hash(x, endY, rng.seed + 103) > 0.5)
-      .setAlpha(0.82)
+      .setFlipY(hash(x, sy, rng.seed + 103) > 0.5)
+      .setAlpha(0.76)
       .setDepth(0.77);
     return spriteIndex + 1;
   }
