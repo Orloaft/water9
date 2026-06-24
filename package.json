@@ -303,7 +303,7 @@
     "source:ingest": "node tools/ingest_source_candidate_image.mjs",
     "source:ingest-batch": "node tools/ingest_source_candidate_batch.mjs",
     "source:reject-attempt": "node tools/reject_source_candidate_attempt.mjs",
-    "environment:capture-source": "node tools/environment_source_capture_server.mjs",
+    "environment:generate-openai": "node tools/generate_environment_source_openai.mjs",
     "source:imagegen-mark": "node tools/source_imagegen_handoff.mjs --mark",
     "source:imagegen-status": "node tools/source_imagegen_handoff.mjs --status",
     "source:imagegen-health": "node tools/source_imagegen_handoff.mjs --health",
