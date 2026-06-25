@@ -24,6 +24,7 @@ export function rebuildTerrainMask(scene: DeepdiveScene) {
     }
   }
   scene.terrainMask = mask;
+  normalizeTerrainMask(scene, 0, TERRAIN_MASK_WIDTH - 1, 0, TERRAIN_MASK_HEIGHT - 1, 5);
   scene.terrainDirty = true;
   scene.terrainBoundsKey = '';
 }
@@ -42,6 +43,14 @@ export function syncTerrainMaskTile(scene: DeepdiveScene, tileX: number, tileY: 
       }
     }
   }
+  normalizeTerrainMask(
+    scene,
+    Math.max(0, (tileX - 2) * TERRAIN_MASK_RES),
+    Math.min(TERRAIN_MASK_WIDTH - 1, (tileX + 3) * TERRAIN_MASK_RES - 1),
+    Math.max(0, (tileY - 2) * TERRAIN_MASK_RES),
+    Math.min(TERRAIN_MASK_HEIGHT - 1, (tileY + 3) * TERRAIN_MASK_RES - 1),
+    2,
+  );
   scene.terrainDirty = true;
   scene.terrainBoundsKey = '';
 }
@@ -84,6 +93,109 @@ function maskIndex(sx: number, sy: number) {
   return sy * TERRAIN_MASK_WIDTH + sx;
 }
 
+function normalizeTerrainMask(
+  scene: DeepdiveScene,
+  minSx: number,
+  maxSx: number,
+  minSy: number,
+  maxSy: number,
+  passes: number,
+) {
+  if (scene.terrainMask.length !== TERRAIN_MASK_WIDTH * TERRAIN_MASK_HEIGHT) return;
+  const margin = 3;
+  const fromX = Math.max(1, minSx - margin);
+  const toX = Math.min(TERRAIN_MASK_WIDTH - 2, maxSx + margin);
+  const fromY = Math.max(1, minSy - margin);
+  const toY = Math.min(TERRAIN_MASK_HEIGHT - 2, maxSy + margin);
+  for (let pass = 0; pass < passes; pass += 1) {
+    const next = new Uint8Array(scene.terrainMask);
+    for (let sy = fromY; sy <= toY; sy += 1) {
+      for (let sx = fromX; sx <= toX; sx += 1) {
+        const index = maskIndex(sx, sy);
+        const current = scene.terrainMask[index];
+        const solid = current >= TERRAIN_MASK_SOLID_THRESHOLD;
+        const neighbors = countSolidMaskNeighbors(scene, sx, sy, 1);
+        const broad = countSolidMaskNeighbors(scene, sx, sy, 2);
+        const horizontalBridge = terrainMaskSolidInArray(scene.terrainMask, sx - 1, sy)
+          && terrainMaskSolidInArray(scene.terrainMask, sx + 1, sy);
+        const verticalBridge = terrainMaskSolidInArray(scene.terrainMask, sx, sy - 1)
+          && terrainMaskSolidInArray(scene.terrainMask, sx, sy + 1);
+        const isolatedVoid = !solid && (neighbors >= 7 || (neighbors >= 6 && broad >= 18));
+        const thinVoid = !solid && (
+          (horizontalBridge && countSolidMaskNeighbors(scene, sx, sy, 2) >= 13)
+          || (verticalBridge && countSolidMaskNeighbors(scene, sx, sy, 2) >= 13)
+        );
+        const unsupportedSolid = solid && (neighbors <= 2 || (neighbors <= 3 && broad <= 10));
+        const needleSolid = solid && (
+          (!terrainMaskSolidInArray(scene.terrainMask, sx - 1, sy) && !terrainMaskSolidInArray(scene.terrainMask, sx + 1, sy) && neighbors <= 4)
+          || (!terrainMaskSolidInArray(scene.terrainMask, sx, sy - 1) && !terrainMaskSolidInArray(scene.terrainMask, sx, sy + 1) && neighbors <= 4)
+        );
+        const edgeCut = solid && contourErosionAt(scene, sx, sy, pass, neighbors, broad);
+        if (isolatedVoid || thinVoid) {
+          next[index] = 235;
+        } else if (unsupportedSolid || needleSolid || edgeCut) {
+          next[index] = 0;
+        } else if (solid) {
+          const average = averageMaskDensity(scene.terrainMask, sx, sy);
+          next[index] = Math.max(TERRAIN_MASK_SOLID_THRESHOLD, Math.round(current * 0.72 + average * 0.28));
+        } else if (neighbors >= 5 && broad >= 14) {
+          next[index] = Math.max(current, 78);
+        }
+      }
+    }
+    scene.terrainMask = next;
+  }
+}
+
+function contourErosionAt(scene: DeepdiveScene, sx: number, sy: number, pass: number, neighbors: number, broad: number) {
+  const northOpen = !terrainMaskSolidInArray(scene.terrainMask, sx, sy - 1);
+  const southOpen = !terrainMaskSolidInArray(scene.terrainMask, sx, sy + 1);
+  const westOpen = !terrainMaskSolidInArray(scene.terrainMask, sx - 1, sy);
+  const eastOpen = !terrainMaskSolidInArray(scene.terrainMask, sx + 1, sy);
+  const exposed = [northOpen, southOpen, westOpen, eastOpen].filter(Boolean).length;
+  if (exposed === 0 || neighbors < 4 || broad < 9) return false;
+  const macroX = Math.floor(sx / 4);
+  const macroY = Math.floor(sy / 4);
+  const lobe = hash(macroX * 211 + pass * 17, macroY * 223 - pass * 19, rng.seed + 5903);
+  const wave = (
+    Math.sin(sx * 0.18 + sy * 0.09 + rng.seed * 0.017)
+    + Math.sin(sx * 0.07 - sy * 0.16 + rng.seed * 0.011)
+  ) * 0.5 + 0.5;
+  const cornerBonus = exposed >= 2 ? 0.11 : 0;
+  return lobe * 0.72 + wave * 0.28 + cornerBonus > 0.82;
+}
+
+function terrainMaskSolidInArray(mask: Uint8Array, sx: number, sy: number) {
+  if (sx < 0 || sy < 0 || sx >= TERRAIN_MASK_WIDTH || sy >= TERRAIN_MASK_HEIGHT) return false;
+  return mask[maskIndex(sx, sy)] >= TERRAIN_MASK_SOLID_THRESHOLD;
+}
+
+function countSolidMaskNeighbors(scene: DeepdiveScene, sx: number, sy: number, radius: number) {
+  let solid = 0;
+  for (let oy = -radius; oy <= radius; oy += 1) {
+    for (let ox = -radius; ox <= radius; ox += 1) {
+      if (ox === 0 && oy === 0) continue;
+      if (terrainMaskSolidInArray(scene.terrainMask, sx + ox, sy + oy)) solid += 1;
+    }
+  }
+  return solid;
+}
+
+function averageMaskDensity(mask: Uint8Array, sx: number, sy: number) {
+  let total = 0;
+  let count = 0;
+  for (let oy = -1; oy <= 1; oy += 1) {
+    for (let ox = -1; ox <= 1; ox += 1) {
+      const x = sx + ox;
+      const y = sy + oy;
+      if (x < 0 || y < 0 || x >= TERRAIN_MASK_WIDTH || y >= TERRAIN_MASK_HEIGHT) continue;
+      total += mask[maskIndex(x, y)];
+      count += 1;
+    }
+  }
+  return count > 0 ? total / count : 0;
+}
+
 function initialMaskDensity(scene: DeepdiveScene, sx: number, sy: number) {
   const tx = Math.floor(sx / TERRAIN_MASK_RES);
   const ty = Math.floor(sy / TERRAIN_MASK_RES);
@@ -92,10 +204,11 @@ function initialMaskDensity(scene: DeepdiveScene, sx: number, sy: number) {
   const localX = ((sx % TERRAIN_MASK_RES) + 0.5) * TERRAIN_MASK_CELL;
   const localY = ((sy % TERRAIN_MASK_RES) + 0.5) * TERRAIN_MASK_CELL;
   let density = 255;
-  density = erodeOpenSide(scene, density, tx, ty, localY, 'north');
-  density = erodeOpenSide(scene, density, tx, ty, TILE - localY, 'south');
-  density = erodeOpenSide(scene, density, tx, ty, localX, 'west');
-  density = erodeOpenSide(scene, density, tx, ty, TILE - localX, 'east');
+  density = erodeOpenSide(scene, density, tx, ty, sx, sy, localX, localY, localY, 'north');
+  density = erodeOpenSide(scene, density, tx, ty, sx, sy, localX, localY, TILE - localY, 'south');
+  density = erodeOpenSide(scene, density, tx, ty, sx, sy, localX, localY, localX, 'west');
+  density = erodeOpenSide(scene, density, tx, ty, sx, sy, localX, localY, TILE - localX, 'east');
+  density = erodeOpenCorners(scene, density, tx, ty, sx, sy, localX, localY);
   const edgeSeed = hash(sx * 17, sy * 19, rng.seed + 5051);
   const nearOpen = scene.getTile(tx, ty - 1) === 'water'
     || scene.getTile(tx, ty + 1) === 'water'
@@ -110,6 +223,10 @@ function erodeOpenSide(
   density: number,
   tx: number,
   ty: number,
+  sx: number,
+  sy: number,
+  localX: number,
+  localY: number,
   distanceToSide: number,
   side: 'north' | 'south' | 'west' | 'east',
 ) {
@@ -122,8 +239,44 @@ function erodeOpenSide(
         : scene.getTile(tx + 1, ty);
   if (tiles[neighbor].solid) return density;
   const salt = side === 'north' ? 5101 : side === 'south' ? 5107 : side === 'west' ? 5113 : 5119;
-  const inset = 1.5 + hash(tx * 31 + salt, ty * 37 - salt, rng.seed + salt) * 16.5;
+  const along = side === 'north' || side === 'south' ? localX : localY;
+  const largeWave = hash(Math.floor((side === 'north' || side === 'south' ? sx : sy) / 3) * 31 + salt, ty * 37 - tx * 13, rng.seed + salt);
+  const fineWave = hash(sx * 43 + salt, sy * 47 - salt, rng.seed + salt + 97);
+  const lobe = Math.sin((along / TILE) * Math.PI * 2 + largeWave * Math.PI * 2) * 0.5 + 0.5;
+  const inset = 3.5 + largeWave * 11.5 + fineWave * 8.5 + lobe * 5.5;
   if (distanceToSide <= inset) return 0;
-  if (distanceToSide <= inset + 4) return Math.min(density, 150);
+  if (distanceToSide <= inset + 5) return Math.min(density, 116);
   return density;
+}
+
+function erodeOpenCorners(
+  scene: DeepdiveScene,
+  density: number,
+  tx: number,
+  ty: number,
+  sx: number,
+  sy: number,
+  localX: number,
+  localY: number,
+) {
+  const corners: Array<[number, number, number, number]> = [
+    [-1, -1, localX, localY],
+    [1, -1, TILE - localX, localY],
+    [-1, 1, localX, TILE - localY],
+    [1, 1, TILE - localX, TILE - localY],
+  ];
+  let next = density;
+  for (const [dx, dy, distX, distY] of corners) {
+    const horizontalOpen = !tiles[scene.getTile(tx + dx, ty)].solid;
+    const verticalOpen = !tiles[scene.getTile(tx, ty + dy)].solid;
+    const diagonalOpen = !tiles[scene.getTile(tx + dx, ty + dy)].solid;
+    if (!diagonalOpen && !(horizontalOpen && verticalOpen)) continue;
+    const salt = 5600 + (dx < 0 ? 11 : 17) + (dy < 0 ? 23 : 29);
+    const radius = 7 + hash(tx * 59 + salt, ty * 61 - salt, rng.seed + salt) * 16;
+    const distance = Math.hypot(distX, distY);
+    const noise = hash(sx * 67 + salt, sy * 71 - salt, rng.seed + salt + 101);
+    if (distance < radius * (0.82 + noise * 0.28)) next = 0;
+    else if (distance < radius + 5) next = Math.min(next, 104);
+  }
+  return next;
 }

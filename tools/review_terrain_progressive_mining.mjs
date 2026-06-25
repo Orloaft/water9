@@ -3,18 +3,17 @@ import { chromium } from 'playwright';
 
 const baseUrl = process.env.PLAYTEST_URL ?? 'http://127.0.0.1:5175/';
 const outDir = process.env.TERRAIN_PROGRESSIVE_OUT ?? 'tools/scratch/terrain-progressive-mining-review';
-const stages = [
-  'intact',
-  'intact',
-  'damage',
-  'damage',
-  'break',
-  'after',
-  'after',
-  'damage',
-  'break',
-  'after',
-  'after',
+const cuts = [
+  { dx: 0, dy: 24, repeats: 3 },
+  { dx: 18, dy: 24, repeats: 4 },
+  { dx: 38, dy: 25, repeats: 4 },
+  { dx: -18, dy: 24, repeats: 4 },
+  { dx: -38, dy: 25, repeats: 4 },
+  { dx: 58, dy: 27, repeats: 4 },
+  { dx: 78, dy: 29, repeats: 4 },
+  { dx: -58, dy: 27, repeats: 4 },
+  { dx: 12, dy: 38, repeats: 3 },
+  { dx: 36, dy: 40, repeats: 3 },
 ];
 
 function withPlaytestParam(url) {
@@ -45,21 +44,52 @@ await page.waitForFunction(() => {
 }, null, { timeout: 10000 });
 
 const frames = [];
-for (let index = 0; index < stages.length; index += 1) {
-  const stage = stages[index];
-  await page.evaluate((stageName) => window.__AQUA_PLAYTEST__?.command('terrainMiningReview', { stage: stageName }), stage);
+await page.evaluate(() => window.__AQUA_PLAYTEST__?.command('terrainMiningReview', { stage: 'intact' }));
+await page.waitForFunction(() => {
+  const snap = window.__AQUA_PLAYTEST__?.snapshot();
+  return Boolean(snap?.world && snap.world.ready !== false);
+}, null, { timeout: 10000 });
+await page.waitForTimeout(180);
+
+let snapshot = await page.evaluate(() => window.__AQUA_PLAYTEST__?.snapshot());
+let path = `${outDir}/00-intact.png`;
+await page.screenshot({ path });
+let cropPath = `${outDir}/00-intact-crop.png`;
+await page.screenshot({ path: cropPath, clip: { x: 300, y: 330, width: 620, height: 330 } });
+frames.push({
+  index: 0,
+  stage: 'intact',
+  path,
+  cropPath,
+  status: snapshot?.ui?.status ?? null,
+  player: snapshot?.player ?? null,
+});
+
+for (let index = 0; index < cuts.length; index += 1) {
+  snapshot = await page.evaluate(() => window.__AQUA_PLAYTEST__?.snapshot());
+  const player = snapshot?.player ?? { x: 1248, y: 840 };
+  const cut = cuts[index];
+  await page.evaluate((payload) => window.__AQUA_PLAYTEST__?.command('terrainMineAt', payload), {
+    worldX: player.x + cut.dx,
+    worldY: player.y + cut.dy,
+    repeats: cut.repeats,
+  });
   await page.waitForFunction(() => {
     const snap = window.__AQUA_PLAYTEST__?.snapshot();
     return Boolean(snap?.world && snap.world.ready !== false);
   }, null, { timeout: 10000 });
-  await page.waitForTimeout(stage === 'break' ? 300 : 160);
-  const snapshot = await page.evaluate(() => window.__AQUA_PLAYTEST__?.snapshot());
-  const path = `${outDir}/${String(index).padStart(2, '0')}-${stage}.png`;
+  await page.waitForTimeout(220);
+  snapshot = await page.evaluate(() => window.__AQUA_PLAYTEST__?.snapshot());
+  path = `${outDir}/${String(index + 1).padStart(2, '0')}-actual-cut.png`;
   await page.screenshot({ path });
+  cropPath = `${outDir}/${String(index + 1).padStart(2, '0')}-actual-cut-crop.png`;
+  await page.screenshot({ path: cropPath, clip: { x: 300, y: 330, width: 620, height: 330 } });
   frames.push({
-    index,
-    stage,
+    index: index + 1,
+    stage: 'actual-cut',
+    cut,
     path,
+    cropPath,
     status: snapshot?.ui?.status ?? null,
     player: snapshot?.player ?? null,
   });
@@ -74,9 +104,11 @@ const report = {
   passedRuntime: errors.length === 0,
   errors,
   criteria: [
+    'actual repeated cutter calls remove terrain through the density mask',
     'drilled openings stay visually passable after break effects settle',
-    'large ledge brushes do not pop into newly opened mining wounds',
-    'decorative flora remains attached to broad terrain boundaries instead of masking collision shape',
+    'body-height cutter targets should open a swimmer-sized tunnel instead of a low waist-level groove',
+    'edge flora and ore accents stay attached to mask boundaries instead of masking collision shape',
+    'no square ledge plates or pasted rock slabs appear after sequential mining cuts',
   ],
   frames,
 };

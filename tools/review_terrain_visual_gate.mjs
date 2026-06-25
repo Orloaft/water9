@@ -11,6 +11,76 @@ function withPlaytestParam(url) {
   return parsed.toString();
 }
 
+async function terrainShapeMetrics(page) {
+  return page.evaluate(() => {
+    const canvas = document.querySelector('canvas');
+    if (!canvas) return { available: false, reason: 'missing canvas' };
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return { available: false, reason: 'missing 2d context' };
+    const width = canvas.width;
+    const height = canvas.height;
+    const data = ctx.getImageData(0, 0, width, height).data;
+    const roi = {
+      left: 0,
+      top: 96,
+      right: Math.min(width, Math.floor(width * 0.78)),
+      bottom: Math.min(height - 112, Math.floor(height * 0.9)),
+    };
+    const dark = (x, y) => {
+      const i = (y * width + x) * 4;
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      return r < 18 && g < 28 && b < 34;
+    };
+    const horizontalRuns = [];
+    const verticalRuns = [];
+    for (let y = roi.top; y < roi.bottom - 1; y += 1) {
+      let run = 0;
+      for (let x = roi.left; x < roi.right; x += 1) {
+        const edge = dark(x, y) !== dark(x, y + 1);
+        if (edge) run += 1;
+        else if (run) {
+          horizontalRuns.push(run);
+          run = 0;
+        }
+      }
+      if (run) horizontalRuns.push(run);
+    }
+    for (let x = roi.left; x < roi.right - 1; x += 1) {
+      let run = 0;
+      for (let y = roi.top; y < roi.bottom; y += 1) {
+        const edge = dark(x, y) !== dark(x + 1, y);
+        if (edge) run += 1;
+        else if (run) {
+          verticalRuns.push(run);
+          run = 0;
+        }
+      }
+      if (run) verticalRuns.push(run);
+    }
+    const summarize = (runs) => {
+      const sorted = [...runs].sort((a, b) => b - a);
+      return {
+        count: runs.length,
+        max: sorted[0] ?? 0,
+        over24: runs.filter((run) => run >= 24).length,
+        over48: runs.filter((run) => run >= 48).length,
+        top5: sorted.slice(0, 5),
+      };
+    };
+    const horizontal = summarize(horizontalRuns);
+    const vertical = summarize(verticalRuns);
+    return {
+      available: true,
+      roi,
+      horizontal,
+      vertical,
+      blockyEdgeScore: horizontal.over48 * 2 + vertical.over48 * 2 + horizontal.over24 + vertical.over24,
+    };
+  });
+}
+
 await mkdir(outDir, { recursive: true });
 
 const browser = await chromium.launch({ headless: true });
@@ -43,15 +113,26 @@ for (const stage of stages) {
   const snapshot = await page.evaluate(() => window.__AQUA_PLAYTEST__?.snapshot());
   const screenshotPath = `${outDir}/terrain-${stage}.png`;
   await page.screenshot({ path: screenshotPath });
+  const visualMetrics = await terrainShapeMetrics(page);
   results.push({
     stage,
     screenshotPath,
+    visualMetrics,
     status: snapshot?.status ?? null,
     player: snapshot?.player ?? null,
   });
 }
 
 await browser.close();
+
+const visualFailures = results
+  .filter((result) => result.visualMetrics?.available && result.visualMetrics.blockyEdgeScore > 48)
+  .map((result) => ({
+    stage: result.stage,
+    blockyEdgeScore: result.visualMetrics.blockyEdgeScore,
+    horizontal: result.visualMetrics.horizontal,
+    vertical: result.visualMetrics.vertical,
+  }));
 
 const report = {
   schema: 'water9/terrain-visual-gate@1',
@@ -64,6 +145,8 @@ const report = {
     'edge brushes enrich exposed boundaries without replacing passability cues',
   ],
   passedRuntime: errors.length === 0,
+  passedVisual: visualFailures.length === 0,
+  visualFailures,
   errors,
   results,
 };

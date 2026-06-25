@@ -492,6 +492,7 @@ export function environmentTextureKeys() {
     'env-ore-alien-alloy',
     'env-ore-ruin-core',
     ...terrainBrushTextureKeys(),
+    ...terrainEdgeAccentTextureKeys(),
     'env-flora-glass-kelp',
     'env-flora-moon-sponge',
     'env-flora-sting-anemone',
@@ -519,6 +520,27 @@ export function terrainBrushTextureKeys() {
     ...Array.from({ length: 4 }, (_, index) => `terrain-brush-fill-${index}`),
     ...Array.from({ length: 6 }, (_, index) => `terrain-brush-ore-${index}`),
     ...Array.from({ length: 8 }, (_, index) => `terrain-brush-flora-${index}`),
+  ];
+}
+
+export function terrainEdgeAccentTextureKeys() {
+  return [
+    'terrain-edge-ore-copper',
+    'terrain-edge-ore-quartz',
+    'terrain-edge-ore-cobalt',
+    'terrain-edge-ore-ruby',
+    'terrain-edge-seam-gold',
+    'terrain-edge-nodule-green',
+    'terrain-edge-fossil-shell',
+    'terrain-edge-nodule-blue',
+    'terrain-edge-flora-glass-kelp',
+    'terrain-edge-flora-brine-grass',
+    'terrain-edge-flora-black-fan',
+    'terrain-edge-flora-lumen-fern',
+    'terrain-edge-flora-abyss-sacs',
+    'terrain-edge-flora-lumen-stalks',
+    'terrain-edge-flora-crown-polyps',
+    'terrain-edge-flora-oracle-tendrils',
   ];
 }
 

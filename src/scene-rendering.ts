@@ -4,7 +4,7 @@ import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGH
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,swimTopSpeed } from './helpers';
+import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxAlphas,parallaxPrefix,parallaxSpeeds,scaledEntity,sonarKey,sonarTileColor,spriteManifests,subDef,swimPose,swimTopSpeed } from './helpers';
 import type { DeepdiveScene } from './scene';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { ensureTerrainMask,TERRAIN_MASK_CELL,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainMaskDensityAt } from './terrain-mask';
@@ -94,8 +94,9 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     this.terrain.clear();
     this.terrainEdges.clear();
 
-    drawTerrainMaskBody(this, startX, endX, startY, endY);
     const activeTerrainBrushKeys = new Set<string>();
+    drawTerrainMaskBody(this, startX, endX, startY, endY);
+    drawTerrainVisualBrushes(this, startX, endX, startY, endY, activeTerrainBrushKeys);
     for (let y = startY; y <= endY; y += 1) {
       for (let x = startX; x <= endX; x += 1) {
         const tile = this.getTile(x, y);
@@ -146,17 +147,18 @@ export function drawTerrainBreakEffects(this: DeepdiveScene, camera: Phaser.Came
       const t = Phaser.Math.Clamp(effect.age / effect.life, 0, 1);
       const alpha = (1 - t) * 0.72;
       const radius = TILE * (0.44 + t * 0.72);
-      this.actors.fillStyle(effect.color, alpha * 0.16);
+      const palette = terrainAccentPalette();
+      this.actors.fillStyle(palette.glow, alpha * 0.12);
       this.actors.fillCircle(effect.x, effect.y, radius);
-      this.actors.lineStyle(2, 0xd7f6f0, alpha * 0.42);
+      this.actors.lineStyle(2, palette.rim, alpha * 0.36);
       this.actors.strokeCircle(effect.x, effect.y, radius * 0.92);
-      for (let i = 0; i < 7; i += 1) {
-        const angle = effect.seed * Math.PI * 2 + i * 1.63;
-        const travel = TILE * (0.18 + t * (0.64 + (i % 3) * 0.13));
+      for (let i = 0; i < 13; i += 1) {
+        const angle = effect.seed * Math.PI * 2 + i * 1.137;
+        const travel = TILE * (0.12 + t * (0.72 + (i % 4) * 0.1));
         const chipX = effect.x + Math.cos(angle) * travel;
         const chipY = effect.y + Math.sin(angle) * travel;
-        this.actors.fillStyle(i % 3 === 0 ? 0xe4f3ee : effect.color, alpha * 0.56);
-        this.actors.fillCircle(chipX, chipY, 1.6 + (i % 2) * 0.7);
+        this.actors.fillStyle(i % 4 === 0 ? palette.rim : 0x050b10, alpha * (i % 4 === 0 ? 0.42 : 0.58));
+        this.actors.fillRect(Math.floor(chipX), Math.floor(chipY), i % 4 === 0 ? 2 : 1, i % 3 === 0 ? 2 : 1);
       }
     }
   }
@@ -197,24 +199,36 @@ function drawTerrainMaskBody(scene: DeepdiveScene, startX: number, endX: number,
     const maxSx = Math.min(TERRAIN_MASK_WIDTH - 1, (endX + 1) * TERRAIN_MASK_RES + 2);
     const minSy = Math.max(0, startY * TERRAIN_MASK_RES - 2);
     const maxSy = Math.min(TERRAIN_MASK_HEIGHT - 1, (endY + 1) * TERRAIN_MASK_RES + 2);
+    const boundaryCells: Array<{ sx: number; sy: number; color: number }> = [];
 
+    collectTerrainBoundaryCells(scene, minSx, maxSx, minSy, maxSy, boundaryCells);
+    drawTerrainContinuousMaskFill(scene, minSx, maxSx, minSy, maxSy);
+    drawTerrainOrganicBoundary(scene, boundaryCells);
+    drawTerrainEcologyFringe(scene, boundaryCells);
+    drawTerrainMaskEdgeFray(scene, minSx, maxSx, minSy, maxSy);
+  }
+
+function drawTerrainContinuousMaskFill(scene: DeepdiveScene, minSx: number, maxSx: number, minSy: number, maxSy: number) {
     for (let sy = minSy; sy <= maxSy; sy += 1) {
       let runStart = -1;
       let runColor = 0;
       const flush = (sx: number) => {
         if (runStart < 0) return;
-        scene.terrain.fillStyle(runColor, 0.98);
-        scene.terrain.fillRect(
-          runStart * TERRAIN_MASK_CELL,
-          sy * TERRAIN_MASK_CELL,
-          (sx - runStart) * TERRAIN_MASK_CELL,
-          TERRAIN_MASK_CELL,
-        );
+        const width = sx - runStart;
+        if (width > 0) {
+          scene.terrain.fillStyle(runColor, 1);
+          scene.terrain.fillRect(
+            runStart * TERRAIN_MASK_CELL,
+            sy * TERRAIN_MASK_CELL,
+            width * TERRAIN_MASK_CELL + 0.65,
+            TERRAIN_MASK_CELL + 0.65,
+          );
+        }
         runStart = -1;
       };
 
       for (let sx = minSx; sx <= maxSx + 1; sx += 1) {
-        const solid = sx <= maxSx && terrainMaskDensityAt(scene, sx, sy) >= TERRAIN_MASK_SOLID_THRESHOLD;
+        const solid = sx <= maxSx && terrainMaskSolid(scene, sx, sy) && terrainMaskInteriorFillCell(scene, sx, sy);
         if (!solid) {
           flush(sx);
           continue;
@@ -232,7 +246,233 @@ function drawTerrainMaskBody(scene: DeepdiveScene, startX: number, endX: number,
         }
       }
     }
-    drawTerrainMaskEdgeFray(scene, minSx, maxSx, minSy, maxSy);
+  }
+
+function collectTerrainBoundaryCells(
+  scene: DeepdiveScene,
+  minSx: number,
+  maxSx: number,
+  minSy: number,
+  maxSy: number,
+  boundaryCells: Array<{ sx: number; sy: number; color: number }>,
+) {
+    for (let sy = minSy; sy <= maxSy; sy += 1) {
+      for (let sx = minSx; sx <= maxSx; sx += 1) {
+        if (!terrainMaskSolid(scene, sx, sy) || !terrainMaskBoundaryCell(scene, sx, sy)) continue;
+        if (!terrainBoundarySupported(scene, sx, sy)) continue;
+        const tx = Math.floor(sx / TERRAIN_MASK_RES);
+        const ty = Math.floor(sy / TERRAIN_MASK_RES);
+        boundaryCells.push({ sx, sy, color: terrainBodyColor(scene.getTile(tx, ty), ty) });
+      }
+    }
+  }
+
+function terrainMaskSolid(scene: DeepdiveScene, sx: number, sy: number) {
+    return terrainMaskDensityAt(scene, sx, sy) >= TERRAIN_MASK_SOLID_THRESHOLD;
+  }
+
+function terrainBoundarySupported(scene: DeepdiveScene, sx: number, sy: number) {
+    let solid = 0;
+    for (let oy = -2; oy <= 2; oy += 1) {
+      for (let ox = -2; ox <= 2; ox += 1) {
+        if (ox === 0 && oy === 0) continue;
+        if (terrainMaskSolid(scene, sx + ox, sy + oy)) solid += 1;
+      }
+    }
+    const horizontal = terrainMaskSolid(scene, sx - 1, sy) || terrainMaskSolid(scene, sx + 1, sy);
+    const vertical = terrainMaskSolid(scene, sx, sy - 1) || terrainMaskSolid(scene, sx, sy + 1);
+    return solid >= 4 && (horizontal || vertical);
+  }
+
+function terrainMaskBoundaryCell(scene: DeepdiveScene, sx: number, sy: number) {
+    for (let oy = -2; oy <= 2; oy += 1) {
+      for (let ox = -2; ox <= 2; ox += 1) {
+        if (ox === 0 && oy === 0) continue;
+        if (Math.abs(ox) + Math.abs(oy) > 3) continue;
+        if (!terrainMaskSolid(scene, sx + ox, sy + oy)) return true;
+      }
+    }
+    return false;
+  }
+
+function terrainMaskInteriorFillCell(scene: DeepdiveScene, sx: number, sy: number) {
+    for (let oy = -2; oy <= 2; oy += 1) {
+      for (let ox = -2; ox <= 2; ox += 1) {
+        if (!terrainMaskSolid(scene, sx + ox, sy + oy)) return false;
+      }
+    }
+    return true;
+  }
+
+function drawTerrainOrganicBoundary(
+  scene: DeepdiveScene,
+  cells: Array<{ sx: number; sy: number; color: number }>,
+) {
+    const cellMap = new Map<string, { sx: number; sy: number; color: number }>();
+    for (const cell of cells) cellMap.set(`${cell.sx}:${cell.sy}`, cell);
+    for (const cell of cells) {
+      const cx = (cell.sx + 0.5) * TERRAIN_MASK_CELL;
+      const cy = (cell.sy + 0.5) * TERRAIN_MASK_CELL;
+      const neighbors = [
+        cellMap.get(`${cell.sx + 1}:${cell.sy}`),
+        cellMap.get(`${cell.sx}:${cell.sy + 1}`),
+        cellMap.get(`${cell.sx + 1}:${cell.sy + 1}`),
+        cellMap.get(`${cell.sx - 1}:${cell.sy + 1}`),
+      ].filter(Boolean) as Array<{ sx: number; sy: number; color: number }>;
+      for (const neighbor of neighbors) {
+        const nx = (neighbor.sx + 0.5) * TERRAIN_MASK_CELL;
+        const ny = (neighbor.sy + 0.5) * TERRAIN_MASK_CELL;
+        scene.terrain.lineStyle(TERRAIN_MASK_CELL * 3.2, cell.color, 1);
+        scene.terrain.lineBetween(cx, cy, nx, ny);
+      }
+    }
+    for (const cell of cells) {
+      const cx = (cell.sx + 0.5) * TERRAIN_MASK_CELL;
+      const cy = (cell.sy + 0.5) * TERRAIN_MASK_CELL;
+      const seed = hash(cell.sx * 131, cell.sy * 137, rng.seed + 5321);
+      const radiusX = TERRAIN_MASK_CELL * (1.92 + seed * 0.46);
+      const radiusY = TERRAIN_MASK_CELL * (1.78 + hash(cell.sy, cell.sx, rng.seed + 5323) * 0.5);
+      scene.terrain.fillStyle(cell.color, 0.96);
+      scene.terrain.fillEllipse(cx, cy, radiusX * 1.55, radiusY * 1.5);
+      if (seed > 0.86) {
+        scene.terrain.fillStyle(cell.color, 0.82);
+        scene.terrain.fillEllipse(
+          cx + (hash(cell.sx, cell.sy, rng.seed + 5327) - 0.5) * TERRAIN_MASK_CELL * 0.7,
+          cy + (hash(cell.sy, cell.sx, rng.seed + 5329) - 0.5) * TERRAIN_MASK_CELL * 0.7,
+          radiusX * 1.15,
+          radiusY,
+        );
+      }
+    }
+  }
+
+function drawTerrainEcologyFringe(
+  scene: DeepdiveScene,
+  cells: Array<{ sx: number; sy: number; color: number }>,
+) {
+    const palette = terrainAccentPalette();
+    const cellMap = new Map<string, { sx: number; sy: number; color: number }>();
+    for (const cell of cells) cellMap.set(`${cell.sx}:${cell.sy}`, cell);
+
+    for (const cell of cells) {
+      const support = terrainLocalSolidSupport(scene, cell.sx, cell.sy, 3);
+      if (support < 14) continue;
+      const seed = hash(cell.sx * 269, cell.sy * 271, rng.seed + 6201);
+      if (seed < 0.38) continue;
+      const jitterX = (hash(cell.sx, cell.sy, rng.seed + 6251) - 0.5) * TERRAIN_MASK_CELL * 1.4;
+      const jitterY = (hash(cell.sy, cell.sx, rng.seed + 6253) - 0.5) * TERRAIN_MASK_CELL * 1.4;
+      const cx = (cell.sx + 0.5) * TERRAIN_MASK_CELL + jitterX;
+      const cy = (cell.sy + 0.5) * TERRAIN_MASK_CELL + jitterY;
+      const matColor = fringeMatColor(palette, seed);
+      const neighbors = [
+        cellMap.get(`${cell.sx + 1}:${cell.sy}`),
+        cellMap.get(`${cell.sx}:${cell.sy + 1}`),
+        cellMap.get(`${cell.sx + 1}:${cell.sy + 1}`),
+        cellMap.get(`${cell.sx - 1}:${cell.sy + 1}`),
+      ].filter(Boolean) as Array<{ sx: number; sy: number; color: number }>;
+      for (const neighbor of neighbors) {
+        if (terrainLocalSolidSupport(scene, neighbor.sx, neighbor.sy, 3) < 14) continue;
+        if (hash(cell.sx * 313 + neighbor.sx, cell.sy * 317 + neighbor.sy, rng.seed + 6257) < 0.42) continue;
+        const nx = (neighbor.sx + 0.5) * TERRAIN_MASK_CELL
+          + (hash(neighbor.sx, neighbor.sy, rng.seed + 6261) - 0.5) * TERRAIN_MASK_CELL * 1.4;
+        const ny = (neighbor.sy + 0.5) * TERRAIN_MASK_CELL
+          + (hash(neighbor.sy, neighbor.sx, rng.seed + 6263) - 0.5) * TERRAIN_MASK_CELL * 1.4;
+        scene.terrainEdges.lineStyle(TERRAIN_MASK_CELL * 6.2, 0x03090b, 0.12);
+        scene.terrainEdges.lineBetween(cx, cy, nx, ny);
+        scene.terrainEdges.lineStyle(TERRAIN_MASK_CELL * 3.4, matColor, 0.075);
+        scene.terrainEdges.lineBetween(cx, cy, nx, ny);
+      }
+    }
+
+    for (const cell of cells) {
+      const exposed = terrainMaskExposureVector(scene, cell.sx, cell.sy);
+      if (exposed.count === 0) continue;
+      const support = terrainLocalSolidSupport(scene, cell.sx, cell.sy, 3);
+      if (support < 18) continue;
+      const cx = (cell.sx + 0.5) * TERRAIN_MASK_CELL;
+      const cy = (cell.sy + 0.5) * TERRAIN_MASK_CELL;
+      const seed = hash(cell.sx * 269, cell.sy * 271, rng.seed + 6201);
+      if (seed < 0.9) continue;
+      const outwardX = exposed.x / Math.max(1, Math.abs(exposed.x) + Math.abs(exposed.y));
+      const outwardY = exposed.y / Math.max(1, Math.abs(exposed.x) + Math.abs(exposed.y));
+      const matColor = fringeMatColor(palette, seed);
+      const shadowColor = 0x03090b;
+      const fringeX = cx + outwardX * TERRAIN_MASK_CELL * (0.92 + seed * 0.45);
+      const fringeY = cy + outwardY * TERRAIN_MASK_CELL * (0.92 + hash(cell.sy, cell.sx, rng.seed + 6203) * 0.45);
+      const wide = TERRAIN_MASK_CELL * (7.2 + seed * 4.2);
+      const tall = TERRAIN_MASK_CELL * (2.7 + hash(cell.sx, cell.sy, rng.seed + 6207) * 1.9);
+      const horizontal = Math.abs(outwardY) >= Math.abs(outwardX);
+
+      scene.terrainEdges.fillStyle(shadowColor, 0.06);
+      scene.terrainEdges.fillEllipse(fringeX, fringeY, horizontal ? wide : tall, horizontal ? tall : wide);
+      scene.terrainEdges.fillStyle(matColor, 0.06);
+      scene.terrainEdges.fillEllipse(
+        fringeX + (hash(cell.sx, cell.sy, rng.seed + 6211) - 0.5) * TERRAIN_MASK_CELL * 1.5,
+        fringeY + (hash(cell.sy, cell.sx, rng.seed + 6217) - 0.5) * TERRAIN_MASK_CELL * 1.5,
+        horizontal ? wide * 0.78 : tall * 0.9,
+        horizontal ? tall * 0.82 : wide * 0.78,
+      );
+
+      if (seed > 0.985 && outwardY <= 0.2) {
+        drawTerrainFringeTendrils(scene, cell.sx, cell.sy, fringeX, fringeY, outwardX, outwardY, matColor, palette);
+      }
+    }
+  }
+
+function terrainMaskExposureVector(scene: DeepdiveScene, sx: number, sy: number) {
+    const north = !terrainMaskSolid(scene, sx, sy - 1);
+    const south = !terrainMaskSolid(scene, sx, sy + 1);
+    const west = !terrainMaskSolid(scene, sx - 1, sy);
+    const east = !terrainMaskSolid(scene, sx + 1, sy);
+    return {
+      x: (east ? 1 : 0) - (west ? 1 : 0),
+      y: (south ? 1 : 0) - (north ? 1 : 0),
+      count: [north, south, west, east].filter(Boolean).length,
+    };
+  }
+
+function terrainLocalSolidSupport(scene: DeepdiveScene, sx: number, sy: number, radius: number) {
+    let solid = 0;
+    for (let oy = -radius; oy <= radius; oy += 1) {
+      for (let ox = -radius; ox <= radius; ox += 1) {
+        if (terrainMaskSolid(scene, sx + ox, sy + oy)) solid += 1;
+      }
+    }
+    return solid;
+  }
+
+function fringeMatColor(palette: ReturnType<typeof terrainAccentPalette>, seed: number) {
+    if (seed > 0.92) return palette.glow;
+    if (seed > 0.68) return palette.growth;
+    if (seed > 0.42) return palette.rim;
+    return palette.moss;
+  }
+
+function drawTerrainFringeTendrils(
+  scene: DeepdiveScene,
+  sx: number,
+  sy: number,
+  x: number,
+  y: number,
+  outwardX: number,
+  outwardY: number,
+  color: number,
+  palette: ReturnType<typeof terrainAccentPalette>,
+) {
+    const count = 2 + Math.floor(hash(sx * 281, sy * 283, rng.seed + 6221) * 3);
+    const tangentX = outwardY;
+    const tangentY = -outwardX;
+    for (let i = 0; i < count; i += 1) {
+      const seed = hash(sx * 293 + i * 17, sy * 307 - i * 19, rng.seed + 6229);
+      const offset = (seed - 0.5) * TERRAIN_MASK_CELL * 6;
+      const length = TERRAIN_MASK_CELL * (2.0 + hash(sy + i, sx - i, rng.seed + 6233) * 3.6);
+      const px = x + tangentX * offset;
+      const py = y + tangentY * offset;
+      const tipX = px + outwardX * length + (hash(sx + i, sy, rng.seed + 6237) - 0.5) * TERRAIN_MASK_CELL * 1.3;
+      const tipY = py + outwardY * length + (hash(sy - i, sx, rng.seed + 6241) - 0.5) * TERRAIN_MASK_CELL * 1.3;
+      scene.terrainEdges.lineStyle(seed > 0.86 ? 2 : 1, seed > 0.86 ? palette.glow : color, seed > 0.86 ? 0.28 : 0.18);
+      scene.terrainEdges.lineBetween(px, py, tipX, tipY);
+    }
   }
 
 function drawTerrainMaskEdgeFray(scene: DeepdiveScene, minSx: number, maxSx: number, minSy: number, maxSy: number) {
@@ -249,20 +489,24 @@ function drawTerrainMaskEdgeFray(scene: DeepdiveScene, minSx: number, maxSx: num
         const tx = Math.floor(sx / TERRAIN_MASK_RES);
         const ty = Math.floor(sy / TERRAIN_MASK_RES);
         const tile = scene.getTile(tx, ty);
-        const rimColor = tile === 'sand' ? 0x293b3a : 0x2f4a50;
+        const palette = terrainAccentPalette();
+        const rimColor = tile === 'sand' ? palette.sandRim : palette.rim;
         const darkColor = 0x010306;
         const seed = hash(sx * 83, sy * 89, rng.seed + 5303);
-        if (seed > 0.12) {
-          scene.terrainEdges.fillStyle(seed > 0.86 ? rimColor : darkColor, seed > 0.86 ? 0.18 : 0.42);
-          const size = seed > 0.86 ? 2 : 1;
-          const jitter = (hash(sx * 97, sy * 101, rng.seed + 5309) - 0.5) * 4;
-          if (north) scene.terrainEdges.fillRect(wx + TERRAIN_MASK_CELL * 0.5 + jitter, wy - 1, size, size);
-          if (south) scene.terrainEdges.fillRect(wx + TERRAIN_MASK_CELL * 0.5 - jitter, wy + TERRAIN_MASK_CELL, size, size);
-          if (west) scene.terrainEdges.fillRect(wx - 1, wy + TERRAIN_MASK_CELL * 0.5 + jitter, size, size);
-          if (east) scene.terrainEdges.fillRect(wx + TERRAIN_MASK_CELL, wy + TERRAIN_MASK_CELL * 0.5 - jitter, size, size);
+        if (seed > 0.955) {
+          const highlight = seed > 0.9 ? palette.glow : rimColor;
+          scene.terrainEdges.lineStyle(1, highlight, 0.18);
+          const px = wx + TERRAIN_MASK_CELL * (0.24 + hash(sx, sy, rng.seed + 5329) * 0.52);
+          const py = wy + TERRAIN_MASK_CELL * (0.24 + hash(sy, sx, rng.seed + 5339) * 0.52);
+          scene.terrainEdges.lineBetween(
+            px - (north || south ? TERRAIN_MASK_CELL * 0.32 : 0),
+            py - (west || east ? TERRAIN_MASK_CELL * 0.32 : 0),
+            px + (north || south ? TERRAIN_MASK_CELL * 0.32 : 0),
+            py + (west || east ? TERRAIN_MASK_CELL * 0.32 : 0),
+          );
         }
-        if (seed > 0.82 && (north || south)) {
-          scene.terrainEdges.lineStyle(1, state.biome >= 3 ? 0x204e55 : 0x1d5c52, 0.2);
+        if (seed > 0.86 && (north || south)) {
+          scene.terrainEdges.lineStyle(1, palette.growth, 0.24);
           const dir = north ? -1 : 1;
           scene.terrainEdges.lineBetween(
             wx + TERRAIN_MASK_CELL * 0.5,
@@ -273,6 +517,13 @@ function drawTerrainMaskEdgeFray(scene: DeepdiveScene, minSx: number, maxSx: num
         }
       }
     }
+  }
+
+function terrainAccentPalette() {
+    if (state.biome === 4) return { rim: 0x6f87a4, sandRim: 0x405468, growth: 0x78d7da, glow: 0x82b7ff, moss: 0x203e42 };
+    if (state.biome === 3) return { rim: 0x625887, sandRim: 0x3c3558, growth: 0x9964b8, glow: 0x8f6cff, moss: 0x243047 };
+    if (state.biome === 2) return { rim: 0x655649, sandRim: 0x4b3f36, growth: 0xd17645, glow: 0xff8a3d, moss: 0x2e3a2e };
+    return { rim: 0x2f4a50, sandRim: 0x293b3a, growth: 0x1d5c52, glow: 0x5eb6be, moss: 0x183539 };
   }
 
 function maskTileExposed(scene: DeepdiveScene, x: number, y: number) {
@@ -296,13 +547,13 @@ function drawTerrainInteriorRuns(scene: DeepdiveScene, startX: number, endX: num
       let runColor = 0;
       const flush = (x: number) => {
         if (runStart < 0) return;
-        scene.terrain.fillStyle(runColor, 0.96);
+        scene.terrain.fillStyle(runColor, 1);
         scene.terrain.fillRect(runStart * TILE, y * TILE, (x - runStart) * TILE, TILE);
         runStart = -1;
       };
       for (let x = startX; x <= endX + 1; x += 1) {
         const tile = x <= endX ? scene.getTile(x, y) : 'water';
-        const interior = tile !== 'water' && !exposedToWater(scene, x, y);
+        const interior = tile !== 'water' && maskTileDeepInterior(scene, x, y);
         if (!interior) {
           flush(x);
           continue;
@@ -318,6 +569,17 @@ function drawTerrainInteriorRuns(scene: DeepdiveScene, startX: number, endX: num
         }
       }
     }
+  }
+
+function maskTileDeepInterior(scene: DeepdiveScene, x: number, y: number) {
+    const startSx = x * TERRAIN_MASK_RES;
+    const startSy = y * TERRAIN_MASK_RES;
+    for (let sy = startSy - 3; sy < startSy + TERRAIN_MASK_RES + 3; sy += 1) {
+      for (let sx = startSx - 3; sx < startSx + TERRAIN_MASK_RES + 3; sx += 1) {
+        if (terrainMaskDensityAt(scene, sx, sy) < TERRAIN_MASK_SOLID_THRESHOLD) return false;
+      }
+    }
+    return true;
   }
 
 function drawTerrainSilhouetteCell(scene: DeepdiveScene, x: number, y: number, tile: Tile) {
@@ -444,29 +706,8 @@ function buildTerrainVisualChunk(scene: DeepdiveScene, chunkX: number, chunkY: n
     const startY = chunkY * size;
     appendFillPlacement(scene, placements, chunkX, chunkY, startX, startY, size);
 
-    const segmentStartX = Math.floor((startX - TERRAIN_EDGE_SEGMENT_TILES) / TERRAIN_EDGE_SEGMENT_TILES) * TERRAIN_EDGE_SEGMENT_TILES;
-    const segmentEndX = startX + size + TERRAIN_EDGE_SEGMENT_TILES;
-    for (let y = startY - 2; y <= startY + size + 2; y += 1) {
-      for (let sx = segmentStartX; sx <= segmentEndX; sx += TERRAIN_EDGE_SEGMENT_TILES) {
-        if (!anchorBelongsToChunk(sx, y, chunkX, chunkY)) continue;
-        if (horizontalSegmentExposed(scene, sx, y, true)) placements.push(ledgePlacement(sx, y, true));
-        if (horizontalSegmentExposed(scene, sx, y, false)) placements.push(ledgePlacement(sx, y, false));
-      }
-    }
-
-    const segmentStartY = Math.floor((startY - TERRAIN_EDGE_SEGMENT_TILES) / TERRAIN_EDGE_SEGMENT_TILES) * TERRAIN_EDGE_SEGMENT_TILES;
-    const segmentEndY = startY + size + TERRAIN_EDGE_SEGMENT_TILES;
-    for (let x = startX - 2; x <= startX + size + 2; x += 1) {
-      for (let sy = segmentStartY; sy <= segmentEndY; sy += TERRAIN_EDGE_SEGMENT_TILES) {
-        if (!anchorBelongsToChunk(x, sy, chunkX, chunkY)) continue;
-        if (verticalSegmentExposed(scene, x, sy, true)) placements.push(wallPlacement(x, sy, true));
-        if (verticalSegmentExposed(scene, x, sy, false)) placements.push(wallPlacement(x, sy, false));
-      }
-    }
-
     for (let y = startY; y < startY + size; y += 1) {
       for (let x = startX; x < startX + size; x += 1) {
-        appendCornerPlacements(scene, placements, x, y);
         appendFloraPlacements(scene, placements, x, y);
       }
     }
@@ -596,8 +837,8 @@ function verticalSegmentOpenWater(scene: DeepdiveScene, x: number, sy: number, w
 
 function ledgePlacement(sx: number, y: number, north: boolean): TerrainBrushPlacement {
     const variant = Math.floor(hash(sx * 11, y * 13 + (north ? 0 : 101), rng.seed) * 4) % 4;
-    const width = 142 + hash(sx, y, rng.seed + 401) * 22;
-    const height = 42 + hash(y, sx, rng.seed + 403) * 10;
+    const width = 86 + hash(sx, y, rng.seed + 401) * 18;
+    const height = 24 + hash(y, sx, rng.seed + 403) * 8;
     const x = (sx + TERRAIN_EDGE_SEGMENT_TILES * 0.5) * TILE + (hash(sx * 5, y * 7, rng.seed + 405) - 0.5) * 8;
     const yPos = north ? y * TILE + 4 : (y + 1) * TILE - 4;
     return {
@@ -611,15 +852,15 @@ function ledgePlacement(sx: number, y: number, north: boolean): TerrainBrushPlac
       originY: north ? 0.2 : 0.8,
       flipX: hash(sx, y, rng.seed + 101) > 0.5,
       flipY: !north,
-      alpha: 0.62,
+      alpha: 0.035,
       depth: 0.78,
     };
   }
 
 function wallPlacement(x: number, sy: number, west: boolean): TerrainBrushPlacement {
     const variant = Math.floor(hash(x * 17, sy * 19 + (west ? 0 : 103), rng.seed) * 4) % 4;
-    const height = 148 + hash(x, sy, rng.seed + 411) * 24;
-    const width = 58 + hash(sy, x, rng.seed + 413) * 16;
+    const height = 86 + hash(x, sy, rng.seed + 411) * 22;
+    const width = 28 + hash(sy, x, rng.seed + 413) * 12;
     const xPos = west ? x * TILE + 3 : (x + 1) * TILE - 3;
     const y = (sy + TERRAIN_EDGE_SEGMENT_TILES * 0.5) * TILE + (hash(x * 7, sy * 5, rng.seed + 415) - 0.5) * 8;
     return {
@@ -633,7 +874,7 @@ function wallPlacement(x: number, sy: number, west: boolean): TerrainBrushPlacem
       originY: 0.5,
       flipX: !west,
       flipY: hash(x, sy, rng.seed + 103) > 0.5,
-      alpha: 0.52,
+      alpha: 0.03,
       depth: 0.72,
     };
   }
@@ -654,12 +895,12 @@ function appendCornerPlacements(scene: DeepdiveScene, placements: TerrainBrushPl
 function appendFloraPlacements(scene: DeepdiveScene, placements: TerrainBrushPlacement[], x: number, y: number) {
     if (x < 1 || y < 8 || x >= WORLD_W - 1 || y >= WORLD_H - 2 || scene.getTile(x, y) === 'water') return;
     const seed = hash(x * 97, y * 101, rng.seed + 1201);
-    if (scene.getTile(x, y - 1) === 'water' && topLedgeFloraClearance(scene, x, y) && seed > 0.94) {
+    if (scene.getTile(x, y - 1) === 'water' && topLedgeFloraClearance(scene, x, y) && seed > 0.9) {
       placements.push(floraPlacement(x, y, 'top'));
       return;
     }
-    if (seed > 0.988 && sideWallFloraClearance(scene, x, y, true)) placements.push(floraPlacement(x, y, 'west'));
-    if (seed < 0.012 && sideWallFloraClearance(scene, x, y, false)) placements.push(floraPlacement(x, y, 'east'));
+    if (seed > 0.975 && sideWallFloraClearance(scene, x, y, true)) placements.push(floraPlacement(x, y, 'west'));
+    if (seed < 0.025 && sideWallFloraClearance(scene, x, y, false)) placements.push(floraPlacement(x, y, 'east'));
   }
 
 function topLedgeFloraClearance(scene: DeepdiveScene, x: number, y: number) {
@@ -721,7 +962,7 @@ function floraPlacement(x: number, y: number, anchor: 'top' | 'west' | 'east'): 
 
 function cornerPlacement(x: number, y: number, corner: 'nw' | 'ne' | 'sw' | 'se'): TerrainBrushPlacement {
     const variant = Math.floor(hash(x * 43 + corner.charCodeAt(0), y * 47 + corner.charCodeAt(1), rng.seed + 601) * 6) % 6;
-    const size = 56 + hash(x * 53, y * 59, rng.seed + 603) * 12;
+    const size = 34 + hash(x * 53, y * 59, rng.seed + 603) * 10;
     const west = corner === 'nw' || corner === 'sw';
     const north = corner === 'nw' || corner === 'ne';
     return {
@@ -735,7 +976,7 @@ function cornerPlacement(x: number, y: number, corner: 'nw' | 'ne' | 'sw' | 'se'
       originY: north ? 0.18 : 0.82,
       flipX: !west,
       flipY: !north,
-      alpha: 0.38,
+      alpha: 0.035,
       depth: 0.8,
     };
   }
@@ -775,10 +1016,9 @@ function drawTerrainDetail(scene: DeepdiveScene, x: number, y: number, tile: Til
   }
 
 function terrainBodyColor(tile: Tile, y: number) {
-    if (tile === 'anchorstone') return 0x091019;
-    if (tile === 'bedrock') return 0x03070b;
-    if (tile === 'sand') return y < WORLD_H * 0.34 ? 0x08161b : 0x061016;
-    return y < WORLD_H * 0.58 ? 0x071119 : 0x050c12;
+    void tile;
+    void y;
+    return 0x010408;
   }
 
 function drawOrganicEdgeFeather(scene: DeepdiveScene, x: number, y: number, tile: Tile) {
@@ -1006,23 +1246,20 @@ function oreGlowColor(tile: Tile) {
 function drawFractureMarks(scene: DeepdiveScene, x: number, y: number, tile: Tile, fracture: number) {
     const wx = x * TILE;
     const wy = y * TILE;
-    const count = fracture > 0.65 ? 4 : fracture > 0.32 ? 3 : 2;
-    scene.terrain.fillStyle(0xe9f4ef, 0.04 + fracture * 0.06);
-    scene.terrain.fillCircle(wx + TILE * 0.5, wy + TILE * 0.5, TILE * (0.18 + fracture * 0.16));
-    for (let i = 0; i < count; i += 1) {
-      const seedA = hash(x + i * 13, y - i * 7, rng.seed);
-      const seedB = hash(y + i * 17, x + i * 5, rng.seed);
-      const sx = wx + 5 + seedA * 14;
-      const sy = wy + 5 + seedB * 14;
-      const length = 6 + fracture * 11 + (i % 2) * 4;
-      const angle = seedA * Math.PI * 1.6 + i * 0.7;
-      scene.terrain.lineStyle(i === 0 ? 2 : 1, tile === 'sand' ? 0xfff2cc : 0xeef9f7, 0.18 + fracture * 0.34);
-      scene.terrain.lineBetween(sx, sy, sx + Math.cos(angle) * length, sy + Math.sin(angle) * length);
-      if (fracture > 0.5) {
-        scene.terrain.lineStyle(1, 0x071018, 0.28);
-        scene.terrain.lineBetween(sx + 1, sy + 1, sx + Math.cos(angle) * length + 1, sy + Math.sin(angle) * length + 1);
-      }
-    }
+    const seedA = hash(x * 151, y * 157, rng.seed + 7601);
+    const seedB = hash(y * 163, x * 167, rng.seed + 7603);
+    const cx = wx + TILE * (0.42 + seedA * 0.16);
+    const cy = wy + TILE * (0.42 + seedB * 0.16);
+    const tint = tile === 'sand' ? 0x2b352f : 0x10282a;
+    scene.terrain.fillStyle(0x010306, 0.08 + fracture * 0.1);
+    scene.terrain.fillEllipse(cx, cy, TILE * (0.42 + fracture * 0.42), TILE * (0.24 + fracture * 0.24));
+    scene.terrain.fillStyle(tint, 0.035 + fracture * 0.055);
+    scene.terrain.fillEllipse(
+      cx + (seedA - 0.5) * TILE * 0.18,
+      cy + (seedB - 0.5) * TILE * 0.18,
+      TILE * (0.3 + fracture * 0.28),
+      TILE * (0.16 + fracture * 0.16),
+    );
   }
 
 export function drawBoat(this: DeepdiveScene, ) {
@@ -1321,8 +1558,27 @@ export function drawPlayer(this: DeepdiveScene, ) {
     const angle = p.facing.angle();
     const swimSpeed = Math.hypot(p.vx, p.vy);
     const animation = diverAnimation(p.vx, p.vy, swimSpeed, p.mineCooldown, state.lost);
-    this.playerSprite.setVisible(false);
-    this.drawArticulatedDiver(animation, angle, swimSpeed);
+    for (const sprite of Object.values(this.diverPartSprites)) sprite.setVisible(false);
+    this.drawLegacyDiver(animation, angle, swimSpeed);
+  }
+
+export function drawLegacyDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {
+    const p = this.player;
+    const time = performance.now() * 0.001;
+    const pose = diverPose(animation, angle, p.facingSign);
+    const frame = diverFrame(animation, time, swimSpeed, p.mineCooldown);
+    const origin = diverOrigin(animation, p.facingSign);
+    const width = diverDisplayWidth(animation) * PLAYER_DRAW_SCALE;
+    this.playerSprite
+      .setTexture(`diver-${animation}-${frame}`)
+      .setVisible(true)
+      .setPosition(p.x, p.y + (state.lost ? scaledEntity(8) : 0))
+      .setOrigin(origin.x, origin.y)
+      .setFlipX(pose.flipX)
+      .setRotation(state.lost ? pose.rotation + 1.1 * (pose.flipX ? -1 : 1) : pose.rotation)
+      .setAlpha(state.lost ? 0.45 : 1)
+      .setDepth(2.08);
+    fitImageWidth(this.playerSprite, width);
   }
 
 export function drawArticulatedDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {

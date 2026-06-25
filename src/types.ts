@@ -51,6 +51,7 @@ export type PlaytestCommand =
   | 'teleportDepth'
   | 'terrainReview'
   | 'terrainMiningReview'
+  | 'terrainMineAt'
   | 'teleportToArticulated'
   | 'liveArticulatedReview'
   | 'advanceLiveArticulatedReview'
@@ -457,7 +458,7 @@ export interface FloraSpecies {
   radius: number;
 }
 
-export type EnvironmentPropKind = 'rock' | 'ore';
+export type EnvironmentPropKind = 'rock' | 'ore' | 'flora';
 
 export interface EnvironmentProp {
   id: string;

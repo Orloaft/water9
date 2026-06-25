@@ -18,7 +18,7 @@ import * as audioNs from './scene-audio';
 import * as articulatedNs from './scene-articulated';
 import { ensureArticulatedTextures } from './articulated';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
-import { syncTerrainMaskTile } from './terrain-mask';
+import { ensureTerrainMask,syncTerrainMaskTile,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
@@ -537,7 +537,17 @@ export class DeepdiveScene extends Phaser.Scene {
 
   collides(x: number, y: number): boolean {
     const points = this.collisionSamplePoints(x, y);
-    return points.some(([px, py]) => bargeSolidAtWorld(px, py) || tiles[this.tileAtWorld(px, py)].solid);
+    ensureTerrainMask(this);
+    return points.some(([px, py]) => {
+      if (bargeSolidAtWorld(px, py)) return true;
+      const tx = Math.floor(px / TILE);
+      const ty = Math.floor(py / TILE);
+      if (tx < 0 || tx >= WORLD_W || ty < 0 || ty >= WORLD_H) return true;
+      if (!tiles[this.getTile(tx, ty)].solid) return false;
+      const sx = Math.floor((px / TILE) * TERRAIN_MASK_RES);
+      const sy = Math.floor((py / TILE) * TERRAIN_MASK_RES);
+      return terrainMaskDensityAt(this, sx, sy) >= TERRAIN_MASK_SOLID_THRESHOLD;
+    });
   }
 
   collisionSamplePoints(x: number, y: number) {
@@ -788,6 +798,7 @@ export interface DeepdiveScene {
   carveTunnelBand: OmitThisParameter<typeof worldgenNs.carveTunnelBand>;
   carveDarkBasin: OmitThisParameter<typeof worldgenNs.carveDarkBasin>;
   carveRuinVaults: OmitThisParameter<typeof worldgenNs.carveRuinVaults>;
+  smoothTerrainSilhouette: OmitThisParameter<typeof worldgenNs.smoothTerrainSilhouette>;
   pickLanePoint: OmitThisParameter<typeof worldgenNs.pickLanePoint>;
   nearestLanePoint: OmitThisParameter<typeof worldgenNs.nearestLanePoint>;
   carveAnchorstoneStrata: OmitThisParameter<typeof worldgenNs.carveAnchorstoneStrata>;
@@ -814,6 +825,7 @@ export interface DeepdiveScene {
   drawFlora: OmitThisParameter<typeof renderingNs.drawFlora>;
   fishVisibilityAlpha: OmitThisParameter<typeof renderingNs.fishVisibilityAlpha>;
   drawPlayer: OmitThisParameter<typeof renderingNs.drawPlayer>;
+  drawLegacyDiver: OmitThisParameter<typeof renderingNs.drawLegacyDiver>;
   drawArticulatedDiver: OmitThisParameter<typeof renderingNs.drawArticulatedDiver>;
   drawSub: OmitThisParameter<typeof renderingNs.drawSub>;
   drawDarkness: OmitThisParameter<typeof renderingNs.drawDarkness>;

@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
 import type { ArticulatedCreature,CargoItem,Fish,Flare,Larva,NestEgg,ScanTarget,SubVehicle,ThrownUtility,Tile,TileDef } from './types';
-import { DYNAMITE_LAND_FUSE,DYNAMITE_LIFE_DAMAGE,DYNAMITE_RADIUS_TILES,EGG_CUTTER_FUEL_COST,EGG_HATCH_SECONDS,FIRST_AID_REPAIR,FLARE_DURATION,FUEL_TANK_REFILL,INJECTOR_KNIFE_DAMAGE,INJECTOR_KNIFE_RANGE,LIFE_CUTTER_DAMAGE,LIFE_CUTTER_FUEL_COST,OXYGEN_TANK_REFILL,PLAYER_FORWARD_REACH,STUN_GRENADE_DURATION,STUN_GRENADE_RADIUS,THROWN_ITEM_SPEED,TILE } from './constants';
+import { DYNAMITE_LAND_FUSE,DYNAMITE_LIFE_DAMAGE,DYNAMITE_RADIUS_TILES,EGG_CUTTER_FUEL_COST,EGG_HATCH_SECONDS,FIRST_AID_REPAIR,FLARE_DURATION,FUEL_TANK_REFILL,INJECTOR_KNIFE_DAMAGE,INJECTOR_KNIFE_RANGE,LIFE_CUTTER_DAMAGE,LIFE_CUTTER_FUEL_COST,OXYGEN_TANK_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_FORWARD_REACH,STUN_GRENADE_DURATION,STUN_GRENADE_RADIUS,THROWN_ITEM_SPEED,TILE } from './constants';
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
 import { cargoCapacity,cargoIconForTile,cargoKindForTile,clampSelectedCargoIndex,clearBleed,clearVenom,fuelMax,hash,hullMax,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenMax,resetOxygenWarnings,scaledEntity,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
-import { subtractTerrainMaskBrush } from './terrain-mask';
+import { subtractTerrainMaskBrush,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
 
 export function mineFromSub(this: DeepdiveScene, sub: SubVehicle) {
     if (sub.tier < 2) {
@@ -57,17 +57,15 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
       state.status = `${subDef(sub.tier).name} carries scanners only. Buy a Marlin or Leviathan to mine from a sub.`;
       return;
     }
-    const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, worldX, worldY);
     const range = sub ? subMiningRange(sub) : 40 + miningUpgradeBonus() * 6;
-    if (distance > range) return;
     const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, worldX, worldY);
     this.player.facing.set(Math.cos(angle), Math.sin(angle));
     this.updatePlayerFacing(Math.cos(angle));
     if (this.cutNestTarget(worldX, worldY, sub)) return;
     if (this.cutLifeTarget(worldX, worldY, sub)) return;
-    const tx = Math.floor(worldX / TILE);
-    const ty = Math.floor(worldY / TILE);
-    const targets = this.mineTargets(tx, ty);
+    const impact = miningTunnelTarget(this, angle, range);
+    if (!impact) return;
+    const targets = this.mineTargets(impact.tx, impact.ty);
     if (!targets.length) return;
     const fuelReserve = sub ? sub.fuel : state.fuel;
     if (fuelReserve > 0) this.drillingThisFrame = true;
@@ -83,20 +81,14 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     const power = 8.8 + miningUpgradeBonus() * 2.35;
     if (sub) sub.fuel = Math.max(0, sub.fuel - fuelCost);
     else state.fuel = Math.max(0, state.fuel - fuelCost);
+    carveMiningTunnel(this, impact);
     for (const target of targets) {
       const tile = this.getTile(target.x, target.y);
       const def = tiles[tile];
       if (!def.solid || tile === 'bedrock' || tile === 'anchorstone') continue;
       this.damage[target.y][target.x] += power;
-      subtractTerrainMaskBrush(
-        this,
-        target.x * TILE + TILE * 0.5,
-        target.y * TILE + TILE * 0.5,
-        TILE * (0.34 + miningUpgradeBonus() * 0.035),
-        0.22,
-      );
       if (this.damage[target.y][target.x] >= def.hp) {
-        this.breakTile(target.x, target.y, tile, def);
+        this.breakTile(target.x, target.y, tile, def, impact.x, impact.y);
       }
     }
     this.terrainDirty = true;
@@ -104,6 +96,74 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     if (sub) sub.oxygen = Math.max(0, sub.oxygen - (0.08 + targets.length * 0.02));
     else state.oxygen -= 0.11 + targets.length * 0.035;
     renderHud();
+  }
+
+type MiningTunnelTarget = {
+  x: number;
+  y: number;
+  tx: number;
+  ty: number;
+  dx: number;
+  dy: number;
+  lateralX: number;
+  lateralY: number;
+};
+
+function miningTunnelTarget(scene: DeepdiveScene, angle: number, range: number): MiningTunnelTarget | null {
+    const dx = Math.cos(angle);
+    const dy = Math.sin(angle);
+    const lateralX = -dy;
+    const lateralY = dx;
+    const start = state.pilotingSub ? TILE * 0.55 : TILE * 0.48;
+    const step = TERRAIN_MASK_RES > 0 ? Math.max(2, TILE / TERRAIN_MASK_RES * 0.62) : 2;
+    const halfWidth = state.pilotingSub
+      ? TILE * 0.42
+      : PLAYER_COLLISION_RADIUS * 1.45 + miningUpgradeBonus() * 0.75;
+    const offsets = [0, -halfWidth * 0.58, halfWidth * 0.58, -halfWidth, halfWidth];
+    for (let distance = start; distance <= range + step; distance += step) {
+      for (const offset of offsets) {
+        const x = scene.player.x + dx * distance + lateralX * offset;
+        const y = scene.player.y + dy * distance + lateralY * offset;
+        const tx = Math.floor(x / TILE);
+        const ty = Math.floor(y / TILE);
+        const tile = scene.getTile(tx, ty);
+        if (!tiles[tile].solid || tile === 'bedrock' || tile === 'anchorstone') continue;
+        const sx = Math.floor((x / TILE) * TERRAIN_MASK_RES);
+        const sy = Math.floor((y / TILE) * TERRAIN_MASK_RES);
+        if (terrainMaskDensityAt(scene, sx, sy) < TERRAIN_MASK_SOLID_THRESHOLD) continue;
+        return { x, y, tx, ty, dx, dy, lateralX, lateralY };
+      }
+    }
+    return null;
+  }
+
+function carveMiningTunnel(scene: DeepdiveScene, impact: MiningTunnelTarget) {
+    const bonus = miningUpgradeBonus();
+    const radius = state.pilotingSub
+      ? TILE * (0.38 + bonus * 0.012)
+      : TILE * (0.42 + bonus * 0.018);
+    const lateralSpan = state.pilotingSub
+      ? TILE * 0.42
+      : PLAYER_COLLISION_RADIUS * 1.72 + bonus * 0.72;
+    const upwardBias = state.pilotingSub ? 0 : PLAYER_COLLISION_RADIUS * 1.08;
+    const lowerBias = state.pilotingSub ? 0 : PLAYER_COLLISION_RADIUS * 0.34;
+    const centers = [
+      { along: 0, side: 0, lift: upwardBias },
+      { along: 0, side: 0, lift: -lowerBias },
+      { along: -radius * 0.7, side: 0, lift: upwardBias },
+      { along: -radius * 0.7, side: 0, lift: 0 },
+      { along: -radius * 1.4, side: 0, lift: upwardBias * 0.72 },
+      { along: -radius * 0.45, side: -lateralSpan, lift: upwardBias * 0.82 },
+      { along: -radius * 0.45, side: lateralSpan, lift: upwardBias * 0.82 },
+      { along: -radius * 1.05, side: -lateralSpan * 0.74, lift: upwardBias * 0.5 },
+      { along: -radius * 1.05, side: lateralSpan * 0.74, lift: upwardBias * 0.5 },
+    ];
+    for (const center of centers) {
+      const x = impact.x + impact.dx * center.along + impact.lateralX * center.side;
+      const y = impact.y + impact.dy * center.along + impact.lateralY * center.side - center.lift;
+      const edgeSeed = hash(Math.floor(x), Math.floor(y), rng.seed + 7011);
+      subtractTerrainMaskBrush(scene, x, y, radius * (0.9 + edgeSeed * 0.16), 0.3);
+    }
   }
 
 export function cutNestTarget(this: DeepdiveScene, worldX: number, worldY: number, sub: SubVehicle | null) {
@@ -263,7 +323,7 @@ export function nearestNestCutTarget(this: DeepdiveScene, worldX: number, worldY
   }
 
 export function mineTargets(this: DeepdiveScene, tx: number, ty: number) {
-    const maxBlocks = state.upgrades.laser >= 10 ? 4 : state.upgrades.laser >= 6 ? 3 : state.upgrades.laser >= 3 ? 2 : 1;
+    const maxBlocks = 1;
     const radius = maxBlocks > 1 ? 1 : 0;
     const targets: Array<{ x: number; y: number; distance: number }> = [];
     for (let y = ty - radius; y <= ty + radius; y += 1) {
@@ -282,14 +342,29 @@ export function mineTargets(this: DeepdiveScene, tx: number, ty: number) {
       .slice(0, maxBlocks);
   }
 
-export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Tile, def: TileDef) {
+export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Tile, def: TileDef, impactX?: number, impactY?: number) {
     const x = tx * TILE + TILE * 0.5;
     const y = ty * TILE + TILE * 0.5;
-    subtractTerrainMaskBrush(this, x, y, TILE * 0.82, 1.18);
-    this.setTile(tx, ty, 'water');
+    const chipX = Number.isFinite(impactX) ? impactX as number : x;
+    const chipY = Number.isFinite(impactY) ? impactY as number : y;
+    subtractTerrainMaskBrush(this, chipX, chipY, TILE * 0.34, 0.78);
+    if (tileMaskSolidRatio(this, tx, ty) > 0.34) {
+      this.damage[ty][tx] = def.hp * 0.28;
+      this.terrainDirty = true;
+      this.terrainBoundsKey = '';
+      this.markTerrainVisualDirty(tx, ty);
+      this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.42, color: def.color, seed: hash(tx, ty, rng.seed) });
+      if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
+      state.status = `Chipped ${def.name}.`;
+      return;
+    }
+    this.world[ty][tx] = 'water';
     this.damage[ty][tx] = 0;
+    this.terrainDirty = true;
+    this.terrainBoundsKey = '';
+    this.markTerrainVisualDirty(tx, ty);
     this.refreshEnvironmentPropsAround(tx, ty);
-    this.terrainBreakEffects.push({ x, y, age: 0, life: 0.62, color: def.color, seed: hash(tx, ty, rng.seed) });
+    this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.5, color: def.color, seed: hash(tx, ty, rng.seed) });
     if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
     this.spawnLoose(tile, def, x, y);
     if (def.value > 0) {
@@ -299,6 +374,18 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
     } else {
       state.status = `Cut through ${def.name}.`;
     }
+  }
+
+function tileMaskSolidRatio(scene: DeepdiveScene, tx: number, ty: number) {
+    let solid = 0;
+    for (let ly = 0; ly < TERRAIN_MASK_RES; ly += 1) {
+      for (let lx = 0; lx < TERRAIN_MASK_RES; lx += 1) {
+        const sx = tx * TERRAIN_MASK_RES + lx;
+        const sy = ty * TERRAIN_MASK_RES + ly;
+        if (terrainMaskDensityAt(scene, sx, sy) >= TERRAIN_MASK_SOLID_THRESHOLD) solid += 1;
+      }
+    }
+    return solid / (TERRAIN_MASK_RES * TERRAIN_MASK_RES);
   }
 
 export function spawnLoose(this: DeepdiveScene, tile: Tile, def: TileDef, x: number, y: number) {

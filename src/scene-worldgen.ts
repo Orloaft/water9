@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import type { Bobbit,Fish,FishSpecies,Flora,FloraSpecies,Hazard,SpecialRoom,Tile,VeinRule } from './types';
+import type { Bobbit,EnvironmentProp,Fish,FishSpecies,Flora,FloraSpecies,Hazard,SpecialRoom,Tile,VeinRule } from './types';
 import { BIOLUME_CAVERN_CHANCE,BOBBIT_ESCAPE_SECONDS,deepScale,EGG_HP,NEST_CHAMBER_CHANCE,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,scaledDepthPx,scaledEntity,veinRuleAt,veinRulesForBiome } from './helpers';
+import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,isOreTile,oreEnvironmentAssetKey,scaledDepthPx,scaledEntity,veinRuleAt,veinRulesForBiome } from './helpers';
 import type { DeepdiveScene } from './scene';
-import { rebuildTerrainMask } from './terrain-mask';
+import { ensureTerrainMask,rebuildTerrainMask,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
 
 export function generateWorld(this: DeepdiveScene, ) {
     this.world = [];
@@ -40,9 +40,11 @@ export function generateWorld(this: DeepdiveScene, ) {
     }
     this.carveStarterCaverns(center);
     this.carveDeepTunnelNetwork(center);
-    this.carveAnchorstoneStrata();
+	    this.carveAnchorstoneStrata();
 	    this.injectSpecialRooms(center);
+    this.smoothTerrainSilhouette();
 	    this.populateOreVeins();
+    rebuildTerrainMask(this);
 	    this.populateEnvironmentProps();
 
     this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
@@ -53,7 +55,6 @@ export function generateWorld(this: DeepdiveScene, ) {
       state.activeQuestId = '';
     this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
     this.bobbits = state.biome >= 2 ? this.makeBobbits() : [];
-    rebuildTerrainMask(this);
   }
 
 export function makeVentFields(this: DeepdiveScene, ): Hazard[] {
@@ -317,11 +318,131 @@ export function canHostOre(this: DeepdiveScene, x: number, y: number) {
 
 export function populateEnvironmentProps(this: DeepdiveScene) {
     this.environmentProps = [];
+    ensureTerrainMask(this);
+    const props: EnvironmentProp[] = [];
+    for (let y = 8; y < WORLD_H - 3; y += 1) {
+      for (let x = 2; x < WORLD_W - 2; x += 1) {
+        const tile = this.getTile(x, y);
+        if (!tiles[tile].solid || tile === 'bedrock') continue;
+        const anchor = terrainEdgeAnchor(this, x, y);
+        if (!anchor) continue;
+        const seed = hash(x * 149, y * 157, rng.seed + 8011);
+        if (isOreTile(tile)) {
+          if (seed > 0.08) {
+            props.push(edgeOreProp(this, x, y, tile, anchor));
+          }
+          continue;
+        }
+        if (seed > 0.86 && anchor.kind !== 'ceiling') {
+          props.push(edgeFloraProp(this, x, y, anchor));
+        }
+      }
+    }
+    this.environmentProps = props.slice(0, 420);
   }
 
 export function refreshEnvironmentPropsAround(this: DeepdiveScene, cx: number, cy: number) {
     void cx;
     void cy;
+    this.populateEnvironmentProps();
+  }
+
+type EdgeAnchor = {
+  kind: 'floor' | 'ceiling' | 'leftWall' | 'rightWall';
+  x: number;
+  y: number;
+  rotation: number;
+};
+
+function terrainEdgeAnchor(scene: DeepdiveScene, tileX: number, tileY: number): EdgeAnchor | null {
+    const baseX = tileX * TERRAIN_MASK_RES;
+    const baseY = tileY * TERRAIN_MASK_RES;
+    const open = {
+      floor: 0,
+      ceiling: 0,
+      leftWall: 0,
+      rightWall: 0,
+    };
+    for (let i = 0; i < TERRAIN_MASK_RES; i += 1) {
+      if (terrainMaskDensityAt(scene, baseX + i, baseY - 1) < TERRAIN_MASK_SOLID_THRESHOLD) open.floor += 1;
+      if (terrainMaskDensityAt(scene, baseX + i, baseY + TERRAIN_MASK_RES) < TERRAIN_MASK_SOLID_THRESHOLD) open.ceiling += 1;
+      if (terrainMaskDensityAt(scene, baseX - 1, baseY + i) < TERRAIN_MASK_SOLID_THRESHOLD) open.leftWall += 1;
+      if (terrainMaskDensityAt(scene, baseX + TERRAIN_MASK_RES, baseY + i) < TERRAIN_MASK_SOLID_THRESHOLD) open.rightWall += 1;
+    }
+    const entries = Object.entries(open) as Array<[EdgeAnchor['kind'], number]>;
+    const [kind, score] = entries.sort((a, b) => b[1] - a[1])[0];
+    if (score < Math.ceil(TERRAIN_MASK_RES * 0.72)) return null;
+    const jitterX = (hash(tileX, tileY, rng.seed + 8021) - 0.5) * 10;
+    const jitterY = (hash(tileY, tileX, rng.seed + 8023) - 0.5) * 10;
+    if (kind === 'floor') return { kind, x: tileX * TILE + TILE * 0.5 + jitterX, y: tileY * TILE + 4 + jitterY * 0.3, rotation: (hash(tileX, tileY, rng.seed + 8025) - 0.5) * 0.16 };
+    if (kind === 'ceiling') return { kind, x: tileX * TILE + TILE * 0.5 + jitterX, y: (tileY + 1) * TILE - 4 + jitterY * 0.3, rotation: Math.PI + (hash(tileX, tileY, rng.seed + 8027) - 0.5) * 0.16 };
+    if (kind === 'leftWall') return { kind, x: tileX * TILE + 3 + jitterX * 0.3, y: tileY * TILE + TILE * 0.5 + jitterY, rotation: -Math.PI * 0.5 + (hash(tileX, tileY, rng.seed + 8029) - 0.5) * 0.22 };
+    return { kind, x: (tileX + 1) * TILE - 3 + jitterX * 0.3, y: tileY * TILE + TILE * 0.5 + jitterY, rotation: Math.PI * 0.5 + (hash(tileX, tileY, rng.seed + 8031) - 0.5) * 0.22 };
+  }
+
+function edgeOreProp(scene: DeepdiveScene, x: number, y: number, tile: Tile, anchor: EdgeAnchor): EnvironmentProp {
+    const rareOre = tile === 'ruinCore' || tile === 'abyssalCrown' || tile === 'precursorEngine' || tile === 'alienAlloy';
+    const size = rareOre ? 18 : 14;
+    const insetX = anchor.kind === 'leftWall' ? 9 : anchor.kind === 'rightWall' ? -9 : 0;
+    const insetY = anchor.kind === 'floor' ? 8 : anchor.kind === 'ceiling' ? -8 : 0;
+    return {
+      id: `edge-ore:${x}:${y}:${tile}`,
+      kind: 'ore',
+      assetKey: oreEdgeAccentAssetKey(tile),
+      x: anchor.x + insetX,
+      y: anchor.y + insetY,
+      tileX: x,
+      tileY: y,
+      tile,
+      width: size * (1.05 + hash(x, y, rng.seed + 8041) * 0.22),
+      height: size * (0.72 + hash(y, x, rng.seed + 8043) * 0.18),
+      rotation: anchor.rotation + (hash(x, y, rng.seed + 8045) - 0.5) * 0.3,
+      alpha: 0.72,
+      depth: 0.82,
+      flipX: hash(x, y, rng.seed + 8047) > 0.5,
+    };
+  }
+
+function edgeFloraProp(scene: DeepdiveScene, x: number, y: number, anchor: EdgeAnchor): EnvironmentProp {
+    const keys = floraAccentKeys();
+    const variant = Math.floor(hash(x * 163, y * 167, rng.seed + 8051) * keys.length) % keys.length;
+    const size = 22 + hash(y, x, rng.seed + 8053) * (state.biome >= 3 ? 18 : 14);
+    const insetX = anchor.kind === 'leftWall' ? 8 : anchor.kind === 'rightWall' ? -8 : 0;
+    const insetY = anchor.kind === 'floor' ? 7 : anchor.kind === 'ceiling' ? -7 : 0;
+    return {
+      id: `edge-flora:${x}:${y}:${variant}`,
+      kind: 'flora',
+      assetKey: keys[variant],
+      x: anchor.x + insetX,
+      y: anchor.y + insetY,
+      tileX: x,
+      tileY: y,
+      tile: scene.getTile(x, y),
+      width: size * (anchor.kind === 'floor' ? 1.55 : 1.05),
+      height: size * (anchor.kind === 'floor' ? 1.18 : 1),
+      rotation: anchor.rotation,
+      alpha: state.biome >= 3 ? 0.82 : 0.78,
+      depth: 0.9,
+      flipX: hash(x, y, rng.seed + 8055) > 0.5,
+    };
+  }
+
+function oreEdgeAccentAssetKey(tile: Tile) {
+    if (tile === 'copper') return 'terrain-edge-ore-copper';
+    if (tile === 'quartz') return 'terrain-edge-ore-quartz';
+    if (tile === 'ruby') return 'terrain-edge-ore-ruby';
+    if (tile === 'cobalt') return 'terrain-edge-ore-cobalt';
+    if (tile === 'sunstone') return 'terrain-edge-seam-gold';
+    if (tile === 'alienAlloy' || tile === 'ruinCore') return 'terrain-edge-nodule-green';
+    if (tile === 'relic' || tile === 'drownedIdol' || tile === 'precursorEngine' || tile === 'abyssalCrown') return 'terrain-edge-fossil-shell';
+    return 'terrain-edge-nodule-blue';
+  }
+
+function floraAccentKeys() {
+    if (state.biome === 4) return ['terrain-edge-flora-abyss-sacs', 'terrain-edge-flora-lumen-stalks', 'terrain-edge-flora-crown-polyps', 'terrain-edge-flora-oracle-tendrils'];
+    if (state.biome === 3) return ['terrain-edge-flora-black-fan', 'terrain-edge-flora-lumen-fern', 'terrain-edge-flora-crown-polyps', 'terrain-edge-flora-oracle-tendrils'];
+    if (state.biome === 2) return ['terrain-edge-flora-brine-grass', 'terrain-edge-flora-black-fan', 'terrain-edge-flora-lumen-fern'];
+    return ['terrain-edge-flora-glass-kelp', 'terrain-edge-flora-brine-grass', 'terrain-edge-flora-lumen-fern'];
   }
 
 export function makeBobbits(this: DeepdiveScene, ): Bobbit[] {
@@ -766,6 +887,131 @@ export function carveRuinVaults(this: DeepdiveScene, center: number, basinY: num
       const x = center + (i % 2 === 0 ? -18 : 18);
       this.carveWindingTunnel(x, floors[i], -x + WORLD_W, floors[i + 1], 2);
     }
+  }
+
+export function smoothTerrainSilhouette(this: DeepdiveScene) {
+    carveTerrainEdgeLobes(this, 0.32);
+    carveTerrainEdgeScallops(this, 0.18);
+    for (let pass = 0; pass < 2; pass += 1) {
+      const next = this.world.map((row) => [...row]);
+      for (let y = 8; y < WORLD_H - 2; y += 1) {
+        for (let x = 2; x < WORLD_W - 2; x += 1) {
+          const tile = this.getTile(x, y);
+          if (tile === 'bedrock') continue;
+          const solid = tiles[tile].solid;
+          const neighborSolids = countSolidNeighbors(this, x, y);
+          const northWater = this.getTile(x, y - 1) === 'water';
+          const southWater = this.getTile(x, y + 1) === 'water';
+          const westWater = this.getTile(x - 1, y) === 'water';
+          const eastWater = this.getTile(x + 1, y) === 'water';
+          if (solid) {
+            const unsupportedColumn = (northWater || southWater) && westWater && eastWater;
+            const unsupportedShelf = (westWater || eastWater) && northWater && southWater;
+            const exposedSides = [northWater, southWater, westWater, eastWater].filter(Boolean).length;
+            const scallop = exposedSides >= 2
+              && neighborSolids <= 4
+              && hash(x * 149 + pass * 17, y * 151 - pass * 19, rng.seed + 13001) > 0.34;
+            if (unsupportedColumn || unsupportedShelf || neighborSolids <= 2 || scallop) {
+              next[y][x] = 'water';
+            }
+            continue;
+          }
+          if (neighborSolids >= 7 && hash(x * 157 + pass, y * 163 - pass, rng.seed + 13033) > 0.18) {
+            next[y][x] = 'stone';
+          }
+        }
+      }
+      this.world = next;
+    }
+    carveTerrainEdgeLobes(this, 0.16);
+    carveTerrainEdgeScallops(this, 0.12);
+  }
+
+function carveTerrainEdgeScallops(scene: DeepdiveScene, chance = 0.1) {
+    const cuts: Array<{ x: number; y: number; radius: number }> = [];
+    for (let y = 9; y < WORLD_H - 3; y += 1) {
+      for (let x = 3; x < WORLD_W - 3; x += 1) {
+        const tile = scene.getTile(x, y);
+        if (tile === 'bedrock' || !tiles[tile].solid) continue;
+        const northWater = scene.getTile(x, y - 1) === 'water';
+        const southWater = scene.getTile(x, y + 1) === 'water';
+        const westWater = scene.getTile(x - 1, y) === 'water';
+        const eastWater = scene.getTile(x + 1, y) === 'water';
+        const exposed = [northWater, southWater, westWater, eastWater].filter(Boolean).length;
+        if (exposed === 0) continue;
+        const broadFace = (northWater && scene.getTile(x - 1, y - 1) === 'water' && scene.getTile(x + 1, y - 1) === 'water')
+          || (southWater && scene.getTile(x - 1, y + 1) === 'water' && scene.getTile(x + 1, y + 1) === 'water')
+          || (westWater && scene.getTile(x - 1, y - 1) === 'water' && scene.getTile(x - 1, y + 1) === 'water')
+          || (eastWater && scene.getTile(x + 1, y - 1) === 'water' && scene.getTile(x + 1, y + 1) === 'water');
+        if (!broadFace) continue;
+        const wave = Math.sin(x * 0.37 + y * 0.19 + rng.seed * 0.03) * 0.5 + 0.5;
+        const seed = hash(x * 181, y * 191, rng.seed + 13111);
+        if (seed + wave * 0.18 < 1 - chance) continue;
+        cuts.push({ x, y, radius: seed > 0.82 ? 2 : 1 });
+      }
+    }
+    for (const cut of cuts) {
+      for (let y = cut.y - cut.radius; y <= cut.y + cut.radius; y += 1) {
+        for (let x = cut.x - cut.radius; x <= cut.x + cut.radius; x += 1) {
+          if ((x - cut.x) ** 2 + (y - cut.y) ** 2 <= cut.radius ** 2 + 0.35) {
+            if (scene.getTile(x, y) !== 'bedrock') scene.setTile(x, y, 'water');
+          }
+        }
+      }
+    }
+  }
+
+function carveTerrainEdgeLobes(scene: DeepdiveScene, chance: number) {
+    const cuts: Array<{ x: number; y: number; radius: number }> = [];
+    for (let y = 10; y < WORLD_H - 4; y += 1) {
+      for (let x = 4; x < WORLD_W - 4; x += 1) {
+        const tile = scene.getTile(x, y);
+        if (tile === 'bedrock' || !tiles[tile].solid) continue;
+        const northOpen = scene.getTile(x, y - 1) === 'water';
+        const southOpen = scene.getTile(x, y + 1) === 'water';
+        const westOpen = scene.getTile(x - 1, y) === 'water';
+        const eastOpen = scene.getTile(x + 1, y) === 'water';
+        if (!northOpen && !southOpen && !westOpen && !eastOpen) continue;
+        const broadOpen =
+          (northOpen && scene.getTile(x - 2, y - 1) === 'water' && scene.getTile(x + 2, y - 1) === 'water')
+          || (southOpen && scene.getTile(x - 2, y + 1) === 'water' && scene.getTile(x + 2, y + 1) === 'water')
+          || (westOpen && scene.getTile(x - 1, y - 2) === 'water' && scene.getTile(x - 1, y + 2) === 'water')
+          || (eastOpen && scene.getTile(x + 1, y - 2) === 'water' && scene.getTile(x + 1, y + 2) === 'water');
+        if (!broadOpen) continue;
+        const solidSupport = countSolidNeighbors(scene, x, y);
+        if (solidSupport < 4) continue;
+        const seed = hash(x * 197, y * 199, rng.seed + 13277);
+        const wave = Math.sin(x * 0.23 + y * 0.17 + rng.seed * 0.021) * 0.5 + 0.5;
+        if (seed * 0.72 + wave * 0.28 < 1 - chance) continue;
+        cuts.push({
+          x: x + (eastOpen ? -1 : westOpen ? 1 : 0),
+          y: y + (southOpen ? -1 : northOpen ? 1 : 0),
+          radius: seed > 0.9 ? 4 : seed > 0.72 ? 3 : 2,
+        });
+      }
+    }
+    for (const cut of cuts) {
+      for (let y = cut.y - cut.radius; y <= cut.y + cut.radius; y += 1) {
+        for (let x = cut.x - cut.radius; x <= cut.x + cut.radius; x += 1) {
+          if (x < 3 || x >= WORLD_W - 3 || y < 8 || y >= WORLD_H - 2) continue;
+          const nx = (x - cut.x) / cut.radius;
+          const ny = (y - cut.y) / Math.max(1.4, cut.radius * 0.78);
+          const ragged = 0.86 + hash(x * 211, y * 223, rng.seed + 13291) * 0.24;
+          if (nx * nx + ny * ny < ragged && scene.getTile(x, y) !== 'bedrock') scene.setTile(x, y, 'water');
+        }
+      }
+    }
+  }
+
+function countSolidNeighbors(scene: DeepdiveScene, x: number, y: number) {
+    let solid = 0;
+    for (let oy = -1; oy <= 1; oy += 1) {
+      for (let ox = -1; ox <= 1; ox += 1) {
+        if (ox === 0 && oy === 0) continue;
+        if (tiles[scene.getTile(x + ox, y + oy)].solid) solid += 1;
+      }
+    }
+    return solid;
   }
 
 export function pickLanePoint(this: DeepdiveScene, points: Array<{ x: number; y: number }>, salt: number) {

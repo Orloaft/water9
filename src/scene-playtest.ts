@@ -8,6 +8,7 @@ import { cargoCapacity,clearBleed,clearVenom,createConsumableItem,fuelMax,hash,o
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { articulatedManifestInfo,articulatedPlaceholderTextureKeys,partManifest } from './articulated';
 import type { DeepdiveScene } from './scene';
+import { rebuildTerrainMask,subtractTerrainMaskBrush } from './terrain-mask';
 
 function refreshPlaytestCamera(scene: DeepdiveScene) {
   scene.cameras.main.preRender();
@@ -28,15 +29,39 @@ function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'i
   const top = floorY - 8;
   const bottom = floorY + 8;
   const surfaceAt = (x: number) => {
-    const wave = Math.sin((x - left) * 0.22) * 2.2 + Math.sin((x - left) * 0.09 + 1.8) * 1.3;
+    const local = x - left;
+    const wave = Math.sin(local * 0.22) * 2.6
+      + Math.sin(local * 0.09 + 1.8) * 1.7
+      + Math.sin(local * 0.47 + rng.seed * 0.013) * 1.2;
     return floorY + Math.round(wave);
+  };
+  const organicCutout = (x: number, y: number, surface: number) => {
+    if (Math.abs(x - centerX) < 3 && y <= surface + 2) return false;
+    const cavities = [
+      { x: centerX - 31, y: floorY + 3, rx: 8.5, ry: 4.6 },
+      { x: centerX - 18, y: floorY + 6, rx: 6.5, ry: 3.4 },
+      { x: centerX + 21, y: floorY + 1, rx: 7.8, ry: 4.2 },
+      { x: centerX + 35, y: floorY - 2, rx: 5.8, ry: 3.2 },
+    ];
+    for (const cavity of cavities) {
+      const nx = (x - cavity.x) / cavity.rx;
+      const ny = (y - cavity.y) / cavity.ry;
+      const ragged = 0.88 + hash(x * 31, y * 37, rng.seed + 2271) * 0.26;
+      if (nx * nx + ny * ny < ragged) return true;
+    }
+    if (y <= surface + 2) {
+      const lobe = hash(Math.floor(x / 4) * 41, Math.floor(y / 3) * 43, rng.seed + 2297);
+      const wave = Math.sin((x - left) * 0.31 + y * 0.17 + rng.seed * 0.019) * 0.5 + 0.5;
+      return lobe * 0.68 + wave * 0.32 > 0.82;
+    }
+    return false;
   };
   for (let y = top; y <= bottom; y += 1) {
     for (let x = left; x <= right; x += 1) {
       const surface = surfaceAt(x);
       const orePocket = x >= centerX + 7 && x <= centerX + 13 && y >= surface && y <= surface + 2;
       const undercut = x >= centerX - 15 && x <= centerX - 10 && y >= surface && y <= surface + 1 && hash(x, y, rng.seed + 233) > 0.72;
-      const tile: Tile = y < surface || undercut
+      const tile: Tile = y < surface || undercut || organicCutout(x, y, surface)
         ? 'water'
         : orePocket
           ? (x + y) % 3 === 0 ? 'quartz' : 'copper'
@@ -45,6 +70,7 @@ function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'i
       if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
     }
   }
+  rebuildTerrainMask(scene);
 
   const targetX = centerX;
   const targetY = surfaceAt(centerX);
@@ -54,12 +80,22 @@ function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'i
   if (stage === 'damage' && scene.damage[targetY]?.[targetX] !== undefined) {
     scene.damage[targetY][targetX] = targetDef.hp * 0.72;
   } else if (stage === 'break' || stage === 'after') {
-    scene.setTile(targetX, targetY, 'water');
+    const cutX = targetX * TILE + TILE * 0.5;
+    const cutY = targetY * TILE + TILE * 0.5;
+    for (let i = 0; i < 4; i += 1) {
+      subtractTerrainMaskBrush(
+        scene,
+        cutX + (hash(targetX + i, targetY, rng.seed + 541) - 0.5) * TILE * 0.5,
+        cutY + (hash(targetY, targetX + i, rng.seed + 547) - 0.5) * TILE * 0.45,
+        TILE * 0.3,
+        0.72,
+      );
+    }
     if (scene.damage[targetY]?.[targetX] !== undefined) scene.damage[targetY][targetX] = 0;
     if (stage === 'break') {
       scene.terrainBreakEffects.push({
-        x: targetX * TILE + TILE * 0.5,
-        y: targetY * TILE + TILE * 0.5,
+        x: cutX,
+        y: cutY,
         age: 0.08,
         life: 0.62,
         color: targetDef.color,
@@ -480,6 +516,16 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
 	        ? payload.stage
 	        : 'intact';
 	      stageTerrainReview(this, stage);
+	    } else if (command === 'terrainMineAt') {
+	      const payload = typeof value === 'object' && value !== null ? value as { worldX?: number; worldY?: number; repeats?: number } : {};
+	      const repeats = Phaser.Math.Clamp(Math.floor(Number(payload.repeats) || 1), 1, 12);
+	      state.fuel = Math.max(state.fuel, 80);
+	      state.oxygen = Math.max(state.oxygen, 80);
+	      state.upgrades.laser = Math.max(state.upgrades.laser, 3);
+	      for (let i = 0; i < repeats; i += 1) {
+	        this.player.mineCooldown = 0;
+	        this.mineAt(Number(payload.worldX) || this.player.x, Number(payload.worldY) || this.player.y + 36);
+	      }
 	    } else if (command === 'teleportToArticulated') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string } : {};
       const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
