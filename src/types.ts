@@ -474,7 +474,10 @@ export interface EnvironmentProp {
   rotation: number;
   alpha: number;
   depth: number;
+  originX?: number;
+  originY?: number;
   flipX?: boolean;
+  flipY?: boolean;
 }
 
 export interface CargoItem {

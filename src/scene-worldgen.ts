@@ -328,14 +328,14 @@ export function populateEnvironmentProps(this: DeepdiveScene) {
         if (!anchor) continue;
         const seed = hash(x * 149, y * 157, rng.seed + 8011);
         if (isOreTile(tile)) {
-          if (seed > 0.08) {
+          const rareOre = tile === 'ruinCore' || tile === 'abyssalCrown' || tile === 'precursorEngine' || tile === 'alienAlloy';
+          if (rareOre && seed > 0.45) {
             props.push(edgeOreProp(this, x, y, tile, anchor));
           }
           continue;
         }
-        if (seed > 0.86 && anchor.kind !== 'ceiling') {
-          props.push(edgeFloraProp(this, x, y, anchor));
-        }
+        // Rock-backed generated flora sprites read as detached islands on destructible edges.
+        // Procedural fringe/tendrils now carry edge ecology until flora-only source art exists.
       }
     }
     this.environmentProps = props.slice(0, 420);
@@ -382,9 +382,13 @@ function terrainEdgeAnchor(scene: DeepdiveScene, tileX: number, tileY: number): 
 
 function edgeOreProp(scene: DeepdiveScene, x: number, y: number, tile: Tile, anchor: EdgeAnchor): EnvironmentProp {
     const rareOre = tile === 'ruinCore' || tile === 'abyssalCrown' || tile === 'precursorEngine' || tile === 'alienAlloy';
-    const size = rareOre ? 18 : 14;
-    const insetX = anchor.kind === 'leftWall' ? 9 : anchor.kind === 'rightWall' ? -9 : 0;
-    const insetY = anchor.kind === 'floor' ? 8 : anchor.kind === 'ceiling' ? -8 : 0;
+    void scene;
+    const size = rareOre ? 24 : 16;
+    const orientation = edgePropOrientation(anchor);
+    const insetX = anchor.kind === 'leftWall' ? 11 : anchor.kind === 'rightWall' ? -11 : 0;
+    const insetY = anchor.kind === 'floor' ? 13 : anchor.kind === 'ceiling' ? -13 : 0;
+    const length = size * (1.25 + hash(x, y, rng.seed + 8041) * 0.32);
+    const thickness = size * (0.66 + hash(y, x, rng.seed + 8043) * 0.22);
     return {
       id: `edge-ore:${x}:${y}:${tile}`,
       kind: 'ore',
@@ -394,21 +398,26 @@ function edgeOreProp(scene: DeepdiveScene, x: number, y: number, tile: Tile, anc
       tileX: x,
       tileY: y,
       tile,
-      width: size * (1.05 + hash(x, y, rng.seed + 8041) * 0.22),
-      height: size * (0.72 + hash(y, x, rng.seed + 8043) * 0.18),
+      width: length,
+      height: thickness,
       rotation: anchor.rotation + (hash(x, y, rng.seed + 8045) - 0.5) * 0.3,
-      alpha: 0.72,
-      depth: 0.82,
+      alpha: rareOre ? 0.9 : 0.72,
+      depth: 0.86,
+      originX: orientation.originX,
+      originY: orientation.originY,
       flipX: hash(x, y, rng.seed + 8047) > 0.5,
+      flipY: orientation.flipY,
     };
   }
 
 function edgeFloraProp(scene: DeepdiveScene, x: number, y: number, anchor: EdgeAnchor): EnvironmentProp {
     const keys = floraAccentKeys();
     const variant = Math.floor(hash(x * 163, y * 167, rng.seed + 8051) * keys.length) % keys.length;
-    const size = 22 + hash(y, x, rng.seed + 8053) * (state.biome >= 3 ? 18 : 14);
-    const insetX = anchor.kind === 'leftWall' ? 8 : anchor.kind === 'rightWall' ? -8 : 0;
-    const insetY = anchor.kind === 'floor' ? 7 : anchor.kind === 'ceiling' ? -7 : 0;
+    const size = 23 + hash(y, x, rng.seed + 8053) * (state.biome >= 3 ? 17 : 13);
+    const orientation = edgePropOrientation(anchor);
+    const insetX = anchor.kind === 'leftWall' ? 10 : anchor.kind === 'rightWall' ? -10 : 0;
+    const insetY = anchor.kind === 'floor' ? 14 : anchor.kind === 'ceiling' ? -14 : 0;
+    const floorScale = anchor.kind === 'floor' || anchor.kind === 'ceiling' ? 1 : 0.78;
     return {
       id: `edge-flora:${x}:${y}:${variant}`,
       kind: 'flora',
@@ -418,13 +427,23 @@ function edgeFloraProp(scene: DeepdiveScene, x: number, y: number, anchor: EdgeA
       tileX: x,
       tileY: y,
       tile: scene.getTile(x, y),
-      width: size * (anchor.kind === 'floor' ? 1.55 : 1.05),
-      height: size * (anchor.kind === 'floor' ? 1.18 : 1),
+      width: size * (anchor.kind === 'floor' ? 1.38 : 1.06) * floorScale,
+      height: size * (anchor.kind === 'floor' ? 1.04 : 0.94) * floorScale,
       rotation: anchor.rotation,
-      alpha: state.biome >= 3 ? 0.82 : 0.78,
+      alpha: state.biome >= 3 ? 0.84 : 0.8,
       depth: 0.9,
+      originX: orientation.originX,
+      originY: orientation.originY,
       flipX: hash(x, y, rng.seed + 8055) > 0.5,
+      flipY: orientation.flipY,
     };
+  }
+
+function edgePropOrientation(anchor: EdgeAnchor) {
+    if (anchor.kind === 'floor') return { originX: 0.5, originY: 0.82, flipY: false };
+    if (anchor.kind === 'ceiling') return { originX: 0.5, originY: 0.18, flipY: true };
+    if (anchor.kind === 'leftWall') return { originX: 0.78, originY: 0.5, flipY: false };
+    return { originX: 0.22, originY: 0.5, flipY: false };
   }
 
 function oreEdgeAccentAssetKey(tile: Tile) {

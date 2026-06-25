@@ -174,11 +174,13 @@ export function drawEnvironmentProps(this: DeepdiveScene, camera: Phaser.Cameras
         .setTexture(prop.assetKey)
         .setVisible(true)
         .setPosition(prop.x, prop.y)
+        .setOrigin(prop.originX ?? 0.5, prop.originY ?? 0.5)
         .setDisplaySize(prop.width, prop.height)
         .setRotation(prop.rotation)
         .setAlpha(prop.alpha)
         .setDepth(prop.depth)
-        .setFlipX(Boolean(prop.flipX));
+        .setFlipX(Boolean(prop.flipX))
+        .setFlipY(Boolean(prop.flipY));
       spriteIndex += 1;
     }
     for (let i = spriteIndex; i < this.environmentSprites.length; i += 1) {
@@ -358,7 +360,7 @@ function drawTerrainEcologyFringe(
       const support = terrainLocalSolidSupport(scene, cell.sx, cell.sy, 3);
       if (support < 14) continue;
       const seed = hash(cell.sx * 269, cell.sy * 271, rng.seed + 6201);
-      if (seed < 0.38) continue;
+      if (seed < 0.44) continue;
       const jitterX = (hash(cell.sx, cell.sy, rng.seed + 6251) - 0.5) * TERRAIN_MASK_CELL * 1.4;
       const jitterY = (hash(cell.sy, cell.sx, rng.seed + 6253) - 0.5) * TERRAIN_MASK_CELL * 1.4;
       const cx = (cell.sx + 0.5) * TERRAIN_MASK_CELL + jitterX;
@@ -377,9 +379,9 @@ function drawTerrainEcologyFringe(
           + (hash(neighbor.sx, neighbor.sy, rng.seed + 6261) - 0.5) * TERRAIN_MASK_CELL * 1.4;
         const ny = (neighbor.sy + 0.5) * TERRAIN_MASK_CELL
           + (hash(neighbor.sy, neighbor.sx, rng.seed + 6263) - 0.5) * TERRAIN_MASK_CELL * 1.4;
-        scene.terrainEdges.lineStyle(TERRAIN_MASK_CELL * 6.2, 0x03090b, 0.12);
+        scene.terrainEdges.lineStyle(TERRAIN_MASK_CELL * 4.4, 0x03090b, 0.08);
         scene.terrainEdges.lineBetween(cx, cy, nx, ny);
-        scene.terrainEdges.lineStyle(TERRAIN_MASK_CELL * 3.4, matColor, 0.075);
+        scene.terrainEdges.lineStyle(TERRAIN_MASK_CELL * 2.6, matColor, 0.105);
         scene.terrainEdges.lineBetween(cx, cy, nx, ny);
       }
     }
@@ -392,26 +394,37 @@ function drawTerrainEcologyFringe(
       const cx = (cell.sx + 0.5) * TERRAIN_MASK_CELL;
       const cy = (cell.sy + 0.5) * TERRAIN_MASK_CELL;
       const seed = hash(cell.sx * 269, cell.sy * 271, rng.seed + 6201);
-      if (seed < 0.9) continue;
+      if (seed < 0.86) continue;
       const outwardX = exposed.x / Math.max(1, Math.abs(exposed.x) + Math.abs(exposed.y));
       const outwardY = exposed.y / Math.max(1, Math.abs(exposed.x) + Math.abs(exposed.y));
       const matColor = fringeMatColor(palette, seed);
       const shadowColor = 0x03090b;
-      const fringeX = cx + outwardX * TERRAIN_MASK_CELL * (0.92 + seed * 0.45);
-      const fringeY = cy + outwardY * TERRAIN_MASK_CELL * (0.92 + hash(cell.sy, cell.sx, rng.seed + 6203) * 0.45);
-      const wide = TERRAIN_MASK_CELL * (7.2 + seed * 4.2);
-      const tall = TERRAIN_MASK_CELL * (2.7 + hash(cell.sx, cell.sy, rng.seed + 6207) * 1.9);
+      const fringeX = cx + outwardX * TERRAIN_MASK_CELL * (0.58 + seed * 0.35);
+      const fringeY = cy + outwardY * TERRAIN_MASK_CELL * (0.58 + hash(cell.sy, cell.sx, rng.seed + 6203) * 0.35);
+      const wide = TERRAIN_MASK_CELL * (4.8 + seed * 3.0);
+      const tall = TERRAIN_MASK_CELL * (1.7 + hash(cell.sx, cell.sy, rng.seed + 6207) * 1.1);
       const horizontal = Math.abs(outwardY) >= Math.abs(outwardX);
 
-      scene.terrainEdges.fillStyle(shadowColor, 0.06);
+      scene.terrainEdges.fillStyle(shadowColor, 0.045);
       scene.terrainEdges.fillEllipse(fringeX, fringeY, horizontal ? wide : tall, horizontal ? tall : wide);
-      scene.terrainEdges.fillStyle(matColor, 0.06);
+      scene.terrainEdges.fillStyle(matColor, 0.092);
       scene.terrainEdges.fillEllipse(
         fringeX + (hash(cell.sx, cell.sy, rng.seed + 6211) - 0.5) * TERRAIN_MASK_CELL * 1.5,
         fringeY + (hash(cell.sy, cell.sx, rng.seed + 6217) - 0.5) * TERRAIN_MASK_CELL * 1.5,
         horizontal ? wide * 0.78 : tall * 0.9,
         horizontal ? tall * 0.82 : wide * 0.78,
       );
+      if (seed > 0.93) {
+        const tangentX = outwardY;
+        const tangentY = -outwardX;
+        scene.terrainEdges.lineStyle(1, seed > 0.975 ? palette.glow : palette.rim, seed > 0.975 ? 0.32 : 0.18);
+        scene.terrainEdges.lineBetween(
+          fringeX - tangentX * wide * 0.28,
+          fringeY - tangentY * wide * 0.28,
+          fringeX + tangentX * wide * 0.28,
+          fringeY + tangentY * wide * 0.28,
+        );
+      }
 
       if (seed > 0.985 && outwardY <= 0.2) {
         drawTerrainFringeTendrils(scene, cell.sx, cell.sy, fringeX, fringeY, outwardX, outwardY, matColor, palette);
@@ -539,6 +552,18 @@ function maskTileExposed(scene: DeepdiveScene, x: number, y: number) {
       }
     }
     return false;
+  }
+
+function maskTileSolidRatio(scene: DeepdiveScene, x: number, y: number) {
+    const startX = x * TERRAIN_MASK_RES;
+    const startY = y * TERRAIN_MASK_RES;
+    let solid = 0;
+    for (let sy = startY; sy < startY + TERRAIN_MASK_RES; sy += 1) {
+      for (let sx = startX; sx < startX + TERRAIN_MASK_RES; sx += 1) {
+        if (terrainMaskDensityAt(scene, sx, sy) >= TERRAIN_MASK_SOLID_THRESHOLD) solid += 1;
+      }
+    }
+    return solid / (TERRAIN_MASK_RES * TERRAIN_MASK_RES);
   }
 
 function drawTerrainInteriorRuns(scene: DeepdiveScene, startX: number, endX: number, startY: number, endY: number) {
@@ -1173,23 +1198,43 @@ function drawContourLines(
   }
 
 function drawEmbeddedOre(scene: DeepdiveScene, x: number, y: number, tile: Tile, exposed: boolean) {
-    if (!exposed && hash(x * 13, y * 17, rng.seed) < 0.84) return;
+    if (maskTileSolidRatio(scene, x, y) < 0.42) return;
+    if (!exposed && hash(x * 13, y * 17, rng.seed) < 0.72) return;
     const wx = x * TILE;
     const wy = y * TILE;
     const color = orePixelColor(tile);
     const glow = oreGlowColor(tile);
     const cx = wx + TILE * (0.45 + (hash(x, y, rng.seed + 71) - 0.5) * 0.24);
     const cy = wy + TILE * (0.48 + (hash(y, x, rng.seed + 73) - 0.5) * 0.24);
-    scene.terrainEdges.fillStyle(0x041019, exposed ? 0.6 : 0.34);
-    scene.terrainEdges.fillCircle(cx, cy, exposed ? 8 : 5);
-    scene.terrainEdges.fillStyle(glow, exposed ? 0.2 : 0.1);
-    scene.terrainEdges.fillCircle(cx, cy, exposed ? 11 : 7);
-    for (let i = 0; i < 5; i += 1) {
+    const veinAngle = hash(x * 97, y * 101, rng.seed + 1103) * Math.PI - Math.PI * 0.5;
+    const veinLength = exposed ? TILE * 0.5 : TILE * 0.32;
+    const veinWidth = 1;
+    scene.terrainEdges.lineStyle(3, 0x010306, exposed ? 0.3 : 0.18);
+    scene.terrainEdges.lineBetween(
+      cx - Math.cos(veinAngle) * veinLength * 0.5,
+      cy - Math.sin(veinAngle) * veinLength * 0.5,
+      cx + Math.cos(veinAngle) * veinLength * 0.5,
+      cy + Math.sin(veinAngle) * veinLength * 0.5,
+    );
+    scene.terrainEdges.lineStyle(veinWidth, glow, exposed ? 0.22 : 0.1);
+    scene.terrainEdges.lineBetween(
+      cx - Math.cos(veinAngle) * veinLength * 0.42,
+      cy - Math.sin(veinAngle) * veinLength * 0.42,
+      cx + Math.cos(veinAngle) * veinLength * 0.42,
+      cy + Math.sin(veinAngle) * veinLength * 0.42,
+    );
+    scene.terrainEdges.fillStyle(0x041019, exposed ? 0.36 : 0.22);
+    scene.terrainEdges.fillEllipse(cx, cy, exposed ? 8 : 5, exposed ? 5 : 3);
+    scene.terrainEdges.fillStyle(glow, exposed ? 0.065 : 0.035);
+    scene.terrainEdges.fillEllipse(cx, cy, exposed ? 11 : 7, exposed ? 7 : 4);
+    for (let i = 0; i < 7; i += 1) {
       const angle = hash(x * 23 + i, y * 29, rng.seed) * Math.PI * 2;
-      const radius = hash(y * 31, x * 37 + i, rng.seed) * (exposed ? 7 : 4);
-      const size = i === 0 ? 4 : 2 + hash(i, x + y, rng.seed) * 2;
-      scene.terrainEdges.fillStyle(i === 0 ? 0xe6fbff : color, i === 0 ? 0.86 : 0.72);
-      scene.terrainEdges.fillRect(Math.floor(cx + Math.cos(angle) * radius), Math.floor(cy + Math.sin(angle) * radius), size, size);
+      const radius = hash(y * 31, x * 37 + i, rng.seed) * (exposed ? 4 : 2.6);
+      const size = i === 0 ? 2 : 1 + hash(i, x + y, rng.seed) * 1.3;
+      const px = cx + Math.cos(angle) * radius;
+      const py = cy + Math.sin(angle) * radius;
+      scene.terrainEdges.fillStyle(i === 0 ? 0xe6fbff : color, i === 0 ? 0.68 : exposed ? 0.58 : 0.34);
+      scene.terrainEdges.fillRect(Math.floor(px), Math.floor(py), Math.max(1, Math.round(size)), Math.max(1, Math.round(size)));
     }
   }
 

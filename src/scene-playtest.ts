@@ -59,7 +59,7 @@ function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'i
   for (let y = top; y <= bottom; y += 1) {
     for (let x = left; x <= right; x += 1) {
       const surface = surfaceAt(x);
-      const orePocket = x >= centerX + 7 && x <= centerX + 13 && y >= surface && y <= surface + 2;
+      const orePocket = x >= centerX + 2 && x <= centerX + 8 && y >= surface && y <= surface + 3;
       const undercut = x >= centerX - 15 && x <= centerX - 10 && y >= surface && y <= surface + 1 && hash(x, y, rng.seed + 233) > 0.72;
       const tile: Tile = y < surface || undercut || organicCutout(x, y, surface)
         ? 'water'
