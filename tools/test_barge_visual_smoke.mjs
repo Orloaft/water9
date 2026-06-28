@@ -101,6 +101,7 @@ page.on('response', (response) => {
 
 let texture = null;
 let bargeStats = null;
+let surfaceStats = null;
 try {
   await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 25000 });
   await waitForReady(page);
@@ -150,11 +151,49 @@ try {
   if (bargeStats && bargeStats.magentaFringe > 260) {
     errors.push({ type: 'assertion', text: `barge-platform has too much magenta key fringe: ${bargeStats.magentaFringe}` });
   }
+  surfaceStats = await page.evaluate(() => {
+    const canvas = document.querySelector('canvas');
+    const context = canvas?.getContext('2d', { willReadFrequently: true });
+    if (!canvas || !context) return null;
+    const x = Math.floor(canvas.width * 0.62);
+    const sample = (y) => {
+      const yy = Math.max(0, Math.min(canvas.height - 1, y));
+      const data = context.getImageData(x, yy, 1, 1).data;
+      return { x, y: yy, r: data[0], g: data[1], b: data[2], a: data[3], luma: data[0] * 0.2126 + data[1] * 0.7152 + data[2] * 0.0722 };
+    };
+    let surface = sample(Math.floor(canvas.height * 0.33));
+    const scanTop = Math.floor(canvas.height * 0.24);
+    const scanBottom = Math.floor(canvas.height * 0.38);
+    for (let y = scanTop; y <= scanBottom; y += 2) {
+      const candidate = sample(y);
+      const cyanEdgeScore = candidate.luma + Math.max(0, candidate.g - candidate.r) * 0.35 + Math.max(0, candidate.b - candidate.r) * 0.2;
+      const currentScore = surface.luma + Math.max(0, surface.g - surface.r) * 0.35 + Math.max(0, surface.b - surface.r) * 0.2;
+      if (cyanEdgeScore > currentScore) surface = candidate;
+    }
+    return {
+      sky: sample(Math.floor(canvas.height * 0.05)),
+      surface,
+      water: sample(Math.floor(canvas.height * 0.45)),
+    };
+  });
+  if (!surfaceStats) {
+    errors.push({ type: 'assertion', text: 'surface composition canvas samples were unavailable' });
+  } else {
+    if (surfaceStats.sky.luma < surfaceStats.water.luma + 35) {
+      errors.push({ type: 'assertion', text: `sky sample was not clearly brighter than water: ${JSON.stringify(surfaceStats)}` });
+    }
+    if (surfaceStats.surface.luma < surfaceStats.water.luma + 18) {
+      errors.push({ type: 'assertion', text: `waterline sample was not a readable bright edge: ${JSON.stringify(surfaceStats)}` });
+    }
+    if (surfaceStats.water.b < surfaceStats.water.r + 16) {
+      errors.push({ type: 'assertion', text: `below-surface sample did not read as blue-green water: ${JSON.stringify(surfaceStats)}` });
+    }
+  }
   await page.screenshot({ path: screenshotPath, fullPage: false });
 } catch (error) {
   errors.push({ type: 'exception', text: error?.stack ?? String(error) });
 } finally {
-  await writeFile(reportPath, `${JSON.stringify({ ok: errors.length === 0, texture, bargeStats, screenshotPath, errors, serverLogs: serverLogs.slice(-20) }, null, 2)}\n`);
+  await writeFile(reportPath, `${JSON.stringify({ ok: errors.length === 0, texture, bargeStats, surfaceStats, screenshotPath, errors, serverLogs: serverLogs.slice(-20) }, null, 2)}\n`);
   await browser.close();
   if (server) server.kill('SIGTERM');
 }

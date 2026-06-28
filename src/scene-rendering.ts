@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Fish,Flora,TerrainBrushPlacement,TerrainVisualChunk,Tile } from './types';
-import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FLARE_LIGHT_RADIUS,PLAYER_DRAW_SCALE,SONAR_ATTRACT_RADIUS,SONAR_REVEAL_RADIUS_TILES,SUB_BOARD_SECONDS,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FLARE_LIGHT_RADIUS,PLAYER_DRAW_SCALE,SONAR_ATTRACT_RADIUS,SONAR_REVEAL_RADIUS_TILES,SUB_BOARD_SECONDS,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
@@ -68,8 +68,62 @@ export function drawParallax(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D
       layer.tileScaleX = coverScale;
       layer.tileScaleY = coverScale;
     }
+    drawSurfaceAtmosphere(this, camera);
     drawParallaxOverlay(this, camera, profile);
   }
+
+function drawSurfaceAtmosphere(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+  const view = camera.worldView;
+  const waterlineY = BARGE_DOCK_Y + 4;
+  if (view.bottom < 0 || view.y > waterlineY + 260) return;
+
+  const left = view.x;
+  const width = view.width;
+  const skyTop = Math.max(view.y, 0);
+  const skyBottom = Math.min(view.bottom, waterlineY);
+  if (skyBottom > skyTop) {
+    const bands = [
+      { color: 0x99d4e6, alpha: 1 },
+      { color: 0x7fc3d7, alpha: 1 },
+      { color: 0x5faabd, alpha: 1 },
+      { color: 0x397f92, alpha: 0.96 },
+      { color: 0x1e5869, alpha: 0.94 },
+    ];
+    const bandHeight = (skyBottom - skyTop) / bands.length;
+    for (let i = 0; i < bands.length; i += 1) {
+      scene.parallaxBackdrop.fillStyle(bands[i].color, bands[i].alpha);
+      scene.parallaxBackdrop.fillRect(left, skyTop + bandHeight * i, width, Math.ceil(bandHeight) + 1);
+    }
+    const sunX = WORLD_W * TILE * 0.5 - 230;
+    scene.parallaxBackdrop.fillStyle(0xffe7a8, 0.16);
+    scene.parallaxBackdrop.fillEllipse(sunX, 22, 210, 52);
+    scene.parallaxBackdrop.fillStyle(0xf5ffff, 0.1);
+    scene.parallaxBackdrop.fillRect(left, waterlineY - 18, width, 14);
+  }
+
+  const waterTop = Math.max(view.y, waterlineY);
+  const waterBottom = Math.min(view.bottom, waterlineY + 260);
+  if (waterBottom > waterTop) {
+    const bands = [
+      { color: 0x0f6576, alpha: 0.68 },
+      { color: 0x0b4d61, alpha: 0.74 },
+      { color: 0x093849, alpha: 0.78 },
+      { color: 0x062536, alpha: 0.82 },
+    ];
+    const bandHeight = (waterBottom - waterTop) / bands.length;
+    for (let i = 0; i < bands.length; i += 1) {
+      scene.parallaxBackdrop.fillStyle(bands[i].color, bands[i].alpha);
+      scene.parallaxBackdrop.fillRect(left, waterTop + bandHeight * i, width, Math.ceil(bandHeight) + 1);
+    }
+  }
+
+  scene.parallaxBackdrop.fillStyle(0xdffcff, 0.48);
+  scene.parallaxBackdrop.fillRect(left, waterlineY - 2, width, 2);
+  scene.parallaxBackdrop.fillStyle(0x7ee6ef, 0.32);
+  scene.parallaxBackdrop.fillRect(left, waterlineY, width, 5);
+  scene.parallaxBackdrop.fillStyle(0x052234, 0.18);
+  scene.parallaxBackdrop.fillRect(left, waterlineY + 5, width, 12);
+}
 
 function drawParallaxOverlay(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof parallaxProfileFor>) {
   const view = camera.worldView;
@@ -1260,13 +1314,31 @@ function drawFractureMarks(scene: DeepdiveScene, x: number, y: number, tile: Til
 export function drawBoat(this: DeepdiveScene, ) {
     const x = WORLD_W * TILE * 0.5;
     const s = BARGE_DRAW_SCALE;
+    const waterlineY = BARGE_DOCK_Y + 4;
+    const halfWidth = BARGE_PLATFORM_WIDTH * 0.5;
     this.bargeSprite
       .setVisible(true)
       .setAlpha(1)
       .setPosition(x, 0)
       .setDisplaySize(BARGE_PLATFORM_WIDTH, BARGE_PLATFORM_HEIGHT);
-    this.actors.fillStyle(0x55d7e6, state.atBoat ? 0.14 : 0.06);
-    this.actors.fillEllipse(x, SURFACE_Y + 8 * s, 150 * s, 18 * s);
+
+    this.actors.fillStyle(0x0a4252, 0.2);
+    this.actors.fillRect(x - halfWidth - 18 * s, waterlineY + 3 * s, BARGE_PLATFORM_WIDTH + 36 * s, 12 * s);
+    this.actors.fillStyle(0xcdfcff, state.atBoat ? 0.34 : 0.2);
+    this.actors.fillEllipse(x - 138 * s, waterlineY + 2 * s, 130 * s, 11 * s);
+    this.actors.fillEllipse(x + 130 * s, waterlineY + 2 * s, 118 * s, 10 * s);
+    this.actors.fillStyle(0x55d7e6, state.atBoat ? 0.18 : 0.09);
+    this.actors.fillEllipse(x, waterlineY + 8 * s, 210 * s, 20 * s);
+    this.actors.lineStyle(2, 0xe8ffff, state.atBoat ? 0.72 : 0.42);
+    this.actors.lineBetween(x - halfWidth - 10 * s, waterlineY, x + halfWidth + 10 * s, waterlineY);
+    this.actors.lineStyle(1, 0x7ee6ef, state.atBoat ? 0.55 : 0.3);
+    for (let i = 0; i < 10; i += 1) {
+      const t = i / 9;
+      const rippleX = x - halfWidth + BARGE_PLATFORM_WIDTH * t;
+      const rippleW = (18 + (i % 3) * 10) * s;
+      const rippleY = waterlineY + (i % 2 === 0 ? 5 : 9) * s;
+      this.actors.lineBetween(rippleX - rippleW, rippleY, rippleX + rippleW, rippleY + (i % 2 === 0 ? 1 : -1) * s);
+    }
     this.actors.lineStyle(1, 0xb8edf0, state.atBoat ? 0.62 : 0.28);
     this.actors.lineBetween(x - 28 * s, BARGE_DOCK_Y, x + 28 * s, BARGE_DOCK_Y);
     this.actors.lineBetween(x, BARGE_DOCK_Y, x, BARGE_DOCKING_ZONE_Y);
