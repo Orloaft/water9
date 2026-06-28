@@ -18,6 +18,9 @@ FOCUSED_FAUNA = {
     "fauna-abyss-lantern-swarm",
     "fauna-abyss-static-fry",
     "fauna-abyss-microfish",
+    "fauna-abyss-viperfish",
+    "fauna-abyss-goblin-shark",
+    "fauna-abyss-snipe-eel",
 }
 
 

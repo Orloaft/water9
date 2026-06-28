@@ -49,7 +49,15 @@ function parseFauna(content) {
         pattern,
         radius: Number(radius),
         runtime: { source: 'src/content.ts:biomeFish', loader: 'SPRITESHEET_BASES', draw: 'drawFish' },
-        reviewStatus: ['fauna-abyss-hatchet-school', 'fauna-abyss-lantern-swarm', 'fauna-abyss-static-fry', 'fauna-abyss-microfish'].includes(assetKey)
+        reviewStatus: [
+          'fauna-abyss-hatchet-school',
+          'fauna-abyss-lantern-swarm',
+          'fauna-abyss-static-fry',
+          'fauna-abyss-microfish',
+          'fauna-abyss-viperfish',
+          'fauna-abyss-goblin-shark',
+          'fauna-abyss-snipe-eel',
+        ].includes(assetKey)
           ? 'fixed-2026-06-28'
           : 'existing-runtime',
       });

@@ -180,7 +180,7 @@ export const biomeFish: Record<Biome, FishSpecies[]> = {
     { species: 'Abyss Vampire Squid', count: 10, minY: 380, maxY: 1160, color: 0xff6f7f, hostile: false, pattern: 'glide', radius: 14, speed: [24, 42], assetKey: 'fauna-abyss-vampire-squid' },
     { species: 'Hadopelagic Microfish', count: 8, minY: 520, maxY: 1440, color: 0xb9a7a0, hostile: false, pattern: 'sway', radius: 24, speed: [10, 20], assetKey: 'fauna-abyss-microfish' },
     { species: 'Anglerfish', count: 12, minY: 640, maxY: 1740, color: 0xffd166, hostile: true, pattern: 'stalk', radius: 16, speed: [42, 74], assetKey: 'fauna-abyss-anglerfish' },
-    { species: 'Viperfish', count: 10, minY: 840, maxY: 1980, color: 0xb8f7ff, hostile: true, pattern: 'stalk', radius: 15, speed: [52, 88], assetKey: 'fauna-abyss-snipe-eel' },
+    { species: 'Snipe Eel', count: 10, minY: 840, maxY: 1980, color: 0xb8f7ff, hostile: true, pattern: 'stalk', radius: 15, speed: [52, 88], assetKey: 'fauna-abyss-snipe-eel' },
     { species: 'Goblin Shark', count: 6, minY: 1240, maxY: 2360, color: 0xff7a8f, hostile: true, pattern: 'glide', radius: 24, speed: [44, 78], assetKey: 'fauna-abyss-goblin-shark' },
     { species: 'Black Swallower', count: 5, minY: 1540, maxY: 2600, color: 0x8f8cff, hostile: true, pattern: 'stalk', radius: 30, speed: [38, 70], assetKey: 'fauna-abyss-black-swallower' },
     { species: 'Abyssal Medusa', count: 8, minY: 1640, maxY: 2680, color: 0xb8f7ff, hostile: false, pattern: 'circle', radius: 16, speed: [10, 22], assetKey: 'fauna-abyss-medusa' },
