@@ -42,17 +42,24 @@ export function renderHud() {
   const radioActive = state.radioOpen && state.started && !state.lost && !state.won;
   if (!canOpenCargoOverlay()) state.cargoOpen = false;
   const cargoActive = state.cargoOpen && canOpenCargoOverlay();
+  const sub = state.pilotingSub ? state.activeSub : null;
   shell.classList.toggle('is-title', !state.started);
   shell.classList.toggle('is-radio-modal', radioActive);
   shell.classList.toggle('is-cargo-open', cargoActive);
   shell.classList.toggle('is-biome-loading', state.biomeLoading.active);
+  shell.classList.toggle('is-oxygen-danger', state.started && !state.atBoat && !state.lost && (sub ? sub.oxygen <= subDef(sub.tier).oxygen * 0.16 : state.oxygen <= oxygenMax() * 0.16));
+  shell.classList.toggle('is-load-error', state.saveLoad.phase === 'error');
   titleScreen.classList.toggle('is-hidden', state.started);
   titleScreen.classList.toggle('is-options', state.titlePanel === 'options');
   titleScreen.classList.toggle('is-controls', state.titlePanel === 'controls');
   setStableHtml(titleScreen, state.started ? '' : titlePanel());
   const cargoValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
-  const sub = state.pilotingSub ? state.activeSub : null;
   const statusFlags = [
+    state.saveLoad.phase === 'error' ? `SAVE ERROR: ${state.saveLoad.message}` : '',
+    state.saveLoad.phase === 'loading' ? 'LOADING SAVE: restoring diver position and world state.' : '',
+    !state.atBoat && !sub && state.oxygen <= 0 ? 'OXYGEN DEPLETED: hull breach is imminent.' : '',
+    !state.atBoat && !sub && state.oxygen > 0 && state.oxygen <= oxygenMax() * 0.16 ? 'OXYGEN CRITICAL: surface or use O2 now.' : '',
+    !state.atBoat && sub && sub.oxygen <= subDef(sub.tier).oxygen * 0.16 ? 'SUB OXYGEN CRITICAL: dock or switch reserves.' : '',
     state.venom.active ? `VENOMED: ${state.venom.source} toxin is draining hull integrity.` : '',
     state.bleed.active ? `BLEEDING x${state.bleed.stacks}: suit integrity is leaking for ${Math.ceil(state.bleed.duration)}s.` : '',
   ].filter(Boolean);
@@ -63,6 +70,7 @@ export function renderHud() {
       <div><strong>${state.depth} m</strong><span>Depth</span></div>
       <div><strong>${state.maxDepth} m</strong><span>Record</span></div>
     </div>
+    ${objectivePanel()}
     ${sonarPanel()}
     ${sub ? meter('Sub O2', sub.oxygen, subDef(sub.tier).oxygen, '#8ee7f4') : meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
     ${sub ? meter('Sub hull', sub.hull, subDef(sub.tier).hull, '#ff8a6b') : meter('Hull', state.hull, hullMax(), '#ff8a6b')}
@@ -71,7 +79,7 @@ export function renderHud() {
     ${subHatchControl()}
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
-    <p class="status ${state.venom.active || state.bleed.active ? 'is-venomed' : ''}">${statusText}</p>
+    <p class="status ${state.saveLoad.phase === 'error' ? 'is-error' : ''} ${state.oxygen <= oxygenMax() * 0.16 && !state.atBoat ? 'is-danger' : ''} ${state.venom.active || state.bleed.active ? 'is-venomed' : ''}">${statusText}</p>
   `;
   renderGameOver(app);
   const bargeOpen = state.started && state.atBoat && !radioActive && !state.lost && !state.won;
@@ -92,6 +100,34 @@ export function renderHud() {
   setStableHtml(biomeLoading, state.biomeLoading.active ? biomeLoadingPanel() : '');
   restoreControllerFocus();
   gameScene()?.drawSonarMap();
+}
+
+export function objectivePanel() {
+  if (!state.started || state.atBoat || state.docked || state.lost || state.won) return '';
+  const quest = activeQuest() ?? undefined;
+  const objective = currentDiveObjective(quest);
+  return `
+    <section class="objective-panel">
+      <span>${quest ? 'Active contract' : 'Current goal'}</span>
+      <strong>${objective.title}</strong>
+      <p>${objective.detail}</p>
+    </section>
+  `;
+}
+
+export function currentDiveObjective(quest: Quest | undefined) {
+  if (quest) {
+    const remaining = Math.max(0, quest.target - quest.progress);
+    return {
+      title: quest.title,
+      detail: remaining > 0 ? `${remaining} ${quest.kind === 'ore' ? 'more cargo' : quest.kind === 'scan' ? 'more scan' : quest.kind === 'depth' ? 'meters of depth' : 'more objective step'} needed, then return to the barge.` : 'Return to the barge to claim payment.',
+    };
+  }
+  if (state.cargo.length <= 0 && state.scannedSpecies.size <= 0) {
+    return { title: 'Cut one ore or scan one lifeform', detail: 'Space cuts rock ahead. Hold E scans wildlife. Return when cargo or catalog has proof.' };
+  }
+  if (state.cargo.length > 0) return { title: 'Return cargo to the barge', detail: 'Surface to sell this load, then buy the first upgrade you can afford.' };
+  return { title: 'Bank the scan data', detail: 'Return to the barge, review contracts, then pick the next paid objective.' };
 }
 
 export function biomeLoadingPanel() {

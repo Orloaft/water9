@@ -106,7 +106,24 @@ export function hasSavedGame() {
 export function saveGame(this: DeepdiveScene) {
   const payload = buildSave(this);
   const raw = JSON.stringify(payload);
-  storage()?.setItem(SAVE_STORAGE_KEY, raw);
+  try {
+    storage()?.setItem(SAVE_STORAGE_KEY, raw);
+  } catch {
+    state.saveLoad = {
+      phase: 'error',
+      requestId: state.saveLoad.requestId,
+      completedId: state.saveLoad.completedId,
+      message: 'Save failed. Browser storage is unavailable or full.',
+    };
+    state.status = state.saveLoad.message;
+    return { ok: false, reason: state.saveLoad.message };
+  }
+  state.saveLoad = {
+    phase: 'complete',
+    requestId: state.saveLoad.requestId,
+    completedId: state.saveLoad.completedId,
+    message: 'Game saved.',
+  };
   state.status = `Game saved at ${new Date(payload.savedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}.`;
   return { ok: true, version: payload.version, savedAt: payload.savedAt, bytes: raw.length };
 }
@@ -114,13 +131,37 @@ export function saveGame(this: DeepdiveScene) {
 export function loadGame(this: DeepdiveScene) {
   const parsed = parseSavedGame(readRawSave());
   if (!parsed.ok) {
+    state.saveLoad = {
+      phase: 'error',
+      requestId: state.saveLoad.requestId,
+      completedId: state.saveLoad.completedId,
+      message: parsed.reason,
+    };
     state.status = parsed.reason;
     return parsed;
   }
+  const requestId = state.saveLoad.requestId + 1;
   pendingLoad = parsed.save;
+  state.saveLoad = {
+    phase: 'loading',
+    requestId,
+    completedId: state.saveLoad.completedId,
+    message: 'Loading saved dive...',
+  };
+  state.status = 'Loading saved dive...';
+  state.biomeLoading = {
+    active: true,
+    biome: parsed.save.biome,
+    title: 'Loading save',
+    status: 'Restoring diver position, cargo, and world state...',
+    progress: 0.2,
+    phase: 'staging',
+    startedAt: performance.now(),
+    completedAt: 0,
+  };
   applySavedState(parsed.save);
   this.scene.restart();
-  return { ok: true, version: parsed.save.version, savedAt: parsed.save.savedAt };
+  return { ok: true, version: parsed.save.version, savedAt: parsed.save.savedAt, loadId: requestId };
 }
 
 export function clearSavedGame() {
@@ -144,7 +185,14 @@ export function applyPendingLoad(this: DeepdiveScene) {
   this.terrainVisualDirtyChunks.clear();
   this.revealSonarAtPlayer(8);
   this.cameras.main.centerOn(this.player.x, this.player.y);
-  state.status = `Loaded save from ${new Date(save.savedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}.`;
+  const message = `Loaded save from ${new Date(save.savedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}.`;
+  state.saveLoad = {
+    phase: 'complete',
+    requestId: state.saveLoad.requestId,
+    completedId: state.saveLoad.requestId,
+    message,
+  };
+  state.status = message;
   return true;
 }
 

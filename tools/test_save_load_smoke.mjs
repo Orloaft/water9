@@ -60,6 +60,19 @@ async function waitForWorld(page) {
   }, null, { timeout: 20000 });
 }
 
+async function waitForLoadComplete(page, loadId) {
+  await page.waitForFunction((expectedLoadId) => {
+    const snap = window.__AQUA_PLAYTEST__?.snapshot?.();
+    return Boolean(
+      snap?.world
+      && snap.world.ready !== false
+      && !snap.ui?.biomeLoading?.active
+      && snap.state?.saveLoad?.phase === 'complete'
+      && snap.state?.saveLoad?.completedId >= expectedLoadId
+    );
+  }, loadId, { timeout: 20000 });
+}
+
 if (server) await waitForServer(baseUrl);
 
 const browser = await chromium.launch({ headless: true });
@@ -90,7 +103,7 @@ try {
   await command(page, 'setOxygen', 11);
   const mutated = await snapshot(page);
   const loadResult = await command(page, 'loadGame');
-  await waitForWorld(page);
+  await waitForLoadComplete(page, loadResult?.loadId ?? 0);
   const afterLoad = await snapshot(page);
   await command(page, 'corruptSave');
   const corruptLoad = await command(page, 'loadGame');

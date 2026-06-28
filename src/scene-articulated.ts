@@ -920,8 +920,8 @@ export function updateBurrowBobbitCreature(this: DeepdiveScene, creature: Articu
       this.applyHullDamage(13 + state.biome * 2, 'Abyssal bobbit mandibles clamped down.');
       this.registerPredatorBite(creature);
       this.playFishBite(18);
-      state.status = 'Bobbit latched. Thrash, knife, or stun before it drags you into the burrow.';
-      this.spawnFloatingText('Latched', 0xff4f64);
+      state.status = 'Bobbit latched. Hold away from the burrow, use the knife, or fire a stun before the timer ends.';
+      this.spawnFloatingText('Escape now', 0xff4f64);
     } else if (runtime.phaseTimer <= 0 || creature.y > burrow.y - TILE * 0.5) {
       runtime.phase = 'reset';
       runtime.phaseTimer = 1.05;
@@ -976,7 +976,7 @@ export function updateBurrowBobbitCreature(this: DeepdiveScene, creature: Articu
         if (runtime.escapeRemaining <= 0 || runtime.dragTimer <= 0 || target.y >= burrow.anchorY - TILE * 1.4) {
           this.releaseBurrowBobbit(creature, runtime.escapeRemaining <= 0 ? 'released' : 'released');
         } else {
-          state.status = `Bobbit dragging downward. Escape: ${Math.ceil(runtime.escapeRemaining)}s.`;
+          state.status = `Bobbit dragging downward. Escape ${Math.ceil(runtime.escapeRemaining)}s: hold away, knife the jaws, or stun.`;
         }
       }
     }
@@ -1544,7 +1544,7 @@ export function resolveArticulatedGrab(this: DeepdiveScene, creature: Articulate
   const distance = Math.max(1, Math.hypot(dx, dy));
   target.vx += (dx / distance) * (58 - struggle * 16) * delta;
   target.vy += (dy / distance) * (58 - struggle * 16) * delta;
-  this.applyHullDamage((9.2 - struggle * 2.6) * delta, `${creature.species} is dragging you in.`);
+  this.applyHullDamage((9.2 - struggle * 2.6) * delta, `${creature.species} is dragging you in. Hold away and use the knife or stun.`);
   state.oxygen = Math.max(0, state.oxygen - (2.4 - struggle * 0.7) * delta);
   if (!combat.grabEnabled || creature.grabTimer <= 0 || struggle > 0.82) {
     creature.state = 'recover';
@@ -1586,8 +1586,8 @@ export function bumpArticulatedCreature(this: DeepdiveScene, creature: Articulat
   if (combat.grabEnabled && creature.state === 'lunge' && creature.grabTimer <= 0 && !part.detached) {
     creature.state = 'grab';
     creature.grabTimer = combat.grabSeconds;
-    state.status = `${creature.species} has you. Thrash hard to break free.`;
-    this.spawnFloatingText('Grabbed', 0xff4f64);
+    state.status = `${creature.species} has you. Hold away, knife the head, or stun to break free.`;
+    this.spawnFloatingText('Break free', 0xff4f64);
   }
   renderHud();
 }

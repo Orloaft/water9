@@ -426,6 +426,44 @@ button.is-controller-focus {
   transform: translateX(-50%);
 }
 
+.objective-panel {
+  position: fixed;
+  top: 112px;
+  left: 14px;
+  z-index: 3;
+  display: grid;
+  gap: 4px;
+  width: min(330px, calc(100vw - 28px));
+  border: 1px solid rgba(255, 209, 102, 0.28);
+  border-radius: 4px;
+  padding: 9px 11px;
+  background:
+    linear-gradient(180deg, rgba(34, 26, 8, 0.62), rgba(3, 13, 19, 0.82)),
+    url("/assets/generated/ui-panel-wide.png");
+  background-size: 100% 100%;
+  pointer-events: auto;
+}
+
+.objective-panel span {
+  color: #ffd166;
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.objective-panel strong {
+  color: #fff7df;
+  font-size: 0.9rem;
+  line-height: 1.15;
+}
+
+.objective-panel p {
+  margin: 0;
+  color: rgba(236, 251, 255, 0.74);
+  font-size: 0.78rem;
+  line-height: 1.28;
+}
+
 .readout div {
   border-radius: 4px;
   background:
@@ -596,6 +634,17 @@ button.is-controller-focus {
   border-color: rgba(185, 242, 124, 0.34);
   background: rgba(12, 27, 16, 0.68);
   color: rgba(230, 255, 211, 0.92);
+}
+
+.status.is-danger,
+.status.is-error {
+  border-color: rgba(255, 79, 100, 0.58);
+  background: rgba(45, 7, 12, 0.76);
+  color: #fff7df;
+}
+
+.shell.is-oxygen-danger #game canvas {
+  filter: saturate(0.9) contrast(1.08);
 }
 
 .cargo-manifest {

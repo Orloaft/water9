@@ -66,6 +66,12 @@ export const state = {
     startedAt: 0,
     completedAt: 0,
   },
+  saveLoad: {
+    phase: 'idle' as 'idle' | 'loading' | 'complete' | 'error',
+    requestId: 0,
+    completedId: 0,
+    message: '',
+  },
   oxygenWarnings: {
     half: false,
     quarter: false,

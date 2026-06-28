@@ -598,6 +598,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         activeSub,
         carrierSub,
         hasSavedGame: hasSavedGame(),
+        saveLoad: { ...state.saveLoad },
       },
       ui: {
         paused: state.paused,

@@ -770,7 +770,7 @@ export class DeepdiveScene extends Phaser.Scene {
     }
     if (state.oxygen <= 0) {
       state.oxygen = 0;
-      this.applyHullDamage(16 * delta, 'Oxygen starvation is damaging the suit.');
+      this.applyHullDamage(24 * delta, 'OXYGEN DEPLETED. Suit integrity is failing. Surface or use emergency O2 now.');
     }
     if (state.hull <= 0) {
       if (state.unhardcore) {
