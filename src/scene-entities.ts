@@ -316,8 +316,8 @@ export function updateHazards(this: DeepdiveScene, delta: number) {
       hazard.phase += delta;
       const active = Math.sin(hazard.phase * 1.8) > -0.18;
       if (!active) continue;
-      const plumeX = hazard.x;
-      const plumeY = hazard.y - hazard.radius * 1.35;
+      const plumeX = hazard.x + (hazard.surface?.normalX ?? 0) * hazard.radius * 1.35;
+      const plumeY = hazard.y + (hazard.surface?.normalY ?? -1) * hazard.radius * 1.35;
       const plumeRadius = hazard.radius * 1.45;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, plumeX, plumeY);
       if (distance > plumeRadius) continue;

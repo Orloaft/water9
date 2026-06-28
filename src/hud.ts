@@ -24,6 +24,7 @@ export function renderHud() {
         <aside id="logbook" class="logbook"></aside>
         <aside id="pause-menu" class="pause-menu"></aside>
         <aside id="radio-dialogue" class="radio-dialogue"></aside>
+        <aside id="biome-loading" class="biome-loading"></aside>
       </main>
     `;
   }
@@ -32,9 +33,10 @@ export function renderHud() {
   const logbook = document.querySelector<HTMLDivElement>('#logbook');
   const pauseMenu = document.querySelector<HTMLDivElement>('#pause-menu');
   const radioDialogue = document.querySelector<HTMLDivElement>('#radio-dialogue');
+  const biomeLoading = document.querySelector<HTMLElement>('#biome-loading');
   const shell = document.querySelector<HTMLElement>('.shell');
   const titleScreen = document.querySelector<HTMLElement>('#title-screen');
-  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !radioDialogue || !shell || !titleScreen) return;
+  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !radioDialogue || !biomeLoading || !shell || !titleScreen) return;
   const logbookScrollTop = logbook.querySelector<HTMLDivElement>('.logbook__list')?.scrollTop ?? 0;
   const radioActive = state.radioOpen && state.started && !state.lost && !state.won;
   if (!canOpenCargoOverlay()) state.cargoOpen = false;
@@ -42,6 +44,7 @@ export function renderHud() {
   shell.classList.toggle('is-title', !state.started);
   shell.classList.toggle('is-radio-modal', radioActive);
   shell.classList.toggle('is-cargo-open', cargoActive);
+  shell.classList.toggle('is-biome-loading', state.biomeLoading.active);
   titleScreen.classList.toggle('is-hidden', state.started);
   titleScreen.classList.toggle('is-options', state.titlePanel === 'options');
   titleScreen.classList.toggle('is-controls', state.titlePanel === 'controls');
@@ -81,8 +84,27 @@ export function renderHud() {
   setStableHtml(pauseMenu, state.paused && state.started && !radioActive && !state.lost && !state.won ? pauseMenuPanel() : '');
   radioDialogue.classList.toggle('is-open', radioActive);
   setStableHtml(radioDialogue, radioActive ? radioDialoguePanel() : '');
+  biomeLoading.classList.toggle('is-open', state.biomeLoading.active);
+  biomeLoading.setAttribute('data-phase', state.biomeLoading.phase);
+  biomeLoading.setAttribute('data-biome', String(state.biomeLoading.biome));
+  biomeLoading.setAttribute('data-progress', String(Math.round(state.biomeLoading.progress * 100)));
+  setStableHtml(biomeLoading, state.biomeLoading.active ? biomeLoadingPanel() : '');
   restoreControllerFocus();
   gameScene()?.drawSonarMap();
+}
+
+export function biomeLoadingPanel() {
+  const loading = state.biomeLoading;
+  const progress = Math.round(Phaser.Math.Clamp(loading.progress, 0, 1) * 100);
+  return `
+    <div class="biome-loading__panel">
+      <span>Depth transition</span>
+      <strong>${loading.title || biomeName()}</strong>
+      <p>${loading.status || 'Mapping pressure lanes...'}</p>
+      <div class="biome-loading__bar"><i style="width:${progress}%"></i></div>
+      <small>${progress}%</small>
+    </div>
+  `;
 }
 
 export let fpsSampleFrames = 0;

@@ -1,14 +1,15 @@
 import Phaser from 'phaser';
 import type { Biome,PlaytestCommand,SubTier,Tile } from './types';
-import { ENTITY_SCALE,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { cargoCapacity,clearBleed,clearVenom,createConsumableItem,fuelMax,hash,oxygenMax,refillAtBoat,restart,scaledDepthPx,shopItem,subDef,upgradeMax } from './helpers';
+import { cargoCapacity,clearBleed,clearVenom,createConsumableItem,createSubVehicle,darknessAtDepth,fuelMax,hash,isOreTile,oxygenMax,parallaxProfileFor,refillAtBoat,restart,scaledDepthPx,shopItem,specialRoomEffectCenter,subDef,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
-import { articulatedManifestInfo,articulatedPlaceholderTextureKeys,partManifest } from './articulated';
+import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
 import type { DeepdiveScene } from './scene';
-import { rebuildTerrainMask,subtractTerrainMaskBrush } from './terrain-mask';
+import { rebuildTerrainMask,sampleTerrainSurfaceAnchors,subtractTerrainMaskBrush,validateTerrainSurfaceAnchor } from './terrain-mask';
+import { perfSnapshot } from './perf';
 
 function refreshPlaytestCamera(scene: DeepdiveScene) {
   scene.cameras.main.preRender();
@@ -143,9 +144,404 @@ function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'i
   renderHud();
 }
 
+function stagePerfGuardrailReview(scene: DeepdiveScene) {
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const centerY = Math.floor((SURFACE_Y + 720) / TILE);
+  for (let y = centerY - 8; y <= centerY + 8; y += 1) {
+    for (let x = centerX - 14; x <= centerX + 14; x += 1) {
+      scene.setTile(x, y, y >= centerY ? 'stone' : 'water');
+      if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+    }
+  }
+  rebuildTerrainMask(scene);
+  const rockX = centerX * TILE + TILE * 0.5;
+  const rockY = centerY * TILE + TILE * 0.5;
+  let creature = scene.articulatedCreatures.find((candidate) => !candidate.dead && !candidate.bobbitBurrow) ?? scene.articulatedCreatures.find((candidate) => !candidate.dead) ?? null;
+  if (!creature) {
+    const manifest = articulatedCreatureDefs().find((candidate) => candidate.id !== 'abyssal-mandible-bobbit' && state.biome >= candidate.minBiome) ?? articulatedCreatureDefs()[0];
+    creature = createArticulatedCreature(scene, manifest, rockX, rockY);
+    scene.articulatedCreatures.push(creature);
+  }
+  let articulatedContact = null;
+  if (creature) {
+    creature.x = rockX;
+    creature.y = rockY;
+    creature.vx = 0;
+    creature.vy = 0;
+    creature.homeX = rockX;
+    creature.homeY = rockY;
+    creature.reviewFrozen = true;
+    scene.updateArticulatedParts(creature, 0);
+    const part = creature.parts.find((candidate) => !candidate.detached && candidate.hp > 0) ?? creature.parts[0];
+    const contact = part ? scene.articulatedPartTerrainContact(creature, part) : null;
+    articulatedContact = contact ? {
+      creatureId: creature.id,
+      partId: part.id,
+      count: contact.count,
+      nx: roundMetric(contact.nx),
+      ny: roundMetric(contact.ny),
+    } : null;
+  }
+  const refreshBefore = scene.perfTelemetry?.propRefresh.processed ?? 0;
+  const fullBefore = scene.perfTelemetry?.propRefresh.fullScans ?? 0;
+  for (let i = 0; i < 8; i += 1) {
+    const tx = centerX - 4 + i;
+    scene.world[centerY][tx] = 'water';
+    scene.refreshEnvironmentPropsAround(tx, centerY);
+  }
+  scene.processEnvironmentPropRefreshQueue();
+  state.activeSub = createSubVehicle(2, rockX, rockY);
+  state.activeSub.fuel = subDef(2).fuel;
+  state.activeSub.oxygen = subDef(2).oxygen;
+  state.activeSub.hull = subDef(2).hull;
+  state.pilotingSub = true;
+  state.subOwned[2] = true;
+  state.selectedSubTier = 2;
+  scene.player.x = rockX;
+  scene.player.y = rockY;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  const subCollision = scene.collides(rockX, rockY);
+  scene.processEnvironmentPropRefreshQueue();
+  scene.cameras.main.centerOn(rockX, rockY);
+  refreshPlaytestCamera(scene);
+  scene.draw();
+  return {
+    articulatedContact,
+    subCollision,
+    localPropRefreshes: (scene.perfTelemetry?.propRefresh.processed ?? 0) - refreshBefore,
+    fullScansDuringLocalRefresh: (scene.perfTelemetry?.propRefresh.fullScans ?? 0) - fullBefore,
+    propRefresh: scene.perfTelemetry?.propRefresh ?? null,
+    perf: perfSnapshot(scene),
+  };
+}
+
+function stageArticulatedContactPolishReview(scene: DeepdiveScene) {
+  const reviewX = WORLD_W * TILE * 0.5;
+  const reviewY = SURFACE_Y + 520;
+  for (let ty = Math.max(7, Math.floor((reviewY - 260) / TILE)); ty <= Math.min(WORLD_H - 2, Math.ceil((reviewY + 260) / TILE)); ty += 1) {
+    for (let tx = Math.max(1, Math.floor((reviewX - 620) / TILE)); tx <= Math.min(WORLD_W - 2, Math.ceil((reviewX + 620) / TILE)); tx += 1) {
+      scene.setTile(tx, ty, 'water');
+    }
+  }
+  rebuildTerrainMask(scene);
+  let creature = scene.articulatedCreatures.find((candidate) => !candidate.dead && !candidate.bobbitBurrow && candidate.parts.some((part) => scene.isDangerousArticulatedPart(candidate, part)))
+    ?? scene.articulatedCreatures.find((candidate) => !candidate.dead && candidate.parts.some((part) => scene.isDangerousArticulatedPart(candidate, part)))
+    ?? null;
+  if (!creature) {
+    const manifest = articulatedCreatureDefs().find((candidate) => state.biome >= candidate.minBiome && candidate.parts.some((part) => part.motion.kind === 'jaw' || part.anchors?.bite)) ?? articulatedCreatureDefs()[0];
+    creature = createArticulatedCreature(scene, manifest, reviewX, reviewY);
+    scene.articulatedCreatures.push(creature);
+  }
+  creature.reviewFrozen = false;
+  creature.dead = false;
+  creature.hp = Math.max(creature.hp, creature.maxHp);
+  creature.x = reviewX;
+  creature.y = reviewY;
+  creature.homeX = reviewX;
+  creature.homeY = reviewY;
+  creature.vx = creature.speed * 0.8;
+  creature.vy = 0;
+  creature.facingSign = 1;
+  creature.state = 'lunge';
+  creature.stateTimer = 0.7;
+  creature.grabTimer = 0;
+  creature.grabCooldown = 0;
+  creature.bumpCooldown = 0;
+  creature.stunned = 0;
+  creature.parts.forEach((part) => {
+    part.detached = false;
+    part.hp = Math.max(1, part.hp);
+  });
+  scene.updateArticulatedParts(creature, 0);
+  const dangerousPart = scene.articulatedBitePart(creature)
+    ?? creature.parts.find((part) => scene.isDangerousArticulatedPart(creature, part))
+    ?? creature.parts[0];
+  const nonDangerousPart = creature.parts.find((part) => part.id !== dangerousPart.id && !scene.isDangerousArticulatedPart(creature, part) && !part.detached && part.hp > 0)
+    ?? creature.parts.find((part) => part.id !== dangerousPart.id && !part.detached && part.hp > 0)
+    ?? dangerousPart;
+  clearVenom();
+  clearBleed();
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.hull = 180;
+  state.oxygen = oxygenMax();
+  scene.player.x = dangerousPart.x;
+  scene.player.y = dangerousPart.y;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  const hullBeforeDangerous = state.hull;
+  scene.bumpArticulatedCreature(creature, dangerousPart, 0);
+  const dangerousDamage = hullBeforeDangerous - state.hull;
+  const afterDangerous = { x: creature.x, y: creature.y, vx: creature.vx, vy: creature.vy };
+  state.hull = 180;
+  creature.bumpCooldown = 0;
+  scene.player.x = nonDangerousPart.x;
+  scene.player.y = nonDangerousPart.y;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  const hullBeforeNonDangerous = state.hull;
+  scene.bumpArticulatedCreature(creature, nonDangerousPart, 0);
+  const nonDangerousDamage = hullBeforeNonDangerous - state.hull;
+  const startX = creature.x;
+  const startY = creature.y;
+  for (let i = 0; i < 8; i += 1) {
+    creature.bumpCooldown = 0;
+    scene.player.x = dangerousPart.x;
+    scene.player.y = dangerousPart.y;
+    scene.updateArticulatedCreatures(0.04);
+  }
+  const repeatedDisplacement = Phaser.Math.Distance.Between(startX, startY, creature.x, creature.y);
+  scene.cameras.main.centerOn(creature.x, creature.y);
+  refreshPlaytestCamera(scene);
+  scene.draw();
+  return {
+    creatureId: creature.id,
+    dangerousPart: dangerousPart.id,
+    dangerousPartIsDangerous: scene.isDangerousArticulatedPart(creature, dangerousPart),
+    nonDangerousPart: nonDangerousPart.id,
+    nonDangerousPartIsDangerous: scene.isDangerousArticulatedPart(creature, nonDangerousPart),
+    dangerousDamage: roundMetric(dangerousDamage),
+    nonDangerousDamage: roundMetric(nonDangerousDamage),
+    afterDangerous: {
+      x: roundMetric(afterDangerous.x),
+      y: roundMetric(afterDangerous.y),
+      vx: roundMetric(afterDangerous.vx),
+      vy: roundMetric(afterDangerous.vy),
+    },
+    repeatedDisplacement: roundMetric(repeatedDisplacement),
+    finalVelocity: {
+      vx: roundMetric(creature.vx),
+      vy: roundMetric(creature.vy),
+    },
+  };
+}
+
+function stageLightingVisibilityReview(scene: DeepdiveScene) {
+  const reviewX = WORLD_W * TILE * 0.5;
+  const reviewDepth = state.biome === 2 ? 820 : state.biome === 3 ? 700 : 620;
+  const reviewY = SURFACE_Y + reviewDepth * 6;
+  const centerTileX = Math.floor(reviewX / TILE);
+  const centerTileY = Math.floor(reviewY / TILE);
+  for (let ty = Math.max(7, centerTileY - 16); ty <= Math.min(WORLD_H - 2, centerTileY + 16); ty += 1) {
+    for (let tx = Math.max(1, centerTileX - 34); tx <= Math.min(WORLD_W - 2, centerTileX + 34); tx += 1) {
+      const dx = tx - centerTileX;
+      const dy = ty - centerTileY;
+      const tunnel = Math.abs(dy + Math.sin(dx * 0.23) * 2.6) < 5.8;
+      const pocket = ((dx + 13) / 10) ** 2 + ((dy - 1) / 5.2) ** 2 < 1
+        || ((dx - 18) / 8.4) ** 2 + ((dy + 3) / 4.4) ** 2 < 1;
+      const notch = Math.abs(dx) < 3 && dy > -8 && dy < 2;
+      const ribOpen = Math.abs(dx % 9) <= 1 && dy > -9 && dy < 8;
+      const tile: Tile = tunnel || pocket || notch || ribOpen
+        ? 'water'
+        : state.biome === 4 && dy > 7 && Math.abs(dx) % 11 === 0
+          ? 'anchorstone'
+          : ty < centerTileY
+            ? 'stone'
+            : 'sand';
+      scene.setTile(tx, ty, tile);
+      if (scene.damage[ty]?.[tx] !== undefined) scene.damage[ty][tx] = 0;
+    }
+  }
+  rebuildTerrainMask(scene);
+
+  const creatureManifest = articulatedCreatureDefs().find((candidate) =>
+    state.biome >= candidate.minBiome
+    && candidate.combat?.hostile !== false
+    && candidate.id !== 'abyssal-mandible-bobbit'
+  ) ?? articulatedCreatureDefs().find((candidate) => state.biome >= candidate.minBiome) ?? articulatedCreatureDefs()[0];
+  let creature = scene.articulatedCreatures.find((candidate) => candidate.id === creatureManifest.id && !candidate.bobbitBurrow) ?? null;
+  if (!creature) {
+    creature = createArticulatedCreature(scene, creatureManifest, reviewX + 260, reviewY - 8);
+    scene.articulatedCreatures.push(creature);
+  }
+  creature.dead = false;
+  creature.scanned = false;
+  creature.state = 'lunge';
+  creature.stateTimer = 0.45;
+  creature.attackBlend = 0.55;
+  creature.aggro = 1;
+  creature.x = reviewX + 260;
+  creature.y = reviewY - 8;
+  creature.homeX = creature.x;
+  creature.homeY = creature.y;
+  creature.vx = -creature.speed * 0.65;
+  creature.vy = 0;
+  creature.facingSign = -1;
+  creature.parts.forEach((part) => {
+    part.detached = false;
+    part.hp = Math.max(1, part.hp);
+  });
+  scene.updateArticulatedParts(creature, 0);
+
+  clearVenom();
+  clearBleed();
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.oxygen = oxygenMax();
+  state.fuel = fuelMax();
+  state.hull = 100 + state.upgrades.suit * 25;
+  state.upgrades.lamp = Math.max(1, Math.min(state.upgrades.lamp, 2));
+  scene.player.x = reviewX;
+  scene.player.y = reviewY;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.facing.set(1, 0.05).normalize();
+  scene.player.facingSign = 1;
+  state.depth = Math.max(0, Math.round((scene.player.y - SURFACE_Y) / 6));
+  scene.cameras.main.centerOn(scene.player.x + 80, scene.player.y);
+  scene.terrainBoundsKey = '';
+  scene.terrainDirty = true;
+  refreshPlaytestCamera(scene);
+  scene.draw();
+
+  const look = terrainLookForBiome();
+  const visibleEdgeTiles = countVisibleEdgeTiles(scene);
+  return {
+    biome: state.biome,
+    depth: state.depth,
+    darkness: roundMetric(darknessAtDepth()),
+    lookId: look.id,
+    palette: { ...look.palette },
+    visibleEdgeTiles,
+    creature: {
+      id: creature.id,
+      species: creature.species,
+      distance: roundMetric(Phaser.Math.Distance.Between(scene.player.x, scene.player.y, creature.x, creature.y)),
+      hostile: creature.hostile,
+      state: creature.state,
+      parts: creature.parts.filter((part) => !part.detached && part.hp > 0).length,
+    },
+    camera: {
+      x: roundMetric(scene.cameras.main.worldView.x),
+      y: roundMetric(scene.cameras.main.worldView.y),
+      width: roundMetric(scene.cameras.main.worldView.width),
+      height: roundMetric(scene.cameras.main.worldView.height),
+    },
+  };
+}
+
+function countVisibleEdgeTiles(scene: DeepdiveScene) {
+  const view = scene.cameras.main.worldView;
+  const startX = Math.max(0, Math.floor(view.x / TILE));
+  const endX = Math.min(WORLD_W - 1, Math.ceil(view.right / TILE));
+  const startY = Math.max(0, Math.floor(view.y / TILE));
+  const endY = Math.min(WORLD_H - 1, Math.ceil(view.bottom / TILE));
+  let count = 0;
+  for (let y = startY; y <= endY; y += 1) {
+    for (let x = startX; x <= endX; x += 1) {
+      if (scene.getTile(x, y) === 'water') continue;
+      if (scene.getTile(x, y - 1) === 'water'
+        || scene.getTile(x, y + 1) === 'water'
+        || scene.getTile(x - 1, y) === 'water'
+        || scene.getTile(x + 1, y) === 'water') {
+        count += 1;
+      }
+    }
+  }
+  return count;
+}
+
+function terrainLookReviewSnapshot(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+    const look = terrainLookForBiome();
+    if (scene.world.length < WORLD_H || !scene.world[0]) {
+      return {
+        ready: false,
+        biome: state.biome,
+        depthBand: 'unknown',
+        depthMeters: state.depth,
+        lookId: look.id,
+        palette: { ...look.palette },
+        stampPools: {
+          fringe: [...look.fringeStampPool],
+          flora: [...look.floraStampPool],
+          materialAccent: [...look.materialAccentStampPool],
+          activeEnvironment: [],
+        },
+        density: {
+          edgeStamp: roundMetric(look.edgeStampDensity),
+          proceduralFringeAlpha: roundMetric(look.proceduralFringeAlpha),
+        },
+        cameraSlice: {
+          tileBounds: null,
+          visibleOreCount: 0,
+          anchorstoneCount: 0,
+          destructibleCount: 0,
+          bobbitBurrowCount: 0,
+          encounterReservationCount: 0,
+        },
+      };
+    }
+    const view = camera.worldView;
+    const startX = Math.max(0, Math.floor(view.x / TILE));
+    const endX = Math.min(WORLD_W - 1, Math.ceil(view.right / TILE));
+    const startY = Math.max(0, Math.floor(view.y / TILE));
+    const endY = Math.min(WORLD_H - 1, Math.ceil(view.bottom / TILE));
+    let visibleOreCount = 0;
+    let anchorstoneCount = 0;
+    let destructibleCount = 0;
+    for (let y = startY; y <= endY; y += 1) {
+      for (let x = startX; x <= endX; x += 1) {
+        const tile = scene.getTile(x, y);
+        if (isOreTile(tile)) visibleOreCount += 1;
+        if (tile === 'anchorstone' || tile === 'bedrock') anchorstoneCount += 1;
+        if (tiles[tile].solid && Number.isFinite(tiles[tile].hp)) destructibleCount += 1;
+      }
+    }
+    const bobbitBurrowCount = scene.bobbitBurrows.filter((burrow) => (
+      burrow.x >= view.x && burrow.x <= view.right && burrow.y >= view.y && burrow.y <= view.bottom
+    )).length;
+    const encounterReservationCount = scene.encounterReservations.filter((reservation) => {
+      const left = reservation.tileBounds.x * TILE;
+      const right = (reservation.tileBounds.x + reservation.tileBounds.width) * TILE;
+      const top = reservation.tileBounds.y * TILE;
+      const bottom = (reservation.tileBounds.y + reservation.tileBounds.height) * TILE;
+      return right >= view.x && left <= view.right && bottom >= view.y && top <= view.bottom;
+    }).length;
+    const centerBand = terrainLookDepthBandForTileY(Math.floor((view.centerY ?? (view.y + view.height * 0.5)) / TILE));
+    const activeEnvironmentStampPools = Array.from(new Set(scene.environmentProps
+      .filter((prop) => prop.x >= view.x - 32 && prop.x <= view.right + 32 && prop.y >= view.y - 32 && prop.y <= view.bottom + 32)
+      .map((prop) => prop.assetKey)
+      .filter((key) => key.startsWith('terrain-stamp-'))));
+    return {
+      biome: state.biome,
+      depthBand: centerBand.id,
+      depthMeters: roundMetric(centerBand.depthMeters),
+      lookId: look.id,
+      palette: { ...look.palette },
+      stampPools: {
+        fringe: [...look.fringeStampPool],
+        flora: [...look.floraStampPool],
+        materialAccent: [...look.materialAccentStampPool],
+        activeEnvironment: activeEnvironmentStampPools,
+      },
+      density: {
+        edgeStamp: roundMetric(look.edgeStampDensity),
+        proceduralFringeAlpha: roundMetric(look.proceduralFringeAlpha),
+      },
+      cameraSlice: {
+        tileBounds: { startX, endX, startY, endY },
+        visibleOreCount,
+        anchorstoneCount,
+        destructibleCount,
+        bobbitBurrowCount,
+        encounterReservationCount,
+      },
+    };
+  }
+
 export function playtestSnapshot(this: DeepdiveScene, ) {
     refreshPlaytestCamera(this);
     const camera = this.cameras.main;
+    const parallaxProfile = parallaxProfileFor(state.biome, state.depth);
     const screenFor = (x: number, y: number) => ({
       screenX: roundMetric((x - camera.worldView.x) * camera.zoom),
       screenY: roundMetric((y - camera.worldView.y) * camera.zoom),
@@ -206,6 +602,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         cargoOpen: state.cargoOpen,
         floatingTextCount: this.floatingTexts.length,
         status: state.status,
+        biomeLoading: { ...state.biomeLoading },
       },
       camera: {
         x: roundMetric(camera.worldView.x),
@@ -213,6 +610,28 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         width: roundMetric(camera.worldView.width),
         height: roundMetric(camera.worldView.height),
         zoom: roundMetric(camera.zoom),
+      },
+      parallax: {
+        profile: parallaxProfile.id,
+        depthBand: parallaxProfile.depthBand,
+        overlay: {
+          alpha: roundMetric(parallaxProfile.overlay.alpha),
+          color: `#${parallaxProfile.overlay.color.toString(16).padStart(6, '0')}`,
+          density: roundMetric(parallaxProfile.overlay.density),
+          drift: roundMetric(parallaxProfile.overlay.drift),
+        },
+        layers: parallaxProfile.layers.map((layer, index) => ({
+          index,
+          texturePrefix: layer.texturePrefix,
+          fallbackPrefix: layer.fallbackPrefix,
+          horizontalSpeed: roundMetric(layer.horizontalSpeed),
+          verticalSpeed: roundMetric(layer.verticalSpeed),
+          phaseX: roundMetric(layer.phaseX),
+          phaseY: roundMetric(layer.phaseY),
+          alpha: roundMetric(layer.alpha),
+          tint: `#${layer.tint.toString(16).padStart(6, '0')}`,
+          scale: roundMetric(layer.scale),
+        })),
       },
       sceneDepths: {
         articulatedBridges: roundMetric(this.articulatedBridges?.depth ?? null),
@@ -226,6 +645,173 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         vx: Math.round(this.player.vx),
         vy: Math.round(this.player.vy),
       },
+      fish: this.fish.map((fish) => ({
+        species: fish.species,
+        x: roundMetric(fish.x),
+        y: roundMetric(fish.y),
+        hostile: fish.hostile,
+        pattern: fish.pattern,
+        radius: roundMetric(fish.radius),
+        hp: Math.round(fish.hp),
+        maxHp: Math.round(fish.maxHp),
+        assetKey: fish.assetKey,
+        scanned: fish.scanned,
+        dead: fish.dead,
+      })),
+      hazards: this.hazards.map((hazard) => {
+        const validation = hazard.surface ? validateTerrainSurfaceAnchor(this, hazard.surface) : { valid: false, anchor: null };
+        return {
+          x: roundMetric(hazard.x),
+          y: roundMetric(hazard.y),
+          radius: roundMetric(hazard.radius),
+          plumeX: roundMetric(hazard.x + (hazard.surface?.normalX ?? 0) * hazard.radius * 1.35),
+          plumeY: roundMetric(hazard.y + (hazard.surface?.normalY ?? -1) * hazard.radius * 1.35),
+          hasSurface: Boolean(hazard.surface),
+          anchorSource: hazard.surface?.source ?? 'none',
+          supported: validation.valid,
+          support: validation.anchor?.support ?? hazard.surface?.support ?? 0,
+          clearance: validation.anchor?.clearance ?? hazard.surface?.clearance ?? 0,
+          tileX: hazard.surface?.tileX ?? Math.floor(hazard.x / TILE),
+          tileY: hazard.surface?.tileY ?? Math.floor(hazard.y / TILE),
+          maskSx: hazard.surface?.maskSx ?? null,
+          maskSy: hazard.surface?.maskSy ?? null,
+          normalX: roundMetric(hazard.surface?.normalX ?? 0),
+          normalY: roundMetric(hazard.surface?.normalY ?? 0),
+          fakeOpenWaterAnchor: !hazard.surface,
+        };
+      }),
+      specialRooms: this.specialRooms.map((room) => {
+        const center = specialRoomEffectCenter(room);
+        return {
+          id: room.id,
+          kind: room.kind,
+          x: roundMetric(room.x),
+          y: roundMetric(room.y),
+          effectX: roundMetric(center.x),
+          effectY: roundMetric(center.y),
+          rx: roundMetric(room.rx),
+          ry: roundMetric(room.ry),
+        };
+      }),
+      floraAnchors: {
+        terrainSurfaceSamples: sampleTerrainSurfaceAnchors(this, {
+          minY: Math.max(SURFACE_Y, camera.worldView.y),
+          maxY: Math.min(WORLD_H * TILE, camera.worldView.bottom),
+          salt: 7,
+          limit: 32,
+        }).map((anchor) => ({
+          id: anchor.id,
+          x: roundMetric(anchor.x),
+          y: roundMetric(anchor.y),
+          anchor: anchor.anchor,
+          tileX: anchor.tileX,
+          tileY: anchor.tileY,
+          maskSx: anchor.maskSx,
+          maskSy: anchor.maskSy,
+          normalX: roundMetric(anchor.normalX),
+          normalY: roundMetric(anchor.normalY),
+          support: anchor.support,
+          clearance: anchor.clearance,
+          source: anchor.source,
+        })),
+        gameplay: this.flora.map((flora) => {
+          const validation = flora.surface ? validateTerrainSurfaceAnchor(this, flora.surface) : { valid: false, anchor: null };
+          return {
+            species: flora.species,
+            assetKey: flora.assetKey,
+            x: roundMetric(flora.x),
+            y: roundMetric(flora.y),
+            anchor: flora.anchor,
+            scanned: flora.scanned,
+            hazardous: flora.hazardous,
+            dead: flora.dead,
+            hasSurface: Boolean(flora.surface),
+            anchorSource: flora.surface?.source ?? 'none',
+            supported: validation.valid,
+            support: validation.anchor?.support ?? flora.surface?.support ?? 0,
+            clearance: validation.anchor?.clearance ?? flora.surface?.clearance ?? 0,
+            tileX: flora.surface?.tileX ?? Math.floor(flora.x / TILE),
+            tileY: flora.surface?.tileY ?? Math.floor(flora.y / TILE),
+            maskSx: flora.surface?.maskSx ?? null,
+            maskSy: flora.surface?.maskSy ?? null,
+            normalX: roundMetric(flora.surface?.normalX ?? 0),
+            normalY: roundMetric(flora.surface?.normalY ?? 0),
+            fakeOpenWaterAnchor: !flora.surface,
+          };
+        }),
+      },
+      terrainLookReview: terrainLookReviewSnapshot(this, camera),
+      encounterReservations: this.encounterReservations.map((reservation) => ({
+        id: reservation.id,
+        role: reservation.role,
+        creatureId: reservation.creatureId,
+        biome: reservation.biome,
+        home: {
+          x: roundMetric(reservation.homeX),
+          y: roundMetric(reservation.homeY),
+          tileX: Math.floor(reservation.homeX / TILE),
+          tileY: Math.floor(reservation.homeY / TILE),
+          tile: this.getTile(Math.floor(reservation.homeX / TILE), Math.floor(reservation.homeY / TILE)),
+        },
+        depth: {
+          min: roundMetric(reservation.depthMin),
+          max: roundMetric(reservation.depthMax),
+          homeMeters: roundMetric(Math.max(0, (reservation.homeY - SURFACE_Y) / 6)),
+        },
+        tileBounds: { ...reservation.tileBounds },
+        clearanceRadius: roundMetric(reservation.clearanceRadius),
+        exclusionRadius: roundMetric(reservation.exclusionRadius),
+        source: reservation.source ?? null,
+        score: roundMetric(reservation.score ?? 0),
+        occupied: reservation.occupied,
+        bobbitBurrowId: reservation.bobbitBurrowId ?? null,
+      })),
+      articulatedManifestRoster: articulatedCreatureDefs().map((manifest) => ({
+        id: manifest.id,
+        species: manifest.species,
+        minBiome: manifest.minBiome,
+        rarity: manifest.rarity,
+        spawn: { ...manifest.spawn },
+        runtimeSpawnMode: articulatedRuntimeSpawnMode(manifest),
+        spawnableInCurrentBiome: state.biome >= manifest.minBiome && shouldSpawnArticulatedCreature(manifest),
+        scannableInCurrentBiome: state.biome >= manifest.minBiome,
+        hp: Math.round(manifest.hp),
+        combat: {
+          behavior: manifest.combat?.behavior ?? null,
+          hostile: manifest.combat?.hostile ?? null,
+          damageMultiplier: roundMetric(manifest.combat?.damageMultiplier ?? 1),
+        },
+      })),
+      bobbitBurrows: this.bobbitBurrows.map((burrow) => {
+        const creature = this.articulatedCreatures.find((candidate) => candidate.bobbitBurrow?.burrowId === burrow.id);
+        return {
+          id: burrow.id,
+          tileX: burrow.tileX,
+          tileY: burrow.tileY,
+          depthMeters: roundMetric(Math.max(0, (burrow.y - SURFACE_Y) / 6)),
+          mouth: { x: roundMetric(burrow.x), y: roundMetric(burrow.y), tile: this.getTile(burrow.tileX, burrow.tileY) },
+          shaft: {
+            topY: roundMetric(burrow.shaftTopY),
+            bottomY: roundMetric(burrow.shaftBottomY),
+            anchorX: roundMetric(burrow.anchorX),
+            anchorY: roundMetric(burrow.anchorY),
+          },
+          approach: {
+            x: roundMetric(burrow.approachX),
+            y: roundMetric(burrow.approachY),
+            radius: roundMetric(burrow.approachRadius),
+          },
+          occupied: burrow.occupied,
+          triggered: burrow.triggered,
+          cooldown: roundMetric(burrow.cooldown),
+          debugScore: roundMetric(burrow.debugScore),
+          creatureId: creature?.id ?? null,
+          creaturePhase: creature?.bobbitBurrow?.phase ?? null,
+          captured: creature?.bobbitBurrow?.captured ?? null,
+          escapeRemaining: roundMetric(creature?.bobbitBurrow?.escapeRemaining ?? 0),
+          dragTimer: roundMetric(creature?.bobbitBurrow?.dragTimer ?? 0),
+        };
+      }),
       articulatedCreatures: this.articulatedCreatures.map((creature) => {
         const joints = this.articulatedJointMetrics(creature).map((joint) => ({
           partId: joint.partId,
@@ -253,6 +839,13 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           stunned: roundMetric(creature.stunned),
           mobilityScale: roundMetric(this.articulatedMobilityScale(creature)),
           maxHp: Math.round(creature.maxHp),
+          combat: {
+            behavior: creature.manifest.combat?.behavior ?? null,
+            hostile: creature.hostile,
+            damageMultiplier: roundMetric(creature.manifest.combat?.damageMultiplier ?? 1),
+            contactDamageAtCurrentBiome: Math.round((12 + state.biome * 2.6 + creature.radius * 0.18) * (creature.manifest.combat?.damageMultiplier ?? 1)),
+            lungeContactDamageAtCurrentBiome: Math.round((12 + state.biome * 2.6 + creature.radius * 0.18) * 1.45 * (creature.manifest.combat?.damageMultiplier ?? 1)),
+          },
           collisionDebug: creature.collisionDebug
             ? {
               ...creature.collisionDebug,
@@ -288,6 +881,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           },
           hp: Math.round(creature.hp),
           state: creature.state,
+          bobbitBurrow: creature.bobbitBurrow ? { ...creature.bobbitBurrow } : null,
           scanned: creature.scanned,
           dead: creature.dead,
           jointSummary: {
@@ -317,6 +911,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
             return {
               id: part.id,
               anatomy: manifest.anatomy ?? null,
+              dangerousContact: this.isDangerousArticulatedPart(creature, part),
               x: roundMetric(part.x),
               y: roundMetric(part.y),
               rotation: roundMetric(part.rotation),
@@ -409,8 +1004,13 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           }),
         };
       }),
-      articulatedManifest: articulatedManifestInfo(),
+      articulatedManifest: {
+        ...articulatedManifestInfo(),
+        spawnBudget: articulatedSpawnBudgetForBiome(state.biome, articulatedPrototypeRuntimeEnabled()),
+        prototypeRuntime: articulatedPrototypeRuntimeEnabled(),
+      },
       articulatedPlaceholders: articulatedPlaceholderTextureKeys(),
+      perf: perfSnapshot(this),
       world: this.playtestWorldSurvey(),
     };
   }
@@ -508,14 +1108,47 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.carrierSub.vx = 0;
         state.carrierSub.vy = 0;
       }
+    } else if (command === 'teleportToFlora') {
+      const payload = typeof value === 'object' && value !== null ? value as { index?: number } : {};
+      const candidates = this.flora.filter((flora) => !flora.dead && flora.surface);
+      const flora = candidates[Phaser.Math.Clamp(Math.floor(Number(payload.index) || 0), 0, Math.max(0, candidates.length - 1))];
+      if (flora?.surface) {
+        this.player.x = Phaser.Math.Clamp(flora.surface.rootX + flora.surface.normalX * 34, 20, WORLD_W * TILE - 20);
+        this.player.y = Phaser.Math.Clamp(flora.surface.rootY + flora.surface.normalY * 34, 20, WORLD_H * TILE - 20);
+        this.player.vx = 0;
+        this.player.vy = 0;
+        this.player.facing.set(-flora.surface.normalX, -flora.surface.normalY);
+        this.player.facingSign = this.player.facing.x < 0 ? -1 : 1;
+        state.docked = false;
+        state.atBoat = false;
+        state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+        if (state.activeSub && state.pilotingSub) {
+          state.activeSub.x = this.player.x;
+          state.activeSub.y = this.player.y;
+          state.activeSub.vx = 0;
+          state.activeSub.vy = 0;
+        }
+        if (state.carrierSub) {
+          state.carrierSub.x = this.player.x;
+          state.carrierSub.y = this.player.y;
+          state.carrierSub.vx = 0;
+          state.carrierSub.vy = 0;
+        }
+      }
+	    } else if (command === 'terrainLookReview') {
+      refreshPlaytestCamera(this);
+      this.draw();
+      return this.playtestSnapshot();
 	    } else if (command === 'terrainReview') {
 	      stageTerrainReview(this, 'intact');
-	    } else if (command === 'terrainMiningReview') {
+    } else if (command === 'terrainMiningReview') {
 	      const payload = typeof value === 'object' && value !== null ? value as { stage?: TerrainReviewStage } : {};
 	      const stage = payload.stage === 'damage' || payload.stage === 'break' || payload.stage === 'after'
 	        ? payload.stage
 	        : 'intact';
 	      stageTerrainReview(this, stage);
+    } else if (command === 'lightingVisibilityReview') {
+      return stageLightingVisibilityReview(this);
 	    } else if (command === 'terrainMineAt') {
 	      const payload = typeof value === 'object' && value !== null ? value as { worldX?: number; worldY?: number; repeats?: number } : {};
 	      const repeats = Phaser.Math.Clamp(Math.floor(Number(payload.repeats) || 1), 1, 12);
@@ -526,7 +1159,11 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
 	        this.player.mineCooldown = 0;
 	        this.mineAt(Number(payload.worldX) || this.player.x, Number(payload.worldY) || this.player.y + 36);
 	      }
-	    } else if (command === 'teleportToArticulated') {
+    } else if (command === 'perfGuardrailReview') {
+      return stagePerfGuardrailReview(this);
+    } else if (command === 'biomeLoadingReview') {
+      return { ...state.biomeLoading, worldReady: this.worldReady };
+    } else if (command === 'teleportToArticulated') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string } : {};
       const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
       if (creature) {
@@ -538,6 +1175,79 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.atBoat = false;
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         this.revealSonarAtWorld(creature.x, creature.y, 12);
+      }
+    } else if (command === 'teleportToBobbitBurrow') {
+      const payload = typeof value === 'object' && value !== null ? value as { index?: number; burrowId?: string } : {};
+      const burrow = payload.burrowId
+        ? this.bobbitBurrows.find((candidate) => candidate.id === payload.burrowId)
+        : this.bobbitBurrows[Phaser.Math.Clamp(Math.floor(Number(payload.index) || 0), 0, Math.max(0, this.bobbitBurrows.length - 1))];
+      if (burrow) {
+        this.player.x = burrow.approachX;
+        this.player.y = burrow.approachY;
+        this.player.vx = 0;
+        this.player.vy = 0;
+        this.player.facing.set(0, 1);
+        state.started = true;
+        state.docked = false;
+        state.atBoat = false;
+        state.paused = false;
+        state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+        this.revealSonarAtWorld(burrow.x, burrow.y, 10);
+        this.cameras.main.centerOn(burrow.x, burrow.y);
+        return this.playtestSnapshot();
+      }
+    } else if (command === 'forceBobbitTelegraph') {
+      const payload = typeof value === 'object' && value !== null ? value as { burrowId?: string } : {};
+      const creature = this.articulatedCreatures.find((candidate) => candidate.bobbitBurrow && (!payload.burrowId || candidate.bobbitBurrow.burrowId === payload.burrowId));
+      const burrow = creature ? this.bobbitBurrows.find((candidate) => candidate.id === creature.bobbitBurrow?.burrowId) : undefined;
+      if (creature?.bobbitBurrow && burrow) {
+        this.player.x = burrow.approachX;
+        this.player.y = burrow.approachY;
+        this.player.vx = 0;
+        this.player.vy = 0;
+        creature.bobbitBurrow.phase = 'telegraph';
+        creature.bobbitBurrow.phaseTimer = 0.72;
+        burrow.triggered = true;
+        state.started = true;
+        state.docked = false;
+        state.atBoat = false;
+        state.paused = false;
+        state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+        this.updateArticulatedCreatures(0.016, { move: new Phaser.Math.Vector2(0, 0), hasMove: false, mineHeld: false, scanHeld: false, sonarPressed: false, useItemPressed: false, boardHeld: false, scoutPressed: false, pausePressed: false, logbookPressed: false, confirmPressed: false });
+        return this.playtestSnapshot();
+      }
+    } else if (command === 'forceBobbitDrag') {
+      const payload = typeof value === 'object' && value !== null ? value as { burrowId?: string; target?: 'player' | 'sub' } : {};
+      const creature = this.articulatedCreatures.find((candidate) => candidate.bobbitBurrow && (!payload.burrowId || candidate.bobbitBurrow.burrowId === payload.burrowId));
+      const burrow = creature ? this.bobbitBurrows.find((candidate) => candidate.id === creature.bobbitBurrow?.burrowId) : undefined;
+      if (creature?.bobbitBurrow && burrow) {
+        const useSub = payload.target === 'sub' && state.activeSub;
+        const target = useSub && state.activeSub ? state.activeSub : this.player;
+        target.x = burrow.x + 8;
+        target.y = burrow.y - TILE * 2;
+        target.vx = 0;
+        target.vy = 0;
+        creature.x = burrow.x;
+        creature.y = burrow.y - TILE;
+        creature.vx = 0;
+        creature.vy = 0;
+        creature.state = 'grab';
+        creature.grabTimer = 5.2;
+        creature.bobbitBurrow.phase = 'drag';
+        creature.bobbitBurrow.phaseTimer = 0;
+        creature.bobbitBurrow.dragTimer = 5.2;
+        creature.bobbitBurrow.escapeRemaining = BOBBIT_ESCAPE_SECONDS;
+        creature.bobbitBurrow.captured = useSub ? 'sub' : 'player';
+        creature.bobbitBurrow.lastSafeX = target.x;
+        creature.bobbitBurrow.lastSafeY = target.y;
+        creature.bobbitBurrow.biteRegistered = true;
+        state.started = true;
+        state.docked = false;
+        state.atBoat = false;
+        state.paused = false;
+        state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+        this.updateArticulatedParts(creature, 0);
+        return this.playtestSnapshot();
       }
     } else if (command === 'liveArticulatedReview') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string; mode?: string } : {};
@@ -1008,6 +1718,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         this.draw();
         return this.playtestSnapshot();
       }
+    } else if (command === 'articulatedContactPolishReview') {
+      return stageArticulatedContactPolishReview(this);
     } else if (command === 'setOxygen') {
       state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());
     } else if (command === 'setHull') {
@@ -1025,7 +1737,7 @@ export function playtestWorldSurvey(this: DeepdiveScene, ) {
         height: WORLD_H,
         bands: [],
         reachable: { cells: 0, waterCoverage: 0, deepestTileY: 0, deepestMeters: 0 },
-        entities: { fish: 0, hostileFish: 0, articulated: 0, flora: 0, hazardousFlora: 0, vents: 0, bobbits: 0, rooms: 0, eggs: 0, larvae: 0 },
+        entities: { fish: 0, hostileFish: 0, articulated: 0, flora: 0, hazardousFlora: 0, vents: 0, bobbits: 0, bobbitBurrows: 0, rooms: 0, eggs: 0, larvae: 0 },
       };
     }
     const bandDefs = [
@@ -1093,6 +1805,8 @@ export function playtestWorldSurvey(this: DeepdiveScene, ) {
         hazardousFlora: this.flora.filter((flora) => flora.hazardous).length,
         vents: this.hazards.length,
         bobbits: this.bobbits.length,
+        bobbitBurrows: this.bobbitBurrows.length,
+        articulatedBobbits: this.articulatedCreatures.filter((creature) => creature.id === 'abyssal-mandible-bobbit').length,
         rooms: this.specialRooms.length,
         biolumeRooms: this.specialRooms.filter((room) => room.kind === 'biolume').length,
         nestRooms: this.specialRooms.filter((room) => room.kind === 'nest').length,

@@ -28,6 +28,7 @@ SOURCE_SIZE = (992, 397)
 SOURCE_CENTER = (SOURCE_SIZE[0] / 2, SOURCE_SIZE[1] / 2)
 PREFIX = "fauna-abyssal-glasshook-skulk"
 CREATURE_ID = "abyssal-glasshook-skulk"
+RUNTIME_GEOMETRY_SCALE = 0.5
 
 
 def crop_image(source: Image.Image, crop: dict[str, int]) -> Image.Image:
@@ -131,6 +132,30 @@ def socket_overlay(
         "bridgeWidthScale": width_scale,
         "bridgeSleeveScale": sleeve_scale,
     }
+
+
+def scaled_number(value: float) -> float:
+    scaled = value * RUNTIME_GEOMETRY_SCALE
+    return int(scaled) if float(scaled).is_integer() else round(scaled, 3)
+
+
+def scaled_vector(values: list[float]) -> list[float]:
+    return [scaled_number(value) for value in values]
+
+
+def scale_runtime_geometry(parts: list[dict[str, Any]], overlays: list[dict[str, Any]]) -> None:
+    for part in parts:
+        part["offset"] = scaled_vector(part["offset"])
+        part["size"] = scaled_vector(part["size"])
+        part["hitRadius"] = scaled_number(part["hitRadius"])
+        if part.get("restOffset"):
+            part["restOffset"] = scaled_vector(part["restOffset"])
+        part["anchors"] = {key: scaled_vector(value) for key, value in part["anchors"].items()}
+        if part["motion"].get("amplitude") is not None:
+            part["motion"]["amplitude"] = scaled_number(part["motion"]["amplitude"])
+    for overlay in overlays:
+        overlay["offset"] = scaled_vector(overlay["offset"])
+        overlay["size"] = scaled_vector(overlay["size"])
 
 
 def source_part(part: dict[str, Any]) -> dict[str, Any]:
@@ -400,6 +425,7 @@ def main() -> int:
     parts, overlays = build_parts()
     write_part_images(source, parts)
     write_socket_images(parts, overlays)
+    scale_runtime_geometry(parts, overlays)
 
     quality = {
         "status": "prototype",
@@ -427,7 +453,7 @@ def main() -> int:
         "minBiome": 3,
         "color": 0x73CBD0,
         "rarity": "rare",
-        "radius": 54,
+        "radius": scaled_number(54),
         "hp": 92,
         "speed": [46, 82],
         "spawn": {"minDepth": 920, "maxDepth": 2100, "count": 2},

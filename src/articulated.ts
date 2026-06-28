@@ -231,12 +231,21 @@ articulatedManifests.set(fallbackSerpentManifest.id, fallbackSerpentManifest);
 const placeholderTextureKeys = new Set<string>();
 let articulatedManifestSource: 'fallback' | 'generated' = 'fallback';
 let articulatedManifestSchema = 'fallback';
-const legacyRuntimeCreatureIds = new Set(['abyssal-serpent', 'abyssal-gulper', 'abyssal-crownmaw']);
+const legacyRuntimeCreatureIds = new Set(['abyssal-serpent', 'abyssal-gulper', 'abyssal-crownmaw', 'abyssal-glasshook-skulk', 'abyssal-mandible-bobbit']);
+const signatureRuntimeCreatureIds = new Set(['abyssal-mandible-bobbit', 'abyssal-gulper', 'abyssal-reliquary-wyrm', 'abyssal-glasshook-skulk', 'abyssal-crownmaw']);
+const ARTICULATED_SPAWN_BUDGETS: Record<'normal' | 'prototype', Record<Biome, number>> = {
+  normal: { 1: 4, 2: 6, 3: 8, 4: 10 },
+  prototype: { 1: 8, 2: 8, 3: 9, 4: 10 },
+};
 
 function prototypeRuntimeEnabled() {
   if (typeof window === 'undefined') return false;
   const params = new URLSearchParams(window.location.search);
   return params.has('prototypeThreats') || params.get('threats') === 'prototype' || params.has('playtest');
+}
+
+export function articulatedPrototypeRuntimeEnabled() {
+  return prototypeRuntimeEnabled();
 }
 
 function inferredBehaviorFor(manifest: ArticulatedCreatureManifest): ArticulatedBehaviorKind {
@@ -305,6 +314,18 @@ export function articulatedRuntimeSpawnMode(manifest: ArticulatedCreatureManifes
   if (manifest.quality?.status === 'accepted') return 'accepted';
   if (legacyRuntimeCreatureIds.has(manifest.id)) return 'legacy';
   return 'prototype';
+}
+
+export function articulatedSpawnBudgetForBiome(biome: Biome, prototypeMode = prototypeRuntimeEnabled()) {
+  const mode = prototypeMode ? 'prototype' : 'normal';
+  return ARTICULATED_SPAWN_BUDGETS[mode][biome] ?? ARTICULATED_SPAWN_BUDGETS[mode][4];
+}
+
+export function articulatedSpawnPriority(manifest: ArticulatedCreatureManifest) {
+  if (signatureRuntimeCreatureIds.has(manifest.id)) return 100;
+  const mode = articulatedRuntimeSpawnMode(manifest);
+  if (mode === 'accepted' || mode === 'legacy') return 80;
+  return 30;
 }
 
 export function shouldSpawnArticulatedCreature(manifest: ArticulatedCreatureManifest) {

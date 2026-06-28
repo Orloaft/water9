@@ -82,6 +82,7 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     if (sub) sub.fuel = Math.max(0, sub.fuel - fuelCost);
     else state.fuel = Math.max(0, state.fuel - fuelCost);
     carveMiningTunnel(this, impact);
+    this.refreshFloraAnchorsAround(impact.tx, impact.ty, 7);
     for (const target of targets) {
       const tile = this.getTile(target.x, target.y);
       const def = tiles[tile];
@@ -353,6 +354,7 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       this.terrainDirty = true;
       this.terrainBoundsKey = '';
       this.markTerrainVisualDirty(tx, ty);
+      this.refreshFloraAnchorsAround(tx, ty, 5);
       this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.42, color: def.color, seed: hash(tx, ty, rng.seed) });
       if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
       state.status = `Chipped ${def.name}.`;
@@ -364,6 +366,7 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
     this.terrainBoundsKey = '';
     this.markTerrainVisualDirty(tx, ty);
     this.refreshEnvironmentPropsAround(tx, ty);
+    this.refreshFloraAnchorsAround(tx, ty, 6);
     this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.5, color: def.color, seed: hash(tx, ty, rng.seed) });
     if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
     this.spawnLoose(tile, def, x, y);
@@ -470,6 +473,7 @@ export function triggerStunPulse(this: DeepdiveScene, ) {
       creature.aggro = 0;
       creature.vx *= 0.18;
       creature.vy *= 0.18;
+      if (creature.bobbitBurrow?.phase === 'drag') this.releaseBurrowBobbit(creature, 'stun');
       stunned += 1;
     }
     state.status = stunned > 0
@@ -521,6 +525,14 @@ export function useInjectorKnife(this: DeepdiveScene, ) {
     }
     const damage = INJECTOR_KNIFE_DAMAGE + state.upgrades.suit * 0.8;
     this.damageLifeTarget(target, damage, 'Injector knife');
+    if (target.kind === 'articulated' && target.bobbitBurrow?.phase === 'drag') {
+      const bitePart = this.articulatedBitePart(target);
+      const hit = this.closestArticulatedPartTo(target, this.player.x, this.player.y);
+      if (!bitePart || hit?.part.id === bitePart.id || hit?.part.id === 'head' || hit?.part.id.includes('mandible')) {
+        target.bobbitBurrow.escapeRemaining -= 1.7;
+        if (target.bobbitBurrow.escapeRemaining <= 0) this.releaseBurrowBobbit(target, 'knife');
+      }
+    }
     target.stunned = Math.max(target.stunned, 0.45);
     target.aggro = Math.max(target.aggro, 2.4);
     const distance = Math.max(1, Phaser.Math.Distance.Between(this.player.x, this.player.y, target.x, target.y));
@@ -751,6 +763,7 @@ export function fireSubWeapon(this: DeepdiveScene, ) {
       creature.aggro = 0;
       creature.vx += facing * scaledEntity(150);
       creature.vy += Phaser.Math.FloatBetween(-70, 70);
+      if (creature.bobbitBurrow?.phase === 'drag') this.releaseBurrowBobbit(creature, 'stun');
     }
     this.actors.lineStyle(3, 0x8ee7f4, 0.85);
     this.actors.lineBetween(sub.x, sub.y, sub.x + sub.facingSign * scaledEntity(230), sub.y);

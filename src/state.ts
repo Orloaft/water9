@@ -56,6 +56,16 @@ export const state = {
   won: false,
   lost: false,
   started: false,
+  biomeLoading: {
+    active: false,
+    biome: 1 as Biome,
+    title: '',
+    status: '',
+    progress: 0,
+    phase: 'idle' as 'idle' | 'staging' | 'generating' | 'complete',
+    startedAt: 0,
+    completedAt: 0,
+  },
   oxygenWarnings: {
     half: false,
     quarter: false,

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature,AuxSub,Biome,Bobbit,CargoItem,ControlState,EnvironmentProp,Fish,FishSpecies,Flare,FloatingText,Flora,FloraSpecies,Hazard,Larva,LooseItem,NestEgg,PlaytestCommand,Quest,ScanTarget,ShopItem,SonarContact,SpecialRoom,SubTier,SubVehicle,TerrainVisualChunk,ThrownUtility,Tile,TileDef,UpgradeId,VeinRule } from './types';
+import type { ArticulatedCreature,AuxSub,Biome,Bobbit,BobbitBurrow,CargoItem,ControlState,EncounterReservation,EnvironmentProp,Fish,FishSpecies,Flare,FloatingText,Flora,FloraSpecies,Hazard,Larva,LooseItem,NestEgg,PlaytestCommand,Quest,ScanTarget,ShopItem,SonarContact,SpecialRoom,SubTier,SubVehicle,TerrainVisualChunk,ThrownUtility,Tile,TileDef,UpgradeId,VeinRule } from './types';
 import { audioKeys,audioVolumes,BARGE_DOCKING_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_ENTRY_HALF_WIDTH,BARGE_ENTRY_Y,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BIOLUME_CAVERN_CHANCE,BLEED_DURATION,BLEED_HULL_DRAIN,BLEED_RECENT_WINDOW,BLEED_TRIGGER_BITES,BOBBIT_DETECT_RADIUS,BOBBIT_ESCAPE_SECONDS,BOBBIT_LATCH_RADIUS,CAMERA_ZOOM_MULTIPLIER,deepScale,DYNAMITE_LAND_FUSE,DYNAMITE_LIFE_DAMAGE,DYNAMITE_RADIUS_TILES,EGG_CUTTER_FUEL_COST,EGG_DETECTION_RADIUS,EGG_HATCH_SECONDS,EGG_HP,ENTITY_SCALE,FIRST_AID_REPAIR,FISH_BITE_SFX_GAP_MS,FLARE_DURATION,FLARE_LIGHT_RADIUS,FUEL_REFILL_AMOUNT,FUEL_TANK_REFILL,INJECTOR_KNIFE_DAMAGE,INJECTOR_KNIFE_RANGE,LIFE_CUTTER_DAMAGE,LIFE_CUTTER_FUEL_COST,NEST_CHAMBER_CHANCE,NEST_CLEAR_REWARD,OASIS_OXYGEN_REFILL,OXYGEN_TANK_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_CONTACT_RADIUS,PLAYER_DRAW_SCALE,PLAYER_FORWARD_REACH,PLAYER_PICKUP_RADIUS,SONAR_ATTRACT_RADIUS,SONAR_COOLDOWN,SONAR_FUEL_COST,SONAR_REVEAL_RADIUS_TILES,STUN_GRENADE_DURATION,STUN_GRENADE_RADIUS,SUB_BOARD_SECONDS,SUB_FUEL_CELL,SUB_FUEL_COST,SUB_OXYGEN_CELL,SUB_OXYGEN_COST,SURFACE_Y,TARGET_DEPTH,THROWN_ITEM_GRAVITY,THROWN_ITEM_MAX_FALL_SPEED,THROWN_ITEM_SPEED,TILE,VENOM_HULL_DRAIN,VENOM_TICK_SECONDS,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state,ui } from './state';
@@ -18,10 +18,15 @@ import * as audioNs from './scene-audio';
 import * as articulatedNs from './scene-articulated';
 import { ensureArticulatedTextures } from './articulated';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
-import { ensureTerrainMask,syncTerrainMaskTile,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
+import { createSubmarinePartSprites,ensureSubmarinePartTextures,setSubmarineDrillingFrameProvider } from './submarine-parts';
+import type { SubmarinePartSpriteMap } from './submarine-parts';
+import { ensureTerrainMask,syncTerrainMaskTile,terrainMaskContactForAabb,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
+import { createPerfTelemetry,markTerrainDirty,measurePerf,updatePerfHud } from './perf';
+import type { PerfTelemetry } from './perf';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
+  parallaxBackdrop!: Phaser.GameObjects.Graphics;
   terrain!: Phaser.GameObjects.Graphics;
   terrainEdges!: Phaser.GameObjects.Graphics;
   articulatedBridges!: Phaser.GameObjects.Graphics;
@@ -32,6 +37,8 @@ export class DeepdiveScene extends Phaser.Scene {
   bargeSprite!: Phaser.GameObjects.Image;
   playerSprite!: Phaser.GameObjects.Image;
   diverPartSprites: Record<string, Phaser.GameObjects.Image> = {};
+  subPartSprites: SubmarinePartSpriteMap = {};
+  carrierSubPartSprites: SubmarinePartSpriteMap = {};
   subSprite?: Phaser.GameObjects.Image;
   cutterBeamSprite?: Phaser.GameObjects.Image;
   auxSub?: AuxSub;
@@ -47,6 +54,9 @@ export class DeepdiveScene extends Phaser.Scene {
   environmentProps: EnvironmentProp[] = [];
   fish: Fish[] = [];
   articulatedCreatures: ArticulatedCreature[] = [];
+  bobbitBurrows: BobbitBurrow[] = [];
+  encounterReservations: EncounterReservation[] = [];
+  sideTunnelPocketCandidates: Array<{ x: number; y: number; score: number; source: string }> = [];
   flora: Flora[] = [];
   hazards: Hazard[] = [];
   bobbits: Bobbit[] = [];
@@ -69,6 +79,9 @@ export class DeepdiveScene extends Phaser.Scene {
   terrainDirty = true;
   terrainVisualChunks = new Map<string, TerrainVisualChunk>();
   terrainVisualDirtyChunks = new Set<string>();
+  environmentPropRefreshQueue: Array<{ minX: number; maxX: number; minY: number; maxY: number; reason: string }> = [];
+  perfTelemetry: PerfTelemetry = createPerfTelemetry();
+  worldReady = false;
   gamepadButtonsDown = new Set<number>();
   menuNavCooldown = 0;
   player = {
@@ -93,8 +106,8 @@ export class DeepdiveScene extends Phaser.Scene {
     loadGeneratedAssets(this);
   }
 
-  create() {
-    this.cameras.main.setBounds(0, 0, WORLD_W * TILE, WORLD_H * TILE);
+	  create() {
+	    this.cameras.main.setBounds(0, 0, WORLD_W * TILE, WORLD_H * TILE);
     this.cameras.main.setRoundPixels(true);
     this.tileSprites = [];
     this.terrainBrushSprites = [];
@@ -108,6 +121,7 @@ export class DeepdiveScene extends Phaser.Scene {
       .setOrigin(0)
       .setDepth(-12 + index)
       .setScrollFactor(1));
+    this.parallaxBackdrop = this.add.graphics().setDepth(-7.5);
     this.terrain = this.add.graphics().setDepth(0);
     this.terrainEdges = this.add.graphics().setDepth(0.82);
     this.bargeSprite = this.add.image(WORLD_W * TILE * 0.5, SURFACE_Y + 24, 'barge-platform')
@@ -121,6 +135,10 @@ export class DeepdiveScene extends Phaser.Scene {
         .setOrigin(part.origin[0], part.origin[1])
         .setVisible(false),
     ]));
+    ensureSubmarinePartTextures(this);
+    this.subPartSprites = createSubmarinePartSprites(this, 'active', 2.22);
+    this.carrierSubPartSprites = createSubmarinePartSprites(this, 'carrier', 2.12);
+    setSubmarineDrillingFrameProvider(() => this.drillingThisFrame);
     this.subSprite = this.add.image(this.player.x, this.player.y, 'sub-tier1').setDepth(2.25).setOrigin(0.5).setVisible(false);
     this.cutterBeamSprite = this.add.image(this.player.x, this.player.y, 'sub-cutter-beam-0').setDepth(3.25).setOrigin(0, 0.5).setVisible(false);
     this.auxSub = {
@@ -137,16 +155,19 @@ export class DeepdiveScene extends Phaser.Scene {
     this.lampGloom = this.add.graphics().setDepth(6);
     this.overlay = this.add.graphics().setDepth(7);
     ensureArticulatedTextures(this);
-    this.generateWorld();
-    if (state.started) this.revealSonarAtPlayer(8);
-    this.cameras.main.centerOn(this.player.x, this.player.y);
-    this.creatureCallTimer = Phaser.Math.Between(95, 175);
-    this.updateAudio(0);
-    renderHud();
-  }
+    this.beginBiomeGenerationTransition();
+	  }
 
   update(_: number, deltaMs: number) {
+    measurePerf(this, 'frame.total', () => {
+    this.perfTelemetry = this.perfTelemetry ?? createPerfTelemetry();
     updateFpsTracker(deltaMs);
+    if (!this.worldReady) {
+      this.updateBiomeGenerationLoading();
+      this.updateAudio(0);
+      updatePerfHud(this);
+      return;
+    }
     const delta = deltaMs / 1000;
     const controls = this.readControls();
     if (canDiveFromBargeShortcut() && Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) {
@@ -157,6 +178,7 @@ export class DeepdiveScene extends Phaser.Scene {
     if (state.radioOpen && state.started && !state.lost && !state.won) {
       this.draw();
       this.updateAudio(delta);
+      updatePerfHud(this);
       return;
     }
     if (!state.started) {
@@ -184,17 +206,20 @@ export class DeepdiveScene extends Phaser.Scene {
       if (controls.confirmPressed) restart(this);
       this.draw();
       this.updateAudio(delta);
+      updatePerfHud(this);
       return;
     }
     if (state.paused) {
       this.draw();
       this.updateAudio(delta);
+      updatePerfHud(this);
       return;
     }
     if (state.docked) {
+      measurePerf(this, 'update.total', () => {
       this.updateDockedAtBarge(delta, controls);
-      this.updateFish(delta * 0.35);
-      this.updateArticulatedCreatures(delta * 0.25);
+      measurePerf(this, 'update.fish', () => this.updateFish(delta * 0.35), { count: this.fish.length });
+      measurePerf(this, 'update.articulated', () => this.updateArticulatedCreatures(delta * 0.25), { count: this.articulatedCreatures.length, parts: this.articulatedCreatures.reduce((sum, creature) => sum + creature.parts.length, 0) });
       this.updateFlora(delta * 0.35);
       this.updateAuxSub(delta * 0.35);
       this.updateFloatingTexts(delta);
@@ -203,28 +228,32 @@ export class DeepdiveScene extends Phaser.Scene {
       this.updateQuestProgress();
       this.updateCameraZoom();
       this.cameras.main.centerOn(this.player.x, this.player.y);
-      this.draw();
+      this.processEnvironmentPropRefreshQueue();
+      });
+      measurePerf(this, 'draw.total', () => this.draw());
       this.updateAudio(delta);
       this.hudTimer += deltaMs;
       if (this.hudTimer > 90) {
         this.hudTimer = 0;
         renderHud();
       }
+      updatePerfHud(this);
       return;
     }
 
+    measurePerf(this, 'update.total', () => {
     this.drillingThisFrame = false;
-    this.updatePlayer(delta, controls);
+    if (state.pilotingSub) measurePerf(this, 'update.sub', () => this.updatePlayer(delta, controls), { tier: state.activeSub?.tier ?? 0 });
+    else this.updatePlayer(delta, controls);
     this.updateLooseItems(delta);
     this.updateFlora(delta);
-    this.updateFish(delta);
-    this.updateArticulatedCreatures(delta, controls);
+    measurePerf(this, 'update.fish', () => this.updateFish(delta), { count: this.fish.length });
+    measurePerf(this, 'update.articulated', () => this.updateArticulatedCreatures(delta, controls), { count: this.articulatedCreatures.length, parts: this.articulatedCreatures.reduce((sum, creature) => sum + creature.parts.length, 0) });
     this.updateSpecialRooms(delta);
     this.updateNestEggs(delta);
     this.updateLarvae(delta, controls);
     this.updateAuxSub(delta);
     this.updateHazards(delta);
-    this.updateBobbits(delta, controls);
     this.updateSystems(delta);
     this.updateQuestProgress();
     this.updateFloatingTexts(delta);
@@ -232,13 +261,69 @@ export class DeepdiveScene extends Phaser.Scene {
     this.updateSonarPings(delta);
     this.updateCameraZoom();
     this.cameras.main.centerOn(this.player.x, this.player.y);
-    this.draw();
+    this.processEnvironmentPropRefreshQueue();
+    });
+    measurePerf(this, 'draw.total', () => this.draw());
     this.updateAudio(delta);
     this.hudTimer += deltaMs;
     if (this.hudTimer > 90) {
       this.hudTimer = 0;
       renderHud();
     }
+    updatePerfHud(this);
+    });
+  }
+
+  beginBiomeGenerationTransition() {
+    this.worldReady = false;
+    state.biomeLoading = {
+      active: true,
+      biome: state.biome,
+      title: biomeName(),
+      status: 'Calibrating pressure map...',
+      progress: 0.12,
+      phase: 'staging',
+      startedAt: performance.now(),
+      completedAt: 0,
+    };
+    renderHud();
+    this.time.delayedCall(90, () => this.finishBiomeGenerationTransition());
+  }
+
+  updateBiomeGenerationLoading() {
+    const loading = state.biomeLoading;
+    if (!loading.active || loading.phase !== 'staging') return;
+    const elapsed = performance.now() - loading.startedAt;
+    const nextProgress = Phaser.Math.Clamp(0.12 + elapsed / 520, 0.12, 0.34);
+    if (Math.abs(nextProgress - loading.progress) > 0.03) {
+      loading.progress = nextProgress;
+      renderHud();
+    }
+  }
+
+  finishBiomeGenerationTransition() {
+    if (this.worldReady) return;
+    state.biomeLoading.phase = 'generating';
+    state.biomeLoading.status = 'Carving routes and placing encounters...';
+    state.biomeLoading.progress = 0.42;
+    renderHud();
+    measurePerf(this, 'worldgen.total', () => this.generateWorld(), { biome: state.biome });
+    this.worldReady = true;
+    state.biomeLoading.phase = 'complete';
+    state.biomeLoading.status = 'Barge systems synchronized.';
+    state.biomeLoading.progress = 1;
+    state.biomeLoading.completedAt = performance.now();
+    if (state.started) this.revealSonarAtPlayer(8);
+    this.cameras.main.centerOn(this.player.x, this.player.y);
+    this.creatureCallTimer = Phaser.Math.Between(95, 175);
+    this.updateAudio(0);
+    renderHud();
+    this.time.delayedCall(180, () => {
+      if (state.biomeLoading.phase !== 'complete') return;
+      state.biomeLoading.active = false;
+      state.biomeLoading.phase = 'idle';
+      renderHud();
+    });
   }
 
   updateCameraZoom() {
@@ -440,6 +525,20 @@ export class DeepdiveScene extends Phaser.Scene {
     }
 
     const latchedBobbit = this.latchedBobbit();
+    const activeBobbitDrag = this.activeBobbitDrag();
+    if (activeBobbitDrag?.bobbitBurrow?.captured === 'player') {
+      if (hasInput) {
+        this.rotateFacingToward(input.angle(), delta, 7.2);
+        this.updatePlayerFacing(input.x);
+      }
+      this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
+      this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
+      this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
+      if (controls.sonarPressed) this.sonarPing();
+      if (controls.useItemPressed) this.useSelectedItem();
+      this.scanNearbyLife(delta, controls.scanHeld);
+      return;
+    }
     if (latchedBobbit) {
       this.player.x = latchedBobbit.latchX;
       this.player.y = latchedBobbit.latchY;
@@ -536,9 +635,14 @@ export class DeepdiveScene extends Phaser.Scene {
   }
 
   collides(x: number, y: number): boolean {
-    const points = this.collisionSamplePoints(x, y);
     ensureTerrainMask(this);
-    return points.some(([px, py]) => {
+    const sub = state.pilotingSub ? state.activeSub : null;
+    if (sub) {
+      const { halfW, halfH } = subCollisionHalfExtents(sub);
+      if (terrainMaskContactForAabb(this, x, y, halfW, halfH, { maxSamples: 30 })) return true;
+      return this.collisionSamplePoints(x, y).some(([px, py]) => bargeSolidAtWorld(px, py));
+    }
+    return this.collisionSamplePoints(x, y).some(([px, py]) => {
       if (bargeSolidAtWorld(px, py)) return true;
       const tx = Math.floor(px / TILE);
       const ty = Math.floor(py / TILE);
@@ -735,6 +839,7 @@ export class DeepdiveScene extends Phaser.Scene {
     syncTerrainMaskTile(this, x, y);
     this.markTerrainVisualDirty(x, y);
     this.terrainDirty = true;
+    markTerrainDirty(this, `tile:${x},${y}`);
   }
 
   markTerrainVisualDirty(x: number, y: number) {
@@ -768,6 +873,8 @@ export interface DeepdiveScene {
   generateWorld: OmitThisParameter<typeof worldgenNs.generateWorld>;
   populateEnvironmentProps: OmitThisParameter<typeof worldgenNs.populateEnvironmentProps>;
   refreshEnvironmentPropsAround: OmitThisParameter<typeof worldgenNs.refreshEnvironmentPropsAround>;
+  processEnvironmentPropRefreshQueue: OmitThisParameter<typeof worldgenNs.processEnvironmentPropRefreshQueue>;
+  refreshFloraAnchorsAround: OmitThisParameter<typeof worldgenNs.refreshFloraAnchorsAround>;
   makeVentFields: OmitThisParameter<typeof worldgenNs.makeVentFields>;
   injectSpecialRooms: OmitThisParameter<typeof worldgenNs.injectSpecialRooms>;
   pickBiolumeCavernCenter: OmitThisParameter<typeof worldgenNs.pickBiolumeCavernCenter>;
@@ -783,14 +890,23 @@ export interface DeepdiveScene {
   populateOreVeins: OmitThisParameter<typeof worldgenNs.populateOreVeins>;
   growOreVein: OmitThisParameter<typeof worldgenNs.growOreVein>;
   canHostOre: OmitThisParameter<typeof worldgenNs.canHostOre>;
+  reserveBobbitBurrows: OmitThisParameter<typeof worldgenNs.reserveBobbitBurrows>;
+  reserveSignatureEncounters: OmitThisParameter<typeof worldgenNs.reserveSignatureEncounters>;
+  encounterReservationForCreature: OmitThisParameter<typeof worldgenNs.encounterReservationForCreature>;
+  pointNearEncounterReservation: OmitThisParameter<typeof worldgenNs.pointNearEncounterReservation>;
+  tileNearEncounterReservation: OmitThisParameter<typeof worldgenNs.tileNearEncounterReservation>;
+  findBobbitBurrowSiteInBand: OmitThisParameter<typeof worldgenNs.findBobbitBurrowSiteInBand>;
+  pointNearBobbitSpecialRoom: OmitThisParameter<typeof worldgenNs.pointNearBobbitSpecialRoom>;
   makeBobbits: OmitThisParameter<typeof worldgenNs.makeBobbits>;
   makeSchool: OmitThisParameter<typeof worldgenNs.makeSchool>;
   makeFloraPatch: OmitThisParameter<typeof worldgenNs.makeFloraPatch>;
   populateSpecialRooms: OmitThisParameter<typeof worldgenNs.populateSpecialRooms>;
   populateBiolumeRoom: OmitThisParameter<typeof worldgenNs.populateBiolumeRoom>;
   populateNestRoom: OmitThisParameter<typeof worldgenNs.populateNestRoom>;
+  findRoomFloraAnchor: OmitThisParameter<typeof worldgenNs.findRoomFloraAnchor>;
   findRoomFloorAnchor: OmitThisParameter<typeof worldgenNs.findRoomFloorAnchor>;
   findFloraAnchorInBand: OmitThisParameter<typeof worldgenNs.findFloraAnchorInBand>;
+  findVentAnchorInBand: OmitThisParameter<typeof worldgenNs.findVentAnchorInBand>;
   findRockTopAnchorInBand: OmitThisParameter<typeof worldgenNs.findRockTopAnchorInBand>;
   findOpenWaterInBand: OmitThisParameter<typeof worldgenNs.findOpenWaterInBand>;
   carveStarterCaverns: OmitThisParameter<typeof worldgenNs.carveStarterCaverns>;
@@ -821,6 +937,7 @@ export interface DeepdiveScene {
   drawNestEggs: OmitThisParameter<typeof renderingNs.drawNestEggs>;
   drawLarvae: OmitThisParameter<typeof renderingNs.drawLarvae>;
   drawBobbits: OmitThisParameter<typeof renderingNs.drawBobbits>;
+  drawBobbitBurrows: OmitThisParameter<typeof renderingNs.drawBobbitBurrows>;
   drawFish: OmitThisParameter<typeof renderingNs.drawFish>;
   drawFlora: OmitThisParameter<typeof renderingNs.drawFlora>;
   fishVisibilityAlpha: OmitThisParameter<typeof renderingNs.fishVisibilityAlpha>;
@@ -829,6 +946,7 @@ export interface DeepdiveScene {
   drawArticulatedDiver: OmitThisParameter<typeof renderingNs.drawArticulatedDiver>;
   drawSub: OmitThisParameter<typeof renderingNs.drawSub>;
   drawDarkness: OmitThisParameter<typeof renderingNs.drawDarkness>;
+  drawBiomeVisibilityCues: OmitThisParameter<typeof renderingNs.drawBiomeVisibilityCues>;
   lampIntervalsAtY: OmitThisParameter<typeof renderingNs.lampIntervalsAtY>;
   drawSonarPings: OmitThisParameter<typeof renderingNs.drawSonarPings>;
   drawFlares: OmitThisParameter<typeof renderingNs.drawFlares>;
@@ -839,7 +957,11 @@ export interface DeepdiveScene {
 Object.assign(DeepdiveScene.prototype, articulatedNs);
 export interface DeepdiveScene {
   populateArticulatedCreatures: OmitThisParameter<typeof articulatedNs.populateArticulatedCreatures>;
+  populateBobbitArticulatedThreats: OmitThisParameter<typeof articulatedNs.populateBobbitArticulatedThreats>;
   updateArticulatedCreatures: OmitThisParameter<typeof articulatedNs.updateArticulatedCreatures>;
+  updateBurrowBobbitCreature: OmitThisParameter<typeof articulatedNs.updateBurrowBobbitCreature>;
+  activeBobbitDrag: OmitThisParameter<typeof articulatedNs.activeBobbitDrag>;
+  releaseBurrowBobbit: OmitThisParameter<typeof articulatedNs.releaseBurrowBobbit>;
   steerArticulatedCreature: OmitThisParameter<typeof articulatedNs.steerArticulatedCreature>;
   keepArticulatedCreatureInWater: OmitThisParameter<typeof articulatedNs.keepArticulatedCreatureInWater>;
   updateArticulatedParts: OmitThisParameter<typeof articulatedNs.updateArticulatedParts>;
@@ -848,6 +970,7 @@ export interface DeepdiveScene {
   articulatedBiteAnchorWorld: OmitThisParameter<typeof articulatedNs.articulatedBiteAnchorWorld>;
   articulatedPartHitShape: OmitThisParameter<typeof articulatedNs.articulatedPartHitShape>;
   articulatedPartHitDistanceTo: OmitThisParameter<typeof articulatedNs.articulatedPartHitDistanceTo>;
+  isDangerousArticulatedPart: OmitThisParameter<typeof articulatedNs.isDangerousArticulatedPart>;
   articulatedPartTerrainContact: OmitThisParameter<typeof articulatedNs.articulatedPartTerrainContact>;
   articulatedJointMetrics: OmitThisParameter<typeof articulatedNs.articulatedJointMetrics>;
   resolveArticulatedGrab: OmitThisParameter<typeof articulatedNs.resolveArticulatedGrab>;

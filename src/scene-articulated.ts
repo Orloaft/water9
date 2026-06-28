@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
 import type { ArticulatedCreature, ArticulatedCreatureManifest, ArticulatedPartManifest, ArticulatedPartState, ArticulatedSocketOverlayManifest, ArticulatedSocketOverlayState, ArticulatedSocketStyleManifest, ControlState } from './types';
-import { ENTITY_SCALE,PLAYER_CONTACT_RADIUS,TILE,WORLD_H,WORLD_W } from './constants';
-import { tiles } from './content';
+import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,PLAYER_CONTACT_RADIUS,TILE,WORLD_H,WORLD_W } from './constants';
 import { state } from './state';
-import { articulatedBehaviorFor,articulatedCreatureDefs,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
-import { rarityColor, scaledDepthPx } from './helpers';
+import { articulatedBehaviorFor,articulatedCreatureDef,articulatedCreatureDefs,articulatedPrototypeRuntimeEnabled,articulatedSpawnBudgetForBiome,articulatedSpawnPriority,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
+import { darknessAtDepth, lightRadius, rarityColor, scaledDepthPx } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
+import { terrainMaskContactForCapsule } from './terrain-mask';
 
 const PART_WORLD_SCALE = ENTITY_SCALE;
 const BODY_SWIM_WAVE_SCALE = 1.32;
@@ -17,6 +17,10 @@ const SERPENT_DETECTION_RANGE = 430;
 const SERPENT_LEASH_RANGE = 720;
 const SERPENT_GRAB_SECONDS = 1.18;
 const SERPENT_GRAB_COOLDOWN = 5.5;
+const BOBBIT_BURROW_LATERAL_LIMIT = TILE * 1.2;
+const BOBBIT_BURROW_VERTICAL_LEAN_LIMIT = 0.14;
+const BOBBIT_MOUTH_LATCH_OFFSET_LIMIT = TILE * 1.6;
+const ARTICULATED_TERRAIN_CORRECTION_PASSES = 3;
 
 function articulatedCombatFor(creature: ArticulatedCreature) {
   const behavior = articulatedBehaviorFor(creature.manifest);
@@ -42,6 +46,7 @@ function articulatedCombatFor(creature: ArticulatedCreature) {
     bitePartId: combat.bitePartId,
     biteAnchor: combat.biteAnchor ?? 'bite',
     contactPadding: combat.contactPadding ?? behaviorDefaults.contactPadding,
+    damageMultiplier: combat.damageMultiplier ?? 1,
   };
 }
 
@@ -215,72 +220,30 @@ function canDetachPart(manifest: ArticulatedPartManifest) {
   return anatomyFor(manifest).severable;
 }
 
-function solidAt(scene: DeepdiveScene, x: number, y: number) {
-  const tx = Math.floor(x / TILE);
-  const ty = Math.floor(y / TILE);
-  if (tx < 1 || tx >= WORLD_W - 1 || ty < 7 || ty >= WORLD_H - 2) return true;
-  return tiles[scene.getTile(tx, ty)].solid;
+export function isDangerousArticulatedPart(creature: ArticulatedCreature, part: ArticulatedPartState) {
+  if (part.detached || part.hp <= 0) return false;
+  const manifest = partManifest(creature, part);
+  const anatomy = anatomyFor(manifest);
+  const id = manifest.id.toLowerCase();
+  const hasBiteAnchor = Boolean(manifest.anchors?.bite || manifest.anchors?.jaw || manifest.anchors?.sting);
+  const dangerousName = /\b(jaw|mandible|tooth|teeth|fang|bite|claw|stinger|sting|spike|thorn|saw|razor|hook|harpoon|barb)\b/.test(id);
+  const sharpFin = anatomy.role === 'fin' && /\b(sharp|saw|razor|spike|thorn|blade|barb)\b/.test(id);
+  return anatomy.role === 'jaw'
+    || manifest.motion.kind === 'jaw'
+    || hasBiteAnchor
+    || dangerousName
+    || sharpFin
+    || part.id === creature.manifest.combat?.bitePartId;
 }
 
 function terrainContactForPart(scene: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, _manifest: ArticulatedPartManifest) {
   const shape = articulatedPartHitShape(creature, part);
-  const axisX = Math.cos(shape.rotation);
-  const axisY = Math.sin(shape.rotation);
-  const normalX = -axisY;
-  const normalY = axisX;
-  const sideRadius = Math.max(6, shape.radius);
-  const capLength = shape.halfLength;
-  const projectedHalfWidth = Math.abs(axisX) * capLength + sideRadius;
-  const projectedHalfHeight = Math.abs(axisY) * capLength + sideRadius;
-  const edgeInsetY = Math.min(projectedHalfHeight * 0.42, sideRadius * 0.72);
-  const edgeInsetX = Math.min(projectedHalfWidth * 0.42, sideRadius * 0.72);
-  const samples = [
-    { x: shape.centerX, y: shape.centerY, nx: 0, ny: 0 },
-    { x: shape.centerX + axisX * (capLength + sideRadius), y: shape.centerY + axisY * (capLength + sideRadius), nx: -axisX, ny: -axisY },
-    { x: shape.centerX - axisX * (capLength + sideRadius), y: shape.centerY - axisY * (capLength + sideRadius), nx: axisX, ny: axisY },
-    { x: shape.centerX + normalX * sideRadius, y: shape.centerY + normalY * sideRadius, nx: -normalX, ny: -normalY },
-    { x: shape.centerX - normalX * sideRadius, y: shape.centerY - normalY * sideRadius, nx: normalX, ny: normalY },
-    { x: shape.centerX + projectedHalfWidth, y: shape.centerY, nx: -1, ny: 0 },
-    { x: shape.centerX + projectedHalfWidth, y: shape.centerY - edgeInsetY, nx: -1, ny: 0 },
-    { x: shape.centerX + projectedHalfWidth, y: shape.centerY + edgeInsetY, nx: -1, ny: 0 },
-    { x: shape.centerX - projectedHalfWidth, y: shape.centerY, nx: 1, ny: 0 },
-    { x: shape.centerX - projectedHalfWidth, y: shape.centerY - edgeInsetY, nx: 1, ny: 0 },
-    { x: shape.centerX - projectedHalfWidth, y: shape.centerY + edgeInsetY, nx: 1, ny: 0 },
-    { x: shape.centerX, y: shape.centerY + projectedHalfHeight, nx: 0, ny: -1 },
-    { x: shape.centerX - edgeInsetX, y: shape.centerY + projectedHalfHeight, nx: 0, ny: -1 },
-    { x: shape.centerX + edgeInsetX, y: shape.centerY + projectedHalfHeight, nx: 0, ny: -1 },
-    { x: shape.centerX, y: shape.centerY - projectedHalfHeight, nx: 0, ny: 1 },
-    { x: shape.centerX - edgeInsetX, y: shape.centerY - projectedHalfHeight, nx: 0, ny: 1 },
-    { x: shape.centerX + edgeInsetX, y: shape.centerY - projectedHalfHeight, nx: 0, ny: 1 },
-    { x: shape.centerX + axisX * capLength + normalX * sideRadius * 0.72, y: shape.centerY + axisY * capLength + normalY * sideRadius * 0.72, nx: -(axisX + normalX * 0.55), ny: -(axisY + normalY * 0.55) },
-    { x: shape.centerX + axisX * capLength - normalX * sideRadius * 0.72, y: shape.centerY + axisY * capLength - normalY * sideRadius * 0.72, nx: -(axisX - normalX * 0.55), ny: -(axisY - normalY * 0.55) },
-    { x: shape.centerX - axisX * capLength + normalX * sideRadius * 0.72, y: shape.centerY - axisY * capLength + normalY * sideRadius * 0.72, nx: axisX - normalX * 0.55, ny: axisY - normalY * 0.55 },
-    { x: shape.centerX - axisX * capLength - normalX * sideRadius * 0.72, y: shape.centerY - axisY * capLength - normalY * sideRadius * 0.72, nx: axisX + normalX * 0.55, ny: axisY + normalY * 0.55 },
-  ];
-  let count = 0;
-  let nx = 0;
-  let ny = 0;
-  for (const sample of samples) {
-    if (!solidAt(scene, sample.x, sample.y)) continue;
-    count += 1;
-    if (sample.nx || sample.ny) {
-      const sampleLen = Math.max(1, Math.hypot(sample.nx, sample.ny));
-      nx += sample.nx / sampleLen;
-      ny += sample.ny / sampleLen;
-    } else {
-      const awayX = shape.centerX - creature.x;
-      const awayY = shape.centerY - creature.y;
-      const len = Math.max(1, Math.hypot(awayX, awayY));
-      nx += awayX / len;
-      ny += awayY / len;
-    }
-  }
-  const len = Math.hypot(nx, ny);
-  if (count <= 0 || len <= 0) return null;
+  const contact = terrainMaskContactForCapsule(scene, shape.centerX, shape.centerY, shape.rotation, shape.halfLength, Math.max(6, shape.radius), { maxSamples: 40 });
+  if (!contact) return null;
   return {
-    count,
-    nx: nx / len,
-    ny: ny / len,
+    count: contact.count,
+    nx: contact.nx,
+    ny: contact.ny,
     part,
   };
 }
@@ -380,6 +343,98 @@ function articulatedSpawnIsClear(scene: DeepdiveScene, creature: ArticulatedCrea
   return creature.parts
     .filter((part) => !part.detached && part.hp > 0)
     .every((part) => !terrainContactForPart(scene, creature, part, partManifest(creature, part)));
+}
+
+const signatureEncounterCreatureIds = new Set([
+  'abyssal-mandible-bobbit',
+  'abyssal-gulper',
+  'abyssal-reliquary-wyrm',
+  'abyssal-glasshook-skulk',
+]);
+
+function spawnArticulatedAt(scene: DeepdiveScene, manifest: ArticulatedCreatureManifest, point: { x: number; y: number }, phaseOffset = 0) {
+  const clamped = clampArticulatedSpawnPoint(manifest, point);
+  const creature = createArticulatedCreature(scene, manifest, clamped.x, clamped.y);
+  creature.homeX = clamped.x;
+  creature.homeY = clamped.y;
+  creature.phase += phaseOffset;
+  scene.updateArticulatedParts(creature, 0);
+  return creature;
+}
+
+function spawnReservedArticulated(scene: DeepdiveScene, manifest: ArticulatedCreatureManifest, index: number) {
+  const reservation = scene.encounterReservationForCreature(manifest.id);
+  if (!reservation) return null;
+  let creature = spawnArticulatedAt(scene, manifest, { x: reservation.homeX, y: reservation.homeY }, index * 1.7);
+  if (!articulatedSpawnIsClear(scene, creature)) {
+    destroyArticulatedCreatureSprites(creature);
+    carveArticulatedSpawnPocket(scene, manifest, { x: reservation.homeX, y: reservation.homeY });
+    creature = spawnArticulatedAt(scene, manifest, { x: reservation.homeX, y: reservation.homeY }, index * 1.7);
+  }
+  reservation.occupied = true;
+  return creature;
+}
+
+function reservedBobbitSpawnCount(scene: DeepdiveScene) {
+  if (state.biome < 2 || scene.bobbitBurrows.length <= 0) return 0;
+  const manifest = articulatedCreatureDef('abyssal-mandible-bobbit');
+  return shouldSpawnArticulatedCreature(manifest) ? scene.bobbitBurrows.length : 0;
+}
+
+function isBurrowBobbit(creature: ArticulatedCreature) {
+  return creature.id === 'abyssal-mandible-bobbit' && Boolean(creature.bobbitBurrow);
+}
+
+function bobbitBurrowFor(scene: DeepdiveScene, creature: ArticulatedCreature) {
+  const runtime = creature.bobbitBurrow;
+  return runtime ? scene.bobbitBurrows.find((burrow) => burrow.id === runtime.burrowId) ?? null : null;
+}
+
+function constrainBurrowBobbitToShaft(creature: ArticulatedCreature, burrow: NonNullable<ReturnType<typeof bobbitBurrowFor>>) {
+  creature.facingSign = 1;
+  creature.x = Phaser.Math.Clamp(creature.x, burrow.x - BOBBIT_BURROW_LATERAL_LIMIT, burrow.x + BOBBIT_BURROW_LATERAL_LIMIT);
+  creature.y = Phaser.Math.Clamp(creature.y, burrow.shaftTopY + TILE * 0.6, burrow.anchorY + TILE * 0.8);
+  creature.vx = Phaser.Math.Clamp(creature.vx, -creature.speed * 0.42, creature.speed * 0.42);
+  creature.vy = Phaser.Math.Clamp(creature.vy, -creature.speed * 2.2, creature.speed * 1.35);
+  creature.posePitch = Phaser.Math.Clamp(creature.posePitch, -BOBBIT_BURROW_VERTICAL_LEAN_LIMIT, BOBBIT_BURROW_VERTICAL_LEAN_LIMIT);
+}
+
+export function populateBobbitArticulatedThreats(this: DeepdiveScene) {
+  if (!this.bobbitBurrows.length || state.biome < 2) return;
+  const manifest = articulatedCreatureDef('abyssal-mandible-bobbit');
+  if (manifest.id !== 'abyssal-mandible-bobbit' || !shouldSpawnArticulatedCreature(manifest)) return;
+  for (const burrow of this.bobbitBurrows) {
+    if (burrow.occupied) continue;
+    const creature = createArticulatedCreature(this, manifest, burrow.anchorX, burrow.anchorY);
+    creature.homeX = burrow.anchorX;
+    creature.homeY = burrow.anchorY;
+    creature.x = burrow.anchorX;
+    creature.y = burrow.anchorY;
+    creature.vx = 0;
+    creature.vy = 0;
+    creature.facingSign = 1;
+    creature.state = 'recover';
+    creature.stateTimer = 999;
+    creature.grabCooldown = 999;
+    creature.bobbitBurrow = {
+      burrowId: burrow.id,
+      phase: 'burrowed',
+      phaseTimer: 0,
+      escapeRemaining: BOBBIT_ESCAPE_SECONDS,
+      dragTimer: 0,
+      captured: null,
+      lastSafeX: burrow.x,
+      lastSafeY: burrow.y - TILE * 2,
+      mouthLatchOffsetX: 0,
+      mouthLatchOffsetY: 0,
+      biteRegistered: false,
+    };
+    burrow.occupied = true;
+    const reservation = this.encounterReservations.find((candidate) => candidate.bobbitBurrowId === burrow.id);
+    if (reservation) reservation.occupied = true;
+    this.updateArticulatedParts(creature, 0);
+    this.articulatedCreatures.push(creature);
+  }
 }
 
 export function articulatedJointMetrics(creature: ArticulatedCreature) {
@@ -490,20 +545,39 @@ export function detachArticulatedPart(this: DeepdiveScene, creature: Articulated
     creature.grabTimer = 0;
     creature.stateTimer = 1.2;
   }
+  if (detachedWasBitePart && creature.bobbitBurrow?.phase === 'drag') {
+    this.releaseBurrowBobbit(creature, 'knife');
+  }
   return true;
 }
 
 export function populateArticulatedCreatures(this: DeepdiveScene) {
   this.articulatedCreatures = [];
-  for (const manifest of articulatedCreatureDefs()) {
-    if (state.biome < manifest.minBiome) continue;
-    if (!shouldSpawnArticulatedCreature(manifest)) continue;
-    for (let i = 0; i < manifest.spawn.count; i += 1) {
+  const spawnBudget = articulatedSpawnBudgetForBiome(state.biome, articulatedPrototypeRuntimeEnabled());
+  let remainingBudget = Math.max(0, spawnBudget - reservedBobbitSpawnCount(this));
+  const manifests = articulatedCreatureDefs()
+    .filter((manifest) => state.biome >= manifest.minBiome)
+    .filter((manifest) => shouldSpawnArticulatedCreature(manifest))
+    .filter((manifest) => manifest.id !== 'abyssal-mandible-bobbit')
+    .sort((a, b) => articulatedSpawnPriority(b) - articulatedSpawnPriority(a) || a.id.localeCompare(b.id));
+  for (const manifest of manifests) {
+    if (remainingBudget <= 0) break;
+    const spawnCount = Math.min(manifest.spawn.count, remainingBudget);
+    for (let i = 0; i < spawnCount; i += 1) {
+      const reservedCreature = signatureEncounterCreatureIds.has(manifest.id)
+        ? spawnReservedArticulated(this, manifest, i)
+        : null;
+      if (reservedCreature) {
+        this.articulatedCreatures.push(reservedCreature);
+        remainingBudget -= 1;
+        continue;
+      }
       const minY = scaledDepthPx(manifest.spawn.minDepth);
       const maxY = scaledDepthPx(manifest.spawn.maxDepth);
       let creature: ArticulatedCreature | null = null;
       for (let attempt = 0; attempt < 90; attempt += 1) {
         const point = clampArticulatedSpawnPoint(manifest, this.findOpenWaterInBand(minY, maxY));
+        if (this.pointNearEncounterReservation(point.x, point.y, manifest.radius * ENTITY_SCALE)) continue;
         const candidate = createArticulatedCreature(this, manifest, point.x, point.y);
         candidate.homeX = point.x;
         candidate.homeY = point.y;
@@ -517,7 +591,10 @@ export function populateArticulatedCreatures(this: DeepdiveScene) {
         destroyArticulatedCreatureSprites(candidate);
       }
       if (!creature) {
-        const point = clampArticulatedSpawnPoint(manifest, this.findOpenWaterInBand(minY, maxY));
+        let point = clampArticulatedSpawnPoint(manifest, this.findOpenWaterInBand(minY, maxY));
+        for (let attempt = 0; attempt < 32 && this.pointNearEncounterReservation(point.x, point.y, manifest.radius * ENTITY_SCALE); attempt += 1) {
+          point = clampArticulatedSpawnPoint(manifest, this.findOpenWaterInBand(minY, maxY));
+        }
         carveArticulatedSpawnPocket(this, manifest, point);
         creature = createArticulatedCreature(this, manifest, point.x, point.y);
         creature.homeX = point.x;
@@ -526,6 +603,7 @@ export function populateArticulatedCreatures(this: DeepdiveScene) {
         this.updateArticulatedParts(creature, 0);
       }
       this.articulatedCreatures.push(creature);
+      remainingBudget -= 1;
     }
   }
 }
@@ -571,6 +649,11 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     }
     creature.scanning = false;
 
+    if (isBurrowBobbit(creature)) {
+      this.updateBurrowBobbitCreature(creature, delta, controls);
+      continue;
+    }
+
     if (creature.stunned > 0) {
       creature.aggro = 0;
       creature.vx *= Math.exp(-3.5 * delta);
@@ -595,15 +678,242 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     const bitePart = this.articulatedBitePart(creature);
     const biteAnchor = this.articulatedBiteAnchorWorld(creature);
     const biteDistance = biteAnchor ? Phaser.Math.Distance.Between(this.player.x, this.player.y, biteAnchor.x, biteAnchor.y) : Number.POSITIVE_INFINITY;
-    if ((creature.state === 'lunge' || creature.state === 'grab') && bitePart && biteDistance < PLAYER_CONTACT_RADIUS + combat.contactPadding && creature.bumpCooldown <= 0) {
+    if ((creature.state === 'lunge' || creature.state === 'grab') && bitePart && this.isDangerousArticulatedPart(creature, bitePart) && biteDistance < PLAYER_CONTACT_RADIUS + combat.contactPadding && creature.bumpCooldown <= 0) {
       this.bumpArticulatedCreature(creature, bitePart, biteDistance);
       continue;
     }
     const hit = this.closestArticulatedPartTo(creature, this.player.x, this.player.y);
-    if (hit && hit.distance < PLAYER_CONTACT_RADIUS && creature.bumpCooldown <= 0) {
+    if (hit && hit.distance < PLAYER_CONTACT_RADIUS && creature.bumpCooldown <= 0 && this.isDangerousArticulatedPart(creature, hit.part)) {
       this.bumpArticulatedCreature(creature, hit.part, hit.distance);
     }
   }
+}
+
+export function activeBobbitDrag(this: DeepdiveScene) {
+  return this.articulatedCreatures.find((creature) => creature.bobbitBurrow?.phase === 'drag' && creature.bobbitBurrow.captured !== null && !creature.dead) ?? null;
+}
+
+export function releaseBurrowBobbit(this: DeepdiveScene, creature: ArticulatedCreature, reason = 'released') {
+  const runtime = creature.bobbitBurrow;
+  const burrow = bobbitBurrowFor(this, creature);
+  if (!runtime) return;
+  const target = runtime.captured === 'sub' && state.activeSub ? state.activeSub : this.player;
+  runtime.captured = null;
+  runtime.phase = 'release';
+  runtime.phaseTimer = 0.55;
+  runtime.dragTimer = 0;
+  runtime.escapeRemaining = BOBBIT_ESCAPE_SECONDS;
+  runtime.mouthLatchOffsetX = 0;
+  runtime.mouthLatchOffsetY = 0;
+  runtime.biteRegistered = false;
+  creature.state = 'recover';
+  creature.grabTimer = 0;
+  creature.bumpCooldown = 1.2;
+  creature.grabCooldown = 3.8;
+  creature.vx *= 0.25;
+  creature.vy = -Math.abs(creature.vy) * 0.12;
+  target.vx += (target.x < (burrow?.x ?? creature.x) ? -1 : 1) * 84;
+  target.vy -= 118;
+  state.status = reason === 'stun'
+    ? 'The stun pulse broke the bobbit grip.'
+    : reason === 'knife'
+      ? 'Injector knife forced the bobbit to release.'
+      : reason === 'killed'
+        ? 'The bobbit went slack and let go.'
+        : 'You tore free of the bobbit drag.';
+  this.spawnFloatingText('Released', 0x8ee7f4);
+}
+
+export function updateBurrowBobbitCreature(this: DeepdiveScene, creature: ArticulatedCreature, delta: number, controls?: ControlState) {
+  const runtime = creature.bobbitBurrow;
+  const burrow = bobbitBurrowFor(this, creature);
+  if (!runtime || !burrow) return;
+  const target = state.pilotingSub && state.activeSub ? state.activeSub : this.player;
+  const targetKind = state.pilotingSub && state.activeSub ? 'sub' : 'player';
+  const targetDistance = Phaser.Math.Distance.Between(target.x, target.y, burrow.approachX, burrow.approachY);
+  const inApproachLane = target.y >= burrow.shaftTopY - TILE * 4 && target.y <= burrow.y - TILE * 1.25;
+  const canTrigger = !this.isAtBoat() && burrow.cooldown <= 0 && targetDistance < burrow.approachRadius && inApproachLane;
+  burrow.cooldown = Math.max(0, burrow.cooldown - delta);
+  runtime.phaseTimer = Math.max(0, runtime.phaseTimer - delta);
+  constrainBurrowBobbitToShaft(creature, burrow);
+
+  if (creature.dead || creature.hp <= 0) {
+    if (runtime.captured) this.releaseBurrowBobbit(creature, 'killed');
+    return;
+  }
+  const bitePartAlive = Boolean(this.articulatedBitePart(creature));
+  if (!bitePartAlive && runtime.captured) this.releaseBurrowBobbit(creature, 'knife');
+  if (creature.stunned > 0 && runtime.captured) this.releaseBurrowBobbit(creature, 'stun');
+
+  if (runtime.phase === 'burrowed') {
+    burrow.triggered = false;
+    runtime.biteRegistered = false;
+    creature.x = Phaser.Math.Linear(creature.x, burrow.anchorX, Math.min(1, delta * 4.5));
+    creature.y = Phaser.Math.Linear(creature.y, burrow.anchorY, Math.min(1, delta * 4.5));
+    creature.vx = 0;
+    creature.vy = 0;
+    creature.state = 'recover';
+    creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, 0, Math.min(1, delta * 8));
+    creature.swimEffort = 0.25;
+    if (canTrigger && creature.stunned <= 0) {
+      runtime.phase = 'telegraph';
+      runtime.phaseTimer = 0.72;
+      burrow.triggered = true;
+      state.status = 'Silt pulses from a deep burrow.';
+    }
+  } else if (runtime.phase === 'telegraph') {
+    creature.x = Phaser.Math.Linear(creature.x, burrow.x, Math.min(1, delta * 3.5));
+    creature.y = Phaser.Math.Linear(creature.y, burrow.y - TILE * 1.7, Math.min(1, delta * 3.5));
+    creature.vx = 0;
+    creature.vy = -28;
+    creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, 0.55, Math.min(1, delta * 9));
+    creature.swimEffort = 0.7;
+    if (!canTrigger) {
+      runtime.phase = 'reset';
+      runtime.phaseTimer = 0.8;
+      burrow.cooldown = 2.6;
+    } else if (runtime.phaseTimer <= 0) {
+      runtime.phase = 'emerge';
+      runtime.phaseTimer = 0.45;
+    }
+  } else if (runtime.phase === 'emerge') {
+    creature.x = Phaser.Math.Linear(creature.x, burrow.x, Math.min(1, delta * 5));
+    creature.y = Phaser.Math.Linear(creature.y, Math.max(burrow.shaftTopY + TILE * 1.6, burrow.y - TILE * 4.25), Math.min(1, delta * 5));
+    creature.vx = 0;
+    creature.vy = -58;
+    creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, 0.75, Math.min(1, delta * 10));
+    creature.swimEffort = 1;
+    if (runtime.phaseTimer <= 0) {
+      runtime.phase = 'lunge';
+      runtime.phaseTimer = 0.62;
+      creature.state = 'lunge';
+      state.status = 'Mandibles erupt from the burrow.';
+    }
+  } else if (runtime.phase === 'lunge') {
+    const desiredX = Phaser.Math.Clamp(target.x, burrow.x - BOBBIT_BURROW_LATERAL_LIMIT, burrow.x + BOBBIT_BURROW_LATERAL_LIMIT);
+    const desiredY = Phaser.Math.Clamp(target.y, burrow.shaftTopY + TILE * 0.8, burrow.y - TILE * 1.2);
+    const dx = desiredX - creature.x;
+    const dy = desiredY - creature.y;
+    const len = Math.max(1, Math.hypot(dx, dy));
+    const speed = creature.speed * 2.35;
+    creature.vx += (dx / len) * speed * 1.55 * delta;
+    creature.vy += (dy / len) * speed * 7.1 * delta - 22 * delta;
+    creature.vx *= Math.exp(-6.8 * delta);
+    creature.vy *= Math.exp(-1.65 * delta);
+    creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, 1, Math.min(1, delta * 14));
+    creature.swimEffort = 1.25;
+    creature.x += creature.vx * delta;
+    creature.y += creature.vy * delta;
+    const bite = this.articulatedBiteAnchorWorld(creature);
+    const biteDistance = bite ? Phaser.Math.Distance.Between(target.x, target.y, bite.x, bite.y) : Infinity;
+    if (bite && biteDistance < PLAYER_CONTACT_RADIUS + 26 && bitePartAlive) {
+      runtime.phase = 'drag';
+      runtime.phaseTimer = 0;
+      runtime.dragTimer = 5.2;
+      runtime.escapeRemaining = BOBBIT_ESCAPE_SECONDS;
+      runtime.captured = targetKind;
+      runtime.lastSafeX = target.x;
+      runtime.lastSafeY = target.y;
+      const latchLimit = targetKind === 'sub' ? TILE * 2.2 : BOBBIT_MOUTH_LATCH_OFFSET_LIMIT;
+      runtime.mouthLatchOffsetX = Phaser.Math.Clamp(target.x - bite.x, -latchLimit, latchLimit);
+      runtime.mouthLatchOffsetY = Phaser.Math.Clamp(target.y - bite.y, -latchLimit, latchLimit);
+      runtime.biteRegistered = true;
+      creature.state = 'grab';
+      creature.grabTimer = runtime.dragTimer;
+      creature.bumpCooldown = 1.1;
+      this.applyHullDamage(13 + state.biome * 2, 'Abyssal bobbit mandibles clamped down.');
+      this.registerPredatorBite(creature);
+      this.playFishBite(18);
+      state.status = 'Bobbit latched. Thrash, knife, or stun before it drags you into the burrow.';
+      this.spawnFloatingText('Latched', 0xff4f64);
+    } else if (runtime.phaseTimer <= 0 || creature.y > burrow.y - TILE * 0.5) {
+      runtime.phase = 'reset';
+      runtime.phaseTimer = 1.05;
+      burrow.cooldown = 3.4;
+    }
+  } else if (runtime.phase === 'drag') {
+    if (!runtime.captured || this.isAtBoat() || (runtime.captured === 'sub' && (!state.activeSub || !state.pilotingSub))) {
+      this.releaseBurrowBobbit(creature, 'released');
+    } else {
+      const struggle = controls?.hasMove ? controls.move.length() : 0;
+      const upward = controls?.move ? Math.max(0, -controls.move.y) : 0;
+      runtime.escapeRemaining -= delta * (0.55 + struggle * 0.72 + upward * 0.42);
+      runtime.dragTimer -= delta;
+      const subResist = runtime.captured === 'sub' && state.activeSub ? 0.58 + state.activeSub.tier * 0.14 : 1;
+      const dragSpeed = (52 + state.biome * 7) * subResist * Math.max(0.42, 1 - upward * 0.28);
+      const previousTargetX = target.x;
+      const previousTargetY = target.y;
+      const mouthGoalX = Phaser.Math.Linear(target.x - runtime.mouthLatchOffsetX, burrow.x, Math.min(1, delta * 2.4));
+      const mouthGoalY = Math.min(burrow.anchorY - TILE * 1.2, target.y - runtime.mouthLatchOffsetY + dragSpeed * delta);
+      creature.x = Phaser.Math.Linear(creature.x, burrow.x, Math.min(1, delta * 5.5));
+      creature.y = Phaser.Math.Linear(creature.y, Math.min(mouthGoalY + TILE * 0.55, burrow.anchorY), Math.min(1, delta * 4));
+      creature.vx = 0;
+      creature.vy = Math.max(20, dragSpeed * 0.45);
+      creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, 1, Math.min(1, delta * 12));
+      creature.swimEffort = 1.2;
+      this.updateArticulatedParts(creature, 0, { preserveSmoothedPose: true });
+      const currentBite = this.articulatedBiteAnchorWorld(creature);
+      if (currentBite) {
+        creature.x += Phaser.Math.Clamp(mouthGoalX - currentBite.x, -TILE * 2.4, TILE * 2.4);
+        creature.y += Phaser.Math.Clamp(mouthGoalY - currentBite.y, -TILE * 2.4, TILE * 2.4);
+        constrainBurrowBobbitToShaft(creature, burrow);
+        this.updateArticulatedParts(creature, 0, { preserveSmoothedPose: true });
+      }
+      const finalBite = this.articulatedBiteAnchorWorld(creature);
+      const desiredX = finalBite ? finalBite.x + runtime.mouthLatchOffsetX : mouthGoalX + runtime.mouthLatchOffsetX;
+      const desiredY = finalBite ? finalBite.y + runtime.mouthLatchOffsetY : mouthGoalY + runtime.mouthLatchOffsetY;
+      const blocked = runtime.captured === 'player' && this.collides(desiredX, desiredY);
+      if (blocked) {
+        target.x = runtime.lastSafeX;
+        target.y = runtime.lastSafeY;
+        this.releaseBurrowBobbit(creature, 'released');
+      } else {
+        runtime.lastSafeX = target.x;
+        runtime.lastSafeY = target.y;
+        target.x = desiredX;
+        target.y = desiredY;
+        const invDelta = 1 / Math.max(0.001, delta);
+        target.vx = Phaser.Math.Clamp((target.x - previousTargetX) * invDelta, -160, 160) * 0.38;
+        target.vy = Math.max(target.vy, Phaser.Math.Clamp((target.y - previousTargetY) * invDelta, -40, 190) * 0.35);
+        this.applyHullDamage((8.5 - struggle * 1.6) * delta, 'Abyssal bobbit is dragging you down.');
+        if (runtime.captured === 'player') state.oxygen = Math.max(0, state.oxygen - (2.8 - struggle * 0.55) * delta);
+        if (runtime.escapeRemaining <= 0 || runtime.dragTimer <= 0 || target.y >= burrow.anchorY - TILE * 1.4) {
+          this.releaseBurrowBobbit(creature, runtime.escapeRemaining <= 0 ? 'released' : 'released');
+        } else {
+          state.status = `Bobbit dragging downward. Escape: ${Math.ceil(runtime.escapeRemaining)}s.`;
+        }
+      }
+    }
+  } else if (runtime.phase === 'release') {
+    creature.x = Phaser.Math.Linear(creature.x, burrow.x, Math.min(1, delta * 3));
+    creature.y = Phaser.Math.Linear(creature.y, burrow.y - TILE * 1.4, Math.min(1, delta * 3));
+    creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, 0.25, Math.min(1, delta * 7));
+    if (runtime.phaseTimer <= 0) {
+      runtime.phase = 'reset';
+      runtime.phaseTimer = 1.2;
+      burrow.cooldown = 4.8;
+    }
+  } else if (runtime.phase === 'reset') {
+    creature.x = Phaser.Math.Linear(creature.x, burrow.anchorX, Math.min(1, delta * 3.8));
+    creature.y = Phaser.Math.Linear(creature.y, burrow.anchorY, Math.min(1, delta * 3.8));
+    creature.vx = 0;
+    creature.vy = 0;
+    creature.attackBlend = Phaser.Math.Linear(creature.attackBlend, 0, Math.min(1, delta * 6));
+    creature.swimEffort = 0.32;
+    if (runtime.phaseTimer <= 0 || Phaser.Math.Distance.Between(creature.x, creature.y, burrow.anchorX, burrow.anchorY) < 8) {
+      runtime.phase = 'burrowed';
+      runtime.phaseTimer = 0;
+      burrow.triggered = false;
+    }
+  }
+
+  constrainBurrowBobbitToShaft(creature, burrow);
+  updateDetachedArticulatedParts(this, creature, delta);
+  this.updateArticulatedParts(creature, delta);
+  if (runtime.phase !== 'burrowed' && runtime.phase !== 'reset' && runtime.phase !== 'telegraph') this.keepArticulatedCreatureInWater(creature);
+  constrainBurrowBobbitToShaft(creature, burrow);
+  this.updateArticulatedParts(creature, 0, { preserveSmoothedPose: true });
+  refreshJointStress(creature);
 }
 
 export function steerArticulatedCreature(this: DeepdiveScene, creature: ArticulatedCreature, delta: number) {
@@ -683,58 +993,70 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
 }
 
 export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: ArticulatedCreature) {
-  const contacts: ReturnType<typeof terrainContactForPart>[] = [];
-  for (const part of creature.parts) {
-    if (part.detached) continue;
-    part.terrainContact = 0;
-    part.terrainNormalX = 0;
-    part.terrainNormalY = 0;
-    if (part.hp <= 0) continue;
-    const manifest = partManifest(creature, part);
-    const contact = terrainContactForPart(this, creature, part, manifest);
-    if (!contact) continue;
-    part.terrainContact = Math.min(1, contact.count / 3);
-    part.terrainNormalX = contact.nx;
-    part.terrainNormalY = contact.ny;
-    contacts.push(contact);
+  let corrected = false;
+  for (let pass = 0; pass < ARTICULATED_TERRAIN_CORRECTION_PASSES; pass += 1) {
+    const contacts: ReturnType<typeof terrainContactForPart>[] = [];
+    for (const part of creature.parts) {
+      if (part.detached) continue;
+      if (pass === 0) {
+        part.terrainContact = 0;
+        part.terrainNormalX = 0;
+        part.terrainNormalY = 0;
+      }
+      if (part.hp <= 0) continue;
+      const manifest = partManifest(creature, part);
+      const contact = terrainContactForPart(this, creature, part, manifest);
+      if (!contact) continue;
+      part.terrainContact = Math.max(part.terrainContact, Math.min(1, contact.count / 3));
+      part.terrainNormalX = contact.nx;
+      part.terrainNormalY = contact.ny;
+      contacts.push(contact);
+    }
+    if (!contacts.length) break;
+    corrected = true;
+    let nx = 0;
+    let ny = 0;
+    let weightedCount = 0;
+    for (const contact of contacts) {
+      if (!contact) continue;
+      const weight = 1 + contact.count * 0.22;
+      nx += contact.nx * weight;
+      ny += contact.ny * weight;
+      weightedCount += contact.count * weight;
+    }
+    const len = Math.max(1, Math.hypot(nx, ny));
+    nx /= len;
+    ny /= len;
+    const push = Phaser.Math.Clamp(0.65 + weightedCount / Math.max(1, contacts.length) * 0.24, 0.65, pass === 0 ? 3.2 : 1.7);
+    creature.x += nx * push;
+    creature.y += ny * push;
+    const into = creature.vx * nx + creature.vy * ny;
+    if (into < 0) {
+      creature.vx -= into * nx * 0.74;
+      creature.vy -= into * ny * 0.74;
+    } else {
+      creature.vx += nx * 1.6;
+      creature.vy += ny * 1.6;
+    }
+    creature.vx *= 0.82;
+    creature.vy *= 0.82;
+    this.updateArticulatedParts(creature, 0, { preserveSmoothedPose: true });
   }
-  if (!contacts.length) return;
-  let nx = 0;
-  let ny = 0;
-  let strongest = 0;
-  for (const contact of contacts) {
-    if (!contact) continue;
-    const weight = 1 + contact.count * 0.35;
-    nx += contact.nx * weight;
-    ny += contact.ny * weight;
-    strongest = Math.max(strongest, contact.count);
-  }
-  const len = Math.max(1, Math.hypot(nx, ny));
-  nx /= len;
-  ny /= len;
-  const push = 3.5 + strongest * 1.6;
-  creature.x += nx * push;
-  creature.y += ny * push;
-  const into = creature.vx * nx + creature.vy * ny;
-  if (into < 0) {
-    creature.vx -= into * nx * 1.65;
-    creature.vy -= into * ny * 1.65;
-  } else {
-    creature.vx += nx * 12;
-    creature.vy += ny * 12;
-  }
-  creature.vx *= 0.82;
-  creature.vy *= 0.82;
-  creature.homeX = Phaser.Math.Linear(creature.homeX, creature.x, 0.08);
-  creature.homeY = Phaser.Math.Linear(creature.homeY, creature.y, 0.08);
+  if (!corrected) return;
+  creature.homeX = Phaser.Math.Linear(creature.homeX, creature.x, 0.012);
+  creature.homeY = Phaser.Math.Linear(creature.homeY, creature.y, 0.012);
 }
 
 export function updateArticulatedParts(this: DeepdiveScene, creature: ArticulatedCreature, delta: number, options: { preserveSmoothedPose?: boolean } = {}) {
   const speed = Math.hypot(creature.vx, creature.vy);
   const facing = facingFor(creature);
-  const targetPitch = speed > 3
+  const burrowPose = isBurrowBobbit(creature);
+  let targetPitch = speed > 3
     ? Phaser.Math.Clamp(Math.atan2(creature.vy, Math.max(1, Math.abs(creature.vx))), -0.62, 0.62) * ARTICULATED_PITCH_SCALE
     : 0;
+  if (burrowPose) {
+    targetPitch = Phaser.Math.Clamp(creature.vx / Math.max(1, creature.speed * 3.2), -0.18, 0.18);
+  }
   const targetAttackBlend = creature.state === 'lunge' || creature.state === 'grab' ? 1 : 0;
   const targetSwimEffort = Phaser.Math.Clamp(
     0.22 + speed / Math.max(1, creature.speed * 1.15) + (creature.state === 'lunge' ? 0.22 : 0),
@@ -754,8 +1076,13 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   }
   const swimPitch = creature.posePitch;
   const swimEffort = creature.swimEffort;
-  const forward = new Phaser.Math.Vector2(facing * Math.cos(swimPitch), Math.sin(swimPitch));
-  const normal = new Phaser.Math.Vector2(-facing * Math.sin(swimPitch), Math.cos(swimPitch));
+  const forward = burrowPose
+    ? new Phaser.Math.Vector2(Math.sin(swimPitch), -Math.cos(swimPitch))
+    : new Phaser.Math.Vector2(facing * Math.cos(swimPitch), Math.sin(swimPitch));
+  const normal = burrowPose
+    ? new Phaser.Math.Vector2(facing * Math.cos(swimPitch), facing * Math.sin(swimPitch))
+    : new Phaser.Math.Vector2(-facing * Math.sin(swimPitch), Math.cos(swimPitch));
+  const rootRotation = burrowPose ? Math.atan2(forward.y, forward.x) : facing * swimPitch;
   const lungeOpen = creature.attackBlend;
   const partById = new Map(creature.parts.map((part) => [part.id, part]));
   const placed = new Set<string>();
@@ -922,7 +1249,6 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const motion = manifest.motion;
     const spineMotion = spineMotionFor(manifest);
     const wave = motion.kind === 'body' || motion.kind === 'tail' ? spineMotion.offset : targetWaveFor(manifest);
-    const rootRotation = facing * swimPitch;
     const parentRotation = parent?.rotation ?? rootRotation;
     const rotationOffset = facing * (manifest.rotationOffset ?? 0);
     if (motion.kind === 'jaw') {
@@ -983,7 +1309,7 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
       : 0;
     part.x = creature.x + forward.x * localX + normal.x * (localY + bodyWave);
     part.y = creature.y + forward.y * localX + normal.y * (localY + bodyWave);
-    part.rotation = facing * (swimPitch + bodyWave * 0.012 + finWave * 0.018 + jawOpen);
+    part.rotation = rootRotation + facing * (bodyWave * 0.012 + finWave * 0.018 + jawOpen);
   };
 
   const placePart = (part: ArticulatedPartState): void => {
@@ -1131,6 +1457,7 @@ export function resolveArticulatedGrab(this: DeepdiveScene, creature: Articulate
 }
 
 export function bumpArticulatedCreature(this: DeepdiveScene, creature: ArticulatedCreature, part: ArticulatedPartState, distance: number) {
+  if (!this.isDangerousArticulatedPart(creature, part)) return;
   const combat = articulatedCombatFor(creature);
   const bitePart = this.articulatedBitePart(creature);
   const biteAnchor = bitePart && part.id === bitePart.id ? this.articulatedBiteAnchorWorld(creature) : null;
@@ -1141,12 +1468,18 @@ export function bumpArticulatedCreature(this: DeepdiveScene, creature: Articulat
   const ny = (this.player.y - contactY) / contactDistance;
   const impact = Math.hypot(this.player.vx, this.player.vy);
   const strike = creature.state === 'lunge' ? 1.45 : creature.state === 'grab' ? 1.2 : 1;
-  const damage = Math.round((12 + state.biome * 2.6 + creature.radius * 0.18 + impact * 0.012) * strike);
+  const damage = Math.round((12 + state.biome * 2.6 + creature.radius * 0.18 + impact * 0.012) * strike * (combat.damageMultiplier ?? 1));
   const target = state.pilotingSub && state.activeSub ? state.activeSub : this.player;
-  target.vx += nx * 138 * strike;
-  target.vy += ny * 138 * strike;
-  creature.vx -= nx * 94;
-  creature.vy -= ny * 94;
+  target.vx += nx * 88 * strike;
+  target.vy += ny * 88 * strike;
+  creature.vx -= nx * 38;
+  creature.vy -= ny * 38;
+  const creatureSpeed = Math.max(1, Math.hypot(creature.vx, creature.vy));
+  const maxCreatureSpeed = creature.speed * (creature.state === 'lunge' ? 1.7 : 1.15);
+  if (creatureSpeed > maxCreatureSpeed) {
+    creature.vx = (creature.vx / creatureSpeed) * maxCreatureSpeed;
+    creature.vy = (creature.vy / creatureSpeed) * maxCreatureSpeed;
+  }
   creature.bumpCooldown = creature.state === 'lunge' ? 1.55 : 1.9;
   creature.scan = Math.max(0, creature.scan - 0.2);
   this.applyHullDamage(Math.max(5, damage - state.upgrades.suit), `${creature.species} hit ${part.id.replace(/-/g, ' ')} first.`);
@@ -1227,6 +1560,7 @@ export function damageArticulatedPart(this: DeepdiveScene, creature: Articulated
   creature.dead = true;
   creature.scanning = false;
   creature.scan = 0;
+  if (creature.bobbitBurrow?.captured) this.releaseBurrowBobbit(creature, 'killed');
   creature.parts.forEach((candidate) => candidate.sprite?.setVisible(false));
   state.status = `${creature.species} killed by ${source.toLowerCase()}.`;
   this.spawnFloatingText(`${creature.species} killed`, 0xffd166);
@@ -1358,6 +1692,10 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       this.actors.lineStyle(2, 0x8ee7f4, alpha * (0.38 + Math.sin(creature.phase * 9) * 0.16));
       this.actors.strokeCircle(creature.x, creature.y, creature.radius + 12);
     }
+    const darknessTellAlpha = articulatedDarknessTellAlpha(this, creature, camera);
+    if (darknessTellAlpha > 0) {
+      drawArticulatedDarknessTell(this, creature, darknessTellAlpha);
+    }
     if (attacking) {
       const bitePart = this.articulatedBitePart(creature);
       if (bitePart) {
@@ -1404,4 +1742,45 @@ export function articulatedVisibilityAlpha(this: DeepdiveScene, creature: Articu
   if (creature.scanned) return 0.64;
   const fade = 1 - Phaser.Math.Clamp((distance - fullyVisibleAt) / (goneAt - fullyVisibleAt), 0, 1);
   return fade * 0.84;
+}
+
+function articulatedDarknessTellAlpha(scene: DeepdiveScene, creature: ArticulatedCreature, camera: Phaser.Cameras.Scene2D.Camera) {
+  if (state.biome < 2 || state.depth < 180 || creature.scanned || creature.dead) return 0;
+  const view = camera.worldView;
+  if (creature.x < view.x - 120 || creature.x > view.right + 120 || creature.y < view.y - 120 || creature.y > view.bottom + 120) return 0;
+  const darkness = darknessAtDepth();
+  if (darkness < 0.24) return 0;
+  const distance = Phaser.Math.Distance.Between(scene.player.x, scene.player.y, creature.x, creature.y);
+  const minRange = lightRadius() * 0.92;
+  const maxRange = minRange + 360;
+  if (distance < minRange || distance > maxRange) return 0;
+  const rangeFade = 1 - Phaser.Math.Clamp((distance - minRange) / (maxRange - minRange), 0, 1);
+  const danger = creature.hostile || creature.radius >= 42 || creature.manifest.combat?.behavior === 'ambusher' ? 1 : 0.62;
+  return Phaser.Math.Clamp((0.08 + darkness * 0.12) * rangeFade * danger, 0, 0.2);
+}
+
+function drawArticulatedDarknessTell(scene: DeepdiveScene, creature: ArticulatedCreature, alpha: number) {
+  const color = state.biome === 2 ? 0xffb06a : state.biome === 3 ? 0xb49cff : 0xa8d6ff;
+  const dangerousPart = scene.articulatedBitePart(creature)
+    ?? creature.parts.find((part) => scene.isDangerousArticulatedPart(creature, part) && !part.detached && part.hp > 0)
+    ?? creature.parts.find((part) => !part.detached && part.hp > 0);
+  const pulse = 0.65 + Math.sin(creature.phase * 5.5) * 0.22;
+  if (dangerousPart) {
+    scene.actors.lineStyle(1, color, alpha * pulse);
+    scene.actors.strokeEllipse(dangerousPart.x, dangerousPart.y, creature.radius * 0.62, Math.max(6, creature.radius * 0.18));
+    scene.actors.fillStyle(color, alpha * 0.42 * pulse);
+    scene.actors.fillCircle(
+      dangerousPart.x + creature.facingSign * Math.max(8, creature.radius * 0.18),
+      dangerousPart.y - Math.max(2, creature.radius * 0.06),
+      Math.max(1.4, creature.radius * 0.035),
+    );
+  }
+  if (Math.hypot(creature.vx, creature.vy) > 16 || creature.state === 'lunge' || creature.state === 'grab') {
+    const wakeX = creature.x - creature.facingSign * creature.radius * 0.52;
+    const wakeY = creature.y + Math.sin(creature.phase * 4) * 4;
+    scene.actors.lineStyle(1, color, alpha * 0.62);
+    scene.actors.strokeEllipse(wakeX, wakeY, creature.radius * 1.35, creature.radius * 0.28);
+    scene.actors.lineStyle(1, 0xe4f5ff, alpha * 0.34);
+    scene.actors.lineBetween(wakeX - creature.facingSign * creature.radius * 0.55, wakeY, wakeX - creature.facingSign * creature.radius * 1.05, wakeY + 3);
+  }
 }

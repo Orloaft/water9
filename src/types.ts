@@ -49,10 +49,19 @@ export type PlaytestCommand =
   | 'buySub'
   | 'refill'
   | 'teleportDepth'
+  | 'teleportToFlora'
   | 'terrainReview'
+  | 'terrainLookReview'
   | 'terrainMiningReview'
+  | 'lightingVisibilityReview'
   | 'terrainMineAt'
+  | 'perfGuardrailReview'
+  | 'biomeLoadingReview'
+  | 'articulatedContactPolishReview'
   | 'teleportToArticulated'
+  | 'teleportToBobbitBurrow'
+  | 'forceBobbitTelegraph'
+  | 'forceBobbitDrag'
   | 'liveArticulatedReview'
   | 'advanceLiveArticulatedReview'
   | 'focusArticulatedCamera'
@@ -183,7 +192,28 @@ export interface Flora {
   hurtFlash: number;
   radius: number;
   assetKey: string;
+  surface?: TerrainSurfaceAnchor;
   sprite?: Phaser.GameObjects.Image;
+}
+
+export interface TerrainSurfaceAnchor {
+  id: string;
+  x: number;
+  y: number;
+  rootX: number;
+  rootY: number;
+  normalX: number;
+  normalY: number;
+  tangentX: number;
+  tangentY: number;
+  anchor: 'floor' | 'ceiling' | 'leftWall' | 'rightWall';
+  tileX: number;
+  tileY: number;
+  maskSx: number;
+  maskSy: number;
+  support: number;
+  clearance: number;
+  source: 'terrain-mask';
 }
 
 export interface ArticulatedMotionManifest {
@@ -267,6 +297,7 @@ export interface ArticulatedCombatManifest {
   bitePartId?: string;
   biteAnchor?: string;
   contactPadding?: number;
+  damageMultiplier?: number;
 }
 
 export interface ArticulatedRuntimeManifest {
@@ -426,6 +457,7 @@ export interface ArticulatedCreature {
   grabCooldown: number;
   reviewFrozen?: boolean;
   collisionDebug?: ArticulatedCollisionDebug;
+  bobbitBurrow?: ArticulatedBobbitRuntime;
   manifest: ArticulatedCreatureManifest;
   parts: ArticulatedPartState[];
   spine: ArticulatedSpineNodeState[];
@@ -433,6 +465,69 @@ export interface ArticulatedCreature {
 }
 
 export type ScanTarget = Fish | Flora | ArticulatedCreature;
+
+export type BobbitBurrowPhase = 'burrowed' | 'telegraph' | 'emerge' | 'lunge' | 'drag' | 'release' | 'reset';
+
+export interface BobbitBurrow {
+  id: string;
+  x: number;
+  y: number;
+  tileX: number;
+  tileY: number;
+  shaftTopY: number;
+  shaftBottomY: number;
+  anchorX: number;
+  anchorY: number;
+  approachX: number;
+  approachY: number;
+  approachRadius: number;
+  bodySpaceTopY: number;
+  bodySpaceBottomY: number;
+  spawnCreatureId: 'abyssal-mandible-bobbit';
+  occupied: boolean;
+  triggered: boolean;
+  cooldown: number;
+  debugScore: number;
+}
+
+export type EncounterReservationRole = 'burrow_ambush' | 'open_water_arena' | 'ruin_route' | 'side_tunnel_ambush';
+
+export interface EncounterReservation {
+  id: string;
+  role: EncounterReservationRole;
+  creatureId: string;
+  biome: Biome;
+  homeX: number;
+  homeY: number;
+  tileBounds: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  depthMin: number;
+  depthMax: number;
+  clearanceRadius: number;
+  exclusionRadius: number;
+  source?: string;
+  score?: number;
+  occupied: boolean;
+  bobbitBurrowId?: string;
+}
+
+export interface ArticulatedBobbitRuntime {
+  burrowId: string;
+  phase: BobbitBurrowPhase;
+  phaseTimer: number;
+  escapeRemaining: number;
+  dragTimer: number;
+  captured: 'player' | 'sub' | null;
+  lastSafeX: number;
+  lastSafeY: number;
+  mouthLatchOffsetX: number;
+  mouthLatchOffsetY: number;
+  biteRegistered: boolean;
+}
 
 export interface FishSpecies {
   species: string;
@@ -495,6 +590,7 @@ export interface Hazard {
   radius: number;
   phase: number;
   heat: number;
+  surface?: TerrainSurfaceAnchor;
   sprite?: Phaser.GameObjects.Image;
 }
 
@@ -524,6 +620,8 @@ export interface SpecialRoom {
   kind: SpecialRoomKind;
   x: number;
   y: number;
+  effectX?: number;
+  effectY?: number;
   rx: number;
   ry: number;
   rewardClaimed: boolean;

@@ -1,19 +1,25 @@
 import Phaser from 'phaser';
-import type { Bobbit,EnvironmentProp,Fish,FishSpecies,Flora,FloraSpecies,Hazard,SpecialRoom,Tile,VeinRule } from './types';
-import { BIOLUME_CAVERN_CHANCE,BOBBIT_ESCAPE_SECONDS,deepScale,EGG_HP,NEST_CHAMBER_CHANCE,TILE,WORLD_H,WORLD_W } from './constants';
+import type { Bobbit,BobbitBurrow,EncounterReservation,EncounterReservationRole,EnvironmentProp,Fish,FishSpecies,Flora,FloraSpecies,Hazard,SpecialRoom,TerrainSurfaceAnchor,Tile,VeinRule } from './types';
+import { BIOLUME_CAVERN_CHANCE,BOBBIT_ESCAPE_SECONDS,deepScale,EGG_HP,NEST_CHAMBER_CHANCE,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,isOreTile,oreEnvironmentAssetKey,scaledDepthPx,scaledEntity,veinRuleAt,veinRulesForBiome } from './helpers';
+import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,isOreTile,oreEnvironmentAssetKey,scaledDepthPx,scaledEntity,terrainLookForBiome,veinRuleAt,veinRulesForBiome } from './helpers';
 import type { DeepdiveScene } from './scene';
-import { ensureTerrainMask,rebuildTerrainMask,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
+import { ensureTerrainMask,findNearbyTerrainSurfaceAnchor,findTerrainSurfaceAnchorInBand,rebuildTerrainMask,sampleTerrainSurfaceAnchors,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
+import { markTerrainDirty,measurePerf } from './perf';
 
 export function generateWorld(this: DeepdiveScene, ) {
-    this.world = [];
-    this.damage = [];
-	    this.looseItems = [];
+	    this.world = [];
+	    this.damage = [];
+	    // Scene restarts reuse this instance; invalidate the previous biome's mask until the new world is fully carved.
+	    this.terrainMask = new Uint8Array();
+		    this.looseItems = [];
 	    this.environmentProps = [];
 	    this.articulatedCreatures = [];
+    this.bobbitBurrows = [];
+    this.encounterReservations = [];
+    this.sideTunnelPocketCandidates = [];
     this.flora = [];
     this.bobbits = [];
     this.specialRooms = [];
@@ -38,40 +44,55 @@ export function generateWorld(this: DeepdiveScene, ) {
         this.setTile(x, y, 'water');
       }
     }
-    this.carveStarterCaverns(center);
-    this.carveDeepTunnelNetwork(center);
-	    this.carveAnchorstoneStrata();
-	    this.injectSpecialRooms(center);
-    this.smoothTerrainSilhouette();
-	    this.populateOreVeins();
-    rebuildTerrainMask(this);
-	    this.populateEnvironmentProps();
+	    this.carveStarterCaverns(center);
+	    this.carveDeepTunnelNetwork(center);
+		    this.carveAnchorstoneStrata();
+		    this.injectSpecialRooms(center);
+	    this.smoothTerrainSilhouette();
+	    this.reserveBobbitBurrows();
+	    this.reserveSignatureEncounters();
+		    this.populateOreVeins();
+	    rebuildTerrainMask(this);
+		    this.populateEnvironmentProps();
 
-    this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
-    this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
-    this.populateSpecialRooms();
-    this.populateArticulatedCreatures();
-    state.questBoard = generateQuestBoard(this.specialRooms.some((room) => room.kind === 'nest'));
-      state.activeQuestId = '';
-    this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
-    this.bobbits = state.biome >= 2 ? this.makeBobbits() : [];
-  }
+	    this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
+	    this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
+	    this.populateSpecialRooms();
+	    this.populateArticulatedCreatures();
+	    this.populateBobbitArticulatedThreats();
+	    state.questBoard = generateQuestBoard(this.specialRooms.some((room) => room.kind === 'nest'));
+	      state.activeQuestId = '';
+	    this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
+	    this.bobbits = [];
+	  }
 
 export function makeVentFields(this: DeepdiveScene, ): Hazard[] {
     const vents: Hazard[] = [];
     const count = state.biome === 4 ? 32 : state.biome === 3 ? 26 : 18;
     for (let i = 0; i < count; i += 1) {
-      const point = this.findRockTopAnchorInBand(scaledDepthPx(340 + i * 42), scaledDepthPx(2200));
+      const point = this.findVentAnchorInBand(scaledDepthPx(340 + i * 42), scaledDepthPx(2200), i);
+      if (!point) continue;
+      const offset = ventSurfaceOffset(point);
+      const x = point.rootX + offset.x;
+      const y = point.rootY + offset.y;
       vents.push({
-        x: point.x,
-        y: point.y,
-        radius: scaledEntity(Phaser.Math.Between(34, 58)),
+        x,
+        y,
+        radius: scaledEntity(Phaser.Math.Between(34, 58) * 0.5),
         phase: Math.random() * Math.PI * 2,
         heat: Phaser.Math.FloatBetween(0.7, state.biome >= 3 ? 1.55 : 1.25),
-        sprite: this.createEntitySprite(point.x, point.y, 'vent-steam-0').setDepth(1.5).setOrigin(0.5, 1),
+        surface: point,
+        sprite: this.createEntitySprite(x, y, 'vent-steam-0').setDepth(1.5).setOrigin(0.5, 1),
       });
     }
     return vents;
+  }
+
+function ventSurfaceOffset(anchor: TerrainSurfaceAnchor) {
+    return {
+      x: anchor.normalX * 4,
+      y: anchor.normalY * 4,
+    };
   }
 
 export function injectSpecialRooms(this: DeepdiveScene, center: number) {
@@ -311,40 +332,423 @@ export function growOreVein(this: DeepdiveScene, startX: number, startY: number,
     }
   }
 
+export function reserveBobbitBurrows(this: DeepdiveScene, ) {
+    this.bobbitBurrows = [];
+    if (state.biome < 2) return;
+    const count = state.biome >= 4 ? 2 : 1;
+    const minTileY = Math.max(Math.floor(scaledDepthPx(1020) / TILE), Math.floor(WORLD_H * 0.5));
+    const maxTileY = Math.min(WORLD_H - 22, Math.floor(scaledDepthPx(state.biome >= 4 ? 2550 : 2250) / TILE));
+    for (let i = 0; i < count; i += 1) {
+      const site = this.findBobbitBurrowSiteInBand(minTileY, maxTileY, i);
+      if (!site) continue;
+      const burrow = carveBobbitBurrow(this, site, i);
+      this.bobbitBurrows.push(burrow);
+    }
+  }
+
+export function findBobbitBurrowSiteInBand(this: DeepdiveScene, minTileY: number, maxTileY: number, salt: number) {
+    const candidates: Array<{ x: number; y: number; score: number }> = [];
+    for (let y = minTileY; y <= maxTileY; y += 1) {
+      for (let x = 8; x < WORLD_W - 8; x += 1) {
+        const score = bobbitBurrowSiteScore(this, x, y, salt);
+        if (score <= 0) continue;
+        candidates.push({ x, y, score });
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    for (const candidate of candidates.slice(0, 28)) {
+      if (this.bobbitBurrows.some((burrow) => Math.hypot(burrow.tileX - candidate.x, burrow.tileY - candidate.y) < 26)) continue;
+      return candidate;
+    }
+    return null;
+  }
+
+function bobbitBurrowSiteScore(scene: DeepdiveScene, x: number, y: number, salt: number) {
+    if (scene.getTile(x, y) !== 'water') return 0;
+    if (scene.pointNearBobbitSpecialRoom(x, y, 17)) return 0;
+    let approachWater = 0;
+    let approachCells = 0;
+    for (let oy = -5; oy <= 0; oy += 1) {
+      for (let ox = -5; ox <= 5; ox += 1) {
+        approachCells += 1;
+        if (!tiles[scene.getTile(x + ox, y + oy)].solid) approachWater += 1;
+      }
+    }
+    const approachRatio = approachWater / approachCells;
+    if (approachRatio < 0.72) return 0;
+    let laneWater = 0;
+    let lateralWater = 0;
+    for (let oy = -8; oy <= -2; oy += 1) {
+      if (!tiles[scene.getTile(x, y + oy)].solid) laneWater += 1;
+      if (!tiles[scene.getTile(x - 1, y + oy)].solid) lateralWater += 1;
+      if (!tiles[scene.getTile(x + 1, y + oy)].solid) lateralWater += 1;
+    }
+    if (laneWater < 4 || lateralWater < 5) return 0;
+    let shaftSolid = 0;
+    let shaftCells = 0;
+    for (let oy = 2; oy <= 17; oy += 1) {
+      for (let ox = -2; ox <= 2; ox += 1) {
+        shaftCells += 1;
+        if (tiles[scene.getTile(x + ox, y + oy)].solid) shaftSolid += 1;
+      }
+    }
+    if (shaftSolid / shaftCells < 0.68) return 0;
+    const sideSolid = scene.denseSolidRatio(x, y + 11, 6, 12);
+    if (sideSolid < 0.62) return 0;
+    const lowerPlugSolid = scene.denseSolidRatio(x, y + 17, 4, 4);
+    if (lowerPlugSolid < 0.68) return 0;
+    const bottomAnchorScore = Phaser.Math.Clamp((y - Math.floor(WORLD_H * 0.5)) / Math.max(1, WORLD_H * 0.34), 0, 1) * 28;
+    return bottomAnchorScore + sideSolid * 24 + lowerPlugSolid * 14 + approachRatio * 8 + hash(x * 337 + salt * 19, y * 347, rng.seed + 16001) * 4;
+  }
+
+export function pointNearBobbitSpecialRoom(this: DeepdiveScene, tileX: number, tileY: number, margin: number) {
+    return this.specialRooms.some((room) => {
+      const rx = room.rx / TILE + margin;
+      const ry = room.ry / TILE + margin;
+      const dx = tileX - room.x / TILE;
+      const dy = tileY - room.y / TILE;
+      return (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) < 1;
+    });
+  }
+
+function carveBobbitBurrow(scene: DeepdiveScene, site: { x: number; y: number; score: number }, index: number): BobbitBurrow {
+    const shaftDepth = state.biome >= 4 ? 18 : 16;
+    const mouthRx = 3;
+    const mouthRy = 2;
+    const shaftHalf = 1;
+    const bottomY = Math.min(WORLD_H - 6, site.y + shaftDepth);
+    const supportTile: Tile = state.biome >= 3 ? 'anchorstone' : 'stone';
+    for (let y = site.y - 2; y <= bottomY + 4; y += 1) {
+      for (let x = site.x - 4; x <= site.x + 4; x += 1) {
+        if (x < 2 || x >= WORLD_W - 2 || y < 8 || y >= WORLD_H - 2) continue;
+        const mouth = ((x - site.x) / mouthRx) ** 2 + ((y - site.y) / mouthRy) ** 2 <= 1.15;
+        const shaft = Math.abs(x - site.x) <= shaftHalf && y >= site.y && y <= bottomY;
+        const pocket = ((x - site.x) / 3.2) ** 2 + ((y - bottomY) / 2.8) ** 2 <= 1.08;
+        const approach = Math.abs(x - site.x) <= 5 && y >= site.y - 5 && y <= site.y - 1;
+        if (mouth || shaft || pocket || approach) {
+          scene.setTile(x, y, 'water');
+        } else if (Math.abs(x - site.x) <= 4 && y >= site.y + 1 && y <= bottomY + 2 && scene.getTile(x, y) !== 'bedrock') {
+          scene.setTile(x, y, supportTile);
+        }
+      }
+    }
+    const mouthX = site.x * TILE + TILE * 0.5;
+    const mouthY = site.y * TILE + TILE * 0.54;
+    const anchorY = bottomY * TILE + TILE * 0.5;
+    return {
+      id: `bobbit-burrow-${index}-${site.x}-${site.y}`,
+      x: mouthX,
+      y: anchorY,
+      tileX: site.x,
+      tileY: site.y,
+      shaftTopY: site.y * TILE,
+      shaftBottomY: (bottomY + 1) * TILE,
+      anchorX: mouthX,
+      anchorY,
+      approachX: mouthX,
+      approachY: (site.y - 3) * TILE,
+      approachRadius: TILE * 7,
+      bodySpaceTopY: mouthY - TILE * 1.5,
+      bodySpaceBottomY: (bottomY + 3) * TILE,
+      spawnCreatureId: 'abyssal-mandible-bobbit',
+      occupied: false,
+      triggered: false,
+      cooldown: 0,
+      debugScore: site.score,
+    };
+  }
+
+export function reserveSignatureEncounters(this: DeepdiveScene) {
+    this.encounterReservations = this.bobbitBurrows.map((burrow) => bobbitBurrowReservation(burrow));
+    if (state.biome >= 3) {
+      const gulper = reserveGulperArena(this);
+      if (gulper) this.encounterReservations.push(gulper);
+    }
+    if (state.biome >= 4) {
+      const wyrm = reserveReliquaryRoute(this);
+      if (wyrm) this.encounterReservations.push(wyrm);
+    }
+    if (state.biome >= 3) {
+      this.encounterReservations.push(...reserveSkulkSideTunnels(this));
+    }
+  }
+
+function bobbitBurrowReservation(burrow: BobbitBurrow): EncounterReservation {
+    const minTileY = Math.floor(burrow.bodySpaceTopY / TILE);
+    const maxTileY = Math.floor(burrow.bodySpaceBottomY / TILE);
+    return {
+      id: `encounter-${burrow.id}`,
+      role: 'burrow_ambush',
+      creatureId: burrow.spawnCreatureId,
+      biome: state.biome,
+      homeX: burrow.anchorX,
+      homeY: burrow.anchorY,
+      tileBounds: {
+        x: burrow.tileX - 6,
+        y: minTileY,
+        width: 13,
+        height: Math.max(1, maxTileY - minTileY + 1),
+      },
+      depthMin: Math.max(0, (burrow.bodySpaceTopY - SURFACE_Y) / 6),
+      depthMax: Math.max(0, (burrow.bodySpaceBottomY - SURFACE_Y) / 6),
+      clearanceRadius: TILE * 4,
+      exclusionRadius: TILE * 9,
+      source: 'bobbit_burrow',
+      score: burrow.debugScore,
+      occupied: burrow.occupied,
+      bobbitBurrowId: burrow.id,
+    };
+  }
+
+function reserveGulperArena(scene: DeepdiveScene): EncounterReservation | null {
+    const center = Math.floor(WORLD_W / 2);
+    const minTileY = Math.floor(scaledDepthPx(1500) / TILE);
+    const maxTileY = Math.floor(scaledDepthPx(2600) / TILE);
+    const basinY = Math.floor(WORLD_H * 0.58);
+    const homeTileY = Phaser.Math.Clamp(basinY + 8, minTileY + 10, Math.min(WORLD_H - 18, maxTileY - 10));
+    const homeTileX = Phaser.Math.Clamp(center + Math.floor((hash(901, state.biome, rng.seed) - 0.5) * 18), 24, WORLD_W - 25);
+    const rx = 24;
+    const ry = 15;
+    carveEncounterEllipse(scene, homeTileX, homeTileY, rx, ry);
+    return encounterReservationFromTiles('encounter-gulper-arena-0', 'open_water_arena', 'abyssal-gulper', homeTileX, homeTileY, rx, ry, TILE * 10, TILE * 22, 'dark_basin_arena', 1);
+  }
+
+function reserveReliquaryRoute(scene: DeepdiveScene): EncounterReservation | null {
+    const center = Math.floor(WORLD_W / 2);
+    const minTileY = Math.floor(scaledDepthPx(1650) / TILE);
+    const maxTileY = Math.floor(scaledDepthPx(2900) / TILE);
+    const floors = [Math.floor(WORLD_H * 0.58) - 16, Math.floor(WORLD_H * 0.58), Math.floor(WORLD_H * 0.58) + 16, Math.floor(WORLD_H * 0.78), Math.floor(WORLD_H * 0.9)];
+    const eligible = floors
+      .map((y, index) => ({ y: Phaser.Math.Clamp(y, 12, WORLD_H - 12), index }))
+      .filter((floor) => floor.y >= minTileY && floor.y <= maxTileY);
+    const floor = eligible[eligible.length - 1] ?? { y: Phaser.Math.Clamp(Math.floor(WORLD_H * 0.78), minTileY + 8, maxTileY - 8), index: 0 };
+    const side = hash(floor.index, 1907, rng.seed) > 0.5 ? 1 : -1;
+    const homeTileX = Phaser.Math.Clamp(center + side * 18, 24, WORLD_W - 25);
+    const homeTileY = floor.y;
+    scene.carveWindingTunnel(center - 30, homeTileY, center + 30, homeTileY + (side > 0 ? 5 : -5), 4);
+    carveEncounterEllipse(scene, homeTileX, homeTileY, 18, 10);
+    return encounterReservationFromTiles('encounter-reliquary-route-0', 'ruin_route', 'abyssal-reliquary-wyrm', homeTileX, homeTileY, 30, 11, TILE * 11, TILE * 24, 'ruin_vault_route', floor.index);
+  }
+
+function reserveSkulkSideTunnels(scene: DeepdiveScene): EncounterReservation[] {
+    const minTileY = Math.floor(scaledDepthPx(920) / TILE);
+    const maxTileY = Math.floor(scaledDepthPx(2100) / TILE);
+    const candidates = scene.sideTunnelPocketCandidates
+      .filter((candidate) => candidate.y >= minTileY && candidate.y <= maxTileY)
+      .filter((candidate) => !scene.encounterReservations.some((reservation) => pointNearReservation(reservation, candidate.x * TILE, candidate.y * TILE, reservation.exclusionRadius * 0.7)))
+      .sort((a, b) => b.score - a.score);
+    const reservations: EncounterReservation[] = [];
+    for (const candidate of candidates) {
+      if (reservations.length >= 2) break;
+      if (reservations.some((reservation) => Math.hypot(reservation.homeX / TILE - candidate.x, reservation.homeY / TILE - candidate.y) < 28)) continue;
+      scene.carveDisc(candidate.x, candidate.y, 5);
+      reservations.push(encounterReservationFromTiles(
+        `encounter-skulk-side-tunnel-${reservations.length}-${candidate.x}-${candidate.y}`,
+        'side_tunnel_ambush',
+        'abyssal-glasshook-skulk',
+        candidate.x,
+        candidate.y,
+        9,
+        7,
+        TILE * 5.5,
+        TILE * 14,
+        candidate.source,
+        candidate.score,
+      ));
+    }
+    return reservations;
+  }
+
+function carveEncounterEllipse(scene: DeepdiveScene, cx: number, cy: number, rx: number, ry: number) {
+    for (let y = cy - ry; y <= cy + ry; y += 1) {
+      for (let x = cx - rx; x <= cx + rx; x += 1) {
+        if (x < 2 || x >= WORLD_W - 2 || y < 8 || y >= WORLD_H - 2) continue;
+        const nx = (x - cx) / Math.max(1, rx);
+        const ny = (y - cy) / Math.max(1, ry);
+        const edge = 1 + (hash(x * 271, y * 277, rng.seed + 17011) - 0.5) * 0.14;
+        if (nx * nx + ny * ny <= edge) scene.setTile(x, y, 'water');
+      }
+    }
+  }
+
+function encounterReservationFromTiles(
+    id: string,
+    role: EncounterReservationRole,
+    creatureId: string,
+    tileX: number,
+    tileY: number,
+    rx: number,
+    ry: number,
+    clearanceRadius: number,
+    exclusionRadius: number,
+    source: string,
+    score: number,
+  ): EncounterReservation {
+    return {
+      id,
+      role,
+      creatureId,
+      biome: state.biome,
+      homeX: tileX * TILE + TILE * 0.5,
+      homeY: tileY * TILE + TILE * 0.5,
+      tileBounds: {
+        x: tileX - rx,
+        y: tileY - ry,
+        width: rx * 2 + 1,
+        height: ry * 2 + 1,
+      },
+      depthMin: Math.max(0, ((tileY - ry) * TILE - SURFACE_Y) / 6),
+      depthMax: Math.max(0, ((tileY + ry) * TILE - SURFACE_Y) / 6),
+      clearanceRadius,
+      exclusionRadius,
+      source,
+      score,
+      occupied: false,
+    };
+  }
+
+export function encounterReservationForCreature(this: DeepdiveScene, creatureId: string) {
+    return this.encounterReservations.find((reservation) => reservation.creatureId === creatureId && !reservation.occupied) ?? null;
+  }
+
+export function tileNearEncounterReservation(this: DeepdiveScene, reservation: EncounterReservation, x: number, y: number, margin: number) {
+    return x >= reservation.tileBounds.x - margin
+      && x < reservation.tileBounds.x + reservation.tileBounds.width + margin
+      && y >= reservation.tileBounds.y - margin
+      && y < reservation.tileBounds.y + reservation.tileBounds.height + margin;
+  }
+
+function pointNearReservation(reservation: EncounterReservation, x: number, y: number, extraRadius = 0) {
+    return x >= reservation.homeX - reservation.exclusionRadius - extraRadius
+      && x <= reservation.homeX + reservation.exclusionRadius + extraRadius
+      && y >= reservation.homeY - reservation.exclusionRadius - extraRadius
+      && y <= reservation.homeY + reservation.exclusionRadius + extraRadius
+      && Phaser.Math.Distance.Between(x, y, reservation.homeX, reservation.homeY) <= reservation.exclusionRadius + extraRadius;
+  }
+
+export function pointNearEncounterReservation(this: DeepdiveScene, x: number, y: number, extraRadius = 0, exceptReservationId?: string) {
+    return this.encounterReservations.some((reservation) => reservation.id !== exceptReservationId && pointNearReservation(reservation, x, y, extraRadius));
+  }
+
+function tileNearBobbitBurrow(burrow: BobbitBurrow, x: number, y: number, margin: number) {
+    return x >= burrow.tileX - 6 - margin
+      && x <= burrow.tileX + 6 + margin
+      && y >= Math.floor(burrow.bodySpaceTopY / TILE) - margin
+      && y <= Math.floor(burrow.bodySpaceBottomY / TILE) + margin;
+  }
+
 export function canHostOre(this: DeepdiveScene, x: number, y: number) {
 	    const tile = this.getTile(x, y);
+	    if (this.bobbitBurrows.some((burrow) => tileNearBobbitBurrow(burrow, x, y, 1))) return false;
+      if (this.encounterReservations.some((reservation) => this.tileNearEncounterReservation(reservation, x, y, 1))) return false;
 	    return tile === 'stone' || tile === 'sand';
 	  }
 
 export function populateEnvironmentProps(this: DeepdiveScene) {
+    if (this.perfTelemetry?.enabled) {
+      this.perfTelemetry.propRefresh.fullScans += 1;
+      this.perfTelemetry.propRefresh.lastReason = 'full-populate';
+    }
     this.environmentProps = [];
     ensureTerrainMask(this);
-    const props: EnvironmentProp[] = [];
-    for (let y = 8; y < WORLD_H - 3; y += 1) {
-      for (let x = 2; x < WORLD_W - 2; x += 1) {
-        const tile = this.getTile(x, y);
-        if (!tiles[tile].solid || tile === 'bedrock') continue;
-        const anchor = terrainEdgeAnchor(this, x, y);
-        if (!anchor) continue;
-        const seed = hash(x * 149, y * 157, rng.seed + 8011);
-        if (isOreTile(tile)) {
-          const rareOre = tile === 'ruinCore' || tile === 'abyssalCrown' || tile === 'precursorEngine' || tile === 'alienAlloy';
-          if (rareOre && seed > 0.45) {
-            props.push(edgeOreProp(this, x, y, tile, anchor));
-          }
-          continue;
-        }
-        // Rock-backed generated flora sprites read as detached islands on destructible edges.
-        // Procedural fringe/tendrils now carry edge ecology until flora-only source art exists.
-      }
-    }
+    const props = environmentPropsInTileBounds(this, 2, WORLD_W - 3, 8, WORLD_H - 4);
     this.environmentProps = props.slice(0, 420);
   }
 
 export function refreshEnvironmentPropsAround(this: DeepdiveScene, cx: number, cy: number) {
-    void cx;
-    void cy;
-    this.populateEnvironmentProps();
+    const radius = 10;
+    this.environmentPropRefreshQueue.push({
+      minX: Math.max(2, cx - radius),
+      maxX: Math.min(WORLD_W - 3, cx + radius),
+      minY: Math.max(8, cy - radius),
+      maxY: Math.min(WORLD_H - 4, cy + radius),
+      reason: `tile:${cx},${cy}`,
+    });
+    if (this.perfTelemetry?.enabled) {
+      this.perfTelemetry.propRefresh.queued = this.environmentPropRefreshQueue.length;
+      this.perfTelemetry.propRefresh.lastReason = `queued:${cx},${cy}`;
+    }
+  }
+
+export function processEnvironmentPropRefreshQueue(this: DeepdiveScene) {
+    if (!this.environmentPropRefreshQueue.length) return;
+    measurePerf(this, 'props.refresh', () => {
+      const queue = this.environmentPropRefreshQueue.splice(0);
+      const bounds = queue.reduce((acc, entry) => ({
+        minX: Math.min(acc.minX, entry.minX),
+        maxX: Math.max(acc.maxX, entry.maxX),
+        minY: Math.min(acc.minY, entry.minY),
+        maxY: Math.max(acc.maxY, entry.maxY),
+      }), { minX: WORLD_W, maxX: 0, minY: WORLD_H, maxY: 0 });
+      const before = this.environmentProps.length;
+      const retained = this.environmentProps.filter((prop) => (
+        prop.tileX < bounds.minX || prop.tileX > bounds.maxX || prop.tileY < bounds.minY || prop.tileY > bounds.maxY
+      ));
+      const rebuilt = environmentPropsInTileBounds(this, bounds.minX, bounds.maxX, bounds.minY, bounds.maxY);
+      const byId = new Map<string, EnvironmentProp>();
+      for (const prop of retained) byId.set(prop.id, prop);
+      for (const prop of rebuilt) byId.set(prop.id, prop);
+      this.environmentProps = [...byId.values()]
+        .sort((a, b) => a.tileY - b.tileY || a.tileX - b.tileX || a.id.localeCompare(b.id))
+        .slice(0, 420);
+      if (this.perfTelemetry?.enabled) {
+        this.perfTelemetry.propRefresh.queued = this.environmentPropRefreshQueue.length;
+        this.perfTelemetry.propRefresh.processed += queue.length;
+        this.perfTelemetry.propRefresh.removed += before - retained.length;
+        this.perfTelemetry.propRefresh.added += rebuilt.length;
+        this.perfTelemetry.propRefresh.lastReason = queue.length === 1 ? queue[0].reason : `merged:${queue.length}`;
+      }
+      markTerrainDirty(this, this.perfTelemetry?.propRefresh.lastReason ?? 'props.refresh');
+    }, {
+      queue: this.environmentPropRefreshQueue.length,
+      props: this.environmentProps.length,
+    });
+  }
+
+function environmentPropsInTileBounds(scene: DeepdiveScene, minX: number, maxX: number, minY: number, maxY: number) {
+    const props: EnvironmentProp[] = [];
+    const look = terrainLookForBiome();
+    for (let y = minY; y <= maxY; y += 1) {
+      for (let x = minX; x <= maxX; x += 1) {
+        const tile = scene.getTile(x, y);
+        if (!tiles[tile].solid || tile === 'bedrock') continue;
+        if (scene.bobbitBurrows.some((burrow) => tileNearBobbitBurrow(burrow, x, y, 2))) continue;
+        if (scene.encounterReservations.some((reservation) => scene.tileNearEncounterReservation(reservation, x, y, 2))) continue;
+        const anchor = terrainEdgeAnchor(scene, x, y);
+        if (!anchor) continue;
+        const seed = hash(x * 149, y * 157, rng.seed + 8011);
+        if (isOreTile(tile)) continue;
+        const baseChance = anchor.kind === 'ceiling' ? 0.015 : anchor.kind === 'floor' ? 0.095 : 0.05;
+        const floraChance = 1 - Phaser.Math.Clamp(baseChance * look.edgeStampDensity, 0.01, 0.14);
+        if (seed > floraChance && maskTileHasStableFloraFooting(scene, x, y, anchor)) {
+          props.push(edgeFloraProp(scene, x, y, anchor));
+        }
+      }
+    }
+    return props;
+  }
+
+export function refreshFloraAnchorsAround(this: DeepdiveScene, cx: number, cy: number, radiusTiles = 5) {
+    const worldX = cx * TILE + TILE * 0.5;
+    const worldY = cy * TILE + TILE * 0.5;
+    const radius = radiusTiles * TILE;
+    for (const flora of this.flora) {
+      if (flora.dead || !flora.surface) continue;
+      if (Phaser.Math.Distance.Between(worldX, worldY, flora.surface.rootX, flora.surface.rootY) > radius + flora.radius) continue;
+      const validation = validateTerrainSurfaceAnchor(this, flora.surface);
+      const next = validation.valid ? validation.anchor : findNearbyTerrainSurfaceAnchor(this, flora.surface, 8);
+      if (!next) {
+        flora.dead = true;
+        flora.sprite?.setVisible(false);
+        continue;
+      }
+      const offset = floraSurfaceOffset(next);
+      flora.surface = next;
+      flora.anchor = next.anchor;
+      flora.x = next.rootX + offset.x;
+      flora.y = next.rootY + offset.y;
+      flora.sprite?.setPosition(flora.x, flora.y);
+    }
   }
 
 type EdgeAnchor = {
@@ -380,43 +784,14 @@ function terrainEdgeAnchor(scene: DeepdiveScene, tileX: number, tileY: number): 
     return { kind, x: (tileX + 1) * TILE - 3 + jitterX * 0.3, y: tileY * TILE + TILE * 0.5 + jitterY, rotation: Math.PI * 0.5 + (hash(tileX, tileY, rng.seed + 8031) - 0.5) * 0.22 };
   }
 
-function edgeOreProp(scene: DeepdiveScene, x: number, y: number, tile: Tile, anchor: EdgeAnchor): EnvironmentProp {
-    const rareOre = tile === 'ruinCore' || tile === 'abyssalCrown' || tile === 'precursorEngine' || tile === 'alienAlloy';
-    void scene;
-    const size = rareOre ? 24 : 16;
-    const orientation = edgePropOrientation(anchor);
-    const insetX = anchor.kind === 'leftWall' ? 11 : anchor.kind === 'rightWall' ? -11 : 0;
-    const insetY = anchor.kind === 'floor' ? 13 : anchor.kind === 'ceiling' ? -13 : 0;
-    const length = size * (1.25 + hash(x, y, rng.seed + 8041) * 0.32);
-    const thickness = size * (0.66 + hash(y, x, rng.seed + 8043) * 0.22);
-    return {
-      id: `edge-ore:${x}:${y}:${tile}`,
-      kind: 'ore',
-      assetKey: oreEdgeAccentAssetKey(tile),
-      x: anchor.x + insetX,
-      y: anchor.y + insetY,
-      tileX: x,
-      tileY: y,
-      tile,
-      width: length,
-      height: thickness,
-      rotation: anchor.rotation + (hash(x, y, rng.seed + 8045) - 0.5) * 0.3,
-      alpha: rareOre ? 0.9 : 0.72,
-      depth: 0.86,
-      originX: orientation.originX,
-      originY: orientation.originY,
-      flipX: hash(x, y, rng.seed + 8047) > 0.5,
-      flipY: orientation.flipY,
-    };
-  }
-
 function edgeFloraProp(scene: DeepdiveScene, x: number, y: number, anchor: EdgeAnchor): EnvironmentProp {
     const keys = floraAccentKeys();
     const variant = Math.floor(hash(x * 163, y * 167, rng.seed + 8051) * keys.length) % keys.length;
-    const size = 23 + hash(y, x, rng.seed + 8053) * (state.biome >= 3 ? 17 : 13);
+    const isMat = keys[variant].includes('-fringe-');
+    const size = (isMat ? 19 : 22) + hash(y, x, rng.seed + 8053) * (state.biome >= 3 ? 12 : 10);
     const orientation = edgePropOrientation(anchor);
-    const insetX = anchor.kind === 'leftWall' ? 10 : anchor.kind === 'rightWall' ? -10 : 0;
-    const insetY = anchor.kind === 'floor' ? 14 : anchor.kind === 'ceiling' ? -14 : 0;
+    const insetX = anchor.kind === 'leftWall' ? 8 : anchor.kind === 'rightWall' ? -8 : 0;
+    const insetY = anchor.kind === 'floor' ? 11 : anchor.kind === 'ceiling' ? -11 : 0;
     const floorScale = anchor.kind === 'floor' || anchor.kind === 'ceiling' ? 1 : 0.78;
     return {
       id: `edge-flora:${x}:${y}:${variant}`,
@@ -427,11 +802,11 @@ function edgeFloraProp(scene: DeepdiveScene, x: number, y: number, anchor: EdgeA
       tileX: x,
       tileY: y,
       tile: scene.getTile(x, y),
-      width: size * (anchor.kind === 'floor' ? 1.38 : 1.06) * floorScale,
-      height: size * (anchor.kind === 'floor' ? 1.04 : 0.94) * floorScale,
-      rotation: anchor.rotation,
-      alpha: state.biome >= 3 ? 0.84 : 0.8,
-      depth: 0.9,
+      width: size * (isMat ? 1.45 : anchor.kind === 'floor' ? 1.16 : 0.94) * floorScale,
+      height: size * (isMat ? 0.62 : anchor.kind === 'floor' ? 0.98 : 0.9) * floorScale,
+      rotation: anchor.rotation + (hash(x, y, rng.seed + 8057) - 0.5) * (isMat ? 0.08 : 0.16),
+      alpha: isMat ? 0.74 : state.biome >= 3 ? 0.86 : 0.82,
+      depth: 0.94,
       originX: orientation.originX,
       originY: orientation.originY,
       flipX: hash(x, y, rng.seed + 8055) > 0.5,
@@ -446,22 +821,23 @@ function edgePropOrientation(anchor: EdgeAnchor) {
     return { originX: 0.22, originY: 0.5, flipY: false };
   }
 
-function oreEdgeAccentAssetKey(tile: Tile) {
-    if (tile === 'copper') return 'terrain-edge-ore-copper';
-    if (tile === 'quartz') return 'terrain-edge-ore-quartz';
-    if (tile === 'ruby') return 'terrain-edge-ore-ruby';
-    if (tile === 'cobalt') return 'terrain-edge-ore-cobalt';
-    if (tile === 'sunstone') return 'terrain-edge-seam-gold';
-    if (tile === 'alienAlloy' || tile === 'ruinCore') return 'terrain-edge-nodule-green';
-    if (tile === 'relic' || tile === 'drownedIdol' || tile === 'precursorEngine' || tile === 'abyssalCrown') return 'terrain-edge-fossil-shell';
-    return 'terrain-edge-nodule-blue';
+function floraAccentKeys() {
+    const look = terrainLookForBiome();
+    return [...look.fringeStampPool, ...look.floraStampPool];
   }
 
-function floraAccentKeys() {
-    if (state.biome === 4) return ['terrain-edge-flora-abyss-sacs', 'terrain-edge-flora-lumen-stalks', 'terrain-edge-flora-crown-polyps', 'terrain-edge-flora-oracle-tendrils'];
-    if (state.biome === 3) return ['terrain-edge-flora-black-fan', 'terrain-edge-flora-lumen-fern', 'terrain-edge-flora-crown-polyps', 'terrain-edge-flora-oracle-tendrils'];
-    if (state.biome === 2) return ['terrain-edge-flora-brine-grass', 'terrain-edge-flora-black-fan', 'terrain-edge-flora-lumen-fern'];
-    return ['terrain-edge-flora-glass-kelp', 'terrain-edge-flora-brine-grass', 'terrain-edge-flora-lumen-fern'];
+function maskTileHasStableFloraFooting(scene: DeepdiveScene, tileX: number, tileY: number, anchor: EdgeAnchor) {
+    const baseX = tileX * TERRAIN_MASK_RES;
+    const baseY = tileY * TERRAIN_MASK_RES;
+    let solid = 0;
+    const centerStart = Math.floor(TERRAIN_MASK_RES * 0.25);
+    const centerEnd = Math.ceil(TERRAIN_MASK_RES * 0.75);
+    for (let i = centerStart; i < centerEnd; i += 1) {
+      const sx = anchor.kind === 'leftWall' ? baseX + 1 : anchor.kind === 'rightWall' ? baseX + TERRAIN_MASK_RES - 2 : baseX + i;
+      const sy = anchor.kind === 'floor' ? baseY + 1 : anchor.kind === 'ceiling' ? baseY + TERRAIN_MASK_RES - 2 : baseY + i;
+      if (terrainMaskDensityAt(scene, sx, sy) >= TERRAIN_MASK_SOLID_THRESHOLD) solid += 1;
+    }
+    return solid >= Math.max(2, Math.floor((centerEnd - centerStart) * 0.62));
   }
 
 export function makeBobbits(this: DeepdiveScene, ): Bobbit[] {
@@ -531,15 +907,20 @@ export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
 export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flora[] {
     const patch: Flora[] = [];
     for (let i = 0; i < species.count; i += 1) {
-      const point = this.findFloraAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY));
-      const assetKey = floraAssetKey(species);
+      const point = this.findFloraAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), i, species);
+      if (!point) continue;
+      const offset = floraSurfaceOffset(point);
+      const x = point.rootX + offset.x;
+      const y = point.rootY + offset.y;
+      const assetKey = floraGameplayAssetKey(species);
+      this.environmentProps = this.environmentProps.filter((prop) => prop.kind !== 'flora' || prop.tileX !== point.tileX || prop.tileY !== point.tileY);
       patch.push({
         kind: 'flora',
         species: species.species,
-        x: point.x + (point.anchor === 'floor' || point.anchor === 'ceiling' ? Phaser.Math.FloatBetween(-5, 5) : 0),
-        y: point.y + (point.anchor === 'leftWall' || point.anchor === 'rightWall' ? Phaser.Math.FloatBetween(-5, 5) : 0),
+        x,
+        y,
         anchor: point.anchor,
-        phase: Math.random() * Math.PI * 2,
+        phase: hash(point.maskSx + i * 31, point.maskSy, rng.seed + 9111) * Math.PI * 2,
         color: species.color,
         hazardous: species.hazardous,
         rare: species.rare,
@@ -553,10 +934,30 @@ export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flor
         hurtFlash: 0,
         radius: scaledEntity(species.radius),
         assetKey,
-        sprite: this.createEntitySprite(point.x, point.y, assetKey),
+        surface: point,
+        sprite: this.createEntitySprite(x, y, assetKey),
       });
     }
     return patch;
+  }
+
+function floraSurfaceOffset(anchor: TerrainSurfaceAnchor) {
+    const tangentJitter = (hash(anchor.maskSx * 23, anchor.maskSy * 29, rng.seed + 9101) - 0.5) * 10;
+    const outward = 5 + hash(anchor.maskSy, anchor.maskSx, rng.seed + 9103) * 4;
+    return {
+      x: anchor.normalX * outward + anchor.tangentX * tangentJitter,
+      y: anchor.normalY * outward + anchor.tangentY * tangentJitter,
+    };
+  }
+
+function floraGameplayAssetKey(species: FloraSpecies) {
+    if (species.species === 'Glass Kelp') return 'terrain-edge-flora-glass-kelp';
+    if (species.species === 'Brine Grass') return 'terrain-edge-flora-brine-grass';
+    if (species.species === 'Black Fan') return 'terrain-edge-flora-black-fan';
+    if (species.species === 'Lumen Fern') return 'terrain-edge-flora-lumen-fern';
+    if (species.species === 'Crown Polyp') return 'terrain-edge-flora-crown-polyps';
+    if (species.species === 'Oracle Polyp') return 'terrain-edge-flora-oracle-tendrils';
+    return floraAssetKey(species);
   }
 
 export function populateSpecialRooms(this: DeepdiveScene, ) {
@@ -568,19 +969,25 @@ export function populateSpecialRooms(this: DeepdiveScene, ) {
 
 export function populateBiolumeRoom(this: DeepdiveScene, room: SpecialRoom) {
     const count = state.biome >= 3 ? 18 : 12;
+    let primaryOxygenPlant: { x: number; y: number } | null = null;
     for (let i = 0; i < count; i += 1) {
-      const anchor = this.findRoomFloorAnchor(room, i);
+      const anchor = this.findRoomFloraAnchor(room, i);
+      if (!anchor) continue;
+      const offset = floraSurfaceOffset(anchor);
+      const x = anchor.rootX + offset.x;
+      const y = anchor.rootY + offset.y;
       const oxygen = i % 3 !== 2;
+      if (oxygen && !primaryOxygenPlant) primaryOxygenPlant = { x, y };
       const assetKey = oxygen
         ? (i % 2 === 0 ? 'flora-oxygen-kelp' : 'flora-oxygen-bulb')
-        : 'flora-biolume-tall';
+        : 'terrain-edge-flora-lumen-fern';
       this.flora.push({
         kind: 'flora',
         species: oxygen ? 'Oxygen Bloom' : 'Lumen Fern',
-        x: anchor.x + Phaser.Math.FloatBetween(-4, 4),
-        y: anchor.y,
-        anchor: 'floor',
-        phase: Math.random() * Math.PI * 2,
+        x,
+        y,
+        anchor: anchor.anchor,
+        phase: hash(anchor.maskSx + i * 37, anchor.maskSy, rng.seed + 9121) * Math.PI * 2,
         color: oxygen ? 0x8ee7f4 : 0xb9f27c,
         hazardous: false,
         rare: true,
@@ -594,19 +1001,26 @@ export function populateBiolumeRoom(this: DeepdiveScene, room: SpecialRoom) {
         hurtFlash: 0,
         radius: scaledEntity(oxygen ? 15 : 13),
         assetKey,
-        sprite: this.createEntitySprite(anchor.x, anchor.y, assetKey).setDepth(2.05),
+        surface: anchor,
+        sprite: this.createEntitySprite(x, y, assetKey).setDepth(2.05),
       });
     }
+    if (primaryOxygenPlant) {
+      room.effectX = primaryOxygenPlant.x;
+      room.effectY = primaryOxygenPlant.y;
+    }
     for (let i = 0; i < 6; i += 1) {
-      const anchor = this.findRoomFloorAnchor(room, i + 120);
+      const anchor = this.findRoomFloraAnchor(room, i + 120);
+      if (!anchor) continue;
+      const offset = floraSurfaceOffset(anchor);
       const assetKey = i % 3 === 2 ? 'biolume-crystal' : `biolume-rock-${i % 2}`;
       this.flora.push({
         kind: 'flora',
         species: 'Lumen Nodule',
-        x: anchor.x + Phaser.Math.FloatBetween(-5, 5),
-        y: anchor.y,
-        anchor: 'floor',
-        phase: Math.random() * Math.PI * 2,
+        x: anchor.rootX + offset.x,
+        y: anchor.rootY + offset.y,
+        anchor: anchor.anchor,
+        phase: hash(anchor.maskSx + i * 41, anchor.maskSy, rng.seed + 9127) * Math.PI * 2,
         color: 0x73fbd3,
         hazardous: false,
         rare: true,
@@ -620,9 +1034,66 @@ export function populateBiolumeRoom(this: DeepdiveScene, room: SpecialRoom) {
         hurtFlash: 0,
         radius: scaledEntity(11),
         assetKey,
-        sprite: this.createEntitySprite(anchor.x, anchor.y, assetKey).setDepth(2.02),
+        surface: anchor,
+        sprite: this.createEntitySprite(anchor.rootX + offset.x, anchor.rootY + offset.y, assetKey).setDepth(2.02),
       });
     }
+  }
+
+export function findRoomFloraAnchor(this: DeepdiveScene, room: SpecialRoom, salt: number) {
+    const candidates = roomFloraAnchorCandidates(this, room, salt);
+    if (candidates.length) return candidates[salt % candidates.length];
+    if (!createRoomFloraSupport(this, room, salt)) return null;
+    const repaired = roomFloraAnchorCandidates(this, room, salt + 911);
+    return repaired.length ? repaired[salt % repaired.length] : null;
+  }
+
+function roomFloraAnchorCandidates(scene: DeepdiveScene, room: SpecialRoom, salt: number) {
+    const candidates = sampleTerrainSurfaceAnchors(scene, {
+      minY: room.y - room.ry - TILE,
+      maxY: room.y + room.ry + TILE,
+      salt: salt + Math.floor(room.x) * 3 + Math.floor(room.y) * 5,
+      prefer: ['floor', 'leftWall', 'rightWall', 'ceiling'],
+      minSupport: 9,
+      minClearance: 2,
+      limit: 160,
+    }).filter((anchor) => {
+      const nx = (anchor.rootX - room.x) / Math.max(1, room.rx + TILE);
+      const ny = (anchor.rootY - room.y) / Math.max(1, room.ry + TILE);
+      return nx * nx + ny * ny <= 1.28;
+    });
+    return candidates;
+  }
+
+function createRoomFloraSupport(scene: DeepdiveScene, room: SpecialRoom, salt: number) {
+    const cx = Math.floor(room.x / TILE);
+    const cy = Math.floor(room.y / TILE);
+    const rx = Math.max(4, Math.floor(room.rx / TILE));
+    const ry = Math.max(3, Math.floor(room.ry / TILE));
+    const candidates: Array<{ x: number; y: number; score: number }> = [];
+    for (let y = Math.max(8, cy - ry + 1); y <= Math.min(WORLD_H - 3, cy + ry - 1); y += 1) {
+      for (let x = Math.max(3, cx - rx + 1); x <= Math.min(WORLD_W - 4, cx + rx - 1); x += 1) {
+        if (scene.getTile(x, y) !== 'water') continue;
+        if (scene.getTile(x, y - 1) !== 'water') continue;
+        if (scene.getTile(x, y + 1) !== 'water') continue;
+        const nx = (x - cx) / Math.max(1, rx);
+        const ny = (y - cy) / Math.max(1, ry);
+        if (nx * nx + ny * ny > 0.94) continue;
+        const lowerRoomBias = Phaser.Math.Clamp((ny + 0.35) * 0.5, 0, 1);
+        candidates.push({ x, y, score: hash(x + salt * 53, y + salt * 59, rng.seed + 9341) + lowerRoomBias });
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    const pick = candidates[0];
+    if (!pick) return false;
+    scene.setTile(pick.x, pick.y, 'water');
+    scene.setTile(pick.x, pick.y - 1, 'water');
+    for (let ox = -1; ox <= 1; ox += 1) {
+      scene.setTile(pick.x + ox, pick.y + 1, 'stone');
+      scene.setTile(pick.x + ox, pick.y + 2, 'stone');
+    }
+    rebuildTerrainMask(scene);
+    return true;
   }
 
 export function populateNestRoom(this: DeepdiveScene, room: SpecialRoom) {
@@ -732,27 +1203,24 @@ export function findRoomFloorAnchor(this: DeepdiveScene, room: SpecialRoom, salt
     return { x: x * TILE + TILE * 0.5, y: (y + 1) * TILE + 2 };
   }
 
-export function findFloraAnchorInBand(this: DeepdiveScene, minY: number, maxY: number) {
-    for (let attempt = 0; attempt < 180; attempt += 1) {
-      const tx = Phaser.Math.Between(4, WORLD_W - 5);
-      const ty = Math.floor(Phaser.Math.Between(minY, maxY) / TILE);
-      if (ty < 1 || ty >= WORLD_H - 2) continue;
-      if (this.getTile(tx, ty) !== 'water') continue;
-      const candidates = [
-        { anchor: 'floor' as const, solid: this.getTile(tx, ty + 1), clear: this.getTile(tx, ty - 1), x: tx * TILE + TILE * 0.5, y: (ty + 1) * TILE + 2 },
-        { anchor: 'ceiling' as const, solid: this.getTile(tx, ty - 1), clear: this.getTile(tx, ty + 1), x: tx * TILE + TILE * 0.5, y: ty * TILE - 2 },
-        { anchor: 'leftWall' as const, solid: this.getTile(tx - 1, ty), clear: this.getTile(tx + 1, ty), x: tx * TILE - 2, y: ty * TILE + TILE * 0.5 },
-        { anchor: 'rightWall' as const, solid: this.getTile(tx + 1, ty), clear: this.getTile(tx - 1, ty), x: (tx + 1) * TILE + 2, y: ty * TILE + TILE * 0.5 },
-      ].filter((candidate) => tiles[candidate.solid].solid && candidate.clear === 'water');
-      if (!candidates.length) continue;
-      const roll = hash(tx * 17 + attempt, ty * 19, rng.seed);
-      const floor = candidates.find((candidate) => candidate.anchor === 'floor');
-      const wall = candidates.find((candidate) => candidate.anchor === 'leftWall' || candidate.anchor === 'rightWall');
-      const ceiling = candidates.find((candidate) => candidate.anchor === 'ceiling');
-      return roll < 0.55 && floor ? floor : roll < 0.82 && wall ? wall : ceiling ?? floor ?? candidates[0];
+export function findFloraAnchorInBand(this: DeepdiveScene, minY: number, maxY: number, salt = 0, species?: FloraSpecies) {
+    const prefer = floraSurfacePreferences(species);
+    return findTerrainSurfaceAnchorInBand(this, minY, maxY, salt, prefer);
+  }
+
+export function findVentAnchorInBand(this: DeepdiveScene, minY: number, maxY: number, salt = 0) {
+    return findTerrainSurfaceAnchorInBand(this, minY, maxY, salt + 3301, ['floor', 'leftWall', 'rightWall', 'ceiling']);
+  }
+
+function floraSurfacePreferences(species?: FloraSpecies): TerrainSurfaceAnchor['anchor'][] {
+    if (!species) return ['floor', 'leftWall', 'rightWall', 'ceiling'];
+    if (species.species.includes('Kelp') || species.species.includes('Grass') || species.species.includes('Bloom')) {
+      return ['floor', 'leftWall', 'rightWall'];
     }
-    const fallback = this.findOpenWaterInBand(minY, maxY);
-    return { x: fallback.x, y: fallback.y + TILE * 0.35, anchor: 'floor' as const };
+    if (species.species.includes('Sponge') || species.species.includes('Fan') || species.species.includes('Coral') || species.species.includes('Polyp')) {
+      return ['leftWall', 'rightWall', 'ceiling', 'floor'];
+    }
+    return ['floor', 'leftWall', 'rightWall', 'ceiling'];
   }
 
 export function findRockTopAnchorInBand(this: DeepdiveScene, minY: number, maxY: number) {
@@ -765,7 +1233,7 @@ export function findRockTopAnchorInBand(this: DeepdiveScene, minY: number, maxY:
       if (!tiles[this.getTile(tx, ty + 1)].solid) continue;
       return { x: tx * TILE + TILE * 0.5, y: (ty + 1) * TILE + 2 };
     }
-    return this.findFloraAnchorInBand(minY, maxY);
+    return this.findFloraAnchorInBand(minY, maxY) ?? this.findOpenWaterInBand(minY, maxY);
   }
 
 export function findOpenWaterInBand(this: DeepdiveScene, minY: number, maxY: number) {
@@ -869,6 +1337,11 @@ export function carveTunnelBand(this: DeepdiveScene, startY: number, endY: numbe
       const toY = Phaser.Math.Clamp(Math.floor(from.y + Math.sin(angle) * length * 0.6), startY, endY);
       this.carveWindingTunnel(from.x, from.y, toX, toY, tunnelRadius);
       this.carveDisc(toX, toY, state.biome >= 2 ? 4 : 3);
+      if (state.biome >= 3) {
+        const branchDistance = Math.hypot(toX - from.x, toY - from.y);
+        const score = branchDistance + toY * 0.18 + hash(toX * 229 + salt, toY * 233, rng.seed + 17137) * 24;
+        this.sideTunnelPocketCandidates.push({ x: toX, y: toY, score, source: `tunnel_band_${salt}_branch` });
+      }
     }
 
     return lanes;

@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Biome,CargoItem,DiverAnimation,Fish,FishSpecies,FloraSpecies,Hazard,InventoryItemKind,Quest,ScanRarity,ScanTarget,ShopItem,SpecialRoom,SubTier,SubVehicle,Tile,Upgrade,UpgradeId,VeinRule } from './types';
-import { audioKeys,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,TILE,WORLD_H,WORLD_W } from './constants';
+import { audioKeys,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
@@ -95,9 +95,17 @@ export function scaledEntity(value: number) {
 }
 
 export function pointInRoom(x: number, y: number, room: SpecialRoom, scale = 1) {
-  const nx = (x - room.x) / (room.rx * scale);
-  const ny = (y - room.y) / (room.ry * scale);
+  const center = specialRoomEffectCenter(room);
+  const nx = (x - center.x) / (room.rx * scale);
+  const ny = (y - center.y) / (room.ry * scale);
   return nx * nx + ny * ny <= 1;
+}
+
+export function specialRoomEffectCenter(room: SpecialRoom) {
+  return {
+    x: room.effectX ?? room.x,
+    y: room.effectY ?? room.y,
+  };
 }
 
 export function venomousFish(fish: Fish) {
@@ -362,7 +370,6 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
   scene.load.image('barge-platform', assetPath('barge-platform'));
   scene.load.image('vent-base', assetPath('vent-base'));
   for (let i = 0; i < 4; i += 1) scene.load.image(`vent-steam-${i}`, assetPath(`vent-steam-${i}`));
-  for (let i = 0; i < 4; i += 1) scene.load.image(`bobbit-${i}`, assetPath(`bobbit-${i}`));
   for (const key of parallaxTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of uiTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of environmentTextureKeys()) scene.load.image(key, assetPath(key));
@@ -401,22 +408,116 @@ export function parallaxTextureKeys() {
   ];
 }
 
+export interface ParallaxLayerProfile {
+  texturePrefix: string;
+  fallbackPrefix: string;
+  horizontalSpeed: number;
+  verticalSpeed: number;
+  phaseX: number;
+  phaseY: number;
+  alpha: number;
+  tint: number;
+  scale: number;
+}
+
+export interface ParallaxProfile {
+  id: string;
+  biome: Biome;
+  depthBand: 'upper' | 'mid' | 'lower';
+  overlay: {
+    alpha: number;
+    color: number;
+    density: number;
+    drift: number;
+  };
+  layers: ParallaxLayerProfile[];
+}
+
+const parallaxBaseProfiles: Record<Biome, Omit<ParallaxProfile, 'biome' | 'depthBand' | 'layers'> & { layers: Omit<ParallaxLayerProfile, 'alpha' | 'tint' | 'scale'>[]; tint: [number, number, number]; alpha: [number, number, number, number] }> = {
+  1: {
+    id: 'shallow-sunlit',
+    overlay: { alpha: 0.13, color: 0xb5fff5, density: 0.78, drift: 14 },
+    tint: [0xffffff, 0xcdf7ed, 0x8ed9d4],
+    alpha: [0.7, 0.52, 0.34, 0.38],
+    layers: [
+      { texturePrefix: 'parallax-shallow', fallbackPrefix: 'parallax-shallow', horizontalSpeed: 0.96, verticalSpeed: 0.022, phaseX: 0, phaseY: 0 },
+      { texturePrefix: 'parallax-shallow', fallbackPrefix: 'parallax-shallow', horizontalSpeed: 0.64, verticalSpeed: 0.016, phaseX: 173, phaseY: 331 },
+      { texturePrefix: 'parallax-shallow', fallbackPrefix: 'parallax-shallow', horizontalSpeed: 0.36, verticalSpeed: 0.011, phaseX: 419, phaseY: 97 },
+      { texturePrefix: 'parallax-shallow', fallbackPrefix: 'parallax-shallow', horizontalSpeed: 0.1, verticalSpeed: 0.007, phaseX: 71, phaseY: 619 },
+    ],
+  },
+  2: {
+    id: 'brine-cavern',
+    overlay: { alpha: 0.16, color: 0x9affd8, density: 0.86, drift: 10 },
+    tint: [0xd8fff0, 0x9ecbc0, 0x678f9a],
+    alpha: [0.76, 0.6, 0.44, 0.4],
+    layers: [
+      { texturePrefix: 'parallax-brine', fallbackPrefix: 'parallax-brine', horizontalSpeed: 0.9, verticalSpeed: 0.02, phaseX: 83, phaseY: 227 },
+      { texturePrefix: 'parallax-brine', fallbackPrefix: 'parallax-brine', horizontalSpeed: 0.56, verticalSpeed: 0.014, phaseX: 311, phaseY: 43 },
+      { texturePrefix: 'parallax-brine', fallbackPrefix: 'parallax-brine', horizontalSpeed: 0.31, verticalSpeed: 0.01, phaseX: 29, phaseY: 503 },
+      { texturePrefix: 'parallax-brine', fallbackPrefix: 'parallax-brine', horizontalSpeed: 0.09, verticalSpeed: 0.006, phaseX: 557, phaseY: 149 },
+    ],
+  },
+  3: {
+    id: 'abyssal-deep',
+    overlay: { alpha: 0.12, color: 0x8bb3ff, density: 0.66, drift: 7 },
+    tint: [0xb8c8ff, 0x7b89b5, 0x4c5677],
+    alpha: [0.52, 0.43, 0.34, 0.38],
+    layers: [
+      { texturePrefix: 'parallax-deep', fallbackPrefix: 'parallax-deep', horizontalSpeed: 0.62, verticalSpeed: 0.016, phaseX: 211, phaseY: 367 },
+      { texturePrefix: 'parallax-deep', fallbackPrefix: 'parallax-deep', horizontalSpeed: 0.38, verticalSpeed: 0.011, phaseX: 467, phaseY: 53 },
+      { texturePrefix: 'parallax-deep', fallbackPrefix: 'parallax-deep', horizontalSpeed: 0.2, verticalSpeed: 0.007, phaseX: 101, phaseY: 601 },
+      { texturePrefix: 'parallax-deep', fallbackPrefix: 'parallax-deep', horizontalSpeed: 0.07, verticalSpeed: 0.004, phaseX: 653, phaseY: 193 },
+    ],
+  },
+  4: {
+    id: 'cold-ruin-trench',
+    overlay: { alpha: 0.14, color: 0xbfd7ff, density: 0.58, drift: 5 },
+    tint: [0xcedcff, 0x8998b6, 0x556070],
+    alpha: [0.44, 0.38, 0.31, 0.36],
+    layers: [
+      { texturePrefix: 'parallax-deep', fallbackPrefix: 'parallax-deep', horizontalSpeed: 0.52, verticalSpeed: 0.014, phaseX: 359, phaseY: 127 },
+      { texturePrefix: 'parallax-deep', fallbackPrefix: 'parallax-deep', horizontalSpeed: 0.3, verticalSpeed: 0.009, phaseX: 41, phaseY: 431 },
+      { texturePrefix: 'parallax-deep', fallbackPrefix: 'parallax-deep', horizontalSpeed: 0.15, verticalSpeed: 0.006, phaseX: 587, phaseY: 229 },
+      { texturePrefix: 'parallax-deep', fallbackPrefix: 'parallax-deep', horizontalSpeed: 0.05, verticalSpeed: 0.003, phaseX: 137, phaseY: 701 },
+    ],
+  },
+};
+
+export function parallaxProfileFor(biome: Biome = state.biome, depth: number = state.depth): ParallaxProfile {
+  const base = parallaxBaseProfiles[biome] ?? parallaxBaseProfiles[3];
+  const descent = Phaser.Math.Clamp(depth / 1500, 0, 1);
+  const depthBand: ParallaxProfile['depthBand'] = descent < 0.34 ? 'upper' : descent < 0.72 ? 'mid' : 'lower';
+  const bandIndex = depthBand === 'upper' ? 0 : depthBand === 'mid' ? 1 : 2;
+  const murk = Phaser.Math.Linear(1, 0.72, descent);
+  return {
+    id: `${base.id}-${depthBand}`,
+    biome,
+    depthBand,
+    overlay: {
+      ...base.overlay,
+      alpha: base.overlay.alpha * Phaser.Math.Linear(0.72, 1.18, descent),
+      density: base.overlay.density * Phaser.Math.Linear(0.85, 1.08, descent),
+    },
+    layers: base.layers.map((layer, index) => ({
+      ...layer,
+      alpha: base.alpha[index] * murk,
+      tint: base.tint[bandIndex],
+      scale: 1 + descent * (0.05 + index * 0.012),
+    })),
+  };
+}
+
 export function parallaxPrefix() {
-  if (state.biome === 1) return 'parallax-shallow';
-  if (state.biome === 2) return 'parallax-brine';
-  return 'parallax-deep';
+  return parallaxProfileFor().layers[0].texturePrefix;
 }
 
 export function parallaxSpeeds() {
-  if (state.biome === 1) return [1, 0.8, 0.5, 0.16];
-  if (state.biome === 2) return [1, 0.8, 0.5, 0.16];
-  return [0.76, 0.48, 0.28, 0.12];
+  return parallaxProfileFor().layers.map((layer) => layer.horizontalSpeed);
 }
 
 export function parallaxAlphas() {
-  if (state.biome === 1) return [0.72, 0.58, 0.42, 0.52];
-  if (state.biome === 2) return [0.82, 0.68, 0.54, 0.46];
-  return [0.56, 0.48, 0.42, 0.5];
+  return parallaxProfileFor().layers.map((layer) => layer.alpha);
 }
 
 export function uiTextureKeys() {
@@ -541,7 +642,110 @@ export function terrainEdgeAccentTextureKeys() {
     'terrain-edge-flora-lumen-stalks',
     'terrain-edge-flora-crown-polyps',
     'terrain-edge-flora-oracle-tendrils',
+    ...terrainMaterialStampTextureKeys(),
   ];
+}
+
+export function terrainMaterialStampTextureKeys() {
+  return [
+    'terrain-stamp-ore-copper',
+    'terrain-stamp-ore-quartz',
+    'terrain-stamp-ore-cobalt',
+    'terrain-stamp-ore-ruby',
+    'terrain-stamp-seam-gold',
+    'terrain-stamp-seam-green',
+    'terrain-stamp-fossil-shell',
+    'terrain-stamp-nodule-blue',
+    'terrain-stamp-fringe-teal',
+    'terrain-stamp-fringe-brine',
+    'terrain-stamp-fringe-purple',
+    'terrain-stamp-fringe-cyan',
+    'terrain-stamp-plant-glass',
+    'terrain-stamp-plant-brine',
+    'terrain-stamp-plant-lumen',
+    'terrain-stamp-plant-purple',
+  ];
+}
+
+export function terrainLookForBiome(biome: Biome = state.biome) {
+  const looks = {
+    1: {
+      id: 'reef-shelf',
+      body: {
+        stone: [0x010609, 0x02090c, 0x020b0e, 0x030d11],
+        sand: [0x03100d, 0x04120f, 0x04140f, 0x05150f],
+        anchorstone: [0x051016, 0x06131a, 0x06151c, 0x071820],
+      },
+      palette: { rim: 0x3b5f65, sandRim: 0x293b3a, growth: 0x24806f, glow: 0x72d5dc, moss: 0x1c4642, shadow: 0x010306 },
+      fringeStampPool: ['terrain-stamp-fringe-teal', 'terrain-stamp-fringe-teal', 'terrain-stamp-fringe-brine'],
+      floraStampPool: ['terrain-stamp-plant-glass', 'terrain-stamp-plant-brine'],
+      materialAccentStampPool: ['terrain-stamp-fossil-shell', 'terrain-stamp-ore-copper', 'terrain-stamp-ore-quartz'],
+      edgeStampDensity: 1,
+      proceduralFringeAlpha: 1,
+    },
+    2: {
+      id: 'brine-vents',
+      body: {
+        stone: [0x030506, 0x050706, 0x070807, 0x080907],
+        sand: [0x070706, 0x090807, 0x0a0907, 0x0b0a07],
+        anchorstone: [0x0a0e10, 0x0d1112, 0x101312, 0x121411],
+      },
+      palette: { rim: 0x776252, sandRim: 0x4b3f36, growth: 0xe6844f, glow: 0xff9f52, moss: 0x344538, shadow: 0x020303 },
+      fringeStampPool: ['terrain-stamp-fringe-brine', 'terrain-stamp-fringe-brine', 'terrain-stamp-fringe-teal'],
+      floraStampPool: ['terrain-stamp-plant-brine'],
+      materialAccentStampPool: ['terrain-stamp-ore-copper', 'terrain-stamp-ore-quartz', 'terrain-stamp-seam-gold'],
+      edgeStampDensity: 0.9,
+      proceduralFringeAlpha: 1.05,
+    },
+    3: {
+      id: 'abyssal-garden',
+      body: {
+        stone: [0x02030a, 0x03040d, 0x040411, 0x050313],
+        sand: [0x05050f, 0x060513, 0x070617, 0x080719],
+        anchorstone: [0x070a13, 0x080c17, 0x090e1b, 0x0a1020],
+      },
+      palette: { rim: 0x73649d, sandRim: 0x3c3558, growth: 0xb26bd2, glow: 0xa981ff, moss: 0x2b3654, shadow: 0x020208 },
+      fringeStampPool: ['terrain-stamp-fringe-purple', 'terrain-stamp-fringe-purple', 'terrain-stamp-fringe-brine'],
+      floraStampPool: ['terrain-stamp-plant-lumen', 'terrain-stamp-plant-purple'],
+      materialAccentStampPool: ['terrain-stamp-ore-ruby', 'terrain-stamp-ore-cobalt', 'terrain-stamp-nodule-blue'],
+      edgeStampDensity: 1.12,
+      proceduralFringeAlpha: 1.16,
+    },
+    4: {
+      id: 'ruin-trench',
+      body: {
+        stone: [0x01040a, 0x02060d, 0x020710, 0x030812],
+        sand: [0x040a10, 0x050d14, 0x061018, 0x07101a],
+        anchorstone: [0x07101a, 0x081521, 0x091927, 0x0a1d2e],
+      },
+      palette: { rim: 0x819ab8, sandRim: 0x405468, growth: 0x8ee9ec, glow: 0x9ec7ff, moss: 0x22484d, shadow: 0x01040a },
+      fringeStampPool: ['terrain-stamp-fringe-cyan', 'terrain-stamp-fringe-cyan', 'terrain-stamp-fringe-purple'],
+      floraStampPool: ['terrain-stamp-plant-lumen', 'terrain-stamp-plant-purple'],
+      materialAccentStampPool: ['terrain-stamp-seam-green', 'terrain-stamp-nodule-blue', 'terrain-stamp-ore-cobalt'],
+      edgeStampDensity: 0.96,
+      proceduralFringeAlpha: 1.08,
+    },
+  } as const;
+  return looks[biome] ?? looks[1];
+}
+
+export function terrainLookDepthBandForTileY(tileY: number) {
+  const depthMeters = Math.max(0, (tileY * TILE - SURFACE_Y) / 6);
+  if (depthMeters >= 2000) return { id: 'trench', index: 3, depthMeters };
+  if (depthMeters >= 1200) return { id: 'abyss', index: 2, depthMeters };
+  if (depthMeters >= 600) return { id: 'mid', index: 1, depthMeters };
+  return { id: 'upper', index: 0, depthMeters };
+}
+
+export function terrainBodyColorForTile(tile: Tile, tileY: number, biome: Biome = state.biome) {
+  const look = terrainLookForBiome(biome);
+  const band = terrainLookDepthBandForTileY(tileY);
+  const colors = tile === 'sand'
+    ? look.body.sand
+    : tile === 'bedrock' || tile === 'anchorstone'
+      ? look.body.anchorstone
+      : look.body.stone;
+  return colors[band.index] ?? colors[colors.length - 1];
 }
 
 export function isOreTile(tile: Tile) {

@@ -1,0 +1,68 @@
+{
+  "schema": "water9/submarine-parts@1",
+  "source": "repo-local procedural first pass",
+  "tiers": [
+    {
+      "tier": 1,
+      "id": "seeker",
+      "name": "Seeker",
+      "designWidth": 72,
+      "parts": [
+        { "id": "thruster-glow", "role": "thrusterGlow", "shape": "glow", "x": -39, "y": 6, "w": 18, "h": 11, "depth": -0.14, "color": "49d8ff" },
+        { "id": "thruster-nozzle", "role": "thruster", "shape": "nozzle", "x": -33, "y": 5, "w": 18, "h": 17, "depth": -0.08, "color": "2a4655", "accent": "6be9ff" },
+        { "id": "fin-top", "role": "fin", "shape": "finTop", "x": -6, "y": -21, "w": 29, "h": 13, "depth": -0.04, "color": "4f6873" },
+        { "id": "fin-bottom", "role": "fin", "shape": "finBottom", "x": -7, "y": 23, "w": 27, "h": 13, "depth": -0.04, "color": "405a65" },
+        { "id": "hull-core", "role": "hull", "shape": "hull", "x": 0, "y": 0, "w": 67, "h": 37, "depth": 0, "color": "607884", "accent": "172b36" },
+        { "id": "hatch-ring", "role": "hatch", "shape": "ring", "x": -7, "y": -19, "w": 21, "h": 17, "depth": 0.04, "color": "73fbd3" },
+        { "id": "scanner-dome", "role": "scanner", "shape": "dome", "x": 17, "y": -4, "w": 23, "h": 22, "depth": 0.06, "color": "89f7ff", "accent": "1d5362" },
+        { "id": "lamp-nose", "role": "lamp", "shape": "lamp", "x": 34, "y": 7, "w": 13, "h": 9, "depth": 0.08, "color": "f6f0b8" },
+        { "id": "damage-cracks", "role": "damage", "shape": "damage", "x": 6, "y": 0, "w": 58, "h": 31, "depth": 0.12, "color": "ff6f7f" }
+      ]
+    },
+    {
+      "tier": 2,
+      "id": "marlin",
+      "name": "Marlin",
+      "designWidth": 92,
+      "parts": [
+        { "id": "thruster-glow", "role": "thrusterGlow", "shape": "glow", "x": -50, "y": 7, "w": 23, "h": 13, "depth": -0.16, "color": "49d8ff" },
+        { "id": "engine-pod", "role": "engine", "shape": "engine", "x": -38, "y": 7, "w": 28, "h": 25, "depth": -0.1, "color": "334b58", "accent": "6be9ff" },
+        { "id": "thruster-nozzle", "role": "thruster", "shape": "nozzle", "x": -51, "y": 7, "w": 19, "h": 18, "depth": -0.07, "color": "273f4c", "accent": "6be9ff" },
+        { "id": "ballast-top", "role": "ballast", "shape": "tank", "x": -9, "y": -26, "w": 56, "h": 13, "depth": -0.05, "color": "48616c" },
+        { "id": "ballast-bottom", "role": "ballast", "shape": "tank", "x": -9, "y": 27, "w": 56, "h": 13, "depth": -0.05, "color": "3f5965" },
+        { "id": "hull-core", "role": "hull", "shape": "hull", "x": 0, "y": 0, "w": 86, "h": 42, "depth": 0, "color": "667681", "accent": "1d2f38" },
+        { "id": "cargo-belly", "role": "cargo", "shape": "cargo", "x": -4, "y": 20, "w": 47, "h": 14, "depth": 0.03, "color": "52656d", "accent": "d98f46" },
+        { "id": "hatch-ring", "role": "hatch", "shape": "ring", "x": -16, "y": -20, "w": 24, "h": 18, "depth": 0.05, "color": "73fbd3" },
+        { "id": "work-lamp", "role": "lamp", "shape": "lamp", "x": 40, "y": 12, "w": 15, "h": 10, "depth": 0.08, "color": "f6f0b8" },
+        { "id": "drill-arm-upper", "role": "drillUpper", "shape": "arm", "x": 37, "y": 17, "w": 31, "h": 9, "depth": 0.12, "color": "b7793a", "accent": "27333a" },
+        { "id": "drill-arm-lower", "role": "drillLower", "shape": "arm", "x": 57, "y": 18, "w": 28, "h": 8, "depth": 0.13, "color": "c68b43", "accent": "27333a" },
+        { "id": "drill-head", "role": "drillHead", "shape": "drill", "x": 73, "y": 18, "w": 18, "h": 14, "depth": 0.14, "color": "d9cba3", "accent": "ffb45e" },
+        { "id": "damage-cracks", "role": "damage", "shape": "damage", "x": 6, "y": 1, "w": 76, "h": 35, "depth": 0.16, "color": "ff6f7f" }
+      ]
+    },
+    {
+      "tier": 3,
+      "id": "leviathan",
+      "name": "Leviathan",
+      "designWidth": 118,
+      "parts": [
+        { "id": "thruster-glow", "role": "thrusterGlow", "shape": "glow", "x": -65, "y": 7, "w": 30, "h": 16, "depth": -0.18, "color": "49d8ff" },
+        { "id": "engine-pod", "role": "engine", "shape": "engine", "x": -51, "y": 7, "w": 32, "h": 30, "depth": -0.12, "color": "334b58", "accent": "6be9ff" },
+        { "id": "thruster-nozzle", "role": "thruster", "shape": "nozzle", "x": -70, "y": 7, "w": 22, "h": 22, "depth": -0.09, "color": "273f4c", "accent": "6be9ff" },
+        { "id": "ballast-top", "role": "ballast", "shape": "tank", "x": -11, "y": -28, "w": 82, "h": 14, "depth": -0.05, "color": "445e69" },
+        { "id": "ballast-bottom", "role": "ballast", "shape": "tank", "x": -11, "y": 30, "w": 82, "h": 14, "depth": -0.05, "color": "3a5561" },
+        { "id": "hull-rear", "role": "hull", "shape": "hull", "x": -32, "y": 3, "w": 54, "h": 43, "depth": -0.01, "color": "5b6c76", "accent": "192c36" },
+        { "id": "hull-core", "role": "hull", "shape": "hull", "x": 9, "y": 0, "w": 76, "h": 47, "depth": 0, "color": "657782", "accent": "1d303a" },
+        { "id": "command-glass", "role": "scanner", "shape": "dome", "x": 42, "y": -6, "w": 26, "h": 23, "depth": 0.06, "color": "89f7ff", "accent": "1d5362" },
+        { "id": "hatch-ring", "role": "hatch", "shape": "ring", "x": -26, "y": -21, "w": 25, "h": 19, "depth": 0.07, "color": "73fbd3" },
+        { "id": "aux-bay-door", "role": "bayDoor", "shape": "bay", "x": -29, "y": 21, "w": 36, "h": 17, "depth": 0.08, "color": "40535d", "accent": "73fbd3" },
+        { "id": "seeker-docked", "role": "dockedScout", "shape": "docked", "x": -31, "y": 22, "w": 26, "h": 11, "depth": 0.09, "color": "73fbd3", "accent": "607884" },
+        { "id": "turret-yoke", "role": "turretYoke", "shape": "turret", "x": 18, "y": -27, "w": 24, "h": 16, "depth": 0.11, "color": "51656e", "accent": "8ee7f4" },
+        { "id": "turret-barrel", "role": "turretBarrel", "shape": "barrel", "x": 37, "y": -28, "w": 37, "h": 8, "depth": 0.12, "color": "c2d3d6", "accent": "8ee7f4" },
+        { "id": "work-lamp", "role": "lamp", "shape": "lamp", "x": 58, "y": 12, "w": 16, "h": 10, "depth": 0.13, "color": "f6f0b8" },
+        { "id": "drill-head", "role": "drillHead", "shape": "drill", "x": 63, "y": 24, "w": 20, "h": 15, "depth": 0.14, "color": "d9cba3", "accent": "ffb45e" },
+        { "id": "damage-cracks", "role": "damage", "shape": "damage", "x": 8, "y": 1, "w": 102, "h": 38, "depth": 0.17, "color": "ff6f7f" }
+      ]
+    }
+  ]
+}
