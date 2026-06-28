@@ -483,6 +483,7 @@ export class EntitySandboxScene extends Phaser.Scene {
 
   private textureForEntry(entry: SandboxEntry) {
     if (!entry.textureKey) return 'item-icon-stone';
+    if (entry.kind === 'fish') return entry.textureKey;
     if ((entry.frameCount ?? 0) > 1) {
       const frame = animatedFrame(this.elapsed, 54, entry.frameCount ?? 1, entry.kind === 'object' ? 5.6 : 4.2);
       return `${entry.textureKey.replace(/-0$/, '')}-${frame}`;

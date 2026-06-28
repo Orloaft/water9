@@ -1,6 +1,6 @@
 # Water 9 Sandbox Quickstart
 
-Generated: `2026-06-18T17:07:21.417Z`
+Generated: `2026-06-28T15:46:09.541Z`
 
 Canonical launch commands for every registered Water 9 sandbox entity. Use the paired commands when scale, silhouette, collision, or predator behavior needs to be reviewed against the diver.
 
@@ -17,20 +17,24 @@ npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --vis
 
 ## Counts
 
-- Entries: 125
-- Articulated: 33
+- Entries: 129
+- Articulated: 37
 - Source previews: 20
-- Hostile: 73
+- Hostile: 77
 - Gate accepted: 0
-- Preview-only: 125
+- Preview-only: 129
 
 ## Entries
 
 | ID | Kind | Stage | Gate Accepted | Production Boundary | Direct Preview | Paired Diver Preview |
 | --- | --- | --- | ---: | --- | --- | --- |
 | `abyssal-crownmaw` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id abyssal-crownmaw --serve --open --visual` | `npm run sandbox:preview -- --id abyssal-crownmaw --with diver --serve --open --visual` |
+| `abyssal-glasshook-skulk` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id abyssal-glasshook-skulk --serve --open --visual` | `npm run sandbox:preview -- --id abyssal-glasshook-skulk --with diver --serve --open --visual` |
 | `abyssal-gulper` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id abyssal-gulper --serve --open --visual` | `npm run sandbox:preview -- --id abyssal-gulper --with diver --serve --open --visual` |
 | `abyssal-lantern-mantis` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id abyssal-lantern-mantis --serve --open --visual` | `npm run sandbox:preview -- --id abyssal-lantern-mantis --with diver --serve --open --visual` |
+| `abyssal-mandible-bobbit` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id abyssal-mandible-bobbit --serve --open --visual` | `npm run sandbox:preview -- --id abyssal-mandible-bobbit --with diver --serve --open --visual` |
+| `abyssal-reliquary-wyrm` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id abyssal-reliquary-wyrm --serve --open --visual` | `npm run sandbox:preview -- --id abyssal-reliquary-wyrm --with diver --serve --open --visual` |
+| `abyssal-riftmaw` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id abyssal-riftmaw --serve --open --visual` | `npm run sandbox:preview -- --id abyssal-riftmaw --with diver --serve --open --visual` |
 | `abyssal-serpent` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id abyssal-serpent --serve --open --visual` | `npm run sandbox:preview -- --id abyssal-serpent --with diver --serve --open --visual` |
 | `black-coral-gate` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id black-coral-gate --serve --open --visual` | `npm run sandbox:preview -- --id black-coral-gate --with diver --serve --open --visual` |
 | `brine-crown` | articulated | prototype | no | preview-only | `npm run sandbox:preview -- --id brine-crown --serve --open --visual` | `npm run sandbox:preview -- --id brine-crown --with diver --serve --open --visual` |
@@ -93,11 +97,11 @@ npm run sandbox:preview -- --id gulper-eel-maw --with diver --serve --open --vis
 | `fauna-shallow-squid` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-shallow-squid --serve --open --visual` | `npm run sandbox:preview -- --id fauna-shallow-squid --with diver --serve --open --visual` |
 | `fauna-deep-sea-spider` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-deep-sea-spider --serve --open --visual` | `npm run sandbox:preview -- --id fauna-deep-sea-spider --with diver --serve --open --visual` |
 | `fauna-shallow-snap-shrimp` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-shallow-snap-shrimp --serve --open --visual` | `npm run sandbox:preview -- --id fauna-shallow-snap-shrimp --with diver --serve --open --visual` |
+| `fauna-abyss-snipe-eel` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-abyss-snipe-eel --serve --open --visual` | `npm run sandbox:preview -- --id fauna-abyss-snipe-eel --with diver --serve --open --visual` |
 | `fauna-abyss-static-fry` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-abyss-static-fry --serve --open --visual` | `npm run sandbox:preview -- --id fauna-abyss-static-fry --with diver --serve --open --visual` |
 | `fauna-shallow-octopus` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-shallow-octopus --serve --open --visual` | `npm run sandbox:preview -- --id fauna-shallow-octopus --with diver --serve --open --visual` |
 | `fauna-deep-tripodfish` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-deep-tripodfish --serve --open --visual` | `npm run sandbox:preview -- --id fauna-deep-tripodfish --with diver --serve --open --visual` |
 | `fauna-deep-vampire-squid` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-deep-vampire-squid --serve --open --visual` | `npm run sandbox:preview -- --id fauna-deep-vampire-squid --with diver --serve --open --visual` |
-| `fauna-abyss-snipe-eel` | fish | reference | no | preview-only | `npm run sandbox:preview -- --id fauna-abyss-snipe-eel --serve --open --visual` | `npm run sandbox:preview -- --id fauna-abyss-snipe-eel --with diver --serve --open --visual` |
 | `flora-black-fan` | flora | reference | no | preview-only | `npm run sandbox:preview -- --id flora-black-fan --serve --open --visual` | `npm run sandbox:preview -- --id flora-black-fan --with diver --serve --open --visual` |
 | `flora-brine-grass` | flora | reference | no | preview-only | `npm run sandbox:preview -- --id flora-brine-grass --serve --open --visual` | `npm run sandbox:preview -- --id flora-brine-grass --with diver --serve --open --visual` |
 | `flora-circuit-kelp` | flora | reference | no | preview-only | `npm run sandbox:preview -- --id flora-circuit-kelp --serve --open --visual` | `npm run sandbox:preview -- --id flora-circuit-kelp --with diver --serve --open --visual` |
