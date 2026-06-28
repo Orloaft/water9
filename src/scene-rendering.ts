@@ -1546,14 +1546,14 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         fish.sprite?.setVisible(false);
         continue;
       }
-      const angle = Math.atan2(fish.vy, fish.vx);
+      const angle = fish.visualAngle ?? Math.atan2(fish.vy, fish.vx);
       const bodyAlpha = fish.scanned ? Math.max(alpha, 0.9) : alpha;
       const threatDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       const movingTowardPlayer = (fish.vx * (this.player.x - fish.x) + fish.vy * (this.player.y - fish.y)) > 0;
       const attacking = fish.hostile && fish.aggro > 0 && movingTowardPlayer && threatDistance < 220;
       const threat = attacking ? 1 - Phaser.Math.Clamp((threatDistance - 52) / 118, 0, 1) : 0;
       const desiredWidth = fish.radius * (fish.hostile ? 3.8 : fish.pattern === 'circle' || fish.pattern === 'glide' ? 3.4 : 3);
-      const pose = swimPose(angle, fish.facingSign);
+      const pose = swimPose(angle, fish.visualFacingSign ?? fish.facingSign);
       const frameSpeed = fish.stunned > 0 ? 8 : Math.hypot(fish.vx, fish.vy);
       const frame = animatedFrame(fish.phase, frameSpeed, fishFrameCount(fish.assetKey), fish.hostile ? 3.3 : 4.2);
       if (fish.sprite) {

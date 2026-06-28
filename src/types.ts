@@ -169,6 +169,10 @@ export interface Fish {
   hurtFlash: number;
   assetKey: string;
   facingSign: 1 | -1;
+  visualAngle?: number;
+  visualFacingSign?: 1 | -1;
+  visualTurnIntentSign?: 1 | -1;
+  visualTurnIntentTime?: number;
   sprite?: Phaser.GameObjects.Image;
 }
 

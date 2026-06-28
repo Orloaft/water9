@@ -3,7 +3,7 @@ import type { ArticulatedCreature,Bobbit,ControlState,Fish,Larva,LooseItem,NestE
 import { BLEED_DURATION,BLEED_RECENT_WINDOW,BLEED_TRIGGER_BITES,BOBBIT_DETECT_RADIUS,BOBBIT_ESCAPE_SECONDS,BOBBIT_LATCH_RADIUS,DYNAMITE_LAND_FUSE,EGG_DETECTION_RADIUS,EGG_HATCH_SECONDS,FISH_BITE_SFX_GAP_MS,NEST_CLEAR_REWARD,OASIS_OXYGEN_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_CONTACT_RADIUS,PLAYER_PICKUP_RADIUS,TARGET_DEPTH,THROWN_ITEM_GRAVITY,THROWN_ITEM_MAX_FALL_SPEED,TILE,WORLD_H } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
-import { bargeSolidAtWorld,cargoCapacity,currentApexSpecies,oxygenMax,pointInRoom,predatorBiteCooldown,rarityColor,rarityLabel,resetOxygenWarnings,scaledEntity,scannableRarity,scanReward,subDef,updateFacingFromVelocity,venomousFish } from './helpers';
+import { bargeSolidAtWorld,cargoCapacity,currentApexSpecies,oxygenMax,pointInRoom,predatorBiteCooldown,rarityColor,rarityLabel,resetOxygenWarnings,scaledEntity,scannableRarity,scanReward,subDef,updateFacingFromVelocity,updateFishVisualFacing,venomousFish } from './helpers';
 import { biomeName,renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 
@@ -31,8 +31,9 @@ export function updateFish(this: DeepdiveScene, delta: number) {
       }
       fish.x += fish.vx * delta;
       fish.y += fish.vy * delta;
-      updateFacingFromVelocity(fish);
       this.keepFishInWater(fish);
+      updateFacingFromVelocity(fish);
+      updateFishVisualFacing(fish, delta);
       if (fish.stunned > 0) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance < fish.radius + PLAYER_CONTACT_RADIUS && fish.bumpCooldown <= 0 && !this.isAtBoat()) {

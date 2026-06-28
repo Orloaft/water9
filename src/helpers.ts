@@ -876,6 +876,46 @@ export function updateFacingFromVelocity(entity: Fish) {
   if (entity.vx > 2) entity.facingSign = 1;
 }
 
+export function updateFishVisualFacing(fish: Fish, delta: number) {
+  const speed = Math.hypot(fish.vx, fish.vy);
+  const fallbackAngle = fish.facingSign < 0 ? Math.PI : 0;
+  if (fish.visualFacingSign !== -1 && fish.visualFacingSign !== 1) fish.visualFacingSign = fish.facingSign;
+  const currentAngle = typeof fish.visualAngle === 'number' && Number.isFinite(fish.visualAngle)
+    ? fish.visualAngle
+    : speed > 0.01 ? Math.atan2(fish.vy, fish.vx) : fallbackAngle;
+  fish.visualAngle = currentAngle;
+
+  if (speed >= 6) {
+    const targetAngle = Math.atan2(fish.vy, fish.vx);
+    const turnRate = fish.radius <= scaledEntity(12) ? 4.6 : 5.4;
+    const angleDelta = Phaser.Math.Angle.Wrap(targetAngle - fish.visualAngle);
+    const maxStep = turnRate * delta;
+    fish.visualAngle = Phaser.Math.Angle.Wrap(
+      fish.visualAngle + Phaser.Math.Clamp(angleDelta, -maxStep, maxStep),
+    );
+  }
+
+  const intentThreshold = Math.max(8, fish.speed * 0.18);
+  const desiredSign: 1 | -1 | 0 = fish.vx < -intentThreshold ? -1 : fish.vx > intentThreshold ? 1 : 0;
+  if (desiredSign === 0 || desiredSign === fish.visualFacingSign) {
+    fish.visualTurnIntentSign = undefined;
+    fish.visualTurnIntentTime = 0;
+    return;
+  }
+
+  if (fish.visualTurnIntentSign !== desiredSign) {
+    fish.visualTurnIntentSign = desiredSign;
+    fish.visualTurnIntentTime = 0;
+  }
+  fish.visualTurnIntentTime = (fish.visualTurnIntentTime ?? 0) + delta;
+  const commitDelay = fish.hostile && fish.aggro > 0 ? 0.08 : 0.13;
+  if (fish.visualTurnIntentTime >= commitDelay) {
+    fish.visualFacingSign = desiredSign;
+    fish.visualTurnIntentSign = undefined;
+    fish.visualTurnIntentTime = 0;
+  }
+}
+
 export function predatorBiteCooldown(fish: Fish) {
   const strength = fish.radius + (fish.pattern === 'circle' ? scaledEntity(7) : 0) + state.biome * 1.7;
   return Phaser.Math.Clamp(1.62 - strength * 0.018, 1.05, 1.48);

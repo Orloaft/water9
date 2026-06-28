@@ -870,6 +870,7 @@ export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
       const point = this.findOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY));
       const angle = Math.random() * Math.PI * 2;
       const assetKey = fishAssetKey(species);
+      const facingSign = Math.cos(angle) < 0 ? -1 : 1;
       school.push({
         kind: 'fish',
         species: species.species,
@@ -897,7 +898,9 @@ export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
         dead: false,
         hurtFlash: 0,
         assetKey,
-        facingSign: Math.cos(angle) < 0 ? -1 : 1,
+        facingSign,
+        visualAngle: angle,
+        visualFacingSign: facingSign,
         sprite: this.createEntitySprite(point.x, point.y, assetKey),
       });
     }
@@ -1115,6 +1118,7 @@ export function populateNestRoom(this: DeepdiveScene, room: SpecialRoom) {
       const assetKey = fishAssetKey(species);
       const x = room.x + Math.cos(angle) * room.rx * 0.42;
       const y = room.y + Math.sin(angle) * room.ry * 0.35;
+      const facingSign = Math.cos(angle) < 0 ? -1 : 1;
       this.fish.push({
         kind: 'fish',
         species: species.species,
@@ -1142,7 +1146,9 @@ export function populateNestRoom(this: DeepdiveScene, room: SpecialRoom) {
         dead: false,
         hurtFlash: 0,
         assetKey,
-        facingSign: Math.cos(angle) < 0 ? -1 : 1,
+        facingSign,
+        visualAngle: angle,
+        visualFacingSign: facingSign,
         sprite: this.createEntitySprite(x, y, assetKey).setDepth(2.15),
       });
     }
