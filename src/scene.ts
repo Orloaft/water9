@@ -84,6 +84,8 @@ export class DeepdiveScene extends Phaser.Scene {
   perfTelemetry: PerfTelemetry = createPerfTelemetry();
   worldReady = false;
   gamepadButtonsDown = new Set<number>();
+  browserGamepadIndex = -1;
+  gamepadEventCleanup?: () => void;
   menuNavCooldown = 0;
   passiveSonarRevealTimer = 0;
   player = {
@@ -118,6 +120,8 @@ export class DeepdiveScene extends Phaser.Scene {
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,H,M,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.installGamepadEvents();
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.shutdown());
     this.parallaxLayers = [0, 1, 2, 3].map((index) => this.add
       .tileSprite(0, 0, 1, 1, `parallax-shallow-${index}`)
       .setOrigin(0)
@@ -159,6 +163,37 @@ export class DeepdiveScene extends Phaser.Scene {
     ensureArticulatedTextures(this);
     this.beginBiomeGenerationTransition();
 	  }
+
+  installGamepadEvents() {
+    if (typeof window === 'undefined' || this.gamepadEventCleanup) return;
+    const connect = (event: GamepadEvent) => {
+      this.browserGamepadIndex = event.gamepad.index;
+      this.updateControllerStatus(event.gamepad, 'connected');
+      renderHud();
+    };
+    const disconnect = (event: GamepadEvent) => {
+      if (this.browserGamepadIndex === event.gamepad.index) this.browserGamepadIndex = -1;
+      state.controller = {
+        ...state.controller,
+        connected: false,
+        name: event.gamepad.id || state.controller.name || 'Controller',
+        index: event.gamepad.index,
+        message: 'Controller disconnected',
+      };
+      renderHud();
+    };
+    window.addEventListener('gamepadconnected', connect);
+    window.addEventListener('gamepaddisconnected', disconnect);
+    this.gamepadEventCleanup = () => {
+      window.removeEventListener('gamepadconnected', connect);
+      window.removeEventListener('gamepaddisconnected', disconnect);
+    };
+  }
+
+  shutdown() {
+    this.gamepadEventCleanup?.();
+    this.gamepadEventCleanup = undefined;
+  }
 
   update(_: number, deltaMs: number) {
     measurePerf(this, 'frame.total', () => {
@@ -425,20 +460,28 @@ export class DeepdiveScene extends Phaser.Scene {
       axes?: Array<{ getValue?: () => number; value?: number } | number>;
       buttons?: Array<{ pressed?: boolean; value?: number } | number>;
     } | undefined;
-    const gamepad = navigator.getGamepads?.().find((pad): pad is Gamepad => Boolean(pad?.connected));
+    const gamepads = this.pollBrowserGamepads();
     const pressed = new Set<number>();
-    const buttonCount = Math.max(phaserPad?.buttons?.length ?? 0, gamepad?.buttons.length ?? 0);
+    const buttonCount = Math.max(phaserPad?.buttons?.length ?? 0, ...gamepads.map((pad) => pad.buttons.length), 0);
     for (let index = 0; index < buttonCount; index += 1) {
       const phaserButton = phaserPad?.buttons?.[index];
       const phaserValue = typeof phaserButton === 'number' ? phaserButton : phaserButton?.value ?? (phaserButton?.pressed ? 1 : 0);
-      const rawButton = gamepad?.buttons[index];
-      if ((phaserButton && phaserValue > 0.5) || rawButton?.pressed || (rawButton?.value ?? 0) > 0.5) pressed.add(index);
+      const rawPressed = gamepads.some((pad) => {
+        const rawButton = pad.buttons[index];
+        return Boolean(rawButton?.pressed || (rawButton?.value ?? 0) > 0.5);
+      });
+      if ((phaserButton && phaserValue > 0.5) || rawPressed) pressed.add(index);
     }
+    if (this.analogTriggerHeld(gamepads, 'left')) pressed.add(6);
+    if (this.analogTriggerHeld(gamepads, 'right')) pressed.add(7);
     const padJustPressed = (index: number) => pressed.has(index) && !this.gamepadButtonsDown.has(index);
     const axisValue = (index: number) => {
       const phaserAxis = phaserPad?.axes?.[index];
       const phaserValue = typeof phaserAxis === 'number' ? phaserAxis : phaserAxis?.getValue?.() ?? phaserAxis?.value;
-      const rawValue = gamepad?.axes[index] ?? 0;
+      const rawValue = gamepads.reduce((best, pad) => {
+        const value = pad.axes[index] ?? 0;
+        return Math.abs(value) > Math.abs(best) ? value : best;
+      }, 0);
       const value = Math.abs(rawValue) > Math.abs(phaserValue ?? 0) ? rawValue : phaserValue ?? 0;
       return Math.abs(value) > 0.18 ? value : 0;
     };
@@ -458,7 +501,7 @@ export class DeepdiveScene extends Phaser.Scene {
       scanHeld: this.keys.E.isDown || pressed.has(2),
       boardHeld: this.keys.F.isDown || pressed.has(1),
       scoutPressed: Phaser.Input.Keyboard.JustDown(this.keys.H) || padJustPressed(10),
-      sonarPressed: Phaser.Input.Keyboard.JustDown(this.keys.Q) || padJustPressed(4),
+      sonarPressed: Phaser.Input.Keyboard.JustDown(this.keys.Q) || padJustPressed(4) || padJustPressed(6),
       sonarMapPressed: Phaser.Input.Keyboard.JustDown(this.keys.M) || padJustPressed(8),
       useItemPressed: Phaser.Input.Keyboard.JustDown(this.keys.G) || padJustPressed(5),
       pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.ESC) || Phaser.Input.Keyboard.JustDown(this.keys.P) || padJustPressed(9),
@@ -468,6 +511,61 @@ export class DeepdiveScene extends Phaser.Scene {
     };
     this.gamepadButtonsDown = pressed;
     return controls;
+  }
+
+  pollBrowserGamepads() {
+    const pads = Array.from(navigator.getGamepads?.() ?? []).filter((pad): pad is Gamepad => Boolean(pad?.connected));
+    if (!pads.length) {
+      if (state.controller.connected) {
+        state.controller = { ...state.controller, connected: false, message: 'Controller disconnected' };
+        renderHud();
+      }
+      return [];
+    }
+    const activePad = this.selectActiveGamepad(pads);
+    this.updateControllerStatus(activePad, this.gamepadHasInput(activePad) ? 'active' : 'connected');
+    return [activePad, ...pads.filter((pad) => pad.index !== activePad.index)];
+  }
+
+  selectActiveGamepad(pads: Gamepad[]) {
+    const remembered = pads.find((pad) => pad.index === this.browserGamepadIndex);
+    const active = pads.find((pad) => this.gamepadHasInput(pad));
+    const preferred = active ?? remembered ?? pads.find((pad) => pad.mapping === 'standard') ?? pads[0];
+    this.browserGamepadIndex = preferred.index;
+    return preferred;
+  }
+
+  gamepadHasInput(pad: Gamepad) {
+    return pad.buttons.some((button) => button.pressed || button.value > 0.5)
+      || pad.axes.some((value) => Math.abs(value) > 0.22);
+  }
+
+  updateControllerStatus(pad: Gamepad, activity: 'connected' | 'active') {
+    const hadConnection = state.controller.connected;
+    const previousIndex = state.controller.index;
+    const previousInputAt = state.controller.lastInputAt;
+    state.controller = {
+      connected: true,
+      name: pad.id || 'Controller',
+      index: pad.index,
+      lastSeenAt: performance.now(),
+      lastInputAt: activity === 'active' ? performance.now() : previousInputAt,
+      message: activity === 'active' ? 'Controller active' : 'Controller connected',
+    };
+    if (!hadConnection || previousIndex !== pad.index) renderHud();
+  }
+
+  analogTriggerHeld(pads: Gamepad[], side: 'left' | 'right') {
+    return pads.some((pad) => this.analogTriggerValue(pad, side) > 0.55);
+  }
+
+  analogTriggerValue(pad: Gamepad, side: 'left' | 'right') {
+    const buttonIndex = side === 'left' ? 6 : 7;
+    const buttonValue = pad.buttons[buttonIndex]?.value ?? 0;
+    if (pad.mapping === 'standard') return buttonValue;
+    const axisCandidates = side === 'left' ? [2, 4] : [5, 3];
+    const axisValue = Math.max(0, ...axisCandidates.map((index) => pad.axes[index] ?? 0));
+    return Math.max(buttonValue, axisValue);
   }
 
   handleGlobalControllerActions(controls: ControlState) {

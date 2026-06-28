@@ -17,6 +17,7 @@ export function renderHud() {
       <main class="shell">
         <section id="game"></section>
         <aside id="fps-tracker" class="fps-tracker" aria-hidden="true">FPS --</aside>
+        <aside id="controller-status" class="controller-status"></aside>
         <aside id="title-screen" class="title-screen"></aside>
         <aside class="hud">
           <div id="gauges"></div>
@@ -39,7 +40,8 @@ export function renderHud() {
   const biomeLoading = document.querySelector<HTMLElement>('#biome-loading');
   const shell = document.querySelector<HTMLElement>('.shell');
   const titleScreen = document.querySelector<HTMLElement>('#title-screen');
-  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !sonarMapOverlay || !radioDialogue || !biomeLoading || !shell || !titleScreen) return;
+  const controllerStatus = document.querySelector<HTMLElement>('#controller-status');
+  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !sonarMapOverlay || !radioDialogue || !biomeLoading || !shell || !titleScreen || !controllerStatus) return;
   const logbookScrollTop = logbook.querySelector<HTMLDivElement>('.logbook__list')?.scrollTop ?? 0;
   const radioActive = state.radioOpen && state.started && !state.lost && !state.won;
   const debugUi = debugPresentationEnabled();
@@ -51,6 +53,7 @@ export function renderHud() {
   shell.classList.toggle('is-cargo-open', cargoActive);
   shell.classList.toggle('is-sonar-map-open', state.sonarMapOpen);
   shell.classList.toggle('is-biome-loading', state.biomeLoading.active);
+  shell.classList.toggle('is-controller-known', state.controller.connected || Boolean(state.controller.message));
   shell.classList.toggle('is-debug-ui', debugUi);
   shell.classList.toggle('is-oxygen-danger', state.started && !state.atBoat && !state.lost && (sub ? sub.oxygen <= subDef(sub.tier).oxygen * 0.16 : state.oxygen <= oxygenMax() * 0.16));
   shell.classList.toggle('is-load-error', state.saveLoad.phase === 'error');
@@ -58,6 +61,8 @@ export function renderHud() {
   titleScreen.classList.toggle('is-options', state.titlePanel === 'options');
   titleScreen.classList.toggle('is-controls', state.titlePanel === 'controls');
   setStableHtml(titleScreen, state.started ? '' : titlePanel());
+  controllerStatus.classList.toggle('is-open', state.controller.connected || Boolean(state.controller.message));
+  setStableHtml(controllerStatus, state.controller.connected || state.controller.message ? controllerPanel() : '');
   const cargoValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
   const statusFlags = [
     state.saveLoad.phase === 'error' ? `SAVE ERROR: ${state.saveLoad.message}` : '',
@@ -120,6 +125,24 @@ export function objectivePanel() {
       <span>${quest ? 'Active contract' : 'Current goal'}</span>
       <strong>${objective.title}</strong>
       <p>${objective.detail}</p>
+    </section>
+  `;
+}
+
+export function controllerPanel() {
+  if (!state.controller.connected && !state.controller.message) return '';
+  const name = state.controller.name
+    .replace(/\s*\([^)]*\)/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 42) || 'Controller';
+  const detail = state.controller.connected
+    ? `${name} ready. Press A to confirm, Start to pause.`
+    : `${name} disconnected. Reconnect and press any controller button.`;
+  return `
+    <section class="controller-panel ${state.controller.connected ? 'is-connected' : 'is-disconnected'}">
+      <span>Controller</span>
+      <strong>${detail}</strong>
     </section>
   `;
 }

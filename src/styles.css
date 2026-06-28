@@ -472,6 +472,49 @@ button.is-controller-focus {
   line-height: 1.28;
 }
 
+.controller-status {
+  position: fixed;
+  top: 92px;
+  right: 14px;
+  z-index: 3;
+  display: none;
+  width: min(300px, calc(100vw - 28px));
+  pointer-events: none;
+}
+
+.controller-status.is-open {
+  display: block;
+}
+
+.controller-panel {
+  display: grid;
+  gap: 3px;
+  border: 1px solid rgba(115, 251, 211, 0.28);
+  border-radius: 4px;
+  padding: 8px 10px;
+  background:
+    linear-gradient(180deg, rgba(3, 26, 28, 0.66), rgba(1, 9, 14, 0.82)),
+    url("/assets/generated/ui-panel-wide.png");
+  background-size: 100% 100%;
+}
+
+.controller-panel span {
+  color: #73fbd3;
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.controller-panel strong {
+  color: rgba(236, 251, 255, 0.82);
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.controller-panel.is-disconnected {
+  border-color: rgba(255, 138, 107, 0.42);
+}
+
 .priority-alert {
   position: fixed;
   top: 14px;
@@ -2264,6 +2307,12 @@ button.is-controller-focus {
   .objective-panel {
     top: 138px;
     width: min(330px, calc(100vw - 236px));
+  }
+
+  .controller-status {
+    top: 282px;
+    right: 10px;
+    width: 200px;
   }
 
   .status {

@@ -76,6 +76,14 @@ export const state = {
     completedId: 0,
     message: '',
   },
+  controller: {
+    connected: false,
+    name: '',
+    index: -1,
+    lastSeenAt: 0,
+    lastInputAt: 0,
+    message: '',
+  },
   oxygenWarnings: {
     half: false,
     quarter: false,

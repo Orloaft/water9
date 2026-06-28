@@ -557,6 +557,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         oxygen: Math.round(state.activeSub.oxygen),
         fuel: Math.round(state.activeSub.fuel),
         cargoBonus: subDef(state.activeSub.tier).cargo,
+        weaponCooldown: roundMetric(state.activeSub.weaponCooldown),
         piloting: state.pilotingSub,
       }
       : null;
@@ -613,7 +614,9 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         cargoOpen: state.cargoOpen,
         floatingTextCount: this.floatingTexts.length,
         status: state.status,
+        controller: { ...state.controller },
         biomeLoading: { ...state.biomeLoading },
+        sonarPings: this.sonarPings.length,
       },
       camera: {
         x: roundMetric(camera.worldView.x),
@@ -655,6 +658,8 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         y: Math.round(this.player.y),
         vx: Math.round(this.player.vx),
         vy: Math.round(this.player.vy),
+        mineCooldown: roundMetric(this.player.mineCooldown),
+        scanTarget: this.player.scanTarget ? this.player.scanTarget.species : '',
       },
       fish: this.fish.map((fish) => ({
         species: fish.species,
