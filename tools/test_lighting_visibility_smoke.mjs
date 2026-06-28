@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { chromium } from 'playwright';
 
 const outDir = process.env.LIGHTING_VISIBILITY_OUT_DIR ?? '/home/orlovboros/projects/manager/runs';
-const prefix = 'water9-lighting-visibility-first-slice-2026-06-28';
+const prefix = 'water9-terrain-outline-soften-2026-06-28';
 const reportPath = process.env.LIGHTING_VISIBILITY_REPORT ?? `${outDir}/${prefix}.json`;
 const host = '127.0.0.1';
 const port = Number(process.env.LIGHTING_VISIBILITY_PORT ?? 5194);
@@ -81,11 +81,14 @@ try {
     await page.goto(url, { waitUntil: 'networkidle', timeout: 25000 });
     await waitForPlaytest(page, biome);
     const review = await command(page, 'lightingVisibilityReview');
+    await page.waitForFunction(() => !document.querySelector('#biome-loading')?.classList.contains('is-open'), { timeout: 8000 });
     await page.waitForTimeout(180);
     const screenshotPath = `${outDir}/${prefix}-biome-${biome}.png`;
     await page.screenshot({ path: screenshotPath, fullPage: false });
     const screenshotBytes = (await stat(screenshotPath)).size;
     if (!review) fail(`biome ${biome} returned no lighting visibility review`);
+    if (review?.terrainVisibilityTreatment !== 'softened-wash') fail(`biome ${biome} did not report softened terrain visibility treatment`);
+    if ((review?.hardBlockOutlineAlpha ?? 1) > 0.02) fail(`biome ${biome} still reports hard block outline alpha: ${review?.hardBlockOutlineAlpha}`);
     if ((review?.visibleEdgeTiles ?? 0) < 8) fail(`biome ${biome} staged too few readable edge tiles: ${review?.visibleEdgeTiles ?? 0}`);
     if ((review?.darkness ?? 0) < 0.55) fail(`biome ${biome} review depth was not dark enough: ${review?.darkness ?? 0}`);
     if (!review?.creature?.hostile || (review?.creature?.parts ?? 0) < 1) fail(`biome ${biome} lacked a dangerous articulated visibility subject`);

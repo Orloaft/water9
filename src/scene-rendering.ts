@@ -11,6 +11,9 @@ import { hideSubmarinePartSprites,renderSubmarineParts } from './submarine-parts
 import { ensureTerrainMask,TERRAIN_MASK_CELL,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainBoundarySupported,terrainLocalSolidSupport,terrainMaskBoundaryCell,terrainMaskDensityAt,terrainMaskExposureVector,terrainMaskInteriorFillCell,terrainMaskSolid } from './terrain-mask';
 import { measurePerf } from './perf';
 
+const TERRAIN_VISIBILITY_WASH_ALPHA = 0.034;
+const TERRAIN_VISIBILITY_GLOW_ALPHA = 0.052;
+
 export function draw(this: DeepdiveScene, ) {
     const camera = this.cameras.main;
     this.articulatedBridges.clear();
@@ -388,15 +391,15 @@ function drawTerrainOrganicBoundary(
       const seed = hash(cell.sx * 131, cell.sy * 137, rng.seed + 5321);
       const radiusX = TERRAIN_MASK_CELL * (1.92 + seed * 0.46);
       const radiusY = TERRAIN_MASK_CELL * (1.78 + hash(cell.sy, cell.sx, rng.seed + 5323) * 0.5);
-      scene.terrain.fillStyle(cell.color, 0.96);
-      scene.terrain.fillEllipse(cx, cy, radiusX * 1.55, radiusY * 1.5);
+      scene.terrain.fillStyle(cell.color, 0.9);
+      scene.terrain.fillEllipse(cx, cy, radiusX * 1.7, radiusY * 1.62);
       if (seed > 0.86) {
-        scene.terrain.fillStyle(cell.color, 0.82);
+        scene.terrain.fillStyle(cell.color, 0.56);
         scene.terrain.fillEllipse(
           cx + (hash(cell.sx, cell.sy, rng.seed + 5327) - 0.5) * TERRAIN_MASK_CELL * 0.7,
           cy + (hash(cell.sy, cell.sx, rng.seed + 5329) - 0.5) * TERRAIN_MASK_CELL * 0.7,
-          radiusX * 1.15,
-          radiusY,
+          radiusX * 1.45,
+          radiusY * 1.18,
         );
       }
     }
@@ -499,11 +502,10 @@ function drawTerrainMaskEdgeFray(scene: DeepdiveScene, minSx: number, maxSx: num
         const tile = scene.getTile(tx, ty);
         const palette = terrainAccentPalette();
         const rimColor = tile === 'sand' ? palette.sandRim : palette.rim;
-        const darkColor = 0x010306;
         const seed = hash(sx * 83, sy * 89, rng.seed + 5303);
-        if (seed > 0.955) {
+        if (seed > 0.975) {
           const highlight = seed > 0.9 ? palette.glow : rimColor;
-          scene.terrainEdges.lineStyle(1, highlight, 0.18);
+          scene.terrainEdges.lineStyle(1, highlight, 0.07);
           const px = wx + TERRAIN_MASK_CELL * (0.24 + hash(sx, sy, rng.seed + 5329) * 0.52);
           const py = wy + TERRAIN_MASK_CELL * (0.24 + hash(sy, sx, rng.seed + 5339) * 0.52);
           scene.terrainEdges.lineBetween(
@@ -513,13 +515,22 @@ function drawTerrainMaskEdgeFray(scene: DeepdiveScene, minSx: number, maxSx: num
             py + (west || east ? TERRAIN_MASK_CELL * 0.32 : 0),
           );
         }
-        if (seed > 0.82 && (north || south)) {
-          scene.terrainEdges.fillStyle(seed > 0.94 ? palette.glow : palette.growth, seed > 0.94 ? 0.14 : 0.11);
+        if (seed > 0.76 && (north || south || west || east)) {
+          const horizontal = north || south;
+          scene.terrainEdges.fillStyle(seed > 0.94 ? palette.glow : palette.growth, seed > 0.94 ? TERRAIN_VISIBILITY_GLOW_ALPHA : TERRAIN_VISIBILITY_WASH_ALPHA);
           scene.terrainEdges.fillEllipse(
-            wx + TERRAIN_MASK_CELL * (0.38 + hash(sx, sy, rng.seed + 5311) * 0.24),
-            wy + (north ? TERRAIN_MASK_CELL * 0.16 : TERRAIN_MASK_CELL * 0.84),
-            TERRAIN_MASK_CELL * (0.52 + hash(sy, sx, rng.seed + 5317) * 0.42),
-            TERRAIN_MASK_CELL * 0.28,
+            horizontal
+              ? wx + TERRAIN_MASK_CELL * (0.38 + hash(sx, sy, rng.seed + 5311) * 0.24)
+              : wx + (west ? TERRAIN_MASK_CELL * 0.18 : TERRAIN_MASK_CELL * 0.82),
+            horizontal
+              ? wy + (north ? TERRAIN_MASK_CELL * 0.18 : TERRAIN_MASK_CELL * 0.82)
+              : wy + TERRAIN_MASK_CELL * (0.38 + hash(sy, sx, rng.seed + 5313) * 0.24),
+            horizontal
+              ? TERRAIN_MASK_CELL * (0.72 + hash(sy, sx, rng.seed + 5317) * 0.54)
+              : TERRAIN_MASK_CELL * 0.34,
+            horizontal
+              ? TERRAIN_MASK_CELL * 0.34
+              : TERRAIN_MASK_CELL * (0.72 + hash(sx, sy, rng.seed + 5319) * 0.54),
           );
         }
       }
@@ -1109,11 +1120,13 @@ function drawEdgeFuzz(scene: DeepdiveScene, x: number, y: number, tile: Tile, si
         sx = length;
       }
 
-      scene.terrainEdges.fillStyle(depth > 0.74 ? rim : dark, depth > 0.74 ? 0.24 : 0.42);
-      scene.terrainEdges.fillRect(Math.floor(px), Math.floor(py), depth > 0.7 ? 2 : 1, depth > 0.82 ? 3 : 2);
-      if (depth > 0.7) {
-        scene.terrainEdges.lineStyle(1, depth > 0.88 ? growth : dark, depth > 0.88 ? 0.26 : 0.32);
-        scene.terrainEdges.lineBetween(px, py, px + sx * 0.7, py + sy * 0.7);
+      if (depth > 0.62) {
+        scene.terrainEdges.fillStyle(depth > 0.8 ? rim : dark, depth > 0.8 ? 0.055 : 0.07);
+        scene.terrainEdges.fillEllipse(px, py, depth > 0.82 ? 3.2 : 2.1, depth > 0.86 ? 2.2 : 1.6);
+      }
+      if (depth > 0.82) {
+        scene.terrainEdges.lineStyle(1, depth > 0.92 ? growth : dark, depth > 0.92 ? 0.07 : 0.05);
+        scene.terrainEdges.lineBetween(px, py, px + sx * 0.42, py + sy * 0.42);
       }
     }
   }
@@ -1947,11 +1960,19 @@ export function drawBiomeVisibilityCues(this: DeepdiveScene, camera: Phaser.Came
         const proximity = 1 - Phaser.Math.Clamp((distance - lightRadius() * 0.65) / Math.max(1, radius - lightRadius() * 0.65), 0, 1);
         const alpha = ambient * Phaser.Math.Linear(0.36, 1, proximity);
         const pulse = 0.75 + Math.sin(this.time.now * 0.0016 + x * 0.47 + y * 0.31) * 0.25;
-        this.lampGloom.lineStyle(1, profile.silhouette, alpha);
-        if (this.getTile(x, y - 1) === 'water') this.lampGloom.lineBetween(x * TILE + 2, y * TILE + 1, (x + 1) * TILE - 2, y * TILE + 1);
-        if (this.getTile(x, y + 1) === 'water') this.lampGloom.lineBetween(x * TILE + 2, (y + 1) * TILE - 1, (x + 1) * TILE - 2, (y + 1) * TILE - 1);
-        if (this.getTile(x - 1, y) === 'water') this.lampGloom.lineBetween(x * TILE + 1, y * TILE + 2, x * TILE + 1, (y + 1) * TILE - 2);
-        if (this.getTile(x + 1, y) === 'water') this.lampGloom.lineBetween((x + 1) * TILE - 1, y * TILE + 2, (x + 1) * TILE - 1, (y + 1) * TILE - 2);
+        this.lampGloom.fillStyle(profile.silhouette, alpha * 0.34);
+        if (this.getTile(x, y - 1) === 'water') {
+          this.lampGloom.fillEllipse(wx, y * TILE + 3, TILE * 0.94, TILE * 0.24);
+        }
+        if (this.getTile(x, y + 1) === 'water') {
+          this.lampGloom.fillEllipse(wx, (y + 1) * TILE - 3, TILE * 0.94, TILE * 0.24);
+        }
+        if (this.getTile(x - 1, y) === 'water') {
+          this.lampGloom.fillEllipse(x * TILE + 3, wy, TILE * 0.24, TILE * 0.94);
+        }
+        if (this.getTile(x + 1, y) === 'water') {
+          this.lampGloom.fillEllipse((x + 1) * TILE - 3, wy, TILE * 0.24, TILE * 0.94);
+        }
         const sparkleSeed = hash(x * 19, y * 23, rng.seed + state.biome * 1801);
         if (sparkleSeed > profile.accentThreshold) {
           const accentAlpha = profile.accentAlpha * pulse * Phaser.Math.Linear(0.35, 1, proximity);

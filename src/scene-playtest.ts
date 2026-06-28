@@ -411,6 +411,8 @@ function stageLightingVisibilityReview(scene: DeepdiveScene) {
     darkness: roundMetric(darknessAtDepth()),
     lookId: look.id,
     palette: { ...look.palette },
+    terrainVisibilityTreatment: 'softened-wash',
+    hardBlockOutlineAlpha: 0,
     visibleEdgeTiles,
     creature: {
       id: creature.id,
