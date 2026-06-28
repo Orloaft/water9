@@ -55,7 +55,6 @@ export function renderHud() {
   shell.classList.toggle('is-biome-loading', state.biomeLoading.active);
   shell.classList.toggle('is-controller-known', state.controller.connected || Boolean(state.controller.message));
   shell.classList.toggle('is-debug-ui', debugUi);
-  shell.classList.toggle('is-oxygen-danger', state.started && !state.atBoat && !state.lost && (sub ? sub.oxygen <= subDef(sub.tier).oxygen * 0.16 : state.oxygen <= oxygenMax() * 0.16));
   shell.classList.toggle('is-load-error', state.saveLoad.phase === 'error');
   titleScreen.classList.toggle('is-hidden', state.started);
   titleScreen.classList.toggle('is-options', state.titlePanel === 'options');
@@ -67,21 +66,16 @@ export function renderHud() {
   const statusFlags = [
     state.saveLoad.phase === 'error' ? `SAVE ERROR: ${state.saveLoad.message}` : '',
     state.saveLoad.phase === 'loading' ? 'LOADING SAVE: restoring diver position and world state.' : '',
-    !state.atBoat && !sub && state.oxygen <= 0 ? 'OXYGEN DEPLETED: hull breach is imminent.' : '',
-    !state.atBoat && !sub && state.oxygen > 0 && state.oxygen <= oxygenMax() * 0.16 ? 'OXYGEN CRITICAL: surface or use O2 now.' : '',
-    !state.atBoat && sub && sub.oxygen <= subDef(sub.tier).oxygen * 0.16 ? 'SUB OXYGEN CRITICAL: dock or switch reserves.' : '',
     state.venom.active ? `VENOMED: ${state.venom.source} toxin is draining hull integrity.` : '',
     state.bleed.active ? `BLEEDING x${state.bleed.stacks}: suit integrity is leaking for ${Math.ceil(state.bleed.duration)}s.` : '',
   ].filter(Boolean);
   const statusText = statusFlags.length ? `${statusFlags.join(' ')} ${state.status}` : state.status;
-  const priorityAlert = priorityAlertPanel(statusFlags);
   gauges.innerHTML = `
     <div class="readout">
       <div><strong>${state.credits}</strong><span>Credits</span></div>
       <div><strong>${state.depth} m</strong><span>Depth</span></div>
       <div><strong>${state.maxDepth} m</strong><span>Record</span></div>
     </div>
-    ${priorityAlert}
     ${objectivePanel()}
     ${sonarPanel()}
     ${sub ? meter('Sub O2', sub.oxygen, subDef(sub.tier).oxygen, '#8ee7f4') : meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
@@ -91,7 +85,7 @@ export function renderHud() {
     ${subHatchControl()}
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
     ${cargoManifest()}
-    <p class="status ${state.saveLoad.phase === 'error' ? 'is-error' : ''} ${state.oxygen <= oxygenMax() * 0.16 && !state.atBoat ? 'is-danger' : ''} ${state.venom.active || state.bleed.active ? 'is-venomed' : ''}">${statusText}</p>
+    <p class="status ${state.saveLoad.phase === 'error' ? 'is-error' : ''} ${state.venom.active || state.bleed.active ? 'is-venomed' : ''}">${statusText}</p>
   `;
   renderGameOver(app);
   const bargeOpen = state.started && state.atBoat && !radioActive && !state.lost && !state.won;
@@ -231,20 +225,6 @@ export function debugPresentationEnabled() {
   if (typeof window === 'undefined') return false;
   const params = new URLSearchParams(window.location.search);
   return params.has('debug') || params.has('perf') || window.localStorage?.getItem('water9:debug') === '1';
-}
-
-export function priorityAlertPanel(statusFlags: string[]) {
-  if (!state.started || state.atBoat || state.docked || state.lost || state.won || statusFlags.length <= 0) return '';
-  const text = statusFlags[0];
-  const label = text.includes(':') ? text.split(':')[0] : 'Alert';
-  const detail = text.includes(':') ? text.slice(text.indexOf(':') + 1).trim() : text;
-  const severity = /OXYGEN|SAVE ERROR|DEPLETED|VENOMED|BLEEDING/.test(text) ? 'critical' : 'warning';
-  return `
-    <section class="priority-alert priority-alert--${severity}">
-      <span>${label}</span>
-      <strong>${detail}</strong>
-    </section>
-  `;
 }
 
 export function renderGameOver(app: HTMLDivElement) {

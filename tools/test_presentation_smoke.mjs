@@ -97,7 +97,6 @@ async function captureFrame(page, label, viewport) {
   return page.evaluate(() => {
     const selectors = {
       objective: '.objective-panel',
-      alert: '.priority-alert',
       sonar: '.sonar-panel',
       hud: '#gauges',
       status: '.status',
@@ -147,15 +146,12 @@ try {
     const { rects } = frame;
     if (rects.fps?.visible) errors.push({ type: 'assertion', text: `${frame.label}: FPS tracker visible by default` });
     if (rects.perf?.visible) errors.push({ type: 'assertion', text: `${frame.label}: perf HUD visible by default` });
-    for (const key of ['objective', 'alert', 'sonar', 'hud', 'status']) {
+    for (const key of ['objective', 'sonar', 'hud', 'status']) {
       if (!rects[key]?.visible) errors.push({ type: 'assertion', text: `${frame.label}: ${key} panel was not visible` });
     }
     const pairs = [
-      ['objective', 'alert'],
       ['objective', 'sonar'],
-      ['alert', 'sonar'],
       ['objective', 'hud'],
-      ['alert', 'hud'],
       ['sonar', 'hud'],
     ];
     for (const [a, b] of pairs) {

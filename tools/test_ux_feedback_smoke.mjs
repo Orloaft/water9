@@ -84,19 +84,23 @@ try {
   const oxygenSnap = await snapshot(page);
   const objectiveText = await page.locator('.objective-panel').innerText({ timeout: 5000 }).catch(() => '');
   const oxygenStatus = await page.locator('.status').innerText({ timeout: 5000 }).catch(() => '');
+  const priorityAlertVisible = await page.locator('.priority-alert').isVisible({ timeout: 500 }).catch(() => false);
   await command(page, 'terrainMineAt', { worldX: 8, worldY: 8, repeats: 1 });
   const miningSnap = await snapshot(page);
+  const miningStatus = String(miningSnap?.ui?.status ?? '');
 
   if (!objectiveText.toLowerCase().includes('current goal')) fail('in-dive objective panel did not render a current goal');
-  if (!oxygenStatus.toLowerCase().includes('oxygen critical')) fail('oxygen danger status was not visible in the HUD');
-  if (!String(miningSnap?.ui?.status ?? '').toLowerCase().includes('cutter')) fail('mining miss feedback did not explain cutter outcome');
+  if (priorityAlertVisible) fail('redundant priority alert panel was visible during oxygen warning');
+  if (/OXYGEN (CRITICAL|DEPLETED):|SUB OXYGEN CRITICAL:/u.test(oxygenStatus)) fail('redundant HUD oxygen alert text was visible');
+  if (/no rock|no yield|cutter found open water|cutter scraped terrain/iu.test(miningStatus)) fail('mining miss status text was visible');
 
   report = {
     ok: errors.length === 0,
     objectiveText,
     oxygenStatus,
+    priorityAlertVisible,
     oxygen: oxygenSnap?.state?.oxygen ?? null,
-    miningStatus: miningSnap?.ui?.status ?? null,
+    miningStatus,
   };
 } catch (error) {
   errors.push({ type: 'exception', text: error?.stack ?? String(error) });

@@ -4,7 +4,7 @@ import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGH
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,hullMax,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,oxygenMax,parallaxProfileFor,scaledEntity,sonarKey,sonarTileColor,specialRoomEffectCenter,spriteManifests,subDef,swimPose,swimTopSpeed,terrainBodyColorForTile,terrainLookForBiome } from './helpers';
+import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxProfileFor,scaledEntity,sonarKey,sonarTileColor,specialRoomEffectCenter,spriteManifests,subDef,swimPose,swimTopSpeed,terrainBodyColorForTile,terrainLookForBiome } from './helpers';
 import type { DeepdiveScene } from './scene';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { hideSubmarinePartSprites,renderSubmarineParts } from './submarine-parts';
@@ -1763,10 +1763,10 @@ export function drawLegacyDiver(this: DeepdiveScene, animation: ReturnType<typeo
       .setDepth(2.08);
     fitImageWidth(this.playerSprite, width);
     const danger = this.activeBobbitDrag() || this.articulatedCreatures.some((creature) => !creature.dead && (creature.state === 'lunge' || creature.state === 'grab') && Phaser.Math.Distance.Between(creature.x, creature.y, p.x, p.y) < creature.radius + 180);
-    if (danger || state.hull <= hullMax() * 0.28 || state.oxygen <= oxygenMax() * 0.18) {
+    if (danger) {
       const alpha = danger ? 0.74 : 0.46;
       const pulse = Math.sin(time * 9) * 3;
-      this.actors.lineStyle(2, danger ? 0xffd166 : 0x8ee7f4, alpha);
+      this.actors.lineStyle(2, 0xffd166, alpha);
       this.actors.strokeCircle(p.x, p.y, scaledEntity(24 + pulse));
       this.actors.lineStyle(1, 0xfff7df, alpha * 0.5);
       this.actors.strokeCircle(p.x, p.y, scaledEntity(31 - pulse * 0.35));

@@ -64,19 +64,9 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     if (this.cutNestTarget(worldX, worldY, sub)) return;
     if (this.cutLifeTarget(worldX, worldY, sub)) return;
     const impact = miningTunnelTarget(this, angle, range);
-    if (!impact) {
-      state.status = 'Cutter found open water. Aim at a solid rock face in range.';
-      this.spawnFloatingText('No rock', 0xa9b8c9);
-      renderHud();
-      return;
-    }
+    if (!impact) return;
     const targets = this.mineTargets(impact.tx, impact.ty);
-    if (!targets.length) {
-      state.status = 'Cutter scraped terrain, but nothing mineable is under the beam.';
-      this.spawnFloatingText('No yield', 0xa9b8c9);
-      renderHud();
-      return;
-    }
+    if (!targets.length) return;
     const fuelReserve = sub ? sub.fuel : state.fuel;
     if (fuelReserve > 0) this.drillingThisFrame = true;
     if (this.player.mineCooldown > 0) return;
@@ -89,8 +79,6 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     }
 
     const power = 8.8 + miningUpgradeBonus() * 2.35;
-    let strongestHit: { name: string; hp: number; damage: number } | null = null;
-    let broken = 0;
     if (sub) sub.fuel = Math.max(0, sub.fuel - fuelCost);
     else state.fuel = Math.max(0, state.fuel - fuelCost);
     carveMiningTunnel(this, impact);
@@ -102,15 +90,7 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
       this.damage[target.y][target.x] += power;
       if (this.damage[target.y][target.x] >= def.hp) {
         this.breakTile(target.x, target.y, tile, def, impact.x, impact.y);
-        broken += 1;
-      } else if (!strongestHit || this.damage[target.y][target.x] / def.hp > strongestHit.damage / strongestHit.hp) {
-        strongestHit = { name: def.name, hp: def.hp, damage: this.damage[target.y][target.x] };
       }
-    }
-    if (!broken && strongestHit) {
-      const cracked = Phaser.Math.Clamp(Math.round((strongestHit.damage / strongestHit.hp) * 100), 1, 99);
-      state.status = `Cutter hit ${strongestHit.name}. Rock integrity ${cracked}% cracked. Keep cutting.`;
-      this.spawnFloatingText(`${strongestHit.name} hit`, 0xffd166);
     }
     this.terrainDirty = true;
     this.player.mineCooldown = mineCooldown();
@@ -377,8 +357,7 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       this.refreshFloraAnchorsAround(tx, ty, 5);
       this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.42, color: def.color, seed: hash(tx, ty, rng.seed) });
       if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
-      state.status = `Cutter bit into ${def.name}. Keep pressure to break it loose.`;
-      this.spawnFloatingText('Chip', def.value > 0 ? def.color : 0x8ee7f4);
+      state.status = `Chipped ${def.name}.`;
       return;
     }
     this.world[ty][tx] = 'water';
@@ -395,10 +374,8 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       state.status = state.cargo.length < cargoCapacity()
         ? `${def.name} broke loose. Swim near it to collect.`
         : `Cargo full. ${def.name} broke loose and can be picked up later.`;
-      this.spawnFloatingText(`Ore +${def.value}c`, def.color);
     } else {
       state.status = `Cut through ${def.name}.`;
-      this.spawnFloatingText('Opened', 0x8ee7f4);
     }
   }
 

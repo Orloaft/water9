@@ -550,48 +550,6 @@ button.is-controller-focus {
   line-height: 1.25;
 }
 
-.priority-alert {
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  z-index: 4;
-  display: grid;
-  gap: 3px;
-  width: min(420px, calc(100vw - 610px));
-  min-width: 280px;
-  border: 1px solid rgba(255, 209, 102, 0.42);
-  border-radius: 4px;
-  padding: 8px 11px;
-  background:
-    linear-gradient(180deg, rgba(48, 31, 6, 0.72), rgba(5, 14, 20, 0.88)),
-    url("/assets/generated/ui-panel-wide.png");
-  background-size: 100% 100%;
-  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-.priority-alert span {
-  color: #ffd166;
-  font-size: 0.68rem;
-  font-weight: 950;
-  text-transform: uppercase;
-}
-
-.priority-alert strong {
-  color: #fff7df;
-  font-size: 0.82rem;
-  line-height: 1.18;
-}
-
-.priority-alert--critical {
-  border-color: rgba(255, 79, 100, 0.64);
-  background:
-    linear-gradient(180deg, rgba(68, 8, 15, 0.78), rgba(5, 14, 20, 0.9)),
-    url("/assets/generated/ui-panel-wide.png");
-  background-size: 100% 100%;
-}
-
 .readout div {
   border-radius: 4px;
   background:
@@ -770,15 +728,10 @@ button.is-controller-focus {
   color: rgba(230, 255, 211, 0.92);
 }
 
-.status.is-danger,
 .status.is-error {
   border-color: rgba(255, 79, 100, 0.58);
   background: rgba(45, 7, 12, 0.76);
   color: #fff7df;
-}
-
-.shell.is-oxygen-danger #game canvas {
-  filter: saturate(0.9) contrast(1.08);
 }
 
 .cargo-manifest {
@@ -2331,14 +2284,6 @@ button.is-controller-focus {
     transform: none;
   }
 
-  .priority-alert {
-    top: 78px;
-    left: 10px;
-    width: min(330px, calc(100vw - 236px));
-    min-width: 0;
-    transform: none;
-  }
-
   .objective-panel {
     top: 138px;
     width: min(330px, calc(100vw - 236px));
@@ -2472,7 +2417,6 @@ button.is-controller-focus {
   }
 
   .readout,
-  .priority-alert,
   .objective-panel {
     width: min(220px, calc(100vw - 178px));
   }
