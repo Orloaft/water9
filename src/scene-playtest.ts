@@ -584,8 +584,10 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         fuelMax: fuelMax(),
         cargo: state.cargo.length,
         cargoCapacity: cargoCapacity(),
+        sonarRevealed: state.sonarRevealed.size,
         atBoat: state.atBoat,
         docked: state.docked,
+        started: state.started,
         lost: state.lost,
         won: state.won,
         venom: { ...state.venom },
@@ -602,6 +604,10 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
       },
       ui: {
         paused: state.paused,
+        sonarMapOpen: state.sonarMapOpen,
+        sonarMapPanX: state.sonarMapPanX,
+        sonarMapPanY: state.sonarMapPanY,
+        sonarMapZoom: state.sonarMapZoom,
         radioOpen: state.radioOpen,
         logbookOpen: state.logbookOpen,
         cargoOpen: state.cargoOpen,
@@ -1052,6 +1058,10 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       state.atBoat = true;
       state.docked = true;
       state.paused = false;
+      state.sonarMapOpen = false;
+      state.sonarMapPanX = 0;
+      state.sonarMapPanY = 0;
+      state.sonarMapZoom = 1;
       state.cargoOpen = false;
       state.lost = false;
       state.won = false;
@@ -1218,7 +1228,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.atBoat = false;
         state.paused = false;
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
-        this.updateArticulatedCreatures(0.016, { move: new Phaser.Math.Vector2(0, 0), hasMove: false, mineHeld: false, scanHeld: false, sonarPressed: false, useItemPressed: false, boardHeld: false, scoutPressed: false, pausePressed: false, logbookPressed: false, confirmPressed: false });
+        this.updateArticulatedCreatures(0.016, { move: new Phaser.Math.Vector2(0, 0), hasMove: false, mineHeld: false, scanHeld: false, sonarPressed: false, sonarMapPressed: false, useItemPressed: false, boardHeld: false, scoutPressed: false, pausePressed: false, cancelPressed: false, logbookPressed: false, confirmPressed: false });
         return this.playtestSnapshot();
       }
     } else if (command === 'forceBobbitDrag') {

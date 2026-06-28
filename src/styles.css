@@ -330,6 +330,7 @@ button.is-controller-focus {
 .shell.is-title .barge-menu,
 .shell.is-title .logbook,
 .shell.is-title .pause-menu,
+.shell.is-title .sonar-map-overlay,
 .shell.is-title .radio-dialogue {
   display: none;
 }
@@ -338,6 +339,7 @@ button.is-controller-focus {
 .shell.is-radio-modal .barge-menu,
 .shell.is-radio-modal .logbook,
 .shell.is-radio-modal .pause-menu,
+.shell.is-radio-modal .sonar-map-overlay,
 .shell.is-radio-modal .fps-tracker {
   opacity: 0;
   pointer-events: none;
@@ -347,6 +349,7 @@ button.is-controller-focus {
 .barge-menu,
 .logbook,
 .pause-menu,
+.sonar-map-overlay,
 .radio-dialogue,
 .game-over {
   position: absolute;
@@ -1241,8 +1244,94 @@ button.is-controller-focus {
 
 .pause-actions {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
+}
+
+.sonar-map-overlay {
+  inset: 16px;
+  z-index: 7;
+  display: none;
+  padding: 14px;
+  background:
+    linear-gradient(180deg, rgba(2, 10, 18, 0.9), rgba(1, 5, 10, 0.96)),
+    repeating-linear-gradient(90deg, rgba(115, 251, 211, 0.045) 0 1px, transparent 1px 56px);
+  pointer-events: auto;
+}
+
+.sonar-map-overlay.is-open {
+  display: grid;
+}
+
+.sonar-map-overlay__panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.sonar-map-overlay__header,
+.sonar-map-overlay__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sonar-map-overlay__header div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sonar-map-overlay__header span,
+.sonar-map-overlay__footer span {
+  color: rgba(236, 251, 255, 0.68);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sonar-map-overlay__header strong {
+  color: #fff7df;
+  font-size: 1.25rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.sonar-map-overlay__header button {
+  min-width: 96px;
+}
+
+#big-sonar-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 1px solid rgba(115, 251, 211, 0.32);
+  border-radius: 4px;
+  background:
+    radial-gradient(circle, rgba(6, 34, 47, 0.38), rgba(1, 7, 12, 0.9)),
+    url("/assets/generated/ui-radar.png");
+  background-size: 100% 100%;
+  box-shadow:
+    inset 0 0 28px rgba(115, 251, 211, 0.12),
+    0 0 16px rgba(7, 31, 40, 0.82);
+  image-rendering: pixelated;
+}
+
+.sonar-map-overlay__footer {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  min-height: 30px;
+}
+
+.sonar-map-overlay__footer span {
+  border: 1px solid rgba(236, 251, 255, 0.1);
+  border-radius: 4px;
+  padding: 6px 8px;
+  background: rgba(236, 251, 255, 0.045);
 }
 
 .pause-controls {
@@ -2240,6 +2329,24 @@ button.is-controller-focus {
   .pause-actions,
   .pause-controls dl {
     grid-template-columns: 1fr;
+  }
+
+  .sonar-map-overlay {
+    inset: 10px;
+    padding: 10px;
+  }
+
+  .sonar-map-overlay__header {
+    align-items: stretch;
+  }
+
+  .sonar-map-overlay__header strong {
+    font-size: 1.05rem;
+  }
+
+  .sonar-map-overlay__footer span {
+    font-size: 0.64rem;
+    padding: 5px 6px;
   }
 
   .controls {

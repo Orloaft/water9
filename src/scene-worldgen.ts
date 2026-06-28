@@ -27,6 +27,10 @@ export function generateWorld(this: DeepdiveScene, ) {
     this.larvae = [];
     state.sonarRevealed.clear();
     state.sonarContacts = [];
+    state.sonarMapOpen = false;
+    state.sonarMapPanX = 0;
+    state.sonarMapPanY = 0;
+    state.sonarMapZoom = 1;
     for (let y = 0; y < WORLD_H; y += 1) {
       const row: Tile[] = [];
       const damageRow: number[] = [];

@@ -85,6 +85,7 @@ export class DeepdiveScene extends Phaser.Scene {
   worldReady = false;
   gamepadButtonsDown = new Set<number>();
   menuNavCooldown = 0;
+  passiveSonarRevealTimer = 0;
   player = {
     x: WORLD_W * TILE * 0.5,
     y: BARGE_DOCK_Y,
@@ -116,7 +117,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,H,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,H,M,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
     this.parallaxLayers = [0, 1, 2, 3].map((index) => this.add
       .tileSprite(0, 0, 1, 1, `parallax-shallow-${index}`)
       .setOrigin(0)
@@ -171,10 +172,12 @@ export class DeepdiveScene extends Phaser.Scene {
     }
     const delta = deltaMs / 1000;
     const controls = this.readControls();
+    if (this.handleGlobalControllerActions(controls)) return;
     if (canDiveFromBargeShortcut() && Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) {
       this.diveFromBarge();
       return;
     }
+    if (this.updateSonarMapNavigation(delta, controls)) return;
     if (this.updateMenuNavigation(delta, controls)) return;
     if (state.radioOpen && state.started && !state.lost && !state.won) {
       this.draw();
@@ -199,8 +202,12 @@ export class DeepdiveScene extends Phaser.Scene {
     }
     if (controls.pausePressed) {
       state.paused = !state.paused;
-      if (state.paused) state.logbookOpen = false;
-      if (state.paused) state.cargoOpen = false;
+      if (state.paused) {
+        state.logbookOpen = false;
+        state.cargoOpen = false;
+      } else {
+        state.sonarMapOpen = false;
+      }
       renderHud();
     }
     if (state.lost || state.won) {
@@ -226,6 +233,7 @@ export class DeepdiveScene extends Phaser.Scene {
       this.updateFloatingTexts(delta);
       this.updateFlares(delta);
       this.updateSystems(delta);
+      this.updatePassiveSonarReveal(delta);
       this.updateQuestProgress();
       this.updateCameraZoom();
       this.cameras.main.centerOn(this.player.x, this.player.y);
@@ -256,6 +264,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.updateAuxSub(delta);
     this.updateHazards(delta);
     this.updateSystems(delta);
+    this.updatePassiveSonarReveal(delta);
     this.updateQuestProgress();
     this.updateFloatingTexts(delta);
     this.updateFlares(delta);
@@ -429,7 +438,8 @@ export class DeepdiveScene extends Phaser.Scene {
     const axisValue = (index: number) => {
       const phaserAxis = phaserPad?.axes?.[index];
       const phaserValue = typeof phaserAxis === 'number' ? phaserAxis : phaserAxis?.getValue?.() ?? phaserAxis?.value;
-      const value = phaserValue ?? gamepad?.axes[index] ?? 0;
+      const rawValue = gamepad?.axes[index] ?? 0;
+      const value = Math.abs(rawValue) > Math.abs(phaserValue ?? 0) ? rawValue : phaserValue ?? 0;
       return Math.abs(value) > 0.18 ? value : 0;
     };
     const padX = axisValue(0) + (pressed.has(15) ? 1 : 0) - (pressed.has(14) ? 1 : 0);
@@ -447,15 +457,88 @@ export class DeepdiveScene extends Phaser.Scene {
       mineHeld: !cargoSelecting && (this.keys.SPACE.isDown || pressed.has(0) || pressed.has(7)),
       scanHeld: this.keys.E.isDown || pressed.has(2),
       boardHeld: this.keys.F.isDown || pressed.has(1),
-      scoutPressed: Phaser.Input.Keyboard.JustDown(this.keys.H) || padJustPressed(8),
+      scoutPressed: Phaser.Input.Keyboard.JustDown(this.keys.H) || padJustPressed(10),
       sonarPressed: Phaser.Input.Keyboard.JustDown(this.keys.Q) || padJustPressed(4),
+      sonarMapPressed: Phaser.Input.Keyboard.JustDown(this.keys.M) || padJustPressed(8),
       useItemPressed: Phaser.Input.Keyboard.JustDown(this.keys.G) || padJustPressed(5),
       pausePressed: Phaser.Input.Keyboard.JustDown(this.keys.ESC) || Phaser.Input.Keyboard.JustDown(this.keys.P) || padJustPressed(9),
+      cancelPressed: Phaser.Input.Keyboard.JustDown(this.keys.ESC) || padJustPressed(1),
       logbookPressed: Phaser.Input.Keyboard.JustDown(this.keys.L) || padJustPressed(3),
       confirmPressed: Phaser.Input.Keyboard.JustDown(this.keys.SPACE) || Phaser.Input.Keyboard.JustDown(this.keys.ENTER) || padJustPressed(0),
     };
     this.gamepadButtonsDown = pressed;
     return controls;
+  }
+
+  handleGlobalControllerActions(controls: ControlState) {
+    if (!state.started || state.lost || state.won || state.radioOpen) return false;
+    if (state.sonarMapOpen && (controls.cancelPressed || controls.sonarMapPressed || controls.pausePressed)) {
+      state.sonarMapOpen = false;
+      state.paused = true;
+      renderHud();
+      return true;
+    }
+    if (controls.sonarMapPressed) {
+      state.paused = true;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.sonarMapOpen = true;
+      this.captureSonarContacts();
+      renderHud();
+      requestAnimationFrame(() => this.drawSonarMap());
+      return true;
+    }
+    if (controls.cancelPressed) {
+      if (state.paused) {
+        state.paused = false;
+        state.sonarMapOpen = false;
+        renderHud();
+        return true;
+      }
+      if (state.logbookOpen) {
+        state.logbookOpen = false;
+        renderHud();
+        return true;
+      }
+      if (state.cargoOpen) {
+        state.cargoOpen = false;
+        renderHud();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  updateSonarMapNavigation(delta: number, controls: ControlState) {
+    if (!state.sonarMapOpen) return false;
+    let changed = false;
+    if (controls.hasMove) {
+      const speed = 24 / Math.max(0.65, state.sonarMapZoom);
+      state.sonarMapPanX = Phaser.Math.Clamp(state.sonarMapPanX + controls.move.x * speed * delta * 60, -WORLD_W * 0.46, WORLD_W * 0.46);
+      state.sonarMapPanY = Phaser.Math.Clamp(state.sonarMapPanY + controls.move.y * speed * delta * 60, -WORLD_H * 0.46, WORLD_H * 0.46);
+      changed = true;
+    }
+    if (this.keys.Q.isDown || this.gamepadButtonsDown.has(4)) {
+      state.sonarMapZoom = Phaser.Math.Clamp(state.sonarMapZoom - delta * 1.1, 0.62, 2.6);
+      changed = true;
+    }
+    if (this.keys.E.isDown || this.gamepadButtonsDown.has(5)) {
+      state.sonarMapZoom = Phaser.Math.Clamp(state.sonarMapZoom + delta * 1.1, 0.62, 2.6);
+      changed = true;
+    }
+    if (changed) {
+      this.drawSonarMap();
+      return true;
+    }
+    return false;
+  }
+
+  updatePassiveSonarReveal(delta: number) {
+    if (!state.started || state.atBoat || state.docked || state.lost || state.won || state.paused) return;
+    this.passiveSonarRevealTimer = Math.max(0, this.passiveSonarRevealTimer - delta);
+    if (this.passiveSonarRevealTimer > 0) return;
+    this.passiveSonarRevealTimer = 0.18;
+    this.revealSonarAtPlayer(5);
   }
 
   updateMenuNavigation(delta: number, controls: ControlState) {

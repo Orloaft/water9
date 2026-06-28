@@ -306,6 +306,10 @@ function applySavedState(save: SavedGame) {
   state.atBoat = Boolean(save.state.atBoat);
   state.docked = Boolean(save.state.docked || state.atBoat);
   state.paused = false;
+  state.sonarMapOpen = false;
+  state.sonarMapPanX = 0;
+  state.sonarMapPanY = 0;
+  state.sonarMapZoom = 1;
   state.logbookOpen = false;
   state.cargoOpen = false;
   state.radioOpen = false;

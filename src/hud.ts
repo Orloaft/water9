@@ -24,6 +24,7 @@ export function renderHud() {
         <aside id="barge-menu" class="barge-menu"></aside>
         <aside id="logbook" class="logbook"></aside>
         <aside id="pause-menu" class="pause-menu"></aside>
+        <aside id="sonar-map-overlay" class="sonar-map-overlay"></aside>
         <aside id="radio-dialogue" class="radio-dialogue"></aside>
         <aside id="biome-loading" class="biome-loading"></aside>
       </main>
@@ -33,11 +34,12 @@ export function renderHud() {
   const bargeMenu = document.querySelector<HTMLDivElement>('#barge-menu');
   const logbook = document.querySelector<HTMLDivElement>('#logbook');
   const pauseMenu = document.querySelector<HTMLDivElement>('#pause-menu');
+  const sonarMapOverlay = document.querySelector<HTMLDivElement>('#sonar-map-overlay');
   const radioDialogue = document.querySelector<HTMLDivElement>('#radio-dialogue');
   const biomeLoading = document.querySelector<HTMLElement>('#biome-loading');
   const shell = document.querySelector<HTMLElement>('.shell');
   const titleScreen = document.querySelector<HTMLElement>('#title-screen');
-  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !radioDialogue || !biomeLoading || !shell || !titleScreen) return;
+  if (!gauges || !bargeMenu || !logbook || !pauseMenu || !sonarMapOverlay || !radioDialogue || !biomeLoading || !shell || !titleScreen) return;
   const logbookScrollTop = logbook.querySelector<HTMLDivElement>('.logbook__list')?.scrollTop ?? 0;
   const radioActive = state.radioOpen && state.started && !state.lost && !state.won;
   const debugUi = debugPresentationEnabled();
@@ -47,6 +49,7 @@ export function renderHud() {
   shell.classList.toggle('is-title', !state.started);
   shell.classList.toggle('is-radio-modal', radioActive);
   shell.classList.toggle('is-cargo-open', cargoActive);
+  shell.classList.toggle('is-sonar-map-open', state.sonarMapOpen);
   shell.classList.toggle('is-biome-loading', state.biomeLoading.active);
   shell.classList.toggle('is-debug-ui', debugUi);
   shell.classList.toggle('is-oxygen-danger', state.started && !state.atBoat && !state.lost && (sub ? sub.oxygen <= subDef(sub.tier).oxygen * 0.16 : state.oxygen <= oxygenMax() * 0.16));
@@ -95,6 +98,8 @@ export function renderHud() {
   if (logbookList) logbookList.scrollTop = logbookScrollTop;
   pauseMenu.classList.toggle('is-open', state.paused && state.started && !radioActive && !state.lost && !state.won);
   setStableHtml(pauseMenu, state.paused && state.started && !radioActive && !state.lost && !state.won ? pauseMenuPanel() : '');
+  sonarMapOverlay.classList.toggle('is-open', state.sonarMapOpen && state.started && !radioActive && !state.lost && !state.won);
+  setStableHtml(sonarMapOverlay, state.sonarMapOpen && state.started && !radioActive && !state.lost && !state.won ? sonarMapPanel() : '');
   radioDialogue.classList.toggle('is-open', radioActive);
   setStableHtml(radioDialogue, radioActive ? radioDialoguePanel() : '');
   biomeLoading.classList.toggle('is-open', state.biomeLoading.active);
@@ -251,7 +256,9 @@ export function titlePanel() {
         <div><strong>Dive / mine</strong><span>Space / A / right trigger</span></div>
         <div><strong>Scan</strong><span>Hold E / X</span></div>
         <div><strong>Sonar</strong><span>Q / left bumper</span></div>
+        <div><strong>Sonar map</strong><span>M / View</span></div>
         <div><strong>Use item</strong><span>G / right bumper</span></div>
+        <div><strong>Back / close</strong><span>B</span></div>
         <div><strong>Logbook</strong><span>L / Y</span></div>
         <div><strong>Pause</strong><span>Esc, P / Start</span></div>
       </div>
@@ -356,6 +363,7 @@ export function toggleLogbook() {
   state.logbookOpen = opening;
   if (opening) {
     state.paused = false;
+    state.sonarMapOpen = false;
     state.cargoOpen = false;
   }
   renderHud();
@@ -505,6 +513,28 @@ export function bindUiEvents(app: HTMLDivElement) {
     gameScene()?.diveFromBarge();
   }, true);
   window.addEventListener('keydown', (event) => {
+    if (event.repeat || !state.started || state.lost || state.won || state.radioOpen) return;
+    if (event.code === 'KeyM') {
+      event.preventDefault();
+      event.stopPropagation();
+      state.paused = true;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.sonarMapOpen = !state.sonarMapOpen;
+      if (state.sonarMapOpen) gameScene()?.captureSonarContacts();
+      renderHud();
+      requestAnimationFrame(() => gameScene()?.drawSonarMap());
+      return;
+    }
+    if (event.code === 'Escape' && state.sonarMapOpen) {
+      event.preventDefault();
+      event.stopPropagation();
+      state.sonarMapOpen = false;
+      state.paused = true;
+      renderHud();
+    }
+  }, true);
+  window.addEventListener('keydown', (event) => {
     if (event.code !== 'KeyG' || event.repeat || state.docked || state.paused || state.logbookOpen || state.radioOpen || !state.started || state.lost || state.won) return;
     event.preventDefault();
     event.stopPropagation();
@@ -513,7 +543,7 @@ export function bindUiEvents(app: HTMLDivElement) {
   app.addEventListener('pointerdown', (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
-    if (target.closest('.hud, .barge-menu, .logbook, .pause-menu, .radio-dialogue, .title-screen, .game-over')) {
+    if (target.closest('.hud, .barge-menu, .logbook, .pause-menu, .sonar-map-overlay, .radio-dialogue, .title-screen, .game-over')) {
       event.stopPropagation();
     }
     if (state.radioOpen && state.started && !state.lost && !state.won) {
@@ -607,6 +637,27 @@ export function bindUiEvents(app: HTMLDivElement) {
       event.preventDefault();
       state.paused = !state.paused;
       if (state.paused) state.logbookOpen = false;
+      if (!state.paused) state.sonarMapOpen = false;
+      renderHud();
+      return;
+    }
+    const sonarMapButton = target.closest<HTMLButtonElement>('button[data-sonar-map]');
+    if (sonarMapButton) {
+      event.preventDefault();
+      state.paused = true;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.sonarMapOpen = true;
+      gameScene()?.captureSonarContacts();
+      renderHud();
+      requestAnimationFrame(() => gameScene()?.drawSonarMap());
+      return;
+    }
+    const closeSonarMapButton = target.closest<HTMLButtonElement>('button[data-close-sonar-map]');
+    if (closeSonarMapButton) {
+      event.preventDefault();
+      state.sonarMapOpen = false;
+      state.paused = true;
       renderHud();
       return;
     }
@@ -755,6 +806,7 @@ export function activeMenuButtons() {
   const scopes = [
     '#title-screen:not(.is-hidden)',
     '.radio-dialogue.is-open',
+    '.sonar-map-overlay.is-open',
     '.pause-menu.is-open',
     '.logbook.is-open',
     '.barge-menu.is-open',
@@ -866,6 +918,8 @@ export function menuButtonKey(button: HTMLButtonElement) {
     (button.dataset.saveGame !== undefined ? 'save-game' : undefined) ??
     (button.dataset.loadGame !== undefined ? 'load-game' : undefined) ??
     (button.dataset.clearSave !== undefined ? 'clear-save' : undefined) ??
+    (button.dataset.sonarMap !== undefined ? 'sonar-map' : undefined) ??
+    (button.dataset.closeSonarMap !== undefined ? 'close-sonar-map' : undefined) ??
     button.dataset.selectCargo ??
     (button.dataset.subHatch !== undefined ? 'sub-hatch' : undefined) ??
     (button.dataset.deployScout !== undefined ? 'deploy-scout' : undefined) ??
@@ -1100,6 +1154,7 @@ export function pauseMenuPanel() {
     </div>
     <div class="pause-actions">
       <button data-pause>Resume</button>
+      <button data-sonar-map data-focus-key="pause-sonar-map">Sonar Map</button>
       <button data-save-game data-focus-key="pause-save">Save game</button>
       <button data-load-game data-focus-key="pause-load" ${hasSavedGame() ? '' : 'disabled'}>Load game</button>
       <button data-logbook>${state.logbookOpen ? 'Close logbook' : 'Open logbook'}</button>
@@ -1115,6 +1170,7 @@ export function pauseMenuPanel() {
         <div><dt>Sub hatch</dt><dd>Hold F</dd></div>
         <div><dt>Deploy scout</dt><dd>H</dd></div>
         <div><dt>Sonar</dt><dd>Q</dd></div>
+        <div><dt>Sonar map</dt><dd>M</dd></div>
         <div><dt>Use item / sub weapon</dt><dd>G</dd></div>
         <div><dt>Logbook</dt><dd>L</dd></div>
         <div><dt>Pause</dt><dd>Esc / P</dd></div>
@@ -1127,13 +1183,39 @@ export function pauseMenuPanel() {
         <div><dt>Dive / Mine</dt><dd>A / right trigger</dd></div>
         <div><dt>Scan</dt><dd>Hold X</dd></div>
         <div><dt>Sub hatch</dt><dd>Hold B</dd></div>
-        <div><dt>Deploy scout</dt><dd>Back / Select</dd></div>
+        <div><dt>Deploy scout</dt><dd>Left stick press</dd></div>
         <div><dt>Sonar</dt><dd>Left bumper</dd></div>
+        <div><dt>Sonar map</dt><dd>View / Back</dd></div>
         <div><dt>Use item / sub weapon</dt><dd>Right bumper</dd></div>
         <div><dt>Logbook</dt><dd>Y</dd></div>
         <div><dt>Pause</dt><dd>Start</dd></div>
       </dl>
     </section>
+  `;
+}
+
+export function sonarMapPanel() {
+  const revealed = state.sonarRevealed.size;
+  const total = Math.max(1, 180 * 220);
+  const percent = Math.min(100, Math.round((revealed / total) * 1000) / 10);
+  return `
+    <div class="sonar-map-overlay__panel">
+      <header class="sonar-map-overlay__header">
+        <div>
+          <span>Discovered biome sonar</span>
+          <strong>${biomeName()}</strong>
+        </div>
+        <button data-close-sonar-map data-focus-key="sonar-map-close">Back</button>
+      </header>
+      <canvas id="big-sonar-map" width="960" height="560" aria-label="Discovered biome sonar map"></canvas>
+      <footer class="sonar-map-overlay__footer">
+        <span>${revealed.toLocaleString()} cells charted (${percent}%)</span>
+        <span>Left stick / arrows pan</span>
+        <span>LB/Q zoom out</span>
+        <span>RB/E zoom in</span>
+        <span>B/Esc/View close</span>
+      </footer>
+    </div>
   `;
 }
 

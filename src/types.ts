@@ -712,8 +712,10 @@ export interface ControlState {
   boardHeld: boolean;
   scoutPressed: boolean;
   sonarPressed: boolean;
+  sonarMapPressed: boolean;
   useItemPressed: boolean;
   pausePressed: boolean;
+  cancelPressed: boolean;
   logbookPressed: boolean;
   confirmPressed: boolean;
 }

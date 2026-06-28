@@ -2201,7 +2201,9 @@ export function drawFlares(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.C
 
 export function drawSonarMap(this: DeepdiveScene, ) {
     const canvas = document.querySelector<HTMLCanvasElement>('#sonar-map');
-    if (!canvas || !this.world.length) return;
+    if (!this.world.length) return;
+    drawBigSonarMap.call(this);
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const size = 224;
@@ -2366,6 +2368,149 @@ export function drawSonarMap(this: DeepdiveScene, ) {
     ctx.lineTo(size / 2 - 5, size / 2 + 5);
     ctx.closePath();
     ctx.fill();
+  }
+
+function drawBigSonarMap(this: DeepdiveScene) {
+    const canvas = document.querySelector<HTMLCanvasElement>('#big-sonar-map');
+    if (!canvas || !this.world.length) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(640, Math.round(rect.width || 960));
+    const height = Math.max(360, Math.round(rect.height || 560));
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = '#01070d';
+    ctx.fillRect(0, 0, width, height);
+    const gradient = ctx.createRadialGradient(width * 0.5, height * 0.46, 20, width * 0.5, height * 0.5, Math.max(width, height) * 0.58);
+    gradient.addColorStop(0, 'rgba(20, 84, 101, 0.2)');
+    gradient.addColorStop(0.68, 'rgba(3, 24, 36, 0.1)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.78)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    const zoom = Phaser.Math.Clamp(state.sonarMapZoom || 1, 0.62, 2.6);
+    const worldAspect = WORLD_W / WORLD_H;
+    const canvasAspect = width / height;
+    const baseCell = canvasAspect > worldAspect ? height / WORLD_H : width / WORLD_W;
+    const cell = baseCell * zoom;
+    const centerTileX = Phaser.Math.Clamp(this.player.x / TILE + state.sonarMapPanX, 0, WORLD_W);
+    const centerTileY = Phaser.Math.Clamp(this.player.y / TILE + state.sonarMapPanY, 0, WORLD_H);
+    const originX = width * 0.5 - centerTileX * cell;
+    const originY = height * 0.5 - centerTileY * cell;
+    const minX = Math.max(0, Math.floor(-originX / cell) - 2);
+    const maxX = Math.min(WORLD_W - 1, Math.ceil((width - originX) / cell) + 2);
+    const minY = Math.max(0, Math.floor(-originY / cell) - 2);
+    const maxY = Math.min(WORLD_H - 1, Math.ceil((height - originY) / cell) + 2);
+    const drawSize = Math.max(1, Math.ceil(cell) + 1);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, width, height);
+    ctx.clip();
+    ctx.fillStyle = 'rgba(115, 251, 211, 0.06)';
+    for (let x = 0; x <= WORLD_W; x += 20) {
+      const px = originX + x * cell;
+      if (px < -1 || px > width + 1) continue;
+      ctx.fillRect(px, 0, 1, height);
+    }
+    for (let y = 0; y <= WORLD_H; y += 20) {
+      const py = originY + y * cell;
+      if (py < -1 || py > height + 1) continue;
+      ctx.fillRect(0, py, width, 1);
+    }
+
+    for (let y = minY; y <= maxY; y += 1) {
+      for (let x = minX; x <= maxX; x += 1) {
+        if (!state.sonarRevealed.has(sonarKey(x, y))) continue;
+        const tile = this.getTile(x, y);
+        const px = Math.floor(originX + x * cell);
+        const py = Math.floor(originY + y * cell);
+        const solid = tiles[tile].solid;
+        if (!solid) {
+          ctx.fillStyle = 'rgba(12, 88, 111, 0.46)';
+          ctx.fillRect(px, py, drawSize, drawSize);
+          continue;
+        }
+        const north = y <= 0 || !tiles[this.getTile(x, y - 1)].solid;
+        const south = y >= WORLD_H - 1 || !tiles[this.getTile(x, y + 1)].solid;
+        const west = x <= 0 || !tiles[this.getTile(x - 1, y)].solid;
+        const east = x >= WORLD_W - 1 || !tiles[this.getTile(x + 1, y)].solid;
+        const edge = north || south || west || east;
+        if (edge || tile === 'stone' || tile === 'sand' || tile === 'bedrock' || tile === 'anchorstone' || tiles[tile].value > 0 || isArtifactTile(tile)) {
+          ctx.fillStyle = sonarTileColor(tile, edge);
+          ctx.fillRect(px, py, drawSize, drawSize);
+        }
+      }
+    }
+
+    const drawContact = (x: number, y: number, color: string, radius: number, stroke = '') => {
+      const px = originX + (x / TILE) * cell;
+      const py = originY + (y / TILE) * cell;
+      if (px < -20 || px > width + 20 || py < -20 || py > height + 20) return;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(px, py, radius, 0, Math.PI * 2);
+      ctx.fill();
+      if (stroke) {
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    };
+
+    const bargeX = WORLD_W * TILE * 0.5;
+    const bargeY = BARGE_DOCK_Y;
+    if (state.sonarRevealed.has(sonarKey(Math.floor(bargeX / TILE), Math.floor(bargeY / TILE)))) {
+      const px = originX + (bargeX / TILE) * cell;
+      const py = originY + (bargeY / TILE) * cell;
+      const bw = Math.max(32, cell * 14);
+      const bh = Math.max(7, cell * 2.6);
+      ctx.fillStyle = 'rgba(242, 211, 155, 0.9)';
+      ctx.fillRect(px - bw * 0.5, py - bh * 0.5, bw, bh);
+      ctx.strokeStyle = 'rgba(142, 231, 244, 0.78)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(px - bw * 0.5, py - bh * 0.5, bw, bh);
+    }
+
+    for (const contact of state.sonarContacts) {
+      const tx = Math.floor(contact.x / TILE);
+      const ty = Math.floor(contact.y / TILE);
+      if (!state.sonarRevealed.has(sonarKey(tx, ty))) continue;
+      const alpha = Phaser.Math.Clamp(1 - contact.age / 14, 0.22, 1);
+      const color = contact.hostile
+        ? `rgba(255, 79, 100, ${alpha})`
+        : contact.kind === 'flora'
+          ? `rgba(115, 251, 211, ${alpha * 0.85})`
+          : `rgba(142, 231, 244, ${alpha})`;
+      drawContact(contact.x, contact.y, color, contact.kind === 'predator' ? 6.8 : 4.2, contact.hostile ? `rgba(255, 209, 102, ${alpha * 0.45})` : '');
+    }
+
+    const playerX = originX + (this.player.x / TILE) * cell;
+    const playerY = originY + (this.player.y / TILE) * cell;
+    ctx.save();
+    ctx.translate(playerX, playerY);
+    ctx.rotate(this.player.facing.angle() + Math.PI / 2);
+    ctx.fillStyle = '#fff7df';
+    ctx.strokeStyle = 'rgba(115, 251, 211, 0.92)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -11);
+    ctx.lineTo(8, 9);
+    ctx.lineTo(0, 5);
+    ctx.lineTo(-8, 9);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.strokeStyle = 'rgba(115, 251, 211, 0.18)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
+    ctx.restore();
   }
 
 export function drawLooseItems(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
