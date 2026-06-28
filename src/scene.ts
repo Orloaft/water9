@@ -16,6 +16,7 @@ import * as renderingNs from './scene-rendering';
 import * as worldgenNs from './scene-worldgen';
 import * as audioNs from './scene-audio';
 import * as articulatedNs from './scene-articulated';
+import * as saveLoadNs from './save-load';
 import { ensureArticulatedTextures } from './articulated';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { createSubmarinePartSprites,ensureSubmarinePartTextures,setSubmarineDrillingFrameProvider } from './submarine-parts';
@@ -308,6 +309,7 @@ export class DeepdiveScene extends Phaser.Scene {
     state.biomeLoading.progress = 0.42;
     renderHud();
     measurePerf(this, 'worldgen.total', () => this.generateWorld(), { biome: state.biome });
+    this.applyPendingLoad();
     this.worldReady = true;
     state.biomeLoading.phase = 'complete';
     state.biomeLoading.status = 'Barge systems synchronized.';
@@ -1092,6 +1094,15 @@ export interface DeepdiveScene {
   completeNestQuest: OmitThisParameter<typeof economyNs.completeNestQuest>;
   hasActiveNestLocator: OmitThisParameter<typeof economyNs.hasActiveNestLocator>;
   nearestOpenNestRoom: OmitThisParameter<typeof economyNs.nearestOpenNestRoom>;
+}
+
+Object.assign(DeepdiveScene.prototype, saveLoadNs);
+export interface DeepdiveScene {
+  saveGame: OmitThisParameter<typeof saveLoadNs.saveGame>;
+  loadGame: OmitThisParameter<typeof saveLoadNs.loadGame>;
+  clearSavedGame: OmitThisParameter<typeof saveLoadNs.clearSavedGame>;
+  writeCorruptSaveForSmoke: OmitThisParameter<typeof saveLoadNs.writeCorruptSaveForSmoke>;
+  applyPendingLoad: OmitThisParameter<typeof saveLoadNs.applyPendingLoad>;
 }
 
 Object.assign(DeepdiveScene.prototype, sonarNs);

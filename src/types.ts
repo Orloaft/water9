@@ -64,6 +64,7 @@ export type PlaytestCommand =
   | 'forceBobbitDrag'
   | 'liveArticulatedReview'
   | 'advanceLiveArticulatedReview'
+  | 'articulatedBudgetReview'
   | 'focusArticulatedCamera'
   | 'reviewArticulated'
   | 'advanceArticulatedReview'
@@ -71,6 +72,10 @@ export type PlaytestCommand =
   | 'damageArticulatedPart'
   | 'exerciseArticulatedToolDamage'
   | 'collideArticulated'
+  | 'saveGame'
+  | 'loadGame'
+  | 'corruptSave'
+  | 'clearSave'
   | 'setOxygen'
   | 'setHull';
 export type DiverAnimation =
@@ -459,6 +464,13 @@ export interface ArticulatedCreature {
   stateTimer: number;
   grabTimer: number;
   grabCooldown: number;
+  simulationBudget?: {
+    accumulator: number;
+    lastTier: 'full' | 'near' | 'far' | 'offscreen';
+    skippedFrames: number;
+    fullSteps: number;
+    skippedSteps: number;
+  };
   reviewFrozen?: boolean;
   collisionDebug?: ArticulatedCollisionDebug;
   bobbitBurrow?: ArticulatedBobbitRuntime;

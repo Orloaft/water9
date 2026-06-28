@@ -6,6 +6,7 @@ import { state,ui } from './state';
 import { articulatedCreatureDefs } from './articulated';
 import { activeQuest,bargeUpgradeCost,cargoCapacity,clampSelectedCargoIndex,fishAssetKey,fishRarity,floraAssetKey,floraRarity,fuelMax,fuelRefillCost,hullMax,lifeCatalogTotal,oxygenMax,rarityLabel,restart,subDef,subRepairCost,upgradeCost,upgradeMax } from './helpers';
 import { gameScene } from './game-ref';
+import { hasSavedGame } from './save-load';
 
 export function renderHud() {
   const app = document.querySelector<HTMLDivElement>('#app');
@@ -202,6 +203,7 @@ export function titlePanel() {
     ${logo}
     <div class="title-actions title-actions--main">
       <button class="title-button title-play" data-start-game data-focus-key="title-play">Play</button>
+      <button class="title-button" data-load-game data-focus-key="title-load" ${hasSavedGame() ? '' : 'disabled'}>Load Game</button>
       <button class="title-button" data-title-panel="options" data-focus-key="title-options">Options</button>
       <button class="title-button" data-title-panel="controls" data-focus-key="title-controls">Controls</button>
     </div>
@@ -517,6 +519,28 @@ export function bindUiEvents(app: HTMLDivElement) {
       if (scene) restart(scene);
       return;
     }
+    const saveButton = target.closest<HTMLButtonElement>('button[data-save-game]');
+    if (saveButton && !saveButton.disabled) {
+      event.preventDefault();
+      gameScene()?.saveGame();
+      renderHud();
+      return;
+    }
+    const loadButton = target.closest<HTMLButtonElement>('button[data-load-game]');
+    if (loadButton && !loadButton.disabled) {
+      event.preventDefault();
+      const result = gameScene()?.loadGame();
+      if (!result?.ok) renderHud();
+      return;
+    }
+    const clearSaveButton = target.closest<HTMLButtonElement>('button[data-clear-save]');
+    if (clearSaveButton && !clearSaveButton.disabled) {
+      event.preventDefault();
+      gameScene()?.clearSavedGame();
+      state.status = 'Saved game cleared.';
+      renderHud();
+      return;
+    }
     const pauseButton = target.closest<HTMLButtonElement>('button[data-pause]');
     if (pauseButton) {
       event.preventDefault();
@@ -778,6 +802,9 @@ export function menuButtonKey(button: HTMLButtonElement) {
     button.dataset.acceptQuest ??
     button.dataset.claimQuest ??
     button.dataset.buyFuel ??
+    (button.dataset.saveGame !== undefined ? 'save-game' : undefined) ??
+    (button.dataset.loadGame !== undefined ? 'load-game' : undefined) ??
+    (button.dataset.clearSave !== undefined ? 'clear-save' : undefined) ??
     button.dataset.selectCargo ??
     (button.dataset.subHatch !== undefined ? 'sub-hatch' : undefined) ??
     (button.dataset.deployScout !== undefined ? 'deploy-scout' : undefined) ??
@@ -819,6 +846,11 @@ export function bargeServicesPanel() {
       <span>O2 and hull refilling</span>
       <span>Cargo sold automatically</span>
       <strong>${state.credits} credits</strong>
+    </div>
+    <div class="save-actions">
+      <button data-save-game data-focus-key="barge-save">Save game</button>
+      <button data-load-game data-focus-key="barge-load" ${hasSavedGame() ? '' : 'disabled'}>Load game</button>
+      <button data-clear-save data-focus-key="barge-clear-save" ${hasSavedGame() ? '' : 'disabled'}>Clear save</button>
     </div>
     ${bargeFuelRow()}
     ${bargeTravelRow()}
@@ -1007,6 +1039,8 @@ export function pauseMenuPanel() {
     </div>
     <div class="pause-actions">
       <button data-pause>Resume</button>
+      <button data-save-game data-focus-key="pause-save">Save game</button>
+      <button data-load-game data-focus-key="pause-load" ${hasSavedGame() ? '' : 'disabled'}>Load game</button>
       <button data-logbook>${state.logbookOpen ? 'Close logbook' : 'Open logbook'}</button>
       <button data-gold data-focus-key="pause-gold">+1k credits</button>
       <button data-restart>Restart run</button>

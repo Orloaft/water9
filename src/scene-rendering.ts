@@ -1960,19 +1960,6 @@ export function drawBiomeVisibilityCues(this: DeepdiveScene, camera: Phaser.Came
         const proximity = 1 - Phaser.Math.Clamp((distance - lightRadius() * 0.65) / Math.max(1, radius - lightRadius() * 0.65), 0, 1);
         const alpha = ambient * Phaser.Math.Linear(0.36, 1, proximity);
         const pulse = 0.75 + Math.sin(this.time.now * 0.0016 + x * 0.47 + y * 0.31) * 0.25;
-        this.lampGloom.fillStyle(profile.silhouette, alpha * 0.34);
-        if (this.getTile(x, y - 1) === 'water') {
-          this.lampGloom.fillEllipse(wx, y * TILE + 3, TILE * 0.94, TILE * 0.24);
-        }
-        if (this.getTile(x, y + 1) === 'water') {
-          this.lampGloom.fillEllipse(wx, (y + 1) * TILE - 3, TILE * 0.94, TILE * 0.24);
-        }
-        if (this.getTile(x - 1, y) === 'water') {
-          this.lampGloom.fillEllipse(x * TILE + 3, wy, TILE * 0.24, TILE * 0.94);
-        }
-        if (this.getTile(x + 1, y) === 'water') {
-          this.lampGloom.fillEllipse((x + 1) * TILE - 3, wy, TILE * 0.24, TILE * 0.94);
-        }
         const sparkleSeed = hash(x * 19, y * 23, rng.seed + state.biome * 1801);
         if (sparkleSeed > profile.accentThreshold) {
           const accentAlpha = profile.accentAlpha * pulse * Phaser.Math.Linear(0.35, 1, proximity);
@@ -1981,6 +1968,13 @@ export function drawBiomeVisibilityCues(this: DeepdiveScene, camera: Phaser.Came
             wx + (hash(x, y, rng.seed + 1807) - 0.5) * TILE * 0.52,
             wy + (hash(y, x, rng.seed + 1811) - 0.5) * TILE * 0.52,
             Phaser.Math.Linear(1.2, 2.7, sparkleSeed),
+          );
+        } else if (sparkleSeed > profile.accentThreshold - 0.035 && alpha > 0.018) {
+          this.lampGloom.fillStyle(profile.silhouette, alpha * 0.12);
+          this.lampGloom.fillCircle(
+            wx + (hash(x, y, rng.seed + 1877) - 0.5) * TILE * 0.56,
+            wy + (hash(y, x, rng.seed + 1879) - 0.5) * TILE * 0.56,
+            Phaser.Math.Linear(0.8, 1.8, sparkleSeed),
           );
         }
       }

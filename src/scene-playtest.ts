@@ -6,6 +6,7 @@ import { state } from './state';
 import { rng } from './rng';
 import { cargoCapacity,clearBleed,clearVenom,createConsumableItem,createSubVehicle,darknessAtDepth,fuelMax,hash,isOreTile,oxygenMax,parallaxProfileFor,refillAtBoat,restart,scaledDepthPx,shopItem,specialRoomEffectCenter,subDef,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
+import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
 import type { DeepdiveScene } from './scene';
 import { rebuildTerrainMask,sampleTerrainSurfaceAnchors,subtractTerrainMaskBrush,validateTerrainSurfaceAnchor } from './terrain-mask';
@@ -596,6 +597,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         selectedSubTier: state.selectedSubTier,
         activeSub,
         carrierSub,
+        hasSavedGame: hasSavedGame(),
       },
       ui: {
         paused: state.paused,
@@ -1388,6 +1390,77 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       }
       refreshPlaytestCamera(this);
       this.draw();
+    } else if (command === 'articulatedBudgetReview') {
+      const manifest = articulatedCreatureDefs().find((candidate) => candidate.id !== 'abyssal-mandible-bobbit' && state.biome >= candidate.minBiome)
+        ?? articulatedCreatureDefs().find((candidate) => candidate.id !== 'abyssal-mandible-bobbit')
+        ?? articulatedCreatureDefs()[0];
+      while (this.articulatedCreatures.filter((candidate) => !candidate.bobbitBurrow).length < 2) {
+        const spawned = createArticulatedCreature(this, manifest, WORLD_W * TILE * 0.5, SURFACE_Y + 420);
+        this.articulatedCreatures.push(spawned);
+      }
+      const candidates = this.articulatedCreatures.filter((candidate) => !candidate.bobbitBurrow);
+      const visible = candidates[0];
+      const offscreen = candidates[1];
+      const visibleX = WORLD_W * TILE * 0.5;
+      const visibleY = SURFACE_Y + 520;
+      const offscreenX = Phaser.Math.Clamp(visibleX + 1700, 60, WORLD_W * TILE - 60);
+      const offscreenY = Phaser.Math.Clamp(visibleY + 980, 60, WORLD_H * TILE - 60);
+      state.started = true;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.radioOpen = false;
+      state.lost = false;
+      state.won = false;
+      this.player.x = visibleX - 180;
+      this.player.y = visibleY;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      this.player.facing.set(1, 0);
+      this.cameras.main.centerOn(visibleX, visibleY);
+      for (const creature of [visible, offscreen]) {
+        creature.x = creature === visible ? visibleX : offscreenX;
+        creature.y = creature === visible ? visibleY : offscreenY;
+        creature.homeX = creature.x;
+        creature.homeY = creature.y;
+        creature.vx = creature === visible ? 24 : 18;
+        creature.vy = 0;
+        creature.aggro = 0;
+        creature.stunned = 0;
+        creature.hurtFlash = 0;
+        creature.state = 'patrol';
+        creature.stateTimer = 0;
+        creature.grabTimer = 0;
+        creature.grabCooldown = 999;
+        creature.bumpCooldown = 999;
+        creature.reviewFrozen = false;
+        creature.simulationBudget = {
+          accumulator: 0,
+          lastTier: 'full',
+          skippedFrames: 0,
+          fullSteps: 0,
+          skippedSteps: 0,
+        };
+        this.updateArticulatedParts(creature, 0);
+      }
+      refreshPlaytestCamera(this);
+      for (let i = 0; i < 60; i += 1) this.updateArticulatedCreatures(1 / 60);
+      return {
+        visible: {
+          id: visible.id,
+          tier: visible.simulationBudget?.lastTier,
+          fullSteps: visible.simulationBudget?.fullSteps ?? 0,
+          skippedSteps: visible.simulationBudget?.skippedSteps ?? 0,
+          x: roundMetric(visible.x),
+        },
+        offscreen: {
+          id: offscreen.id,
+          tier: offscreen.simulationBudget?.lastTier,
+          fullSteps: offscreen.simulationBudget?.fullSteps ?? 0,
+          skippedSteps: offscreen.simulationBudget?.skippedSteps ?? 0,
+          x: roundMetric(offscreen.x),
+        },
+      };
     } else if (command === 'focusArticulatedCamera') {
       const payload = typeof value === 'object' && value !== null
         ? value as { creatureId?: string; preserveVitals?: boolean; freeze?: boolean; unpaused?: boolean; maxZoom?: number; includePlayer?: boolean }
@@ -1722,6 +1795,16 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       }
     } else if (command === 'articulatedContactPolishReview') {
       return stageArticulatedContactPolishReview(this);
+    } else if (command === 'saveGame') {
+      return this.saveGame();
+    } else if (command === 'loadGame') {
+      return this.loadGame();
+    } else if (command === 'corruptSave') {
+      this.writeCorruptSaveForSmoke();
+      return { ok: true, hasSavedGame: hasSavedGame() };
+    } else if (command === 'clearSave') {
+      this.clearSavedGame();
+      return { ok: true, hasSavedGame: hasSavedGame() };
     } else if (command === 'setOxygen') {
       state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());
     } else if (command === 'setHull') {

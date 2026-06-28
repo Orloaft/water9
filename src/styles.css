@@ -1137,7 +1137,7 @@ button.is-controller-focus {
 
 .pause-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -1313,6 +1313,12 @@ button.is-controller-focus {
 .dock-summary strong {
   color: #ffd166;
   white-space: nowrap;
+}
+
+.save-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .fuel-card {

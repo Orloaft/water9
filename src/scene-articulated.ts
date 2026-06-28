@@ -21,6 +21,12 @@ const BOBBIT_BURROW_LATERAL_LIMIT = TILE * 1.2;
 const BOBBIT_BURROW_VERTICAL_LEAN_LIMIT = 0.14;
 const BOBBIT_MOUTH_LATCH_OFFSET_LIMIT = TILE * 1.6;
 const ARTICULATED_TERRAIN_CORRECTION_PASSES = 3;
+const ARTICULATED_FULL_SIM_RADIUS = 720;
+const ARTICULATED_NEAR_SIM_RADIUS = 1180;
+const ARTICULATED_OFFSCREEN_MARGIN = 220;
+const ARTICULATED_NEAR_STEP_SECONDS = 1 / 30;
+const ARTICULATED_FAR_STEP_SECONDS = 1 / 15;
+const ARTICULATED_OFFSCREEN_STEP_SECONDS = 1 / 10;
 
 function articulatedCombatFor(creature: ArticulatedCreature) {
   const behavior = articulatedBehaviorFor(creature.manifest);
@@ -609,6 +615,7 @@ export function populateArticulatedCreatures(this: DeepdiveScene) {
 }
 
 export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, controls?: ControlState) {
+  const camera = this.cameras.main;
   for (const creature of this.articulatedCreatures) {
     if (creature.dead) {
       creature.parts.forEach((part) => part.sprite?.setVisible(false));
@@ -654,24 +661,31 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
       continue;
     }
 
+    const budget = articulatedSimulationBudgetFor(this, creature, delta, camera);
+    const simDelta = budget.runFullStep ? budget.delta : delta;
+
     if (creature.stunned > 0) {
       creature.aggro = 0;
-      creature.vx *= Math.exp(-3.5 * delta);
-      creature.vy *= Math.exp(-3.5 * delta);
-    } else {
-      this.steerArticulatedCreature(creature, delta);
+      creature.vx *= Math.exp(-3.5 * simDelta);
+      creature.vy *= Math.exp(-3.5 * simDelta);
+    } else if (budget.runFullStep) {
+      this.steerArticulatedCreature(creature, simDelta);
     }
 
-    creature.x += creature.vx * delta;
-    creature.y += creature.vy * delta;
+    creature.x += creature.vx * simDelta;
+    creature.y += creature.vy * simDelta;
+    if (!budget.runFullStep) {
+      creature.vx *= Math.exp(-0.18 * delta);
+      creature.vy *= Math.exp(-0.18 * delta);
+    }
     if (creature.vx < -2) creature.facingSign = -1;
     if (creature.vx > 2) creature.facingSign = 1;
     updateDetachedArticulatedParts(this, creature, delta);
-    this.updateArticulatedParts(creature, delta);
-    this.keepArticulatedCreatureInWater(creature);
-    this.updateArticulatedParts(creature, 0, { preserveSmoothedPose: true });
+    if (!budget.runFullStep) continue;
+    this.updateArticulatedParts(creature, simDelta);
+    this.keepArticulatedCreatureInWater(creature, { passes: budget.terrainPasses });
     refreshJointStress(creature);
-    this.resolveArticulatedGrab(creature, delta, controls);
+    this.resolveArticulatedGrab(creature, simDelta, controls);
 
     if (creature.stunned > 0 || this.isAtBoat()) continue;
     const combat = articulatedCombatFor(creature);
@@ -691,6 +705,88 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
 
 export function activeBobbitDrag(this: DeepdiveScene) {
   return this.articulatedCreatures.find((creature) => creature.bobbitBurrow?.phase === 'drag' && creature.bobbitBurrow.captured !== null && !creature.dead) ?? null;
+}
+
+function articulatedSimulationBudgetFor(
+  scene: DeepdiveScene,
+  creature: ArticulatedCreature,
+  delta: number,
+  camera: Phaser.Cameras.Scene2D.Camera,
+) {
+  const playerDistance = Phaser.Math.Distance.Between(scene.player.x, scene.player.y, creature.x, creature.y);
+  const visible = creatureWithinCamera(creature, camera, ARTICULATED_OFFSCREEN_MARGIN);
+  const engaged = visible
+    || playerDistance <= ARTICULATED_FULL_SIM_RADIUS
+    || creature.aggro > 0
+    || creature.state === 'lunge'
+    || creature.state === 'grab'
+    || creature.stunned > 0
+    || creature.hurtFlash > 0
+    || creature.grabTimer > 0
+    || Boolean(creature.bobbitBurrow?.captured);
+  const tier = engaged
+    ? 'full'
+    : playerDistance <= ARTICULATED_NEAR_SIM_RADIUS
+      ? 'near'
+      : visible
+        ? 'far'
+        : 'offscreen';
+  const interval = tier === 'full'
+    ? 0
+    : tier === 'near'
+      ? ARTICULATED_NEAR_STEP_SECONDS
+      : tier === 'far'
+        ? ARTICULATED_FAR_STEP_SECONDS
+        : ARTICULATED_OFFSCREEN_STEP_SECONDS;
+  const runtime = creature.simulationBudget ?? {
+    accumulator: 0,
+    lastTier: tier,
+    skippedFrames: 0,
+    fullSteps: 0,
+    skippedSteps: 0,
+  };
+  if (runtime.lastTier !== tier) {
+    runtime.accumulator = 0;
+    runtime.skippedFrames = 0;
+    runtime.lastTier = tier;
+  }
+  runtime.fullSteps = runtime.fullSteps || 0;
+  runtime.skippedSteps = runtime.skippedSteps || 0;
+  creature.simulationBudget = runtime;
+  if (tier === 'full') {
+    runtime.accumulator = 0;
+    runtime.skippedFrames = 0;
+    runtime.fullSteps += 1;
+    return { runFullStep: true, delta, terrainPasses: ARTICULATED_TERRAIN_CORRECTION_PASSES };
+  }
+  runtime.accumulator += delta;
+  if (runtime.accumulator < interval) {
+    runtime.skippedFrames += 1;
+    runtime.skippedSteps += 1;
+    return { runFullStep: false, delta, terrainPasses: 0 };
+  }
+  const simDelta = Phaser.Math.Clamp(runtime.accumulator, delta, interval * 2.25);
+  runtime.accumulator = 0;
+  runtime.skippedFrames = 0;
+  runtime.fullSteps += 1;
+  return {
+    runFullStep: true,
+    delta: simDelta,
+    terrainPasses: tier === 'near' ? 2 : 1,
+  };
+}
+
+function creatureWithinCamera(
+  creature: ArticulatedCreature,
+  camera: Phaser.Cameras.Scene2D.Camera,
+  margin: number,
+) {
+  const radius = Math.max(120, creature.radius + 80);
+  const view = camera.worldView;
+  return creature.x + radius >= view.x - margin
+    && creature.x - radius <= view.right + margin
+    && creature.y + radius >= view.y - margin
+    && creature.y - radius <= view.bottom + margin;
 }
 
 export function releaseBurrowBobbit(this: DeepdiveScene, creature: ArticulatedCreature, reason = 'released') {
@@ -992,9 +1088,10 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
   }
 }
 
-export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: ArticulatedCreature) {
+export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: ArticulatedCreature, options: { passes?: number } = {}) {
   let corrected = false;
-  for (let pass = 0; pass < ARTICULATED_TERRAIN_CORRECTION_PASSES; pass += 1) {
+  const passes = Phaser.Math.Clamp(Math.floor(options.passes ?? ARTICULATED_TERRAIN_CORRECTION_PASSES), 0, ARTICULATED_TERRAIN_CORRECTION_PASSES);
+  for (let pass = 0; pass < passes; pass += 1) {
     const contacts: ReturnType<typeof terrainContactForPart>[] = [];
     for (const part of creature.parts) {
       if (part.detached) continue;
@@ -1042,9 +1139,10 @@ export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: Ar
     creature.vy *= 0.82;
     this.updateArticulatedParts(creature, 0, { preserveSmoothedPose: true });
   }
-  if (!corrected) return;
+  if (!corrected) return false;
   creature.homeX = Phaser.Math.Linear(creature.homeX, creature.x, 0.012);
   creature.homeY = Phaser.Math.Linear(creature.homeY, creature.y, 0.012);
+  return true;
 }
 
 export function updateArticulatedParts(this: DeepdiveScene, creature: ArticulatedCreature, delta: number, options: { preserveSmoothedPose?: boolean } = {}) {
