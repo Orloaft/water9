@@ -136,15 +136,48 @@ export function controllerPanel() {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 42) || 'Controller';
+  const debugUi = debugPresentationEnabled();
   const detail = state.controller.connected
     ? `${name} ready. Press A to confirm, Start to pause.`
     : `${name} disconnected. Reconnect and press any controller button.`;
+  const now = typeof performance !== 'undefined' ? performance.now() : 0;
+  const msAgo = (value: number) => value > 0 && now > value ? `${Math.round(now - value)}ms ago` : 'never';
+  const support = state.controller.apiSupported ? 'yes' : 'no';
+  const secure = state.controller.secureContext ? 'yes' : 'no';
+  const focused = state.controller.hasFocus ? 'yes' : 'no';
+  const buttons = state.controller.buttons.length ? state.controller.buttons.map((value, index) => `B${index}:${value}`).join(' ') : 'none';
+  const axes = state.controller.axes.length ? state.controller.axes.map((value, index) => `A${index}:${value}`).join(' ') : 'none';
+  const diagnostic = debugUi || state.controller.connected || Boolean(state.controller.message)
+    ? `
+      <dl class="controller-diagnostics">
+        <div><dt>API</dt><dd>${support}</dd></div>
+        <div><dt>Secure</dt><dd>${secure}</dd></div>
+        <div><dt>Focus</dt><dd>${focused}</dd></div>
+        <div><dt>Poll</dt><dd>${msAgo(state.controller.lastPollAt)}</dd></div>
+        <div><dt>Pad</dt><dd>#${state.controller.index} / ${state.controller.connectedPadCount} visible</dd></div>
+        <div><dt>Buttons</dt><dd>${escapeHtml(buttons)}</dd></div>
+        <div><dt>Axes</dt><dd>${escapeHtml(axes)}</dd></div>
+        <div><dt>Action</dt><dd>${escapeHtml(state.controller.lastAction || 'none')} (${msAgo(state.controller.lastActionAt)})</dd></div>
+      </dl>
+      <small>${escapeHtml(state.controller.hint || 'Click the game, then press any controller button.')}</small>
+    `
+    : '';
   return `
     <section class="controller-panel ${state.controller.connected ? 'is-connected' : 'is-disconnected'}">
       <span>Controller</span>
-      <strong>${detail}</strong>
+      <strong>${escapeHtml(detail)}</strong>
+      ${diagnostic}
     </section>
   `;
+}
+
+export function escapeHtml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
 export function currentDiveObjective(quest: Quest | undefined) {

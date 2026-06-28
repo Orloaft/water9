@@ -478,7 +478,7 @@ button.is-controller-focus {
   right: 14px;
   z-index: 3;
   display: none;
-  width: min(300px, calc(100vw - 28px));
+  width: min(360px, calc(100vw - 28px));
   pointer-events: none;
 }
 
@@ -513,6 +513,41 @@ button.is-controller-focus {
 
 .controller-panel.is-disconnected {
   border-color: rgba(255, 138, 107, 0.42);
+}
+
+.controller-diagnostics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 8px;
+  margin: 2px 0 0;
+  color: rgba(236, 251, 255, 0.72);
+  font-size: 0.67rem;
+  line-height: 1.2;
+}
+
+.controller-diagnostics div {
+  min-width: 0;
+}
+
+.controller-diagnostics dt {
+  color: rgba(115, 251, 211, 0.74);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.controller-diagnostics dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.controller-diagnostics div:nth-child(n + 6) {
+  grid-column: 1 / -1;
+}
+
+.controller-panel small {
+  color: rgba(255, 209, 102, 0.82);
+  font-size: 0.68rem;
+  line-height: 1.25;
 }
 
 .priority-alert {
@@ -2312,7 +2347,7 @@ button.is-controller-focus {
   .controller-status {
     top: 282px;
     right: 10px;
-    width: 200px;
+    width: min(300px, calc(100vw - 20px));
   }
 
   .status {

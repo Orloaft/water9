@@ -86,6 +86,7 @@ export class DeepdiveScene extends Phaser.Scene {
   gamepadButtonsDown = new Set<number>();
   browserGamepadIndex = -1;
   gamepadEventCleanup?: () => void;
+  lastControllerHudRenderAt = 0;
   menuNavCooldown = 0;
   passiveSonarRevealTimer = 0;
   player = {
@@ -166,6 +167,7 @@ export class DeepdiveScene extends Phaser.Scene {
 
   installGamepadEvents() {
     if (typeof window === 'undefined' || this.gamepadEventCleanup) return;
+    document.querySelector<HTMLElement>('#game')?.setAttribute('tabindex', '0');
     const connect = (event: GamepadEvent) => {
       this.browserGamepadIndex = event.gamepad.index;
       this.updateControllerStatus(event.gamepad, 'connected');
@@ -178,15 +180,37 @@ export class DeepdiveScene extends Phaser.Scene {
         connected: false,
         name: event.gamepad.id || state.controller.name || 'Controller',
         index: event.gamepad.index,
+        connectedPadCount: Math.max(0, state.controller.connectedPadCount - 1),
         message: 'Controller disconnected',
+        hint: 'Reconnect the controller, click the game, then press any controller button.',
       };
       renderHud();
     };
+    const markGesture = () => {
+      state.controller.lastGestureAt = performance.now();
+      state.controller.hasFocus = document.hasFocus();
+      document.querySelector<HTMLElement>('#game')?.focus({ preventScroll: true });
+      this.pollBrowserGamepads(!state.started);
+    };
+    const markFocus = () => {
+      state.controller.hasFocus = document.hasFocus();
+      this.pollBrowserGamepads(!state.started);
+    };
     window.addEventListener('gamepadconnected', connect);
     window.addEventListener('gamepaddisconnected', disconnect);
+    window.addEventListener('pointerdown', markGesture, { capture: true });
+    window.addEventListener('keydown', markGesture, { capture: true });
+    window.addEventListener('focus', markFocus);
+    window.addEventListener('blur', markFocus);
+    document.addEventListener('visibilitychange', markFocus);
     this.gamepadEventCleanup = () => {
       window.removeEventListener('gamepadconnected', connect);
       window.removeEventListener('gamepaddisconnected', disconnect);
+      window.removeEventListener('pointerdown', markGesture, { capture: true });
+      window.removeEventListener('keydown', markGesture, { capture: true });
+      window.removeEventListener('focus', markFocus);
+      window.removeEventListener('blur', markFocus);
+      document.removeEventListener('visibilitychange', markFocus);
     };
   }
 
@@ -200,6 +224,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.perfTelemetry = this.perfTelemetry ?? createPerfTelemetry();
     updateFpsTracker(deltaMs);
     if (!this.worldReady) {
+      this.pollBrowserGamepads();
       this.updateBiomeGenerationLoading();
       this.updateAudio(0);
       updatePerfHud(this);
@@ -509,21 +534,69 @@ export class DeepdiveScene extends Phaser.Scene {
       logbookPressed: Phaser.Input.Keyboard.JustDown(this.keys.L) || padJustPressed(3),
       confirmPressed: Phaser.Input.Keyboard.JustDown(this.keys.SPACE) || Phaser.Input.Keyboard.JustDown(this.keys.ENTER) || padJustPressed(0),
     };
+    const mappedAction = this.mappedControllerAction(controls, pressed, move);
+    if (mappedAction) this.recordControllerAction(mappedAction);
     this.gamepadButtonsDown = pressed;
     return controls;
   }
 
-  pollBrowserGamepads() {
-    const pads = Array.from(navigator.getGamepads?.() ?? []).filter((pad): pad is Gamepad => Boolean(pad?.connected));
+  pollBrowserGamepads(forceRender = false) {
+    const apiSupported = typeof navigator !== 'undefined' && typeof navigator.getGamepads === 'function';
+    const pollAt = performance.now();
+    state.controller = {
+      ...state.controller,
+      apiSupported,
+      secureContext: typeof window !== 'undefined' ? window.isSecureContext : false,
+      hasFocus: typeof document !== 'undefined' ? document.hasFocus() : false,
+      lastPollAt: pollAt,
+    };
+    if (!apiSupported) {
+      state.controller = {
+        ...state.controller,
+        connected: false,
+        name: state.controller.name || 'Controller',
+        index: -1,
+        rawPadCount: 0,
+        connectedPadCount: 0,
+        buttons: [],
+        axes: [],
+        message: 'Controller API unavailable',
+        hint: state.controller.secureContext
+          ? 'This browser did not expose navigator.getGamepads(). Try Chrome or Edge.'
+          : 'Gamepads require HTTPS or localhost. Open the game on localhost/HTTPS, click it, then press a controller button.',
+      };
+      this.maybeRenderControllerHud(forceRender);
+      return [];
+    }
+    const rawPads = Array.from(navigator.getGamepads() ?? []);
+    const pads = rawPads.filter((pad): pad is Gamepad => Boolean(pad?.connected));
+    state.controller.rawPadCount = rawPads.filter(Boolean).length;
+    state.controller.connectedPadCount = pads.length;
     if (!pads.length) {
       if (state.controller.connected) {
-        state.controller = { ...state.controller, connected: false, message: 'Controller disconnected' };
-        renderHud();
+        state.controller = {
+          ...state.controller,
+          connected: false,
+          message: 'Controller disconnected',
+          hint: 'Reconnect the controller, click the game, then press any controller button.',
+        };
+      } else {
+        state.controller = {
+          ...state.controller,
+          message: 'No browser gamepad visible yet',
+          hint: state.controller.secureContext
+            ? 'Click the game, then press any controller button. Some browsers hide pads until a button is pressed.'
+            : 'Gamepads require HTTPS or localhost. Use localhost/HTTPS, then click the game and press any controller button.',
+        };
       }
+      state.controller.buttons = [];
+      state.controller.axes = [];
+      this.maybeRenderControllerHud(forceRender);
       return [];
     }
     const activePad = this.selectActiveGamepad(pads);
     this.updateControllerStatus(activePad, this.gamepadHasInput(activePad) ? 'active' : 'connected');
+    this.maybeRenderControllerHud(forceRender);
     return [activePad, ...pads.filter((pad) => pad.index !== activePad.index)];
   }
 
@@ -551,8 +624,51 @@ export class DeepdiveScene extends Phaser.Scene {
       lastSeenAt: performance.now(),
       lastInputAt: activity === 'active' ? performance.now() : previousInputAt,
       message: activity === 'active' ? 'Controller active' : 'Controller connected',
+      apiSupported: state.controller.apiSupported,
+      secureContext: state.controller.secureContext,
+      hasFocus: state.controller.hasFocus,
+      lastPollAt: state.controller.lastPollAt,
+      lastGestureAt: state.controller.lastGestureAt,
+      rawPadCount: state.controller.rawPadCount,
+      connectedPadCount: state.controller.connectedPadCount,
+      buttons: pad.buttons.slice(0, 8).map((button) => Number((button.value ?? 0).toFixed(2))),
+      axes: pad.axes.slice(0, 4).map((value) => Number(value.toFixed(2))),
+      lastAction: state.controller.lastAction,
+      lastActionAt: state.controller.lastActionAt,
+      hint: activity === 'active' ? 'Input is reaching the game.' : 'Pad selected. Press A, Start, or move the left stick.',
     };
     if (!hadConnection || previousIndex !== pad.index) renderHud();
+  }
+
+  maybeRenderControllerHud(forceRender = false) {
+    if (!forceRender && state.started) return;
+    const now = performance.now();
+    if (!forceRender && now - this.lastControllerHudRenderAt < 220) return;
+    this.lastControllerHudRenderAt = now;
+    renderHud();
+  }
+
+  mappedControllerAction(controls: ControlState, pressed: Set<number>, move: Phaser.Math.Vector2) {
+    if (controls.confirmPressed) return 'confirm';
+    if (controls.pausePressed) return 'pause';
+    if (controls.sonarMapPressed) return 'sonar map';
+    if (controls.sonarPressed) return 'sonar';
+    if (controls.useItemPressed) return 'use item';
+    if (controls.logbookPressed) return 'logbook';
+    if (controls.scoutPressed) return 'scout';
+    if (controls.cancelPressed) return 'cancel';
+    if (controls.scanHeld && pressed.has(2)) return 'scan held';
+    if (controls.mineHeld && (pressed.has(0) || pressed.has(7))) return 'mine held';
+    if (controls.boardHeld && pressed.has(1)) return 'board held';
+    if (move.lengthSq() > 0 && pressed.size > 0) return 'd-pad move';
+    if (move.lengthSq() > 0 && state.controller.connected) return 'left stick move';
+    return '';
+  }
+
+  recordControllerAction(action: string) {
+    if (state.controller.lastAction === action && performance.now() - state.controller.lastActionAt < 120) return;
+    state.controller.lastAction = action;
+    state.controller.lastActionAt = performance.now();
   }
 
   analogTriggerHeld(pads: Gamepad[], side: 'left' | 'right') {
