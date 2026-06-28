@@ -4,7 +4,7 @@ import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGH
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxProfileFor,scaledEntity,sonarKey,sonarTileColor,specialRoomEffectCenter,spriteManifests,subDef,swimPose,swimTopSpeed,terrainBodyColorForTile,terrainLookForBiome } from './helpers';
+import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,hullMax,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,oxygenMax,parallaxProfileFor,scaledEntity,sonarKey,sonarTileColor,specialRoomEffectCenter,spriteManifests,subDef,swimPose,swimTopSpeed,terrainBodyColorForTile,terrainLookForBiome } from './helpers';
 import type { DeepdiveScene } from './scene';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { hideSubmarinePartSprites,renderSubmarineParts } from './submarine-parts';
@@ -130,6 +130,35 @@ function drawSurfaceAtmosphere(scene: DeepdiveScene, camera: Phaser.Cameras.Scen
 
 function drawParallaxOverlay(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof parallaxProfileFor>) {
   const view = camera.worldView;
+  const bandAlpha = state.biome === 1
+    ? 0.06
+    : state.biome === 2
+      ? 0.08
+      : 0.12;
+  scene.parallaxBackdrop.fillGradientStyle(
+    0x052234,
+    0x073047,
+    0x020813,
+    0x020813,
+    bandAlpha * 0.55,
+    bandAlpha * 0.44,
+    bandAlpha,
+    bandAlpha * 1.18,
+  );
+  scene.parallaxBackdrop.fillRect(view.x, view.y, view.width, view.height);
+  const mistStep = state.biome >= 3 ? 168 : 220;
+  const mistStart = Math.floor(view.y / mistStep) * mistStep - mistStep;
+  for (let y = mistStart; y <= view.bottom + mistStep; y += mistStep) {
+    const roll = hash(Math.floor(view.x / 512), Math.floor(y / mistStep), rng.seed + 2447 + state.biome * 97);
+    const alpha = bandAlpha * Phaser.Math.Linear(0.32, 0.78, roll);
+    scene.parallaxBackdrop.fillStyle(profile.overlay.color, alpha);
+    scene.parallaxBackdrop.fillEllipse(
+      view.centerX + Math.sin(roll * 12.4 + scene.time.now * 0.00012) * view.width * 0.28,
+      y + roll * mistStep,
+      view.width * Phaser.Math.Linear(0.72, 1.18, roll),
+      Phaser.Math.Linear(54, 96, roll),
+    );
+  }
   const cellSize = 256;
   const startX = Math.floor(view.x / cellSize) - 1;
   const endX = Math.ceil(view.right / cellSize) + 1;
@@ -1525,12 +1554,27 @@ export function drawBobbitBurrows(this: DeepdiveScene, camera: Phaser.Cameras.Sc
       if (runtime?.phase === 'drag' && runtime.captured) {
         const target = runtime.captured === 'sub' && state.activeSub ? state.activeSub : this.player;
         const progress = Phaser.Math.Clamp(runtime.escapeRemaining / BOBBIT_ESCAPE_SECONDS, 0, 1);
-        this.actors.lineStyle(3, 0xff4f64, 0.5);
+        this.actors.lineStyle(5, 0xff4f64, 0.38);
         this.actors.lineBetween(burrow.x, burrow.y, target.x, target.y);
+        this.actors.lineStyle(2, 0xfff7df, 0.5);
+        this.actors.lineBetween(target.x, target.y, target.x + (target.x - burrow.x) * 0.42, target.y + (target.y - burrow.y) * 0.42);
+        this.actors.fillStyle(0xfff7df, 0.72);
+        this.actors.fillTriangle(
+          target.x + (target.x - burrow.x) * 0.5,
+          target.y + (target.y - burrow.y) * 0.5,
+          target.x + (target.x - burrow.x) * 0.39 - 6,
+          target.y + (target.y - burrow.y) * 0.39,
+          target.x + (target.x - burrow.x) * 0.39 + 6,
+          target.y + (target.y - burrow.y) * 0.39,
+        );
         this.actors.lineStyle(2, 0xffd166, 0.74);
         this.actors.strokeCircle(target.x, target.y, scaledEntity(26 + progress * 16));
         this.actors.lineStyle(1, 0xfff7df, 0.42);
         this.actors.lineBetween(target.x - 18, target.y, target.x + 18, target.y);
+        this.actors.fillStyle(0x05070d, 0.58);
+        this.actors.fillRoundedRect(target.x - 78, target.y - scaledEntity(58), 156, 20, 4);
+        this.actors.fillStyle(0xfff7df, 0.9);
+        this.actors.fillRect(target.x - 68, target.y - scaledEntity(50), 136 * (1 - progress), 4);
       }
     }
   }
@@ -1579,6 +1623,8 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
       if (attacking) {
         const markerAlpha = Math.max(0.35, threat) * alpha;
         const markerY = fish.y - fish.radius - scaledEntity(18) - Math.sin(fish.phase * 7) * scaledEntity(2);
+        this.actors.lineStyle(2, 0xff4f64, markerAlpha * 0.7);
+        this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(12 + threat * 10));
         this.actors.fillStyle(0xff4f64, markerAlpha);
         this.actors.fillTriangle(fish.x, markerY, fish.x - scaledEntity(6), markerY - scaledEntity(12), fish.x + scaledEntity(6), markerY - scaledEntity(12));
         this.actors.fillRect(fish.x - scaledEntity(2), markerY - scaledEntity(9), scaledEntity(4), scaledEntity(8));
@@ -1716,6 +1762,15 @@ export function drawLegacyDiver(this: DeepdiveScene, animation: ReturnType<typeo
       .setAlpha(state.lost ? 0.45 : 1)
       .setDepth(2.08);
     fitImageWidth(this.playerSprite, width);
+    const danger = this.activeBobbitDrag() || this.articulatedCreatures.some((creature) => !creature.dead && (creature.state === 'lunge' || creature.state === 'grab') && Phaser.Math.Distance.Between(creature.x, creature.y, p.x, p.y) < creature.radius + 180);
+    if (danger || state.hull <= hullMax() * 0.28 || state.oxygen <= oxygenMax() * 0.18) {
+      const alpha = danger ? 0.74 : 0.46;
+      const pulse = Math.sin(time * 9) * 3;
+      this.actors.lineStyle(2, danger ? 0xffd166 : 0x8ee7f4, alpha);
+      this.actors.strokeCircle(p.x, p.y, scaledEntity(24 + pulse));
+      this.actors.lineStyle(1, 0xfff7df, alpha * 0.5);
+      this.actors.strokeCircle(p.x, p.y, scaledEntity(31 - pulse * 0.35));
+    }
   }
 
 export function drawArticulatedDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {

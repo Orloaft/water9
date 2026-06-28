@@ -16,7 +16,7 @@ export function renderHud() {
     app.innerHTML = `
       <main class="shell">
         <section id="game"></section>
-        <aside id="fps-tracker" class="fps-tracker">FPS --</aside>
+        <aside id="fps-tracker" class="fps-tracker" aria-hidden="true">FPS --</aside>
         <aside id="title-screen" class="title-screen"></aside>
         <aside class="hud">
           <div id="gauges"></div>
@@ -40,6 +40,7 @@ export function renderHud() {
   if (!gauges || !bargeMenu || !logbook || !pauseMenu || !radioDialogue || !biomeLoading || !shell || !titleScreen) return;
   const logbookScrollTop = logbook.querySelector<HTMLDivElement>('.logbook__list')?.scrollTop ?? 0;
   const radioActive = state.radioOpen && state.started && !state.lost && !state.won;
+  const debugUi = debugPresentationEnabled();
   if (!canOpenCargoOverlay()) state.cargoOpen = false;
   const cargoActive = state.cargoOpen && canOpenCargoOverlay();
   const sub = state.pilotingSub ? state.activeSub : null;
@@ -47,6 +48,7 @@ export function renderHud() {
   shell.classList.toggle('is-radio-modal', radioActive);
   shell.classList.toggle('is-cargo-open', cargoActive);
   shell.classList.toggle('is-biome-loading', state.biomeLoading.active);
+  shell.classList.toggle('is-debug-ui', debugUi);
   shell.classList.toggle('is-oxygen-danger', state.started && !state.atBoat && !state.lost && (sub ? sub.oxygen <= subDef(sub.tier).oxygen * 0.16 : state.oxygen <= oxygenMax() * 0.16));
   shell.classList.toggle('is-load-error', state.saveLoad.phase === 'error');
   titleScreen.classList.toggle('is-hidden', state.started);
@@ -64,12 +66,14 @@ export function renderHud() {
     state.bleed.active ? `BLEEDING x${state.bleed.stacks}: suit integrity is leaking for ${Math.ceil(state.bleed.duration)}s.` : '',
   ].filter(Boolean);
   const statusText = statusFlags.length ? `${statusFlags.join(' ')} ${state.status}` : state.status;
+  const priorityAlert = priorityAlertPanel(statusFlags);
   gauges.innerHTML = `
     <div class="readout">
       <div><strong>${state.credits}</strong><span>Credits</span></div>
       <div><strong>${state.depth} m</strong><span>Depth</span></div>
       <div><strong>${state.maxDepth} m</strong><span>Record</span></div>
     </div>
+    ${priorityAlert}
     ${objectivePanel()}
     ${sonarPanel()}
     ${sub ? meter('Sub O2', sub.oxygen, subDef(sub.tier).oxygen, '#8ee7f4') : meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
@@ -148,6 +152,7 @@ export let fpsSampleFrames = 0;
 export let fpsTrackerTimer = 0;
 
 export function updateFpsTracker(deltaMs: number) {
+  if (!debugPresentationEnabled()) return;
   if (!Number.isFinite(deltaMs) || deltaMs <= 0) return;
   fpsSampleFrames += 1;
   fpsTrackerTimer += deltaMs;
@@ -159,6 +164,26 @@ export function updateFpsTracker(deltaMs: number) {
   if (!tracker) return;
   if (tracker.textContent !== `FPS ${fps}`) tracker.textContent = `FPS ${fps}`;
   tracker.classList.toggle('is-low', fps < 45);
+}
+
+export function debugPresentationEnabled() {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.has('debug') || params.has('perf') || window.localStorage?.getItem('water9:debug') === '1';
+}
+
+export function priorityAlertPanel(statusFlags: string[]) {
+  if (!state.started || state.atBoat || state.docked || state.lost || state.won || statusFlags.length <= 0) return '';
+  const text = statusFlags[0];
+  const label = text.includes(':') ? text.split(':')[0] : 'Alert';
+  const detail = text.includes(':') ? text.slice(text.indexOf(':') + 1).trim() : text;
+  const severity = /OXYGEN|SAVE ERROR|DEPLETED|VENOMED|BLEEDING/.test(text) ? 'critical' : 'warning';
+  return `
+    <section class="priority-alert priority-alert--${severity}">
+      <span>${label}</span>
+      <strong>${detail}</strong>
+    </section>
+  `;
 }
 
 export function renderGameOver(app: HTMLDivElement) {
@@ -1078,7 +1103,7 @@ export function pauseMenuPanel() {
       <button data-save-game data-focus-key="pause-save">Save game</button>
       <button data-load-game data-focus-key="pause-load" ${hasSavedGame() ? '' : 'disabled'}>Load game</button>
       <button data-logbook>${state.logbookOpen ? 'Close logbook' : 'Open logbook'}</button>
-      <button data-gold data-focus-key="pause-gold">+1k credits</button>
+      ${debugPresentationEnabled() ? '<button data-gold data-focus-key="pause-gold">+1k credits</button>' : ''}
       <button data-restart>Restart run</button>
     </div>
     <section class="pause-controls">

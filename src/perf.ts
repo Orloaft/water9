@@ -39,8 +39,7 @@ export type PerfTelemetry = {
 export function perfEnabled() {
   if (typeof window === 'undefined') return false;
   const params = new URLSearchParams(window.location.search);
-  const viteEnv = (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env;
-  return Boolean(viteEnv?.DEV || params.has('playtest') || params.has('perf'));
+  return params.has('perf') || params.has('debug') || window.localStorage?.getItem('water9:debug') === '1';
 }
 
 export function createPerfTelemetry(): PerfTelemetry {

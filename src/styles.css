@@ -84,6 +84,7 @@ button.is-controller-focus {
 }
 
 .fps-tracker {
+  display: none;
   position: absolute;
   top: 10px;
   left: 10px;
@@ -100,6 +101,10 @@ button.is-controller-focus {
   text-align: center;
   text-transform: uppercase;
   pointer-events: none;
+}
+
+.shell.is-debug-ui .fps-tracker {
+  display: block;
 }
 
 .fps-tracker.is-low {
@@ -408,7 +413,7 @@ button.is-controller-focus {
 
 #gauges {
   display: grid;
-  grid-template-columns: repeat(4, minmax(120px, 178px)) minmax(260px, 360px);
+  grid-template-columns: minmax(120px, 178px) repeat(3, minmax(108px, 164px)) minmax(184px, 240px) minmax(240px, 340px);
   align-items: end;
   justify-content: space-between;
   gap: 8px;
@@ -428,7 +433,7 @@ button.is-controller-focus {
 
 .objective-panel {
   position: fixed;
-  top: 112px;
+  top: 92px;
   left: 14px;
   z-index: 3;
   display: grid;
@@ -462,6 +467,48 @@ button.is-controller-focus {
   color: rgba(236, 251, 255, 0.74);
   font-size: 0.78rem;
   line-height: 1.28;
+}
+
+.priority-alert {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  z-index: 4;
+  display: grid;
+  gap: 3px;
+  width: min(420px, calc(100vw - 610px));
+  min-width: 280px;
+  border: 1px solid rgba(255, 209, 102, 0.42);
+  border-radius: 4px;
+  padding: 8px 11px;
+  background:
+    linear-gradient(180deg, rgba(48, 31, 6, 0.72), rgba(5, 14, 20, 0.88)),
+    url("/assets/generated/ui-panel-wide.png");
+  background-size: 100% 100%;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.priority-alert span {
+  color: #ffd166;
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.priority-alert strong {
+  color: #fff7df;
+  font-size: 0.82rem;
+  line-height: 1.18;
+}
+
+.priority-alert--critical {
+  border-color: rgba(255, 79, 100, 0.64);
+  background:
+    linear-gradient(180deg, rgba(68, 8, 15, 0.78), rgba(5, 14, 20, 0.9)),
+    url("/assets/generated/ui-panel-wide.png");
+  background-size: 100% 100%;
 }
 
 .readout div {
@@ -498,7 +545,7 @@ button.is-controller-focus {
   justify-items: center;
   align-items: center;
   gap: 10px;
-  width: 250px;
+  width: 226px;
   border: 1px solid rgba(115, 251, 211, 0.18);
   border-radius: 4px;
   padding: 12px;
@@ -539,8 +586,8 @@ button.is-controller-focus {
 }
 
 #sonar-map {
-  width: 206px;
-  height: 206px;
+  width: 176px;
+  height: 176px;
   border-radius: 50%;
   background:
     radial-gradient(circle, rgba(6, 34, 47, 0.38), rgba(1, 7, 12, 0.88)),
@@ -619,7 +666,7 @@ button.is-controller-focus {
 }
 
 .status {
-  grid-column: 5;
+  grid-column: 6;
   margin: 0;
   border: 1px solid rgba(236, 251, 255, 0.11);
   border-radius: 4px;
@@ -628,6 +675,12 @@ button.is-controller-focus {
   color: rgba(236, 251, 255, 0.82);
   line-height: 1.35;
   pointer-events: auto;
+  overflow-wrap: anywhere;
+}
+
+.selected-item-chip strong,
+.meter-block strong {
+  overflow-wrap: anywhere;
 }
 
 .status.is-venomed {
@@ -855,7 +908,7 @@ button.is-controller-focus {
   right: auto;
   left: 18px;
   display: none;
-  width: min(560px, calc(100vw - 36px));
+  width: min(520px, calc(100vw - 36px));
   max-height: calc(100vh - 36px);
   padding: 14px;
   overflow: auto;
@@ -872,8 +925,8 @@ button.is-controller-focus {
   top: -14px;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(5, 1fr) 1.15fr;
-  gap: 8px;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) 1.2fr;
+  gap: 6px;
   margin: -4px -2px 0;
   padding: 4px 2px 10px;
   background: linear-gradient(180deg, rgba(3, 15, 24, 0.96), rgba(3, 15, 24, 0.72));
@@ -977,7 +1030,9 @@ button.is-controller-focus {
 }
 
 .barge-tabs button {
-  min-height: 42px;
+  min-height: 38px;
+  padding: 0 8px;
+  font-size: 0.78rem;
 }
 
 .barge-tabs button.is-active {
@@ -2097,16 +2152,29 @@ button.is-controller-focus {
   }
 
   #gauges {
-    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    grid-template-columns: repeat(3, minmax(112px, 1fr));
     gap: 7px;
   }
 
   .readout {
     top: 10px;
     left: 10px;
-    width: min(330px, calc(100vw - 240px));
+    width: min(300px, calc(100vw - 226px));
     min-width: 0;
     transform: none;
+  }
+
+  .priority-alert {
+    top: 78px;
+    left: 10px;
+    width: min(330px, calc(100vw - 236px));
+    min-width: 0;
+    transform: none;
+  }
+
+  .objective-panel {
+    top: 138px;
+    width: min(330px, calc(100vw - 236px));
   }
 
   .status {
@@ -2125,12 +2193,12 @@ button.is-controller-focus {
   .sonar-panel {
     top: 10px;
     right: 10px;
-    width: 210px;
+    width: 200px;
   }
 
   #sonar-map {
-    width: 168px;
-    height: 168px;
+    width: 154px;
+    height: 154px;
   }
 
   .barge-menu {
@@ -2203,9 +2271,33 @@ button.is-controller-focus {
 }
 
 @media (max-width: 520px) {
+  #gauges {
+    grid-template-columns: repeat(2, minmax(118px, 1fr));
+  }
+
   .readout,
   .dock-summary {
     grid-template-columns: 1fr;
+  }
+
+  .readout,
+  .priority-alert,
+  .objective-panel {
+    width: min(220px, calc(100vw - 178px));
+  }
+
+  .objective-panel {
+    top: 170px;
+  }
+
+  .sonar-panel {
+    width: 158px;
+    padding: 8px;
+  }
+
+  #sonar-map {
+    width: 118px;
+    height: 118px;
   }
 
   .upgrade,

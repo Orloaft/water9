@@ -377,7 +377,8 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       this.refreshFloraAnchorsAround(tx, ty, 5);
       this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.42, color: def.color, seed: hash(tx, ty, rng.seed) });
       if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
-      state.status = `Chipped ${def.name}.`;
+      state.status = `Cutter bit into ${def.name}. Keep pressure to break it loose.`;
+      this.spawnFloatingText('Chip', def.value > 0 ? def.color : 0x8ee7f4);
       return;
     }
     this.world[ty][tx] = 'water';
@@ -394,8 +395,10 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       state.status = state.cargo.length < cargoCapacity()
         ? `${def.name} broke loose. Swim near it to collect.`
         : `Cargo full. ${def.name} broke loose and can be picked up later.`;
+      this.spawnFloatingText(`Ore +${def.value}c`, def.color);
     } else {
       state.status = `Cut through ${def.name}.`;
+      this.spawnFloatingText('Opened', 0x8ee7f4);
     }
   }
 
