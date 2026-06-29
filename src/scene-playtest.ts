@@ -1228,6 +1228,11 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
       const tx = Math.floor(this.player.x / TILE);
       const ty = Math.floor(this.player.y / TILE);
+      for (let oy = -1; oy <= 1; oy += 1) {
+        for (let ox = -1; ox <= 1; ox += 1) {
+          this.setTile(tx + ox, ty + oy, 'water');
+        }
+      }
       this.setTile(tx + 2, ty, 'stone');
       this.setTile(tx + 2, ty + 1, 'stone');
       this.setTile(tx + 2, ty - 1, 'stone');
