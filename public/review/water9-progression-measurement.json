@@ -1,0 +1,748 @@
+{
+  "ok": true,
+  "generatedAt": "2026-06-29T11:10:48.844Z",
+  "seeds": [
+    1701,
+    2718,
+    3141,
+    4637,
+    7919
+  ],
+  "source": {
+    "formulas": [
+      "src/helpers.ts generateTile/veinRulesForBiome/veinRuleAt/hash/darknessForDepth/scanReward/bargeUpgradeCost/upgradeCost/upgradeMax",
+      "src/scene-worldgen.ts populateOreVeins/growOreVein",
+      "src/content.ts tiles/upgrades/subDefs/shopItems/biomeFish/biomeFlora",
+      "public/assets/generated/articulated-creatures.parts.json"
+    ],
+    "smoke": {
+      "ok": true,
+      "failures": []
+    }
+  },
+  "constants": {
+    "worldTiles": {
+      "width": 104,
+      "height": 420
+    },
+    "baseOxygen": 150,
+    "bargeUpgradeCost": 7500,
+    "subCosts": [
+      {
+        "tier": 1,
+        "name": "Seeker",
+        "cost": 18000
+      },
+      {
+        "tier": 2,
+        "name": "Marlin",
+        "cost": 62000
+      },
+      {
+        "tier": 3,
+        "name": "Leviathan",
+        "cost": 145000
+      }
+    ],
+    "shopItemCosts": [
+      {
+        "id": "stun-grenade",
+        "cost": 850
+      },
+      {
+        "id": "dynamite",
+        "cost": 200
+      },
+      {
+        "id": "flare",
+        "cost": 50
+      },
+      {
+        "id": "oxygen-tank",
+        "cost": 900
+      },
+      {
+        "id": "fuel-tank",
+        "cost": 700
+      },
+      {
+        "id": "first-aid-kit",
+        "cost": 760
+      },
+      {
+        "id": "antivenom",
+        "cost": 980
+      },
+      {
+        "id": "injector-knife",
+        "cost": 1600
+      }
+    ]
+  },
+  "biomes": [
+    {
+      "biome": 1,
+      "name": "The Shallows",
+      "ore": {
+        "seeds": [
+          2710,
+          3727,
+          4150,
+          5646,
+          8928
+        ],
+        "meanOreValue": 149647,
+        "p10OreValue": 132003,
+        "p90OreValue": 166026,
+        "meanWaterCells": 7040,
+        "deepestWaterMeters": 2478,
+        "meanOreCounts": {
+          "copper": 1821.6,
+          "drownedIdol": 16.4,
+          "quartz": 1140.4,
+          "relic": 149.6,
+          "ruby": 526.2
+        }
+      },
+      "scans": {
+        "targets": 14,
+        "rewardBaseTotal": 13560,
+        "rewardScannerMaxTotal": 22240,
+        "topBaseRewards": [
+          {
+            "kind": "flora",
+            "species": "Sting Anemone",
+            "rarity": "epic",
+            "hazardous": true,
+            "count": 4,
+            "rewardBase": 2320,
+            "rewardScannerMax": 3805
+          },
+          {
+            "kind": "fish",
+            "species": "Blue-ring Octopus",
+            "rarity": "epic",
+            "hostile": true,
+            "count": 5,
+            "rewardBase": 2280,
+            "rewardScannerMax": 3739
+          },
+          {
+            "kind": "articulated",
+            "species": "Thorn Fan Coralline",
+            "id": "thorn-fan-coralline",
+            "rarity": "rare",
+            "count": 1,
+            "rewardBase": 1870,
+            "rewardScannerMax": 3067
+          },
+          {
+            "kind": "fish",
+            "species": "Mantis Shrimp",
+            "rarity": "rare",
+            "hostile": true,
+            "count": 7,
+            "rewardBase": 1330,
+            "rewardScannerMax": 2181
+          },
+          {
+            "kind": "fish",
+            "species": "Nautilus",
+            "rarity": "rare",
+            "hostile": false,
+            "count": 7,
+            "rewardBase": 1150,
+            "rewardScannerMax": 1886
+          },
+          {
+            "kind": "fish",
+            "species": "Tidepool Octopus",
+            "rarity": "rare",
+            "hostile": false,
+            "count": 6,
+            "rewardBase": 1150,
+            "rewardScannerMax": 1886
+          },
+          {
+            "kind": "fish",
+            "species": "Glass Ray",
+            "rarity": "uncommon",
+            "hostile": false,
+            "count": 10,
+            "rewardBase": 620,
+            "rewardScannerMax": 1017
+          },
+          {
+            "kind": "fish",
+            "species": "Moon Jelly",
+            "rarity": "uncommon",
+            "hostile": false,
+            "count": 9,
+            "rewardBase": 620,
+            "rewardScannerMax": 1017
+          }
+        ],
+        "byRarity": {
+          "common": 5,
+          "uncommon": 3,
+          "rare": 4,
+          "epic": 2
+        }
+      },
+      "quests": {
+        "boards": 5,
+        "meanReward": 1553,
+        "questKinds": {
+          "depth": 5,
+          "scan": 5,
+          "ore": 5,
+          "nest": 3
+        },
+        "sampleBoard": [
+          {
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "reward": 940,
+            "target": 772
+          },
+          {
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "reward": 1100,
+            "target": 3
+          },
+          {
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "reward": 1300,
+            "target": 1400
+          },
+          {
+            "kind": "nest",
+            "title": "Rare: Nest Extermination",
+            "reward": 3750,
+            "target": 1,
+            "rare": true
+          }
+        ]
+      },
+      "economy": {
+        "biome": 1,
+        "gateCredits": 7500,
+        "chartingRequirement": {
+          "requiredScans": 4,
+          "requiredDepth": 900,
+          "requiredSonarCells": 2400,
+          "threatProof": "hostile-or-apex scan"
+        },
+        "recommendedUpgradeSpend": 5920,
+        "totalCredits": 13420,
+        "assumedCargoSlots": 14,
+        "estimatedCreditsPerTrip": 3800,
+        "creditMix": {
+          "oreTripCredits": 660,
+          "scanTripCredits": 2441,
+          "questTripCredits": 699
+        },
+        "marlinListCost": 62000,
+        "estimatedTripsToGate": 3.5,
+        "estimatedMinutesToGate": 16
+      }
+    },
+    {
+      "biome": 2,
+      "name": "Brine Vent Shelf",
+      "ore": {
+        "seeds": [
+          3719,
+          4736,
+          5159,
+          6655,
+          9937
+        ],
+        "meanOreValue": 491089,
+        "p10OreValue": 462204,
+        "p90OreValue": 521768,
+        "meanWaterCells": 7091,
+        "deepestWaterMeters": 2478,
+        "meanOreCounts": {
+          "cobalt": 1300,
+          "precursorEngine": 27.6,
+          "quartz": 2096.6,
+          "relic": 216.2,
+          "sunstone": 370.2
+        }
+      },
+      "scans": {
+        "targets": 26,
+        "rewardBaseTotal": 38180,
+        "rewardScannerMaxTotal": 80935,
+        "topBaseRewards": [
+          {
+            "kind": "articulated",
+            "species": "Abyssal Mandible Bobbit",
+            "id": "abyssal-mandible-bobbit",
+            "rarity": "epic",
+            "count": 1,
+            "rewardBase": 2820,
+            "rewardScannerMax": 5978
+          },
+          {
+            "kind": "flora",
+            "species": "Ember Bloom",
+            "rarity": "epic",
+            "hazardous": true,
+            "count": 5,
+            "rewardBase": 2320,
+            "rewardScannerMax": 4918
+          },
+          {
+            "kind": "fish",
+            "species": "Tripodfish",
+            "rarity": "epic",
+            "hostile": false,
+            "count": 5,
+            "rewardBase": 2100,
+            "rewardScannerMax": 4452
+          },
+          {
+            "kind": "articulated",
+            "species": "Sawback Ray",
+            "id": "sawback-ray",
+            "rarity": "rare",
+            "count": 1,
+            "rewardBase": 1870,
+            "rewardScannerMax": 3964
+          },
+          {
+            "kind": "articulated",
+            "species": "Thornhalo Urchin",
+            "id": "thornhalo-urchin",
+            "rarity": "rare",
+            "count": 2,
+            "rewardBase": 1870,
+            "rewardScannerMax": 3964
+          },
+          {
+            "kind": "articulated",
+            "species": "Cavitation Boxer",
+            "id": "cavitation-boxer",
+            "rarity": "rare",
+            "count": 1,
+            "rewardBase": 1870,
+            "rewardScannerMax": 3964
+          },
+          {
+            "kind": "articulated",
+            "species": "Sand Battery",
+            "id": "sand-battery",
+            "rarity": "rare",
+            "count": 1,
+            "rewardBase": 1870,
+            "rewardScannerMax": 3964
+          },
+          {
+            "kind": "articulated",
+            "species": "Brine Mycelium Shelf",
+            "id": "brine-mycelium-shelf",
+            "rarity": "rare",
+            "count": 1,
+            "rewardBase": 1870,
+            "rewardScannerMax": 3964
+          }
+        ],
+        "byRarity": {
+          "common": 4,
+          "uncommon": 3,
+          "rare": 16,
+          "epic": 3
+        }
+      },
+      "quests": {
+        "boards": 5,
+        "meanReward": 2167,
+        "questKinds": {
+          "depth": 5,
+          "scan": 5,
+          "ore": 5,
+          "nest": 3
+        },
+        "sampleBoard": [
+          {
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "reward": 1360,
+            "target": 907
+          },
+          {
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "reward": 1560,
+            "target": 5
+          },
+          {
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "reward": 1820,
+            "target": 1850
+          }
+        ]
+      },
+      "economy": {
+        "biome": 2,
+        "gateCredits": 15000,
+        "chartingRequirement": {
+          "requiredScans": 5,
+          "requiredDepth": 1100,
+          "requiredSonarCells": 3200,
+          "threatProof": "apex scan"
+        },
+        "recommendedUpgradeSpend": 8430,
+        "totalCredits": 23430,
+        "assumedCargoSlots": 26,
+        "estimatedCreditsPerTrip": 11641,
+        "creditMix": {
+          "oreTripCredits": 3794,
+          "scanTripCredits": 6872,
+          "questTripCredits": 975
+        },
+        "marlinListCost": 62000,
+        "estimatedTripsToGate": 2,
+        "estimatedMinutesToGate": 13
+      }
+    },
+    {
+      "biome": 3,
+      "name": "Midnight Trench",
+      "ore": {
+        "seeds": [
+          4728,
+          5745,
+          6168,
+          7664,
+          10946
+        ],
+        "meanOreValue": 801764,
+        "p10OreValue": 743147,
+        "p90OreValue": 879836,
+        "meanWaterCells": 7113,
+        "deepestWaterMeters": 2478,
+        "meanOreCounts": {
+          "abyssalCrown": 35.6,
+          "cobalt": 1427.6,
+          "relic": 194,
+          "ruby": 1567.2,
+          "sunstone": 607.8
+        }
+      },
+      "scans": {
+        "targets": 37,
+        "rewardBaseTotal": 74180,
+        "rewardScannerMaxTotal": 192868,
+        "topBaseRewards": [
+          {
+            "kind": "articulated",
+            "species": "Abyssal Serpent",
+            "id": "abyssal-serpent",
+            "rarity": "legendary",
+            "count": 1,
+            "rewardBase": 4320,
+            "rewardScannerMax": 11232
+          },
+          {
+            "kind": "articulated",
+            "species": "Abyssal Gulper",
+            "id": "abyssal-gulper",
+            "rarity": "legendary",
+            "count": 1,
+            "rewardBase": 4320,
+            "rewardScannerMax": 11232
+          },
+          {
+            "kind": "fish",
+            "species": "Black Swallower",
+            "rarity": "legendary",
+            "hostile": true,
+            "count": 4,
+            "rewardBase": 3780,
+            "rewardScannerMax": 9828
+          },
+          {
+            "kind": "articulated",
+            "species": "Chainmaw Eel",
+            "id": "chainmaw-eel",
+            "rarity": "epic",
+            "count": 1,
+            "rewardBase": 2820,
+            "rewardScannerMax": 7332
+          },
+          {
+            "kind": "articulated",
+            "species": "Hookjaw Isopod",
+            "id": "hookjaw-isopod",
+            "rarity": "epic",
+            "count": 1,
+            "rewardBase": 2820,
+            "rewardScannerMax": 7332
+          },
+          {
+            "kind": "articulated",
+            "species": "Siphon Lily",
+            "id": "siphon-lily",
+            "rarity": "epic",
+            "count": 1,
+            "rewardBase": 2820,
+            "rewardScannerMax": 7332
+          },
+          {
+            "kind": "articulated",
+            "species": "Harpoon Cone",
+            "id": "harpoon-cone",
+            "rarity": "epic",
+            "count": 1,
+            "rewardBase": 2820,
+            "rewardScannerMax": 7332
+          },
+          {
+            "kind": "articulated",
+            "species": "Trap-Jaw Bristle",
+            "id": "trap-jaw-bristle",
+            "rarity": "epic",
+            "count": 1,
+            "rewardBase": 2820,
+            "rewardScannerMax": 7332
+          }
+        ],
+        "byRarity": {
+          "common": 4,
+          "uncommon": 2,
+          "rare": 18,
+          "epic": 10,
+          "legendary": 3
+        }
+      },
+      "quests": {
+        "boards": 5,
+        "meanReward": 3480,
+        "questKinds": {
+          "depth": 5,
+          "scan": 5,
+          "ore": 5,
+          "nest": 3,
+          "gulperSurvey": 5
+        },
+        "sampleBoard": [
+          {
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "reward": 1780,
+            "target": 1331
+          },
+          {
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "reward": 2020,
+            "target": 6
+          },
+          {
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "reward": 2340,
+            "target": 2500
+          },
+          {
+            "kind": "nest",
+            "title": "Rare: Nest Extermination",
+            "reward": 6450,
+            "target": 1,
+            "rare": true
+          },
+          {
+            "kind": "gulperSurvey",
+            "title": "Rare: Gulper Wake Survey",
+            "reward": 6000,
+            "target": 1350,
+            "rare": true,
+            "grantsMarlinVoucher": true,
+            "marlinVoucherDiscount": 12000
+          }
+        ]
+      },
+      "economy": {
+        "biome": 3,
+        "gateCredits": 36000,
+        "chartingRequirement": {
+          "requiredScans": 6,
+          "requiredDepth": 1250,
+          "requiredSonarCells": 4200,
+          "threatProof": "apex scan"
+        },
+        "recommendedUpgradeSpend": 12059,
+        "totalCredits": 48059,
+        "assumedCargoSlots": 34,
+        "estimatedCreditsPerTrip": 20210,
+        "creditMix": {
+          "oreTripCredits": 5292,
+          "scanTripCredits": 13352,
+          "questTripCredits": 1566
+        },
+        "marlinListCost": 62000,
+        "marlinEffectiveCostAfterVoucher": 50000,
+        "estimatedTripsToGate": 2.4,
+        "estimatedMinutesToGate": 20
+      }
+    },
+    {
+      "biome": 4,
+      "name": "Abyssal Ruins",
+      "ore": {
+        "seeds": [
+          5737,
+          6754,
+          7177,
+          8673,
+          11955
+        ],
+        "meanOreValue": 3377062,
+        "p10OreValue": 3271024,
+        "p90OreValue": 3485902,
+        "meanWaterCells": 6979,
+        "deepestWaterMeters": 2478,
+        "meanOreCounts": {
+          "abyssalCrown": 239.8,
+          "alienAlloy": 1711.8,
+          "cobalt": 1458,
+          "ruinCore": 22.4,
+          "sunstone": 746.6
+        }
+      },
+      "scans": {
+        "targets": 49,
+        "rewardBaseTotal": 105750,
+        "rewardScannerMaxTotal": 308775,
+        "topBaseRewards": [
+          {
+            "kind": "articulated",
+            "species": "Abyssal Serpent",
+            "id": "abyssal-serpent",
+            "rarity": "legendary",
+            "count": 1,
+            "rewardBase": 4320,
+            "rewardScannerMax": 12614
+          },
+          {
+            "kind": "articulated",
+            "species": "Abyssal Gulper",
+            "id": "abyssal-gulper",
+            "rarity": "legendary",
+            "count": 1,
+            "rewardBase": 4320,
+            "rewardScannerMax": 12614
+          },
+          {
+            "kind": "articulated",
+            "species": "Abyssal Crownmaw",
+            "id": "abyssal-crownmaw",
+            "rarity": "legendary",
+            "count": 1,
+            "rewardBase": 4320,
+            "rewardScannerMax": 12614
+          },
+          {
+            "kind": "articulated",
+            "species": "Abyssal Riftmaw",
+            "id": "abyssal-riftmaw",
+            "rarity": "legendary",
+            "count": 1,
+            "rewardBase": 4320,
+            "rewardScannerMax": 12614
+          },
+          {
+            "kind": "articulated",
+            "species": "Abyssal Reliquary Wyrm",
+            "id": "abyssal-reliquary-wyrm",
+            "rarity": "legendary",
+            "count": 1,
+            "rewardBase": 4320,
+            "rewardScannerMax": 12614
+          },
+          {
+            "kind": "fish",
+            "species": "Black Swallower",
+            "rarity": "legendary",
+            "hostile": true,
+            "count": 5,
+            "rewardBase": 3780,
+            "rewardScannerMax": 11038
+          },
+          {
+            "kind": "articulated",
+            "species": "Chainmaw Eel",
+            "id": "chainmaw-eel",
+            "rarity": "epic",
+            "count": 1,
+            "rewardBase": 2820,
+            "rewardScannerMax": 8234
+          },
+          {
+            "kind": "articulated",
+            "species": "Hookjaw Isopod",
+            "id": "hookjaw-isopod",
+            "rarity": "epic",
+            "count": 1,
+            "rewardBase": 2820,
+            "rewardScannerMax": 8234
+          }
+        ],
+        "byRarity": {
+          "common": 3,
+          "uncommon": 2,
+          "epic": 11,
+          "rare": 27,
+          "legendary": 6
+        }
+      },
+      "quests": {
+        "boards": 5,
+        "meanReward": 3394,
+        "questKinds": {
+          "depth": 5,
+          "scan": 5,
+          "ore": 5,
+          "nest": 3
+        },
+        "sampleBoard": [
+          {
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "reward": 2200,
+            "target": 1419
+          },
+          {
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "reward": 2480,
+            "target": 6
+          },
+          {
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "reward": 2860,
+            "target": 3000
+          },
+          {
+            "kind": "nest",
+            "title": "Rare: Nest Extermination",
+            "reward": 7800,
+            "target": 1,
+            "rare": true
+          }
+        ]
+      },
+      "economy": {
+        "biome": 4,
+        "note": "No next-biome gate after biome 4."
+      }
+    }
+  ]
+}

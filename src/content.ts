@@ -41,7 +41,7 @@ export const subDefs: SubDef[] = [
     fuel: 220,
     cargo: 0,
     speed: 168,
-    text: 'A compact scout pod. It carries oxygen and armor, moves quickly, and keeps the scanner stable.',
+    text: 'Scout route: best for mapping, scanning, and reaching contract beacons. No cargo and no drill.',
     features: ['Scanner suite', 'High mobility', 'No mining arm'],
   },
   {
@@ -53,7 +53,7 @@ export const subDefs: SubDef[] = [
     fuel: 340,
     cargo: 14,
     speed: 150,
-    text: 'A working sub with a drill, grabber, reinforced hull, and serious cargo reserves.',
+    text: 'Work route: first mining sub. Buy when you want deeper ore, safer hauling, and Ancient Ruins preparation.',
     features: ['Mining drill', 'Ore pickup', 'Harpoon mount'],
   },
   {

@@ -25,7 +25,7 @@ export type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 export type ArticulatedCreatureState = 'patrol' | 'stalk' | 'lunge' | 'grab' | 'recover';
 export type TitlePanel = 'main' | 'options' | 'controls';
 export type SubTier = 1 | 2 | 3;
-export type QuestKind = 'depth' | 'scan' | 'ore' | 'nest';
+export type QuestKind = 'depth' | 'scan' | 'ore' | 'nest' | 'gulperSurvey';
 export type InventoryItemId =
   | Tile
   | 'stun-grenade'
@@ -762,6 +762,7 @@ export interface Quest {
   completed: boolean;
   claimed: boolean;
   rare?: boolean;
+  grantsMarlinVoucher?: boolean;
 }
 
 export interface SubDef {

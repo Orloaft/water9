@@ -74,6 +74,7 @@ interface SavedGame {
     carrierSub: SavedSub | null;
     pilotingSub: boolean;
     auxSubActive: boolean;
+    marlinVoucherAvailable?: boolean;
     won: boolean;
     lost: boolean;
     started: boolean;
@@ -225,6 +226,7 @@ function buildSave(scene: DeepdiveScene): SavedGame {
       carrierSub: state.carrierSub ? saveSub(state.carrierSub) : null,
       pilotingSub: state.pilotingSub,
       auxSubActive: state.auxSubActive,
+      marlinVoucherAvailable: state.marlinVoucherAvailable,
       won: state.won,
       lost: state.lost,
       started: state.started,
@@ -300,6 +302,7 @@ function applySavedState(save: SavedGame) {
   state.carrierSub = restoreSub(save.state.carrierSub);
   state.pilotingSub = Boolean(save.state.pilotingSub && state.activeSub);
   state.auxSubActive = Boolean(save.state.auxSubActive);
+  state.marlinVoucherAvailable = Boolean(save.state.marlinVoucherAvailable && !state.subOwned[2]);
   state.won = Boolean(save.state.won);
   state.lost = Boolean(save.state.lost);
   state.started = Boolean(save.state.started);

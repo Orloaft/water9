@@ -4,7 +4,7 @@ import { FUEL_REFILL_AMOUNT,SURFACE_Y,TILE,WORLD_W } from './constants';
 import { upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { activeQuest,bargeUpgradeCost,cargoCapacity,clearBleed,clearVenom,createConsumableItem,fuelMax,fuelRefillCost,questProgressSource,refillAtBoat,resetOxygenWarnings,restart,shopItem,subDef,upgradeCost,upgradeMax } from './helpers';
+import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,createConsumableItem,fuelMax,fuelRefillCost,questProgressSource,refillAtBoat,resetOxygenWarnings,restart,shopItem,subDef,upgradeCost,upgradeMax } from './helpers';
 import { biomeName,openingRadioMessages,renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 
@@ -117,15 +117,29 @@ export function claimQuest(this: DeepdiveScene, id: string) {
     if (!quest || !quest.completed || quest.claimed) return;
     quest.claimed = true;
     state.credits += quest.reward;
+    if (quest.grantsMarlinVoucher && !state.subOwned[2]) state.marlinVoucherAvailable = true;
     if (state.activeQuestId === quest.id) state.activeQuestId = '';
-    state.status = `${quest.title} complete. ${quest.reward.toLocaleString()} credits transferred.`;
+    state.status = quest.grantsMarlinVoucher && state.marlinVoucherAvailable
+      ? `${quest.title} complete. ${quest.reward.toLocaleString()} credits transferred. Marlin fabrication voucher active: 12,000c discount.`
+      : `${quest.title} complete. ${quest.reward.toLocaleString()} credits transferred.`;
     renderHud();
     this.drawSonarMap();
   }
 
 export function travelToNextBiome(this: DeepdiveScene, ) {
     const cost = bargeUpgradeCost();
-    if (!state.atBoat || state.biome >= 4 || state.credits < cost) return;
+    const charting = biomeChartingProgress();
+    if (!state.atBoat || state.biome >= 4) return;
+    if (!charting.complete) {
+      state.status = `Charting incomplete: finish ${charting.missing} before the barge risks the next route.`;
+      renderHud();
+      return;
+    }
+    if (!canTravelToNextBiome()) {
+      state.status = `Barge retrofit needs ${cost.toLocaleString()}c plus charting proof.`;
+      renderHud();
+      return;
+    }
     state.credits -= cost;
     state.depth = 0;
     state.maxDepth = 0;
@@ -197,4 +211,3 @@ export function nearestOpenNestRoom(this: DeepdiveScene, ) {
     }
     return nearest?.room ?? null;
   }
-

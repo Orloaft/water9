@@ -57,6 +57,7 @@ export const state = {
   carrierSub: null as SubVehicle | null,
   pilotingSub: false,
   auxSubActive: false,
+  marlinVoucherAvailable: false,
   won: false,
   lost: false,
   started: false,

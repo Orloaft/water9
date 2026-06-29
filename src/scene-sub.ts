@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { ControlState,SubTier,SubVehicle } from './types';
 import { BARGE_DOCK_Y,SUB_BOARD_SECONDS,SUB_FUEL_CELL,SUB_FUEL_COST,SUB_OXYGEN_CELL,SUB_OXYGEN_COST,TILE,WORLD_W } from './constants';
 import { state } from './state';
-import { createSubVehicle,mineCooldown,scaledEntity,scanReward,subDef,subRepairCost } from './helpers';
+import { createSubVehicle,mineCooldown,scaledEntity,scanReward,subDef,subEffectiveCost,subRepairCost } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 
@@ -15,8 +15,10 @@ export function buySub(this: DeepdiveScene, tier: SubTier) {
       renderHud();
       return;
     }
-    if (state.credits < def.cost) return;
-    state.credits -= def.cost;
+    const cost = subEffectiveCost(tier);
+    if (state.credits < cost) return;
+    state.credits -= cost;
+    if (tier === 2) state.marlinVoucherAvailable = false;
     state.subOwned[tier] = true;
     state.selectedSubTier = tier;
     state.activeSub = createSubVehicle(tier, WORLD_W * TILE * 0.5, BARGE_DOCK_Y);
@@ -280,4 +282,3 @@ export function updateAuxSub(this: DeepdiveScene, delta: number) {
       }
     }
   }
-

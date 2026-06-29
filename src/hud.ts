@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import type { BargeTab,Biome,CargoItem,FishSpecies,Flora,FloraSpecies,Quest,RadioMessage,ScanRarity,ShopItem,SubDef,SubTier,SubVehicle,TitlePanel,Upgrade,UpgradeId } from './types';
-import { FUEL_REFILL_AMOUNT,SONAR_FUEL_COST,SUB_FUEL_COST,SUB_OXYGEN_COST } from './constants';
+import { FUEL_REFILL_AMOUNT,MARLIN_VOUCHER_DISCOUNT,SONAR_FUEL_COST,SUB_FUEL_COST,SUB_OXYGEN_COST } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,upgrades } from './content';
 import { state,ui } from './state';
 import { articulatedCreatureDefs } from './articulated';
-import { activeQuest,bargeUpgradeCost,cargoCapacity,clampSelectedCargoIndex,fishAssetKey,fishRarity,floraAssetKey,floraRarity,fuelMax,fuelRefillCost,hullMax,lifeCatalogTotal,oxygenMax,rarityLabel,restart,subDef,subRepairCost,upgradeCost,upgradeMax } from './helpers';
+import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clampSelectedCargoIndex,fishAssetKey,fishRarity,floraAssetKey,floraRarity,fuelMax,fuelRefillCost,hullMax,lifeCatalogTotal,oxygenMax,rarityLabel,restart,subDef,subEffectiveCost,subRepairCost,upgradeCost,upgradeMax } from './helpers';
 import { gameScene } from './game-ref';
 import { hasSavedGame } from './save-load';
 
@@ -179,14 +179,22 @@ export function currentDiveObjective(quest: Quest | undefined) {
     const remaining = Math.max(0, quest.target - quest.progress);
     return {
       title: quest.title,
-      detail: remaining > 0 ? `${remaining} ${quest.kind === 'ore' ? 'more cargo' : quest.kind === 'scan' ? 'more scan' : quest.kind === 'depth' ? 'meters of depth' : 'more objective step'} needed, then return to the barge.` : 'Return to the barge to claim payment.',
+      detail: remaining > 0 ? `${remaining} ${quest.kind === 'ore' ? 'more cargo' : quest.kind === 'scan' ? 'more scan' : quest.kind === 'depth' || quest.kind === 'gulperSurvey' ? 'meters of depth' : 'more objective step'} needed, then return to the barge.` : 'Return to the barge to claim payment.',
     };
   }
   if (state.cargo.length <= 0 && state.scannedSpecies.size <= 0) {
     return { title: 'Cut one ore or scan one lifeform', detail: 'Space cuts rock ahead. Hold E scans wildlife. Return when cargo or catalog has proof.' };
   }
   if (state.cargo.length > 0) return { title: 'Return cargo to the barge', detail: 'Surface to sell this load, then buy the first upgrade you can afford.' };
-  return { title: 'Bank the scan data', detail: 'Return to the barge, review contracts, then pick the next paid objective.' };
+  const charting = biomeChartingProgress();
+  if (!charting.complete) {
+    if (charting.scanned < charting.requiredScans) return { title: 'Scan local lifeforms', detail: `Catalog ${charting.requiredScans - charting.scanned} more signal${charting.requiredScans - charting.scanned === 1 ? '' : 's'} to prove this biome route.` };
+    if (!charting.threatOk) return { title: charting.requiredDepth >= 1100 ? 'Scan the apex signal' : 'Scan a hostile signal', detail: `Threat proof keeps the next barge route from being a blind jump.` };
+    if (charting.depth < charting.requiredDepth) return { title: 'Push the pressure line deeper', detail: `Reach ${charting.requiredDepth.toLocaleString()} m before the barge accepts the route.` };
+    if (charting.sonarCells < charting.requiredSonarCells) return { title: 'Pulse sonar to chart the route', detail: `Reveal ${charting.requiredSonarCells.toLocaleString()} sonar cells for the next-biome lane.` };
+  }
+  if (state.biome === 3) return { title: 'Choose the Ancient Ruins route', detail: 'Complete Gulper Wake Survey or bank 36,000c for Ancient Ruins. Marlin is for mining cargo, not required for travel.' };
+  return { title: 'Fund the barge retrofit', detail: 'Return to the barge, claim contracts, and buy the next route once charting proof is complete.' };
 }
 
 export function biomeLoadingPanel() {
@@ -1352,7 +1360,7 @@ export function bargeTravelRow() {
     return `
       <article class="travel-card">
         <strong>Ancient Ruins</strong>
-        <span>The drowned architects left vaults below the trench. Catalog the sentinel and escape with proof.</span>
+        <span>Follow the Reliquary Vault Route, catalog the Crownmaw sentinel, and escape with proof of the drowned architects.</span>
       </article>
     `;
   }
@@ -1362,15 +1370,29 @@ export function bargeTravelRow() {
     ? 'Unlocks advanced refits, hotter hazards, and richer minerals.'
     : state.biome === 2
       ? 'Adds hazardous flora, stronger vent fields, and anchorstone that cannot be mined.'
-      : 'Opens ancient alien ruins, ruin alloys, and sentinel-class predators.';
-  const disabled = state.credits < cost;
+      : 'You can chart the route now; Marlin is recommended for long ore runs, not required for entry.';
+  const charting = biomeChartingProgress();
+  const ready = canTravelToNextBiome();
+  const disabled = !ready;
+  const buttonLabel = !charting.complete ? 'Chart biome' : state.credits < cost ? `${cost.toLocaleString()}c` : 'Travel';
+  const optional = state.biome === 3 && !state.marlinVoucherAvailable && !state.subOwned[2]
+    ? '<small>Optional: complete Gulper Wake Survey for a Marlin discount before leaving.</small>'
+    : '';
   return `
     <article class="travel-card">
       <div>
         <strong>Barge Retrofit</strong>
         <span>Travel to ${nextName}. ${description}</span>
+        <dl class="travel-card__requirements">
+          <div><dt>Credits</dt><dd>${state.credits.toLocaleString()} / ${cost.toLocaleString()}c</dd></div>
+          <div><dt>Survey scans</dt><dd>${charting.scanned}/${charting.requiredScans}</dd></div>
+          <div><dt>Depth record</dt><dd>${charting.depth.toLocaleString()} / ${charting.requiredDepth.toLocaleString()} m</dd></div>
+          <div><dt>Sonar chart</dt><dd>${charting.sonarCells.toLocaleString()} / ${charting.requiredSonarCells.toLocaleString()} cells</dd></div>
+          <div><dt>Threat proof</dt><dd>${charting.apexScanned ? 'apex scanned' : charting.hostileScanned ? 'hostile scanned' : 'needed'}</dd></div>
+        </dl>
+        ${optional}
       </div>
-      <button data-travel-biome ${disabled ? 'disabled' : ''}>${cost.toLocaleString()}c</button>
+      <button data-travel-biome ${disabled ? 'disabled' : ''}>${buttonLabel}</button>
     </article>
   `;
 }
@@ -1453,8 +1475,14 @@ export function subShopPanel() {
 export function subCard(def: SubDef) {
   const owned = state.subOwned[def.tier];
   const selected = state.selectedSubTier === def.tier;
-  const affordable = state.credits >= def.cost;
-  const buttonText = owned ? selected ? 'Selected' : 'Select' : `${def.cost.toLocaleString()}c`;
+  const effectiveCost = subEffectiveCost(def.tier);
+  const affordable = state.credits >= effectiveCost;
+  const buttonText = owned ? selected ? 'Selected' : 'Select' : `${effectiveCost.toLocaleString()}c`;
+  const roleHint = def.tier === 1
+    ? 'Recommended before deep scan contracts.'
+    : def.tier === 2
+      ? `Recommended before long Ancient Ruins ore runs; not required to travel.${state.marlinVoucherAvailable && !owned ? ` Voucher active: ${MARLIN_VOUCHER_DISCOUNT.toLocaleString()}c discount.` : ''}`
+      : 'Late-game command hull for combat and deep storage.';
   return `
     <article class="sub-card ${selected ? 'is-selected' : ''}">
       <img src="/assets/generated/sub-tier${def.tier}.png" alt="">
@@ -1470,6 +1498,7 @@ export function subCard(def: SubDef) {
         <div><dt>Cargo</dt><dd>${def.cargo}</dd></div>
       </dl>
       <small>${def.features.join(' / ')}</small>
+      <small>${roleHint}</small>
       <button data-buy-sub="${def.tier}" data-focus-key="sub-${def.tier}" ${!owned && !affordable ? 'disabled' : ''}>${buttonText}</button>
     </article>
   `;

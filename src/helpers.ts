@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Biome,CargoItem,DiverAnimation,Fish,FishSpecies,FloraSpecies,Hazard,InventoryItemKind,Quest,ScanRarity,ScanTarget,ShopItem,SpecialRoom,SubTier,SubVehicle,Tile,Upgrade,UpgradeId,VeinRule } from './types';
-import { audioKeys,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { audioKeys,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MARLIN_VOUCHER_DISCOUNT,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
@@ -136,7 +136,7 @@ export function activeQuest() {
 }
 
 export function questProgressSource(quest: Quest) {
-  if (quest.kind === 'depth') return state.maxDepth;
+  if (quest.kind === 'depth' || quest.kind === 'gulperSurvey') return state.maxDepth;
   if (quest.kind === 'scan') return state.scannedSpecies.size;
   if (quest.kind === 'ore') return state.oreSoldCredits;
   if (quest.kind === 'nest') return quest.progress;
@@ -207,6 +207,24 @@ export function generateQuestBoard(hasNest: boolean): Quest[] {
       completed: false,
       claimed: false,
       rare: true,
+    });
+  }
+  if (biome === 3) {
+    quests.push({
+      id: `gulper-wake-${rng.seed}-${biome}`,
+      kind: 'gulperSurvey',
+      title: 'Rare: Gulper Wake Survey',
+      client: 'Barge Cartography',
+      text: 'Track the wake beacon into Midnight Trench, confirm the gulper pressure lane at 1,350 m, and return with a trace.',
+      reward: 6000,
+      target: 1350,
+      progress: 0,
+      startValue: 0,
+      accepted: false,
+      completed: false,
+      claimed: false,
+      rare: true,
+      grantsMarlinVoucher: true,
     });
   }
   return quests.sort((a, b) => hash(a.id.length, b.id.length, rng.seed) - 0.5);
@@ -1237,7 +1255,81 @@ export function subRepairCost() {
 export function bargeUpgradeCost() {
   if (state.biome === 1) return BARGE_UPGRADE_COST;
   if (state.biome === 2) return 15000;
-  return 45000;
+  return 36000;
+}
+
+export function marlinVoucherDiscount() {
+  return state.marlinVoucherAvailable && !state.subOwned[2] ? MARLIN_VOUCHER_DISCOUNT : 0;
+}
+
+export function subEffectiveCost(tier: SubTier) {
+  const def = subDef(tier);
+  return Math.max(0, def.cost - (tier === 2 ? marlinVoucherDiscount() : 0));
+}
+
+export function biomeChartingRequirement(biome = state.biome) {
+  if (biome === 1) return { requiredScans: 4, requiredDepth: 900, requiredSonarCells: 2400, requireApexScan: false, allowHostileScanFallback: true };
+  if (biome === 2) return { requiredScans: 5, requiredDepth: 1100, requiredSonarCells: 3200, requireApexScan: true, allowHostileScanFallback: false };
+  if (biome === 3) return { requiredScans: 6, requiredDepth: 1250, requiredSonarCells: 4200, requireApexScan: true, allowHostileScanFallback: false };
+  return null;
+}
+
+export function hasScannedHostileInCurrentBiome() {
+  return biomeFish[state.biome].some((species) => species.hostile && state.scannedSpecies.has(species.species))
+    || biomeFlora[state.biome].some((species) => species.hazardous && state.scannedSpecies.has(species.species));
+}
+
+export function biomeChartingProgress() {
+  const requirement = biomeChartingRequirement();
+  const apex = currentApexSpecies();
+  const apexScanned = state.scannedSpecies.has(apex);
+  const hostileScanned = hasScannedHostileInCurrentBiome();
+  if (!requirement) {
+    return {
+      scanned: state.scannedSpecies.size,
+      requiredScans: 0,
+      depth: state.maxDepth,
+      requiredDepth: 0,
+      sonarCells: state.sonarRevealed.size,
+      requiredSonarCells: 0,
+      apex,
+      apexScanned,
+      hostileScanned,
+      threatOk: true,
+      complete: true,
+      missing: '',
+    };
+  }
+  const threatOk = requirement.requireApexScan
+    ? apexScanned
+    : apexScanned || (requirement.allowHostileScanFallback ? hostileScanned : true);
+  const missing = state.scannedSpecies.size < requirement.requiredScans
+    ? 'survey scans'
+    : state.maxDepth < requirement.requiredDepth
+      ? 'depth record'
+      : state.sonarRevealed.size < requirement.requiredSonarCells
+        ? 'sonar chart'
+        : !threatOk
+          ? requirement.requireApexScan ? 'apex scan' : 'hostile scan'
+          : '';
+  return {
+    scanned: state.scannedSpecies.size,
+    requiredScans: requirement.requiredScans,
+    depth: state.maxDepth,
+    requiredDepth: requirement.requiredDepth,
+    sonarCells: state.sonarRevealed.size,
+    requiredSonarCells: requirement.requiredSonarCells,
+    apex,
+    apexScanned,
+    hostileScanned,
+    threatOk,
+    complete: !missing,
+    missing,
+  };
+}
+
+export function canTravelToNextBiome() {
+  return state.biome < 4 && state.credits >= bargeUpgradeCost() && biomeChartingProgress().complete;
 }
 
 export function oxygenDrain() {
@@ -1375,6 +1467,7 @@ export function restart(scene: DeepdiveScene) {
   state.carrierSub = null;
   state.pilotingSub = false;
   state.auxSubActive = false;
+  state.marlinVoucherAvailable = false;
   for (const tier of [1, 2, 3] as SubTier[]) state.subOwned[tier] = false;
   state.status = 'A new trench map is ready. Dive again.';
   state.started = true;

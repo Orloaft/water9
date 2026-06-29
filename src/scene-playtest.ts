@@ -4,7 +4,7 @@ import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,SURFACE_Y,TILE,WORLD_H,WORLD_W } fro
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { cargoCapacity,clearBleed,clearVenom,createConsumableItem,createSubVehicle,darknessAtDepth,fuelMax,hash,isOreTile,oxygenMax,parallaxProfileFor,refillAtBoat,restart,scaledDepthPx,shopItem,specialRoomEffectCenter,subDef,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
+import { biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,createConsumableItem,createSubVehicle,darknessAtDepth,fuelMax,hash,isOreTile,oxygenMax,parallaxProfileFor,refillAtBoat,restart,scaledDepthPx,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
@@ -586,6 +586,8 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         cargo: state.cargo.length,
         cargoCapacity: cargoCapacity(),
         sonarRevealed: state.sonarRevealed.size,
+        chartingProgress: biomeChartingProgress(),
+        canTravelToNextBiome: canTravelToNextBiome(),
         atBoat: state.atBoat,
         docked: state.docked,
         started: state.started,
@@ -598,6 +600,8 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         upgrades: { ...state.upgrades },
         subOwned: { ...state.subOwned },
         selectedSubTier: state.selectedSubTier,
+        marlinVoucherAvailable: state.marlinVoucherAvailable,
+        marlinEffectiveCost: subEffectiveCost(2),
         activeSub,
         carrierSub,
         hasSavedGame: hasSavedGame(),
