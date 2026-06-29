@@ -5,6 +5,10 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
+    "desktop": "node tools/desktop_tauri.mjs",
+    "desktop:build": "node tools/desktop_tauri.mjs build",
+    "desktop:check": "node tools/desktop_tauri.mjs build --no-bundle",
+    "desktop:linux": "node tools/desktop_tauri.mjs build --bundles appimage",
     "water9:player-package-smoke": "node tools/test_player_package_assets.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "playtest": "node tools/playtest.mjs",
@@ -391,6 +395,7 @@
     "phaser": "^3.90.0"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
     "playwright": "^1.60.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.12"

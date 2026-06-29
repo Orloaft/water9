@@ -1,0 +1,68 @@
+name: Desktop Builds
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/desktop-builds.yml"
+      - "src-tauri/**"
+      - "src/**"
+      - "public/**"
+      - "index.html"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+      - "tools/desktop_tauri.mjs"
+
+jobs:
+  desktop:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux AppImage
+            os: ubuntu-22.04
+            bundles: appimage
+            artifact_glob: .desktop-build/target/release/bundle/appimage/*
+          - name: Windows NSIS
+            os: windows-latest
+            bundles: nsis
+            artifact_glob: .desktop-build/target/release/bundle/nsis/*
+          - name: macOS DMG
+            os: macos-latest
+            bundles: dmg
+            artifact_glob: .desktop-build/target/release/bundle/dmg/*
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Linux Tauri dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libsoup-3.0-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build desktop artifact
+        run: npm run desktop:build -- --bundles ${{ matrix.bundles }}
+
+      - name: Upload desktop artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: water9-${{ runner.os }}-${{ matrix.bundles }}
+          path: ${{ matrix.artifact_glob }}
+          if-no-files-found: error

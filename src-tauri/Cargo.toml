@@ -1,0 +1,15 @@
+[package]
+name = "water9"
+version = "1.0.0"
+description = "Water9 desktop shell"
+authors = ["Water9 contributors"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
