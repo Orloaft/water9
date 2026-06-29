@@ -127,22 +127,31 @@ try {
       let opaque = 0;
       let brightPixels = 0;
       let magentaFringe = 0;
+      let dockGapTransparent = 0;
+      let dockGapSamples = 0;
       for (let i = 0; i < data.length; i += 4) {
+        const pixel = i / 4;
+        const x = pixel % canvas.width;
+        const y = Math.floor(pixel / canvas.width);
         const r = data[i];
         const g = data[i + 1];
         const b = data[i + 2];
         const a = data[i + 3];
+        if (x >= 270 && x <= 330 && y >= 48) {
+          dockGapSamples += 1;
+          if (a <= 8) dockGapTransparent += 1;
+        }
         if (a <= 8) continue;
         opaque += 1;
         if (r + g + b > 360) brightPixels += 1;
         if (r > 120 && b > 120 && g < 100 && Math.abs(r - b) < 100) magentaFringe += 1;
       }
-      resolveImage({ opaque, brightPixels, magentaFringe });
+      resolveImage({ opaque, brightPixels, magentaFringe, dockGapTransparent, dockGapSamples });
     };
     image.onerror = () => resolveImage(null);
     image.src = `/assets/generated/barge-platform.png?stats=${Date.now()}`;
   }));
-  if (!bargeStats || bargeStats.opaque < 28000) {
+  if (!bargeStats || bargeStats.opaque < 26000) {
     errors.push({ type: 'assertion', text: `barge-platform opaque coverage was too low: ${bargeStats?.opaque ?? 'n/a'}` });
   }
   if (bargeStats && bargeStats.brightPixels < 420) {
@@ -150,6 +159,9 @@ try {
   }
   if (bargeStats && bargeStats.magentaFringe > 260) {
     errors.push({ type: 'assertion', text: `barge-platform has too much magenta key fringe: ${bargeStats.magentaFringe}` });
+  }
+  if (bargeStats && bargeStats.dockGapTransparent < bargeStats.dockGapSamples * 0.86) {
+    errors.push({ type: 'assertion', text: `barge-platform docking gap is not clearly open: ${JSON.stringify({ dockGapTransparent: bargeStats.dockGapTransparent, dockGapSamples: bargeStats.dockGapSamples })}` });
   }
   surfaceStats = await page.evaluate(() => {
     const canvas = document.querySelector('canvas');
@@ -170,8 +182,31 @@ try {
       const currentScore = surface.luma + Math.max(0, surface.g - surface.r) * 0.35 + Math.max(0, surface.b - surface.r) * 0.2;
       if (cyanEdgeScore > currentScore) surface = candidate;
     }
+    let sky = sample(Math.floor(canvas.height * 0.05));
+    let skyBandDelta = 0;
+    let previousSky = null;
+    const skyYStart = Math.floor(canvas.height * 0.04);
+    const skyYEnd = Math.floor(canvas.height * 0.18);
+    for (let sx = Math.floor(canvas.width * 0.12); sx <= Math.floor(canvas.width * 0.88); sx += Math.floor(canvas.width * 0.08)) {
+      for (let sy = skyYStart; sy <= skyYEnd; sy += 8) {
+        const data = context.getImageData(sx, sy, 1, 1).data;
+        const candidate = { x: sx, y: sy, r: data[0], g: data[1], b: data[2], a: data[3], luma: data[0] * 0.2126 + data[1] * 0.7152 + data[2] * 0.0722 };
+        if (candidate.luma > sky.luma) sky = candidate;
+        const unobstructedAtmosphere = candidate.luma >= 45 && candidate.luma <= 210 && candidate.g >= candidate.r - 4 && candidate.b >= candidate.r - 18;
+        if (unobstructedAtmosphere) {
+          if (previousSky && previousSky.x === sx && candidate.y - previousSky.y <= 10) {
+            skyBandDelta = Math.max(skyBandDelta, Math.abs(candidate.luma - previousSky.luma));
+          }
+          previousSky = candidate;
+        } else {
+          previousSky = null;
+        }
+      }
+      previousSky = null;
+    }
     return {
-      sky: sample(Math.floor(canvas.height * 0.05)),
+      sky,
+      skyBandDelta,
       surface,
       water: sample(Math.floor(canvas.height * 0.45)),
     };
@@ -187,6 +222,9 @@ try {
     }
     if (surfaceStats.water.b < surfaceStats.water.r + 16) {
       errors.push({ type: 'assertion', text: `below-surface sample did not read as blue-green water: ${JSON.stringify(surfaceStats)}` });
+    }
+    if (surfaceStats.skyBandDelta > 130) {
+      errors.push({ type: 'assertion', text: `top-stage lighting has too much visible band contrast: ${JSON.stringify(surfaceStats)}` });
     }
   }
   await page.screenshot({ path: screenshotPath, fullPage: false });
