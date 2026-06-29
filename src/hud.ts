@@ -179,7 +179,9 @@ export function currentDiveObjective(quest: Quest | undefined) {
     const remaining = Math.max(0, quest.target - quest.progress);
     return {
       title: quest.title,
-      detail: remaining > 0 ? `${remaining} ${quest.kind === 'ore' ? 'more cargo' : quest.kind === 'scan' ? 'more scan' : quest.kind === 'depth' || quest.kind === 'gulperSurvey' ? 'meters of depth' : 'more objective step'} needed, then return to the barge.` : 'Return to the barge to claim payment.',
+      detail: quest.kind === 'forwardOutpost' && remaining > 0
+        ? 'Press F below 900 m in Biome 3, beside solid terrain and non-hazardous oxygen flora.'
+        : remaining > 0 ? `${remaining} ${quest.kind === 'ore' ? 'more cargo' : quest.kind === 'scan' ? 'more scan' : quest.kind === 'depth' || quest.kind === 'gulperSurvey' ? 'meters of depth' : 'more objective step'} needed, then return to the barge.` : 'Return to the barge to claim payment.',
     };
   }
   if (state.cargo.length <= 0 && state.scannedSpecies.size <= 0) {
@@ -1211,7 +1213,7 @@ export function pauseMenuPanel() {
         <div><dt>Move</dt><dd>WASD / arrow keys</dd></div>
         <div><dt>Mine</dt><dd>Mouse button or Space</dd></div>
         <div><dt>Scan</dt><dd>Hold E</dd></div>
-        <div><dt>Sub hatch</dt><dd>Hold F</dd></div>
+        <div><dt>Sub hatch / outpost</dt><dd>Hold or press F</dd></div>
         <div><dt>Deploy scout</dt><dd>H</dd></div>
         <div><dt>Sonar</dt><dd>Q</dd></div>
         <div><dt>Sonar map</dt><dd>M</dd></div>
@@ -1226,7 +1228,7 @@ export function pauseMenuPanel() {
         <div><dt>Move</dt><dd>Left stick / D-pad</dd></div>
         <div><dt>Dive / Mine</dt><dd>A / right trigger</dd></div>
         <div><dt>Scan</dt><dd>Hold X</dd></div>
-        <div><dt>Sub hatch</dt><dd>Hold B</dd></div>
+        <div><dt>Sub hatch / outpost</dt><dd>Hold or press B</dd></div>
         <div><dt>Deploy scout</dt><dd>Left stick press</dd></div>
         <div><dt>Sonar</dt><dd>Left bumper</dd></div>
         <div><dt>Sonar map</dt><dd>View / Back</dd></div>

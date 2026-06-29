@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Biome,PlaytestCommand,SubTier,Tile } from './types';
-import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
@@ -598,6 +598,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         bleed: { ...state.bleed },
         activeQuestId: state.activeQuestId,
         questBoard: state.questBoard.map((quest) => ({ ...quest })),
+        forwardOutpost: { ...state.forwardOutpost },
         upgrades: { ...state.upgrades },
         subOwned: { ...state.subOwned },
         selectedSubTier: state.selectedSubTier,
@@ -1092,6 +1093,12 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       state.started = true;
       state.bargeTab = 'services';
       state.activeQuestId = '';
+      state.forwardOutpost.active = false;
+      state.forwardOutpost.x = 0;
+      state.forwardOutpost.y = 0;
+      state.forwardOutpost.depth = 0;
+      state.forwardOutpost.charge = 0;
+      state.forwardOutpost.floraSpecies = '';
       rng.seed = Math.floor(Math.random() * 1_000_000);
       this.scene.restart();
       renderHud();
@@ -1196,6 +1203,40 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
 	        this.player.mineCooldown = 0;
 	        this.mineAt(Number(payload.worldX) || this.player.x, Number(payload.worldY) || this.player.y + 36);
 	      }
+    } else if (command === 'acceptForwardOutpostQuest') {
+      const quest = state.questBoard.find((entry) => entry.kind === 'forwardOutpost');
+      if (!quest) return { ok: false, reason: 'forward outpost quest missing' };
+      this.acceptQuest(quest.id);
+      return { ok: state.activeQuestId === quest.id, quest: { ...quest } };
+    } else if (command === 'stageForwardOutpostSite') {
+      const targetDepth = Math.max(FORWARD_OUTPOST_MIN_DEPTH + 60, Number(value) || 0);
+      const targetY = SURFACE_Y + (targetDepth / 6) * TILE;
+      let flora = this.flora.find((candidate) => !candidate.dead && !candidate.hazardous && candidate.y >= targetY - 220);
+      if (!flora) flora = this.flora.find((candidate) => !candidate.dead && !candidate.hazardous);
+      const x = Phaser.Math.Clamp((flora?.x ?? WORLD_W * TILE * 0.5) + 34, 72, WORLD_W * TILE - 72);
+      const y = Phaser.Math.Clamp(flora?.y ?? targetY, targetY, WORLD_H * TILE - 72);
+      if (flora) {
+        flora.x = x - 34;
+        flora.y = y;
+      }
+      this.player.x = x;
+      this.player.y = y;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      state.docked = false;
+      state.atBoat = false;
+      state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+      const tx = Math.floor(this.player.x / TILE);
+      const ty = Math.floor(this.player.y / TILE);
+      this.setTile(tx + 2, ty, 'stone');
+      this.setTile(tx + 2, ty + 1, 'stone');
+      this.setTile(tx + 2, ty - 1, 'stone');
+      this.revealSonarAtWorld(this.player.x, this.player.y, 10);
+      return { ok: true, flora: flora?.species ?? '', player: { x: Math.round(this.player.x), y: Math.round(this.player.y), depth: state.depth } };
+    } else if (command === 'establishForwardOutpost') {
+      return this.establishForwardOutpost();
+    } else if (command === 'tickSystems') {
+      this.updateSystems(Phaser.Math.Clamp(Number(value) || 0.25, 0, 5));
     } else if (command === 'perfGuardrailReview') {
       return stagePerfGuardrailReview(this);
     } else if (command === 'biomeLoadingReview') {
@@ -1250,7 +1291,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.atBoat = false;
         state.paused = false;
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
-        this.updateArticulatedCreatures(0.016, { move: new Phaser.Math.Vector2(0, 0), hasMove: false, mineHeld: false, scanHeld: false, sonarPressed: false, sonarMapPressed: false, useItemPressed: false, boardHeld: false, scoutPressed: false, pausePressed: false, cancelPressed: false, logbookPressed: false, confirmPressed: false });
+        this.updateArticulatedCreatures(0.016, { move: new Phaser.Math.Vector2(0, 0), hasMove: false, mineHeld: false, scanHeld: false, sonarPressed: false, sonarMapPressed: false, useItemPressed: false, boardHeld: false, boardPressed: false, scoutPressed: false, pausePressed: false, cancelPressed: false, logbookPressed: false, confirmPressed: false });
         return this.playtestSnapshot();
       }
     } else if (command === 'forceBobbitDrag') {

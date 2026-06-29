@@ -25,7 +25,7 @@ export type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 export type ArticulatedCreatureState = 'patrol' | 'stalk' | 'lunge' | 'grab' | 'recover';
 export type TitlePanel = 'main' | 'options' | 'controls';
 export type SubTier = 1 | 2 | 3;
-export type QuestKind = 'depth' | 'scan' | 'ore' | 'nest' | 'gulperSurvey';
+export type QuestKind = 'depth' | 'scan' | 'ore' | 'nest' | 'gulperSurvey' | 'forwardOutpost';
 export type InventoryItemId =
   | Tile
   | 'stun-grenade'
@@ -77,6 +77,10 @@ export type PlaytestCommand =
   | 'loadGame'
   | 'corruptSave'
   | 'clearSave'
+  | 'acceptForwardOutpostQuest'
+  | 'stageForwardOutpostSite'
+  | 'establishForwardOutpost'
+  | 'tickSystems'
   | 'setOxygen'
   | 'setHull';
 export type DiverAnimation =
@@ -729,12 +733,26 @@ export interface Flare {
   life: number;
 }
 
+export interface ForwardOutpost {
+  active: boolean;
+  x: number;
+  y: number;
+  biome: Biome;
+  depth: number;
+  oxygenRadius: number;
+  oxygenRate: number;
+  charge: number;
+  maxCharge: number;
+  floraSpecies: string;
+}
+
 export interface ControlState {
   move: Phaser.Math.Vector2;
   hasMove: boolean;
   mineHeld: boolean;
   scanHeld: boolean;
   boardHeld: boolean;
+  boardPressed: boolean;
   scoutPressed: boolean;
   sonarPressed: boolean;
   sonarMapPressed: boolean;

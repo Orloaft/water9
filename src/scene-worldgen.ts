@@ -66,6 +66,12 @@ export function generateWorld(this: DeepdiveScene, ) {
 	    this.populateBobbitArticulatedThreats();
 	    state.questBoard = generateQuestBoard(this.specialRooms.some((room) => room.kind === 'nest'));
 	      state.activeQuestId = '';
+	    state.forwardOutpost.active = false;
+	    state.forwardOutpost.x = 0;
+	    state.forwardOutpost.y = 0;
+	    state.forwardOutpost.depth = 0;
+	    state.forwardOutpost.charge = 0;
+	    state.forwardOutpost.floraSpecies = '';
 	    this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
 	    this.bobbits = [];
 	  }

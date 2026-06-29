@@ -525,6 +525,7 @@ export class DeepdiveScene extends Phaser.Scene {
       mineHeld: !cargoSelecting && (this.keys.SPACE.isDown || pressed.has(0) || pressed.has(7)),
       scanHeld: this.keys.E.isDown || pressed.has(2),
       boardHeld: this.keys.F.isDown || pressed.has(1),
+      boardPressed: Phaser.Input.Keyboard.JustDown(this.keys.F) || padJustPressed(1),
       scoutPressed: Phaser.Input.Keyboard.JustDown(this.keys.H) || padJustPressed(10),
       sonarPressed: Phaser.Input.Keyboard.JustDown(this.keys.Q) || padJustPressed(4) || padJustPressed(6),
       sonarMapPressed: Phaser.Input.Keyboard.JustDown(this.keys.M) || padJustPressed(8),
@@ -895,6 +896,9 @@ export class DeepdiveScene extends Phaser.Scene {
     if (controls.useItemPressed) {
       this.useSelectedItem();
     }
+    if (controls.boardPressed && !state.activeSub) {
+      this.establishForwardOutpost();
+    }
     const pointer = this.input.activePointer;
     if (pointer.isDown) this.mineAt(pointer.worldX, pointer.worldY);
     if (controls.mineHeld) {
@@ -1027,6 +1031,19 @@ export class DeepdiveScene extends Phaser.Scene {
         if (state.activeSub.oxygen <= 0) state.oxygen -= oxygenDrain() * 0.8 * delta;
       } else {
         state.oxygen -= oxygenDrain() * delta;
+      }
+      if (state.forwardOutpost.active && state.forwardOutpost.biome === state.biome && state.forwardOutpost.charge > 0) {
+        const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, state.forwardOutpost.x, state.forwardOutpost.y);
+        if (distance <= state.forwardOutpost.oxygenRadius) {
+          const missing = oxygenMax() - state.oxygen;
+          const amount = Math.min(missing, state.forwardOutpost.oxygenRate * delta, state.forwardOutpost.charge);
+          if (amount > 0) {
+            state.oxygen += amount;
+            state.forwardOutpost.charge = Math.max(0, state.forwardOutpost.charge - amount);
+            resetOxygenWarnings();
+            if (state.oxygen < oxygenMax() * 0.98) state.status = 'Forward air pocket is topping up oxygen. It is a limited refuge, not a second barge.';
+          }
+        }
       }
       if (state.venom.active) {
         state.venom.tick += delta;
@@ -1249,6 +1266,7 @@ export interface DeepdiveScene {
   lampIntervalsAtY: OmitThisParameter<typeof renderingNs.lampIntervalsAtY>;
   drawSonarPings: OmitThisParameter<typeof renderingNs.drawSonarPings>;
   drawFlares: OmitThisParameter<typeof renderingNs.drawFlares>;
+  drawForwardOutpost: OmitThisParameter<typeof renderingNs.drawForwardOutpost>;
   drawSonarMap: OmitThisParameter<typeof renderingNs.drawSonarMap>;
   drawLooseItems: OmitThisParameter<typeof renderingNs.drawLooseItems>;
 }
@@ -1389,6 +1407,10 @@ export interface DeepdiveScene {
   updateQuestProgress: OmitThisParameter<typeof economyNs.updateQuestProgress>;
   completeQuest: OmitThisParameter<typeof economyNs.completeQuest>;
   completeNestQuest: OmitThisParameter<typeof economyNs.completeNestQuest>;
+  canEstablishForwardOutpost: OmitThisParameter<typeof economyNs.canEstablishForwardOutpost>;
+  establishForwardOutpost: OmitThisParameter<typeof economyNs.establishForwardOutpost>;
+  nearestForwardOutpostFlora: OmitThisParameter<typeof economyNs.nearestForwardOutpostFlora>;
+  hasForwardOutpostTerrainSupport: OmitThisParameter<typeof economyNs.hasForwardOutpostTerrainSupport>;
   hasActiveNestLocator: OmitThisParameter<typeof economyNs.hasActiveNestLocator>;
   nearestOpenNestRoom: OmitThisParameter<typeof economyNs.nearestOpenNestRoom>;
 }

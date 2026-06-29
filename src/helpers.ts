@@ -140,6 +140,7 @@ export function questProgressSource(quest: Quest) {
   if (quest.kind === 'scan') return state.scannedSpecies.size;
   if (quest.kind === 'ore') return state.oreSoldCredits;
   if (quest.kind === 'nest') return quest.progress;
+  if (quest.kind === 'forwardOutpost') return state.forwardOutpost.active && state.forwardOutpost.biome === 3 ? 1 : 0;
   return 0;
 }
 
@@ -210,6 +211,21 @@ export function generateQuestBoard(hasNest: boolean): Quest[] {
     });
   }
   if (biome === 3) {
+    quests.push({
+      id: `forward-outpost-${rng.seed}-${biome}`,
+      kind: 'forwardOutpost',
+      title: 'Rare: Forward Air Pocket',
+      client: 'Barge Expedition Office',
+      text: 'Establish one prototype forward outpost in Midnight Trench: depth 900 m or deeper, beside solid terrain, and close to non-hostile oxygen flora.',
+      reward: 4800,
+      target: 1,
+      progress: 0,
+      startValue: 0,
+      accepted: false,
+      completed: false,
+      claimed: false,
+      rare: true,
+    });
     quests.push({
       id: `gulper-wake-${rng.seed}-${biome}`,
       kind: 'gulperSurvey',
@@ -1459,6 +1475,12 @@ export function restart(scene: DeepdiveScene) {
   state.bargeTab = 'services';
   state.questBoard = [];
   state.activeQuestId = '';
+  state.forwardOutpost.active = false;
+  state.forwardOutpost.x = 0;
+  state.forwardOutpost.y = 0;
+  state.forwardOutpost.depth = 0;
+  state.forwardOutpost.charge = 0;
+  state.forwardOutpost.floraSpecies = '';
   state.radioMessages = [];
   state.radioIndex = 0;
   state.radioOpen = false;

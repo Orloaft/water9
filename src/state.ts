@@ -1,5 +1,5 @@
 import type { BargeTab, Biome, CargoItem, Quest, RadioMessage, SonarContact, SubTier, SubVehicle, TitlePanel, UpgradeId } from './types';
-import { BASE_OXYGEN } from './constants';
+import { BASE_OXYGEN,FORWARD_OUTPOST_MAX_CHARGE,FORWARD_OUTPOST_OXYGEN_RADIUS,FORWARD_OUTPOST_OXYGEN_REFILL } from './constants';
 
 export const state = {
   biome: 1 as Biome,
@@ -38,6 +38,18 @@ export const state = {
   bargeTab: 'services' as BargeTab,
   questBoard: [] as Quest[],
   activeQuestId: '',
+  forwardOutpost: {
+    active: false,
+    x: 0,
+    y: 0,
+    biome: 3 as Biome,
+    depth: 0,
+    oxygenRadius: FORWARD_OUTPOST_OXYGEN_RADIUS,
+    oxygenRate: FORWARD_OUTPOST_OXYGEN_REFILL,
+    charge: 0,
+    maxCharge: FORWARD_OUTPOST_MAX_CHARGE,
+    floraSpecies: '',
+  },
   titlePanel: 'main' as TitlePanel,
   radioMessages: [] as RadioMessage[],
   radioIndex: 0,

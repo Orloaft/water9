@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import type { Biome,CargoItem,Quest,SubTier,SubVehicle,Tile,UpgradeId } from './types';
-import { BASE_OXYGEN,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import type { Biome,CargoItem,ForwardOutpost,Quest,SubTier,SubVehicle,Tile,UpgradeId } from './types';
+import { BASE_OXYGEN,FORWARD_OUTPOST_MAX_CHARGE,FORWARD_OUTPOST_OXYGEN_RADIUS,FORWARD_OUTPOST_OXYGEN_REFILL,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { state } from './state';
 import { rng } from './rng';
 import { clampSelectedCargoIndex,clearBleed,clearVenom,createSubVehicle,fuelMax,hullMax,oxygenMax,resetOxygenWarnings } from './helpers';
@@ -68,6 +68,7 @@ interface SavedGame {
     achievements: string[];
     questBoard: Quest[];
     activeQuestId: string;
+    forwardOutpost?: ForwardOutpost;
     subOwned: Record<SubTier, boolean>;
     selectedSubTier: SubTier | null;
     activeSub: SavedSub | null;
@@ -220,6 +221,7 @@ function buildSave(scene: DeepdiveScene): SavedGame {
       achievements: [...state.achievements],
       questBoard: state.questBoard.map((quest) => ({ ...quest })),
       activeQuestId: state.activeQuestId,
+      forwardOutpost: { ...state.forwardOutpost },
       subOwned: { ...state.subOwned },
       selectedSubTier: state.selectedSubTier,
       activeSub: state.activeSub ? saveSub(state.activeSub) : null,
@@ -296,6 +298,7 @@ function applySavedState(save: SavedGame) {
   state.achievements = new Set(save.state.achievements.filter((entry) => typeof entry === 'string'));
   state.questBoard = Array.isArray(save.state.questBoard) ? save.state.questBoard.map((quest) => ({ ...quest })) : [];
   state.activeQuestId = typeof save.state.activeQuestId === 'string' ? save.state.activeQuestId : '';
+  state.forwardOutpost = restoreForwardOutpost(save.state.forwardOutpost);
   for (const tier of subTiers) state.subOwned[tier] = Boolean(save.state.subOwned[tier]);
   state.selectedSubTier = save.state.selectedSubTier && subTiers.includes(save.state.selectedSubTier) ? save.state.selectedSubTier : null;
   state.activeSub = restoreSub(save.state.activeSub);
@@ -324,6 +327,37 @@ function applySavedState(save: SavedGame) {
   resetOxygenWarnings();
   clearVenom();
   clearBleed();
+}
+
+function restoreForwardOutpost(saved: ForwardOutpost | undefined): ForwardOutpost {
+  if (!saved || !saved.active) {
+    return {
+      active: false,
+      x: 0,
+      y: 0,
+      biome: 3,
+      depth: 0,
+      oxygenRadius: FORWARD_OUTPOST_OXYGEN_RADIUS,
+      oxygenRate: FORWARD_OUTPOST_OXYGEN_REFILL,
+      charge: 0,
+      maxCharge: FORWARD_OUTPOST_MAX_CHARGE,
+      floraSpecies: '',
+    };
+  }
+  const biome = saved.biome === 1 || saved.biome === 2 || saved.biome === 3 || saved.biome === 4 ? saved.biome : 3;
+  const maxCharge = Math.max(1, finiteNumber(saved.maxCharge, FORWARD_OUTPOST_MAX_CHARGE));
+  return {
+    active: true,
+    x: finiteNumber(saved.x, WORLD_W * TILE * 0.5),
+    y: finiteNumber(saved.y, SURFACE_Y + TILE * 150),
+    biome,
+    depth: Math.max(0, finiteInt(saved.depth, 0)),
+    oxygenRadius: Math.max(24, finiteNumber(saved.oxygenRadius, FORWARD_OUTPOST_OXYGEN_RADIUS)),
+    oxygenRate: Math.max(1, finiteNumber(saved.oxygenRate, FORWARD_OUTPOST_OXYGEN_REFILL)),
+    charge: Phaser.Math.Clamp(finiteNumber(saved.charge, maxCharge), 0, maxCharge),
+    maxCharge,
+    floraSpecies: typeof saved.floraSpecies === 'string' ? saved.floraSpecies : '',
+  };
 }
 
 function applySavedWorld(scene: DeepdiveScene, save: SavedGame) {

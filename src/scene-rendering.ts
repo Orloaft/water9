@@ -40,10 +40,30 @@ export function draw(this: DeepdiveScene, ) {
     measurePerf(this, 'draw.sub', () => this.drawSub(), { active: Boolean(state.activeSub), parts: this.subPartSprites ? Object.keys(this.subPartSprites).length : 0 });
     this.drawPlayer();
     this.drawFlares(camera);
+    this.drawForwardOutpost(camera);
     this.drawBiomeVisibilityCues(camera);
     this.drawSonarPings();
     this.drawDarkness(camera);
     this.drawGameOver(camera);
+  }
+
+export function drawForwardOutpost(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+    const outpost = state.forwardOutpost;
+    if (!outpost.active || outpost.biome !== state.biome) return;
+    const view = camera.worldView;
+    if (outpost.x < view.x - outpost.oxygenRadius || outpost.x > view.right + outpost.oxygenRadius || outpost.y < view.y - outpost.oxygenRadius || outpost.y > view.bottom + outpost.oxygenRadius) return;
+    const chargePct = outpost.maxCharge > 0 ? Phaser.Math.Clamp(outpost.charge / outpost.maxCharge, 0, 1) : 0;
+    this.overlay.lineStyle(1, 0x8ee7f4, 0.14 + chargePct * 0.18);
+    this.overlay.strokeCircle(outpost.x, outpost.y, outpost.oxygenRadius);
+    this.overlay.fillStyle(0x8ee7f4, 0.04 + chargePct * 0.06);
+    this.overlay.fillCircle(outpost.x, outpost.y, outpost.oxygenRadius);
+    this.actors.lineStyle(2, 0xd6fff8, 0.9);
+    this.actors.fillStyle(0x132d35, 0.88);
+    this.actors.fillCircle(outpost.x, outpost.y, 13);
+    this.actors.strokeCircle(outpost.x, outpost.y, 13);
+    this.actors.lineStyle(2, 0x73fbd3, 0.72);
+    this.actors.lineBetween(outpost.x - 9, outpost.y + 5, outpost.x + 9, outpost.y + 5);
+    this.actors.lineBetween(outpost.x, outpost.y - 11, outpost.x, outpost.y + 11);
   }
 
 export function drawParallax(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
