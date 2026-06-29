@@ -85,46 +85,45 @@ function drawSurfaceAtmosphere(scene: DeepdiveScene, camera: Phaser.Cameras.Scen
   const skyTop = Math.max(view.y, 0);
   const skyBottom = Math.min(view.bottom, waterlineY);
   if (skyBottom > skyTop) {
-    const bands = [
-      { color: 0x99d4e6, alpha: 1 },
-      { color: 0x7fc3d7, alpha: 1 },
-      { color: 0x5faabd, alpha: 1 },
-      { color: 0x397f92, alpha: 0.96 },
-      { color: 0x1e5869, alpha: 0.94 },
-    ];
-    const bandHeight = (skyBottom - skyTop) / bands.length;
-    for (let i = 0; i < bands.length; i += 1) {
-      scene.parallaxBackdrop.fillStyle(bands[i].color, bands[i].alpha);
-      scene.parallaxBackdrop.fillRect(left, skyTop + bandHeight * i, width, Math.ceil(bandHeight) + 1);
-    }
+    scene.parallaxBackdrop.fillGradientStyle(
+      0x9bcfe0,
+      0x9bcfe0,
+      0x2c6f82,
+      0x2c6f82,
+      0.92,
+      0.92,
+      0.78,
+      0.78,
+    );
+    scene.parallaxBackdrop.fillRect(left, skyTop, width, skyBottom - skyTop);
     const sunX = WORLD_W * TILE * 0.5 - 230;
-    scene.parallaxBackdrop.fillStyle(0xffe7a8, 0.16);
+    scene.parallaxBackdrop.fillStyle(0xffe7a8, 0.1);
     scene.parallaxBackdrop.fillEllipse(sunX, 22, 210, 52);
-    scene.parallaxBackdrop.fillStyle(0xf5ffff, 0.1);
+    scene.parallaxBackdrop.fillStyle(0xf5ffff, 0.06);
     scene.parallaxBackdrop.fillRect(left, waterlineY - 18, width, 14);
   }
 
   const waterTop = Math.max(view.y, waterlineY);
   const waterBottom = Math.min(view.bottom, waterlineY + 260);
   if (waterBottom > waterTop) {
-    const bands = [
-      { color: 0x0f6576, alpha: 0.68 },
-      { color: 0x0b4d61, alpha: 0.74 },
-      { color: 0x093849, alpha: 0.78 },
-      { color: 0x062536, alpha: 0.82 },
-    ];
-    const bandHeight = (waterBottom - waterTop) / bands.length;
-    for (let i = 0; i < bands.length; i += 1) {
-      scene.parallaxBackdrop.fillStyle(bands[i].color, bands[i].alpha);
-      scene.parallaxBackdrop.fillRect(left, waterTop + bandHeight * i, width, Math.ceil(bandHeight) + 1);
-    }
+    scene.parallaxBackdrop.fillGradientStyle(
+      0x0e6472,
+      0x0e6472,
+      0x062b3a,
+      0x062b3a,
+      0.58,
+      0.58,
+      0.68,
+      0.68,
+    );
+    scene.parallaxBackdrop.fillRect(left, waterTop, width, waterBottom - waterTop);
   }
 
-  scene.parallaxBackdrop.fillStyle(0xdffcff, 0.48);
+  scene.parallaxBackdrop.fillStyle(0xdffcff, 0.34);
   scene.parallaxBackdrop.fillRect(left, waterlineY - 2, width, 2);
-  scene.parallaxBackdrop.fillStyle(0x7ee6ef, 0.32);
+  scene.parallaxBackdrop.fillStyle(0x7ee6ef, 0.2);
   scene.parallaxBackdrop.fillRect(left, waterlineY, width, 5);
-  scene.parallaxBackdrop.fillStyle(0x052234, 0.18);
+  scene.parallaxBackdrop.fillStyle(0x052234, 0.11);
   scene.parallaxBackdrop.fillRect(left, waterlineY + 5, width, 12);
 }
 
@@ -1593,9 +1592,8 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
       const angle = fish.visualAngle ?? Math.atan2(fish.vy, fish.vx);
       const bodyAlpha = fish.scanned ? Math.max(alpha, 0.9) : alpha;
       const threatDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
-      const movingTowardPlayer = (fish.vx * (this.player.x - fish.x) + fish.vy * (this.player.y - fish.y)) > 0;
-      const attacking = fish.hostile && fish.aggro > 0 && movingTowardPlayer && threatDistance < 220;
-      const threat = attacking ? 1 - Phaser.Math.Clamp((threatDistance - 52) / 118, 0, 1) : 0;
+      const cue = Phaser.Math.Clamp(fish.aggroCue, 0, 1);
+      const threat = cue * (1 - Phaser.Math.Clamp((threatDistance - 52) / 168, 0, 0.45));
       const desiredWidth = fish.radius * (fish.hostile ? 3.8 : fish.pattern === 'circle' || fish.pattern === 'glide' ? 3.4 : 3);
       const pose = swimPose(angle, fish.visualFacingSign ?? fish.facingSign);
       const frameSpeed = fish.stunned > 0 ? 8 : Math.hypot(fish.vx, fish.vy);
@@ -1620,9 +1618,9 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         this.actors.lineStyle(2, 0x8ee7f4, bodyAlpha * pulse);
         this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(7));
       }
-      if (attacking) {
-        const markerAlpha = Math.max(0.35, threat) * alpha;
-        const markerY = fish.y - fish.radius - scaledEntity(18) - Math.sin(fish.phase * 7) * scaledEntity(2);
+      if (cue > 0) {
+        const markerAlpha = cue * alpha;
+        const markerY = fish.y - fish.radius - scaledEntity(18) - Math.sin(fish.phase * 4.6) * scaledEntity(1.5);
         this.actors.lineStyle(2, 0xff4f64, markerAlpha * 0.7);
         this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(12 + threat * 10));
         this.actors.fillStyle(0xff4f64, markerAlpha);
@@ -1631,7 +1629,7 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         this.actors.fillCircle(fish.x, markerY + scaledEntity(1), scaledEntity(2));
         if (threat > 0) {
           this.actors.lineStyle(2, 0xff4f64, threat * 0.72);
-          this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(11) + Math.sin(fish.phase * 8) * scaledEntity(3));
+          this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(11 + (1 - cue) * 10));
         }
       }
       if (fish.scan > 0 && !fish.scanned) {
@@ -1680,9 +1678,10 @@ export function drawFlora(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         this.actors.lineStyle(2, 0xfff7df, flora.hurtFlash * alpha);
         this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(5));
       }
-      if (flora.hazardous) {
-        this.actors.lineStyle(1, 0xff4f64, 0.35 + (flora.rare ? 0.25 : 0));
-        this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(5) + Math.sin(flora.phase * 5) * scaledEntity(2));
+      if (flora.aggroCue > 0) {
+        const cue = Phaser.Math.Clamp(flora.aggroCue, 0, 1);
+        this.actors.lineStyle(2, 0xff4f64, cue * alpha * (flora.rare ? 0.75 : 0.58));
+        this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(6 + (1 - cue) * 12));
       }
       if (flora.scan > 0 && !flora.scanned) {
         this.actors.lineStyle(3, 0xb9f27c, 0.35 + flora.scan * 0.5);

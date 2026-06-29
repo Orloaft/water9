@@ -428,6 +428,7 @@ export function createArticulatedCreature(
     scanPulse: 0,
     radius: manifest.radius * ENTITY_SCALE,
     aggro: 0,
+    aggroCue: 0,
     bumpCooldown: 0,
     stunned: 0,
     hp: manifest.hp,

@@ -141,7 +141,7 @@ export function controllerPanel() {
   const focused = state.controller.hasFocus ? 'yes' : 'no';
   const buttons = state.controller.buttons.length ? state.controller.buttons.map((value, index) => `B${index}:${value}`).join(' ') : 'none';
   const axes = state.controller.axes.length ? state.controller.axes.map((value, index) => `A${index}:${value}`).join(' ') : 'none';
-  const diagnostic = debugUi || state.controller.connected || Boolean(state.controller.message)
+  const diagnostic = debugUi
     ? `
       <dl class="controller-diagnostics">
         <div><dt>API</dt><dd>${support}</dd></div>

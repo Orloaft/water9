@@ -646,6 +646,7 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     creature.stunned = Math.max(0, creature.stunned - delta);
     creature.scanPulse = Math.max(0, creature.scanPulse - delta * 1.2);
     creature.hurtFlash = Math.max(0, creature.hurtFlash - delta * 3.8);
+    creature.aggroCue = Math.max(0, creature.aggroCue - delta * 1.2);
     creature.grabCooldown = Math.max(0, creature.grabCooldown - delta);
     creature.parts.forEach((part) => {
       part.hurtFlash = Math.max(0, part.hurtFlash - delta * 4.2);
@@ -1020,9 +1021,11 @@ export function steerArticulatedCreature(this: DeepdiveScene, creature: Articula
   const homeDistance = Phaser.Math.Distance.Between(creature.x, creature.y, creature.homeX, creature.homeY);
   const canChase = combat.hostile && combat.behavior !== 'passive' && !this.isAtBoat() && playerDistance < combat.detectionRange + state.biome * 24 && homeDistance < combat.leashRange;
   const canBite = Boolean(this.articulatedBitePart(creature));
+  const wasAggroed = creature.aggro > 0;
 
   if (canChase) {
     creature.aggro = Math.max(creature.aggro, 4.5);
+    if (!wasAggroed) creature.aggroCue = Math.max(creature.aggroCue, 0.95);
     if (creature.state === 'patrol') creature.state = 'stalk';
   } else {
     creature.aggro = Math.max(0, creature.aggro - delta * 0.7);
@@ -1581,6 +1584,7 @@ export function bumpArticulatedCreature(this: DeepdiveScene, creature: Articulat
   creature.bumpCooldown = creature.state === 'lunge' ? 1.55 : 1.9;
   creature.scan = Math.max(0, creature.scan - 0.2);
   this.applyHullDamage(Math.max(5, damage - state.upgrades.suit), `${creature.species} hit ${part.id.replace(/-/g, ' ')} first.`);
+  creature.aggroCue = Math.max(creature.aggroCue, 1);
   this.registerPredatorBite(creature);
   this.playFishBite(damage);
   if (combat.grabEnabled && creature.state === 'lunge' && creature.grabTimer <= 0 && !part.detached) {
@@ -1629,6 +1633,7 @@ export function damageArticulatedPart(this: DeepdiveScene, creature: Articulated
   part.hurtFlash = 1;
   creature.hp = Math.max(0, creature.hp - damage * (part.id === 'head' ? 0.92 : 0.62));
   creature.hurtFlash = 1;
+  const wasAggroed = creature.aggro > 0;
   const dx = part.x - creature.x;
   const dy = part.y - creature.y;
   const distance = Math.max(1, Math.hypot(dx, dy));
@@ -1642,6 +1647,7 @@ export function damageArticulatedPart(this: DeepdiveScene, creature: Articulated
     node.vy -= (dy / distance) * impact * 0.08;
   }
   creature.aggro = Math.max(creature.aggro, 5.5);
+  if (!wasAggroed) creature.aggroCue = Math.max(creature.aggroCue, 0.95);
   creature.state = creature.state === 'patrol' ? 'stalk' : creature.state;
   let detached = false;
   if (part.hp <= 0) {
@@ -1793,6 +1799,11 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
     const darknessTellAlpha = articulatedDarknessTellAlpha(this, creature, camera);
     if (darknessTellAlpha > 0) {
       drawArticulatedDarknessTell(this, creature, darknessTellAlpha);
+    }
+    if (creature.aggroCue > 0) {
+      const cue = Phaser.Math.Clamp(creature.aggroCue, 0, 1);
+      this.actors.lineStyle(2, 0xff4f64, alpha * cue * 0.58);
+      this.actors.strokeCircle(creature.x, creature.y, creature.radius + 16 + (1 - cue) * 18);
     }
     if (attacking) {
       const bitePart = this.articulatedBitePart(creature);

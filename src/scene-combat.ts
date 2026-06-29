@@ -276,7 +276,9 @@ export function damageLifeTarget(this: DeepdiveScene, target: ScanTarget, amount
     target.hp = Math.max(0, target.hp - amount);
     target.hurtFlash = 1;
     if (target.kind === 'fish') {
+      const wasAggroed = target.aggro > 0;
       target.aggro = target.hostile ? Math.max(target.aggro, 3.2) : target.aggro;
+      if (target.hostile && !wasAggroed) target.aggroCue = Math.max(target.aggroCue, 0.9);
       target.vx += Phaser.Math.FloatBetween(-18, 18);
       target.vy += Phaser.Math.FloatBetween(-18, 18);
     }

@@ -14,6 +14,7 @@ export function updateFish(this: DeepdiveScene, delta: number) {
       fish.stunned = Math.max(0, fish.stunned - delta);
       fish.scanPulse = Math.max(0, fish.scanPulse - delta * 1.35);
       fish.hurtFlash = Math.max(0, fish.hurtFlash - delta * 4.2);
+      fish.aggroCue = Math.max(0, fish.aggroCue - delta * 1.35);
       if (fish.dead) {
         fish.sprite?.setVisible(false);
         continue;
@@ -47,6 +48,7 @@ export function updateFlora(this: DeepdiveScene, delta: number) {
       flora.phase += delta;
       flora.scanPulse = Math.max(0, flora.scanPulse - delta * 1.35);
       flora.hurtFlash = Math.max(0, flora.hurtFlash - delta * 4.2);
+      flora.aggroCue = Math.max(0, flora.aggroCue - delta * 1.6);
       if (flora.dead) {
         flora.sprite?.setVisible(false);
         continue;
@@ -59,6 +61,7 @@ export function updateFlora(this: DeepdiveScene, delta: number) {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y);
         if (distance < flora.radius + PLAYER_CONTACT_RADIUS + 4) {
           this.applyHullDamage((flora.rare ? 7 : 3.5) * delta, `${flora.species} stings through the suit.`);
+          flora.aggroCue = Math.max(flora.aggroCue, 0.55);
           this.player.vx += ((this.player.x - flora.x) / Math.max(1, distance)) * 24 * delta;
           this.player.vy += ((this.player.y - flora.y) / Math.max(1, distance)) * 24 * delta;
         }
@@ -74,8 +77,10 @@ export function steerFish(this: DeepdiveScene, fish: Fish, delta: number) {
     const detectionRange = (fish.pattern === 'circle' ? 245 : 205) + fish.radius * 3 + state.biome * 8;
     const leashRange = (fish.pattern === 'circle' ? 390 : 320) + fish.radius * 5;
     const chaseActive = fish.hostile && !this.isAtBoat() && playerDistance < detectionRange && homeDistance < leashRange;
+    const wasAggroed = fish.aggro > 0;
     if (chaseActive) {
       fish.aggro = Math.max(fish.aggro, fish.pattern === 'circle' ? 2.6 : 2);
+      if (!wasAggroed) fish.aggroCue = Math.max(fish.aggroCue, 0.9);
     } else {
       fish.aggro = Math.max(0, fish.aggro - delta);
     }
@@ -151,6 +156,7 @@ export function bumpFish(this: DeepdiveScene, fish: Fish, distance: number) {
     if (fish.hostile) {
       const damage = Math.round(4 + fish.radius * 0.35 + state.biome * 1.4 + (fish.pattern === 'circle' ? 3 : 0));
       this.applyHullDamage(Math.max(2, damage + impact * 0.018 - state.upgrades.suit), `${fish.species} slammed your helmet.`);
+      fish.aggroCue = Math.max(fish.aggroCue, 1);
       if (venomousFish(fish)) this.applyVenom(fish);
       this.registerPredatorBite(fish);
       this.playFishBite(damage);

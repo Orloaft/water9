@@ -264,7 +264,8 @@ try {
   if (beforeMove?.ui?.controller?.index !== 2) fail(`browser Gamepad API pad at index 2 was not selected (got ${beforeMove?.ui?.controller?.index})`);
   if (!beforeMove?.ui?.controller?.apiSupported) fail('controller diagnostics did not report browser Gamepad API support');
   if ((beforeMove?.ui?.controller?.connectedPadCount ?? 0) < 1) fail('controller diagnostics did not count the browser-visible gamepad');
-  if (!/API\s*yes/.test(controllerStatus) || !/Poll/.test(controllerStatus) || !/Buttons/.test(controllerStatus)) fail('controller diagnostics panel did not render browser support, poll, and button values');
+  if (!/Controller/.test(controllerStatus) || !/ready/.test(controllerStatus)) fail('controller status panel did not render the connected controller summary');
+  if (/API\s*yes/.test(controllerStatus) || /Poll/.test(controllerStatus) || /Buttons/.test(controllerStatus) || /Axes/.test(controllerStatus)) fail('controller diagnostics should stay hidden outside debug mode');
   if (!beforeMove?.state?.started) fail('controller A did not confirm title/start');
   if (Math.abs((afterMove?.player?.x ?? 0) - (beforeMove?.player?.x ?? 0)) < 8) fail('left stick did not move the diver');
   if ((afterMove?.state?.sonarRevealed ?? 0) <= (beforeMove?.state?.sonarRevealed ?? 0)) fail('passive discovery did not reveal additional sonar cells');

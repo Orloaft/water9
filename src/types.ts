@@ -167,6 +167,7 @@ export interface Fish {
   pattern: FishPattern;
   bumpCooldown: number;
   aggro: number;
+  aggroCue: number;
   stunned: number;
   hp: number;
   maxHp: number;
@@ -199,6 +200,7 @@ export interface Flora {
   maxHp: number;
   dead: boolean;
   hurtFlash: number;
+  aggroCue: number;
   radius: number;
   assetKey: string;
   surface?: TerrainSurfaceAnchor;
@@ -453,6 +455,7 @@ export interface ArticulatedCreature {
   scanPulse: number;
   radius: number;
   aggro: number;
+  aggroCue: number;
   bumpCooldown: number;
   stunned: number;
   hp: number;
