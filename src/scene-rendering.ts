@@ -85,45 +85,46 @@ function drawSurfaceAtmosphere(scene: DeepdiveScene, camera: Phaser.Cameras.Scen
   const skyTop = Math.max(view.y, 0);
   const skyBottom = Math.min(view.bottom, waterlineY);
   if (skyBottom > skyTop) {
-    scene.parallaxBackdrop.fillGradientStyle(
-      0x9bcfe0,
-      0x9bcfe0,
-      0x2c6f82,
-      0x2c6f82,
-      0.92,
-      0.92,
-      0.78,
-      0.78,
-    );
-    scene.parallaxBackdrop.fillRect(left, skyTop, width, skyBottom - skyTop);
+    const bands = [
+      { color: 0x99d4e6, alpha: 1 },
+      { color: 0x7fc3d7, alpha: 1 },
+      { color: 0x5faabd, alpha: 1 },
+      { color: 0x397f92, alpha: 0.96 },
+      { color: 0x1e5869, alpha: 0.94 },
+    ];
+    const bandHeight = (skyBottom - skyTop) / bands.length;
+    for (let i = 0; i < bands.length; i += 1) {
+      scene.parallaxBackdrop.fillStyle(bands[i].color, bands[i].alpha);
+      scene.parallaxBackdrop.fillRect(left, skyTop + bandHeight * i, width, Math.ceil(bandHeight) + 1);
+    }
     const sunX = WORLD_W * TILE * 0.5 - 230;
-    scene.parallaxBackdrop.fillStyle(0xffe7a8, 0.1);
+    scene.parallaxBackdrop.fillStyle(0xffe7a8, 0.16);
     scene.parallaxBackdrop.fillEllipse(sunX, 22, 210, 52);
-    scene.parallaxBackdrop.fillStyle(0xf5ffff, 0.06);
+    scene.parallaxBackdrop.fillStyle(0xf5ffff, 0.1);
     scene.parallaxBackdrop.fillRect(left, waterlineY - 18, width, 14);
   }
 
   const waterTop = Math.max(view.y, waterlineY);
   const waterBottom = Math.min(view.bottom, waterlineY + 260);
   if (waterBottom > waterTop) {
-    scene.parallaxBackdrop.fillGradientStyle(
-      0x0e6472,
-      0x0e6472,
-      0x062b3a,
-      0x062b3a,
-      0.58,
-      0.58,
-      0.68,
-      0.68,
-    );
-    scene.parallaxBackdrop.fillRect(left, waterTop, width, waterBottom - waterTop);
+    const bands = [
+      { color: 0x0f6576, alpha: 0.68 },
+      { color: 0x0b4d61, alpha: 0.74 },
+      { color: 0x093849, alpha: 0.78 },
+      { color: 0x062536, alpha: 0.82 },
+    ];
+    const bandHeight = (waterBottom - waterTop) / bands.length;
+    for (let i = 0; i < bands.length; i += 1) {
+      scene.parallaxBackdrop.fillStyle(bands[i].color, bands[i].alpha);
+      scene.parallaxBackdrop.fillRect(left, waterTop + bandHeight * i, width, Math.ceil(bandHeight) + 1);
+    }
   }
 
-  scene.parallaxBackdrop.fillStyle(0xdffcff, 0.34);
+  scene.parallaxBackdrop.fillStyle(0xdffcff, 0.48);
   scene.parallaxBackdrop.fillRect(left, waterlineY - 2, width, 2);
-  scene.parallaxBackdrop.fillStyle(0x7ee6ef, 0.2);
+  scene.parallaxBackdrop.fillStyle(0x7ee6ef, 0.32);
   scene.parallaxBackdrop.fillRect(left, waterlineY, width, 5);
-  scene.parallaxBackdrop.fillStyle(0x052234, 0.11);
+  scene.parallaxBackdrop.fillStyle(0x052234, 0.18);
   scene.parallaxBackdrop.fillRect(left, waterlineY + 5, width, 12);
 }
 
