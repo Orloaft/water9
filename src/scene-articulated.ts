@@ -27,6 +27,16 @@ const ARTICULATED_OFFSCREEN_MARGIN = 220;
 const ARTICULATED_NEAR_STEP_SECONDS = 1 / 30;
 const ARTICULATED_FAR_STEP_SECONDS = 1 / 15;
 const ARTICULATED_OFFSCREEN_STEP_SECONDS = 1 / 10;
+const TURN_HISTORY_MAX_SAMPLES = 96;
+const TURN_HISTORY_SAMPLE_SPACING = 18;
+
+const largeRippleTurnIds = new Set([
+  'abyssal-serpent',
+  'abyssal-gulper',
+  'abyssal-crownmaw',
+  'abyssal-glasshook-skulk',
+  'abyssal-reliquary-wyrm',
+]);
 
 function articulatedCombatFor(creature: ArticulatedCreature) {
   const behavior = articulatedBehaviorFor(creature.manifest);
@@ -58,6 +68,148 @@ function articulatedCombatFor(creature: ArticulatedCreature) {
 
 function facingFor(creature: ArticulatedCreature) {
   return creature.facingSign < 0 ? -1 : 1;
+}
+
+export function usesLargeThreatRippleTurning(creature: ArticulatedCreature) {
+  if (creature.bobbitBurrow) return false;
+  if (largeRippleTurnIds.has(creature.id)) return true;
+  return state.biome >= 3
+    && creature.radius >= 36
+    && articulatedBehaviorFor(creature.manifest) === 'serpent';
+}
+
+function mirrorSideForHeading(heading: number): 1 | -1 {
+  return Math.cos(heading) < 0 ? -1 : 1;
+}
+
+function ensureLargeThreatTurnRuntime(creature: ArticulatedCreature) {
+  if (creature.turn) return creature.turn;
+  const speed = Math.hypot(creature.vx, creature.vy);
+  const fallbackHeading = creature.facingSign < 0 ? Math.PI : 0;
+  const heading = speed > 1 ? Math.atan2(creature.vy, creature.vx) : fallbackHeading;
+  const mirrorSide = mirrorSideForHeading(heading);
+  creature.turn = {
+    heading,
+    angularVelocity: 0,
+    mirrorSide,
+    mirrorIntentSide: mirrorSide,
+    mirrorIntentTime: 0,
+    time: 0,
+    distance: 0,
+    history: [],
+  };
+  recordLargeThreatTurnSample(creature, 0, true);
+  return creature.turn;
+}
+
+function largeThreatTurnTuning(creature: ArticulatedCreature) {
+  const behavior = articulatedBehaviorFor(creature.manifest);
+  const radiusScale = Phaser.Math.Clamp(creature.radius / 54, 0.75, 1.45);
+  return {
+    maxAngularVelocity: (behavior === 'charger' ? 1.65 : 1.22) / radiusScale,
+    maxAngularAcceleration: (behavior === 'charger' ? 5.8 : 4.25) / radiusScale,
+    headingResponsiveness: behavior === 'charger' ? 7.2 : 5.6,
+    mirrorHysteresisCos: 0.16,
+    mirrorCommitSeconds: creature.aggro > 0 ? 0.1 : 0.15,
+  };
+}
+
+function updateLargeThreatTurnRuntime(creature: ArticulatedCreature, delta: number) {
+  if (!usesLargeThreatRippleTurning(creature)) return;
+  const turn = ensureLargeThreatTurnRuntime(creature);
+  const speed = Math.hypot(creature.vx, creature.vy);
+  const tuning = largeThreatTurnTuning(creature);
+  if (speed > 1.5 && delta > 0) {
+    const desiredHeading = Math.atan2(creature.vy, creature.vx);
+    const angleError = Phaser.Math.Angle.Wrap(desiredHeading - turn.heading);
+    const desiredAngularVelocity = Phaser.Math.Clamp(
+      angleError * tuning.headingResponsiveness,
+      -tuning.maxAngularVelocity,
+      tuning.maxAngularVelocity,
+    );
+    const angularVelocityDelta = Phaser.Math.Clamp(
+      desiredAngularVelocity - turn.angularVelocity,
+      -tuning.maxAngularAcceleration * delta,
+      tuning.maxAngularAcceleration * delta,
+    );
+    turn.angularVelocity = Phaser.Math.Clamp(
+      turn.angularVelocity + angularVelocityDelta,
+      -tuning.maxAngularVelocity,
+      tuning.maxAngularVelocity,
+    );
+    turn.heading = Phaser.Math.Angle.Wrap(turn.heading + turn.angularVelocity * delta);
+  } else {
+    turn.angularVelocity *= Math.exp(-5.5 * delta);
+  }
+
+  const verticalAxisDistance = Math.abs(Math.cos(turn.heading));
+  const targetMirrorSide = mirrorSideForHeading(turn.heading);
+  if (targetMirrorSide === turn.mirrorSide || verticalAxisDistance < tuning.mirrorHysteresisCos) {
+    turn.mirrorIntentSide = turn.mirrorSide;
+    turn.mirrorIntentTime = 0;
+  } else if (turn.mirrorIntentSide !== targetMirrorSide) {
+    turn.mirrorIntentSide = targetMirrorSide;
+    turn.mirrorIntentTime = delta;
+  } else {
+    turn.mirrorIntentTime += delta;
+    if (turn.mirrorIntentTime >= tuning.mirrorCommitSeconds) {
+      turn.mirrorSide = targetMirrorSide;
+      turn.mirrorIntentTime = 0;
+    }
+  }
+
+  creature.facingSign = Math.cos(turn.heading) < 0 ? -1 : 1;
+}
+
+function recordLargeThreatTurnSample(creature: ArticulatedCreature, delta: number, force = false) {
+  if (!usesLargeThreatRippleTurning(creature)) return;
+  const turn = ensureLargeThreatTurnRuntime(creature);
+  turn.time += delta;
+  const last = turn.history[turn.history.length - 1];
+  const stepDistance = last ? Math.hypot(creature.x - last.x, creature.y - last.y) : 0;
+  turn.distance += stepDistance;
+  if (!force && last && last.mirrorSide === turn.mirrorSide && stepDistance < 2.5 && turn.time - last.time < 0.08) return;
+  const sample = {
+    x: creature.x,
+    y: creature.y,
+    rotation: turn.heading,
+    mirrorSide: turn.mirrorSide,
+    time: turn.time,
+    distance: turn.distance,
+  };
+  turn.history.push(sample);
+  while (turn.history.length > TURN_HISTORY_MAX_SAMPLES) turn.history.shift();
+}
+
+function sampleLargeThreatTurnHistory(creature: ArticulatedCreature, distanceBehind: number) {
+  const turn = creature.turn;
+  if (!turn?.history.length) return null;
+  const targetDistance = Math.max(0, turn.distance - distanceBehind);
+  let older = turn.history[0];
+  let newer = turn.history[turn.history.length - 1];
+  for (let i = turn.history.length - 1; i >= 0; i -= 1) {
+    const sample = turn.history[i];
+    if (sample.distance <= targetDistance) {
+      older = sample;
+      newer = turn.history[Math.min(turn.history.length - 1, i + 1)] ?? sample;
+      break;
+    }
+  }
+  const span = Math.max(0.001, newer.distance - older.distance);
+  const t = Phaser.Math.Clamp((targetDistance - older.distance) / span, 0, 1);
+  return {
+    x: Phaser.Math.Linear(older.x, newer.x, t),
+    y: Phaser.Math.Linear(older.y, newer.y, t),
+    rotation: Phaser.Math.Angle.Wrap(older.rotation + Phaser.Math.Angle.Wrap(newer.rotation - older.rotation) * t),
+    mirrorSide: t < 0.5 ? older.mirrorSide : newer.mirrorSide,
+    sampleCount: turn.history.length,
+  };
+}
+
+function historyDistanceForPart(creature: ArticulatedCreature, manifest: ArticulatedPartManifest, spineManifests: ArticulatedPartManifest[]) {
+  const index = spineManifests.findIndex((candidate) => candidate.id === manifest.id);
+  if (index < 0) return 0;
+  return index * TURN_HISTORY_SAMPLE_SPACING + Math.max(0, -manifest.offset[0]) * PART_WORLD_SCALE * 0.36;
 }
 
 function manifestById(creature: ArticulatedCreature, id: string) {
@@ -679,8 +831,13 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
       creature.vx *= Math.exp(-0.18 * delta);
       creature.vy *= Math.exp(-0.18 * delta);
     }
-    if (creature.vx < -2) creature.facingSign = -1;
-    if (creature.vx > 2) creature.facingSign = 1;
+    if (usesLargeThreatRippleTurning(creature)) {
+      updateLargeThreatTurnRuntime(creature, simDelta);
+      recordLargeThreatTurnSample(creature, simDelta);
+    } else {
+      if (creature.vx < -2) creature.facingSign = -1;
+      if (creature.vx > 2) creature.facingSign = 1;
+    }
     updateDetachedArticulatedParts(this, creature, delta);
     if (!budget.runFullStep) continue;
     this.updateArticulatedParts(creature, simDelta);
@@ -1149,8 +1306,11 @@ export function keepArticulatedCreatureInWater(this: DeepdiveScene, creature: Ar
 }
 
 export function updateArticulatedParts(this: DeepdiveScene, creature: ArticulatedCreature, delta: number, options: { preserveSmoothedPose?: boolean } = {}) {
+  const rippleTurning = usesLargeThreatRippleTurning(creature);
+  if (rippleTurning) ensureLargeThreatTurnRuntime(creature);
   const speed = Math.hypot(creature.vx, creature.vy);
-  const facing = facingFor(creature);
+  const facing = rippleTurning ? 1 : facingFor(creature);
+  const visualMirrorSide = rippleTurning ? (creature.turn?.mirrorSide ?? 1) : facingFor(creature);
   const burrowPose = isBurrowBobbit(creature);
   let targetPitch = speed > 3
     ? Phaser.Math.Clamp(Math.atan2(creature.vy, Math.max(1, Math.abs(creature.vx))), -0.62, 0.62) * ARTICULATED_PITCH_SCALE
@@ -1177,13 +1337,19 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   }
   const swimPitch = creature.posePitch;
   const swimEffort = creature.swimEffort;
-  const forward = burrowPose
+  const forward = rippleTurning && !burrowPose && creature.turn
+    ? new Phaser.Math.Vector2(Math.cos(creature.turn.heading), Math.sin(creature.turn.heading))
+    : burrowPose
     ? new Phaser.Math.Vector2(Math.sin(swimPitch), -Math.cos(swimPitch))
     : new Phaser.Math.Vector2(facing * Math.cos(swimPitch), Math.sin(swimPitch));
-  const normal = burrowPose
+  const normal = rippleTurning && !burrowPose && creature.turn
+    ? new Phaser.Math.Vector2(-Math.sin(creature.turn.heading) * visualMirrorSide, Math.cos(creature.turn.heading) * visualMirrorSide)
+    : burrowPose
     ? new Phaser.Math.Vector2(facing * Math.cos(swimPitch), facing * Math.sin(swimPitch))
     : new Phaser.Math.Vector2(-facing * Math.sin(swimPitch), Math.cos(swimPitch));
-  const rootRotation = burrowPose ? Math.atan2(forward.y, forward.x) : facing * swimPitch;
+  const rootRotation = rippleTurning && !burrowPose && creature.turn
+    ? creature.turn.heading
+    : burrowPose ? Math.atan2(forward.y, forward.x) : facing * swimPitch;
   const lungeOpen = creature.attackBlend;
   const partById = new Map(creature.parts.map((part) => [part.id, part]));
   const placed = new Set<string>();
@@ -1194,6 +1360,10 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   const spineManifests = creature.manifest.parts
     .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
     .sort((a, b) => b.offset[0] - a.offset[0]);
+  const historyPoseFor = (manifest: ArticulatedPartManifest) => {
+    if (!rippleTurning || manifest.motion.kind !== 'body' && manifest.motion.kind !== 'tail') return null;
+    return sampleLargeThreatTurnHistory(creature, historyDistanceForPart(creature, manifest, spineManifests));
+  };
   const motionLagIndexFor = (manifest: ReturnType<typeof partManifest>) => {
     const direct = spineLagIndexFor(spineManifests, manifest);
     if (direct > 0 || manifest.motion.kind === 'body' || manifest.motion.kind === 'tail') return direct;
@@ -1232,11 +1402,18 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
       const localX = manifest.offset[0] * PART_WORLD_SCALE;
       const localY = manifest.offset[1] * PART_WORLD_SCALE;
       const lagIndex = spineLagIndexFor(spineManifests, manifest);
-      const baseX = creature.x + forward.x * localX + normal.x * localY;
-      const baseY = creature.y + forward.y * localX + normal.y * localY;
+      const historyPose = historyPoseFor(manifest);
+      const poseForward = historyPose
+        ? new Phaser.Math.Vector2(Math.cos(historyPose.rotation), Math.sin(historyPose.rotation))
+        : forward;
+      const poseNormal = historyPose
+        ? new Phaser.Math.Vector2(-Math.sin(historyPose.rotation) * historyPose.mirrorSide, Math.cos(historyPose.rotation) * historyPose.mirrorSide)
+        : normal;
+      const baseX = historyPose ? historyPose.x + poseNormal.x * localY : creature.x + poseForward.x * localX + poseNormal.x * localY;
+      const baseY = historyPose ? historyPose.y + poseNormal.y * localY : creature.y + poseForward.y * localX + poseNormal.y * localY;
       const targetOffset = targetWaveFor(manifest);
-      const targetX = baseX + normal.x * targetOffset;
-      const targetY = baseY + normal.y * targetOffset;
+      const targetX = baseX + poseNormal.x * targetOffset;
+      const targetY = baseY + poseNormal.y * targetOffset;
       const targetBend = targetOffset * 0.012 + -swimPitch * Phaser.Math.Clamp(lagIndex * 0.09, 0, 0.24);
       const node = spineNodeFor(creature, manifest);
       return { manifest, node, lagIndex, baseX, baseY, targetX, targetY, targetOffset, targetBend };
@@ -1386,6 +1563,15 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const motion = manifest.motion;
     const localX = manifest.offset[0] * PART_WORLD_SCALE;
     const localY = manifest.offset[1] * PART_WORLD_SCALE;
+    const historyPose = historyPoseFor(manifest);
+    const poseForward = historyPose
+      ? new Phaser.Math.Vector2(Math.cos(historyPose.rotation), Math.sin(historyPose.rotation))
+      : forward;
+    const poseNormal = historyPose
+      ? new Phaser.Math.Vector2(-Math.sin(historyPose.rotation) * historyPose.mirrorSide, Math.cos(historyPose.rotation) * historyPose.mirrorSide)
+      : normal;
+    const poseRotation = historyPose?.rotation ?? rootRotation;
+    const poseMirrorSide = historyPose?.mirrorSide ?? visualMirrorSide;
     const spineMotion = spineMotionFor(manifest);
     const wave = motion.kind === 'body' || motion.kind === 'tail' ? spineMotion.offset : targetWaveFor(manifest);
     const bodyWave = motion.kind === 'body' || motion.kind === 'tail' ? wave : 0;
@@ -1408,9 +1594,9 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
         ? mandibleJawAngle * jawSign
         : (jawPulse * 0.16 + lungeOpen * 0.42) * jawOpenScale * jawSign
       : 0;
-    part.x = creature.x + forward.x * localX + normal.x * (localY + bodyWave);
-    part.y = creature.y + forward.y * localX + normal.y * (localY + bodyWave);
-    part.rotation = rootRotation + facing * (bodyWave * 0.012 + finWave * 0.018 + jawOpen);
+    part.x = (historyPose?.x ?? creature.x + poseForward.x * localX) + poseNormal.x * (localY + bodyWave);
+    part.y = (historyPose?.y ?? creature.y + poseForward.y * localX) + poseNormal.y * (localY + bodyWave);
+    part.rotation = poseRotation + poseMirrorSide * (bodyWave * 0.012 + finWave * 0.018 + jawOpen);
   };
 
   const placePart = (part: ArticulatedPartState): void => {
@@ -1427,7 +1613,11 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
       return;
     }
     placing.add(part.id);
-    if (parent) {
+    const historyPose = historyPoseFor(manifest);
+    if (historyPose) {
+      placeOffsetPart(part, manifest);
+      part.rotation = softRotationFor(part, manifest, part.rotation);
+    } else if (parent) {
       placePart(parent);
       const parentManifest = partManifest(creature, parent);
       part.rotation = softRotationFor(part, manifest, motionRotation(manifest, parent));
@@ -1710,6 +1900,22 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
     }
     const attacking = creature.state === 'lunge' || creature.state === 'grab';
     const murkTint = murkTintFor(creature);
+    const rippleTurning = usesLargeThreatRippleTurning(creature);
+    const spineManifests = rippleTurning
+      ? creature.manifest.parts
+        .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
+        .sort((a, b) => b.offset[0] - a.offset[0])
+      : [];
+    const partMirrorSide = (partId: string): 1 | -1 => {
+      if (!rippleTurning) return 1;
+      let manifest = creature.manifest.parts.find((candidate) => candidate.id === partId);
+      if (!manifest || manifest.id === 'head' || manifest.motion.kind === 'root') return creature.turn?.mirrorSide ?? 1;
+      while (manifest && manifest.motion.kind !== 'body' && manifest.motion.kind !== 'tail') {
+        manifest = manifest.parentId ? creature.manifest.parts.find((candidate) => candidate.id === manifest?.parentId) : undefined;
+      }
+      const sample = manifest ? sampleLargeThreatTurnHistory(creature, historyDistanceForPart(creature, manifest, spineManifests)) : null;
+      return sample?.mirrorSide ?? creature.turn?.mirrorSide ?? 1;
+    };
     for (const overlay of creature.socketOverlays) {
       const manifest = overlayManifestById(creature, overlay);
       const parent = manifest ? creature.parts.find((part) => part.id === manifest.parentId) : undefined;
@@ -1755,7 +1961,8 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE, manifest.size[1] * PART_WORLD_SCALE)
         .setDepth(dynamicDepth);
       if (part.sprite) {
-        part.sprite.scaleX = Math.abs(part.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
+        part.sprite.scaleX = Math.abs(part.sprite.scaleX) * (rippleTurning ? 1 : creature.facingSign < 0 ? -1 : 1);
+        part.sprite.scaleY = Math.abs(part.sprite.scaleY) * partMirrorSide(part.id);
         if (murkTint === undefined) part.sprite.clearTint();
         else part.sprite.setTint(murkTint);
       }
@@ -1787,7 +1994,8 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         )
         .setDepth(2.1 + manifest.depth);
       if (overlay.sprite) {
-        overlay.sprite.scaleX = Math.abs(overlay.sprite.scaleX) * (creature.facingSign < 0 ? -1 : 1);
+        overlay.sprite.scaleX = Math.abs(overlay.sprite.scaleX) * (rippleTurning ? 1 : creature.facingSign < 0 ? -1 : 1);
+        overlay.sprite.scaleY = Math.abs(overlay.sprite.scaleY) * partMirrorSide(manifest.parentId);
         if (murkTint === undefined) overlay.sprite.clearTint();
         else overlay.sprite.setTint(murkTint);
       }

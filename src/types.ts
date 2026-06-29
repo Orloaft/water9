@@ -64,6 +64,7 @@ export type PlaytestCommand =
   | 'forceBobbitDrag'
   | 'liveArticulatedReview'
   | 'advanceLiveArticulatedReview'
+  | 'largeThreatRippleTurnReview'
   | 'articulatedBudgetReview'
   | 'focusArticulatedCamera'
   | 'reviewArticulated'
@@ -419,6 +420,26 @@ export interface ArticulatedSpineNodeState {
   initialized: boolean;
 }
 
+export interface ArticulatedTurnHistorySample {
+  x: number;
+  y: number;
+  rotation: number;
+  mirrorSide: 1 | -1;
+  time: number;
+  distance: number;
+}
+
+export interface ArticulatedTurnRuntime {
+  heading: number;
+  angularVelocity: number;
+  mirrorSide: 1 | -1;
+  mirrorIntentSide: 1 | -1;
+  mirrorIntentTime: number;
+  time: number;
+  distance: number;
+  history: ArticulatedTurnHistorySample[];
+}
+
 export interface ArticulatedCollisionDebug {
   partId: string;
   frontSign: 1 | -1;
@@ -481,6 +502,7 @@ export interface ArticulatedCreature {
   parts: ArticulatedPartState[];
   spine: ArticulatedSpineNodeState[];
   socketOverlays: ArticulatedSocketOverlayState[];
+  turn?: ArticulatedTurnRuntime;
 }
 
 export type ScanTarget = Fish | Flora | ArticulatedCreature;

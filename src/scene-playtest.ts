@@ -8,6 +8,7 @@ import { biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,cle
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
+import { usesLargeThreatRippleTurning } from './scene-articulated';
 import type { DeepdiveScene } from './scene';
 import { rebuildTerrainMask,sampleTerrainSurfaceAnchors,subtractTerrainMaskBrush,validateTerrainSurfaceAnchor } from './terrain-mask';
 import { perfSnapshot } from './perf';
@@ -851,6 +852,18 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           vx: roundMetric(creature.vx),
           vy: roundMetric(creature.vy),
           facingSign: creature.facingSign,
+          turn: creature.turn
+            ? {
+              heading: roundMetric(creature.turn.heading),
+              angularVelocity: roundMetric(creature.turn.angularVelocity),
+              mirrorSide: creature.turn.mirrorSide,
+              mirrorIntentSide: creature.turn.mirrorIntentSide,
+              mirrorIntentTime: roundMetric(creature.turn.mirrorIntentTime),
+              historySamples: creature.turn.history.length,
+              historyMaxSamples: 96,
+              distance: roundMetric(creature.turn.distance),
+            }
+            : null,
           aggro: roundMetric(creature.aggro),
           phase: roundMetric(creature.phase),
           posePitch: roundMetric(creature.posePitch),
@@ -1480,6 +1493,115 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
           skippedSteps: offscreen.simulationBudget?.skippedSteps ?? 0,
           x: roundMetric(offscreen.x),
         },
+      };
+    } else if (command === 'largeThreatRippleTurnReview') {
+      const manifest = articulatedCreatureDefs().find((candidate) => ['abyssal-gulper', 'abyssal-serpent', 'abyssal-crownmaw', 'abyssal-reliquary-wyrm', 'abyssal-glasshook-skulk'].includes(candidate.id) && state.biome >= candidate.minBiome)
+        ?? articulatedCreatureDefs().find((candidate) => candidate.id !== 'abyssal-mandible-bobbit' && state.biome >= candidate.minBiome)
+        ?? articulatedCreatureDefs()[0];
+      const reviewX = WORLD_W * TILE * 0.5;
+      const reviewY = SURFACE_Y + 460;
+      let creature = this.articulatedCreatures.find((candidate) => candidate.id === manifest.id && !candidate.bobbitBurrow);
+      if (!creature) {
+        creature = createArticulatedCreature(this, manifest, reviewX, reviewY);
+        this.articulatedCreatures.push(creature);
+      }
+      this.articulatedCreatures.forEach((candidate) => {
+        if (candidate === creature) return;
+        candidate.reviewFrozen = true;
+        candidate.x = reviewX + 2400;
+        candidate.y = reviewY + 1600;
+        candidate.vx = 0;
+        candidate.vy = 0;
+        this.updateArticulatedParts(candidate, 0);
+      });
+      for (let ty = Math.max(7, Math.floor((reviewY - 320) / TILE)); ty <= Math.min(WORLD_H - 2, Math.ceil((reviewY + 320) / TILE)); ty += 1) {
+        for (let tx = Math.max(1, Math.floor((reviewX - 780) / TILE)); tx <= Math.min(WORLD_W - 2, Math.ceil((reviewX + 780) / TILE)); tx += 1) {
+          this.setTile(tx, ty, 'water');
+        }
+      }
+      clearVenom();
+      clearBleed();
+      clearPlaytestFloatingText(this);
+      state.started = true;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.radioOpen = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.lost = false;
+      state.won = false;
+      state.hull = 100 + state.upgrades.suit * 25;
+      state.oxygen = oxygenMax();
+      this.player.x = reviewX - 360;
+      this.player.y = reviewY;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      creature.reviewFrozen = false;
+      creature.x = reviewX;
+      creature.y = reviewY;
+      creature.homeX = reviewX;
+      creature.homeY = reviewY;
+      creature.vx = creature.speed * 1.15;
+      creature.vy = 0;
+      creature.facingSign = 1;
+      creature.turn = undefined;
+      creature.aggro = 4.5;
+      creature.state = 'stalk';
+      creature.stateTimer = 2;
+      creature.grabCooldown = 999;
+      creature.bumpCooldown = 999;
+      creature.stunned = 0;
+      creature.parts.forEach((part) => {
+        part.hp = Math.max(1, part.maxHp);
+        part.detached = false;
+        part.hurtFlash = 0;
+      });
+      this.updateArticulatedParts(creature, 0);
+      const snapshots = [];
+      const capture = (label: string) => ({
+        label,
+        x: roundMetric(creature.x),
+        vx: roundMetric(creature.vx),
+        facingSign: creature.facingSign,
+        heading: roundMetric(creature.turn?.heading ?? 0),
+        angularVelocity: roundMetric(creature.turn?.angularVelocity ?? 0),
+        mirrorSide: creature.turn?.mirrorSide ?? null,
+        historySamples: creature.turn?.history.length ?? 0,
+        scaleYByPart: Object.fromEntries(creature.parts.map((part) => [part.id, roundMetric(part.sprite?.scaleY ?? 0)])),
+      });
+      snapshots.push(capture('initial'));
+      this.cameras.main.centerOn(reviewX, reviewY);
+      for (let i = 0; i < 18; i += 1) {
+        this.player.x = creature.x + 360;
+        this.player.y = creature.y - 120;
+        this.updateArticulatedCreatures(1 / 60);
+        this.draw();
+      }
+      snapshots.push(capture('right-approach'));
+      for (let i = 0; i < 72; i += 1) {
+        this.player.x = creature.x - 420;
+        this.player.y = creature.y + (i < 36 ? 150 : -150);
+        this.updateArticulatedCreatures(1 / 60);
+        this.draw();
+      }
+      snapshots.push(capture('after-cross'));
+      for (let i = 0; i < 160; i += 1) {
+        this.player.x = creature.x + (i % 2 === 0 ? -460 : 460);
+        this.player.y = creature.y + Math.sin(i * 0.2) * 190;
+        this.updateArticulatedCreatures(1 / 60);
+      }
+      this.cameras.main.centerOn(creature.x, creature.y);
+      refreshPlaytestCamera(this);
+      this.draw();
+      snapshots.push(capture('bounded-history'));
+      return {
+        id: creature.id,
+        species: creature.species,
+        minBiome: creature.manifest.minBiome,
+        usesRippleTurning: usesLargeThreatRippleTurning(creature),
+        snapshots,
+        smallFishUsesLegacyFacing: !this.fish.some((fish) => 'turn' in fish),
       };
     } else if (command === 'focusArticulatedCamera') {
       const payload = typeof value === 'object' && value !== null

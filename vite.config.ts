@@ -1,4 +1,5 @@
-import { copyFile, mkdir, readdir } from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
+import { copyFile, mkdir, readdir, stat } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vite';
@@ -44,7 +45,40 @@ async function copyFilteredTree(
 function playerPublicAssets(): Plugin {
   return {
     name: 'water9-player-public-assets',
-    apply: 'build',
+    configureServer(server) {
+      server.middlewares.use('/assets', async (req, res, next) => {
+        const pathname = new URL(req.url ?? '/', 'http://localhost').pathname;
+        const safePath = pathname.split('/').filter(Boolean).join('/');
+        const filePath = resolve(ROOT, 'public/assets', safePath);
+        if (!filePath.startsWith(resolve(ROOT, 'public/assets'))) {
+          next();
+          return;
+        }
+        try {
+          const fileStat = await stat(filePath);
+          if (!fileStat.isFile()) {
+            next();
+            return;
+          }
+          const contentType = filePath.endsWith('.json')
+            ? 'application/json'
+            : filePath.endsWith('.png')
+              ? 'image/png'
+              : filePath.endsWith('.svg')
+                ? 'image/svg+xml'
+                : filePath.endsWith('.mp3')
+                  ? 'audio/mpeg'
+                  : filePath.endsWith('.wav')
+                    ? 'audio/wav'
+                    : 'application/octet-stream';
+          res.setHeader('Content-Type', contentType);
+          res.setHeader('Content-Length', String(fileStat.size));
+          createReadStream(filePath).pipe(res);
+        } catch {
+          next();
+        }
+      });
+    },
     async writeBundle(options) {
       const outDir = resolve(ROOT, String(options.dir ?? 'dist'));
       const publicDir = resolve(ROOT, 'public');
