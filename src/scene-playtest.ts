@@ -23,6 +23,34 @@ function clearPlaytestFloatingText(scene: DeepdiveScene) {
 }
 
 type TerrainReviewStage = 'intact' | 'damage' | 'break' | 'after';
+type ShapeFirstOreProofDeposit = { tile: Tile; x: number; y: number; width: number; height: number };
+type ShapeFirstOreProofScene = DeepdiveScene & { shapeFirstOreProofDeposits?: ShapeFirstOreProofDeposit[] };
+const SHAPE_FIRST_ORE_TIERS: Tile[] = ['copper', 'quartz', 'ruby', 'cobalt', 'sunstone', 'relic', 'alienAlloy', 'drownedIdol', 'precursorEngine', 'abyssalCrown', 'ruinCore'];
+
+function shapeFirstOrePocketShape(tile: Tile): Array<[number, number]> {
+  if (tile === 'ruby') return [[0, 0], [1, -1], [1, 0], [0, 1]];
+  if (tile === 'cobalt') return [[0, 0], [1, 0], [0, 1], [1, 2]];
+  if (tile === 'quartz') return [[0, 0], [1, 0], [0, 1], [2, 1]];
+  if (tile === 'sunstone') return [[0, 0], [1, -1], [1, 0], [2, 0]];
+  if (tile === 'relic') return [[0, 0], [1, 0], [0, 1], [1, 2]];
+  if (tile === 'alienAlloy') return [[0, 0], [1, -1], [1, 0], [2, 1]];
+  if (tile === 'drownedIdol') return [[0, 0], [1, 0], [0, 1], [1, 1]];
+  if (tile === 'precursorEngine') return [[0, 0], [1, 0], [2, 0], [1, 1]];
+  if (tile === 'abyssalCrown') return [[0, 0], [1, -1], [2, 0], [1, 1]];
+  if (tile === 'ruinCore') return [[0, 0], [1, 0], [0, 1], [1, 1]];
+  return [[0, 0], [1, -1], [1, 0], [0, 1]];
+}
+
+function shapeFirstOreDepositBounds(deposit: { tile: Tile; x: number; y: number }) {
+  const shape = shapeFirstOrePocketShape(deposit.tile);
+  const xs = shape.map(([dx]) => deposit.x + dx);
+  const ys = shape.map(([, dy]) => deposit.y + dy);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  return { x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
+}
 
 function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'intact') {
   const centerX = Math.floor(WORLD_W * 0.5);
@@ -144,6 +172,160 @@ function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'i
         ? 'Terrain mining review: fresh break event.'
         : 'Terrain mining review: settled mined opening.';
   renderHud();
+}
+
+function stageOreDepositReview(scene: DeepdiveScene, focusTile: Tile = 'sunstone', focusCamera = false, shapeFirstSlice = false, shapeFirstGroup = -1, shapeFirstCameraOffsetY = 0) {
+  if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
+    scene.generateWorld();
+    scene.worldReady = true;
+  }
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const floorY = Math.floor((SURFACE_Y + 840) / TILE);
+  const left = centerX - 22;
+  const top = floorY - 12;
+  const shapeFirstWallFaceAt = (y: number) => left + 6 + Math.round(Math.sin((y - top) * 0.55) * 1.1 + Math.sin((y - top) * 0.19 + 0.7) * 1.4);
+  const shapeFirstRows = [top + 12, top + 13, top + 15];
+  const shapeFirstGroupTiles = shapeFirstGroup >= 0
+    ? SHAPE_FIRST_ORE_TIERS.slice(shapeFirstGroup * 4, shapeFirstGroup * 4 + 4)
+    : SHAPE_FIRST_ORE_TIERS;
+  const allOreTiles: Tile[] = shapeFirstSlice
+    ? shapeFirstGroupTiles.length ? shapeFirstGroupTiles : SHAPE_FIRST_ORE_TIERS
+    : ['copper', 'quartz', 'ruby', 'cobalt', 'sunstone', 'relic', 'alienAlloy', 'drownedIdol', 'precursorEngine', 'abyssalCrown', 'ruinCore'];
+  const allTierShapeX = (index: number, rowY: number) => {
+    if (shapeFirstGroup >= 0) {
+      const column = index % 2;
+      return shapeFirstWallFaceAt(rowY) + 2 + column * 3;
+    }
+    const column = index % 4;
+    const row = Math.floor(index / 4);
+    const face = shapeFirstWallFaceAt(rowY);
+    return face + 2 + column * 5 + (row % 2 ? 1 : 0);
+  };
+  const allTierShapeY = (index: number) => shapeFirstGroup >= 0
+    ? top + 10 + Math.floor(index / 2) * 5 + (index % 2)
+    : top + 6 + Math.floor(index / 4) * 6 + (index % 2 ? 1 : 0);
+  const deposits = allOreTiles.map((tile, index) => ({
+    x: shapeFirstSlice && allOreTiles.length > 3
+      ? allTierShapeX(index, allTierShapeY(index))
+      : shapeFirstSlice ? shapeFirstWallFaceAt(shapeFirstRows[index] ?? top + 13) + (index === 1 ? 1 : 0) : left + 7 + (index % 4) * 9 + (index >= 8 ? 4 : 0),
+    y: shapeFirstSlice && allOreTiles.length > 3
+      ? allTierShapeY(index)
+      : shapeFirstSlice ? shapeFirstRows[index] ?? top + 13 : top + 6 + Math.floor(index / 4) * 6,
+    tile,
+    focus: tile === focusTile,
+  }));
+  for (let y = top - 4; y <= top + 22; y += 1) {
+    for (let x = left - 6; x <= left + 43; x += 1) {
+      const relX = x - left;
+      const wallFace = left + (shapeFirstSlice
+        ? 6 + Math.round(Math.sin((y - top) * 0.55) * 1.1 + Math.sin((y - top) * 0.19 + 0.7) * 1.4)
+        : 2 + Math.round(Math.sin(relX * 0.27) * 1.2 + Math.sin(relX * 0.09 + 1.4) * 1.4));
+      const ceiling = top + 2 + (shapeFirstSlice ? Math.round(Math.sin(relX * 0.2) * 0.45) : Math.round(Math.sin(relX * 0.18) * 0.9));
+      const outside = x < wallFace || y < ceiling || x > left + (shapeFirstSlice ? 39 : 41) || y > top + (shapeFirstSlice && allOreTiles.length > 3 ? 24 : 21);
+      const sidePocket = !shapeFirstSlice && ((x - (left + 39)) / 2.8) ** 2 + ((y - (top + 18)) / 2.6) ** 2 < 1;
+      scene.setTile(x, y, outside || sidePocket ? 'water' : y > top + 18 ? 'sand' : 'stone');
+      if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+    }
+  }
+  for (const deposit of deposits) {
+    const pocketShape = shapeFirstSlice
+      ? shapeFirstOrePocketShape(deposit.tile)
+      : deposit.focus
+      ? [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1], [-1, 0], [3, 0]]
+      : [[0, 0], [1, 0], [0, 1], [1, 1]];
+    for (const [dx, dy] of pocketShape) {
+        scene.setTile(deposit.x + dx, deposit.y + dy, deposit.tile);
+        if (scene.damage[deposit.y + dy]?.[deposit.x + dx] !== undefined) scene.damage[deposit.y + dy][deposit.x + dx] = 0;
+    }
+    const chipTiles: Array<[number, number, Tile]> = shapeFirstSlice
+      ? [
+        [-1, 0, 'water'],
+        [-1, 1, 'water'],
+        [2, 0, 'stone'],
+        [2, 1, 'stone'],
+        [0, -1, 'stone'],
+        [1, 1, 'stone'],
+        [2, -1, 'stone'],
+        [0, 2, 'stone'],
+        [1, 3, 'stone'],
+      ]
+      : [
+        [-1, -1, 'stone'],
+        [2, -1, 'stone'],
+        [-1, 1, 'stone'],
+        [2, 2, deposit.y > top + 17 ? 'sand' : 'stone'],
+      ];
+    for (const [dx, dy, tile] of chipTiles) {
+      const x = deposit.x + dx;
+      const y = deposit.y + dy;
+      if (scene.getTile(x, y) === 'water') scene.setTile(x, y, tile);
+      if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+    }
+  }
+  rebuildTerrainMask(scene);
+
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.radioOpen = false;
+  state.depth = Math.max(0, Math.round(((top - 1) * TILE - SURFACE_Y) / 6));
+  state.fuel = Math.max(state.fuel, 80);
+  state.oxygen = Math.max(state.oxygen, 100);
+  const lampUpgrade = upgrades.find((upgrade) => upgrade.id === 'lamp');
+  if (lampUpgrade) state.upgrades.lamp = Math.max(state.upgrades.lamp, upgradeMax(lampUpgrade));
+  const focusDeposit = deposits.find((deposit) => deposit.focus);
+  const groupedShapeFirst = shapeFirstSlice && shapeFirstGroup >= 0;
+  const shapeFirstCameraX = deposits.reduce((sum, deposit) => sum + (deposit.x + 1) * TILE, 0) / Math.max(1, deposits.length);
+  const shapeFirstCameraY = deposits.reduce((sum, deposit) => sum + (deposit.y + 0.5) * TILE, 0) / Math.max(1, deposits.length);
+  const cameraX = shapeFirstSlice
+    ? shapeFirstCameraX + TILE * 0.55
+    : focusCamera && focusDeposit ? (focusDeposit.x - 1.8) * TILE : (left + 21.2) * TILE;
+  const cameraY = shapeFirstSlice
+    ? shapeFirstCameraY + shapeFirstCameraOffsetY
+    : focusCamera && focusDeposit ? (focusDeposit.y + 0.5) * TILE : (top + 11.2) * TILE;
+  scene.player.x = shapeFirstSlice
+    ? cameraX + TILE * (groupedShapeFirst ? 4.6 : deposits.length > 3 ? 1.2 : 4.6)
+    : focusCamera && focusDeposit ? (focusDeposit.x - 2.4) * TILE : (left + 21.2) * TILE;
+  scene.player.y = shapeFirstSlice
+    ? cameraY + TILE * (groupedShapeFirst ? 0.35 : deposits.length > 3 ? 3.2 : 0.35)
+    : focusCamera && focusDeposit ? (focusDeposit.y + 0.5) * TILE : (top + 11.2) * TILE;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.mineCooldown = 0;
+  scene.player.facing.set(
+    shapeFirstSlice ? -1 : focusCamera && focusDeposit ? 1 : 0.08,
+    shapeFirstSlice ? -0.02 : focusCamera && focusDeposit ? 0.06 : 1,
+  ).normalize();
+  scene.player.facingSign = 1;
+  scene.fish = [];
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  scene.bobbits = [];
+  scene.hazards = [];
+  scene.larvae = [];
+  scene.nestEggs = [];
+  scene.looseItems = [];
+  clearPlaytestFloatingText(scene);
+  scene.environmentProps = [];
+  scene.terrainBreakEffects = [];
+  scene.terrainBoundsKey = '';
+  scene.terrainDirty = true;
+  if (shapeFirstSlice) (scene as ShapeFirstOreProofScene).shapeFirstOreProofDeposits = deposits.map((deposit) => ({
+    tile: deposit.tile,
+    ...shapeFirstOreDepositBounds(deposit),
+  }));
+  else delete (scene as ShapeFirstOreProofScene).shapeFirstOreProofDeposits;
+  scene.cameras.main.setZoom(shapeFirstSlice && deposits.length > 4 ? 1.25 : 1.85);
+  scene.cameras.main.centerOn(cameraX, cameraY);
+  refreshPlaytestCamera(scene);
+  state.status = shapeFirstSlice
+    ? ''
+    : `Ore review: embedded strata pockets, focus ${tiles[focusTile].name}.`;
+  renderHud();
+  scene.draw();
+  refreshPlaytestCamera(scene);
 }
 
 function stagePerfGuardrailReview(scene: DeepdiveScene) {
@@ -542,6 +724,42 @@ function terrainLookReviewSnapshot(scene: DeepdiveScene, camera: Phaser.Cameras.
     };
   }
 
+function shapeFirstOreProofSnapshot(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+    const deposits = (scene as ShapeFirstOreProofScene).shapeFirstOreProofDeposits ?? [];
+    const view = camera.worldView;
+    const items = deposits.map((deposit) => {
+      let oreTileCells = 0;
+      for (let y = deposit.y; y < deposit.y + deposit.height; y += 1) {
+        for (let x = deposit.x; x < deposit.x + deposit.width; x += 1) {
+          if (scene.getTile(x, y) === deposit.tile) oreTileCells += 1;
+        }
+      }
+      const worldX = (deposit.x + deposit.width * 0.5) * TILE;
+      const worldY = (deposit.y + deposit.height * 0.5) * TILE;
+      const screenX = (worldX - view.x) * camera.zoom;
+      const screenY = (worldY - view.y) * camera.zoom;
+      const inFrame = worldX >= view.x && worldX <= view.right && worldY >= view.y && worldY <= view.bottom
+        && screenX >= 40 && screenX <= 1240 && screenY >= 55 && screenY <= 735;
+      return {
+        tile: deposit.tile,
+        tileBounds: { x: deposit.x, y: deposit.y, width: deposit.width, height: deposit.height },
+        oreTileCells,
+        worldX: roundMetric(worldX),
+        worldY: roundMetric(worldY),
+        screenX: roundMetric(screenX),
+        screenY: roundMetric(screenY),
+        inFrame,
+      };
+    });
+    return {
+      active: deposits.length > 0,
+      expectedDeposits: deposits.length,
+      inFrameDeposits: items.filter((item) => item.inFrame).length,
+      oreTileCells: items.reduce((sum, item) => sum + item.oreTileCells, 0),
+      items,
+    };
+  }
+
 export function playtestSnapshot(this: DeepdiveScene, ) {
     refreshPlaytestCamera(this);
     const camera = this.cameras.main;
@@ -763,6 +981,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         }),
       },
       terrainLookReview: terrainLookReviewSnapshot(this, camera),
+      shapeFirstOreProof: shapeFirstOreProofSnapshot(this, camera),
       encounterReservations: this.encounterReservations.map((reservation) => ({
         id: reservation.id,
         role: reservation.role,
@@ -1191,6 +1410,17 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
 	        ? payload.stage
 	        : 'intact';
 	      stageTerrainReview(this, stage);
+    } else if (command === 'oreDepositReview') {
+      const payload = typeof value === 'object' && value !== null ? value as { focusTile?: Tile; focusCamera?: boolean; shapeFirstSlice?: boolean; shapeFirstGroup?: number; shapeFirstCameraOffsetY?: number } : {};
+      const focusTile = payload.focusTile && isOreTile(payload.focusTile) ? payload.focusTile : 'sunstone';
+      stageOreDepositReview(
+        this,
+        focusTile,
+        payload.focusCamera === true,
+        payload.shapeFirstSlice === true,
+        Number.isFinite(payload.shapeFirstGroup) ? Number(payload.shapeFirstGroup) : -1,
+        Number.isFinite(payload.shapeFirstCameraOffsetY) ? Number(payload.shapeFirstCameraOffsetY) : 0,
+      );
     } else if (command === 'lightingVisibilityReview') {
       return stageLightingVisibilityReview(this);
 	    } else if (command === 'terrainMineAt') {

@@ -53,6 +53,7 @@ export type PlaytestCommand =
   | 'terrainReview'
   | 'terrainLookReview'
   | 'terrainMiningReview'
+  | 'oreDepositReview'
   | 'lightingVisibilityReview'
   | 'terrainMineAt'
   | 'perfGuardrailReview'

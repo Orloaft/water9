@@ -407,6 +407,7 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
   for (const key of parallaxTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of uiTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of environmentTextureKeys()) scene.load.image(key, assetPath(key));
+  for (const key of actualGptOreTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of terrainTextureKeys()) {
     scene.load.image(key, assetPath(key));
   }
@@ -644,6 +645,25 @@ export function environmentTextureKeys() {
     'env-flora-lumen-fern',
     'env-flora-lumen-nodule',
     'env-hazard-ice-spike',
+  ];
+}
+
+export function actualGptOreTextureKeys() {
+  const actualGptOreTiles = [
+    'copper',
+    'quartz',
+    'ruby',
+    'cobalt',
+    'sunstone',
+    'relic',
+    'drownedIdol',
+    'precursorEngine',
+    'abyssalCrown',
+    'alienAlloy',
+    'ruinCore',
+  ];
+  return [
+    ...actualGptOreTiles.flatMap((tile) => Array.from({ length: 5 }, (_, index) => `ore-actual-gpt-${tile}-${index + 1}`)),
   ];
 }
 

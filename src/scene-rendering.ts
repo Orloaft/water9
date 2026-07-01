@@ -10,6 +10,7 @@ import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { hideSubmarinePartSprites,renderSubmarineParts } from './submarine-parts';
 import { ensureTerrainMask,TERRAIN_MASK_CELL,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainBoundarySupported,terrainLocalSolidSupport,terrainMaskBoundaryCell,terrainMaskDensityAt,terrainMaskExposureVector,terrainMaskInteriorFillCell,terrainMaskSolid } from './terrain-mask';
 import { measurePerf } from './perf';
+import { ACTUAL_GPT_ORE_STAMPS,type ActualGptOreTile } from './ore-actual-gpt-stamps';
 
 const TERRAIN_VISIBILITY_WASH_ALPHA = 0.034;
 const TERRAIN_VISIBILITY_GLOW_ALPHA = 0.052;
@@ -235,8 +236,10 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
     this.terrainBoundsKey = boundsKey;
     this.terrain.clear();
     this.terrainEdges.clear();
+    this.oreOverburden.clear();
 
     const activeTerrainBrushKeys = new Set<string>();
+    const activeActualGptOreKeys = new Set<string>();
     drawTerrainMaskBody(this, startX, endX, startY, endY);
     drawTerrainVisualBrushes(this, startX, endX, startY, endY, activeTerrainBrushKeys);
     for (let y = startY; y <= endY; y += 1) {
@@ -251,7 +254,7 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         const fracture = this.damage[y][x] / def.hp;
         const exposed = maskTileExposed(this, x, y);
         if (isOreTile(tile)) {
-          drawEmbeddedOre(this, x, y, tile, exposed);
+          drawEmbeddedOre(this, x, y, tile, exposed, activeActualGptOreKeys);
         }
         if (tile === 'anchorstone') {
           this.terrainEdges.lineStyle(1, 0xb9c2d0, 0.1);
@@ -259,15 +262,6 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
         }
         if (fracture > 0) {
           drawFractureMarks(this, x, y, tile, fracture);
-        }
-        if (isArtifactTile(tile)) {
-          const pulse = 0.48 + Math.sin(performance.now() * 0.004 + x * 0.9 + y * 0.2) * 0.12;
-          this.terrain.lineStyle(1, 0xfff7df, pulse);
-          this.terrain.strokeCircle(wx + 12, wy + 12, 5);
-          this.terrain.lineBetween(wx + 12, wy + 5, wx + 17, wy + 12);
-          this.terrain.lineBetween(wx + 17, wy + 12, wx + 12, wy + 19);
-          this.terrain.lineBetween(wx + 12, wy + 19, wx + 7, wy + 12);
-          this.terrain.lineBetween(wx + 7, wy + 12, wx + 12, wy + 5);
         }
       }
     }
@@ -279,6 +273,12 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
 	    }
       for (const [key, sprite] of this.terrainBrushSpritesByKey) {
         if (!activeTerrainBrushKeys.has(key)) sprite.setVisible(false);
+      }
+      for (const [key, sprite] of this.actualGptOreSpritesByKey) {
+        if (!activeActualGptOreKeys.has(key)) {
+          sprite.setVisible(false);
+          this.actualGptOreMasksByKey.get(key)?.graphics.clear();
+        }
       }
 	  }
 
@@ -1250,55 +1250,1452 @@ function drawContourLines(
     }
   }
 
-function drawEmbeddedOre(scene: DeepdiveScene, x: number, y: number, tile: Tile, exposed: boolean) {
+function drawEmbeddedOre(scene: DeepdiveScene, x: number, y: number, tile: Tile, _exposed: boolean, activeActualGptOreKeys: Set<string>) {
     if (maskTileSolidRatio(scene, x, y) < 0.42) return;
-    if (!exposed && hash(x * 13, y * 17, rng.seed) < 0.72) return;
-    const wx = x * TILE;
-    const wy = y * TILE;
+    const deposit = oreDepositComponent(scene, x, y, tile);
+    if (deposit.rootX !== x || deposit.rootY !== y) return;
+    const shapeFirstSliceTile = isShapeFirstSliceOreTile(tile);
+
     const color = orePixelColor(tile);
     const glow = oreGlowColor(tile);
-    const cx = wx + TILE * (0.45 + (hash(x, y, rng.seed + 71) - 0.5) * 0.24);
-    const cy = wy + TILE * (0.48 + (hash(y, x, rng.seed + 73) - 0.5) * 0.24);
-    const veinAngle = hash(x * 97, y * 101, rng.seed + 1103) * Math.PI - Math.PI * 0.5;
-    const veinLength = exposed ? TILE * 0.5 : TILE * 0.32;
-    const veinWidth = 1;
-    scene.terrainEdges.lineStyle(3, 0x010306, exposed ? 0.3 : 0.18);
-    scene.terrainEdges.lineBetween(
-      cx - Math.cos(veinAngle) * veinLength * 0.5,
-      cy - Math.sin(veinAngle) * veinLength * 0.5,
-      cx + Math.cos(veinAngle) * veinLength * 0.5,
-      cy + Math.sin(veinAngle) * veinLength * 0.5,
+    const dark = oreShadowColor(tile);
+    const facet = oreFacetColor(tile);
+    const width = (deposit.maxX - deposit.minX + 1) * TILE;
+    const height = (deposit.maxY - deposit.minY + 1) * TILE;
+    const cx = (deposit.minX + deposit.maxX + 1) * TILE * 0.5 + (hash(x, y, rng.seed + 71) - 0.5) * TILE * 0.34;
+    const cy = (deposit.minY + deposit.maxY + 1) * TILE * 0.5 + (hash(y, x, rng.seed + 73) - 0.5) * TILE * 0.28;
+    const angle = shapeFirstSliceTile ? shapeFirstOreClusterAngle(tile, deposit) : oreDepositAngle(deposit, x, y);
+    const rawLongRadius = Math.max(TILE * 0.33, width * 0.39 + deposit.cells.length * 0.7);
+    const rawShortRadius = Math.max(TILE * 0.18, Math.min(TILE * 0.58, height * 0.32 + TILE * 0.04));
+    const { longRadius, shortRadius } = oreDepositVisualRadii(tile, deposit, rawLongRadius, rawShortRadius);
+    const points = orePocketPoints(cx, cy, longRadius, shortRadius, angle, x, y, tile);
+
+    drawOreStain(scene, tile, deposit, cx, cy, longRadius, shortRadius, angle, dark, glow);
+    if (isActualGptOreTile(tile) && !shapeFirstSliceTile) {
+      drawEmbeddedAssetCavity(scene, tile, deposit, cx, cy, longRadius, shortRadius, angle, dark, glow);
+    } else {
+      drawPocketShape(scene.terrainEdges, points, 0x010306, 0.36, 1.7, 2.1);
+      drawPocketShape(scene.terrainEdges, points, dark, 0.34, 0, 0);
+    }
+
+    if (shapeFirstSliceTile) {
+      drawShapeFirstEmbeddedOre(scene, tile, deposit, cx, cy, longRadius, shortRadius, angle, color, facet, glow, dark);
+    } else if (isActualGptOreTile(tile)) {
+      drawGptStampIntegratedOre(scene, tile, deposit, cx, cy, longRadius, shortRadius, angle, color, facet, glow, dark, activeActualGptOreKeys);
+    } else {
+      drawCommonStrataOre(scene, tile, cx, cy, longRadius, shortRadius, angle, color, facet, glow, dark);
+    }
+
+    if (!shapeFirstSliceTile) {
+      drawHostRockOcclusion(scene, deposit, cx, cy, longRadius, shortRadius, angle, tile);
+      drawOreDepositGlint(scene, deposit, cx, cy, longRadius, shortRadius, angle, glow);
+    }
+  }
+
+function oreDepositComponent(scene: DeepdiveScene, startX: number, startY: number, tile: Tile) {
+    const stack = [{ x: startX, y: startY }];
+    const seen = new Set<string>();
+    const cells: Array<{ x: number; y: number }> = [];
+    let minX = startX;
+    let maxX = startX;
+    let minY = startY;
+    let maxY = startY;
+    while (stack.length && cells.length < 48) {
+      const current = stack.pop();
+      if (!current) break;
+      const key = `${current.x}:${current.y}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      if (scene.getTile(current.x, current.y) !== tile || maskTileSolidRatio(scene, current.x, current.y) < 0.42) continue;
+      cells.push(current);
+      minX = Math.min(minX, current.x);
+      maxX = Math.max(maxX, current.x);
+      minY = Math.min(minY, current.y);
+      maxY = Math.max(maxY, current.y);
+      stack.push(
+        { x: current.x + 1, y: current.y },
+        { x: current.x - 1, y: current.y },
+        { x: current.x, y: current.y + 1 },
+        { x: current.x, y: current.y - 1 },
+      );
+    }
+    const root = cells.reduce((best, cell) => (
+      cell.y < best.y || (cell.y === best.y && cell.x < best.x) ? cell : best
+    ), { x: startX, y: startY });
+    return { cells, minX, maxX, minY, maxY, rootX: root.x, rootY: root.y };
+  }
+
+function oreDepositAngle(deposit: ReturnType<typeof oreDepositComponent>, x: number, y: number) {
+    const width = deposit.maxX - deposit.minX + 1;
+    const height = deposit.maxY - deposit.minY + 1;
+    const base = width >= height ? -0.18 : Math.PI * 0.5 - 0.2;
+    return base + (hash(x * 97, y * 101, rng.seed + 1103) - 0.5) * 0.82;
+  }
+
+function shapeFirstOreClusterAngle(tile: Tile, deposit: ReturnType<typeof oreDepositComponent>) {
+    const base =
+      tile === 'ruby' ? -0.86 :
+      tile === 'cobalt' ? 0.72 :
+      tile === 'quartz' ? 0.38 :
+      tile === 'sunstone' ? -0.34 :
+      tile === 'relic' ? 0.95 :
+      tile === 'alienAlloy' ? -1.08 :
+      tile === 'drownedIdol' ? 0.18 :
+      tile === 'precursorEngine' ? -0.52 :
+      tile === 'abyssalCrown' ? 0.62 :
+      tile === 'ruinCore' ? -0.12 :
+      -0.62;
+    return base + (hash(deposit.rootX * 89, deposit.rootY * 97, rng.seed + 3881) - 0.5) * 0.5;
+  }
+
+function oreDepositVisualRadii(tile: Tile, deposit: ReturnType<typeof oreDepositComponent>, longRadius: number, shortRadius: number) {
+    if (isShapeFirstSliceOreTile(tile)) {
+      const cellScale = Math.sqrt(Math.max(1, deposit.cells.length));
+      return {
+        longRadius: Phaser.Math.Clamp(TILE * 0.31 + cellScale * 0.62, TILE * 0.34, TILE * 0.5),
+        shortRadius: Phaser.Math.Clamp(TILE * 0.21 + cellScale * 0.54, TILE * 0.22, TILE * 0.34),
+      };
+    }
+    if (!isActualGptOreTile(tile)) return { longRadius, shortRadius };
+    const cellScale = Math.sqrt(Math.max(1, deposit.cells.length));
+    const profile = actualGptEmbeddingProfile(tile);
+    const compactLong = TILE * profile.radiusLong + cellScale * profile.cellLong;
+    const compactShort = TILE * profile.radiusShort + cellScale * profile.cellShort;
+    return {
+      longRadius: Phaser.Math.Clamp(compactLong, TILE * profile.minLong, TILE * profile.maxLong),
+      shortRadius: Phaser.Math.Clamp(compactShort, TILE * profile.minShort, TILE * profile.maxShort),
+    };
+  }
+
+function actualGptEmbeddingProfile(tile: ActualGptOreTile) {
+    switch (tile) {
+      case 'abyssalCrown':
+        return { radiusLong: 0.86, radiusShort: 0.3, cellLong: 1.55, cellShort: 0.46, minLong: 0.78, maxLong: 1.26, minShort: 0.26, maxShort: 0.46, widthScale: 1.5, minWidth: 1.02, maxWidth: 1.62, maskX: 0.4, maskY: 0.28, capCount: 8, capReach: 0.66, contact: 0.6 };
+      case 'drownedIdol':
+        return { radiusLong: 0.62, radiusShort: 0.38, cellLong: 1.28, cellShort: 0.58, minLong: 0.58, maxLong: 1.0, minShort: 0.32, maxShort: 0.56, widthScale: 1.2, minWidth: 0.82, maxWidth: 1.25, maskX: 0.32, maskY: 0.36, capCount: 7, capReach: 0.7, contact: 0.62 };
+      case 'ruinCore':
+        return { radiusLong: 0.58, radiusShort: 0.42, cellLong: 1.18, cellShort: 0.62, minLong: 0.55, maxLong: 0.95, minShort: 0.34, maxShort: 0.58, widthScale: 1.08, minWidth: 0.78, maxWidth: 1.18, maskX: 0.31, maskY: 0.34, capCount: 7, capReach: 0.72, contact: 0.58 };
+      case 'precursorEngine':
+        return { radiusLong: 0.78, radiusShort: 0.36, cellLong: 1.6, cellShort: 0.58, minLong: 0.7, maxLong: 1.2, minShort: 0.3, maxShort: 0.56, widthScale: 1.42, minWidth: 0.96, maxWidth: 1.55, maskX: 0.38, maskY: 0.34, capCount: 8, capReach: 0.68, contact: 0.58 };
+      case 'alienAlloy':
+        return { radiusLong: 0.72, radiusShort: 0.34, cellLong: 1.44, cellShort: 0.54, minLong: 0.66, maxLong: 1.1, minShort: 0.28, maxShort: 0.52, widthScale: 1.34, minWidth: 0.9, maxWidth: 1.42, maskX: 0.36, maskY: 0.3, capCount: 7, capReach: 0.64, contact: 0.54 };
+      case 'relic':
+        return { radiusLong: 0.58, radiusShort: 0.3, cellLong: 1.22, cellShort: 0.48, minLong: 0.54, maxLong: 0.96, minShort: 0.25, maxShort: 0.46, widthScale: 1.16, minWidth: 0.76, maxWidth: 1.16, maskX: 0.32, maskY: 0.28, capCount: 6, capReach: 0.68, contact: 0.56 };
+      default:
+        return { radiusLong: 0.58, radiusShort: 0.28, cellLong: 1.28, cellShort: 0.58, minLong: 0.52, maxLong: 0.9, minShort: 0.24, maxShort: 0.42, widthScale: tile === 'ruby' ? 1.22 : 1.18, minWidth: 0.72, maxWidth: 1.12, maskX: tile === 'ruby' ? 0.44 : 0.42, maskY: tile === 'ruby' ? 0.28 : 0.32, capCount: tile === 'copper' || tile === 'cobalt' ? 6 : 5, capReach: 0.56, contact: 0.46 };
+    }
+  }
+
+function orePocketPoints(cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, x: number, y: number, tile: Tile) {
+    const points: Array<{ x: number; y: number }> = [];
+    const count = 12;
+    for (let i = 0; i < count; i += 1) {
+      const theta = (i / count) * Math.PI * 2;
+      const wobble = 0.76 + hash(x * 157 + i * 17, y * 163 - i * 19, rng.seed + oreBrushVariant(tile) * 37) * 0.38;
+      const lx = Math.cos(theta) * longRadius * wobble;
+      const ly = Math.sin(theta) * shortRadius * (0.82 + hash(y * 173 + i, x * 179 - i, rng.seed + 1601) * 0.3);
+      points.push({
+        x: cx + Math.cos(angle) * lx - Math.sin(angle) * ly,
+        y: cy + Math.sin(angle) * lx + Math.cos(angle) * ly,
+      });
+    }
+    return points;
+  }
+
+function drawPocketShape(graphics: Phaser.GameObjects.Graphics, points: Array<{ x: number; y: number }>, color: number, alpha: number, dx: number, dy: number) {
+    if (!points.length) return;
+    graphics.fillStyle(color, alpha);
+    graphics.beginPath();
+    graphics.moveTo(points[0].x + dx, points[0].y + dy);
+    for (const point of points.slice(1)) graphics.lineTo(point.x + dx, point.y + dy);
+    graphics.closePath();
+    graphics.fillPath();
+  }
+
+function drawOreStain(scene: DeepdiveScene, tile: Tile, deposit: ReturnType<typeof oreDepositComponent>, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, dark: number, glow: number) {
+    const actualGptTile = isActualGptOreTile(tile);
+    if (isShapeFirstSliceOreTile(tile)) {
+      const socket = orePocketPoints(cx, cy, longRadius * 1.42, shortRadius * 1.36, angle, deposit.rootX - 17, deposit.rootY + 29, tile);
+      drawPocketShape(scene.terrainEdges, socket, 0x010306, 0.34, 1.2, 1.5);
+      drawPocketShape(scene.terrainEdges, socket, dark, 0.18, 0, 0);
+      scene.terrainEdges.lineStyle(1.1, glow, 0.12);
+      for (let i = 0; i < 3; i += 1) {
+        const t = (hash(i * 17, deposit.rootX, rng.seed + 3861) - 0.5) * 1.25;
+        const s = (hash(deposit.rootY, i * 19, rng.seed + 3863) - 0.5) * 1.08;
+        const start = stampLocalPoint(cx, cy, angle, t * longRadius, s * shortRadius);
+        const end = stampLocalPoint(start.x, start.y, angle + (hash(i, deposit.rootX, rng.seed + 3865) - 0.5) * 1.8, longRadius * 0.28, 0);
+        scene.terrainEdges.lineBetween(start.x, start.y, end.x, end.y);
+      }
+      return;
+    }
+    if (actualGptTile) {
+      const profile = actualGptEmbeddingProfile(tile);
+      const jagged = orePocketPoints(cx, cy, longRadius * 0.94, shortRadius * 0.82, angle, deposit.rootX - 17, deposit.rootY + 29, tile);
+      drawPocketShape(scene.terrainEdges, jagged, 0x010306, 0.18 + profile.contact * 0.12, 1.1, 1.4);
+      drawPocketShape(scene.terrainEdges, jagged, dark, 0.08 + profile.contact * 0.08, 0, 0);
+      scene.terrainEdges.lineStyle(1.5, 0x010306, 0.26);
+      scene.terrainEdges.lineBetween(
+        cx - Math.cos(angle) * longRadius * 0.76,
+        cy - Math.sin(angle) * longRadius * 0.76,
+        cx + Math.cos(angle) * longRadius * 0.72,
+        cy + Math.sin(angle) * longRadius * 0.72,
+      );
+      scene.terrainEdges.lineStyle(0.8, glow, tile === 'ruinCore' || tile === 'alienAlloy' ? 0.2 : 0.1);
+      scene.terrainEdges.lineBetween(
+        cx - Math.cos(angle) * longRadius * 0.48,
+        cy - Math.sin(angle) * longRadius * 0.48,
+        cx + Math.cos(angle) * longRadius * 0.34,
+        cy + Math.sin(angle) * longRadius * 0.34,
+      );
+      return;
+    }
+    const stainScale = actualGptTile ? 0.76 : Phaser.Math.Clamp(0.9 + deposit.cells.length * 0.08, 0.95, 1.34);
+    scene.terrainEdges.fillStyle(0x010306, 0.2);
+    scene.terrainEdges.fillEllipse(
+      cx + (actualGptTile ? 1.2 : 2.5),
+      cy + (actualGptTile ? 1.5 : 3),
+      longRadius * (actualGptTile ? 1.18 : 2.25) * stainScale,
+      shortRadius * (actualGptTile ? 1.08 : 2.05) * stainScale,
     );
-    scene.terrainEdges.lineStyle(veinWidth, glow, exposed ? 0.38 : 0.18);
+    scene.terrainEdges.fillStyle(dark, actualGptTile ? 0.12 : 0.16);
+    scene.terrainEdges.fillEllipse(cx, cy, longRadius * (actualGptTile ? 1.22 : 2.35) * stainScale, shortRadius * (actualGptTile ? 0.95 : 1.88) * stainScale);
+    scene.terrainEdges.lineStyle(actualGptTile ? 2.2 : Math.max(4, shortRadius * 0.48), dark, actualGptTile ? 0.1 : 0.13);
     scene.terrainEdges.lineBetween(
-      cx - Math.cos(veinAngle) * veinLength * 0.42,
-      cy - Math.sin(veinAngle) * veinLength * 0.42,
-      cx + Math.cos(veinAngle) * veinLength * 0.42,
-      cy + Math.sin(veinAngle) * veinLength * 0.42,
+      cx - Math.cos(angle) * longRadius * 1.05,
+      cy - Math.sin(angle) * longRadius * 1.05,
+      cx + Math.cos(angle) * longRadius * 1.05,
+      cy + Math.sin(angle) * longRadius * 1.05,
     );
-    if (exposed) {
-      for (let branch = -1; branch <= 1; branch += 2) {
-        const branchAngle = veinAngle + branch * (0.65 + hash(x + branch, y - branch, rng.seed + 1113) * 0.4);
-        const bx = cx + Math.cos(veinAngle) * veinLength * (branch > 0 ? 0.12 : -0.18);
-        const by = cy + Math.sin(veinAngle) * veinLength * (branch > 0 ? 0.12 : -0.18);
-        const branchLength = TILE * (0.12 + hash(y + branch, x, rng.seed + 1117) * 0.13);
-        scene.terrainEdges.lineStyle(1, glow, 0.24);
-        scene.terrainEdges.lineBetween(bx, by, bx + Math.cos(branchAngle) * branchLength, by + Math.sin(branchAngle) * branchLength);
+    scene.terrainEdges.lineStyle(actualGptTile ? 0.9 : Math.max(1.4, shortRadius * 0.15), glow, actualGptTile ? 0.16 : 0.12);
+    scene.terrainEdges.lineBetween(
+      cx - Math.cos(angle) * longRadius * 0.85,
+      cy - Math.sin(angle) * longRadius * 0.85,
+      cx + Math.cos(angle) * longRadius * 0.85,
+      cy + Math.sin(angle) * longRadius * 0.85,
+    );
+  }
+
+function drawEmbeddedAssetCavity(scene: DeepdiveScene, tile: ActualGptOreTile, deposit: ReturnType<typeof oreDepositComponent>, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, dark: number, glow: number) {
+    const jagged = orePocketPoints(cx, cy, longRadius * 1.1, shortRadius * 1.05, angle, deposit.rootX + 19, deposit.rootY - 23, tile)
+      .map((point, index) => {
+        const bias = hash(deposit.rootX * 401 + index, deposit.rootY * 409 - index, rng.seed + 3401) - 0.5;
+        return {
+          x: point.x + Math.cos(angle + Math.PI * 0.5) * bias * shortRadius * 0.22,
+          y: point.y + Math.sin(angle + Math.PI * 0.5) * bias * shortRadius * 0.22,
+        };
+      });
+    drawPocketShape(scene.terrainEdges, jagged, 0x010306, 0.28, 1.1, 1.5);
+    drawPocketShape(scene.terrainEdges, jagged, dark, 0.16, 0, 0);
+    drawActualGptMaterialStaining(scene.terrainEdges, tile, deposit, cx, cy, longRadius, shortRadius, angle, dark, glow);
+  }
+
+function drawActualGptMaterialStaining(graphics: Phaser.GameObjects.Graphics, tile: ActualGptOreTile, deposit: ReturnType<typeof oreDepositComponent>, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, dark: number, glow: number) {
+    const stainColor = tile === 'copper' ? 0x315f45
+      : tile === 'cobalt' ? 0x1d5387
+        : tile === 'sunstone' ? 0x8e5930
+          : tile === 'quartz' ? 0xb9c7c2
+            : tile === 'ruby' ? 0x6c1418
+              : tile === 'alienAlloy' || tile === 'ruinCore' ? 0x1bbfc3
+                : glow;
+    const crackCount = tile === 'ruby' ? 7 : tile === 'quartz' ? 8 : tile === 'cobalt' ? 7 : tile === 'copper' ? 9 : 5;
+    for (let i = 0; i < crackCount; i += 1) {
+      const t = hash(deposit.rootX * 421 + i * 17, deposit.rootY, rng.seed + 3411) - 0.5;
+      const s = hash(deposit.rootY * 431, deposit.rootX + i * 19, rng.seed + 3413) - 0.5;
+      const start = stampLocalPoint(cx, cy, angle, t * longRadius * 0.92, s * shortRadius * 0.72);
+      const spread = longRadius * (0.22 + hash(i, deposit.rootX, rng.seed + 3415) * 0.38);
+      const branchAngle = angle + (hash(i * 23, deposit.rootY, rng.seed + 3417) - 0.5) * (tile === 'cobalt' ? 1.7 : 1.15);
+      graphics.lineStyle(tile === 'quartz' ? 1.2 : 0.9, 0x010306, 0.22);
+      graphics.lineBetween(start.x + 0.8, start.y + 1, start.x + Math.cos(branchAngle) * spread + 0.8, start.y + Math.sin(branchAngle) * spread + 1);
+      graphics.lineStyle(tile === 'copper' ? 1.3 : 0.8, stainColor, tile === 'ruby' ? 0.2 : tile === 'cobalt' ? 0.24 : 0.17);
+      graphics.lineBetween(start.x, start.y, start.x + Math.cos(branchAngle) * spread, start.y + Math.sin(branchAngle) * spread);
+    }
+    if (tile === 'cobalt' || tile === 'alienAlloy' || tile === 'ruinCore') {
+      graphics.fillStyle(stainColor, tile === 'cobalt' ? 0.1 : 0.08);
+      graphics.fillEllipse(cx, cy, longRadius * 1.32, shortRadius * 1.2);
+    }
+  }
+
+function drawGptStampIntegratedOre(
+  scene: DeepdiveScene,
+  tile: Tile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+  activeActualGptOreKeys: Set<string>,
+) {
+    if (!isActualGptOreTile(tile)) return;
+    drawActualGptSourceStamp(scene, tile, deposit, cx, cy, longRadius, shortRadius, angle, color, facet, glow, dark, activeActualGptOreKeys);
+  }
+
+function stampLocalPoint(cx: number, cy: number, angle: number, localX: number, localY: number) {
+    return {
+      x: cx + Math.cos(angle) * localX - Math.sin(angle) * localY,
+      y: cy + Math.sin(angle) * localX + Math.cos(angle) * localY,
+    };
+  }
+
+function isActualGptOreTile(tile: Tile): tile is ActualGptOreTile {
+    return tile in ACTUAL_GPT_ORE_STAMPS;
+  }
+
+function isShapeFirstSliceOreTile(tile: Tile) {
+    return isOreTile(tile);
+  }
+
+function drawActualGptSourceStamp(
+  scene: DeepdiveScene,
+  tile: ActualGptOreTile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  _color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+  activeActualGptOreKeys: Set<string>,
+) {
+    const stamps = ACTUAL_GPT_ORE_STAMPS[tile];
+    const stampIndex = Math.min(stamps.length - 1, Math.floor(hash(deposit.rootX * 313, deposit.rootY * 317, rng.seed + 3311) * stamps.length));
+    const stamp = stamps[stampIndex];
+    const isArtifact = tile === 'precursorEngine'
+      || tile === 'relic'
+      || tile === 'drownedIdol'
+      || tile === 'abyssalCrown'
+      || tile === 'alienAlloy'
+      || tile === 'ruinCore';
+    const profile = actualGptEmbeddingProfile(tile);
+    const sourceTwist = (hash(deposit.rootX * 331, deposit.rootY * 337, rng.seed + 3313) - 0.5) * (tile === 'ruby' || tile === 'abyssalCrown' ? 0.34 : 0.22);
+    const stampAngle = angle + sourceTwist;
+    const targetWidth = Phaser.Math.Clamp(
+      longRadius * profile.widthScale,
+      TILE * profile.minWidth,
+      TILE * profile.maxWidth,
+    );
+    const aspect = stamp.height / Math.max(1, stamp.width);
+    const targetHeight = Phaser.Math.Clamp(
+      targetWidth * aspect,
+      TILE * (tile === 'ruby' ? 0.32 : 0.28),
+      TILE * (isArtifact ? 0.92 : 0.72),
+    );
+    const xScale = targetWidth / 200;
+    const yScale = targetHeight / 200;
+    const sampleScale = Phaser.Math.Clamp((targetWidth + targetHeight) / 112, 0.18, isArtifact ? 0.34 : 0.28);
+    const sampleW = tile === 'ruby' ? 1.38 : isArtifact ? 1.1 : 1.18;
+    const sampleH = tile === 'ruby' ? 0.5 : isArtifact ? 0.82 : 0.62;
+    const stampCx = cx + (hash(deposit.rootX, deposit.rootY, rng.seed + 3315) - 0.5) * longRadius * 0.18;
+    const stampCy = cy + (hash(deposit.rootY, deposit.rootX, rng.seed + 3317) - 0.5) * shortRadius * 0.2;
+
+    const backing = orePocketPoints(stampCx, stampCy, targetWidth * 0.46, Math.max(shortRadius * 0.52, targetHeight * 0.34), stampAngle, deposit.rootX + 37, deposit.rootY - 31, tile);
+    drawPocketShape(scene.terrainEdges, backing, 0x010306, isArtifact ? 0.26 : 0.2, 1, 1.3);
+    drawPocketShape(scene.terrainEdges, backing, dark, isArtifact ? 0.14 : 0.1, 0, 0);
+
+    const spriteKey = `actual-gpt-ore:${deposit.rootX}:${deposit.rootY}`;
+    activeActualGptOreKeys.add(spriteKey);
+    let sprite = scene.actualGptOreSpritesByKey.get(spriteKey);
+    if (!sprite) {
+      sprite = scene.add.image(stampCx, stampCy, stamp.assetKey).setOrigin(0.5).setDepth(0.825);
+      scene.actualGptOreSpritesByKey.set(spriteKey, sprite);
+    }
+    sprite
+      .setTexture(stamp.assetKey)
+      .setVisible(true)
+      .setPosition(stampCx, stampCy)
+      .setDisplaySize(targetWidth, targetHeight)
+      .setRotation(stampAngle)
+      .setAlpha(tile === 'ruby' || tile === 'abyssalCrown' ? 1 : isArtifact ? 0.98 : 0.99)
+      .clearTint();
+    updateActualGptOreMask(scene, spriteKey, tile, deposit, stampCx, stampCy, targetWidth, targetHeight, stampAngle);
+
+    drawActualGptStampOverburden(scene, tile, deposit, stampCx, stampCy, targetWidth, targetHeight, stampAngle, longRadius, shortRadius, facet, glow, dark);
+
+    for (const [sourceX, sourceY, sourceSize, sourceColor, sourceAlpha] of stamp.samples) {
+      if (sourceAlpha < 180 || hash(sourceX + deposit.rootX, sourceY + deposit.rootY, rng.seed + 3327) < 0.72) continue;
+      const point = stampLocalPoint(stampCx, stampCy, stampAngle, sourceX * xScale, sourceY * yScale);
+      const alpha = Phaser.Math.Clamp((sourceAlpha / 255) * 0.38, 0.06, 0.42);
+      const width = Math.max(1.2, sourceSize * sampleScale * sampleW);
+      const height = Math.max(0.9, sourceSize * sampleScale * sampleH);
+      const dotAngle = stampAngle + (hash(sourceX + deposit.rootX, sourceY + deposit.rootY, rng.seed + 3321) - 0.5) * 0.34;
+      if (tile !== 'copper' || sourceAlpha > 210 || hash(sourceX, sourceY, rng.seed + 3331) > 0.58) {
+        scene.terrainEdges.lineStyle(0.75, glow, alpha * (tile === 'ruby' || tile === 'abyssalCrown' ? 0.42 : 0.3));
+        scene.terrainEdges.lineBetween(
+          point.x - Math.cos(dotAngle) * width * 0.28,
+          point.y - Math.sin(dotAngle) * width * 0.28,
+          point.x + Math.cos(dotAngle) * width * 0.32,
+          point.y + Math.sin(dotAngle) * width * 0.32,
+        );
       }
     }
-    scene.terrainEdges.fillStyle(0x041019, exposed ? 0.42 : 0.22);
-    scene.terrainEdges.fillEllipse(cx, cy, exposed ? 9 : 5, exposed ? 6 : 3);
-    scene.terrainEdges.fillStyle(glow, exposed ? 0.115 : 0.055);
-    scene.terrainEdges.fillEllipse(cx, cy, exposed ? 13 : 7, exposed ? 8 : 4);
-    for (let i = 0; i < 8; i += 1) {
-      const angle = hash(x * 23 + i, y * 29, rng.seed) * Math.PI * 2;
-      const radius = hash(y * 31, x * 37 + i, rng.seed) * (exposed ? 4.8 : 2.9);
-      const size = i === 0 ? 2.4 : 1.1 + hash(i, x + y, rng.seed) * 1.5;
-      const px = cx + Math.cos(angle) * radius;
-      const py = cy + Math.sin(angle) * radius;
-      scene.terrainEdges.fillStyle(i === 0 ? 0xf4ffff : color, i === 0 ? 0.72 : exposed ? 0.58 : 0.38);
-      scene.terrainEdges.fillCircle(px, py, Math.max(0.75, size * 0.42));
+
+    if (isArtifact) {
+      scene.terrainEdges.lineStyle(1.25, glow, 0.2);
+      scene.terrainEdges.lineBetween(
+        stampCx - Math.cos(stampAngle) * longRadius * 0.64,
+        stampCy - Math.sin(stampAngle) * longRadius * 0.64,
+        stampCx + Math.cos(stampAngle) * longRadius * 0.58,
+        stampCy + Math.sin(stampAngle) * longRadius * 0.58,
+      );
     }
+    scene.terrainEdges.fillStyle(facet, tile === 'ruby' || tile === 'abyssalCrown' ? 0.16 : 0.11);
+    scene.terrainEdges.fillCircle(
+      stampCx + Math.cos(stampAngle) * longRadius * 0.2,
+      stampCy + Math.sin(stampAngle) * longRadius * 0.2,
+      isArtifact ? 1.7 : 1.2,
+    );
+  }
+
+function updateActualGptOreMask(
+  scene: DeepdiveScene,
+  spriteKey: string,
+  tile: ActualGptOreTile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  targetWidth: number,
+  targetHeight: number,
+  angle: number,
+) {
+    let entry = scene.actualGptOreMasksByKey.get(spriteKey);
+    if (!entry) {
+      const graphics = scene.add.graphics().setDepth(0.835).setVisible(false);
+      const mask = graphics.createGeometryMask();
+      entry = { graphics, mask };
+      scene.actualGptOreMasksByKey.set(spriteKey, entry);
+    }
+    const artifact = tile === 'precursorEngine'
+      || tile === 'relic'
+      || tile === 'drownedIdol'
+      || tile === 'abyssalCrown'
+      || tile === 'alienAlloy'
+      || tile === 'ruinCore';
+    const profile = actualGptEmbeddingProfile(tile);
+    const count = artifact ? 13 : tile === 'ruby' ? 9 : 10;
+    const points: Array<{ x: number; y: number }> = [];
+    for (let i = 0; i < count; i += 1) {
+      const theta = (i / count) * Math.PI * 2;
+      const chip = 0.66 + hash(deposit.rootX * 491 + i * 17, deposit.rootY * 499 - i * 19, rng.seed + 3451) * (artifact ? 0.26 : 0.24);
+      const notch = hash(i * 503, deposit.rootX, rng.seed + 3453) > (artifact ? 0.68 : 0.76) ? 0.42 : 1;
+      const bury = Math.sin(theta) > 0.22 ? 0.64 : Math.sin(theta) < -0.35 ? 0.82 : 1;
+      const sx = Math.cos(theta) * targetWidth * profile.maskX * chip * notch;
+      const sy = Math.sin(theta) * targetHeight * profile.maskY * (0.78 + hash(deposit.rootY, i * 509, rng.seed + 3455) * 0.28) * notch * bury;
+      points.push(stampLocalPoint(cx, cy, angle, sx, sy));
+    }
+    entry.graphics.clear();
+    entry.graphics.fillStyle(0xffffff, 1);
+    entry.graphics.beginPath();
+    entry.graphics.moveTo(points[0].x, points[0].y);
+    for (const point of points.slice(1)) entry.graphics.lineTo(point.x, point.y);
+    entry.graphics.closePath();
+    entry.graphics.fillPath();
+
+    const sprite = scene.actualGptOreSpritesByKey.get(spriteKey);
+    sprite?.setMask(entry.mask);
+  }
+
+function drawActualGptStampOverburden(
+  scene: DeepdiveScene,
+  tile: ActualGptOreTile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  targetWidth: number,
+  targetHeight: number,
+  angle: number,
+  longRadius: number,
+  shortRadius: number,
+  facet: number,
+  glow: number,
+  dark: number,
+) {
+    const graphics = scene.oreOverburden;
+    const isArtifact = tile === 'precursorEngine'
+      || tile === 'relic'
+      || tile === 'drownedIdol'
+      || tile === 'abyssalCrown'
+      || tile === 'alienAlloy'
+      || tile === 'ruinCore';
+    const profile = actualGptEmbeddingProfile(tile);
+    const lips = isArtifact ? 12 : tile === 'copper' || tile === 'cobalt' ? 10 : 8;
+    const host = hostRockPaletteForDeposit(scene, deposit, tile);
+    const contactAlpha = profile.contact;
+
+    drawActualGptContactSlot(graphics, tile, deposit, cx, cy, targetWidth, targetHeight, angle, host.shadow, dark);
+    drawActualGptTerrainCaps(graphics, tile, deposit, cx, cy, targetWidth, targetHeight, angle, host.mid, host.dark, host.rim);
+    drawActualGptCrossBites(graphics, tile, deposit, cx, cy, targetWidth, targetHeight, angle, host.mid, host.dark, host.rim);
+    drawActualGptTargetedEmbedding(graphics, tile, deposit, cx, cy, targetWidth, targetHeight, angle, host.mid, host.dark, host.rim, glow);
+
+    for (let i = 0; i < lips; i += 1) {
+      const edge = hash(i * 443, deposit.rootX, rng.seed + 3421) > 0.5 ? -1 : 1;
+      const t = hash(deposit.rootX * 449 + i, deposit.rootY * 457, rng.seed + 3423) - 0.5;
+      const localX = t * targetWidth * 0.72;
+      const localY = edge * targetHeight * (0.22 + hash(i, deposit.rootY, rng.seed + 3425) * 0.34);
+      const center = stampLocalPoint(cx, cy, angle, localX, localY);
+      const lipAngle = angle + (edge < 0 ? -0.1 : 0.1) + (hash(i * 461, deposit.rootX, rng.seed + 3427) - 0.5) * 1.25;
+      const lipLength = targetWidth * (0.22 + hash(deposit.rootY, i * 463, rng.seed + 3429) * (isArtifact ? 0.34 : 0.28));
+      graphics.lineStyle(isArtifact ? 8.8 : 6.2, 0x010306, contactAlpha);
+      graphics.lineBetween(
+        center.x - Math.cos(lipAngle) * lipLength * 0.48 + 1.1,
+        center.y - Math.sin(lipAngle) * lipLength * 0.48 + 1.2,
+        center.x + Math.cos(lipAngle) * lipLength * 0.52 + 1.1,
+        center.y + Math.sin(lipAngle) * lipLength * 0.52 + 1.2,
+      );
+      graphics.lineStyle(isArtifact ? 4.1 : 2.65, i % 3 === 0 ? host.rim : host.mid, 0.9);
+      graphics.lineBetween(
+        center.x - Math.cos(lipAngle) * lipLength * 0.4,
+        center.y - Math.sin(lipAngle) * lipLength * 0.4,
+        center.x + Math.cos(lipAngle) * lipLength * 0.42,
+        center.y + Math.sin(lipAngle) * lipLength * 0.42,
+      );
+    }
+
+    const chips = isArtifact ? 9 : 7;
+    for (let i = 0; i < chips; i += 1) {
+      const theta = hash(i * 467, deposit.rootX, rng.seed + 3431) * Math.PI * 2;
+      const rx = targetWidth * (0.32 + hash(deposit.rootY, i, rng.seed + 3433) * 0.28);
+      const ry = targetHeight * (0.28 + hash(i, deposit.rootY, rng.seed + 3435) * 0.34);
+      const center = stampLocalPoint(cx, cy, angle, Math.cos(theta) * rx, Math.sin(theta) * ry);
+      const chipAngle = angle + theta * 0.35 + (hash(i, deposit.rootX, rng.seed + 3437) - 0.5) * 0.9;
+      const chipLong = 2.2 + hash(i * 479, deposit.rootY, rng.seed + 3439) * (isArtifact ? 5.6 : 4.2);
+      const chipShort = 1.4 + hash(deposit.rootX, i * 487, rng.seed + 3441) * (isArtifact ? 3 : 2.2);
+      drawOrePlate(graphics, center.x, center.y, chipLong, chipShort, chipAngle, i % 2 ? host.mid : host.dark, facet, isArtifact ? 0.68 : 0.58);
+    }
+
+    const upper = stampLocalPoint(cx, cy, angle, -targetWidth * 0.08, -targetHeight * 0.42);
+    drawJaggedRockCap(graphics, upper.x, upper.y, targetWidth * 0.36, Math.max(3, targetHeight * 0.16), angle + 0.05, deposit.rootX + 23, deposit.rootY + 29, host.dark, host.rim, -1);
+    graphics.lineStyle(1.1, glow, tile === 'ruinCore' || tile === 'alienAlloy' ? 0.2 : 0.1);
+    graphics.lineBetween(
+      cx - Math.cos(angle) * longRadius * 0.72,
+      cy - Math.sin(angle) * longRadius * 0.72,
+      cx + Math.cos(angle) * longRadius * 0.46,
+      cy + Math.sin(angle) * longRadius * 0.46,
+    );
+    const lower = stampLocalPoint(cx, cy, angle, targetWidth * 0.08, targetHeight * 0.46);
+    drawJaggedRockCap(graphics, lower.x, lower.y, targetWidth * 0.42, Math.max(3.4, targetHeight * 0.2), angle - 0.08, deposit.rootX - 19, deposit.rootY + 31, host.mid, host.rim, 1);
+  }
+
+function hostRockPaletteForDeposit(scene: DeepdiveScene, deposit: ReturnType<typeof oreDepositComponent>, tile: Tile) {
+    const candidates = [
+      { x: deposit.minX - 1, y: deposit.minY },
+      { x: deposit.maxX + 1, y: deposit.minY },
+      { x: deposit.minX, y: deposit.minY - 1 },
+      { x: deposit.maxX, y: deposit.maxY + 1 },
+      { x: deposit.rootX - 1, y: deposit.rootY + 1 },
+      { x: deposit.rootX + 1, y: deposit.rootY + 1 },
+    ];
+    const hostTile = candidates
+      .map((candidate) => scene.getTile(candidate.x, candidate.y))
+      .find((candidate) => candidate !== 'water' && candidate !== tile) ?? (deposit.maxY > WORLD_H * 0.7 ? 'sand' : 'stone');
+    const y = Math.max(0, deposit.rootY);
+    const actualGpt = isActualGptOreTile(tile);
+    const mid = actualGpt
+      ? hostTile === 'sand' ? 0x4c4938 : 0x31434a
+      : terrainBodyColor(hostTile, y);
+    const dark = hostTile === 'sand' ? 0x211d17 : 0x111a20;
+    const rim = actualGpt
+      ? hostTile === 'sand' ? 0x7a7354 : 0x60747d
+      : hostTile === 'sand' ? 0x5b513b : 0x26343b;
+    return { mid, dark, rim, shadow: 0x010306 };
+  }
+
+function drawActualGptContactSlot(
+  graphics: Phaser.GameObjects.Graphics,
+  tile: ActualGptOreTile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  targetWidth: number,
+  targetHeight: number,
+  angle: number,
+  shadow: number,
+  dark: number,
+) {
+    const artifact = tile === 'precursorEngine'
+      || tile === 'relic'
+      || tile === 'drownedIdol'
+      || tile === 'abyssalCrown'
+      || tile === 'alienAlloy'
+      || tile === 'ruinCore';
+    const profile = actualGptEmbeddingProfile(tile);
+    const points = orePocketPoints(
+      cx,
+      cy,
+      targetWidth * (artifact ? 0.46 : 0.43),
+      targetHeight * (artifact ? 0.34 : 0.32),
+      angle,
+      deposit.rootX + 71,
+      deposit.rootY - 79,
+      tile,
+    );
+    drawPocketShape(graphics, points, shadow, 0.2 + profile.contact * 0.2, 1.2, 1.5);
+    drawPocketShape(graphics, points, dark, 0.1 + profile.contact * 0.12, 0, 0);
+  }
+
+function drawActualGptTerrainCaps(
+  graphics: Phaser.GameObjects.Graphics,
+  tile: ActualGptOreTile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  targetWidth: number,
+  targetHeight: number,
+  angle: number,
+  hostMid: number,
+  hostDark: number,
+  hostRim: number,
+) {
+    const profile = actualGptEmbeddingProfile(tile);
+    const capCount = profile.capCount;
+    for (let i = 0; i < capCount; i += 1) {
+      const side = i % 2 === 0 ? -1 : 1;
+      const centerT = (i / Math.max(1, capCount - 1) - 0.5) * 0.92
+        + (hash(deposit.rootX * 541 + i, deposit.rootY, rng.seed + 3501) - 0.5) * 0.22;
+      const centerS = side * (0.26 + hash(i, deposit.rootY, rng.seed + 3503) * 0.28);
+      const center = stampLocalPoint(cx, cy, angle, centerT * targetWidth, centerS * targetHeight);
+      const long = targetWidth * (0.18 + hash(i * 547, deposit.rootX, rng.seed + 3505) * profile.capReach * 0.26);
+      const short = targetHeight * (0.13 + hash(deposit.rootY, i * 557, rng.seed + 3507) * 0.14);
+      const capAngle = angle + (hash(i * 563, deposit.rootY, rng.seed + 3509) - 0.5) * 0.86;
+      drawJaggedRockCap(graphics, center.x, center.y, long, short, capAngle, deposit.rootX + i * 3, deposit.rootY - i * 5, i % 3 ? hostMid : hostDark, hostRim, side);
+    }
+  }
+
+function drawActualGptCrossBites(
+  graphics: Phaser.GameObjects.Graphics,
+  tile: ActualGptOreTile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  targetWidth: number,
+  targetHeight: number,
+  angle: number,
+  hostMid: number,
+  hostDark: number,
+  hostRim: number,
+) {
+    const artifact = tile === 'precursorEngine'
+      || tile === 'relic'
+      || tile === 'drownedIdol'
+      || tile === 'abyssalCrown'
+      || tile === 'alienAlloy'
+      || tile === 'ruinCore';
+    const biteCount = artifact ? 5 : 3;
+    for (let i = 0; i < biteCount; i += 1) {
+      const side = i % 2 === 0 ? 1 : -1;
+      const t = (i / Math.max(1, biteCount - 1) - 0.5) * 0.82
+        + (hash(deposit.rootX + i * 601, deposit.rootY, rng.seed + 3591) - 0.5) * 0.16;
+      const s = side * (0.08 + hash(i, deposit.rootY, rng.seed + 3593) * 0.28);
+      const center = stampLocalPoint(cx, cy, angle, t * targetWidth, s * targetHeight);
+      const long = targetWidth * (artifact ? 0.18 : 0.12) * (0.82 + hash(i, deposit.rootX, rng.seed + 3595) * 0.5);
+      const short = targetHeight * (artifact ? 0.18 : 0.12) * (0.9 + hash(deposit.rootY, i, rng.seed + 3597) * 0.48);
+      drawJaggedRockCap(
+        graphics,
+        center.x,
+        center.y,
+        long,
+        short,
+        angle + (hash(i * 607, deposit.rootY, rng.seed + 3599) - 0.5) * 1.1,
+        deposit.rootX + i * 17,
+        deposit.rootY - i * 19,
+        i % 3 === 0 ? hostDark : hostMid,
+        hostRim,
+        side,
+      );
+    }
+  }
+
+function drawActualGptTargetedEmbedding(
+  graphics: Phaser.GameObjects.Graphics,
+  tile: ActualGptOreTile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  targetWidth: number,
+  targetHeight: number,
+  angle: number,
+  hostMid: number,
+  hostDark: number,
+  hostRim: number,
+  glow: number,
+) {
+    const lowerSide = tile === 'abyssalCrown' || tile === 'drownedIdol' || tile === 'relic' ? 1 : -1;
+    if (tile === 'abyssalCrown') {
+      const base = stampLocalPoint(cx, cy, angle, 0, targetHeight * 0.28);
+      drawJaggedRockCap(graphics, base.x, base.y, targetWidth * 0.54, targetHeight * 0.24, angle, deposit.rootX + 101, deposit.rootY + 103, hostMid, hostRim, 1);
+      for (let i = 0; i < 5; i += 1) {
+        const t = i / 4 - 0.5;
+        const tip = stampLocalPoint(cx, cy, angle, t * targetWidth * 0.58, -targetHeight * (0.12 + Math.abs(t) * 0.18));
+        drawOrePlate(graphics, tip.x, tip.y, targetWidth * 0.045, targetHeight * 0.11, angle + Math.PI * 0.5 + t * 0.35, hostDark, hostRim, 0.86);
+      }
+    } else if (tile === 'drownedIdol') {
+      const left = stampLocalPoint(cx, cy, angle, -targetWidth * 0.36, -targetHeight * 0.02);
+      const right = stampLocalPoint(cx, cy, angle, targetWidth * 0.36, targetHeight * 0.05);
+      drawJaggedRockCap(graphics, left.x, left.y, targetWidth * 0.18, targetHeight * 0.28, angle + Math.PI * 0.48, deposit.rootX + 109, deposit.rootY, hostDark, hostRim, -1);
+      drawJaggedRockCap(graphics, right.x, right.y, targetWidth * 0.2, targetHeight * 0.3, angle + Math.PI * 0.48, deposit.rootX - 113, deposit.rootY, hostMid, hostRim, 1);
+    } else if (tile === 'ruinCore') {
+      for (let i = 0; i < 6; i += 1) {
+        const crackAngle = angle + (i - 2.5) * 0.28;
+        const start = stampLocalPoint(cx, cy, angle, (hash(i, deposit.rootX, rng.seed + 3561) - 0.5) * targetWidth * 0.5, (hash(deposit.rootY, i, rng.seed + 3563) - 0.5) * targetHeight * 0.5);
+        graphics.lineStyle(2.5, 0x010306, 0.38);
+        graphics.lineBetween(start.x, start.y, start.x + Math.cos(crackAngle) * targetWidth * 0.28, start.y + Math.sin(crackAngle) * targetWidth * 0.28);
+        graphics.lineStyle(0.9, glow, 0.25);
+        graphics.lineBetween(start.x, start.y, start.x + Math.cos(crackAngle) * targetWidth * 0.2, start.y + Math.sin(crackAngle) * targetWidth * 0.2);
+      }
+    } else if (tile === 'precursorEngine') {
+      for (let i = 0; i < 5; i += 1) {
+        const t = i / 4 - 0.5;
+        const p = stampLocalPoint(cx, cy, angle, t * targetWidth * 0.68, (hash(i, deposit.rootY, rng.seed + 3571) - 0.5) * targetHeight * 0.5);
+        drawJaggedRockCap(graphics, p.x, p.y, targetWidth * 0.11, targetHeight * 0.15, angle + t * 0.7, deposit.rootX + i * 11, deposit.rootY - i * 13, i % 2 ? hostMid : hostDark, hostRim, i % 2 ? 1 : -1);
+      }
+    } else if (tile === 'alienAlloy') {
+      for (let i = 0; i < 5; i += 1) {
+        const t = hash(i, deposit.rootX, rng.seed + 3581) - 0.5;
+        const s = hash(deposit.rootY, i, rng.seed + 3583) - 0.5;
+        const p = stampLocalPoint(cx, cy, angle, t * targetWidth * 0.68, s * targetHeight * 0.62);
+        drawOrePlate(graphics, p.x, p.y, targetWidth * (0.08 + Math.abs(t) * 0.04), targetHeight * 0.065, angle + (hash(i, deposit.rootY, rng.seed + 3585) - 0.5) * 1.2, i % 2 ? hostMid : hostDark, hostRim, 0.8);
+      }
+    } else if (tile === 'relic') {
+      const shelf = stampLocalPoint(cx, cy, angle, -targetWidth * 0.04, targetHeight * 0.18);
+      drawJaggedRockCap(graphics, shelf.x, shelf.y, targetWidth * 0.46, targetHeight * 0.18, angle + 0.18, deposit.rootX + 127, deposit.rootY - 131, hostMid, hostRim, lowerSide);
+      graphics.lineStyle(1.1, glow, 0.22);
+      const a = stampLocalPoint(cx, cy, angle, -targetWidth * 0.22, -targetHeight * 0.08);
+      const b = stampLocalPoint(cx, cy, angle, targetWidth * 0.12, targetHeight * 0.12);
+      graphics.lineBetween(a.x, a.y, b.x, b.y);
+    }
+  }
+
+function drawJaggedRockCap(
+  graphics: Phaser.GameObjects.Graphics,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  seedX: number,
+  seedY: number,
+  color: number,
+  rim: number,
+  side: number,
+) {
+    const points: Array<{ x: number; y: number }> = [];
+    const count = 7;
+    for (let i = 0; i < count; i += 1) {
+      const t = i / (count - 1) - 0.5;
+      const bite = 0.76 + hash(seedX * 569 + i, seedY * 571 - i, rng.seed + 3511) * 0.34;
+      const localX = t * longRadius * 2 * bite;
+      const localY = side * shortRadius * (i === 0 || i === count - 1 ? 0.2 : 0.82 + hash(i, seedX, rng.seed + 3513) * 0.34);
+      points.push(stampLocalPoint(cx, cy, angle, localX, localY));
+    }
+    points.push(stampLocalPoint(cx, cy, angle, longRadius * 0.56, -side * shortRadius * 0.55));
+    points.push(stampLocalPoint(cx, cy, angle, -longRadius * 0.6, -side * shortRadius * 0.46));
+    drawPocketShape(graphics, points, 0x010306, 0.44, 1.2, 1.4);
+    drawPocketShape(graphics, points, color, 0.92, 0, 0);
+    graphics.lineStyle(1.2, rim, 0.46);
+    graphics.lineBetween(points[0].x, points[0].y, points[count - 1].x, points[count - 1].y);
+  }
+
+function drawStampPlate(
+  graphics: Phaser.GameObjects.Graphics,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  seedX: number,
+  seedY: number,
+  color: number,
+  facet: number,
+  alpha: number,
+) {
+    const points = orePocketPoints(cx, cy, longRadius, shortRadius, angle, seedX, seedY, 'quartz');
+    drawPocketShape(graphics, points, 0x010306, alpha * 0.82, 1.1, 1.4);
+    drawPocketShape(graphics, points, color, alpha, 0, 0);
+    graphics.lineStyle(1, facet, alpha * 0.42);
+    graphics.lineBetween(
+      cx - Math.cos(angle) * longRadius * 0.34,
+      cy - Math.sin(angle) * longRadius * 0.34,
+      cx + Math.cos(angle) * longRadius * 0.24,
+      cy + Math.sin(angle) * longRadius * 0.24,
+    );
+  }
+
+function drawCopperStampOre(
+  scene: DeepdiveScene,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+) {
+    const count = Math.min(22, 10 + deposit.cells.length * 2);
+    for (let i = 0; i < count; i += 1) {
+      const t = hash(deposit.rootX * 277 + i * 17, deposit.rootY * 281, rng.seed + 3001) - 0.5;
+      const s = hash(deposit.rootY * 283, deposit.rootX * 287 + i * 19, rng.seed + 3003) - 0.5;
+      const center = stampLocalPoint(cx, cy, angle, t * longRadius * 1.34, s * shortRadius * 1.16);
+      const seamAngle = angle + (hash(i * 29, deposit.rootX, rng.seed + 3005) - 0.5) * 1.35;
+      const fleckLength = longRadius * (0.08 + hash(i * 31, deposit.rootY, rng.seed + 3007) * 0.18);
+      const fleckWidth = 1.2 + hash(deposit.rootY, i * 37, rng.seed + 3009) * 2.1;
+      const useOxide = i % 5 === 0 || hash(i, deposit.rootX, rng.seed + 3011) > 0.78;
+      drawStampPlate(
+        scene.terrainEdges,
+        center.x,
+        center.y,
+        fleckLength,
+        fleckWidth,
+        seamAngle,
+        deposit.rootX + i,
+        deposit.rootY - i,
+        useOxide ? 0x47724f : (i % 3 === 0 ? facet : color),
+        useOxide ? 0x8ed29b : glow,
+        useOxide ? 0.24 : 0.32,
+      );
+    }
+    for (let i = 0; i < 7; i += 1) {
+      const center = stampLocalPoint(
+        cx,
+        cy,
+        angle,
+        (hash(i * 41, deposit.rootX, rng.seed + 3021) - 0.5) * longRadius * 1.12,
+        (hash(deposit.rootY, i * 43, rng.seed + 3023) - 0.5) * shortRadius * 1.22,
+      );
+      scene.terrainEdges.fillStyle(i % 2 ? 0x315f45 : 0x6b3f22, i % 2 ? 0.24 : 0.34);
+      scene.terrainEdges.fillEllipse(center.x, center.y, 3.2 + hash(i, deposit.rootX, rng.seed + 3025) * 5.4, 1.4 + hash(deposit.rootY, i, rng.seed + 3027) * 3.1);
+    }
+    scene.terrainEdges.lineStyle(1.1, glow, 0.12);
+    scene.terrainEdges.lineBetween(
+      cx - Math.cos(angle) * longRadius * 0.82,
+      cy - Math.sin(angle) * longRadius * 0.82,
+      cx + Math.cos(angle) * longRadius * 0.42,
+      cy + Math.sin(angle) * longRadius * 0.42,
+    );
+    scene.terrainEdges.fillStyle(dark, 0.18);
+    scene.terrainEdges.fillEllipse(cx, cy, longRadius * 0.92, shortRadius * 0.42);
+  }
+
+function drawRubyStampOre(
+  scene: DeepdiveScene,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+) {
+    const slivers = Math.min(9, 4 + deposit.cells.length);
+    for (let i = 0; i < slivers; i += 1) {
+      const center = stampLocalPoint(
+        cx,
+        cy,
+        angle,
+        (i / Math.max(1, slivers - 1) - 0.5) * longRadius * 1.38 + (hash(i, deposit.rootX, rng.seed + 3101) - 0.5) * longRadius * 0.24,
+        (hash(deposit.rootY, i, rng.seed + 3103) - 0.5) * shortRadius * 1.18,
+      );
+      const sliverAngle = angle + (hash(i * 47, deposit.rootX, rng.seed + 3105) - 0.5) * 0.74;
+      const length = longRadius * (0.24 + hash(i * 53, deposit.rootY, rng.seed + 3107) * 0.42);
+      const width = shortRadius * (0.12 + hash(deposit.rootX, i * 59, rng.seed + 3109) * 0.18);
+      const p1 = stampLocalPoint(center.x, center.y, sliverAngle, -length * 0.58, -width * 0.22);
+      const p2 = stampLocalPoint(center.x, center.y, sliverAngle, -length * 0.12, -width);
+      const p3 = stampLocalPoint(center.x, center.y, sliverAngle, length * 0.58, -width * 0.12);
+      const p4 = stampLocalPoint(center.x, center.y, sliverAngle, length * 0.22, width * 0.82);
+      const p5 = stampLocalPoint(center.x, center.y, sliverAngle, -length * 0.48, width * 0.46);
+      drawPocketShape(scene.terrainEdges, [p1, p2, p3, p4, p5], 0x010306, 0.42, 1, 1.2);
+      drawPocketShape(scene.terrainEdges, [p1, p2, p3, p4, p5], i % 3 === 0 ? facet : color, 0.34, 0, 0);
+      scene.terrainEdges.lineStyle(1.1, glow, i % 3 === 0 ? 0.34 : 0.22);
+      scene.terrainEdges.lineBetween(p1.x, p1.y, p3.x, p3.y);
+    }
+    for (let i = 0; i < 5; i += 1) {
+      const offset = (hash(i, deposit.rootY, rng.seed + 3121) - 0.5) * shortRadius * 1.44;
+      const start = stampLocalPoint(cx, cy, angle, -longRadius * (0.65 + hash(i, deposit.rootX, rng.seed + 3123) * 0.22), offset);
+      const end = stampLocalPoint(cx, cy, angle, longRadius * (0.48 + hash(deposit.rootY, i, rng.seed + 3125) * 0.28), offset + (hash(i * 61, deposit.rootX, rng.seed + 3127) - 0.5) * shortRadius * 0.62);
+      scene.terrainEdges.lineStyle(3.8, 0x010306, 0.34);
+      scene.terrainEdges.lineBetween(start.x + 1, start.y + 1, end.x + 1, end.y + 1);
+      scene.terrainEdges.lineStyle(1.1, i % 2 ? color : glow, 0.26);
+      scene.terrainEdges.lineBetween(start.x, start.y, end.x, end.y);
+    }
+    scene.terrainEdges.fillStyle(dark, 0.18);
+    scene.terrainEdges.fillEllipse(cx, cy, longRadius * 0.88, shortRadius * 0.34);
+  }
+
+function drawPrecursorEngineStampOre(
+  scene: DeepdiveScene,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+) {
+    const radius = Math.min(longRadius * 0.64, TILE * 0.98);
+    const arcCount = 3 + Math.min(2, deposit.cells.length);
+    for (let i = 0; i < arcCount; i += 1) {
+      const arcRadius = radius * (0.44 + i * 0.18 + hash(i, deposit.rootX, rng.seed + 3201) * 0.1);
+      const start = angle + hash(i * 67, deposit.rootY, rng.seed + 3203) * Math.PI * 1.2 - Math.PI * 0.72;
+      const end = start + Math.PI * (0.34 + hash(deposit.rootX, i * 71, rng.seed + 3205) * 0.42);
+      scene.terrainEdges.lineStyle(5.6, 0x010306, 0.38);
+      scene.terrainEdges.beginPath();
+      scene.terrainEdges.arc(cx + 1.2, cy + 1.4, arcRadius, start, end, false);
+      scene.terrainEdges.strokePath();
+      scene.terrainEdges.lineStyle(i % 2 ? 2.2 : 2.8, i % 2 ? glow : color, i % 2 ? 0.28 : 0.34);
+      scene.terrainEdges.beginPath();
+      scene.terrainEdges.arc(cx, cy, arcRadius, start, end, false);
+      scene.terrainEdges.strokePath();
+    }
+    for (let i = 0; i < 7; i += 1) {
+      if (hash(i, deposit.rootX, rng.seed + 3211) < 0.28) continue;
+      const spoke = angle + i * Math.PI * 0.31 + (hash(i * 73, deposit.rootY, rng.seed + 3213) - 0.5) * 0.24;
+      const inner = radius * (0.16 + hash(deposit.rootX, i, rng.seed + 3215) * 0.18);
+      const outer = radius * (0.64 + hash(i, deposit.rootY, rng.seed + 3217) * 0.32);
+      scene.terrainEdges.lineStyle(3.4, 0x010306, 0.36);
+      scene.terrainEdges.lineBetween(cx + Math.cos(spoke) * inner + 1, cy + Math.sin(spoke) * inner + 1, cx + Math.cos(spoke) * outer + 1, cy + Math.sin(spoke) * outer + 1);
+      scene.terrainEdges.lineStyle(1.35, i % 2 ? facet : glow, 0.34);
+      scene.terrainEdges.lineBetween(cx + Math.cos(spoke) * inner, cy + Math.sin(spoke) * inner, cx + Math.cos(spoke) * outer, cy + Math.sin(spoke) * outer);
+    }
+    for (let i = 0; i < 6; i += 1) {
+      const chipAngle = angle + i * Math.PI * 0.42 + hash(i, deposit.rootX, rng.seed + 3221) * 0.22;
+      const center = stampLocalPoint(cx, cy, chipAngle, radius * (0.58 + hash(i, deposit.rootY, rng.seed + 3223) * 0.34), (hash(deposit.rootX, i, rng.seed + 3225) - 0.5) * shortRadius * 0.28);
+      drawStampPlate(
+        scene.terrainEdges,
+        center.x,
+        center.y,
+        4.8 + hash(i, deposit.rootX, rng.seed + 3227) * 7.2,
+        1.8 + hash(deposit.rootY, i, rng.seed + 3229) * 2.4,
+        chipAngle + Math.PI * 0.5,
+        deposit.rootX - i,
+        deposit.rootY + i,
+        i % 2 ? color : dark,
+        glow,
+        i % 2 ? 0.34 : 0.28,
+      );
+    }
+    scene.terrainEdges.fillStyle(0x11383a, 0.16);
+    scene.terrainEdges.fillEllipse(cx, cy, radius * 1.08, shortRadius * 0.58);
+    scene.terrainEdges.fillStyle(facet, 0.18);
+    scene.terrainEdges.fillCircle(cx - Math.cos(angle) * radius * 0.12, cy - Math.sin(angle) * radius * 0.12, radius * 0.13);
+  }
+
+function drawCommonStrataOre(scene: DeepdiveScene, tile: Tile, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, facet: number, glow: number, dark: number) {
+    const strata = tile === 'copper' ? 9 : tile === 'cobalt' ? 7 : tile === 'ruby' ? 5 : 6;
+    const widthScale = tile === 'quartz' ? 0.64 : tile === 'ruby' ? 0.36 : tile === 'cobalt' ? 0.48 : 0.78;
+    for (let i = 0; i < strata; i += 1) {
+      const t = (i / Math.max(1, strata - 1) - 0.5) * 1.5;
+      const offset = t * shortRadius;
+      const length = longRadius * (0.42 + hash(i * 19, Math.round(cx), rng.seed + 1701) * widthScale);
+      const wiggle = (hash(Math.round(cy), i * 23, rng.seed + 1703) - 0.5) * shortRadius * 0.35;
+      const px = cx - Math.sin(angle) * offset + Math.cos(angle) * wiggle;
+      const py = cy + Math.cos(angle) * offset + Math.sin(angle) * wiggle;
+      const alpha = tile === 'copper' ? 0.22 : tile === 'cobalt' ? 0.18 : tile === 'ruby' ? 0.26 : tile === 'quartz' ? 0.32 : 0.28;
+      const lineColor = tile === 'quartz' && i % 3 === 0 ? facet : i % 2 === 0 ? color : dark;
+      scene.terrainEdges.lineStyle(tile === 'copper' ? 1.2 : tile === 'quartz' ? 2.4 : 1.6, lineColor, alpha);
+      scene.terrainEdges.lineBetween(
+        px - Math.cos(angle) * length * 0.5,
+        py - Math.sin(angle) * length * 0.5,
+        px + Math.cos(angle) * length * 0.5,
+        py + Math.sin(angle) * length * 0.5,
+      );
+    }
+    if (tile === 'cobalt') {
+      scene.terrainEdges.fillStyle(glow, 0.115);
+      scene.terrainEdges.fillEllipse(cx, cy, longRadius * 1.18, shortRadius * 1.28);
+    }
+    const facetCount = tile === 'copper' ? 3 : tile === 'ruby' ? 4 : tile === 'quartz' ? 5 : 4;
+    for (let i = 0; i < facetCount; i += 1) {
+      const t = hash(i * 31, Math.round(cx), rng.seed + 1711) - 0.5;
+      const side = hash(Math.round(cy), i * 37, rng.seed + 1713) - 0.5;
+      const px = cx + Math.cos(angle) * t * longRadius * 1.15 - Math.sin(angle) * side * shortRadius * 0.96;
+      const py = cy + Math.sin(angle) * t * longRadius * 1.15 + Math.cos(angle) * side * shortRadius * 0.96;
+      drawOrePlate(scene.terrainEdges, px, py, tile === 'ruby' ? 6 : 8, tile === 'quartz' ? 3.8 : 2.8, angle + (hash(i, Math.round(cx), rng.seed + 1717) - 0.5) * 0.75, tile === 'copper' ? dark : color, facet, tile === 'quartz' ? 0.46 : 0.34);
+    }
+  }
+
+function drawShapeFirstEmbeddedOre(
+  scene: DeepdiveScene,
+  tile: Tile,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+) {
+    const graphics = scene.terrainEdges;
+    const host = hostRockPaletteForDeposit(scene, deposit, tile);
+    const readColor = shapeFirstOreReadColor(tile, color);
+    const readFacet = shapeFirstOreReadFacet(tile, facet);
+    const readGlow = shapeFirstOreReadGlow(tile, glow);
+    const readDark = shapeFirstOreReadDark(tile, dark);
+    const bodyLong = longRadius * 0.98;
+    const bodyShort = shortRadius * 1.06;
+    const body = orePocketPoints(cx, cy, bodyLong, bodyShort, angle, deposit.rootX + 211, deposit.rootY - 223, tile);
+    drawPocketShape(graphics, body, 0x010306, 0.76, 1.15, 1.35);
+    drawPocketShape(graphics, body, host.mid, 0.62, 0.15, 0.05);
+    drawPocketShape(graphics, body, host.dark, 0.5, 0, 0);
+    graphics.lineStyle(1.3, host.rim, 0.38);
+    for (let i = 0; i < body.length; i += 2) {
+      const a = body[i];
+      const b = body[(i + 1) % body.length];
+      graphics.lineBetween(a.x, a.y, b.x, b.y);
+    }
+
+    drawOreContactShadows(graphics, deposit, cx, cy, bodyLong, bodyShort, angle, tile);
+    drawDeepDiveOreInclusion(graphics, deposit, cx, cy, bodyLong, bodyShort, angle, readColor, readFacet, readGlow, readDark, tile);
+
+    const capCount = 3;
+    for (let i = 0; i < capCount; i += 1) {
+      const side = i % 2 === 0 ? -1 : 1;
+      const t = (i / Math.max(1, capCount - 1) - 0.5) * 0.72
+        + (hash(deposit.rootX * 641 + i, deposit.rootY, rng.seed + 3901) - 0.5) * 0.1;
+      const s = side * (0.42 + hash(i, deposit.rootY, rng.seed + 3903) * 0.1);
+      const center = stampLocalPoint(cx, cy, angle, t * bodyLong, s * bodyShort);
+      const lipLong = bodyLong * (0.12 + hash(i * 647, deposit.rootX, rng.seed + 3905) * 0.06);
+      const lipShort = bodyShort * (0.16 + hash(deposit.rootY, i * 653, rng.seed + 3907) * 0.08);
+      drawJaggedRockCap(
+        graphics,
+        center.x,
+        center.y,
+        lipLong,
+        lipShort,
+        angle + (hash(i * 659, deposit.rootY, rng.seed + 3909) - 0.5) * 0.92,
+        deposit.rootX + i * 5,
+        deposit.rootY - i * 7,
+        i % 3 === 0 ? host.dark : host.mid,
+        host.rim,
+        side,
+      );
+    }
+  }
+
+function shapeFirstOreReadColor(tile: Tile, fallback: number) {
+    if (tile === 'copper') return 0xff9a35;
+    if (tile === 'quartz') return 0xeaffff;
+    if (tile === 'ruby') return 0xff2d58;
+    if (tile === 'cobalt') return 0x55b8ff;
+    if (tile === 'sunstone') return 0xffc33c;
+    if (tile === 'relic') return 0xb7ff5d;
+    if (tile === 'alienAlloy') return 0x43ffd0;
+    if (tile === 'drownedIdol') return 0xc9fff4;
+    if (tile === 'precursorEngine') return 0xffd15d;
+    if (tile === 'abyssalCrown') return 0xf879ff;
+    if (tile === 'ruinCore') return 0xf0d5ff;
+    return fallback;
+  }
+
+function shapeFirstOreReadFacet(tile: Tile, fallback: number) {
+    if (tile === 'copper') return 0xffd37d;
+    if (tile === 'quartz') return 0xffffff;
+    if (tile === 'ruby') return 0xff9aaf;
+    if (tile === 'cobalt') return 0xc6ecff;
+    if (tile === 'sunstone') return 0xfff09c;
+    if (tile === 'relic') return 0xe6ff9a;
+    if (tile === 'alienAlloy') return 0xc4ffef;
+    if (tile === 'drownedIdol') return 0xffffff;
+    if (tile === 'precursorEngine') return 0x83fff0;
+    if (tile === 'abyssalCrown') return 0xffc8ff;
+    if (tile === 'ruinCore') return 0xffffff;
+    return fallback;
+  }
+
+function shapeFirstOreReadGlow(tile: Tile, fallback: number) {
+    if (tile === 'copper') return 0xffc15f;
+    if (tile === 'quartz') return 0xf7ffff;
+    if (tile === 'ruby') return 0xff6b86;
+    if (tile === 'cobalt') return 0x8ff4ff;
+    if (tile === 'sunstone') return 0xffe26d;
+    if (tile === 'relic') return 0xd0ff78;
+    if (tile === 'alienAlloy') return 0x73fbd3;
+    if (tile === 'drownedIdol') return 0xdffff8;
+    if (tile === 'precursorEngine') return 0x63e6d0;
+    if (tile === 'abyssalCrown') return 0xff9cff;
+    if (tile === 'ruinCore') return 0xe084ff;
+    return fallback;
+  }
+
+function shapeFirstOreReadDark(tile: Tile, fallback: number) {
+    if (tile === 'copper') return 0x321106;
+    if (tile === 'quartz') return 0x14363a;
+    if (tile === 'ruby') return 0x2c0613;
+    if (tile === 'cobalt') return 0x06142d;
+    if (tile === 'sunstone') return 0x3c2205;
+    if (tile === 'relic') return 0x20350d;
+    if (tile === 'alienAlloy') return 0x07372d;
+    if (tile === 'drownedIdol') return 0x173333;
+    if (tile === 'precursorEngine') return 0x2b240c;
+    if (tile === 'abyssalCrown') return 0x351039;
+    if (tile === 'ruinCore') return 0x2d163a;
+    return fallback;
+  }
+
+function drawDeepDiveOreInclusion(
+  graphics: Phaser.GameObjects.Graphics,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+  tile: Tile,
+) {
+    const count = tile === 'ruby' ? 4 : tile === 'copper' ? 5 : 5;
+    for (let i = 0; i < count; i += 1) {
+      const band = i % 3;
+      const row = Math.floor(i / 3);
+      const t = (band - 1) * 0.34
+        + (row ? 0.14 : 0)
+        + (hash(deposit.rootX + i * 811, deposit.rootY, rng.seed + 3971) - 0.5) * 0.18;
+      const s = (row - 0.35) * 0.48
+        + (hash(deposit.rootY, deposit.rootX + i * 823, rng.seed + 3973) - 0.5) * 0.34;
+      const center = stampLocalPoint(cx, cy, angle, t * longRadius, s * shortRadius);
+      const crystalAngle = angle + (band - 1) * 0.62 + (hash(i * 827, deposit.rootX, rng.seed + 3975) - 0.5) * 0.72;
+      const crystalLong = longRadius * (0.18 + hash(i, deposit.rootY, rng.seed + 3977) * 0.14);
+      const crystalShort = Math.max(1.8, shortRadius * (tile === 'ruby' ? 0.34 : 0.3));
+      const fill = i === 0 ? facet : i % 2 === 0 ? glow : color;
+      drawSharpOreSliver(graphics, center.x, center.y, crystalLong, crystalShort, crystalAngle, fill, facet, glow, dark, i);
+      if (i % 2 === 1) {
+        const chip = stampLocalPoint(center.x, center.y, crystalAngle, crystalLong * 0.14, crystalShort * 0.78);
+        drawOreCrystalChip(graphics, chip.x, chip.y, crystalLong * 0.62, crystalShort * 0.82, crystalAngle - 0.78, i % 3 === 0 ? facet : color, glow, dark, i);
+      }
+    }
+    graphics.lineStyle(1.15, glow, tile === 'ruby' ? 0.46 : 0.38);
+    for (let i = 0; i < 2; i += 1) {
+      const start = stampLocalPoint(cx, cy, angle, (i ? 0.18 : -0.36) * longRadius, (i ? 0.22 : -0.28) * shortRadius);
+      const end = stampLocalPoint(start.x, start.y, angle + (i ? 0.95 : -0.72), longRadius * 0.28, 0);
+      graphics.lineBetween(start.x, start.y, end.x, end.y);
+    }
+  }
+
+function drawSharpOreSliver(graphics: Phaser.GameObjects.Graphics, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, facet: number, glow: number, dark: number, seed: number) {
+    const tail = 0.6 + hash(seed * 829, Math.round(cx), rng.seed + 3981) * 0.18;
+    const nose = 0.54 + hash(Math.round(cy), seed * 839, rng.seed + 3983) * 0.16;
+    const p1 = stampLocalPoint(cx, cy, angle, -longRadius * tail, shortRadius * 0.2);
+    const p2 = stampLocalPoint(cx, cy, angle, -longRadius * 0.22, -shortRadius * 0.95);
+    const p3 = stampLocalPoint(cx, cy, angle, longRadius * nose, -shortRadius * 0.18);
+    const p4 = stampLocalPoint(cx, cy, angle, longRadius * 0.12, shortRadius * 0.74);
+    drawPocketShape(graphics, [p1, p2, p3, p4], 0x010306, 0.88, 1.05, 1.25);
+    drawPocketShape(graphics, [p1, p2, p3, p4], dark, 0.46, 0.42, 0.52);
+    drawPocketShape(graphics, [p1, p2, p3, p4], color, 0.98, 0, 0);
+    graphics.lineStyle(1.08, facet, 0.92);
+    graphics.lineBetween(p2.x, p2.y, p4.x, p4.y);
+    graphics.lineStyle(0.82, glow, 0.64);
+    graphics.lineBetween(p1.x, p1.y, p3.x, p3.y);
+  }
+
+function drawOreCrystalChip(graphics: Phaser.GameObjects.Graphics, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, glow: number, dark: number, seed: number) {
+    const p1 = stampLocalPoint(cx, cy, angle, -longRadius * 0.48, shortRadius * 0.28);
+    const p2 = stampLocalPoint(cx, cy, angle, longRadius * (0.1 + hash(seed, Math.round(cx), rng.seed + 3991) * 0.16), -shortRadius * 0.88);
+    const p3 = stampLocalPoint(cx, cy, angle, longRadius * 0.54, shortRadius * 0.3);
+    drawPocketShape(graphics, [p1, p2, p3], 0x010306, 0.82, 0.8, 1);
+    drawPocketShape(graphics, [p1, p2, p3], dark, 0.42, 0.24, 0.28);
+    drawPocketShape(graphics, [p1, p2, p3], color, 0.94, 0, 0);
+    graphics.lineStyle(0.9, glow, 0.54);
+    graphics.lineBetween(p1.x, p1.y, p2.x, p2.y);
+  }
+
+function drawOreChunkNodule(graphics: Phaser.GameObjects.Graphics, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, facet: number, glow: number, dark: number) {
+    const points = orePocketPoints(cx, cy, longRadius, shortRadius, angle, Math.round(cx), Math.round(cy), 'copper');
+    drawPocketShape(graphics, points, 0x010306, 0.74, 1.5, 1.8);
+    drawPocketShape(graphics, points, dark, 0.38, 0.8, 1);
+    drawPocketShape(graphics, points, color, 0.92, 0, 0);
+    graphics.lineStyle(Math.max(1.6, shortRadius * 0.22), facet, 0.72);
+    graphics.lineBetween(cx - Math.cos(angle) * longRadius * 0.38, cy - Math.sin(angle) * longRadius * 0.38, cx + Math.cos(angle) * longRadius * 0.28, cy + Math.sin(angle) * longRadius * 0.28);
+    graphics.fillStyle(glow, 0.58);
+    graphics.fillEllipse(cx - Math.sin(angle) * shortRadius * 0.18, cy + Math.cos(angle) * shortRadius * 0.18, longRadius * 0.28, shortRadius * 0.22);
+  }
+
+function drawOreCrystalNodule(graphics: Phaser.GameObjects.Graphics, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, facet: number, glow: number, dark: number) {
+    const p1 = stampLocalPoint(cx, cy, angle, -longRadius * 0.55, shortRadius * 0.28);
+    const p2 = stampLocalPoint(cx, cy, angle, -longRadius * 0.18, -shortRadius * 0.72);
+    const p3 = stampLocalPoint(cx, cy, angle, longRadius * 0.56, -shortRadius * 0.22);
+    const p4 = stampLocalPoint(cx, cy, angle, longRadius * 0.26, shortRadius * 0.7);
+    drawPocketShape(graphics, [p1, p2, p3, p4], 0x010306, 0.78, 1.4, 1.8);
+    drawPocketShape(graphics, [p1, p2, p3, p4], dark, 0.36, 0.8, 1);
+    drawPocketShape(graphics, [p1, p2, p3, p4], color, 0.92, 0, 0);
+    graphics.lineStyle(1.35, facet, 0.74);
+    graphics.lineBetween(p2.x, p2.y, p4.x, p4.y);
+    graphics.lineStyle(0.85, glow, 0.48);
+    graphics.lineBetween(p1.x, p1.y, p3.x, p3.y);
+  }
+
+function drawOreCoreNodule(graphics: Phaser.GameObjects.Graphics, cx: number, cy: number, radius: number, angle: number, color: number, facet: number, glow: number, dark: number) {
+    graphics.fillStyle(0x010306, 0.76);
+    graphics.fillCircle(cx + 1.4, cy + 1.8, radius * 1.08);
+    graphics.fillStyle(dark, 0.72);
+    graphics.fillCircle(cx + 0.7, cy + 0.8, radius * 0.96);
+    graphics.fillStyle(color, 0.9);
+    graphics.fillCircle(cx, cy, radius * 0.78);
+    graphics.lineStyle(2.4, facet, 0.74);
+    graphics.strokeCircle(cx, cy, radius * 0.46);
+    graphics.lineStyle(1.5, glow, 0.68);
+    graphics.lineBetween(cx - Math.cos(angle) * radius * 0.48, cy - Math.sin(angle) * radius * 0.48, cx + Math.cos(angle) * radius * 0.42, cy + Math.sin(angle) * radius * 0.42);
+  }
+
+function drawOreContactShadows(graphics: Phaser.GameObjects.Graphics, deposit: ReturnType<typeof oreDepositComponent>, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, tile: Tile) {
+    for (let i = 0; i < 4; i += 1) {
+      const side = i % 2 === 0 ? -1 : 1;
+      const t = (hash(deposit.rootX + i * 673, deposit.rootY, rng.seed + 3911) - 0.5) * 1.36;
+      const center = stampLocalPoint(cx, cy, angle, t * longRadius, side * shortRadius * (0.54 + hash(i, deposit.rootY, rng.seed + 3913) * 0.34));
+      const shadowAngle = angle + (hash(i * 677, deposit.rootX, rng.seed + 3915) - 0.5) * 0.72;
+      const length = longRadius * (0.2 + hash(deposit.rootY, i * 683, rng.seed + 3917) * 0.34);
+      graphics.lineStyle(tile === 'ruinCore' ? 7.2 : 6.8, 0x010306, tile === 'ruinCore' ? 0.62 : 0.68);
+      graphics.lineBetween(
+        center.x - Math.cos(shadowAngle) * length * 0.5,
+        center.y - Math.sin(shadowAngle) * length * 0.5,
+        center.x + Math.cos(shadowAngle) * length * 0.5,
+        center.y + Math.sin(shadowAngle) * length * 0.5,
+      );
+    }
+  }
+
+function drawShapeFirstCopper(
+  graphics: Phaser.GameObjects.Graphics,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+) {
+    const seamCount = 4;
+    for (let i = 0; i < seamCount; i += 1) {
+      const t = (i / Math.max(1, seamCount - 1) - 0.5) * 1.32
+        + (hash(deposit.rootX * 691 + i, deposit.rootY, rng.seed + 3921) - 0.5) * 0.18;
+      const s = (hash(deposit.rootY, deposit.rootX + i * 701, rng.seed + 3923) - 0.5) * 0.62;
+      const center = stampLocalPoint(cx, cy, angle, t * longRadius, s * shortRadius);
+      const seamAngle = angle + (hash(i * 709, deposit.rootX, rng.seed + 3925) - 0.5) * 0.42;
+      const length = longRadius * (0.48 + hash(deposit.rootY, i * 719, rng.seed + 3927) * 0.2);
+      graphics.lineStyle(7.2, 0x130805, 0.74);
+      graphics.lineBetween(center.x - Math.cos(seamAngle) * length * 0.5, center.y - Math.sin(seamAngle) * length * 0.5, center.x + Math.cos(seamAngle) * length * 0.5, center.y + Math.sin(seamAngle) * length * 0.5);
+      graphics.lineStyle(i % 2 === 0 ? 2.8 : 4.2, i % 2 === 0 ? glow : color, i % 2 === 0 ? 0.68 : 0.86);
+      graphics.lineBetween(center.x - Math.cos(seamAngle) * length * 0.38, center.y - Math.sin(seamAngle) * length * 0.38, center.x + Math.cos(seamAngle) * length * 0.36, center.y + Math.sin(seamAngle) * length * 0.36);
+    }
+    for (let i = 0; i < 2; i += 1) {
+      const p = stampLocalPoint(cx, cy, angle, (hash(i, deposit.rootX, rng.seed + 3931) - 0.5) * longRadius * 1.2, (hash(deposit.rootY, i, rng.seed + 3933) - 0.5) * shortRadius);
+      graphics.fillStyle(i % 2 ? dark : facet, i % 2 ? 0.48 : 0.5);
+      graphics.fillEllipse(p.x, p.y, 10 + hash(i, deposit.rootX, rng.seed + 3935) * 7.2, 3.6 + hash(deposit.rootY, i, rng.seed + 3937) * 3.2);
+    }
+  }
+
+function drawShapeFirstRuby(
+  graphics: Phaser.GameObjects.Graphics,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+) {
+    for (let i = 0; i < 3; i += 1) {
+      const offset = (i / 2 - 0.5) * shortRadius * 0.92 + (hash(i, deposit.rootX, rng.seed + 3941) - 0.5) * shortRadius * 0.12;
+      const center = stampLocalPoint(cx, cy, angle, (hash(deposit.rootY, i, rng.seed + 3943) - 0.5) * longRadius * 0.18, offset);
+      const sliverAngle = angle + (hash(i * 727, deposit.rootX, rng.seed + 3945) - 0.5) * 0.28;
+      const length = longRadius * (0.96 + hash(deposit.rootY, i * 733, rng.seed + 3947) * 0.18);
+      const width = shortRadius * (0.32 + hash(i, deposit.rootY, rng.seed + 3949) * 0.14);
+      const p1 = stampLocalPoint(center.x, center.y, sliverAngle, -length * 0.56, -width * 0.22);
+      const p2 = stampLocalPoint(center.x, center.y, sliverAngle, -length * 0.14, -width);
+      const p3 = stampLocalPoint(center.x, center.y, sliverAngle, length * 0.56, -width * 0.1);
+      const p4 = stampLocalPoint(center.x, center.y, sliverAngle, length * 0.18, width * 0.82);
+      const p5 = stampLocalPoint(center.x, center.y, sliverAngle, -length * 0.48, width * 0.48);
+      drawPocketShape(graphics, [p1, p2, p3, p4, p5], 0x130309, 0.8, 1.1, 1.3);
+      drawPocketShape(graphics, [p1, p2, p3, p4, p5], i === 1 ? facet : color, i === 1 ? 0.92 : 0.82, 0, 0);
+      graphics.lineStyle(2.4, glow, i === 1 ? 0.76 : 0.56);
+      graphics.lineBetween(p2.x, p2.y, p4.x, p4.y);
+    }
+  }
+
+function drawShapeFirstRuinCore(
+  graphics: Phaser.GameObjects.Graphics,
+  deposit: ReturnType<typeof oreDepositComponent>,
+  cx: number,
+  cy: number,
+  longRadius: number,
+  shortRadius: number,
+  angle: number,
+  color: number,
+  facet: number,
+  glow: number,
+  dark: number,
+  host: ReturnType<typeof hostRockPaletteForDeposit>,
+) {
+    const radius = Math.min(longRadius * 0.86, TILE * 1.56);
+    graphics.lineStyle(10.2, 0x010306, 0.7);
+    graphics.strokeCircle(cx + 1.3, cy + 1.5, radius);
+    graphics.lineStyle(5.6, dark, 0.9);
+    graphics.strokeCircle(cx, cy, radius * 0.94);
+    graphics.lineStyle(3.2, color, 0.86);
+    graphics.strokeCircle(cx, cy, radius * 0.62);
+    graphics.lineStyle(2.2, facet, 0.76);
+    graphics.strokeCircle(cx, cy, radius * 0.3);
+    for (let i = 0; i < 6; i += 1) {
+      const spoke = angle + i * Math.PI / 3 + (hash(i, deposit.rootX, rng.seed + 3951) - 0.5) * 0.12;
+      const inner = radius * (0.28 + hash(deposit.rootY, i, rng.seed + 3953) * 0.14);
+      const outer = radius * (0.72 + hash(i, deposit.rootY, rng.seed + 3955) * 0.22);
+      graphics.lineStyle(4.2, 0x010306, 0.62);
+      graphics.lineBetween(cx + Math.cos(spoke) * inner + 1, cy + Math.sin(spoke) * inner + 1, cx + Math.cos(spoke) * outer + 1, cy + Math.sin(spoke) * outer + 1);
+      graphics.lineStyle(2, i % 2 === 0 ? glow : facet, i % 2 === 0 ? 0.66 : 0.5);
+      graphics.lineBetween(cx + Math.cos(spoke) * inner, cy + Math.sin(spoke) * inner, cx + Math.cos(spoke) * outer, cy + Math.sin(spoke) * outer);
+    }
+    for (let i = 0; i < 3; i += 1) {
+      const t = i / 4 - 0.5;
+      const shard = stampLocalPoint(cx, cy, angle, t * longRadius * 1.08, (hash(i, deposit.rootY, rng.seed + 3961) - 0.5) * shortRadius * 0.72);
+      drawJaggedRockCap(graphics, shard.x, shard.y, longRadius * 0.12, shortRadius * 0.22, angle + t * 0.9, deposit.rootX + i * 11, deposit.rootY - i * 13, i % 2 ? host.mid : host.dark, host.rim, i % 2 ? 1 : -1);
+    }
+    const shelf = stampLocalPoint(cx, cy, angle, 0, shortRadius * 0.58);
+    drawJaggedRockCap(graphics, shelf.x, shelf.y, longRadius * 0.58, shortRadius * 0.24, angle + 0.12, deposit.rootX + 137, deposit.rootY - 139, host.mid, host.rim, 1);
+  }
+
+function drawBuriedArtifactOre(scene: DeepdiveScene, tile: Tile, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, facet: number, glow: number, dark: number) {
+    const prongs = tile === 'abyssalCrown' ? 5 : tile === 'drownedIdol' ? 3 : 2;
+    const arcRadius = Math.min(longRadius * 0.72, TILE * 1.22);
+    scene.terrainEdges.lineStyle(4.8, 0x010306, 0.32);
+    scene.terrainEdges.strokeEllipse(cx + 1.5, cy + 1.5, arcRadius * 1.35, shortRadius * 1.12);
+    scene.terrainEdges.lineStyle(2.4, color, 0.34);
+    scene.terrainEdges.strokeEllipse(cx, cy, arcRadius * 1.25, shortRadius * 0.95);
+    for (let i = 0; i < prongs; i += 1) {
+      const t = i / (prongs - 1) - 0.5;
+      const px = cx + Math.cos(angle) * t * arcRadius - Math.sin(angle) * -shortRadius * 0.18;
+      const py = cy + Math.sin(angle) * t * arcRadius + Math.cos(angle) * -shortRadius * 0.18;
+      const length = tile === 'abyssalCrown' ? shortRadius * (0.76 + Math.abs(t) * 0.55) : shortRadius * 0.62;
+      scene.terrainEdges.lineStyle(3.2, 0x010306, 0.36);
+      scene.terrainEdges.lineBetween(px + 1, py + 1, px - Math.sin(angle) * length + 1, py + Math.cos(angle) * length + 1);
+      scene.terrainEdges.lineStyle(1.5, facet, 0.4);
+      scene.terrainEdges.lineBetween(px, py, px - Math.sin(angle) * length, py + Math.cos(angle) * length);
+    }
+    if (tile === 'drownedIdol') {
+      scene.terrainEdges.fillStyle(facet, 0.42);
+      scene.terrainEdges.fillCircle(cx - Math.cos(angle) * 4, cy - Math.sin(angle) * 4, 1.5);
+      scene.terrainEdges.fillCircle(cx + Math.cos(angle) * 5, cy + Math.sin(angle) * 5, 1.5);
+      scene.terrainEdges.lineStyle(1, glow, 0.32);
+      scene.terrainEdges.lineBetween(cx - Math.sin(angle) * 5, cy + Math.cos(angle) * 5, cx + Math.sin(angle) * 5, cy - Math.cos(angle) * 5);
+    } else if (tile === 'relic') {
+      scene.terrainEdges.lineStyle(1.3, glow, 0.34);
+      scene.terrainEdges.lineBetween(cx - Math.cos(angle) * 13, cy - Math.sin(angle) * 13, cx + Math.cos(angle) * 8, cy + Math.sin(angle) * 8);
+      scene.terrainEdges.lineBetween(cx - Math.sin(angle) * 8, cy + Math.cos(angle) * 8, cx + Math.sin(angle) * 10, cy - Math.cos(angle) * 10);
+    } else {
+      scene.terrainEdges.fillStyle(glow, 0.12);
+      scene.terrainEdges.fillEllipse(cx, cy, arcRadius * 0.62, shortRadius * 0.42);
+    }
+    scene.terrainEdges.fillStyle(dark, 0.16);
+    scene.terrainEdges.fillEllipse(cx - Math.sin(angle) * shortRadius * 0.5, cy + Math.cos(angle) * shortRadius * 0.5, arcRadius * 0.88, shortRadius * 0.42);
+  }
+
+function drawEngineOre(scene: DeepdiveScene, tile: Tile, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, facet: number, glow: number, dark: number) {
+    const radius = Math.min(longRadius * 0.62, TILE * (tile === 'ruinCore' ? 1.18 : 0.92));
+    scene.terrainEdges.lineStyle(5.2, 0x010306, 0.36);
+    scene.terrainEdges.strokeCircle(cx + 1.4, cy + 1.6, radius);
+    scene.terrainEdges.lineStyle(2.2, color, tile === 'ruinCore' ? 0.4 : 0.3);
+    scene.terrainEdges.strokeCircle(cx, cy, radius * 0.92);
+    scene.terrainEdges.strokeCircle(cx, cy, radius * 0.42);
+    for (let i = 0; i < 8; i += 1) {
+      const spoke = angle + i * Math.PI * 0.25;
+      const inner = radius * (tile === 'ruinCore' ? 0.34 : 0.42);
+      const outer = radius * (0.74 + hash(i, Math.round(cx), rng.seed + 1801) * 0.16);
+      scene.terrainEdges.lineStyle(2.6, 0x010306, 0.28);
+      scene.terrainEdges.lineBetween(cx + Math.cos(spoke) * inner + 1, cy + Math.sin(spoke) * inner + 1, cx + Math.cos(spoke) * outer + 1, cy + Math.sin(spoke) * outer + 1);
+      scene.terrainEdges.lineStyle(1.1, i % 2 === 0 ? glow : facet, tile === 'ruinCore' ? 0.44 : 0.28);
+      scene.terrainEdges.lineBetween(cx + Math.cos(spoke) * inner, cy + Math.sin(spoke) * inner, cx + Math.cos(spoke) * outer, cy + Math.sin(spoke) * outer);
+    }
+    for (let i = 0; i < 5; i += 1) {
+      const cable = angle + (i - 2) * 0.34;
+      scene.terrainEdges.lineStyle(1.4, glow, tile === 'ruinCore' ? 0.26 : 0.18);
+      scene.terrainEdges.lineBetween(
+        cx + Math.cos(cable) * radius * 0.5,
+        cy + Math.sin(cable) * radius * 0.5,
+        cx + Math.cos(cable) * longRadius * 1.05,
+        cy + Math.sin(cable) * longRadius * 1.05,
+      );
+    }
+    scene.terrainEdges.fillStyle(tile === 'ruinCore' ? glow : dark, tile === 'ruinCore' ? 0.2 : 0.14);
+    scene.terrainEdges.fillCircle(cx, cy, radius * 0.24);
+  }
+
+function drawAlienAlloyOre(scene: DeepdiveScene, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, facet: number, glow: number) {
+    for (let i = 0; i < 4; i += 1) {
+      const offset = (i - 1.5) * shortRadius * 0.45;
+      const px = cx - Math.sin(angle) * offset + Math.cos(angle) * (hash(i, Math.round(cx), rng.seed + 1901) - 0.5) * longRadius * 0.35;
+      const py = cy + Math.cos(angle) * offset + Math.sin(angle) * (hash(Math.round(cy), i, rng.seed + 1903) - 0.5) * longRadius * 0.35;
+      drawOrePlate(scene.terrainEdges, px, py, longRadius * 0.36, shortRadius * 0.24, angle + (hash(i * 5, Math.round(cx), rng.seed + 1905) - 0.5) * 0.42, color, facet, 0.42);
+    }
+    scene.terrainEdges.lineStyle(1.3, glow, 0.48);
+    scene.terrainEdges.lineBetween(cx - Math.cos(angle) * longRadius * 0.9, cy - Math.sin(angle) * longRadius * 0.9, cx + Math.cos(angle) * longRadius * 0.88, cy + Math.sin(angle) * longRadius * 0.88);
+  }
+
+function drawOrePlate(graphics: Phaser.GameObjects.Graphics, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, color: number, facet: number, alpha: number) {
+    const points = orePocketPoints(cx, cy, longRadius, shortRadius, angle, Math.round(cx), Math.round(cy), 'quartz');
+    drawPocketShape(graphics, points, 0x010306, alpha * 0.55, 0.9, 1.2);
+    drawPocketShape(graphics, points, color, alpha, 0, 0);
+    graphics.lineStyle(1, facet, alpha * 0.72);
+    graphics.lineBetween(cx - Math.cos(angle) * longRadius * 0.46, cy - Math.sin(angle) * longRadius * 0.46, cx + Math.cos(angle) * longRadius * 0.32, cy + Math.sin(angle) * longRadius * 0.32);
+  }
+
+function drawHostRockOcclusion(scene: DeepdiveScene, deposit: ReturnType<typeof oreDepositComponent>, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, tile: Tile) {
+    const actualGptTile = isActualGptOreTile(tile);
+    const lips = actualGptTile ? Math.min(4, Math.max(2, deposit.cells.length)) : Math.min(7, Math.max(3, deposit.cells.length + 2));
+    const graphics = actualGptTile ? scene.oreOverburden : scene.terrainEdges;
+    for (let i = 0; i < lips; i += 1) {
+      const t = hash(i * 43, deposit.rootX * 47, rng.seed + 2001) - 0.5;
+      const side = (hash(deposit.rootY * 53, i * 59, rng.seed + 2003) > 0.5 ? -1 : 1) * (0.4 + hash(i, deposit.rootY, rng.seed + 2005) * 0.5);
+      const px = cx + Math.cos(angle) * t * longRadius * (actualGptTile ? 1.08 : 1.35) - Math.sin(angle) * side * shortRadius;
+      const py = cy + Math.sin(angle) * t * longRadius * (actualGptTile ? 1.08 : 1.35) + Math.cos(angle) * side * shortRadius;
+      const lipLength = longRadius * ((actualGptTile ? 0.16 : 0.22) + hash(i * 61, deposit.rootX, rng.seed + 2007) * (actualGptTile ? 0.22 : 0.34));
+      const lipAngle = angle + (hash(i * 67, deposit.rootY, rng.seed + 2009) - 0.5) * 1.1;
+      graphics.lineStyle(actualGptTile ? 2.8 : 4.8, 0x010306, actualGptTile ? 0.34 : 0.38);
+      graphics.lineBetween(px - Math.cos(lipAngle) * lipLength * 0.5, py - Math.sin(lipAngle) * lipLength * 0.5, px + Math.cos(lipAngle) * lipLength * 0.5, py + Math.sin(lipAngle) * lipLength * 0.5);
+      graphics.lineStyle(actualGptTile ? 1.15 : 2, tile === 'sunstone' ? 0x3c3426 : 0x18242a, actualGptTile ? 0.4 : 0.46);
+      graphics.lineBetween(px - Math.cos(lipAngle) * lipLength * 0.42, py - Math.sin(lipAngle) * lipLength * 0.42, px + Math.cos(lipAngle) * lipLength * 0.42, py + Math.sin(lipAngle) * lipLength * 0.42);
+    }
+    for (let i = 0; i < (actualGptTile ? 4 : 6); i += 1) {
+      const chipAngle = hash(i * 71, deposit.rootX, rng.seed + 2011) * Math.PI * 2;
+      const r = shortRadius * (0.28 + hash(deposit.rootY, i * 73, rng.seed + 2013) * (actualGptTile ? 0.7 : 1.05));
+      const px = cx + Math.cos(chipAngle) * r + Math.cos(angle) * (hash(i, deposit.rootY, rng.seed + 2015) - 0.5) * longRadius * (actualGptTile ? 0.72 : 1);
+      const py = cy + Math.sin(chipAngle) * r + Math.sin(angle) * (hash(deposit.rootX, i, rng.seed + 2017) - 0.5) * longRadius * (actualGptTile ? 0.72 : 1);
+      graphics.fillStyle(0x111a20, 0.55);
+      graphics.fillCircle(px, py, (actualGptTile ? 0.7 : 1.2) + hash(i, deposit.rootX, rng.seed + 2019) * (actualGptTile ? 0.85 : 1.4));
+    }
+  }
+
+function drawOreDepositGlint(scene: DeepdiveScene, deposit: ReturnType<typeof oreDepositComponent>, cx: number, cy: number, longRadius: number, shortRadius: number, angle: number, glow: number) {
+    if (hash(deposit.rootX * 211, deposit.rootY * 223, rng.seed + 2101) < 0.34) return;
+    const t = hash(deposit.rootX * 227, deposit.rootY * 229, rng.seed + 2103) - 0.5;
+    const s = hash(deposit.rootY * 233, deposit.rootX * 239, rng.seed + 2105) - 0.5;
+    const px = cx + Math.cos(angle) * t * longRadius * 0.7 - Math.sin(angle) * s * shortRadius * 0.6;
+    const py = cy + Math.sin(angle) * t * longRadius * 0.7 + Math.cos(angle) * s * shortRadius * 0.6;
+    scene.terrainEdges.fillStyle(0xf4ffff, 0.58);
+    scene.terrainEdges.fillCircle(px, py, 1.05);
+    scene.terrainEdges.lineStyle(1, glow, 0.24);
+    scene.terrainEdges.lineBetween(px - 2.4, py, px + 2.4, py);
   }
 
 function drawOreBrush(scene: DeepdiveScene, x: number, y: number, tile: Tile, activeKeys: Set<string>) {
@@ -1337,9 +2734,34 @@ function orePixelColor(tile: Tile) {
     if (tile === 'ruby') return 0xff4766;
     if (tile === 'cobalt') return 0x6fa0ff;
     if (tile === 'sunstone') return 0xffd76a;
+    if (tile === 'precursorEngine') return 0xb58c4a;
     if (tile === 'alienAlloy') return 0x80ffd4;
     if (tile === 'ruinCore') return 0xd397ff;
     return 0xb9f27c;
+  }
+
+function oreShadowColor(tile: Tile) {
+    if (tile === 'copper') return 0x482516;
+    if (tile === 'quartz') return 0x315b5e;
+    if (tile === 'ruby') return 0x4d1021;
+    if (tile === 'cobalt') return 0x17305d;
+    if (tile === 'sunstone') return 0x5b3a16;
+    if (tile === 'precursorEngine') return 0x132d31;
+    if (tile === 'alienAlloy') return 0x174c44;
+    if (tile === 'ruinCore') return 0x442159;
+    return 0x263f1e;
+  }
+
+function oreFacetColor(tile: Tile) {
+    if (tile === 'copper') return 0xffbc74;
+    if (tile === 'quartz') return 0xffffff;
+    if (tile === 'ruby') return 0xff8a9d;
+    if (tile === 'cobalt') return 0xa9d9ff;
+    if (tile === 'sunstone') return 0xffef9f;
+    if (tile === 'precursorEngine') return 0x79d8ca;
+    if (tile === 'alienAlloy') return 0xb5ffe7;
+    if (tile === 'ruinCore') return 0xf2b6ff;
+    return 0xd4ff8c;
   }
 
 function oreGlowColor(tile: Tile) {
@@ -1348,6 +2770,7 @@ function oreGlowColor(tile: Tile) {
     if (tile === 'ruby') return 0xff5e78;
     if (tile === 'cobalt') return 0x82d9ff;
     if (tile === 'sunstone') return 0xffdd74;
+    if (tile === 'precursorEngine') return 0x63e6d0;
     if (tile === 'alienAlloy') return 0x80ffd4;
     if (tile === 'ruinCore') return 0xe084ff;
     return orePixelColor(tile);

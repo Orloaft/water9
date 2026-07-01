@@ -30,6 +30,7 @@ export class DeepdiveScene extends Phaser.Scene {
   parallaxBackdrop!: Phaser.GameObjects.Graphics;
   terrain!: Phaser.GameObjects.Graphics;
   terrainEdges!: Phaser.GameObjects.Graphics;
+  oreOverburden!: Phaser.GameObjects.Graphics;
   articulatedBridges!: Phaser.GameObjects.Graphics;
   actors!: Phaser.GameObjects.Graphics;
   darkness!: Phaser.GameObjects.Graphics;
@@ -51,6 +52,8 @@ export class DeepdiveScene extends Phaser.Scene {
   tileSprites: Phaser.GameObjects.Image[] = [];
   terrainBrushSprites: Phaser.GameObjects.Image[] = [];
   terrainBrushSpritesByKey = new Map<string, Phaser.GameObjects.Image>();
+  actualGptOreSpritesByKey = new Map<string, Phaser.GameObjects.Image>();
+  actualGptOreMasksByKey = new Map<string, { graphics: Phaser.GameObjects.Graphics; mask: Phaser.Display.Masks.GeometryMask }>();
   environmentSprites: Phaser.GameObjects.Image[] = [];
   environmentProps: EnvironmentProp[] = [];
   fish: Fish[] = [];
@@ -131,6 +134,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.parallaxBackdrop = this.add.graphics().setDepth(-7.5);
     this.terrain = this.add.graphics().setDepth(0);
     this.terrainEdges = this.add.graphics().setDepth(0.82);
+    this.oreOverburden = this.add.graphics().setDepth(0.84);
     this.bargeSprite = this.add.image(WORLD_W * TILE * 0.5, SURFACE_Y + 24, 'barge-platform')
       .setDepth(2.6)
       .setOrigin(0.5, 0);

@@ -6,6 +6,17 @@ import { defineConfig, type Plugin } from 'vite';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 
+const generatedWatchIgnoreGlobs = [
+  '**/.desktop-build/**',
+  '**/.vite/**',
+  '**/.cache/**',
+  '**/coverage/**',
+  '**/dist/**',
+  '**/playwright-report/**',
+  '**/test-results/**',
+  '**/tools/scratch/**',
+];
+
 const generatedPipelineArtifactPatterns = [
   /\.articulated\.json$/i,
   /(?:^|-)source(?:-|\.|$)/i,
@@ -98,5 +109,10 @@ function playerPublicAssets(): Plugin {
 
 export default defineConfig({
   publicDir: false,
+  server: {
+    watch: {
+      ignored: generatedWatchIgnoreGlobs,
+    },
+  },
   plugins: [playerPublicAssets()],
 });
