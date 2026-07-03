@@ -551,6 +551,41 @@ function drawTerrainMaskEdgeFray(scene: DeepdiveScene, minSx: number, maxSx: num
         const palette = terrainAccentPalette();
         const rimColor = tile === 'sand' ? palette.sandRim : palette.rim;
         const seed = hash(sx * 83, sy * 89, rng.seed + 5303);
+        if (state.biome === 2) {
+          const contourAlpha = tile === 'sand' ? 0.16 : 0.19;
+          const contourJitter = (hash(sx, sy, rng.seed + 5347) - 0.5) * TERRAIN_MASK_CELL * 0.18;
+          scene.terrainEdges.lineStyle(2, rimColor, contourAlpha);
+          if (north) {
+            const y = wy + TERRAIN_MASK_CELL * 0.12 + contourJitter;
+            scene.terrainEdges.lineBetween(wx + TERRAIN_MASK_CELL * 0.12, y, wx + TERRAIN_MASK_CELL * 0.88, y);
+          }
+          if (south) {
+            const y = wy + TERRAIN_MASK_CELL * 0.88 + contourJitter;
+            scene.terrainEdges.lineBetween(wx + TERRAIN_MASK_CELL * 0.12, y, wx + TERRAIN_MASK_CELL * 0.88, y);
+          }
+          if (west) {
+            const x = wx + TERRAIN_MASK_CELL * 0.12 + contourJitter;
+            scene.terrainEdges.lineBetween(x, wy + TERRAIN_MASK_CELL * 0.12, x, wy + TERRAIN_MASK_CELL * 0.88);
+          }
+          if (east) {
+            const x = wx + TERRAIN_MASK_CELL * 0.88 + contourJitter;
+            scene.terrainEdges.lineBetween(x, wy + TERRAIN_MASK_CELL * 0.12, x, wy + TERRAIN_MASK_CELL * 0.88);
+          }
+          if (seed > 0.93) {
+            const horizontal = north || south;
+            scene.terrainEdges.fillStyle(seed > 0.982 ? palette.glow : rimColor, seed > 0.982 ? 0.11 : 0.075);
+            scene.terrainEdges.fillEllipse(
+              horizontal
+                ? wx + TERRAIN_MASK_CELL * (0.34 + hash(sx, sy, rng.seed + 5351) * 0.32)
+                : wx + (west ? TERRAIN_MASK_CELL * 0.14 : TERRAIN_MASK_CELL * 0.86),
+              horizontal
+                ? wy + (north ? TERRAIN_MASK_CELL * 0.14 : TERRAIN_MASK_CELL * 0.86)
+                : wy + TERRAIN_MASK_CELL * (0.34 + hash(sy, sx, rng.seed + 5353) * 0.32),
+              horizontal ? TERRAIN_MASK_CELL * 0.58 : TERRAIN_MASK_CELL * 0.24,
+              horizontal ? TERRAIN_MASK_CELL * 0.24 : TERRAIN_MASK_CELL * 0.58,
+            );
+          }
+        }
         if (seed > 0.975) {
           const highlight = seed > 0.9 ? palette.glow : rimColor;
           scene.terrainEdges.lineStyle(1, highlight, 0.07);
@@ -1060,11 +1095,12 @@ function drawTerrainDetail(scene: DeepdiveScene, x: number, y: number, tile: Til
     const wx = x * TILE;
     const wy = y * TILE;
     const exposed = exposedToWater(scene, x, y);
+    const brine = state.biome === 2;
     const patch = hash(Math.floor(x / 3) * 17, Math.floor(y / 3) * 19, rng.seed);
     const fleck = hash(x * 29, y * 31, rng.seed);
     if ((exposed ? fleck > 0.68 : fleck > 0.92) && fracture <= 0) {
-      const tone = patch > 0.6 ? 0x314650 : 0x0b1820;
-      const alpha = exposed ? (patch > 0.6 ? 0.025 : 0.04) : 0.018;
+      const tone = brine ? (patch > 0.6 ? 0x3f3328 : 0x120d0a) : (patch > 0.6 ? 0x314650 : 0x0b1820);
+      const alpha = (exposed ? (patch > 0.6 ? 0.025 : 0.04) : 0.018) * (brine ? 0.72 : 1);
       const px = wx + 3 + hash(x, y, rng.seed + 3) * 16;
       const py = wy + 3 + hash(y, x, rng.seed + 5) * 16;
       scene.terrain.fillStyle(tone, alpha);
@@ -1075,7 +1111,7 @@ function drawTerrainDetail(scene: DeepdiveScene, x: number, y: number, tile: Til
       const cy = wy + TILE * (0.52 + (hash(y, x, rng.seed + 31) - 0.5) * 0.16);
       scene.terrain.fillStyle(0x050b10, 0.18 + fracture * 0.24);
       scene.terrain.fillEllipse(cx, cy, TILE * (0.38 + fracture * 0.42), TILE * (0.22 + fracture * 0.26));
-      scene.terrain.lineStyle(2, 0xbbe8e3, 0.14 + fracture * 0.28);
+      scene.terrain.lineStyle(2, brine ? 0xf2b06d : 0xbbe8e3, brine ? 0.12 + fracture * 0.18 : 0.14 + fracture * 0.28);
       for (let i = 0; i < 4; i += 1) {
         const angle = hash(x * 17 + i, y * 19 - i, rng.seed + 33) * Math.PI * 2;
         const inner = TILE * (0.08 + fracture * 0.06);
@@ -2856,15 +2892,15 @@ export function drawSpecialRooms(this: DeepdiveScene, camera: Phaser.Cameras.Sce
   }
 
 export function drawHazards(this: DeepdiveScene, ) {
-    const s = ENTITY_SCALE;
     for (const hazard of this.hazards) {
       const pulse = (Math.sin(hazard.phase * 1.8) + 1) * 0.5;
       const frame = Math.floor((hazard.phase * 7) % 4);
       const normalX = hazard.surface?.normalX ?? 0;
       const normalY = hazard.surface?.normalY ?? -1;
       const rotation = Math.atan2(normalY, normalX) + Math.PI / 2;
-      const plumeX = hazard.x + normalX * 4 * s;
-      const plumeY = hazard.y + normalY * 4 * s;
+      const damageRadius = hazard.radius * 1.45;
+      const plumeX = hazard.x + normalX * hazard.radius * 1.35;
+      const plumeY = hazard.y + normalY * hazard.radius * 1.35;
       hazard.sprite
         ?.setTexture(`vent-steam-${frame}`)
         .setVisible(true)
@@ -2873,8 +2909,12 @@ export function drawHazards(this: DeepdiveScene, ) {
         .setRotation(rotation);
       fitImageHeight(hazard.sprite, hazard.radius * 3.2);
       if (pulse > 0.45) {
-        this.actors.lineStyle(1, 0xff8a5c, pulse * 0.32);
-        this.actors.strokeEllipse(plumeX, plumeY, hazard.radius * 1.25, hazard.radius * 0.34);
+        this.actors.fillStyle(0xff8a5c, 0.08 + pulse * 0.08);
+        this.actors.fillEllipse(plumeX, plumeY, damageRadius * 1.18, damageRadius * 0.56);
+        this.actors.lineStyle(2, 0xffc06d, 0.18 + pulse * 0.18);
+        this.actors.strokeEllipse(plumeX, plumeY, damageRadius * 1.24, damageRadius * 0.62);
+        this.actors.lineStyle(2, 0xfff0c8, 0.22 + pulse * 0.24);
+        this.actors.lineBetween(hazard.x, hazard.y, plumeX + normalX * damageRadius * 0.5, plumeY + normalY * damageRadius * 0.5);
       }
     }
   }
