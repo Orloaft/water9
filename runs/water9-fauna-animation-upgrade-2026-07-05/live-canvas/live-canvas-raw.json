@@ -1,0 +1,5959 @@
+{
+  "schema": "water9/live-canvas-capture@1",
+  "baseUrl": "http://127.0.0.1:5181/",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "capturedAt": "2026-07-05T21:33:02.988Z",
+  "scenarios": [
+    {
+      "id": "surface-shallow-exp",
+      "biome": 1,
+      "depths": [
+        120,
+        620,
+        1260
+      ],
+      "targets": [
+        "Prism Bell Jelly",
+        "Nacre Thorn Clam",
+        "Aurora Fin Damselfish",
+        "Pearl Eye Flounder",
+        "Kelp Arrow Squid"
+      ]
+    },
+    {
+      "id": "mid-cutoff-exp",
+      "biome": 2,
+      "depths": [
+        760,
+        1120,
+        1540
+      ],
+      "targets": [
+        "Saffron Paddle Cuttle",
+        "Glass Helm Nautilus",
+        "Lumen Brow Barreleye",
+        "Ashveil Butterflyfish",
+        "Cinder Vent Clingfish",
+        "Velvet Glass Cuttle"
+      ]
+    },
+    {
+      "id": "deep-exp",
+      "biome": 3,
+      "depths": [
+        820,
+        1320,
+        1860
+      ],
+      "targets": [
+        "Snowcap Snailfish",
+        "Moonspot Drumfish",
+        "Rustjaw Blenny",
+        "Starless Lantern Eel",
+        "Bigfin Squid"
+      ]
+    },
+    {
+      "id": "abyss-cutoff-exp",
+      "biome": 4,
+      "depths": [
+        900,
+        1580,
+        2180
+      ],
+      "targets": [
+        "Cathedral Fin Ribbonfish",
+        "Brineglass Snailfish",
+        "Anchorfin Eel",
+        "Cinder Maw Dragonfish",
+        "Sable Razorfish"
+      ]
+    }
+  ],
+  "route": [
+    {
+      "scenario": "surface-shallow-exp",
+      "biome": 1,
+      "requestedDepth": 120,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 120,
+        "depthMeters": 120,
+        "tileX": 52,
+        "tileY": 24,
+        "localWaterRatio": 1
+      }
+    },
+    {
+      "scenario": "surface-shallow-exp",
+      "biome": 1,
+      "requestedDepth": 620,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 620,
+        "depthMeters": 618,
+        "tileX": 32,
+        "tileY": 107,
+        "localWaterRatio": 0.593
+      }
+    },
+    {
+      "scenario": "surface-shallow-exp",
+      "biome": 1,
+      "requestedDepth": 1260,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1260,
+        "depthMeters": 672,
+        "tileX": 26,
+        "tileY": 116,
+        "localWaterRatio": 0.218
+      }
+    },
+    {
+      "scenario": "mid-cutoff-exp",
+      "biome": 2,
+      "requestedDepth": 760,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 760,
+        "depthMeters": 408,
+        "tileX": 46,
+        "tileY": 72,
+        "localWaterRatio": 0.288
+      }
+    },
+    {
+      "scenario": "mid-cutoff-exp",
+      "biome": 2,
+      "requestedDepth": 1120,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1120,
+        "depthMeters": 744,
+        "tileX": 3,
+        "tileY": 128,
+        "localWaterRatio": 0.235
+      }
+    },
+    {
+      "scenario": "mid-cutoff-exp",
+      "biome": 2,
+      "requestedDepth": 1540,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1540,
+        "depthMeters": 744,
+        "tileX": 3,
+        "tileY": 128,
+        "localWaterRatio": 0.235
+      }
+    },
+    {
+      "scenario": "deep-exp",
+      "biome": 3,
+      "requestedDepth": 820,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 820,
+        "depthMeters": 618,
+        "tileX": 56,
+        "tileY": 107,
+        "localWaterRatio": 0.231
+      }
+    },
+    {
+      "scenario": "deep-exp",
+      "biome": 3,
+      "requestedDepth": 1320,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1320,
+        "depthMeters": 654,
+        "tileX": 81,
+        "tileY": 113,
+        "localWaterRatio": 0.214
+      }
+    },
+    {
+      "scenario": "deep-exp",
+      "biome": 3,
+      "requestedDepth": 1860,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1660,
+        "depthMeters": 666,
+        "tileX": 98,
+        "tileY": 115,
+        "localWaterRatio": 0.22
+      }
+    },
+    {
+      "scenario": "abyss-cutoff-exp",
+      "biome": 4,
+      "requestedDepth": 900,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 900,
+        "depthMeters": 558,
+        "tileX": 14,
+        "tileY": 97,
+        "localWaterRatio": 0.349
+      }
+    },
+    {
+      "scenario": "abyss-cutoff-exp",
+      "biome": 4,
+      "requestedDepth": 1580,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1580,
+        "depthMeters": 714,
+        "tileX": 16,
+        "tileY": 123,
+        "localWaterRatio": 0.153
+      }
+    },
+    {
+      "scenario": "abyss-cutoff-exp",
+      "biome": 4,
+      "requestedDepth": 2180,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1660,
+        "depthMeters": 714,
+        "tileX": 16,
+        "tileY": 123,
+        "localWaterRatio": 0.153
+      }
+    }
+  ],
+  "captures": [
+    {
+      "label": "surface-shallow-exp-d120",
+      "frameIndex": 0,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 120,
+      "stateDepth": 120,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1102,
+        "y": 480,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1276,
+        "y": 588,
+        "vx": 91,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Lantern Fry",
+          "x": 1434.744,
+          "y": 713.318,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 31,
+          "maxHp": 31,
+          "assetKey": "fauna-shallow-lantern-fry",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1231.1527999999998,
+          "screenY": 863.2766,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d120",
+      "frameIndex": 1,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 120,
+      "stateDepth": 120,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1198,
+        "y": 480,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1371,
+        "y": 588,
+        "vx": 151,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Comb Jelly",
+          "x": 1528.146,
+          "y": 589.183,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1221.5402,
+          "screenY": 403.9771,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Lantern Fry",
+          "x": 1364.894,
+          "y": 719.736,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 31,
+          "maxHp": 31,
+          "assetKey": "fauna-shallow-lantern-fry",
+          "scanned": false,
+          "dead": false,
+          "screenX": 617.5078000000001,
+          "screenY": 887.0232,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d120",
+      "frameIndex": 2,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 120,
+      "stateDepth": 120,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1316,
+        "y": 480,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1489,
+        "y": 588,
+        "vx": 151,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Comb Jelly",
+          "x": 1536.06,
+          "y": 601.029,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 814.2219999999999,
+          "screenY": 447.8073,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Lantern Fry",
+          "x": 1301.927,
+          "y": 710.133,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 31,
+          "maxHp": 31,
+          "assetKey": "fauna-shallow-lantern-fry",
+          "scanned": false,
+          "dead": false,
+          "screenX": -52.070100000000345,
+          "screenY": 851.4921000000002,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d120",
+      "frameIndex": 3,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 120,
+      "stateDepth": 120,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1396,
+        "y": 480,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1570,
+        "y": 588,
+        "vx": 151,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Comb Jelly",
+          "x": 1542.095,
+          "y": 610.827,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 540.5515000000001,
+          "screenY": 484.0599,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d120",
+      "frameIndex": 4,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 120,
+      "stateDepth": 120,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1534,
+        "y": 480,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1708,
+        "y": 588,
+        "vx": 151,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Comb Jelly",
+          "x": 1533.979,
+          "y": 627.509,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": -0.07769999999984521,
+          "screenY": 545.7833,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Comb Jelly",
+          "x": 1899.385,
+          "y": 671.603,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1351.9245,
+          "screenY": 708.9310999999999,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Snapping Shrimp",
+          "x": 1875.122,
+          "y": 632.528,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.04,
+          "hp": 29,
+          "maxHp": 29,
+          "assetKey": "fauna-shallow-snap-shrimp",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1262.1514000000004,
+          "screenY": 564.3536000000001,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Snapping Shrimp",
+          "x": 1577.449,
+          "y": 459.369,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.04,
+          "hp": 29,
+          "maxHp": 29,
+          "assetKey": "fauna-shallow-snap-shrimp",
+          "scanned": false,
+          "dead": false,
+          "screenX": 160.76130000000026,
+          "screenY": -76.3346999999999,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Snapping Shrimp",
+          "x": 1860.706,
+          "y": 677.506,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.04,
+          "hp": 29,
+          "maxHp": 29,
+          "assetKey": "fauna-shallow-snap-shrimp",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1208.8121999999996,
+          "screenY": 730.7721999999999,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 5,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d120",
+      "frameIndex": 5,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 120,
+      "stateDepth": 120,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1697,
+        "y": 480,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1870,
+        "y": 588,
+        "vx": 151,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Comb Jelly",
+          "x": 1877.87,
+          "y": 658.401,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 669.2189999999996,
+          "screenY": 660.0836999999999,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Comb Jelly",
+          "x": 1927.492,
+          "y": 663.577,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 852.8204,
+          "screenY": 679.2349,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Snapping Shrimp",
+          "x": 1912.475,
+          "y": 620.406,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.04,
+          "hp": 29,
+          "maxHp": 29,
+          "assetKey": "fauna-shallow-snap-shrimp",
+          "scanned": false,
+          "dead": false,
+          "screenX": 797.2574999999997,
+          "screenY": 519.5021999999998,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Snapping Shrimp",
+          "x": 1858.379,
+          "y": 633.155,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.04,
+          "hp": 29,
+          "maxHp": 29,
+          "assetKey": "fauna-shallow-snap-shrimp",
+          "scanned": false,
+          "dead": false,
+          "screenX": 597.1022999999997,
+          "screenY": 566.6734999999999,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 4,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d120",
+      "frameIndex": 6,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 120,
+      "stateDepth": 120,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1830,
+        "y": 480,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2004,
+        "y": 588,
+        "vx": 151,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Comb Jelly",
+          "x": 1863.757,
+          "y": 654.326,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 124.90090000000023,
+          "screenY": 645.0062000000001,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Comb Jelly",
+          "x": 1952.263,
+          "y": 665.843,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 452.37309999999974,
+          "screenY": 687.6190999999999,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Snapping Shrimp",
+          "x": 1937.583,
+          "y": 648.925,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.04,
+          "hp": 29,
+          "maxHp": 29,
+          "assetKey": "fauna-shallow-snap-shrimp",
+          "scanned": false,
+          "dead": false,
+          "screenX": 398.05710000000033,
+          "screenY": 625.0224999999998,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Snapping Shrimp",
+          "x": 1861.984,
+          "y": 635.981,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.04,
+          "hp": 29,
+          "maxHp": 29,
+          "assetKey": "fauna-shallow-snap-shrimp",
+          "scanned": false,
+          "dead": false,
+          "screenX": 118.34079999999972,
+          "screenY": 577.1297,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 4,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d120",
+      "frameIndex": 7,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 120,
+      "stateDepth": 120,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d120-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1927,
+        "y": 480,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2101,
+        "y": 588,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Comb Jelly",
+          "x": 1907.138,
+          "y": 657.226,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": -73.4894000000003,
+          "screenY": 655.7362,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Comb Jelly",
+          "x": 1949.984,
+          "y": 695.647,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 7.92,
+          "hp": 34,
+          "maxHp": 34,
+          "assetKey": "fauna-shallow-comb-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 85.04079999999972,
+          "screenY": 797.8939000000003,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Snapping Shrimp",
+          "x": 1920.572,
+          "y": 679.633,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.04,
+          "hp": 29,
+          "maxHp": 29,
+          "assetKey": "fauna-shallow-snap-shrimp",
+          "scanned": false,
+          "dead": false,
+          "screenX": -23.783600000000412,
+          "screenY": 738.6421000000001,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 3,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d620",
+      "frameIndex": 0,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 620,
+      "stateDepth": 618,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 623,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 797,
+        "y": 2580,
+        "vx": 93,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Nacre Thorn Clam",
+          "x": 679.325,
+          "y": 2647.892,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-nacre-thorn-clam",
+          "scanned": false,
+          "dead": false,
+          "screenX": 208.40250000000017,
+          "screenY": 650.8003999999994,
+          "target": true,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Moon Jelly",
+          "x": 791.718,
+          "y": 2454.622,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 9.36,
+          "hp": 37,
+          "maxHp": 37,
+          "assetKey": "fauna-shallow-jellyfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 624.2565999999999,
+          "screenY": -64.29860000000058,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 1,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d620",
+      "frameIndex": 1,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 620,
+      "stateDepth": 618,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 628,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 802,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Nacre Thorn Clam",
+          "x": 640.956,
+          "y": 2646.466,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-nacre-thorn-clam",
+          "scanned": false,
+          "dead": false,
+          "screenX": 47.93720000000007,
+          "screenY": 645.5241999999996,
+          "target": true,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Moon Jelly",
+          "x": 777.229,
+          "y": 2430.287,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 9.36,
+          "hp": 37,
+          "maxHp": 37,
+          "assetKey": "fauna-shallow-jellyfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 552.1473000000002,
+          "screenY": -154.3381000000007,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 1,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d620",
+      "frameIndex": 2,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 620,
+      "stateDepth": 618,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 628,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 802,
+        "y": 2580,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Nacre Thorn Clam",
+          "x": 639.843,
+          "y": 2613.655,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-nacre-thorn-clam",
+          "scanned": false,
+          "dead": false,
+          "screenX": 43.81909999999986,
+          "screenY": 524.1235000000007,
+          "target": true,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Silver Hinge Crab",
+          "x": 610.986,
+          "y": 2604.07,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-silver-hinge-crab",
+          "scanned": false,
+          "dead": false,
+          "screenX": -62.95180000000004,
+          "screenY": 488.6590000000006,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Ember Needle Pipefish",
+          "x": 984.078,
+          "y": 2448.775,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-ember-needle-pipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1317.4886,
+          "screenY": -85.93249999999966,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Reef Needle Snipefish",
+          "x": 630.285,
+          "y": 2552.865,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-reef-needle-snipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 8.454499999999882,
+          "screenY": 299.2004999999992,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 4,
+        "targetVisible": 1,
+        "experimentalVisible": 4
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d620",
+      "frameIndex": 3,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 620,
+      "stateDepth": 618,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 628,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 802,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Nacre Thorn Clam",
+          "x": 663.318,
+          "y": 2609.226,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-nacre-thorn-clam",
+          "scanned": false,
+          "dead": false,
+          "screenX": 130.67659999999995,
+          "screenY": 507.73620000000045,
+          "target": true,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Silver Hinge Crab",
+          "x": 644.847,
+          "y": 2610.374,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-silver-hinge-crab",
+          "scanned": false,
+          "dead": false,
+          "screenX": 62.33389999999993,
+          "screenY": 511.9837999999993,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Ember Needle Pipefish",
+          "x": 600.618,
+          "y": 2457.685,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-ember-needle-pipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": -101.31339999999982,
+          "screenY": -52.965500000000205,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Reef Needle Snipefish",
+          "x": 675.336,
+          "y": 2565.677,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-reef-needle-snipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 175.14320000000006,
+          "screenY": 346.6049000000005,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 4,
+        "targetVisible": 1,
+        "experimentalVisible": 4
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d620",
+      "frameIndex": 4,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 620,
+      "stateDepth": 618,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 628,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 802,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Nacre Thorn Clam",
+          "x": 683.053,
+          "y": 2608.103,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-nacre-thorn-clam",
+          "scanned": false,
+          "dead": false,
+          "screenX": 203.6961,
+          "screenY": 503.5811000000003,
+          "target": true,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Silver Hinge Crab",
+          "x": 665.622,
+          "y": 2611.264,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-silver-hinge-crab",
+          "scanned": false,
+          "dead": false,
+          "screenX": 139.20139999999984,
+          "screenY": 515.2768000000004,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Ember Needle Pipefish",
+          "x": 623.481,
+          "y": 2464.509,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-ember-needle-pipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": -16.72030000000002,
+          "screenY": -27.716699999999946,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Reef Needle Snipefish",
+          "x": 712.475,
+          "y": 2575.536,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-reef-needle-snipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 312.5575000000001,
+          "screenY": 383.08320000000026,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Moon Jelly",
+          "x": 837.39,
+          "y": 2435.496,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 9.36,
+          "hp": 37,
+          "maxHp": 37,
+          "assetKey": "fauna-shallow-jellyfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 774.7429999999999,
+          "screenY": -135.06479999999965,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 5,
+        "targetVisible": 1,
+        "experimentalVisible": 4
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d620",
+      "frameIndex": 5,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 620,
+      "stateDepth": 618,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 628,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 802,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Nacre Thorn Clam",
+          "x": 699.606,
+          "y": 2621.237,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-nacre-thorn-clam",
+          "scanned": false,
+          "dead": false,
+          "screenX": 264.9422,
+          "screenY": 552.1769000000003,
+          "target": true,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Silver Hinge Crab",
+          "x": 653.693,
+          "y": 2604.988,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-silver-hinge-crab",
+          "scanned": false,
+          "dead": false,
+          "screenX": 95.06409999999994,
+          "screenY": 492.0555999999994,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Ember Needle Pipefish",
+          "x": 649.434,
+          "y": 2472.253,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-ember-needle-pipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 79.30579999999989,
+          "screenY": 0.9361000000005788,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Reef Needle Snipefish",
+          "x": 745.427,
+          "y": 2586.697,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-reef-needle-snipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 434.4799000000001,
+          "screenY": 424.37890000000044,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Moon Jelly",
+          "x": 825.796,
+          "y": 2449.983,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 9.36,
+          "hp": 37,
+          "maxHp": 37,
+          "assetKey": "fauna-shallow-jellyfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 731.8452000000002,
+          "screenY": -81.46289999999935,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 5,
+        "targetVisible": 1,
+        "experimentalVisible": 4
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d620",
+      "frameIndex": 6,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 620,
+      "stateDepth": 618,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 628,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 802,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Nacre Thorn Clam",
+          "x": 692.048,
+          "y": 2641.879,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-nacre-thorn-clam",
+          "scanned": false,
+          "dead": false,
+          "screenX": 236.97760000000002,
+          "screenY": 628.5522999999997,
+          "target": true,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Silver Hinge Crab",
+          "x": 621.037,
+          "y": 2597.099,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-silver-hinge-crab",
+          "scanned": false,
+          "dead": false,
+          "screenX": -25.763099999999874,
+          "screenY": 462.8663000000006,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Ember Needle Pipefish",
+          "x": 671.726,
+          "y": 2481.437,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-ember-needle-pipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 161.7862,
+          "screenY": 34.91689999999962,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Reef Needle Snipefish",
+          "x": 727.877,
+          "y": 2605.011,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-reef-needle-snipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 369.54489999999987,
+          "screenY": 492.1406999999999,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Moon Jelly",
+          "x": 805.473,
+          "y": 2452.559,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 9.36,
+          "hp": 37,
+          "maxHp": 37,
+          "assetKey": "fauna-shallow-jellyfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 656.6500999999998,
+          "screenY": -71.93169999999928,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 5,
+        "targetVisible": 1,
+        "experimentalVisible": 4
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d620",
+      "frameIndex": 7,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 620,
+      "stateDepth": 618,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d620-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 628,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 802,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Nacre Thorn Clam",
+          "x": 668.961,
+          "y": 2646.708,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-nacre-thorn-clam",
+          "scanned": false,
+          "dead": false,
+          "screenX": 151.55570000000006,
+          "screenY": 646.4196000000003,
+          "target": true,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Ember Needle Pipefish",
+          "x": 661.97,
+          "y": 2483.063,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-ember-needle-pipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 125.6890000000001,
+          "screenY": 40.93310000000038,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Reef Needle Snipefish",
+          "x": 703.98,
+          "y": 2592.951,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 7.2,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-exp-reef-needle-snipefish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 281.1260000000001,
+          "screenY": 447.5187000000001,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        },
+        {
+          "species": "Moon Jelly",
+          "x": 784.704,
+          "y": 2452.721,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 9.36,
+          "hp": 37,
+          "maxHp": 37,
+          "assetKey": "fauna-shallow-jellyfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 579.8047999999999,
+          "screenY": -71.33229999999999,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 4,
+        "targetVisible": 1,
+        "experimentalVisible": 3
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d1260",
+      "frameIndex": 0,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 1260,
+      "stateDepth": 672,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 469,
+        "y": 2688,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 642,
+        "y": 2796,
+        "vx": 59,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Basalt Lantern Seahorse",
+          "x": 666.297,
+          "y": 2724.003,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-basalt-lantern-seahorse",
+          "scanned": false,
+          "dead": false,
+          "screenX": 729.9989000000002,
+          "screenY": 133.21110000000058,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d1260",
+      "frameIndex": 1,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 1260,
+      "stateDepth": 672,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 484,
+        "y": 2688,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 658,
+        "y": 2796,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Basalt Lantern Seahorse",
+          "x": 642.041,
+          "y": 2722.341,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-basalt-lantern-seahorse",
+          "scanned": false,
+          "dead": false,
+          "screenX": 584.7517000000003,
+          "screenY": 127.06169999999962,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d1260",
+      "frameIndex": 2,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 1260,
+      "stateDepth": 672,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 484,
+        "y": 2688,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 658,
+        "y": 2796,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Basalt Lantern Seahorse",
+          "x": 620.308,
+          "y": 2723.568,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-basalt-lantern-seahorse",
+          "scanned": false,
+          "dead": false,
+          "screenX": 504.3396,
+          "screenY": 131.6016000000008,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d1260",
+      "frameIndex": 3,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 1260,
+      "stateDepth": 672,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 484,
+        "y": 2688,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 658,
+        "y": 2796,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Basalt Lantern Seahorse",
+          "x": 597.377,
+          "y": 2720.138,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-basalt-lantern-seahorse",
+          "scanned": false,
+          "dead": false,
+          "screenX": 419.49489999999986,
+          "screenY": 118.9105999999997,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d1260",
+      "frameIndex": 4,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 1260,
+      "stateDepth": 672,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 484,
+        "y": 2688,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 658,
+        "y": 2796,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Basalt Lantern Seahorse",
+          "x": 579.37,
+          "y": 2700.091,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-basalt-lantern-seahorse",
+          "scanned": false,
+          "dead": false,
+          "screenX": 352.869,
+          "screenY": 44.736699999999615,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d1260",
+      "frameIndex": 5,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 1260,
+      "stateDepth": 672,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 484,
+        "y": 2688,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 658,
+        "y": 2796,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Basalt Lantern Seahorse",
+          "x": 600.212,
+          "y": 2669.116,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-basalt-lantern-seahorse",
+          "scanned": false,
+          "dead": false,
+          "screenX": 429.9844,
+          "screenY": -69.87080000000006,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d1260",
+      "frameIndex": 6,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 1260,
+      "stateDepth": 672,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 484,
+        "y": 2688,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 658,
+        "y": 2796,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Basalt Lantern Seahorse",
+          "x": 645.745,
+          "y": 2665.269,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-basalt-lantern-seahorse",
+          "scanned": false,
+          "dead": false,
+          "screenX": 598.4565,
+          "screenY": -84.10470000000082,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "surface-shallow-exp-d1260",
+      "frameIndex": 7,
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "routeDepth": 1260,
+      "stateDepth": 672,
+      "seed": 633144,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/surface-shallow-exp-d1260-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 484,
+        "y": 2688,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 658,
+        "y": 2796,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Basalt Lantern Seahorse",
+          "x": 667.418,
+          "y": 2671.896,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 8.64,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-basalt-lantern-seahorse",
+          "scanned": false,
+          "dead": false,
+          "screenX": 678.6466,
+          "screenY": -59.58479999999932,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d760",
+      "frameIndex": 0,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 760,
+      "stateDepth": 408,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 969,
+        "y": 1632,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1143,
+        "y": 1740,
+        "vx": 116,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Barreleye",
+          "x": 1006.724,
+          "y": 1696.362,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-deep-barreleye",
+          "scanned": false,
+          "dead": false,
+          "screenX": 139.57880000000017,
+          "screenY": 238.1394000000003,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Hatchetfish",
+          "x": 966.532,
+          "y": 1628.875,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-deep-hatchetfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": -9.131599999999855,
+          "screenY": -11.5625,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d760",
+      "frameIndex": 1,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 760,
+      "stateDepth": 408,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 976,
+        "y": 1632,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1150,
+        "y": 1740,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Barreleye",
+          "x": 1013.32,
+          "y": 1717.937,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-deep-barreleye",
+          "scanned": false,
+          "dead": false,
+          "screenX": 138.0840000000002,
+          "screenY": 317.9668999999996,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d760",
+      "frameIndex": 2,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 760,
+      "stateDepth": 408,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 976,
+        "y": 1632,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1150,
+        "y": 1740,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Barreleye",
+          "x": 1014.523,
+          "y": 1721.236,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-deep-barreleye",
+          "scanned": false,
+          "dead": false,
+          "screenX": 142.53510000000009,
+          "screenY": 330.1732000000004,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Hatchetfish",
+          "x": 1058.47,
+          "y": 1660.866,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-deep-hatchetfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 305.1390000000001,
+          "screenY": 106.80419999999995,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d760",
+      "frameIndex": 3,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 760,
+      "stateDepth": 408,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 976,
+        "y": 1632,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1150,
+        "y": 1740,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Barreleye",
+          "x": 1011.245,
+          "y": 1721.362,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-deep-barreleye",
+          "scanned": false,
+          "dead": false,
+          "screenX": 130.40650000000002,
+          "screenY": 330.6394000000003,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Hatchetfish",
+          "x": 995.58,
+          "y": 1684.401,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-deep-hatchetfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 72.44600000000015,
+          "screenY": 193.88370000000026,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d760",
+      "frameIndex": 4,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 760,
+      "stateDepth": 408,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 976,
+        "y": 1632,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1150,
+        "y": 1740,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Barreleye",
+          "x": 1009.972,
+          "y": 1720.028,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-deep-barreleye",
+          "scanned": false,
+          "dead": false,
+          "screenX": 125.69639999999993,
+          "screenY": 325.7036000000001,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Hatchetfish",
+          "x": 987.387,
+          "y": 1628.075,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-deep-hatchetfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 42.131899999999796,
+          "screenY": -14.522499999999832,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d760",
+      "frameIndex": 5,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 760,
+      "stateDepth": 408,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 976,
+        "y": 1632,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1150,
+        "y": 1740,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Barreleye",
+          "x": 1010.377,
+          "y": 1719.242,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-deep-barreleye",
+          "scanned": false,
+          "dead": false,
+          "screenX": 127.19489999999983,
+          "screenY": 322.79539999999986,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d760",
+      "frameIndex": 6,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 760,
+      "stateDepth": 408,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 976,
+        "y": 1632,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1150,
+        "y": 1740,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Barreleye",
+          "x": 1010.207,
+          "y": 1718.106,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-deep-barreleye",
+          "scanned": false,
+          "dead": false,
+          "screenX": 126.56589999999998,
+          "screenY": 318.5922,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Hatchetfish",
+          "x": 1059.696,
+          "y": 1647.251,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-deep-hatchetfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 309.6751999999997,
+          "screenY": 56.428699999999914,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d760",
+      "frameIndex": 7,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 760,
+      "stateDepth": 408,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d760-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 976,
+        "y": 1632,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1150,
+        "y": 1740,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Barreleye",
+          "x": 1008.35,
+          "y": 1698.199,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-deep-barreleye",
+          "scanned": false,
+          "dead": false,
+          "screenX": 119.69500000000009,
+          "screenY": 244.93630000000027,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        },
+        {
+          "species": "Hatchetfish",
+          "x": 1015.476,
+          "y": 1683.442,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 5.76,
+          "hp": 33,
+          "maxHp": 33,
+          "assetKey": "fauna-deep-hatchetfish",
+          "scanned": false,
+          "dead": false,
+          "screenX": 146.0612,
+          "screenY": 190.33540000000005,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 2,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1120",
+      "frameIndex": 0,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1120,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 98,
+        "y": 3084,
+        "vx": 89,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1120",
+      "frameIndex": 1,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1120,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 255.57,
+          "y": 2947.066,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 945.609,
+          "screenY": -107.05580000000073,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1120",
+      "frameIndex": 2,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1120,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 253.694,
+          "y": 2947.521,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 938.6678,
+          "screenY": -105.37229999999931,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1120",
+      "frameIndex": 3,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1120,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 250.674,
+          "y": 2948.28,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 927.4938000000001,
+          "screenY": -102.56399999999927,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1120",
+      "frameIndex": 4,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1120,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 247.125,
+          "y": 2948.403,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 914.3625000000001,
+          "screenY": -102.10890000000077,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1120",
+      "frameIndex": 5,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1120,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 241.553,
+          "y": 2947.144,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 893.7461000000001,
+          "screenY": -106.76720000000083,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1120",
+      "frameIndex": 6,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1120,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 243.795,
+          "y": 2946.67,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 902.0415,
+          "screenY": -108.52099999999973,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1120",
+      "frameIndex": 7,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1120,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1120-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1540",
+      "frameIndex": 0,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1540,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 97,
+        "y": 3084,
+        "vx": 87,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1540",
+      "frameIndex": 1,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1540,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1540",
+      "frameIndex": 2,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1540,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1540",
+      "frameIndex": 3,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1540,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 350.912,
+          "y": 2944.906,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1298.3744,
+          "screenY": -115.0478000000002,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1540",
+      "frameIndex": 4,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1540,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 347.634,
+          "y": 2947.192,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1286.2458000000001,
+          "screenY": -106.58959999999998,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1540",
+      "frameIndex": 5,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1540,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 344.991,
+          "y": 2948.74,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1276.4667,
+          "screenY": -100.86200000000082,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1540",
+      "frameIndex": 6,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1540,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 336.293,
+          "y": 2950.77,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1244.2841,
+          "screenY": -93.35100000000007,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "mid-cutoff-exp-d1540",
+      "frameIndex": 7,
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "routeDepth": 1540,
+      "stateDepth": 744,
+      "seed": 826264,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/mid-cutoff-exp-d1540-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 0,
+        "y": 2976,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 157,
+        "y": 3084,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Copper Ribbon Eel",
+          "x": 319.324,
+          "y": 2953.057,
+          "hostile": false,
+          "pattern": "circle",
+          "radius": 7.2,
+          "hp": 36,
+          "maxHp": 36,
+          "assetKey": "fauna-exp-copper-ribbon-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1181.4988,
+          "screenY": -84.88910000000078,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "deep-exp-d820",
+      "frameIndex": 0,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 820,
+      "stateDepth": 618,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1218,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1391,
+        "y": 2580,
+        "vx": 132,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d820",
+      "frameIndex": 1,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 820,
+      "stateDepth": 618,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1222,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1396,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d820",
+      "frameIndex": 2,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 820,
+      "stateDepth": 618,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1222,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1396,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d820",
+      "frameIndex": 3,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 820,
+      "stateDepth": 618,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1222,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1396,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d820",
+      "frameIndex": 4,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 820,
+      "stateDepth": 618,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1222,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1396,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d820",
+      "frameIndex": 5,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 820,
+      "stateDepth": 618,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1222,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1396,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d820",
+      "frameIndex": 6,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 820,
+      "stateDepth": 618,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1222,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1396,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d820",
+      "frameIndex": 7,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 820,
+      "stateDepth": 618,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d820-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1222,
+        "y": 2472,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1396,
+        "y": 2580,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1320",
+      "frameIndex": 0,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1320,
+      "stateDepth": 654,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1787,
+        "y": 2616,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1961,
+        "y": 2724,
+        "vx": 55,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1320",
+      "frameIndex": 1,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1320,
+      "stateDepth": 654,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1825,
+        "y": 2616,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1999,
+        "y": 2724,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1320",
+      "frameIndex": 2,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1320,
+      "stateDepth": 654,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1825,
+        "y": 2616,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1999,
+        "y": 2724,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyssal Jelly",
+          "x": 1915.645,
+          "y": 2572.856,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 10.08,
+          "hp": 43,
+          "maxHp": 43,
+          "assetKey": "fauna-abyss-abyss-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 335.38649999999996,
+          "screenY": -159.63279999999918,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1320",
+      "frameIndex": 3,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1320,
+      "stateDepth": 654,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1825,
+        "y": 2616,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1999,
+        "y": 2724,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyssal Jelly",
+          "x": 1899.675,
+          "y": 2573.598,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 10.08,
+          "hp": 43,
+          "maxHp": 43,
+          "assetKey": "fauna-abyss-abyss-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 276.29749999999984,
+          "screenY": -156.88740000000016,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1320",
+      "frameIndex": 4,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1320,
+      "stateDepth": 654,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1825,
+        "y": 2616,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1999,
+        "y": 2724,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyssal Jelly",
+          "x": 1884.294,
+          "y": 2573.592,
+          "hostile": false,
+          "pattern": "sway",
+          "radius": 10.08,
+          "hp": 43,
+          "maxHp": 43,
+          "assetKey": "fauna-abyss-abyss-jelly",
+          "scanned": false,
+          "dead": false,
+          "screenX": 219.38780000000037,
+          "screenY": -156.90959999999964,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1320",
+      "frameIndex": 5,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1320,
+      "stateDepth": 654,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1825,
+        "y": 2616,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1999,
+        "y": 2724,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1320",
+      "frameIndex": 6,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1320,
+      "stateDepth": 654,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1825,
+        "y": 2616,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1999,
+        "y": 2724,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1320",
+      "frameIndex": 7,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1320,
+      "stateDepth": 654,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1320-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 1825,
+        "y": 2616,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1999,
+        "y": 2724,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1860",
+      "frameIndex": 0,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1860,
+      "stateDepth": 666,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 2150,
+        "y": 2664,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2372,
+        "y": 2772,
+        "vx": 70,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1860",
+      "frameIndex": 1,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1860,
+      "stateDepth": 666,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 2150,
+        "y": 2664,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2413,
+        "y": 2772,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1860",
+      "frameIndex": 2,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1860,
+      "stateDepth": 666,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 2150,
+        "y": 2664,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2413,
+        "y": 2772,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1860",
+      "frameIndex": 3,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1860,
+      "stateDepth": 666,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 2150,
+        "y": 2664,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2413,
+        "y": 2772,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1860",
+      "frameIndex": 4,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1860,
+      "stateDepth": 666,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 2150,
+        "y": 2664,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2413,
+        "y": 2772,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1860",
+      "frameIndex": 5,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1860,
+      "stateDepth": 666,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 2150,
+        "y": 2664,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2413,
+        "y": 2772,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Brassstripe Fusilier",
+          "x": 2271.713,
+          "y": 2635.659,
+          "hostile": false,
+          "pattern": "school",
+          "radius": 7.92,
+          "hp": 39,
+          "maxHp": 39,
+          "assetKey": "fauna-exp-brassstripe-fusilier",
+          "scanned": false,
+          "dead": false,
+          "screenX": 450.33810000000074,
+          "screenY": -104.86169999999962,
+          "target": false,
+          "experimental": true,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 1
+      }
+    },
+    {
+      "label": "deep-exp-d1860",
+      "frameIndex": 6,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1860,
+      "stateDepth": 666,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 2150,
+        "y": 2664,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2413,
+        "y": 2772,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "deep-exp-d1860",
+      "frameIndex": 7,
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "routeDepth": 1860,
+      "stateDepth": 666,
+      "seed": 831676,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/deep-exp-d1860-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 2150,
+        "y": 2664,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2413,
+        "y": 2772,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d900",
+      "frameIndex": 0,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 900,
+      "stateDepth": 558,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 189,
+        "y": 2232,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 362,
+        "y": 2340,
+        "vx": 94,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d900",
+      "frameIndex": 1,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 900,
+      "stateDepth": 558,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 202,
+        "y": 2232,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 376,
+        "y": 2340,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d900",
+      "frameIndex": 2,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 900,
+      "stateDepth": 558,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 202,
+        "y": 2232,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 376,
+        "y": 2340,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d900",
+      "frameIndex": 3,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 900,
+      "stateDepth": 558,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 202,
+        "y": 2232,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 376,
+        "y": 2340,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d900",
+      "frameIndex": 4,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 900,
+      "stateDepth": 558,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 202,
+        "y": 2232,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 376,
+        "y": 2340,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d900",
+      "frameIndex": 5,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 900,
+      "stateDepth": 558,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 202,
+        "y": 2232,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 376,
+        "y": 2340,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Snipe Eel",
+          "x": 342.789,
+          "y": 2445.734,
+          "hostile": true,
+          "pattern": "stalk",
+          "radius": 10.8,
+          "hp": 79,
+          "maxHp": 79,
+          "assetKey": "fauna-abyss-snipe-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 520.9193,
+          "screenY": 790.8157999999997,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d900",
+      "frameIndex": 6,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 900,
+      "stateDepth": 558,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 202,
+        "y": 2232,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 376,
+        "y": 2340,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Snipe Eel",
+          "x": 359.221,
+          "y": 2378.741,
+          "hostile": true,
+          "pattern": "stalk",
+          "radius": 10.8,
+          "hp": 79,
+          "maxHp": 79,
+          "assetKey": "fauna-abyss-snipe-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 581.7177,
+          "screenY": 542.9417,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d900",
+      "frameIndex": 7,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 900,
+      "stateDepth": 558,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d900-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 202,
+        "y": 2232,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 376,
+        "y": 2340,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Snipe Eel",
+          "x": 352.684,
+          "y": 2388.032,
+          "hostile": true,
+          "pattern": "stalk",
+          "radius": 10.8,
+          "hp": 79,
+          "maxHp": 79,
+          "assetKey": "fauna-abyss-snipe-eel",
+          "scanned": false,
+          "dead": false,
+          "screenX": 557.5308000000001,
+          "screenY": 577.3184000000006,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d1580",
+      "frameIndex": 0,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 1580,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 229,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 402,
+        "y": 2964,
+        "vx": 64,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d1580",
+      "frameIndex": 1,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 1580,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 341.587,
+          "y": 2833.182,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 349.97189999999995,
+          "screenY": -84.42660000000079,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d1580",
+      "frameIndex": 2,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 1580,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 369.204,
+          "y": 2844.874,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 452.1548,
+          "screenY": -41.16620000000076,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d1580",
+      "frameIndex": 3,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 1580,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 399.62,
+          "y": 2850.514,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 564.6940000000001,
+          "screenY": -20.298199999999543,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d1580",
+      "frameIndex": 4,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 1580,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 431.575,
+          "y": 2855.96,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 682.9275,
+          "screenY": -0.1479999999998654,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d1580",
+      "frameIndex": 5,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 1580,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 473.464,
+          "y": 2864.379,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 837.9168000000001,
+          "screenY": 31.00229999999965,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d1580",
+      "frameIndex": 6,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 1580,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 508.69,
+          "y": 2872.261,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 968.253,
+          "screenY": 60.16569999999988,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d1580",
+      "frameIndex": 7,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 1580,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d1580-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 522.597,
+          "y": 2875.918,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1019.7089,
+          "screenY": 73.69660000000044,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d2180",
+      "frameIndex": 0,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 2180,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f00-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f00-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 246,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 420,
+        "y": 2964,
+        "vx": -3,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 525.487,
+          "y": 2877.167,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1034.1019,
+          "screenY": 78.3178999999997,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d2180",
+      "frameIndex": 1,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 2180,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f01-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f01-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 523.231,
+          "y": 2876.681,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 1022.0547,
+          "screenY": 76.51970000000016,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d2180",
+      "frameIndex": 2,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 2180,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f02-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f02-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 463.126,
+          "y": 2865.566,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 799.6662,
+          "screenY": 35.39419999999927,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d2180",
+      "frameIndex": 3,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 2180,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f03-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f03-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -2,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 396.55,
+          "y": 2843.399,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 553.335,
+          "screenY": -46.62370000000042,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d2180",
+      "frameIndex": 4,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 2180,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f04-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f04-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [
+        {
+          "species": "Abyss Vampire Squid",
+          "x": 357.323,
+          "y": 2814.748,
+          "hostile": false,
+          "pattern": "glide",
+          "radius": 10.08,
+          "hp": 46,
+          "maxHp": 46,
+          "assetKey": "fauna-abyss-vampire-squid",
+          "scanned": false,
+          "dead": false,
+          "screenX": 408.19509999999997,
+          "screenY": -152.63239999999982,
+          "target": false,
+          "experimental": false,
+          "inFrame": true
+        }
+      ],
+      "fishCounts": {
+        "totalVisible": 1,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d2180",
+      "frameIndex": 5,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 2180,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f05-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f05-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d2180",
+      "frameIndex": 6,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 2180,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f06-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f06-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    },
+    {
+      "label": "abyss-cutoff-exp-d2180",
+      "frameIndex": 7,
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "routeDepth": 2180,
+      "stateDepth": 714,
+      "seed": 68660,
+      "canvasPath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f07-canvas.png",
+      "pagePath": "/mnt/nxt-dev/water9/runs/water9-fauna-animation-upgrade-2026-07-05/live-canvas/abyss-cutoff-exp-d2180-f07-runtime.png",
+      "canvasBox": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 800
+      },
+      "camera": {
+        "x": 247,
+        "y": 2856,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 421,
+        "y": 2964,
+        "vx": -1,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "visibleFish": [],
+      "fishCounts": {
+        "totalVisible": 0,
+        "targetVisible": 0,
+        "experimentalVisible": 0
+      }
+    }
+  ],
+  "runtimeErrors": [],
+  "resourceProof": [
+    {
+      "scenarioId": "surface-shallow-exp",
+      "count": 74,
+      "samples": [
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-abyssal-thread-eel.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-amber-comb-blenny.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-amber-snout-boxfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ashveil-butterflyfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-aurora-fin-damselfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-basalt-lantern-seahorse.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blackwater-hatchet.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blue-lantern-goby.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-bluefire-dragonet.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blueglass-anthias.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brass-knuckle-prawn.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brassstripe-fusilier.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brightscale-halfbeak.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-chimney-ghost-shrimp.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cinder-vent-clingfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cobalt-sawtail-minnow.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cobalt-triggerfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copper-banded-seahorse.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copper-ribbon-eel.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copperglass-cardinal.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cyan-pulse-lanternfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ember-needle-pipefish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ghostfin-croaker.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ghostplate-sea-moth.frames.json"
+      ]
+    },
+    {
+      "scenarioId": "mid-cutoff-exp",
+      "count": 74,
+      "samples": [
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-abyssal-thread-eel.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-amber-comb-blenny.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-amber-snout-boxfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ashveil-butterflyfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-aurora-fin-damselfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-basalt-lantern-seahorse.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blackwater-hatchet.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blue-lantern-goby.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-bluefire-dragonet.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blueglass-anthias.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brass-knuckle-prawn.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brassstripe-fusilier.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brightscale-halfbeak.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-chimney-ghost-shrimp.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cinder-vent-clingfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cobalt-sawtail-minnow.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cobalt-triggerfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copper-banded-seahorse.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copper-ribbon-eel.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copperglass-cardinal.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cyan-pulse-lanternfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ember-needle-pipefish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ghostfin-croaker.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ghostplate-sea-moth.frames.json"
+      ]
+    },
+    {
+      "scenarioId": "deep-exp",
+      "count": 74,
+      "samples": [
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-abyssal-thread-eel.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-amber-comb-blenny.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-amber-snout-boxfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ashveil-butterflyfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-aurora-fin-damselfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-basalt-lantern-seahorse.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blackwater-hatchet.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blue-lantern-goby.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-bluefire-dragonet.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blueglass-anthias.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brass-knuckle-prawn.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brassstripe-fusilier.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brightscale-halfbeak.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-chimney-ghost-shrimp.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cinder-vent-clingfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cobalt-sawtail-minnow.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cobalt-triggerfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copper-banded-seahorse.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copper-ribbon-eel.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copperglass-cardinal.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cyan-pulse-lanternfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ember-needle-pipefish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ghostfin-croaker.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ghostplate-sea-moth.frames.json"
+      ]
+    },
+    {
+      "scenarioId": "abyss-cutoff-exp",
+      "count": 74,
+      "samples": [
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-abyssal-thread-eel.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-amber-comb-blenny.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-amber-snout-boxfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ashveil-butterflyfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-aurora-fin-damselfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-basalt-lantern-seahorse.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blackwater-hatchet.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blue-lantern-goby.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-bluefire-dragonet.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-blueglass-anthias.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brass-knuckle-prawn.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brassstripe-fusilier.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-brightscale-halfbeak.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-chimney-ghost-shrimp.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cinder-vent-clingfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cobalt-sawtail-minnow.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cobalt-triggerfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copper-banded-seahorse.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copper-ribbon-eel.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-copperglass-cardinal.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-cyan-pulse-lanternfish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ember-needle-pipefish.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ghostfin-croaker.frames.json",
+        "http://127.0.0.1:5181/assets/generated/fauna-exp-ghostplate-sea-moth.frames.json"
+      ]
+    }
+  ]
+}
