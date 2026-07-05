@@ -10,7 +10,7 @@ import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
 import { usesLargeThreatRippleTurning } from './scene-articulated';
 import type { DeepdiveScene } from './scene';
-import { rebuildTerrainMask,sampleTerrainSurfaceAnchors,subtractTerrainMaskBrush,TERRAIN_MASK_RES,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
+import { rebuildTerrainMask,sampleTerrainSurfaceAnchors,subtractTerrainMaskBrush,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
 import { perfSnapshot } from './perf';
 
 function refreshPlaytestCamera(scene: DeepdiveScene) {
@@ -1300,6 +1300,105 @@ function countVisibleEdgeTiles(scene: DeepdiveScene) {
   return count;
 }
 
+function playtestOreMaskSolidRatio(scene: DeepdiveScene, tx: number, ty: number) {
+  let solid = 0;
+  for (let ly = 0; ly < TERRAIN_MASK_RES; ly += 1) {
+    for (let lx = 0; lx < TERRAIN_MASK_RES; lx += 1) {
+      const sx = tx * TERRAIN_MASK_RES + lx;
+      const sy = ty * TERRAIN_MASK_RES + ly;
+      if (terrainMaskDensityAt(scene, sx, sy) >= TERRAIN_MASK_SOLID_THRESHOLD) solid += 1;
+    }
+  }
+  return solid / (TERRAIN_MASK_RES * TERRAIN_MASK_RES);
+}
+
+function playtestStableOreComponent(scene: DeepdiveScene, startX: number, startY: number, tile: Tile) {
+  const stack = [{ x: startX, y: startY }];
+  const seen = new Set<string>();
+  const cells: Array<{ x: number; y: number }> = [];
+  let minX = startX;
+  let maxX = startX;
+  let minY = startY;
+  let maxY = startY;
+  while (stack.length && cells.length < 48) {
+    const current = stack.pop();
+    if (!current) break;
+    const key = `${current.x}:${current.y}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    if (scene.getTile(current.x, current.y) !== tile) continue;
+    cells.push(current);
+    minX = Math.min(minX, current.x);
+    maxX = Math.max(maxX, current.x);
+    minY = Math.min(minY, current.y);
+    maxY = Math.max(maxY, current.y);
+    stack.push(
+      { x: current.x + 1, y: current.y },
+      { x: current.x - 1, y: current.y },
+      { x: current.x, y: current.y + 1 },
+      { x: current.x, y: current.y - 1 },
+    );
+  }
+  const root = cells.reduce((best, cell) => (
+    cell.y < best.y || (cell.y === best.y && cell.x < best.x) ? cell : best
+  ), { x: startX, y: startY });
+  return { cells, minX, maxX, minY, maxY, rootX: root.x, rootY: root.y };
+}
+
+function gameplayOreSnapshot(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+  const view = camera.worldView;
+  const startX = Math.max(0, Math.floor(view.x / TILE) - 1);
+  const endX = Math.min(WORLD_W - 1, Math.ceil(view.right / TILE) + 1);
+  const startY = Math.max(0, Math.floor(view.y / TILE) - 1);
+  const endY = Math.min(WORLD_H - 1, Math.ceil(view.bottom / TILE) + 1);
+  const seen = new Set<string>();
+  const deposits = [];
+  for (let y = startY; y <= endY; y += 1) {
+    for (let x = startX; x <= endX; x += 1) {
+      const tile = scene.getTile(x, y);
+      if (!isOreTile(tile)) continue;
+      const component = playtestStableOreComponent(scene, x, y, tile);
+      const key = `${tile}:${component.rootX}:${component.rootY}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const worldX = (component.minX + component.maxX + 1) * TILE * 0.5 + (hash(component.rootX, component.rootY, rng.seed + 71) - 0.5) * TILE * 0.34;
+      const worldY = (component.minY + component.maxY + 1) * TILE * 0.5 + (hash(component.rootY, component.rootX, rng.seed + 73) - 0.5) * TILE * 0.28;
+      deposits.push({
+        key,
+        tile,
+        anchor: {
+          tileX: component.rootX,
+          tileY: component.rootY,
+          worldX: roundMetric(worldX),
+          worldY: roundMetric(worldY),
+        },
+        position: {
+          worldX: roundMetric(worldX),
+          worldY: roundMetric(worldY),
+          screenX: roundMetric((worldX - view.x) * camera.zoom),
+          screenY: roundMetric((worldY - view.y) * camera.zoom),
+        },
+        tileBounds: {
+          minX: component.minX,
+          maxX: component.maxX,
+          minY: component.minY,
+          maxY: component.maxY,
+        },
+        cells: component.cells.map((cell) => ({
+          x: cell.x,
+          y: cell.y,
+          maskSolidRatio: roundMetric(playtestOreMaskSolidRatio(scene, cell.x, cell.y)),
+        })),
+      });
+    }
+  }
+  return {
+    visibleCount: deposits.length,
+    oreTileCells: deposits.reduce((sum, deposit) => sum + deposit.cells.length, 0),
+    deposits,
+  };
+}
+
 function terrainLookReviewSnapshot(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
     const look = terrainLookForBiome();
     if (scene.world.length < WORLD_H || !scene.world[0]) {
@@ -1543,6 +1642,14 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         darkness: roundMetric(this.darkness?.depth ?? null),
         overlay: roundMetric(this.overlay?.depth ?? null),
       },
+      foregroundLayers: {
+        terrainAlpha: roundMetric(this.terrain?.alpha ?? null),
+        terrainDepth: roundMetric(this.terrain?.depth ?? null),
+        terrainEdgesAlpha: roundMetric(this.terrainEdges?.alpha ?? null),
+        terrainEdgesDepth: roundMetric(this.terrainEdges?.depth ?? null),
+        oreOverburdenAlpha: roundMetric(this.oreOverburden?.alpha ?? null),
+        oreOverburdenDepth: roundMetric(this.oreOverburden?.depth ?? null),
+      },
       player: {
         x: Math.round(this.player.x),
         y: Math.round(this.player.y),
@@ -1551,6 +1658,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         mineCooldown: roundMetric(this.player.mineCooldown),
         scanTarget: this.player.scanTarget ? this.player.scanTarget.species : '',
       },
+      gameplayOre: gameplayOreSnapshot(this, camera),
       looseItems: this.looseItems.map((item) => ({
         id: item.id,
         name: item.name,

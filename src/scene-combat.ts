@@ -4,7 +4,7 @@ import { DYNAMITE_LAND_FUSE,DYNAMITE_LIFE_DAMAGE,DYNAMITE_RADIUS_TILES,EGG_CUTTE
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { cargoCapacity,cargoIconForTile,cargoKindForTile,clampSelectedCargoIndex,clearBleed,clearVenom,fuelMax,hash,hullMax,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenMax,resetOxygenWarnings,scaledEntity,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange } from './helpers';
+import { cargoCapacity,cargoIconForTile,cargoKindForTile,clampSelectedCargoIndex,clearBleed,clearVenom,fuelMax,hash,hullMax,isOreTile,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenMax,resetOxygenWarnings,scaledEntity,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 import { subtractTerrainMaskBrush,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainMaskDensityAt } from './terrain-mask';
@@ -67,7 +67,7 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     if (this.cutLifeTarget(worldX, worldY, sub)) return;
     const impact = miningTunnelTarget(this, angle, range);
     if (!impact) return;
-    const targets = this.mineTargets(impact.tx, impact.ty);
+    const targets = this.mineTargets(impact.tx, impact.ty, impact.x, impact.y);
     if (!targets.length) return;
     const fuelReserve = sub ? sub.fuel : state.fuel;
     if (fuelReserve > 0) {
@@ -330,9 +330,11 @@ export function nearestNestCutTarget(this: DeepdiveScene, worldX: number, worldY
     return nearest?.target ?? null;
   }
 
-export function mineTargets(this: DeepdiveScene, tx: number, ty: number) {
+export function mineTargets(this: DeepdiveScene, tx: number, ty: number, impactX = tx * TILE + TILE * 0.5, impactY = ty * TILE + TILE * 0.5) {
     const maxBlocks = 1;
     const radius = maxBlocks > 1 ? 1 : 0;
+    const oreTarget = visibleOreTargetNear(this, tx, ty, impactX, impactY);
+    if (oreTarget) return [oreTarget];
     const targets: Array<{ x: number; y: number; distance: number }> = [];
     for (let y = ty - radius; y <= ty + radius; y += 1) {
       for (let x = tx - radius; x <= tx + radius; x += 1) {
@@ -348,6 +350,60 @@ export function mineTargets(this: DeepdiveScene, tx: number, ty: number) {
     return targets
       .sort((a, b) => a.distance - b.distance || hash(a.x, a.y, rng.seed) - hash(b.x, b.y, rng.seed))
       .slice(0, maxBlocks);
+  }
+
+function visibleOreTargetNear(scene: DeepdiveScene, tx: number, ty: number, impactX: number, impactY: number) {
+    let best: { x: number; y: number; distance: number; impactDistance: number } | null = null;
+    for (let y = ty - 1; y <= ty + 1; y += 1) {
+      for (let x = tx - 1; x <= tx + 1; x += 1) {
+        const tile = scene.getTile(x, y);
+        if (!isOreTile(tile) || !tiles[tile].solid) continue;
+        const component = stableOreTargetComponent(scene, x, y, tile);
+        const centerX = (component.minX + component.maxX + 1) * TILE * 0.5 + (hash(component.rootX, component.rootY, rng.seed + 71) - 0.5) * TILE * 0.34;
+        const centerY = (component.minY + component.maxY + 1) * TILE * 0.5 + (hash(component.rootY, component.rootX, rng.seed + 73) - 0.5) * TILE * 0.28;
+        const impactDistance = Phaser.Math.Distance.Between(impactX, impactY, centerX, centerY);
+        const hitRadius = TILE * (component.cells.length > 1 ? 0.78 : 0.62);
+        if (impactDistance > hitRadius) continue;
+        const distance = Phaser.Math.Distance.Between(scene.player.x, scene.player.y, x * TILE + TILE * 0.5, y * TILE + TILE * 0.5);
+        if (!best || impactDistance < best.impactDistance || (impactDistance === best.impactDistance && distance < best.distance)) {
+          best = { x, y, distance, impactDistance };
+        }
+      }
+    }
+    return best ? { x: best.x, y: best.y, distance: best.distance } : null;
+  }
+
+function stableOreTargetComponent(scene: DeepdiveScene, startX: number, startY: number, tile: Tile) {
+    const stack = [{ x: startX, y: startY }];
+    const seen = new Set<string>();
+    const cells: Array<{ x: number; y: number }> = [];
+    let minX = startX;
+    let maxX = startX;
+    let minY = startY;
+    let maxY = startY;
+    while (stack.length && cells.length < 48) {
+      const current = stack.pop();
+      if (!current) break;
+      const key = `${current.x}:${current.y}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      if (scene.getTile(current.x, current.y) !== tile) continue;
+      cells.push(current);
+      minX = Math.min(minX, current.x);
+      maxX = Math.max(maxX, current.x);
+      minY = Math.min(minY, current.y);
+      maxY = Math.max(maxY, current.y);
+      stack.push(
+        { x: current.x + 1, y: current.y },
+        { x: current.x - 1, y: current.y },
+        { x: current.x, y: current.y + 1 },
+        { x: current.x, y: current.y - 1 },
+      );
+    }
+    const root = cells.reduce((best, cell) => (
+      cell.y < best.y || (cell.y === best.y && cell.x < best.x) ? cell : best
+    ), { x: startX, y: startY });
+    return { cells, minX, maxX, minY, maxY, rootX: root.x, rootY: root.y };
   }
 
 export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Tile, def: TileDef, impactX?: number, impactY?: number) {

@@ -17,9 +17,6 @@ const TERRAIN_VISIBILITY_GLOW_ALPHA = 0.052;
 const TRANSITION_DEEP_TERRAIN_ALPHA = 0.48;
 const TRANSITION_DEEP_TERRAIN_EDGE_ALPHA = 0.24;
 const TRANSITION_DEEP_ORE_OVERBURDEN_ALPHA = 0.48;
-const BRINE_MID_TERRAIN_ALPHA = 0.08;
-const BRINE_MID_TERRAIN_EDGE_ALPHA = 0.025;
-const BRINE_MID_ORE_OVERBURDEN_ALPHA = 0.08;
 
 export function draw(this: DeepdiveScene, ) {
     const camera = this.cameras.main;
@@ -59,10 +56,9 @@ export function draw(this: DeepdiveScene, ) {
 
 export function updateForegroundTerrainPresentation(this: DeepdiveScene, profile = environmentVisualProfileFor(state.biome, state.depth)) {
     const transitionDeep = profile.depthBand === 'transitionDeep';
-    const brineMidLandmark = profile.biome === 2 && profile.depthBand === 'mid';
-    this.terrain.setAlpha(transitionDeep ? TRANSITION_DEEP_TERRAIN_ALPHA : brineMidLandmark ? BRINE_MID_TERRAIN_ALPHA : 1);
-    this.terrainEdges.setAlpha(transitionDeep ? TRANSITION_DEEP_TERRAIN_EDGE_ALPHA : brineMidLandmark ? BRINE_MID_TERRAIN_EDGE_ALPHA : 1);
-    this.oreOverburden.setAlpha(transitionDeep ? TRANSITION_DEEP_ORE_OVERBURDEN_ALPHA : brineMidLandmark ? BRINE_MID_ORE_OVERBURDEN_ALPHA : 1);
+    this.terrain.setAlpha(transitionDeep ? TRANSITION_DEEP_TERRAIN_ALPHA : 1);
+    this.terrainEdges.setAlpha(transitionDeep ? TRANSITION_DEEP_TERRAIN_EDGE_ALPHA : 1);
+    this.oreOverburden.setAlpha(transitionDeep ? TRANSITION_DEEP_ORE_OVERBURDEN_ALPHA : 1);
   }
 
 export function drawForwardOutpost(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
@@ -1557,7 +1553,6 @@ function drawContourLines(
   }
 
 function drawEmbeddedOre(scene: DeepdiveScene, x: number, y: number, tile: Tile, _exposed: boolean, activeActualGptOreKeys: Set<string>) {
-    if (maskTileSolidRatio(scene, x, y) < 0.42) return;
     const deposit = oreDepositComponent(scene, x, y, tile);
     if (deposit.rootX !== x || deposit.rootY !== y) return;
     const shapeFirstSliceTile = isShapeFirstSliceOreTile(tile);
@@ -1612,7 +1607,7 @@ function oreDepositComponent(scene: DeepdiveScene, startX: number, startY: numbe
       const key = `${current.x}:${current.y}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      if (scene.getTile(current.x, current.y) !== tile || maskTileSolidRatio(scene, current.x, current.y) < 0.42) continue;
+      if (scene.getTile(current.x, current.y) !== tile) continue;
       cells.push(current);
       minX = Math.min(minX, current.x);
       maxX = Math.max(maxX, current.x);

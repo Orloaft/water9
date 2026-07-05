@@ -1,0 +1,4136 @@
+{
+  "schema": "water9-ore-anchor-b2-overlay-fix-proof@1",
+  "timestamp": "2026-07-05T14:24:57.341Z",
+  "baseUrl": "http://127.0.0.1:5180/",
+  "port": 5180,
+  "viteWatchIgnoreRequirement": "vite.config.ts server.watch.ignored includes **/.desktop-build/**",
+  "ore": {
+    "setup": {
+      "stage": "setup",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "player": {
+        "x": 1308,
+        "y": 468
+      }
+    },
+    "screenshots": {
+      "beforeAdjacentMining": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/ore-01-before-adjacent-mining.png",
+      "afterAdjacentRockMining": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/ore-02-after-adjacent-rock-mining.png",
+      "afterDirectOreBreak": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/ore-03-after-direct-ore-break.png"
+    },
+    "beforeAdjacentMining": {
+      "targetTiles": [
+        {
+          "label": "adjacent-rock",
+          "tileX": 55,
+          "tileY": 19,
+          "tile": "stone",
+          "damage": 0
+        },
+        {
+          "label": "ore-target",
+          "tileX": 56,
+          "tileY": 19,
+          "tile": "copper",
+          "damage": 0
+        }
+      ],
+      "state": {
+        "biome": 2,
+        "biomeName": "Brine Vent Shelf",
+        "credits": 0,
+        "depth": 90,
+        "maxDepth": 90,
+        "oxygen": 148,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 100,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 81,
+        "chartingProgress": {
+          "scanned": 0,
+          "requiredScans": 5,
+          "depth": 90,
+          "requiredDepth": 1100,
+          "sonarCells": 81,
+          "requiredSonarCells": 3200,
+          "apex": "Gulper Eel",
+          "apexScanned": false,
+          "hostileScanned": false,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "scan-437145-2",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 6 new lifeforms before leaving the claim.",
+            "reward": 1560,
+            "target": 6,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "depth-437145-2",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 1083 m and transmit a pressure profile from this trench.",
+            "reward": 1360,
+            "target": 1083,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "ore-437145-2",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,900 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1820,
+            "target": 1900,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 3,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "ui": {
+        "paused": false,
+        "sonarMapOpen": false,
+        "sonarMapPanX": 0,
+        "sonarMapPanY": 0,
+        "sonarMapZoom": 1,
+        "radioOpen": false,
+        "logbookOpen": false,
+        "cargoOpen": false,
+        "floatingTextCount": 0,
+        "status": "Mining polish proof: ore is embedded in the cut face.",
+        "controller": {
+          "connected": false,
+          "name": "",
+          "index": -1,
+          "lastSeenAt": 0,
+          "lastInputAt": 0,
+          "message": "No browser gamepad visible yet",
+          "apiSupported": true,
+          "secureContext": true,
+          "hasFocus": true,
+          "lastPollAt": 17441,
+          "lastGestureAt": 0,
+          "rawPadCount": 0,
+          "connectedPadCount": 0,
+          "buttons": [],
+          "axes": [],
+          "lastAction": "",
+          "lastActionAt": 0,
+          "hint": "Click the game, then press any controller button. Some browsers hide pads until a button is pressed."
+        },
+        "biomeLoading": {
+          "active": false,
+          "biome": 2,
+          "title": "Brine Vent Shelf",
+          "status": "Barge systems synchronized.",
+          "progress": 1,
+          "phase": "idle",
+          "startedAt": 2162.5999999940395,
+          "completedAt": 12403.40000000596
+        },
+        "sonarPings": 0,
+        "terrainBreakEffects": 0
+      },
+      "foregroundLayers": {
+        "terrainAlpha": 1,
+        "terrainDepth": 0,
+        "terrainEdgesAlpha": 1,
+        "terrainEdgesDepth": 0.82,
+        "oreOverburdenAlpha": 1,
+        "oreOverburdenDepth": 0.84
+      },
+      "player": {
+        "x": 1308,
+        "y": 468,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "gameplayOre": {
+        "visibleCount": 2,
+        "oreTileCells": 2,
+        "deposits": [
+          {
+            "key": "copper:56:19",
+            "tile": "copper",
+            "anchor": {
+              "tileX": 56,
+              "tileY": 19,
+              "worldX": 1356.139,
+              "worldY": 470.653
+            },
+            "position": {
+              "worldX": 1356.139,
+              "worldY": 470.653,
+              "screenX": 818.215,
+              "screenY": 368.716
+            },
+            "tileBounds": {
+              "minX": 56,
+              "maxX": 56,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 56,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          },
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1382.248,
+              "worldY": 464.8
+            },
+            "position": {
+              "worldX": 1382.248,
+              "worldY": 464.8,
+              "screenX": 914.817,
+              "screenY": 347.059
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      },
+      "looseItems": [],
+      "valuableLooseItems": []
+    },
+    "adjacentRockMining": {
+      "target": {
+        "tileX": 55,
+        "tileY": 19,
+        "worldX": 1332,
+        "worldY": 468,
+        "repeats": 4
+      },
+      "targetTiles": [
+        {
+          "label": "adjacent-rock",
+          "tileX": 55,
+          "tileY": 19,
+          "tile": "stone",
+          "damage": 0
+        },
+        {
+          "label": "ore-target",
+          "tileX": 56,
+          "tileY": 19,
+          "tile": "copper",
+          "damage": 9.520000000000001
+        }
+      ],
+      "state": {
+        "biome": 2,
+        "biomeName": "Brine Vent Shelf",
+        "credits": 0,
+        "depth": 90,
+        "maxDepth": 90,
+        "oxygen": 147,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 99,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 81,
+        "chartingProgress": {
+          "scanned": 0,
+          "requiredScans": 5,
+          "depth": 90,
+          "requiredDepth": 1100,
+          "sonarCells": 81,
+          "requiredSonarCells": 3200,
+          "apex": "Gulper Eel",
+          "apexScanned": false,
+          "hostileScanned": false,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "scan-437145-2",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 6 new lifeforms before leaving the claim.",
+            "reward": 1560,
+            "target": 6,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "depth-437145-2",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 1083 m and transmit a pressure profile from this trench.",
+            "reward": 1360,
+            "target": 1083,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "ore-437145-2",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,900 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1820,
+            "target": 1900,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 3,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "ui": {
+        "paused": false,
+        "sonarMapOpen": false,
+        "sonarMapPanX": 0,
+        "sonarMapPanY": 0,
+        "sonarMapZoom": 1,
+        "radioOpen": false,
+        "logbookOpen": false,
+        "cargoOpen": false,
+        "floatingTextCount": 0,
+        "status": "Chipped Copper.",
+        "controller": {
+          "connected": false,
+          "name": "",
+          "index": -1,
+          "lastSeenAt": 0,
+          "lastInputAt": 0,
+          "message": "No browser gamepad visible yet",
+          "apiSupported": true,
+          "secureContext": true,
+          "hasFocus": true,
+          "lastPollAt": 17657.59999999404,
+          "lastGestureAt": 0,
+          "rawPadCount": 0,
+          "connectedPadCount": 0,
+          "buttons": [],
+          "axes": [],
+          "lastAction": "",
+          "lastActionAt": 0,
+          "hint": "Click the game, then press any controller button. Some browsers hide pads until a button is pressed."
+        },
+        "biomeLoading": {
+          "active": false,
+          "biome": 2,
+          "title": "Brine Vent Shelf",
+          "status": "Barge systems synchronized.",
+          "progress": 1,
+          "phase": "idle",
+          "startedAt": 2162.5999999940395,
+          "completedAt": 12403.40000000596
+        },
+        "sonarPings": 0,
+        "terrainBreakEffects": 3
+      },
+      "foregroundLayers": {
+        "terrainAlpha": 1,
+        "terrainDepth": 0,
+        "terrainEdgesAlpha": 1,
+        "terrainEdgesDepth": 0.82,
+        "oreOverburdenAlpha": 1,
+        "oreOverburdenDepth": 0.84
+      },
+      "player": {
+        "x": 1308,
+        "y": 468,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0.385,
+        "scanTarget": ""
+      },
+      "gameplayOre": {
+        "visibleCount": 2,
+        "oreTileCells": 2,
+        "deposits": [
+          {
+            "key": "copper:56:19",
+            "tile": "copper",
+            "anchor": {
+              "tileX": 56,
+              "tileY": 19,
+              "worldX": 1356.139,
+              "worldY": 470.653
+            },
+            "position": {
+              "worldX": 1356.139,
+              "worldY": 470.653,
+              "screenX": 818.215,
+              "screenY": 368.716
+            },
+            "tileBounds": {
+              "minX": 56,
+              "maxX": 56,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 56,
+                "y": 19,
+                "maskSolidRatio": 0.734
+              }
+            ]
+          },
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1382.248,
+              "worldY": 464.8
+            },
+            "position": {
+              "worldX": 1382.248,
+              "worldY": 464.8,
+              "screenX": 914.817,
+              "screenY": 347.059
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      },
+      "looseItems": [],
+      "valuableLooseItems": []
+    },
+    "directOreMining": {
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "repeats": 12
+      },
+      "targetTiles": [
+        {
+          "label": "ore-target",
+          "tileX": 56,
+          "tileY": 19,
+          "tile": "water",
+          "damage": 0
+        },
+        {
+          "label": "quartz-neighbor",
+          "tileX": 57,
+          "tileY": 19,
+          "tile": "quartz",
+          "damage": 0
+        }
+      ],
+      "state": {
+        "biome": 2,
+        "biomeName": "Brine Vent Shelf",
+        "credits": 0,
+        "depth": 90,
+        "maxDepth": 90,
+        "oxygen": 144,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 97,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 81,
+        "chartingProgress": {
+          "scanned": 0,
+          "requiredScans": 5,
+          "depth": 90,
+          "requiredDepth": 1100,
+          "sonarCells": 81,
+          "requiredSonarCells": 3200,
+          "apex": "Gulper Eel",
+          "apexScanned": false,
+          "hostileScanned": false,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "scan-437145-2",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 6 new lifeforms before leaving the claim.",
+            "reward": 1560,
+            "target": 6,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "depth-437145-2",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 1083 m and transmit a pressure profile from this trench.",
+            "reward": 1360,
+            "target": 1083,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "ore-437145-2",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,900 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1820,
+            "target": 1900,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 3,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "ui": {
+        "paused": false,
+        "sonarMapOpen": false,
+        "sonarMapPanX": 0,
+        "sonarMapPanY": 0,
+        "sonarMapZoom": 1,
+        "radioOpen": false,
+        "logbookOpen": false,
+        "cargoOpen": false,
+        "floatingTextCount": 0,
+        "status": "Copper broke loose. Swim near it to collect.",
+        "controller": {
+          "connected": false,
+          "name": "",
+          "index": -1,
+          "lastSeenAt": 0,
+          "lastInputAt": 0,
+          "message": "No browser gamepad visible yet",
+          "apiSupported": true,
+          "secureContext": true,
+          "hasFocus": true,
+          "lastPollAt": 18574.29999999702,
+          "lastGestureAt": 0,
+          "rawPadCount": 0,
+          "connectedPadCount": 0,
+          "buttons": [],
+          "axes": [],
+          "lastAction": "",
+          "lastActionAt": 0,
+          "hint": "Click the game, then press any controller button. Some browsers hide pads until a button is pressed."
+        },
+        "biomeLoading": {
+          "active": false,
+          "biome": 2,
+          "title": "Brine Vent Shelf",
+          "status": "Barge systems synchronized.",
+          "progress": 1,
+          "phase": "idle",
+          "startedAt": 2162.5999999940395,
+          "completedAt": 12403.40000000596
+        },
+        "sonarPings": 0,
+        "terrainBreakEffects": 4
+      },
+      "foregroundLayers": {
+        "terrainAlpha": 1,
+        "terrainDepth": 0,
+        "terrainEdgesAlpha": 1,
+        "terrainEdgesDepth": 0.82,
+        "oreOverburdenAlpha": 1,
+        "oreOverburdenDepth": 0.84
+      },
+      "player": {
+        "x": 1308,
+        "y": 468,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "gameplayOre": {
+        "visibleCount": 1,
+        "oreTileCells": 1,
+        "deposits": [
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1382.248,
+              "worldY": 464.8
+            },
+            "position": {
+              "worldX": 1382.248,
+              "worldY": 464.8,
+              "screenX": 914.817,
+              "screenY": 347.059
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      },
+      "looseItems": [
+        {
+          "id": "copper",
+          "name": "Copper",
+          "value": 14,
+          "kind": "ore",
+          "x": 1358.934,
+          "y": 467.376,
+          "radius": 5.4,
+          "life": "infinite",
+          "exposed": true,
+          "pickupDelay": 0.22,
+          "collected": false,
+          "sourceTileX": 56,
+          "sourceTileY": 19,
+          "screenX": 828.558,
+          "screenY": 356.593
+        }
+      ],
+      "valuableLooseItems": [
+        {
+          "id": "copper",
+          "name": "Copper",
+          "value": 14,
+          "kind": "ore",
+          "x": 1358.934,
+          "y": 467.376,
+          "radius": 5.4,
+          "life": "infinite",
+          "exposed": true,
+          "pickupDelay": 0.22,
+          "collected": false,
+          "sourceTileX": 56,
+          "sourceTileY": 19,
+          "screenX": 828.558,
+          "screenY": 356.593
+        }
+      ]
+    },
+    "collection": {
+      "result": {
+        "stage": "collect",
+        "beforeCargo": 0,
+        "afterCargo": 1,
+        "beforeValue": 0,
+        "afterValue": 14,
+        "collectedOnce": true,
+        "remainingValuableLooseItems": 0
+      },
+      "state": {
+        "biome": 2,
+        "biomeName": "Brine Vent Shelf",
+        "credits": 0,
+        "depth": 90,
+        "maxDepth": 90,
+        "oxygen": 142,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 97,
+        "fuelMax": 100,
+        "cargo": 1,
+        "cargoCapacity": 6,
+        "sonarRevealed": 101,
+        "chartingProgress": {
+          "scanned": 0,
+          "requiredScans": 5,
+          "depth": 90,
+          "requiredDepth": 1100,
+          "sonarCells": 101,
+          "requiredSonarCells": 3200,
+          "apex": "Gulper Eel",
+          "apexScanned": false,
+          "hostileScanned": false,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "scan-437145-2",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 6 new lifeforms before leaving the claim.",
+            "reward": 1560,
+            "target": 6,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "depth-437145-2",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 1083 m and transmit a pressure profile from this trench.",
+            "reward": 1360,
+            "target": 1083,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "ore-437145-2",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,900 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1820,
+            "target": 1900,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 3,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "ui": {
+        "paused": false,
+        "sonarMapOpen": false,
+        "sonarMapPanX": 0,
+        "sonarMapPanY": 0,
+        "sonarMapZoom": 1,
+        "radioOpen": false,
+        "logbookOpen": false,
+        "cargoOpen": false,
+        "floatingTextCount": 1,
+        "status": "Recovered loose Copper worth 14 credits.",
+        "controller": {
+          "connected": false,
+          "name": "",
+          "index": -1,
+          "lastSeenAt": 0,
+          "lastInputAt": 0,
+          "message": "No browser gamepad visible yet",
+          "apiSupported": true,
+          "secureContext": true,
+          "hasFocus": true,
+          "lastPollAt": 19824.09999999404,
+          "lastGestureAt": 0,
+          "rawPadCount": 0,
+          "connectedPadCount": 0,
+          "buttons": [],
+          "axes": [],
+          "lastAction": "",
+          "lastActionAt": 0,
+          "hint": "Click the game, then press any controller button. Some browsers hide pads until a button is pressed."
+        },
+        "biomeLoading": {
+          "active": false,
+          "biome": 2,
+          "title": "Brine Vent Shelf",
+          "status": "Barge systems synchronized.",
+          "progress": 1,
+          "phase": "idle",
+          "startedAt": 2162.5999999940395,
+          "completedAt": 12403.40000000596
+        },
+        "sonarPings": 0,
+        "terrainBreakEffects": 0
+      },
+      "foregroundLayers": {
+        "terrainAlpha": 1,
+        "terrainDepth": 0,
+        "terrainEdgesAlpha": 1,
+        "terrainEdgesDepth": 0.82,
+        "oreOverburdenAlpha": 1,
+        "oreOverburdenDepth": 0.84
+      },
+      "player": {
+        "x": 1363,
+        "y": 465,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "gameplayOre": {
+        "visibleCount": 1,
+        "oreTileCells": 1,
+        "deposits": [
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1382.248,
+              "worldY": 464.8
+            },
+            "position": {
+              "worldX": 1382.248,
+              "worldY": 464.8,
+              "screenX": 715.017,
+              "screenY": 361.859
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      },
+      "looseItems": [],
+      "valuableLooseItems": []
+    }
+  },
+  "biome2": {
+    "captures": [
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "upper-band-504",
+        "depthMeters": 504,
+        "moveResult": {
+          "firstDepth": 504,
+          "captureDepth": 504,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 2112,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 2112,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 504,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-01-upper-band-504-depth-504-color.png",
+        "colorBytes": 375102,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-01-upper-band-504-depth-504-grayscale.png",
+        "grayscaleBytes": 222172,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 31.451,
+          "chromaAverage": 25.399
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 504,
+            "maxDepth": 504,
+            "oxygen": 148,
+            "oxygenMax": 150,
+            "hull": 100,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 280,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 504,
+              "requiredDepth": 1100,
+              "sonarCells": 280,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": false,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": false,
+              "source": "",
+              "duration": 0,
+              "stacks": 0,
+              "recentBites": 0,
+              "recentTimer": 0
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 2015,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-upper",
+            "biome": 2,
+            "depthBand": "upper",
+            "activeBand": "upper",
+            "activeBandBlend": {
+              "from": "surface",
+              "to": "upper",
+              "progress": 1
+            },
+            "cameraClearColor": "#171f2b"
+          },
+          "activeBand": {
+            "id": "upper",
+            "topColor": "#0c7180",
+            "bottomColor": "#0b4b62",
+            "hazeColor": "#9deee4",
+            "hazeAlpha": 0.055,
+            "sedimentAlpha": 0.03,
+            "causticAlpha": 0.075,
+            "silhouetteAlpha": 0.06,
+            "anchorDensity": 0.56
+          },
+          "darkness": {
+            "value": 0.454,
+            "ambientOpacity": 0.172,
+            "maskOpacity": 0.373
+          },
+          "overlay": {
+            "alpha": 0.07,
+            "color": "#9deee4",
+            "density": 0.542,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.021,
+            "color": "#9deee4",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#9deee4",
+              "blendMode": "normal",
+              "driftX": 0,
+              "driftY": 0,
+              "guardRadius": 0,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "upper-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.021,
+                "color": "#96e4d2",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 378,
+                "depthGate": 1,
+                "sourceAlpha": 0.055,
+                "bandScale": 0.62,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "upper-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.014,
+                "color": "#a8e3c7",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 140,
+                "depthGate": 1,
+                "sourceAlpha": 0.03,
+                "bandScale": 0.72,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "upper-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.01,
+                "color": "#9befd7",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 264,
+                "depthGate": 1,
+                "sourceAlpha": 0.03,
+                "bandScale": 0.55,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "upper-soft-caustic-ribbons",
+                "kind": "caustic",
+                "assetId": "soft-caustic-ribbons",
+                "textureKey": "water9-phase3-mask-soft-caustic-ribbons",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#baf9ec",
+                "blendMode": "add",
+                "scale": 2.604,
+                "tileScaleX": 1.36,
+                "tileScaleY": 0.82,
+                "parallaxX": 0.525,
+                "parallaxY": 0.05,
+                "driftX": 7.4,
+                "driftY": 0.12,
+                "phaseX": 333,
+                "phaseY": 654,
+                "depthGate": 0.108,
+                "sourceAlpha": 0.075,
+                "bandScale": 0.24,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 1,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 1,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 1,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      },
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "upper-band-510",
+        "depthMeters": 510,
+        "moveResult": {
+          "firstDepth": 510,
+          "captureDepth": 510,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 2136,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 2136,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 510,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-02-upper-band-510-depth-510-color.png",
+        "colorBytes": 374742,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-02-upper-band-510-depth-510-grayscale.png",
+        "grayscaleBytes": 224877,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 31.205,
+          "chromaAverage": 25.274
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 510,
+            "maxDepth": 510,
+            "oxygen": 147,
+            "oxygenMax": 150,
+            "hull": 100,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 291,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 510,
+              "requiredDepth": 1100,
+              "sonarCells": 291,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": false,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": false,
+              "source": "",
+              "duration": 0,
+              "stacks": 0,
+              "recentBites": 0,
+              "recentTimer": 0
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 2039,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-upper",
+            "biome": 2,
+            "depthBand": "upper",
+            "activeBand": "upper",
+            "activeBandBlend": {
+              "from": "surface",
+              "to": "upper",
+              "progress": 1
+            },
+            "cameraClearColor": "#171f2b"
+          },
+          "activeBand": {
+            "id": "upper",
+            "topColor": "#0c7180",
+            "bottomColor": "#0b4b62",
+            "hazeColor": "#9deee4",
+            "hazeAlpha": 0.055,
+            "sedimentAlpha": 0.03,
+            "causticAlpha": 0.075,
+            "silhouetteAlpha": 0.06,
+            "anchorDensity": 0.56
+          },
+          "darkness": {
+            "value": 0.461,
+            "ambientOpacity": 0.174,
+            "maskOpacity": 0.378
+          },
+          "overlay": {
+            "alpha": 0.07,
+            "color": "#9deee4",
+            "density": 0.543,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.021,
+            "color": "#9deee4",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#9deee4",
+              "blendMode": "normal",
+              "driftX": 0,
+              "driftY": 0,
+              "guardRadius": 0,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "upper-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.021,
+                "color": "#96e4d2",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 378,
+                "depthGate": 1,
+                "sourceAlpha": 0.055,
+                "bandScale": 0.62,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "upper-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.014,
+                "color": "#a8e3c7",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 140,
+                "depthGate": 1,
+                "sourceAlpha": 0.03,
+                "bandScale": 0.72,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "upper-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.01,
+                "color": "#9befd7",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 264,
+                "depthGate": 1,
+                "sourceAlpha": 0.03,
+                "bandScale": 0.55,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "upper-soft-caustic-ribbons",
+                "kind": "caustic",
+                "assetId": "soft-caustic-ribbons",
+                "textureKey": "water9-phase3-mask-soft-caustic-ribbons",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#baf9ec",
+                "blendMode": "add",
+                "scale": 2.604,
+                "tileScaleX": 1.36,
+                "tileScaleY": 0.82,
+                "parallaxX": 0.525,
+                "parallaxY": 0.05,
+                "driftX": 7.4,
+                "driftY": 0.12,
+                "phaseX": 333,
+                "phaseY": 654,
+                "depthGate": 0.096,
+                "sourceAlpha": 0.075,
+                "bandScale": 0.24,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 1,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 1,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 1,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      },
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "former-mid-start-522",
+        "depthMeters": 522,
+        "moveResult": {
+          "firstDepth": 522,
+          "captureDepth": 522,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 2184,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 2184,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 522,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-03-former-mid-start-522-depth-522-color.png",
+        "colorBytes": 326089,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-03-former-mid-start-522-depth-522-grayscale.png",
+        "grayscaleBytes": 200592,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 22.067,
+          "chromaAverage": 12.465
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 522,
+            "maxDepth": 522,
+            "oxygen": 145,
+            "oxygenMax": 150,
+            "hull": 100,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 311,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 522,
+              "requiredDepth": 1100,
+              "sonarCells": 311,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": false,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": false,
+              "source": "",
+              "duration": 0,
+              "stacks": 0,
+              "recentBites": 0,
+              "recentTimer": 0
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 2087,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-mid",
+            "biome": 2,
+            "depthBand": "mid",
+            "activeBand": "mid",
+            "activeBandBlend": {
+              "from": "upper",
+              "to": "mid",
+              "progress": 1
+            },
+            "cameraClearColor": "#171f2b"
+          },
+          "activeBand": {
+            "id": "mid",
+            "topColor": "#0a465f",
+            "bottomColor": "#092f4b",
+            "hazeColor": "#83cfd2",
+            "hazeAlpha": 0.07,
+            "sedimentAlpha": 0.045,
+            "causticAlpha": 0.038,
+            "silhouetteAlpha": 0.075,
+            "anchorDensity": 0.68
+          },
+          "darkness": {
+            "value": 0.474,
+            "ambientOpacity": 0.178,
+            "maskOpacity": 0.389
+          },
+          "overlay": {
+            "alpha": 0.07,
+            "color": "#83cfd2",
+            "density": 0.544,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.003,
+            "color": "#83cfd2",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [
+                "horizontal-brine-ribbons",
+                "suspended-sediment-flecks"
+              ],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#86bca9",
+              "blendMode": "normal",
+              "driftX": -7.4,
+              "driftY": 0.22,
+              "guardRadius": 176,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "mid-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#88d3c9",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 445,
+                "depthGate": 1,
+                "sourceAlpha": 0.07,
+                "bandScale": 0.18,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#9ad2bd",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 207,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.16,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.003,
+                "color": "#8cdecd",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 331,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.28,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 1,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 1,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 1,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      },
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "former-mid-deep-636",
+        "depthMeters": 636,
+        "moveResult": {
+          "firstDepth": 636,
+          "captureDepth": 636,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 2640,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 2640,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 636,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-04-former-mid-deep-636-depth-636-color.png",
+        "colorBytes": 366026,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-04-former-mid-deep-636-depth-636-grayscale.png",
+        "grayscaleBytes": 242933,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 18.411,
+          "chromaAverage": 11.092
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 636,
+            "maxDepth": 636,
+            "oxygen": 143,
+            "oxygenMax": 150,
+            "hull": 100,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 392,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 636,
+              "requiredDepth": 1100,
+              "sonarCells": 392,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": false,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": false,
+              "source": "",
+              "duration": 0,
+              "stacks": 0,
+              "recentBites": 0,
+              "recentTimer": 0
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 2543,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-mid",
+            "biome": 2,
+            "depthBand": "mid",
+            "activeBand": "mid",
+            "activeBandBlend": {
+              "from": "upper",
+              "to": "mid",
+              "progress": 1
+            },
+            "cameraClearColor": "#171f2b"
+          },
+          "activeBand": {
+            "id": "mid",
+            "topColor": "#0a465f",
+            "bottomColor": "#092f4b",
+            "hazeColor": "#83cfd2",
+            "hazeAlpha": 0.07,
+            "sedimentAlpha": 0.045,
+            "causticAlpha": 0.038,
+            "silhouetteAlpha": 0.075,
+            "anchorDensity": 0.68
+          },
+          "darkness": {
+            "value": 0.601,
+            "ambientOpacity": 0.213,
+            "maskOpacity": 0.493
+          },
+          "overlay": {
+            "alpha": 0.073,
+            "color": "#83cfd2",
+            "density": 0.554,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.003,
+            "color": "#83cfd2",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [
+                "horizontal-brine-ribbons",
+                "suspended-sediment-flecks"
+              ],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#86bca9",
+              "blendMode": "normal",
+              "driftX": -7.4,
+              "driftY": 0.22,
+              "guardRadius": 176,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "mid-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#88d3c9",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 445,
+                "depthGate": 1,
+                "sourceAlpha": 0.07,
+                "bandScale": 0.18,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#9ad2bd",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 207,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.16,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.003,
+                "color": "#8cdecd",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 331,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.28,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 1,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 1,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 1,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      },
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "former-mid-deep-690",
+        "depthMeters": 690,
+        "moveResult": {
+          "firstDepth": 690,
+          "captureDepth": 690,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 2856,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 2856,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 690,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-05-former-mid-deep-690-depth-690-color.png",
+        "colorBytes": 341397,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-05-former-mid-deep-690-depth-690-grayscale.png",
+        "grayscaleBytes": 219112,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 18.027,
+          "chromaAverage": 12.352
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 690,
+            "maxDepth": 690,
+            "oxygen": 140,
+            "oxygenMax": 150,
+            "hull": 100,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 471,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 690,
+              "requiredDepth": 1100,
+              "sonarCells": 471,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": false,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": false,
+              "source": "",
+              "duration": 0,
+              "stacks": 0,
+              "recentBites": 0,
+              "recentTimer": 0
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 2759,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-mid",
+            "biome": 2,
+            "depthBand": "mid",
+            "activeBand": "mid",
+            "activeBandBlend": {
+              "from": "upper",
+              "to": "mid",
+              "progress": 1
+            },
+            "cameraClearColor": "#171f2b"
+          },
+          "activeBand": {
+            "id": "mid",
+            "topColor": "#0a465f",
+            "bottomColor": "#092f4b",
+            "hazeColor": "#83cfd2",
+            "hazeAlpha": 0.07,
+            "sedimentAlpha": 0.045,
+            "causticAlpha": 0.038,
+            "silhouetteAlpha": 0.075,
+            "anchorDensity": 0.68
+          },
+          "darkness": {
+            "value": 0.661,
+            "ambientOpacity": 0.23,
+            "maskOpacity": 0.542
+          },
+          "overlay": {
+            "alpha": 0.075,
+            "color": "#83cfd2",
+            "density": 0.559,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.003,
+            "color": "#83cfd2",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [
+                "horizontal-brine-ribbons",
+                "suspended-sediment-flecks"
+              ],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#86bca9",
+              "blendMode": "normal",
+              "driftX": -7.4,
+              "driftY": 0.22,
+              "guardRadius": 176,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "mid-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#88d3c9",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 445,
+                "depthGate": 1,
+                "sourceAlpha": 0.07,
+                "bandScale": 0.18,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#9ad2bd",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 207,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.16,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.003,
+                "color": "#8cdecd",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 331,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.28,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 1,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 1,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 1,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      },
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "former-mid-last-1026",
+        "depthMeters": 1026,
+        "moveResult": {
+          "firstDepth": 1026,
+          "captureDepth": 1026,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 4200,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 4200,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 1026,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-06-former-mid-last-1026-depth-1026-color.png",
+        "colorBytes": 354933,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-06-former-mid-last-1026-depth-1026-grayscale.png",
+        "grayscaleBytes": 244470,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 17.243,
+          "chromaAverage": 12.643
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 1026,
+            "maxDepth": 1026,
+            "oxygen": 137,
+            "oxygenMax": 150,
+            "hull": 70,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 552,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 1026,
+              "requiredDepth": 1100,
+              "sonarCells": 552,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": false,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": false,
+              "source": "",
+              "duration": 0,
+              "stacks": 0,
+              "recentBites": 1,
+              "recentTimer": 8.296690000000002
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 4103,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-mid",
+            "biome": 2,
+            "depthBand": "mid",
+            "activeBand": "mid",
+            "activeBandBlend": {
+              "from": "upper",
+              "to": "mid",
+              "progress": 1
+            },
+            "cameraClearColor": "#171f2b"
+          },
+          "activeBand": {
+            "id": "mid",
+            "topColor": "#0a465f",
+            "bottomColor": "#092f4b",
+            "hazeColor": "#83cfd2",
+            "hazeAlpha": 0.07,
+            "sedimentAlpha": 0.045,
+            "causticAlpha": 0.038,
+            "silhouetteAlpha": 0.075,
+            "anchorDensity": 0.68
+          },
+          "darkness": {
+            "value": 1,
+            "ambientOpacity": 0.32,
+            "maskOpacity": 0.82
+          },
+          "overlay": {
+            "alpha": 0.083,
+            "color": "#83cfd2",
+            "density": 0.589,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.003,
+            "color": "#83cfd2",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [
+                "horizontal-brine-ribbons",
+                "suspended-sediment-flecks"
+              ],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#86bca9",
+              "blendMode": "normal",
+              "driftX": -7.4,
+              "driftY": 0.22,
+              "guardRadius": 176,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "mid-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#88d3c9",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 445,
+                "depthGate": 1,
+                "sourceAlpha": 0.07,
+                "bandScale": 0.18,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#9ad2bd",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 207,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.16,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.003,
+                "color": "#8cdecd",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 331,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.28,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 1,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 1,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 1,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      },
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "former-mid-last-1038",
+        "depthMeters": 1038,
+        "moveResult": {
+          "firstDepth": 1038,
+          "captureDepth": 1038,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 4248,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 4248,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 1038,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-07-former-mid-last-1038-depth-1038-color.png",
+        "colorBytes": 347338,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-07-former-mid-last-1038-depth-1038-grayscale.png",
+        "grayscaleBytes": 255099,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 17.988,
+          "chromaAverage": 13.741
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 1038,
+            "maxDepth": 1038,
+            "oxygen": 133,
+            "oxygenMax": 150,
+            "hull": 26,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 572,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 1038,
+              "requiredDepth": 1100,
+              "sonarCells": 572,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": false,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": true,
+              "source": "Gulper Eel",
+              "duration": 17.76833,
+              "stacks": 1,
+              "recentBites": 0,
+              "recentTimer": 8.768329999999999
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 4151,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-mid",
+            "biome": 2,
+            "depthBand": "mid",
+            "activeBand": "mid",
+            "activeBandBlend": {
+              "from": "upper",
+              "to": "mid",
+              "progress": 1
+            },
+            "cameraClearColor": "#171f2b"
+          },
+          "activeBand": {
+            "id": "mid",
+            "topColor": "#0a465f",
+            "bottomColor": "#092f4b",
+            "hazeColor": "#83cfd2",
+            "hazeAlpha": 0.07,
+            "sedimentAlpha": 0.045,
+            "causticAlpha": 0.038,
+            "silhouetteAlpha": 0.075,
+            "anchorDensity": 0.68
+          },
+          "darkness": {
+            "value": 1,
+            "ambientOpacity": 0.32,
+            "maskOpacity": 0.82
+          },
+          "overlay": {
+            "alpha": 0.083,
+            "color": "#83cfd2",
+            "density": 0.59,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.003,
+            "color": "#83cfd2",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [
+                "horizontal-brine-ribbons",
+                "suspended-sediment-flecks"
+              ],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#86bca9",
+              "blendMode": "normal",
+              "driftX": -7.4,
+              "driftY": 0.22,
+              "guardRadius": 176,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "mid-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#88d3c9",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 445,
+                "depthGate": 1,
+                "sourceAlpha": 0.07,
+                "bandScale": 0.18,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#9ad2bd",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 207,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.16,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "mid-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.003,
+                "color": "#8cdecd",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 331,
+                "depthGate": 1,
+                "sourceAlpha": 0.045,
+                "bandScale": 0.28,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 1,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 1,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 1,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      },
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "lower-band-control-1044",
+        "depthMeters": 1044,
+        "moveResult": {
+          "firstDepth": 1044,
+          "captureDepth": 1044,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 4272,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 4272,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 1044,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-08-lower-band-control-1044-depth-1044-color.png",
+        "colorBytes": 308888,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-08-lower-band-control-1044-depth-1044-grayscale.png",
+        "grayscaleBytes": 201917,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 10.429,
+          "chromaAverage": 8.979
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 1044,
+            "maxDepth": 1044,
+            "oxygen": 130,
+            "oxygenMax": 150,
+            "hull": 3,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 588,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 1044,
+              "requiredDepth": 1100,
+              "sonarCells": 588,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": false,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": true,
+              "source": "Gulper Eel",
+              "duration": 16.775049999999997,
+              "stacks": 1,
+              "recentBites": 1,
+              "recentTimer": 8.535029999999999
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 4175,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-lower",
+            "biome": 2,
+            "depthBand": "lower",
+            "activeBand": "lower",
+            "activeBandBlend": {
+              "from": "mid",
+              "to": "lower",
+              "progress": 1
+            },
+            "cameraClearColor": "#171f2b"
+          },
+          "activeBand": {
+            "id": "lower",
+            "topColor": "#082d49",
+            "bottomColor": "#061d36",
+            "hazeColor": "#668ea8",
+            "hazeAlpha": 0.085,
+            "sedimentAlpha": 0.055,
+            "causticAlpha": 0.015,
+            "silhouetteAlpha": 0.078,
+            "anchorDensity": 0.76
+          },
+          "darkness": {
+            "value": 1,
+            "ambientOpacity": 0.32,
+            "maskOpacity": 0.82
+          },
+          "overlay": {
+            "alpha": 0.083,
+            "color": "#668ea8",
+            "density": 0.591,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.002,
+            "color": "#668ea8",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#668ea8",
+              "blendMode": "normal",
+              "driftX": 0,
+              "driftY": 0,
+              "guardRadius": 0,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "lower-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.002,
+                "color": "#78afb1",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 512,
+                "depthGate": 1,
+                "sourceAlpha": 0.085,
+                "bandScale": 0.22,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "lower-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#8aaea6",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 274,
+                "depthGate": 1,
+                "sourceAlpha": 0.055,
+                "bandScale": 0.24,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "lower-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#7dbab6",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 398,
+                "depthGate": 0.72,
+                "sourceAlpha": 0.055,
+                "bandScale": 0.12,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 1,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 1,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 1,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      },
+      {
+        "captureMode": "exact-depth-runtime-playtest-teleport",
+        "label": "transition-deep-control-1440",
+        "depthMeters": 1440,
+        "moveResult": {
+          "firstDepth": 1440,
+          "captureDepth": 1440,
+          "firstPlayer": {
+            "x": 1248,
+            "y": 5856,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          },
+          "capturePlayer": {
+            "x": 1248,
+            "y": 5856,
+            "vx": 0,
+            "vy": 0,
+            "mineCooldown": 0,
+            "scanTarget": ""
+          }
+        },
+        "actualDepth": 1440,
+        "colorPath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-09-transition-deep-control-1440-depth-1440-color.png",
+        "colorBytes": 280460,
+        "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-ore-anchor-b2-overlay-fix-2026-07-05/b2-09-transition-deep-control-1440-depth-1440-grayscale.png",
+        "grayscaleBytes": 170970,
+        "canvasStats": {
+          "exists": true,
+          "width": 1280,
+          "height": 720,
+          "sampleStride": 8,
+          "lumaAverage": 9.408,
+          "chromaAverage": 8.277
+        },
+        "metrics": {
+          "state": {
+            "biome": 2,
+            "biomeName": "Brine Vent Shelf",
+            "credits": 0,
+            "depth": 1440,
+            "maxDepth": 1044,
+            "oxygen": 130,
+            "oxygenMax": 150,
+            "hull": 0,
+            "fuel": 100,
+            "fuelMax": 100,
+            "cargo": 0,
+            "cargoCapacity": 6,
+            "sonarRevealed": 588,
+            "chartingProgress": {
+              "scanned": 0,
+              "requiredScans": 5,
+              "depth": 1044,
+              "requiredDepth": 1100,
+              "sonarCells": 588,
+              "requiredSonarCells": 3200,
+              "apex": "Gulper Eel",
+              "apexScanned": false,
+              "hostileScanned": false,
+              "threatOk": false,
+              "complete": false,
+              "missing": "survey scans"
+            },
+            "canTravelToNextBiome": false,
+            "atBoat": false,
+            "docked": false,
+            "started": true,
+            "lost": true,
+            "won": false,
+            "venom": {
+              "active": false,
+              "source": "",
+              "tick": 0
+            },
+            "bleed": {
+              "active": true,
+              "source": "Gulper Eel",
+              "duration": 16.751709999999996,
+              "stacks": 1,
+              "recentBites": 2,
+              "recentTimer": 8.976659999999999
+            },
+            "activeQuestId": "",
+            "questBoard": [
+              {
+                "id": "scan-848291-2",
+                "kind": "scan",
+                "title": "Live Catalog Sweep",
+                "client": "Marine Biology Desk",
+                "text": "Scan 6 new lifeforms before leaving the claim.",
+                "reward": 1560,
+                "target": 6,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "nest-848291-2",
+                "kind": "nest",
+                "title": "Rare: Nest Extermination",
+                "client": "Corporate Hazard Office",
+                "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+                "reward": 5100,
+                "target": 1,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false,
+                "rare": true
+              },
+              {
+                "id": "depth-848291-2",
+                "kind": "depth",
+                "title": "Pressure Line Survey",
+                "client": "Barge Cartography",
+                "text": "Reach 887 m and transmit a pressure profile from this trench.",
+                "reward": 1360,
+                "target": 887,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              },
+              {
+                "id": "ore-848291-2",
+                "kind": "ore",
+                "title": "Ore Purchase Order",
+                "client": "Geology Buyer",
+                "text": "Sell 1,700 credits of recovered ore to satisfy an urgent assay order.",
+                "reward": 1820,
+                "target": 1700,
+                "progress": 0,
+                "startValue": 0,
+                "accepted": false,
+                "completed": false,
+                "claimed": false
+              }
+            ],
+            "forwardOutpost": {
+              "active": false,
+              "x": 0,
+              "y": 0,
+              "biome": 3,
+              "depth": 0,
+              "oxygenRadius": 118,
+              "oxygenRate": 18,
+              "charge": 0,
+              "maxCharge": 160,
+              "floraSpecies": ""
+            },
+            "upgrades": {
+              "oxygen": 0,
+              "cargo": 0,
+              "laser": 0,
+              "lamp": 0,
+              "scanner": 0,
+              "suit": 0,
+              "speed": 0,
+              "thermal": 0
+            },
+            "subOwned": {
+              "1": false,
+              "2": false,
+              "3": false
+            },
+            "selectedSubTier": null,
+            "marlinVoucherAvailable": false,
+            "marlinEffectiveCost": 62000,
+            "activeSub": null,
+            "carrierSub": null,
+            "hasSavedGame": false,
+            "saveLoad": {
+              "phase": "idle",
+              "requestId": 0,
+              "completedId": 0,
+              "message": ""
+            }
+          },
+          "camera": {
+            "x": 1075,
+            "y": 5759,
+            "width": 346,
+            "height": 195,
+            "zoom": 3.7
+          },
+          "activeProfile": {
+            "id": "environment-shallows-column-transitionDeep",
+            "biome": 2,
+            "depthBand": "transitionDeep",
+            "activeBand": "transitionDeep",
+            "activeBandBlend": {
+              "from": "lower",
+              "to": "transitionDeep",
+              "progress": 1
+            },
+            "cameraClearColor": "#110f18"
+          },
+          "activeBand": {
+            "id": "transitionDeep",
+            "topColor": "#1e5272",
+            "bottomColor": "#13314e",
+            "hazeColor": "#a8cfe2",
+            "hazeAlpha": 0.026,
+            "sedimentAlpha": 0.012,
+            "causticAlpha": 0.006,
+            "silhouetteAlpha": 0.165,
+            "anchorDensity": 0.88
+          },
+          "darkness": {
+            "value": 1,
+            "ambientOpacity": 0.064,
+            "maskOpacity": 0.197
+          },
+          "overlay": {
+            "alpha": 0.017,
+            "color": "#a8cfe2",
+            "density": 0.203,
+            "drift": 7,
+            "mistStepPx": 340
+          },
+          "worldSpaceNoise": {
+            "alpha": 0.002,
+            "color": "#a8cfe2",
+            "postDarknessVeil": {
+              "enabled": false,
+              "layers": [],
+              "alpha": 0,
+              "particleAlpha": 0,
+              "color": "#a8cfe2",
+              "blendMode": "normal",
+              "driftX": 0,
+              "driftY": 0,
+              "guardRadius": 0,
+              "bandCount": 0,
+              "particleCount": 0
+            },
+            "visibleLayers": [
+              {
+                "id": "transitionDeep-broad-fog-mottle",
+                "kind": "haze",
+                "assetId": "broad-fog-mottle",
+                "textureKey": "water9-phase3-mask-broad-fog-mottle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.002,
+                "color": "#9cd3d1",
+                "blendMode": "normal",
+                "scale": 2.586,
+                "tileScaleX": 1.34,
+                "tileScaleY": 0.86,
+                "parallaxX": 0.504,
+                "parallaxY": 0.06,
+                "driftX": 1.9,
+                "driftY": 0.16,
+                "phaseX": 179,
+                "phaseY": 579,
+                "depthGate": 0.62,
+                "sourceAlpha": 0.026,
+                "bandScale": 0.22,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "transitionDeep-sediment-flecks",
+                "kind": "sediment",
+                "assetId": "sediment-flecks",
+                "textureKey": "water9-phase3-mask-sediment-flecks",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#aed2c6",
+                "blendMode": "normal",
+                "scale": 1.392,
+                "tileScaleX": 1.72,
+                "tileScaleY": 0.72,
+                "parallaxX": 0.552,
+                "parallaxY": 0.15,
+                "driftX": -3.1,
+                "driftY": 0.52,
+                "phaseX": 503,
+                "phaseY": 341,
+                "depthGate": 0.62,
+                "sourceAlpha": 0.012,
+                "bandScale": 0.28,
+                "biomeScale": 1.08,
+                "loaded": true
+              },
+              {
+                "id": "transitionDeep-plankton-speckle",
+                "kind": "plankton",
+                "assetId": "plankton-speckle",
+                "textureKey": "water9-phase3-mask-plankton-speckle",
+                "repeatMode": "worldSpaceNoise",
+                "alpha": 0.001,
+                "color": "#a1ded6",
+                "blendMode": "add",
+                "scale": 1.02,
+                "tileScaleX": 1.18,
+                "tileScaleY": 1.06,
+                "parallaxX": 0.594,
+                "parallaxY": 0.22,
+                "driftX": 2.25,
+                "driftY": -0.42,
+                "phaseX": 815,
+                "phaseY": 465,
+                "depthGate": 0.72,
+                "sourceAlpha": 0.012,
+                "bandScale": 0.12,
+                "biomeScale": 1.08,
+                "loaded": true
+              }
+            ]
+          },
+          "foregroundLayers": {
+            "terrainAlpha": 0.48,
+            "terrainDepth": 0,
+            "terrainEdgesAlpha": 0.24,
+            "terrainEdgesDepth": 0.82,
+            "oreOverburdenAlpha": 0.48,
+            "oreOverburdenDepth": 0.84
+          }
+        }
+      }
+    ]
+  }
+}
