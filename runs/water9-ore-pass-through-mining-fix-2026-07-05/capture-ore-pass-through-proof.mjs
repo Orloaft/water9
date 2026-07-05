@@ -10,6 +10,7 @@ const host = '127.0.0.1';
 const portMin = 5180;
 const portMax = 5199;
 const proofSeed = 7;
+const tileSize = 24;
 
 await mkdir(outDir, { recursive: true });
 
@@ -190,6 +191,15 @@ function anchorSummary(deposit) {
   };
 }
 
+function targetForTile(tileX, tileY) {
+  return {
+    tileX,
+    tileY,
+    worldX: tileX * tileSize + tileSize * 0.5,
+    worldY: tileY * tileSize + tileSize * 0.5,
+  };
+}
+
 function assertStableCopperAnchor(before, after) {
   if (!before || !after) throw new Error('missing copper deposit for adjacent anchor proof');
   if (before.key !== after.key) throw new Error(`copper anchor key changed: ${before.key} -> ${after.key}`);
@@ -254,6 +264,24 @@ try {
   const afterCollectSnapshot = await snapshot(page);
   const afterCollectShot = await canvasShot(page, 'ore-pass-03-after-collect-cargo.png');
 
+  const secondNodeTarget = targetForTile(setup.target.tileX + 1, setup.target.tileY);
+  currentTarget = secondNodeTarget;
+  const secondNodeBeforeSnapshot = await snapshot(page);
+  const secondNodeBeforeProbe = await probeTile(page, secondNodeTarget);
+  const secondNodeBeforeShot = await canvasShot(page, 'ore-pass-05-before-second-visible-quartz.png');
+  const secondNodeMine = {
+    worldX: secondNodeTarget.worldX,
+    worldY: secondNodeTarget.worldY,
+    repeats: 12,
+  };
+  await command(page, 'terrainMineAt', secondNodeMine);
+  await command(page, 'clearProofOverlays');
+  await page.waitForTimeout(260);
+  const secondNodeAfterMineSnapshot = await snapshot(page);
+  const secondNodeAfterMineProbe = await probeTile(page, secondNodeTarget);
+  const secondNodeAfterMineShot = await canvasShot(page, 'ore-pass-06-after-second-node-direct-mineable.png');
+  const secondNodeCollection = await collectLooseOre(page);
+
   const adjacentSetup = await setupMiningReview(page);
   currentTarget = adjacentSetup.target;
   const adjacentBeforeSnapshot = await snapshot(page);
@@ -296,9 +324,14 @@ try {
     throw new Error(`direct ore mining failed to spawn ore: ${JSON.stringify(directAfterMineProbe)}`);
   }
   if (directCollection.after.cargoCount <= directCollection.before.cargoCount) throw new Error('direct ore collect did not increase cargo');
+  if (secondNodeBeforeProbe.tile !== 'quartz') throw new Error(`expected second visible ore node to be quartz, got ${secondNodeBeforeProbe.tile}`);
+  if (secondNodeAfterMineProbe.tile !== 'water' || secondNodeAfterMineProbe.looseValuableCount < 1) {
+    throw new Error(`second ore-node direct mining failed to spawn ore: ${JSON.stringify(secondNodeAfterMineProbe)}`);
+  }
+  if (secondNodeCollection.after.cargoCount <= secondNodeCollection.before.cargoCount) throw new Error('second ore-node collect did not increase cargo');
 
   const proof = {
-    schema: 'water9-ore-pass-through-mining-fix-proof@1',
+    schema: 'water9-ore-pass-through-mining-fix-proof@2',
     timestamp: new Date().toISOString(),
     baseUrl,
     port,
@@ -308,6 +341,8 @@ try {
       afterOffsetMiningNoGhost: afterMineShot,
       afterCollectCargo: afterCollectShot,
       adjacentAnchorRegression: adjacentAfterShot,
+      beforeSecondVisibleQuartz: secondNodeBeforeShot,
+      afterSecondNodeDirectMineable: secondNodeAfterMineShot,
     },
     passThroughMining: {
       setup,
@@ -348,6 +383,22 @@ try {
       afterMine: directAfterMineProbe,
       collection: directCollection,
     },
+    secondOreNodeDirectMining: {
+      description: 'Separate visible quartz node exposed beside the fixed pass-through copper node; proves a normally mineable ore node still breaks, spawns, and collects.',
+      setup,
+      target: secondNodeTarget,
+      mine: secondNodeMine,
+      before: {
+        probe: secondNodeBeforeProbe,
+        gameplayOre: secondNodeBeforeSnapshot?.gameplayOre ?? null,
+      },
+      afterMine: {
+        probe: secondNodeAfterMineProbe,
+        gameplayOre: secondNodeAfterMineSnapshot?.gameplayOre ?? null,
+        looseItems: secondNodeAfterMineSnapshot?.looseItems ?? [],
+      },
+      collection: secondNodeCollection,
+    },
   };
 
   const summaryPath = resolve(outDir, 'proof-summary.json');
@@ -364,6 +415,7 @@ try {
       after: anchorSummary(adjacentAfterCopper),
     },
     directOreAfterMine: directAfterMineProbe,
+    secondOreNodeAfterMine: secondNodeAfterMineProbe,
   }, null, 2));
 } finally {
   if (browser) await browser.close();

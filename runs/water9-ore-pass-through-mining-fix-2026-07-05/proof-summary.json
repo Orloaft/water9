@@ -1,25 +1,33 @@
 {
-  "schema": "water9-ore-pass-through-mining-fix-proof@1",
-  "timestamp": "2026-07-05T15:28:36.850Z",
+  "schema": "water9-ore-pass-through-mining-fix-proof@2",
+  "timestamp": "2026-07-05T15:45:24.776Z",
   "baseUrl": "http://127.0.0.1:5180/",
   "port": 5180,
   "seed": 7,
   "screenshots": {
     "beforeVisibleOre": {
       "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-01-before-visible-ore.png",
-      "bytes": 240642
+      "bytes": 240571
     },
     "afterOffsetMiningNoGhost": {
       "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-02-after-offset-mining-no-ghost.png",
-      "bytes": 243532
+      "bytes": 243493
     },
     "afterCollectCargo": {
       "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-03-after-collect-cargo.png",
-      "bytes": 246058
+      "bytes": 246350
     },
     "adjacentAnchorRegression": {
       "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-04-adjacent-anchor-regression.png",
-      "bytes": 240237
+      "bytes": 240887
+    },
+    "beforeSecondVisibleQuartz": {
+      "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-05-before-second-visible-quartz.png",
+      "bytes": 246365
+    },
+    "afterSecondNodeDirectMineable": {
+      "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-06-after-second-node-direct-mineable.png",
+      "bytes": 259382
     }
   },
   "passThroughMining": {
@@ -145,8 +153,8 @@
             "id": "copper",
             "name": "Copper",
             "value": 14,
-            "x": 1355.385,
-            "y": 460.149,
+            "x": 1355.366,
+            "y": 459.861,
             "pickupDelay": 0
           }
         ],
@@ -195,8 +203,8 @@
           "name": "Copper",
           "value": 14,
           "kind": "ore",
-          "x": 1355.39,
-          "y": 460.22,
+          "x": 1355.38,
+          "y": 460.082,
           "radius": 5.4,
           "life": "infinite",
           "exposed": true,
@@ -204,8 +212,8 @@
           "collected": false,
           "sourceTileX": 56,
           "sourceTileY": 19,
-          "screenX": 815.441,
-          "screenY": 330.115
+          "screenX": 815.407,
+          "screenY": 329.602
         }
       ]
     },
@@ -234,8 +242,8 @@
             "id": "copper",
             "name": "Copper",
             "value": 14,
-            "x": 1355.37,
-            "y": 459.922,
+            "x": 1355.347,
+            "y": 459.582,
             "pickupDelay": 0
           }
         ],
@@ -606,7 +614,7 @@
           "name": "Copper",
           "value": 14,
           "x": 1355.527,
-          "y": 462.285,
+          "y": 462.284,
           "pickupDelay": 0
         }
       ],
@@ -640,7 +648,7 @@
             "name": "Copper",
             "value": 14,
             "x": 1355.527,
-            "y": 462.285,
+            "y": 462.284,
             "pickupDelay": 0
           }
         ],
@@ -662,6 +670,192 @@
         "cargoCount": 1,
         "cargoValue": 14,
         "status": "Recovered loose Copper worth 14 credits."
+      }
+    }
+  },
+  "secondOreNodeDirectMining": {
+    "description": "Separate visible quartz node exposed beside the fixed pass-through copper node; proves a normally mineable ore node still breaks, spawns, and collects.",
+    "setup": {
+      "stage": "setup",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "player": {
+        "x": 1308,
+        "y": 468
+      }
+    },
+    "target": {
+      "tileX": 57,
+      "tileY": 19,
+      "worldX": 1380,
+      "worldY": 468
+    },
+    "mine": {
+      "worldX": 1380,
+      "worldY": 468,
+      "repeats": 12
+    },
+    "before": {
+      "probe": {
+        "tileX": 57,
+        "tileY": 19,
+        "tile": "quartz",
+        "damage": 0,
+        "solidRatio": 1,
+        "openCoreRatio": 0,
+        "centerDensity": 255,
+        "contact": {
+          "count": 21,
+          "samples": 21,
+          "density": 255,
+          "nx": -0.707,
+          "ny": -0.707
+        },
+        "looseValuableCount": 0,
+        "looseValuableItems": [],
+        "cargoCount": 1,
+        "cargoValue": 14,
+        "status": "Recovered loose Copper worth 14 credits."
+      },
+      "gameplayOre": {
+        "visibleCount": 1,
+        "oreTileCells": 1,
+        "deposits": [
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1376.663,
+              "worldY": 468.045
+            },
+            "position": {
+              "worldX": 1376.663,
+              "worldY": 468.045,
+              "screenX": 720.255,
+              "screenY": 392.366
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "afterMine": {
+      "probe": {
+        "tileX": 57,
+        "tileY": 19,
+        "tile": "water",
+        "damage": 0,
+        "solidRatio": 0,
+        "openCoreRatio": 1,
+        "centerDensity": 0,
+        "contact": null,
+        "looseValuableCount": 1,
+        "looseValuableItems": [
+          {
+            "id": "quartz",
+            "name": "Quartz",
+            "value": 32,
+            "x": 1386.06,
+            "y": 463.675,
+            "pickupDelay": 0
+          }
+        ],
+        "cargoCount": 1,
+        "cargoValue": 14,
+        "status": "Quartz broke loose. Swim near it to collect."
+      },
+      "gameplayOre": {
+        "visibleCount": 0,
+        "oreTileCells": 0,
+        "deposits": []
+      },
+      "looseItems": [
+        {
+          "id": "quartz",
+          "name": "Quartz",
+          "value": 32,
+          "kind": "ore",
+          "x": 1385.989,
+          "y": 463.741,
+          "radius": 5.4,
+          "life": "infinite",
+          "exposed": true,
+          "pickupDelay": 0,
+          "collected": false,
+          "sourceTileX": 57,
+          "sourceTileY": 19,
+          "screenX": 754.758,
+          "screenY": 376.442
+        }
+      ]
+    },
+    "collection": {
+      "result": {
+        "stage": "collect",
+        "beforeCargo": 1,
+        "afterCargo": 2,
+        "beforeValue": 14,
+        "afterValue": 46,
+        "collectedOnce": true,
+        "remainingValuableLooseItems": 0
+      },
+      "before": {
+        "tileX": 57,
+        "tileY": 19,
+        "tile": "water",
+        "damage": 0,
+        "solidRatio": 0,
+        "openCoreRatio": 1,
+        "centerDensity": 0,
+        "contact": null,
+        "looseValuableCount": 1,
+        "looseValuableItems": [
+          {
+            "id": "quartz",
+            "name": "Quartz",
+            "value": 32,
+            "x": 1386.221,
+            "y": 463.526,
+            "pickupDelay": 0
+          }
+        ],
+        "cargoCount": 1,
+        "cargoValue": 14,
+        "status": "Quartz broke loose. Swim near it to collect."
+      },
+      "after": {
+        "tileX": 57,
+        "tileY": 19,
+        "tile": "water",
+        "damage": 0,
+        "solidRatio": 0,
+        "openCoreRatio": 1,
+        "centerDensity": 0,
+        "contact": null,
+        "looseValuableCount": 0,
+        "looseValuableItems": [],
+        "cargoCount": 2,
+        "cargoValue": 46,
+        "status": "Recovered loose Quartz worth 32 credits."
       }
     }
   }
