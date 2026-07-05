@@ -1,0 +1,668 @@
+{
+  "schema": "water9-ore-pass-through-mining-fix-proof@1",
+  "timestamp": "2026-07-05T15:28:36.850Z",
+  "baseUrl": "http://127.0.0.1:5180/",
+  "port": 5180,
+  "seed": 7,
+  "screenshots": {
+    "beforeVisibleOre": {
+      "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-01-before-visible-ore.png",
+      "bytes": 240642
+    },
+    "afterOffsetMiningNoGhost": {
+      "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-02-after-offset-mining-no-ghost.png",
+      "bytes": 243532
+    },
+    "afterCollectCargo": {
+      "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-03-after-collect-cargo.png",
+      "bytes": 246058
+    },
+    "adjacentAnchorRegression": {
+      "path": "/mnt/nxt-dev/water9/runs/water9-ore-pass-through-mining-fix-2026-07-05/ore-pass-04-adjacent-anchor-regression.png",
+      "bytes": 240237
+    }
+  },
+  "passThroughMining": {
+    "setup": {
+      "stage": "setup",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "player": {
+        "x": 1308,
+        "y": 468
+      }
+    },
+    "mine": {
+      "worldX": 1343,
+      "worldY": 460,
+      "repeats": 7
+    },
+    "before": {
+      "probe": {
+        "tileX": 56,
+        "tileY": 19,
+        "tile": "copper",
+        "damage": 0,
+        "solidRatio": 1,
+        "openCoreRatio": 0,
+        "centerDensity": 255,
+        "contact": {
+          "count": 21,
+          "samples": 21,
+          "density": 252.429,
+          "nx": -0.707,
+          "ny": -0.707
+        },
+        "looseValuableCount": 0,
+        "looseValuableItems": [],
+        "cargoCount": 0,
+        "cargoValue": 0,
+        "status": "Mining polish proof: ore is embedded in the cut face."
+      },
+      "gameplayOre": {
+        "visibleCount": 2,
+        "oreTileCells": 2,
+        "deposits": [
+          {
+            "key": "copper:56:19",
+            "tile": "copper",
+            "anchor": {
+              "tileX": 56,
+              "tileY": 19,
+              "worldX": 1355.475,
+              "worldY": 470.19
+            },
+            "position": {
+              "worldX": 1355.475,
+              "worldY": 470.19,
+              "screenX": 815.759,
+              "screenY": 367.004
+            },
+            "tileBounds": {
+              "minX": 56,
+              "maxX": 56,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 56,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          },
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1376.663,
+              "worldY": 468.045
+            },
+            "position": {
+              "worldX": 1376.663,
+              "worldY": 468.045,
+              "screenX": 894.155,
+              "screenY": 359.066
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "afterMine": {
+      "probe": {
+        "tileX": 56,
+        "tileY": 19,
+        "tile": "water",
+        "damage": 0,
+        "solidRatio": 0,
+        "openCoreRatio": 1,
+        "centerDensity": 0,
+        "contact": null,
+        "looseValuableCount": 1,
+        "looseValuableItems": [
+          {
+            "id": "copper",
+            "name": "Copper",
+            "value": 14,
+            "x": 1355.385,
+            "y": 460.149,
+            "pickupDelay": 0
+          }
+        ],
+        "cargoCount": 0,
+        "cargoValue": 0,
+        "status": "Copper broke loose. Swim near it to collect."
+      },
+      "gameplayOre": {
+        "visibleCount": 1,
+        "oreTileCells": 1,
+        "deposits": [
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1376.663,
+              "worldY": 468.045
+            },
+            "position": {
+              "worldX": 1376.663,
+              "worldY": 468.045,
+              "screenX": 894.155,
+              "screenY": 359.066
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      },
+      "looseItems": [
+        {
+          "id": "copper",
+          "name": "Copper",
+          "value": 14,
+          "kind": "ore",
+          "x": 1355.39,
+          "y": 460.22,
+          "radius": 5.4,
+          "life": "infinite",
+          "exposed": true,
+          "pickupDelay": 0,
+          "collected": false,
+          "sourceTileX": 56,
+          "sourceTileY": 19,
+          "screenX": 815.441,
+          "screenY": 330.115
+        }
+      ]
+    },
+    "collection": {
+      "result": {
+        "stage": "collect",
+        "beforeCargo": 0,
+        "afterCargo": 1,
+        "beforeValue": 0,
+        "afterValue": 14,
+        "collectedOnce": true,
+        "remainingValuableLooseItems": 0
+      },
+      "before": {
+        "tileX": 56,
+        "tileY": 19,
+        "tile": "water",
+        "damage": 0,
+        "solidRatio": 0,
+        "openCoreRatio": 1,
+        "centerDensity": 0,
+        "contact": null,
+        "looseValuableCount": 1,
+        "looseValuableItems": [
+          {
+            "id": "copper",
+            "name": "Copper",
+            "value": 14,
+            "x": 1355.37,
+            "y": 459.922,
+            "pickupDelay": 0
+          }
+        ],
+        "cargoCount": 0,
+        "cargoValue": 0,
+        "status": "Copper broke loose. Swim near it to collect."
+      },
+      "after": {
+        "tileX": 56,
+        "tileY": 19,
+        "tile": "water",
+        "damage": 0,
+        "solidRatio": 0,
+        "openCoreRatio": 1,
+        "centerDensity": 0,
+        "contact": null,
+        "looseValuableCount": 0,
+        "looseValuableItems": [],
+        "cargoCount": 1,
+        "cargoValue": 14,
+        "status": "Recovered loose Copper worth 14 credits."
+      },
+      "gameplayOre": {
+        "visibleCount": 1,
+        "oreTileCells": 1,
+        "deposits": [
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1376.663,
+              "worldY": 468.045
+            },
+            "position": {
+              "worldX": 1376.663,
+              "worldY": 468.045,
+              "screenX": 720.255,
+              "screenY": 392.366
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      },
+      "looseItems": []
+    }
+  },
+  "adjacentAnchorRegression": {
+    "setup": {
+      "stage": "setup",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "player": {
+        "x": 1308,
+        "y": 468
+      }
+    },
+    "mine": {
+      "tileX": 55,
+      "tileY": 19,
+      "worldX": 1332,
+      "worldY": 468,
+      "repeats": 4
+    },
+    "before": {
+      "probe": {
+        "tileX": 56,
+        "tileY": 19,
+        "tile": "copper",
+        "damage": 0,
+        "solidRatio": 1,
+        "openCoreRatio": 0,
+        "centerDensity": 255,
+        "contact": {
+          "count": 21,
+          "samples": 21,
+          "density": 252.429,
+          "nx": -0.707,
+          "ny": -0.707
+        },
+        "looseValuableCount": 0,
+        "looseValuableItems": [],
+        "cargoCount": 0,
+        "cargoValue": 0,
+        "status": "Mining polish proof: ore is embedded in the cut face."
+      },
+      "copper": {
+        "key": "copper:56:19",
+        "anchor": {
+          "tileX": 56,
+          "tileY": 19,
+          "worldX": 1355.475,
+          "worldY": 470.19
+        },
+        "position": {
+          "worldX": 1355.475,
+          "worldY": 470.19,
+          "screenX": 815.759,
+          "screenY": 367.004
+        },
+        "tileBounds": {
+          "minX": 56,
+          "maxX": 56,
+          "minY": 19,
+          "maxY": 19
+        },
+        "cells": [
+          {
+            "x": 56,
+            "y": 19,
+            "maskSolidRatio": 1
+          }
+        ]
+      },
+      "gameplayOre": {
+        "visibleCount": 2,
+        "oreTileCells": 2,
+        "deposits": [
+          {
+            "key": "copper:56:19",
+            "tile": "copper",
+            "anchor": {
+              "tileX": 56,
+              "tileY": 19,
+              "worldX": 1355.475,
+              "worldY": 470.19
+            },
+            "position": {
+              "worldX": 1355.475,
+              "worldY": 470.19,
+              "screenX": 815.759,
+              "screenY": 367.004
+            },
+            "tileBounds": {
+              "minX": 56,
+              "maxX": 56,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 56,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          },
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1376.663,
+              "worldY": 468.045
+            },
+            "position": {
+              "worldX": 1376.663,
+              "worldY": 468.045,
+              "screenX": 894.155,
+              "screenY": 359.066
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "after": {
+      "probe": {
+        "tileX": 56,
+        "tileY": 19,
+        "tile": "copper",
+        "damage": 12.870319397786862,
+        "solidRatio": 0.859,
+        "openCoreRatio": 0,
+        "centerDensity": 255,
+        "contact": {
+          "count": 20,
+          "samples": 21,
+          "density": 210.15,
+          "nx": -0.894,
+          "ny": -0.447
+        },
+        "looseValuableCount": 0,
+        "looseValuableItems": [],
+        "cargoCount": 0,
+        "cargoValue": 0,
+        "status": "Mining polish proof: ore is embedded in the cut face."
+      },
+      "copper": {
+        "key": "copper:56:19",
+        "anchor": {
+          "tileX": 56,
+          "tileY": 19,
+          "worldX": 1355.475,
+          "worldY": 470.19
+        },
+        "position": {
+          "worldX": 1355.475,
+          "worldY": 470.19,
+          "screenX": 815.759,
+          "screenY": 367.004
+        },
+        "tileBounds": {
+          "minX": 56,
+          "maxX": 56,
+          "minY": 19,
+          "maxY": 19
+        },
+        "cells": [
+          {
+            "x": 56,
+            "y": 19,
+            "maskSolidRatio": 0.859
+          }
+        ]
+      },
+      "gameplayOre": {
+        "visibleCount": 2,
+        "oreTileCells": 2,
+        "deposits": [
+          {
+            "key": "copper:56:19",
+            "tile": "copper",
+            "anchor": {
+              "tileX": 56,
+              "tileY": 19,
+              "worldX": 1355.475,
+              "worldY": 470.19
+            },
+            "position": {
+              "worldX": 1355.475,
+              "worldY": 470.19,
+              "screenX": 815.759,
+              "screenY": 367.004
+            },
+            "tileBounds": {
+              "minX": 56,
+              "maxX": 56,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 56,
+                "y": 19,
+                "maskSolidRatio": 0.859
+              }
+            ]
+          },
+          {
+            "key": "quartz:57:19",
+            "tile": "quartz",
+            "anchor": {
+              "tileX": 57,
+              "tileY": 19,
+              "worldX": 1376.663,
+              "worldY": 468.045
+            },
+            "position": {
+              "worldX": 1376.663,
+              "worldY": 468.045,
+              "screenX": 894.155,
+              "screenY": 359.066
+            },
+            "tileBounds": {
+              "minX": 57,
+              "maxX": 57,
+              "minY": 19,
+              "maxY": 19
+            },
+            "cells": [
+              {
+                "x": 57,
+                "y": 19,
+                "maskSolidRatio": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "directOreMining": {
+    "setup": {
+      "stage": "setup",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "player": {
+        "x": 1308,
+        "y": 468
+      }
+    },
+    "mine": {
+      "worldX": 1356,
+      "worldY": 468,
+      "repeats": 12
+    },
+    "before": {
+      "tileX": 56,
+      "tileY": 19,
+      "tile": "copper",
+      "damage": 0,
+      "solidRatio": 1,
+      "openCoreRatio": 0,
+      "centerDensity": 255,
+      "contact": {
+        "count": 21,
+        "samples": 21,
+        "density": 252.429,
+        "nx": -0.707,
+        "ny": -0.707
+      },
+      "looseValuableCount": 0,
+      "looseValuableItems": [],
+      "cargoCount": 0,
+      "cargoValue": 0,
+      "status": "Mining polish proof: ore is embedded in the cut face."
+    },
+    "afterMine": {
+      "tileX": 56,
+      "tileY": 19,
+      "tile": "water",
+      "damage": 0,
+      "solidRatio": 0,
+      "openCoreRatio": 1,
+      "centerDensity": 0,
+      "contact": null,
+      "looseValuableCount": 1,
+      "looseValuableItems": [
+        {
+          "id": "copper",
+          "name": "Copper",
+          "value": 14,
+          "x": 1355.527,
+          "y": 462.285,
+          "pickupDelay": 0
+        }
+      ],
+      "cargoCount": 0,
+      "cargoValue": 0,
+      "status": "Cut through Basalt."
+    },
+    "collection": {
+      "result": {
+        "stage": "collect",
+        "beforeCargo": 0,
+        "afterCargo": 1,
+        "beforeValue": 0,
+        "afterValue": 14,
+        "collectedOnce": true,
+        "remainingValuableLooseItems": 0
+      },
+      "before": {
+        "tileX": 56,
+        "tileY": 19,
+        "tile": "water",
+        "damage": 0,
+        "solidRatio": 0,
+        "openCoreRatio": 1,
+        "centerDensity": 0,
+        "contact": null,
+        "looseValuableCount": 1,
+        "looseValuableItems": [
+          {
+            "id": "copper",
+            "name": "Copper",
+            "value": 14,
+            "x": 1355.527,
+            "y": 462.285,
+            "pickupDelay": 0
+          }
+        ],
+        "cargoCount": 0,
+        "cargoValue": 0,
+        "status": "Cut through Basalt."
+      },
+      "after": {
+        "tileX": 56,
+        "tileY": 19,
+        "tile": "water",
+        "damage": 0,
+        "solidRatio": 0,
+        "openCoreRatio": 1,
+        "centerDensity": 0,
+        "contact": null,
+        "looseValuableCount": 0,
+        "looseValuableItems": [],
+        "cargoCount": 1,
+        "cargoValue": 14,
+        "status": "Recovered loose Copper worth 14 credits."
+      }
+    }
+  }
+}

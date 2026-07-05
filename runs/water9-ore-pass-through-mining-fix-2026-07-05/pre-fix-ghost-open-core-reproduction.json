@@ -1,0 +1,57 @@
+{
+  "schema": "water9-ore-pass-through-prefix-repro@1",
+  "head": "7636082",
+  "seed": 7,
+  "port": 5180,
+  "case": "upper-left-offset-seven-cuts",
+  "setup": {
+    "stage": "setup",
+    "target": {
+      "tileX": 56,
+      "tileY": 19,
+      "worldX": 1356,
+      "worldY": 468,
+      "tile": "copper"
+    },
+    "player": {
+      "x": 1308,
+      "y": 468
+    }
+  },
+  "target": {
+    "worldX": 1343,
+    "worldY": 460,
+    "repeats": 7
+  },
+  "before": {
+    "tile": "copper",
+    "damage": 0,
+    "solidRatio": 1,
+    "openCoreRatio": 0,
+    "centerDensity": 255,
+    "contact": {
+      "count": 21,
+      "samples": 21,
+      "density": 252.429
+    },
+    "looseValuable": 0,
+    "cargo": 0,
+    "status": "Mining polish proof: ore is embedded in the cut face."
+  },
+  "after": {
+    "tile": "copper",
+    "damage": 22.39031939778686,
+    "solidRatio": 0.422,
+    "openCoreRatio": 0.688,
+    "centerDensity": 84,
+    "contact": {
+      "count": 9,
+      "samples": 21,
+      "density": 210.778
+    },
+    "looseValuable": 0,
+    "cargo": 0,
+    "status": "Chipped Copper."
+  },
+  "regressionObserved": true
+}

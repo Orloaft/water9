@@ -10,6 +10,8 @@ import type { DeepdiveScene } from './scene';
 import { subtractTerrainMaskBrush,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainMaskDensityAt } from './terrain-mask';
 
 const TERRAIN_BREAK_EFFECT_CAP = 72;
+const OPENED_ORE_CORE_RELEASE_RATIO = 0.56;
+const OPENED_ORE_SOLID_RELEASE_RATIO = 0.34;
 
 export function mineFromSub(this: DeepdiveScene, sub: SubVehicle) {
     if (sub.tier < 2) {
@@ -97,6 +99,7 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
         this.breakTile(target.x, target.y, tile, def, impact.x, impact.y);
       }
     }
+    releaseOpenedOreTiles(this, impact);
     this.terrainDirty = true;
     this.player.mineCooldown = mineCooldown();
     if (sub) sub.oxygen = Math.max(0, sub.oxygen - (0.08 + targets.length * 0.02));
@@ -169,6 +172,21 @@ function carveMiningTunnel(scene: DeepdiveScene, impact: MiningTunnelTarget) {
       const y = impact.y + impact.dy * center.along + impact.lateralY * center.side - center.lift;
       const edgeSeed = hash(Math.floor(x), Math.floor(y), rng.seed + 7011);
       subtractTerrainMaskBrush(scene, x, y, radius * (0.9 + edgeSeed * 0.16), 0.3);
+    }
+  }
+
+function releaseOpenedOreTiles(scene: DeepdiveScene, impact: MiningTunnelTarget) {
+    for (let y = impact.ty - 3; y <= impact.ty + 3; y += 1) {
+      for (let x = impact.tx - 3; x <= impact.tx + 3; x += 1) {
+        const tile = scene.getTile(x, y);
+        if (!isOreTile(tile)) continue;
+        const def = tiles[tile];
+        if (!def.solid || def.value <= 0) continue;
+        const openCoreRatio = tileMaskOpenCoreRatio(scene, x, y);
+        const solidRatio = tileMaskSolidRatio(scene, x, y);
+        if (openCoreRatio < OPENED_ORE_CORE_RELEASE_RATIO && solidRatio > OPENED_ORE_SOLID_RELEASE_RATIO) continue;
+        scene.breakTile(x, y, tile, def, impact.x, impact.y);
+      }
     }
   }
 
@@ -413,8 +431,8 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
     const chipY = Number.isFinite(impactY) ? impactY as number : y;
     subtractTerrainMaskBrush(this, chipX, chipY, TILE * 0.34, 0.78);
     const solidRatio = tileMaskSolidRatio(this, tx, ty);
-    const releasedFromOpenOreCore = def.value > 0 && tileMaskOpenCoreRatio(this, tx, ty) >= 0.56;
-    if (solidRatio > 0.34 && !releasedFromOpenOreCore) {
+    const releasedFromOpenOreCore = def.value > 0 && tileMaskOpenCoreRatio(this, tx, ty) >= OPENED_ORE_CORE_RELEASE_RATIO;
+    if (solidRatio > OPENED_ORE_SOLID_RELEASE_RATIO && !releasedFromOpenOreCore) {
       this.damage[ty][tx] = def.hp * 0.28;
       this.terrainDirty = true;
       this.terrainBoundsKey = '';
@@ -425,7 +443,7 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       state.status = `Chipped ${def.name}.`;
       return;
     }
-    if (releasedFromOpenOreCore && solidRatio > 0.34) {
+    if (releasedFromOpenOreCore && solidRatio > OPENED_ORE_SOLID_RELEASE_RATIO) {
       clearTerrainMaskTile(this, tx, ty);
     }
     this.world[ty][tx] = 'water';
