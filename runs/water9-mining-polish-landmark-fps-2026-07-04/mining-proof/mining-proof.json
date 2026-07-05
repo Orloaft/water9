@@ -1,0 +1,952 @@
+{
+  "schema": "water9/mining-polish-proof@1",
+  "generatedAt": "2026-07-05T02:07:11.585Z",
+  "repoRoot": "/mnt/nxt-dev/water9",
+  "head": "7776913",
+  "gitStatusBefore": "M package.json\n M src/helpers.ts\n M src/hud.ts\n M src/scene-combat.ts\n M src/scene-entities.ts\n M src/scene-playtest.ts\n M src/scene-rendering.ts\n M src/scene.ts\n M src/styles.css\n M src/types.ts\n?? public/assets/generated/background-phase3/\n?? runs/water9-biome-2-3-landmark-redo-2026-07-03-correction/\n?? runs/water9-biome-2-3-landmark-redo-2026-07-03/\n?? runs/water9-biome-background-screenshot-assessment-2026-07-03/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-iter1/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-iter2/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local1/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local2/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local3/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local4/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local5/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local6/\n?? runs/water9-biome-landmark-implementation-2026-07-03/\n?? runs/water9-biome1-organic-landmark-replacement-2026-07-04/\n?? runs/water9-biome1-procedural-landmark-removal-2026-07-04/\n?? runs/water9-biome2-brine-shelf-acceptance-loop-2026-07-04/\n?? runs/water9-biome2-brine-shelf-acceptance-loop-final-2026-07-04/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-codex-current/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-final/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-iter2/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-iter3/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-rerun/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03/\n?? runs/water9-biome2-brine-shelf-kill-shelf-2026-07-03/\n?? runs/water9-biome2-brine-shelf-remove-shelf-asset-2026-07-03/\n?? runs/water9-biome2-brine-shelf-rethink-2026-07-03/\n?? runs/water9-biome2-brine-shelf-rethink-followup-2026-07-03/\n?? runs/water9-biome2-brine-shelf-silhouette-2026-07-03/\n?? runs/water9-biome2-fogged-landmark-recovery-2026-07-04/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final3/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-pass/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-pass2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof3/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof4/\n?? runs/water9-biome2-gpt-integration-2026-07-04/\n?? runs/water9-biome2-imagen-asset-reset-2026-07-03.direct-asset-on-black.png\n?? runs/water9-biome2-visibility-fix-2026-07-04-add/\n?? runs/water9-biome2-visibility-fix-2026-07-04-crop/\n?? runs/water9-biome2-visibility-fix-2026-07-04-final/\n?? runs/water9-biome2-visibility-fix-2026-07-04/\n?? runs/water9-distant-landmark-audit-2026-07-04/\n?? runs/water9-distant-landmark-damage-control-2026-07-04.audit.prompt.md\n?? runs/water9-distant-landmark-damage-control-2026-07-04.correction.prompt.md\n?? runs/water9-distant-landmark-damage-control-2026-07-04.md\n?? runs/water9-distant-landmark-damage-control-2026-07-04.restore.prompt.md\n?? runs/water9-distant-landmark-damage-control-2026-07-04/\n?? runs/water9-distant-landmark-known-fix-2026-07-04.asset-runtime-restore-relaunch.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.asset-runtime-restore.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.mechanic-correction.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.micro-mechanic.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.recovery.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04/\n?? runs/water9-immediate-biome-landmark-proof-2026-07-04/\n?? runs/water9-landmark-debug-ui-test-menu-2026-07-04/\n?? runs/water9-mining-polish-landmark-fps-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof2-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof3-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof4-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-final/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-pass2/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-pass3/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-final/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-recovery/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-recovery2/\n?? runs/water9-painterly-landmark-visual-recovery-2026-07-04/\n?? runs/water9-painterly-restoration-after-2026-07-04/\n?? runs/water9-painterly-restoration-before-2026-07-04/\n?? runs/water9-painterly-restoration-final-2026-07-04/\n?? runs/water9-painterly-restoration-final2-2026-07-04/\n?? runs/water9-painterly-restoration-final3-2026-07-04/\n?? runs/water9-painterly-restoration-final4-2026-07-04/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-depth10-diagnostic/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final2/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final3/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass2/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass3/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass4/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass5/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass6/\n?? runs/water9-painterly-runtime-restoration-2026-07-04/\n?? runs/water9-phase11-normal-entry-patch-2026-07-03/\n?? runs/water9-water-column-atmosphere-v1-2026-07-04.md\n?? runs/water9-water-column-atmosphere-v1-2026-07-04.prompt.md\n?? runs/water9-water-column-atmosphere-v1-2026-07-04.revision1.prompt.md\n?? runs/water9-water-column-atmosphere-v1-2026-07-04.revision2.prompt.md\n?? runs/water9-water-column-atmosphere-v1-2026-07-04/\n?? runs/water9-water-visuals-research-2026-07-04.acceptance-plan-scout.prompt.md\n?? runs/water9-water-visuals-research-2026-07-04.current-render-scout.prompt.md\n?? runs/water9-water-visuals-research-2026-07-04.effects-feasibility-scout.prompt.md\n?? runs/water9-water-visuals-research-2026-07-04.md\n?? runs/water9-water-visuals-research-2026-07-04.reference-scout.prompt.md\n?? runs/water9-water-visuals-research-2026-07-04/\n?? tools/build_biome1_organic_shallow_background.py\n?? tools/build_biome2_brine_shelf_gpt_asset.py\n?? tools/build_biome_landmark_assets.py\n?? tools/build_distant_landmark_runtime_restore_assets.py\n?? tools/build_ore_reference_board.mjs\n?? tools/build_phase10_authored_distant_landmark.py\n?? tools/build_phase11_gpt_background_assets.py\n?? tools/build_phase3_background_assets.py\n?? tools/build_phase3_background_proof_sheets.py\n?? tools/build_phase5_deep_background_assets.py\n?? tools/build_phase7_authored_depth_planes.py\n?? tools/build_phase8_painterly_landmarks.py\n?? tools/build_phase9_organic_softened_landmarks.py\n?? tools/extract_actual_gpt_ore_assets.py\n?? tools/review_background_phase1.mjs\n?? tools/review_biome_landmark_implementation.mjs\n?? tools/review_immediate_biome_landmark_proof.mjs\n?? tools/review_normal_biome12_background_slice.mjs\n?? tools/review_ore_fossil_proof.mjs\n?? tools/review_ore_gameplay_rectification.mjs\n?? tools/review_ore_gpt_stamp_integration.mjs\n?? tools/review_ore_shape_first_slice.mjs\n?? tools/review_ore_strata_pockets.mjs\n?? tools/review_painterly_landmark_visual_recovery.mjs\n?? tools/review_phase10_authored_landmark.mjs\n?? tools/review_phase11_gpt_background_assets.mjs\n?? tools/review_phase12_background_readability.mjs\n?? tools/review_phase14_foreground_terrain_presentation.mjs\n?? tools/review_phase15_shallow_deep_screenshot_proof.mjs\n?? tools/source-inbox/water9-biome2-brine-shelf-gpt-source.png\n?? tools/source-inbox/water9-biome2-brine-vertical-chimney-gpt-source.png\n?? tools/source-inbox/water9-phase11-band-transition-deep-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-far-drowned-signal-station-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-near-pipe-cable-cathedral-gpt-source.png\n?? tools/source-inbox/water9-phase3-atmospheric-mask-atlas---609c96d6-5a01-4e47-ae46-45a1452ff190.png\n?? tools/source-inbox/water9-phase3-atmospheric-mask-atlas.png\n?? tools/source-inbox/water9-phase3-band-plate-atlas.png\n?? tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey---40a0eb72-7348-4635-86e4-bc2d2d41b31c.png\n?? tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey.png",
+  "gitStatusAfter": "M package.json\n M src/helpers.ts\n M src/hud.ts\n M src/scene-combat.ts\n M src/scene-entities.ts\n M src/scene-playtest.ts\n M src/scene-rendering.ts\n M src/scene.ts\n M src/styles.css\n M src/types.ts\n?? public/assets/generated/background-phase3/\n?? runs/water9-biome-2-3-landmark-redo-2026-07-03-correction/\n?? runs/water9-biome-2-3-landmark-redo-2026-07-03/\n?? runs/water9-biome-background-screenshot-assessment-2026-07-03/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-iter1/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-iter2/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local1/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local2/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local3/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local4/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local5/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local6/\n?? runs/water9-biome-landmark-implementation-2026-07-03/\n?? runs/water9-biome1-organic-landmark-replacement-2026-07-04/\n?? runs/water9-biome1-procedural-landmark-removal-2026-07-04/\n?? runs/water9-biome2-brine-shelf-acceptance-loop-2026-07-04/\n?? runs/water9-biome2-brine-shelf-acceptance-loop-final-2026-07-04/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-codex-current/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-final/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-iter2/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-iter3/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-rerun/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03/\n?? runs/water9-biome2-brine-shelf-kill-shelf-2026-07-03/\n?? runs/water9-biome2-brine-shelf-remove-shelf-asset-2026-07-03/\n?? runs/water9-biome2-brine-shelf-rethink-2026-07-03/\n?? runs/water9-biome2-brine-shelf-rethink-followup-2026-07-03/\n?? runs/water9-biome2-brine-shelf-silhouette-2026-07-03/\n?? runs/water9-biome2-fogged-landmark-recovery-2026-07-04/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final3/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-pass/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-pass2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof3/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof4/\n?? runs/water9-biome2-gpt-integration-2026-07-04/\n?? runs/water9-biome2-imagen-asset-reset-2026-07-03.direct-asset-on-black.png\n?? runs/water9-biome2-visibility-fix-2026-07-04-add/\n?? runs/water9-biome2-visibility-fix-2026-07-04-crop/\n?? runs/water9-biome2-visibility-fix-2026-07-04-final/\n?? runs/water9-biome2-visibility-fix-2026-07-04/\n?? runs/water9-distant-landmark-audit-2026-07-04/\n?? runs/water9-distant-landmark-damage-control-2026-07-04.audit.prompt.md\n?? runs/water9-distant-landmark-damage-control-2026-07-04.correction.prompt.md\n?? runs/water9-distant-landmark-damage-control-2026-07-04.md\n?? runs/water9-distant-landmark-damage-control-2026-07-04.restore.prompt.md\n?? runs/water9-distant-landmark-damage-control-2026-07-04/\n?? runs/water9-distant-landmark-known-fix-2026-07-04.asset-runtime-restore-relaunch.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.asset-runtime-restore.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.mechanic-correction.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.micro-mechanic.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04.recovery.prompt.md\n?? runs/water9-distant-landmark-known-fix-2026-07-04/\n?? runs/water9-immediate-biome-landmark-proof-2026-07-04/\n?? runs/water9-landmark-debug-ui-test-menu-2026-07-04/\n?? runs/water9-mining-polish-landmark-fps-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof2-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof3-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof4-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-final/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-pass2/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-pass3/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-final/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-recovery/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-recovery2/\n?? runs/water9-painterly-landmark-visual-recovery-2026-07-04/\n?? runs/water9-painterly-restoration-after-2026-07-04/\n?? runs/water9-painterly-restoration-before-2026-07-04/\n?? runs/water9-painterly-restoration-final-2026-07-04/\n?? runs/water9-painterly-restoration-final2-2026-07-04/\n?? runs/water9-painterly-restoration-final3-2026-07-04/\n?? runs/water9-painterly-restoration-final4-2026-07-04/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-depth10-diagnostic/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final2/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final3/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass2/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass3/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass4/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass5/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass6/\n?? runs/water9-painterly-runtime-restoration-2026-07-04/\n?? runs/water9-phase11-normal-entry-patch-2026-07-03/\n?? runs/water9-water-column-atmosphere-v1-2026-07-04.md\n?? runs/water9-water-column-atmosphere-v1-2026-07-04.prompt.md\n?? runs/water9-water-column-atmosphere-v1-2026-07-04.revision1.prompt.md\n?? runs/water9-water-column-atmosphere-v1-2026-07-04.revision2.prompt.md\n?? runs/water9-water-column-atmosphere-v1-2026-07-04/\n?? runs/water9-water-visuals-research-2026-07-04.acceptance-plan-scout.prompt.md\n?? runs/water9-water-visuals-research-2026-07-04.current-render-scout.prompt.md\n?? runs/water9-water-visuals-research-2026-07-04.effects-feasibility-scout.prompt.md\n?? runs/water9-water-visuals-research-2026-07-04.md\n?? runs/water9-water-visuals-research-2026-07-04.reference-scout.prompt.md\n?? runs/water9-water-visuals-research-2026-07-04/\n?? tools/build_biome1_organic_shallow_background.py\n?? tools/build_biome2_brine_shelf_gpt_asset.py\n?? tools/build_biome_landmark_assets.py\n?? tools/build_distant_landmark_runtime_restore_assets.py\n?? tools/build_ore_reference_board.mjs\n?? tools/build_phase10_authored_distant_landmark.py\n?? tools/build_phase11_gpt_background_assets.py\n?? tools/build_phase3_background_assets.py\n?? tools/build_phase3_background_proof_sheets.py\n?? tools/build_phase5_deep_background_assets.py\n?? tools/build_phase7_authored_depth_planes.py\n?? tools/build_phase8_painterly_landmarks.py\n?? tools/build_phase9_organic_softened_landmarks.py\n?? tools/extract_actual_gpt_ore_assets.py\n?? tools/review_background_phase1.mjs\n?? tools/review_biome_landmark_implementation.mjs\n?? tools/review_immediate_biome_landmark_proof.mjs\n?? tools/review_normal_biome12_background_slice.mjs\n?? tools/review_ore_fossil_proof.mjs\n?? tools/review_ore_gameplay_rectification.mjs\n?? tools/review_ore_gpt_stamp_integration.mjs\n?? tools/review_ore_shape_first_slice.mjs\n?? tools/review_ore_strata_pockets.mjs\n?? tools/review_painterly_landmark_visual_recovery.mjs\n?? tools/review_phase10_authored_landmark.mjs\n?? tools/review_phase11_gpt_background_assets.mjs\n?? tools/review_phase12_background_readability.mjs\n?? tools/review_phase14_foreground_terrain_presentation.mjs\n?? tools/review_phase15_shallow_deep_screenshot_proof.mjs\n?? tools/source-inbox/water9-biome2-brine-shelf-gpt-source.png\n?? tools/source-inbox/water9-biome2-brine-vertical-chimney-gpt-source.png\n?? tools/source-inbox/water9-phase11-band-transition-deep-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-far-drowned-signal-station-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-near-pipe-cable-cathedral-gpt-source.png\n?? tools/source-inbox/water9-phase3-atmospheric-mask-atlas---609c96d6-5a01-4e47-ae46-45a1452ff190.png\n?? tools/source-inbox/water9-phase3-atmospheric-mask-atlas.png\n?? tools/source-inbox/water9-phase3-band-plate-atlas.png\n?? tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey---40a0eb72-7348-4635-86e4-bc2d2d41b31c.png\n?? tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey.png",
+  "port": 5180,
+  "baseUrl": "http://127.0.0.1:5180/",
+  "selector": "#game canvas",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "setup": {
+    "stage": "setup",
+    "target": {
+      "tileX": 56,
+      "tileY": 19,
+      "worldX": 1356,
+      "worldY": 468,
+      "tile": "copper"
+    },
+    "player": {
+      "x": 1308,
+      "y": 468
+    }
+  },
+  "miningEvents": [
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 0,
+      "centerMaskDensity": 255,
+      "terrainBreakEffects": 1,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Mining polish proof: ore is embedded in the cut face."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 0,
+      "centerMaskDensity": 255,
+      "terrainBreakEffects": 2,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Mining polish proof: ore is embedded in the cut face."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 0,
+      "centerMaskDensity": 255,
+      "terrainBreakEffects": 3,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Mining polish proof: ore is embedded in the cut face."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 0,
+      "centerMaskDensity": 255,
+      "terrainBreakEffects": 5,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Cut through Basalt."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 12.870319397786862,
+      "centerMaskDensity": 255,
+      "terrainBreakEffects": 7,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Cut through Basalt."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 25.740638795573723,
+      "centerMaskDensity": 255,
+      "terrainBreakEffects": 9,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Cut through Basalt."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 25.740638795573723,
+      "centerMaskDensity": 255,
+      "terrainBreakEffects": 9,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Cut through Basalt."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 25.740638795573723,
+      "centerMaskDensity": 255,
+      "terrainBreakEffects": 8,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Cut through Basalt."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 25.740638795573723,
+      "centerMaskDensity": 213,
+      "terrainBreakEffects": 8,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Cut through Basalt."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 9.520000000000001,
+      "centerMaskDensity": 155,
+      "terrainBreakEffects": 8,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Chipped Copper."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "damage": 22.39031939778686,
+      "centerMaskDensity": 4,
+      "terrainBreakEffects": 6,
+      "looseItems": 0,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Chipped Copper."
+    },
+    {
+      "stage": "drill",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "water"
+      },
+      "damage": 0,
+      "centerMaskDensity": 0,
+      "terrainBreakEffects": 8,
+      "looseItems": 1,
+      "beforeCargo": 0,
+      "afterCargo": 0,
+      "status": "Copper broke loose. Swim near it to collect."
+    },
+    {
+      "collect": {
+        "stage": "collect",
+        "beforeCargo": 0,
+        "afterCargo": 1,
+        "beforeValue": 0,
+        "afterValue": 14,
+        "collectedOnce": true,
+        "remainingValuableLooseItems": 0
+      },
+      "collectAgain": {
+        "stage": "collect",
+        "beforeCargo": 1,
+        "afterCargo": 1,
+        "beforeValue": 14,
+        "afterValue": 14,
+        "collectedOnce": true,
+        "remainingValuableLooseItems": 0
+      }
+    }
+  ],
+  "captures": [
+    {
+      "label": "01 before drill",
+      "note": "Copper/quartz ore is still embedded in the cut face.",
+      "path": "/mnt/nxt-dev/water9/runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-01-before-drill.png",
+      "summary": {
+        "cargo": 0,
+        "looseItems": 0,
+        "status": "Mining polish proof: ore is embedded in the cut face."
+      }
+    },
+    {
+      "label": "02 drilling contact particles",
+      "note": "Holding the drill emits contact chips and ore glints before pickup exists.",
+      "path": "/mnt/nxt-dev/water9/runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-02-drill-contact-particles.png",
+      "summary": {
+        "terrainBreakEffects": 1,
+        "looseItems": 0,
+        "status": "Mining polish proof: ore is embedded in the cut face."
+      }
+    },
+    {
+      "label": "03 exposed ore pickup",
+      "note": "Terrain is cut; ore remains as a readable pickupable nugget.",
+      "path": "/mnt/nxt-dev/water9/runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-03-exposed-ore-pickup.png",
+      "summary": {
+        "cargo": 0,
+        "looseItems": [
+          {
+            "id": "stone",
+            "name": "Basalt",
+            "value": 0,
+            "kind": "rubble",
+            "x": 1325.817,
+            "y": 459.928,
+            "radius": 1.569,
+            "life": 4.805,
+            "exposed": false,
+            "pickupDelay": 0,
+            "collected": false,
+            "sourceTileX": null,
+            "sourceTileY": null,
+            "screenX": 706.023,
+            "screenY": 369.732
+          },
+          {
+            "id": "stone",
+            "name": "Basalt",
+            "value": 0,
+            "kind": "rubble",
+            "x": 1331.564,
+            "y": 460.393,
+            "radius": 1.944,
+            "life": 5.326,
+            "exposed": false,
+            "pickupDelay": 0,
+            "collected": false,
+            "sourceTileX": null,
+            "sourceTileY": null,
+            "screenX": 727.288,
+            "screenY": 371.456
+          },
+          {
+            "id": "stone",
+            "name": "Basalt",
+            "value": 0,
+            "kind": "rubble",
+            "x": 1334.316,
+            "y": 463.97,
+            "radius": 2.007,
+            "life": 6.047,
+            "exposed": false,
+            "pickupDelay": 0,
+            "collected": false,
+            "sourceTileX": null,
+            "sourceTileY": null,
+            "screenX": 737.468,
+            "screenY": 384.687
+          },
+          {
+            "id": "copper",
+            "name": "Copper",
+            "value": 14,
+            "kind": "ore",
+            "x": 1354.731,
+            "y": 471.512,
+            "radius": 5.4,
+            "life": "infinite",
+            "exposed": true,
+            "pickupDelay": 0,
+            "collected": false,
+            "sourceTileX": 56,
+            "sourceTileY": 19,
+            "screenX": 813.005,
+            "screenY": 412.593
+          }
+        ],
+        "status": "Copper broke loose. Swim near it to collect."
+      }
+    },
+    {
+      "label": "04 after pickup",
+      "note": "The visible nugget collected exactly once; cargo rose from 0 to 1.",
+      "path": "/mnt/nxt-dev/water9/runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-04-after-pickup.png",
+      "summary": {
+        "collect": {
+          "stage": "collect",
+          "beforeCargo": 0,
+          "afterCargo": 1,
+          "beforeValue": 0,
+          "afterValue": 14,
+          "collectedOnce": true,
+          "remainingValuableLooseItems": 0
+        },
+        "collectAgain": {
+          "stage": "collect",
+          "beforeCargo": 1,
+          "afterCargo": 1,
+          "beforeValue": 14,
+          "afterValue": 14,
+          "collectedOnce": true,
+          "remainingValuableLooseItems": 0
+        },
+        "cargo": 1,
+        "looseItems": [
+          {
+            "id": "stone",
+            "name": "Basalt",
+            "value": 0,
+            "kind": "rubble",
+            "x": 1325.417,
+            "y": 459.614,
+            "radius": 1.569,
+            "life": 4.438,
+            "exposed": false,
+            "pickupDelay": 0,
+            "collected": false,
+            "sourceTileX": null,
+            "sourceTileY": null,
+            "screenX": 534.343,
+            "screenY": 357.47
+          },
+          {
+            "id": "stone",
+            "name": "Basalt",
+            "value": 0,
+            "kind": "rubble",
+            "x": 1331.504,
+            "y": 459.873,
+            "radius": 1.944,
+            "life": 4.96,
+            "exposed": false,
+            "pickupDelay": 0,
+            "collected": false,
+            "sourceTileX": null,
+            "sourceTileY": null,
+            "screenX": 556.865,
+            "screenY": 358.43
+          },
+          {
+            "id": "stone",
+            "name": "Basalt",
+            "value": 0,
+            "kind": "rubble",
+            "x": 1334.367,
+            "y": 463.583,
+            "radius": 2.007,
+            "life": 5.681,
+            "exposed": false,
+            "pickupDelay": 0,
+            "collected": false,
+            "sourceTileX": null,
+            "sourceTileY": null,
+            "screenX": 567.458,
+            "screenY": 372.157
+          }
+        ],
+        "status": "Recovered loose Copper worth 14 credits."
+      }
+    }
+  ],
+  "fullPagePickupProof": "/mnt/nxt-dev/water9/runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-04-after-pickup-full-page.png",
+  "performanceDiagnosticsPath": "/mnt/nxt-dev/water9/runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/performance-diagnostics.json",
+  "performanceDiagnostics": {
+    "before": {
+      "enabled": true,
+      "frame": 6,
+      "terrainDirtyReason": "tile:94,44",
+      "terrainMaskMutations": 1445,
+      "terrainContactSamples": 8638,
+      "propRefresh": {
+        "fullScans": 2,
+        "queued": 0,
+        "processed": 0,
+        "removed": 0,
+        "added": 0,
+        "lastReason": "full-populate"
+      },
+      "metrics": {
+        "frame.total": {
+          "samples": 10,
+          "avgMs": 14.5,
+          "maxMs": 70.2,
+          "lastMs": 70.2,
+          "context": {}
+        },
+        "worldgen.total": {
+          "samples": 1,
+          "avgMs": 5667.9,
+          "maxMs": 5667.9,
+          "lastMs": 5667.9,
+          "context": {
+            "biome": 3
+          }
+        },
+        "update.fish": {
+          "samples": 1,
+          "avgMs": 0.1,
+          "maxMs": 0.1,
+          "lastMs": 0.1,
+          "context": {
+            "count": 0
+          }
+        },
+        "update.articulated": {
+          "samples": 1,
+          "avgMs": 0.1,
+          "maxMs": 0.1,
+          "lastMs": 0.1,
+          "context": {
+            "count": 0,
+            "parts": 0
+          }
+        },
+        "update.total": {
+          "samples": 1,
+          "avgMs": 2.3,
+          "maxMs": 2.3,
+          "lastMs": 2.3,
+          "context": {}
+        },
+        "draw.world": {
+          "samples": 1,
+          "avgMs": 2.8,
+          "maxMs": 2.8,
+          "lastMs": 2.8,
+          "context": {
+            "dirty": true,
+            "chunks": 355
+          }
+        },
+        "draw.props": {
+          "samples": 1,
+          "avgMs": 0.1,
+          "maxMs": 0.1,
+          "lastMs": 0.1,
+          "context": {
+            "count": 16
+          }
+        },
+        "draw.fish": {
+          "samples": 1,
+          "avgMs": 0.1,
+          "maxMs": 0.1,
+          "lastMs": 0.1,
+          "context": {
+            "count": 0
+          }
+        },
+        "draw.articulated": {
+          "samples": 1,
+          "avgMs": 0.3,
+          "maxMs": 0.3,
+          "lastMs": 0.3,
+          "context": {
+            "count": 0,
+            "parts": 0
+          }
+        },
+        "draw.sub": {
+          "samples": 1,
+          "avgMs": 0.1,
+          "maxMs": 0.1,
+          "lastMs": 0.1,
+          "context": {
+            "active": false,
+            "parts": 38
+          }
+        },
+        "draw.total": {
+          "samples": 1,
+          "avgMs": 67.1,
+          "maxMs": 67.1,
+          "lastMs": 67.1,
+          "context": {}
+        }
+      }
+    },
+    "mined": {
+      "enabled": true,
+      "frame": 17,
+      "terrainDirtyReason": "tile:94,44",
+      "terrainMaskMutations": 1490,
+      "terrainContactSamples": 8638,
+      "propRefresh": {
+        "fullScans": 2,
+        "queued": 0,
+        "processed": 0,
+        "removed": 0,
+        "added": 0,
+        "lastReason": "full-populate"
+      },
+      "metrics": {
+        "frame.total": {
+          "samples": 21,
+          "avgMs": 10.54,
+          "maxMs": 66.43,
+          "lastMs": 8.3,
+          "context": {}
+        },
+        "worldgen.total": {
+          "samples": 1,
+          "avgMs": 5667.9,
+          "maxMs": 5667.9,
+          "lastMs": 5667.9,
+          "context": {
+            "biome": 3
+          }
+        },
+        "update.fish": {
+          "samples": 12,
+          "avgMs": 0,
+          "maxMs": 0.09,
+          "lastMs": 0,
+          "context": {
+            "count": 0
+          }
+        },
+        "update.articulated": {
+          "samples": 12,
+          "avgMs": 0.01,
+          "maxMs": 0.1,
+          "lastMs": 0,
+          "context": {
+            "count": 0,
+            "parts": 0
+          }
+        },
+        "update.total": {
+          "samples": 12,
+          "avgMs": 0.2,
+          "maxMs": 2.18,
+          "lastMs": 0.6,
+          "context": {}
+        },
+        "draw.world": {
+          "samples": 12,
+          "avgMs": 0.61,
+          "maxMs": 15.31,
+          "lastMs": 0,
+          "context": {
+            "dirty": false,
+            "chunks": 340
+          }
+        },
+        "draw.props": {
+          "samples": 12,
+          "avgMs": 0,
+          "maxMs": 0.09,
+          "lastMs": 0,
+          "context": {
+            "count": 16
+          }
+        },
+        "draw.fish": {
+          "samples": 12,
+          "avgMs": 0,
+          "maxMs": 0.09,
+          "lastMs": 0,
+          "context": {
+            "count": 0
+          }
+        },
+        "draw.articulated": {
+          "samples": 12,
+          "avgMs": 0,
+          "maxMs": 0.28,
+          "lastMs": 0,
+          "context": {
+            "count": 0,
+            "parts": 0
+          }
+        },
+        "draw.sub": {
+          "samples": 12,
+          "avgMs": 0.03,
+          "maxMs": 0.1,
+          "lastMs": 0,
+          "context": {
+            "active": false,
+            "parts": 38
+          }
+        },
+        "draw.total": {
+          "samples": 12,
+          "avgMs": 7.6,
+          "maxMs": 63.5,
+          "lastMs": 6.5,
+          "context": {}
+        }
+      }
+    },
+    "guardrail": {
+      "articulatedContact": {
+        "creatureId": "abyssal-serpent",
+        "partId": "tail",
+        "count": 8,
+        "nx": 0.101,
+        "ny": -0.995
+      },
+      "subCollision": true,
+      "localPropRefreshes": 8,
+      "fullScansDuringLocalRefresh": 0,
+      "propRefresh": {
+        "fullScans": 2,
+        "queued": 0,
+        "processed": 8,
+        "removed": 0,
+        "added": 0,
+        "lastReason": "merged:8"
+      },
+      "perf": {
+        "enabled": true,
+        "frame": 18,
+        "terrainDirtyReason": "merged:8",
+        "terrainMaskMutations": 1983,
+        "terrainContactSamples": 8709,
+        "propRefresh": {
+          "fullScans": 2,
+          "queued": 0,
+          "processed": 8,
+          "removed": 0,
+          "added": 0,
+          "lastReason": "merged:8"
+        },
+        "metrics": {
+          "frame.total": {
+            "samples": 22,
+            "avgMs": 10.25,
+            "maxMs": 66.1,
+            "lastMs": 7.3,
+            "context": {}
+          },
+          "worldgen.total": {
+            "samples": 1,
+            "avgMs": 5667.9,
+            "maxMs": 5667.9,
+            "lastMs": 5667.9,
+            "context": {
+              "biome": 3
+            }
+          },
+          "update.fish": {
+            "samples": 13,
+            "avgMs": 0,
+            "maxMs": 0.09,
+            "lastMs": 0,
+            "context": {
+              "count": 0
+            }
+          },
+          "update.articulated": {
+            "samples": 13,
+            "avgMs": 0.01,
+            "maxMs": 0.1,
+            "lastMs": 0,
+            "context": {
+              "count": 0,
+              "parts": 0
+            }
+          },
+          "update.total": {
+            "samples": 13,
+            "avgMs": 0.17,
+            "maxMs": 2.17,
+            "lastMs": 0,
+            "context": {}
+          },
+          "draw.world": {
+            "samples": 14,
+            "avgMs": 1.84,
+            "maxMs": 15.16,
+            "lastMs": 9.8,
+            "context": {
+              "dirty": true,
+              "chunks": 349
+            }
+          },
+          "draw.props": {
+            "samples": 14,
+            "avgMs": 0,
+            "maxMs": 0.09,
+            "lastMs": 0,
+            "context": {
+              "count": 16
+            }
+          },
+          "draw.fish": {
+            "samples": 14,
+            "avgMs": 0,
+            "maxMs": 0.09,
+            "lastMs": 0,
+            "context": {
+              "count": 0
+            }
+          },
+          "draw.articulated": {
+            "samples": 14,
+            "avgMs": 0.07,
+            "maxMs": 0.5,
+            "lastMs": 0.5,
+            "context": {
+              "count": 1,
+              "parts": 8
+            }
+          },
+          "draw.sub": {
+            "samples": 14,
+            "avgMs": 0.17,
+            "maxMs": 1,
+            "lastMs": 1,
+            "context": {
+              "active": true,
+              "parts": 38
+            }
+          },
+          "draw.total": {
+            "samples": 13,
+            "avgMs": 7.54,
+            "maxMs": 63.18,
+            "lastMs": 7.2,
+            "context": {}
+          },
+          "props.refresh": {
+            "samples": 1,
+            "avgMs": 0.7,
+            "maxMs": 0.7,
+            "lastMs": 0.7,
+            "context": {
+              "queue": 8,
+              "props": 16
+            }
+          }
+        }
+      }
+    },
+    "after": {
+      "enabled": true,
+      "frame": 19,
+      "terrainDirtyReason": "merged:8",
+      "terrainMaskMutations": 1983,
+      "terrainContactSamples": 9277,
+      "propRefresh": {
+        "fullScans": 2,
+        "queued": 0,
+        "processed": 8,
+        "removed": 0,
+        "added": 0,
+        "lastReason": "merged:8"
+      },
+      "metrics": {
+        "frame.total": {
+          "samples": 23,
+          "avgMs": 10.05,
+          "maxMs": 65.77,
+          "lastMs": 8,
+          "context": {}
+        },
+        "worldgen.total": {
+          "samples": 1,
+          "avgMs": 5667.9,
+          "maxMs": 5667.9,
+          "lastMs": 5667.9,
+          "context": {
+            "biome": 3
+          }
+        },
+        "update.fish": {
+          "samples": 14,
+          "avgMs": 0,
+          "maxMs": 0.09,
+          "lastMs": 0,
+          "context": {
+            "count": 0
+          }
+        },
+        "update.articulated": {
+          "samples": 14,
+          "avgMs": 0.04,
+          "maxMs": 0.2,
+          "lastMs": 0.2,
+          "context": {
+            "count": 1,
+            "parts": 8
+          }
+        },
+        "update.total": {
+          "samples": 14,
+          "avgMs": 0.25,
+          "maxMs": 2.15,
+          "lastMs": 0.7,
+          "context": {}
+        },
+        "draw.world": {
+          "samples": 15,
+          "avgMs": 1.6,
+          "maxMs": 15.08,
+          "lastMs": 0,
+          "context": {
+            "dirty": false,
+            "chunks": 340
+          }
+        },
+        "draw.props": {
+          "samples": 15,
+          "avgMs": 0,
+          "maxMs": 0.09,
+          "lastMs": 0,
+          "context": {
+            "count": 16
+          }
+        },
+        "draw.fish": {
+          "samples": 15,
+          "avgMs": 0,
+          "maxMs": 0.09,
+          "lastMs": 0,
+          "context": {
+            "count": 0
+          }
+        },
+        "draw.articulated": {
+          "samples": 15,
+          "avgMs": 0.09,
+          "maxMs": 0.5,
+          "lastMs": 0.2,
+          "context": {
+            "count": 1,
+            "parts": 8
+          }
+        },
+        "draw.sub": {
+          "samples": 15,
+          "avgMs": 0.17,
+          "maxMs": 1,
+          "lastMs": 0.2,
+          "context": {
+            "active": true,
+            "parts": 38
+          }
+        },
+        "draw.total": {
+          "samples": 14,
+          "avgMs": 7.49,
+          "maxMs": 62.87,
+          "lastMs": 7.2,
+          "context": {}
+        },
+        "props.refresh": {
+          "samples": 1,
+          "avgMs": 0.7,
+          "maxMs": 0.7,
+          "lastMs": 0.7,
+          "context": {
+            "queue": 8,
+            "props": 16
+          }
+        },
+        "update.sub": {
+          "samples": 1,
+          "avgMs": 0.3,
+          "maxMs": 0.3,
+          "lastMs": 0.3,
+          "context": {
+            "tier": 2
+          }
+        }
+      }
+    }
+  },
+  "contactSheet": {
+    "htmlPath": "/mnt/nxt-dev/water9/runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-polish-contact-sheet.html",
+    "pngPath": "/mnt/nxt-dev/water9/runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-polish-contact-sheet.png",
+    "bytes": 1144272
+  },
+  "runtimeConfirmation": "Mining screenshots were captured from the actual Water9 #game canvas on a normal ?playtest=1 page; playtest commands only staged the scene and invoked real mineAt/updateLooseItems paths.",
+  "serverLogs": "\n  VITE v8.0.12  ready in 145 ms\n\n  ➜  Local:   http://127.0.0.1:5180/\n10:07:10 PM [vite] (client) page reload runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-polish-contact-sheet.html\n10:07:10 PM [vite] (client) page reload runs/water9-mining-polish-landmark-fps-2026-07-04/mining-proof/mining-polish-contact-sheet.html\n"
+}

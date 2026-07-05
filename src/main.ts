@@ -26,10 +26,12 @@ if (params.has('playtest') && Number.isFinite(playtestBiome) && playtestBiome >=
 
 if (!sandboxMode) renderHud();
 
-const forceCanvasRenderer = params.has('playtest') || sandboxMode;
+const rendererParam = params.get('renderer');
+const forceWebglRenderer = rendererParam === 'webgl' && !sandboxMode;
+const forceCanvasRenderer = !forceWebglRenderer;
 
 const game = new Phaser.Game({
-  type: forceCanvasRenderer ? Phaser.CANVAS : Phaser.AUTO,
+  type: forceCanvasRenderer ? Phaser.CANVAS : forceWebglRenderer ? Phaser.WEBGL : Phaser.AUTO,
   parent: 'game',
   backgroundColor: '#0b3741',
   scale: {

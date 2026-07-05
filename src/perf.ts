@@ -134,6 +134,10 @@ export function updatePerfHud(scene: DeepdiveScene) {
   const perf = scene.perfTelemetry;
   if (!perf?.enabled) return;
   perf.frame += 1;
+  if (perfHudDisabled()) {
+    document.querySelector<HTMLElement>('#perf-hud')?.remove();
+    return;
+  }
   const now = performance.now();
   if (now - perf.lastHudAt < 250) return;
   perf.lastHudAt = now;
@@ -167,6 +171,11 @@ export function updatePerfHud(scene: DeepdiveScene) {
     `props q${perf.propRefresh.queued} p${perf.propRefresh.processed} -${perf.propRefresh.removed} +${perf.propRefresh.added}`,
     `${counts} dirty ${perf.terrainDirtyReason}`,
   ].join('\n');
+}
+
+function perfHudDisabled() {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).get('perfHud') === '0';
 }
 
 function ensurePerfHud(): PerfHudElements | null {

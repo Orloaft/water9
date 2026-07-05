@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import type { Biome,CargoItem,DiverAnimation,Fish,FishSpecies,FloraSpecies,Hazard,InventoryItemKind,Quest,ScanRarity,ScanTarget,ShopItem,SpecialRoom,SubTier,SubVehicle,Tile,Upgrade,UpgradeId,VeinRule } from './types';
-import { audioKeys,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MARLIN_VOUCHER_DISCOUNT,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import type { Biome,CargoItem,DiverAnimation,EnvironmentBackgroundRepeatMode,EnvironmentDepthBand,EnvironmentPainterlyBackgroundRole,EnvironmentReadabilityRisk,Fish,FishSpecies,FloraSpecies,Hazard,InventoryItemKind,Quest,ScanRarity,ScanTarget,ShopItem,SpecialRoom,SubTier,SubVehicle,Tile,Upgrade,UpgradeId,VeinRule } from './types';
+import { audioKeys,BARGE_DOCK_Y,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MARLIN_VOUCHER_DISCOUNT,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
@@ -8,6 +8,7 @@ import { articulatedCreatureDefs, loadArticulatedAssets, shouldSpawnArticulatedC
 import { loadArticulatedDiverAssets } from './diver-articulated';
 import { clearFullscreenWarning,meter,renderHud,showFullscreenWarning } from './hud';
 import type { DeepdiveScene } from './scene';
+import phase3BackgroundManifestFile from '../public/assets/generated/background-phase3/background-phase3.manifest.json';
 
 export function generateTile(x: number, y: number): Tile {
   if (y < 7) return 'water';
@@ -405,6 +406,9 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
   scene.load.image('vent-base', assetPath('vent-base'));
   for (let i = 0; i < 4; i += 1) scene.load.image(`vent-steam-${i}`, assetPath(`vent-steam-${i}`));
   for (const key of parallaxTextureKeys()) scene.load.image(key, assetPath(key));
+  for (const asset of painterlyBackgroundManifest.filter((entry) => entry.availableInRuntime)) {
+    scene.load.image(asset.textureKey, asset.path);
+  }
   for (const key of uiTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of environmentTextureKeys()) scene.load.image(key, assetPath(key));
   for (const key of actualGptOreTextureKeys()) scene.load.image(key, assetPath(key));
@@ -446,6 +450,7 @@ export function parallaxTextureKeys() {
 export interface ParallaxLayerProfile {
   texturePrefix: string;
   fallbackPrefix: string;
+  repeatMode: EnvironmentBackgroundRepeatMode;
   horizontalSpeed: number;
   verticalSpeed: number;
   phaseX: number;
@@ -453,6 +458,8 @@ export interface ParallaxLayerProfile {
   alpha: number;
   tint: number;
   scale: number;
+  painterlyAssetId?: string;
+  painterlyAssetStatus?: 'available' | 'expected' | 'fallback';
 }
 
 export interface ParallaxProfile {
@@ -468,7 +475,438 @@ export interface ParallaxProfile {
   layers: ParallaxLayerProfile[];
 }
 
-const parallaxBaseProfiles: Record<Biome, Omit<ParallaxProfile, 'biome' | 'depthBand' | 'layers'> & { layers: Omit<ParallaxLayerProfile, 'alpha' | 'tint' | 'scale'>[]; tint: [number, number, number]; alpha: [number, number, number, number] }> = {
+export interface EnvironmentBandProfile {
+  id: EnvironmentDepthBand;
+  startDepth: number;
+  endDepth: number;
+  blendPx: number;
+  topColor: number;
+  bottomColor: number;
+  hazeColor: number;
+  hazeAlpha: number;
+  sedimentAlpha: number;
+  causticAlpha: number;
+  silhouetteAlpha: number;
+  anchorDensity: number;
+}
+
+export type WaterColumnLayerKind = 'haze' | 'sediment' | 'plankton' | 'caustic';
+export type WaterColumnBlendModeName = 'normal' | 'add';
+
+export interface WaterColumnLayerProfile {
+  id: string;
+  kind: WaterColumnLayerKind;
+  assetId: string;
+  textureKey: string;
+  repeatMode: EnvironmentBackgroundRepeatMode;
+  alpha: number;
+  color: number;
+  blendMode: WaterColumnBlendModeName;
+  scale: number;
+  tileScaleX: number;
+  tileScaleY: number;
+  parallaxX: number;
+  parallaxY: number;
+  driftX: number;
+  driftY: number;
+  phaseX: number;
+  phaseY: number;
+  depthGate: number;
+  sourceAlpha: number;
+  bandScale: number;
+  biomeScale: number;
+}
+
+export interface WaterColumnPostDarknessVeilProfile {
+  enabled: boolean;
+  layers: string[];
+  alpha: number;
+  particleAlpha: number;
+  color: number;
+  blendMode: WaterColumnBlendModeName;
+  driftX: number;
+  driftY: number;
+  guardRadius: number;
+  bandCount: number;
+  particleCount: number;
+}
+
+export interface EnvironmentAnchorSilhouette {
+  id: string;
+  kind: 'reef' | 'kelp' | 'wreck-rib' | 'vent-stone' | 'cable-chain' | 'brine-curtain';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  alpha: number;
+  color: number;
+  depthBand: EnvironmentDepthBand;
+  parallaxFactor: number;
+  textureKey?: string;
+  assetId?: string;
+  assetStatus?: 'available';
+  textureCrop?: [number, number, number, number];
+}
+
+export interface PainterlyBackgroundManifestEntry {
+  id: string;
+  label: string;
+  textureKey: string;
+  path: string;
+  sourcePath: string;
+  sourceStatus: string;
+  role: EnvironmentPainterlyBackgroundRole;
+  band: EnvironmentDepthBand | 'all';
+  repeatMode: EnvironmentBackgroundRepeatMode;
+  safeOpacity: number;
+  scaleRange: [number, number];
+  parallaxRange: [number, number];
+  readabilityRisk: EnvironmentReadabilityRisk;
+  trimCrop?: [number, number, number, number];
+  availableInRuntime: boolean;
+  fallbackTexturePrefix?: string;
+  notes: string;
+}
+
+interface GeneratedPainterlyBackgroundAsset {
+  id: string;
+  role: EnvironmentPainterlyBackgroundRole;
+  band?: EnvironmentDepthBand;
+  label?: string;
+  repeatMode: EnvironmentBackgroundRepeatMode;
+  path: string;
+  status: string;
+  safeOpacity: number;
+  scaleRange: [number, number];
+  parallaxRange: [number, number];
+  readabilityRisk: EnvironmentReadabilityRisk;
+  trimCrop?: [number, number, number, number];
+}
+
+const phase3LandmarkBands: Record<string, EnvironmentDepthBand> = {
+  'kelp-curtain-cluster': 'upper',
+  'reef-arch-distance': 'upper',
+  'cable-buoy-chain': 'upper',
+  'drowned-mine-structure': 'mid',
+  'vent-brine-curtain': 'transitionDeep',
+  'biome-brine-vent-sulfide-shelf': 'mid',
+  'biome-midnight-black-coral-ribs': 'lower',
+  'biome-ruins-vault-causeway-lattice': 'lower',
+};
+
+const phase4SharedLandmarkBands: Partial<Record<EnvironmentDepthBand, string[]>> = {
+  lower: ['drowned-mine-structure', 'cable-buoy-chain', 'vent-brine-curtain'],
+  transitionDeep: ['vent-brine-curtain', 'drowned-mine-structure'],
+};
+
+const normalBiome1OrganicBands: EnvironmentDepthBand[] = ['upper', 'mid', 'lower', 'transitionDeep'];
+const normalBiome1OrganicLandmarkId = 'biome-shallows-organic-reef-shelf';
+const normalBiome1OrganicBandPlateId = 'biome1-organic-shallow-reef-band';
+
+const biomeLandmarkPools: Record<Biome, Partial<Record<EnvironmentDepthBand, string[]>>> = {
+  1: {
+    surface: [
+      normalBiome1OrganicLandmarkId,
+    ],
+    upper: [
+      normalBiome1OrganicLandmarkId,
+    ],
+    mid: [
+      normalBiome1OrganicLandmarkId,
+    ],
+    lower: [
+      normalBiome1OrganicLandmarkId,
+    ],
+    transitionDeep: [
+      normalBiome1OrganicLandmarkId,
+    ],
+  },
+  2: {
+    surface: [],
+    upper: [
+      'biome-brine-vent-sulfide-shelf',
+    ],
+    mid: [
+      'biome-brine-vent-sulfide-shelf',
+      'biome-brine-vent-sulfide-shelf',
+    ],
+    lower: [
+      'biome-brine-vent-sulfide-shelf',
+    ],
+    transitionDeep: [
+      'phase11-transition-near-pipe-cable-cathedral',
+      'phase11-transition-mid-collapsed-gantry-brine-reef',
+      'phase8-transition-brine-curtain-ruin',
+      'phase9-transition-organic-vent-garden',
+    ],
+  },
+  3: {
+    surface: [],
+    upper: [],
+    mid: [],
+    lower: [
+      'biome-midnight-black-coral-ribs',
+    ],
+    transitionDeep: [
+      'phase11-transition-far-drowned-signal-station',
+      'phase8-transition-rib-field',
+      'phase9-transition-organic-rib-reef',
+      'phase5-transition-pressure-ribs-wide',
+    ],
+  },
+  4: {
+    surface: [
+      'biome-ruins-vault-causeway-lattice',
+    ],
+    upper: [
+      'biome-ruins-vault-causeway-lattice',
+    ],
+    mid: [
+      'biome-ruins-vault-causeway-lattice',
+    ],
+    lower: [
+      'biome-ruins-vault-causeway-lattice',
+      'biome-ruins-vault-causeway-lattice',
+    ],
+    transitionDeep: [
+      'biome-ruins-vault-causeway-lattice',
+      'phase10-transition-drowned-signal-station',
+      'phase8-transition-collapsed-sub-elevator',
+    ],
+  },
+};
+
+function runtimeAssetPath(sourcePath: string) {
+  return sourcePath.startsWith('public/') ? `/${sourcePath.slice('public/'.length)}` : sourcePath;
+}
+
+function textureKeyFromPath(sourcePath: string) {
+  return sourcePath.split('/').pop()?.replace(/\.png$/i, '') ?? sourcePath;
+}
+
+function generatedAssetBand(asset: GeneratedPainterlyBackgroundAsset): EnvironmentDepthBand | 'all' {
+  if (asset.band) return asset.band;
+  if (asset.role === 'landmark') return phase3LandmarkBands[asset.id] ?? 'mid';
+  return 'all';
+}
+
+function generatedAssetFallbackPrefix(asset: GeneratedPainterlyBackgroundAsset) {
+  const band = generatedAssetBand(asset);
+  return band === 'lower' || band === 'transitionDeep' ? 'parallax-deep' : 'parallax-shallow';
+}
+
+function generatedAssetNotes(asset: GeneratedPainterlyBackgroundAsset) {
+  if (asset.role === 'bandPlate') return 'Generated Phase 3 band plate from the painterly source atlas; rendered with bandClampY over the Phase 2 compositor.';
+  if (asset.role === 'landmark') return 'Generated Phase 3 chroma-key cutout; rendered only as sparse anchored background scenery.';
+  return 'Generated Phase 3 atmospheric mask; rendered as a low-alpha world-space water-column layer when the active depth band allows it.';
+}
+
+export const painterlyBackgroundManifest: PainterlyBackgroundManifestEntry[] = (
+  phase3BackgroundManifestFile.assets as unknown as GeneratedPainterlyBackgroundAsset[]
+).map((asset) => ({
+  id: asset.id,
+  label: asset.label ?? asset.id,
+  textureKey: textureKeyFromPath(asset.path),
+  path: runtimeAssetPath(asset.path),
+  sourcePath: asset.path,
+  sourceStatus: asset.status,
+  role: asset.role,
+  band: generatedAssetBand(asset),
+  repeatMode: asset.repeatMode,
+  safeOpacity: asset.safeOpacity,
+  scaleRange: asset.scaleRange,
+  parallaxRange: asset.parallaxRange,
+  readabilityRisk: asset.readabilityRisk,
+  trimCrop: asset.trimCrop,
+  availableInRuntime: asset.status === 'ready',
+  fallbackTexturePrefix: generatedAssetFallbackPrefix(asset),
+  notes: generatedAssetNotes(asset),
+}));
+
+function painterlyAssetsFor(role: EnvironmentPainterlyBackgroundRole, band: EnvironmentDepthBand | 'all') {
+  return painterlyBackgroundManifest.filter((asset) => (
+    asset.role === role
+    && (asset.band === band || asset.band === 'all' || band === 'all')
+  ));
+}
+
+function painterlyLandmarksForBand(band: EnvironmentDepthBand) {
+  const direct = painterlyAssetsFor('landmark', band);
+  const sharedIds = phase4SharedLandmarkBands[band] ?? [];
+  if (!sharedIds.length) return direct;
+  const shared = painterlyBackgroundManifest.filter((asset) => (
+    asset.role === 'landmark'
+    && sharedIds.includes(asset.id)
+    && !direct.some((directAsset) => directAsset.id === asset.id)
+  ));
+  return [...direct, ...shared];
+}
+
+function genericPainterlyLandmarksForBand(band: EnvironmentDepthBand) {
+  return painterlyLandmarksForBand(band).filter((asset) => !asset.id.startsWith('biome-'));
+}
+
+function painterlyLandmarksById(ids: string[]) {
+  return ids
+    .map((id) => painterlyBackgroundManifest.find((asset) => asset.id === id && asset.role === 'landmark' && asset.availableInRuntime))
+    .filter((asset): asset is PainterlyBackgroundManifestEntry => Boolean(asset));
+}
+
+function biomeLandmarksFor(biome: Biome, band: EnvironmentDepthBand) {
+  return painterlyLandmarksById(biomeLandmarkPools[biome]?.[band] ?? []);
+}
+
+function isAuthoredRuntimeLandmark(asset: PainterlyBackgroundManifestEntry) {
+  return asset.id.startsWith('biome-') || asset.id.startsWith('phase11-transition-');
+}
+
+function pickWeightedPainterlyLandmark(assets: PainterlyBackgroundManifestEntry[], slot: number, band: EnvironmentBandProfile, seedOffset: number) {
+  if (!assets.length) return null;
+  return assets[Math.floor(hash(slot + 3, band.startDepth + 11, rng.seed + seedOffset) * assets.length)];
+}
+
+function normalBiome1OrganicLandmarksFor(biome: Biome, band: EnvironmentDepthBand) {
+  if (biome !== 1 || !normalBiome1OrganicBands.includes(band)) return [];
+  return [normalBiome1OrganicLandmarkId]
+    .map((id) => painterlyBackgroundManifest.find((asset) => asset.id === id && asset.role === 'landmark' && asset.availableInRuntime))
+    .filter((asset): asset is PainterlyBackgroundManifestEntry => Boolean(asset));
+}
+
+function normalBiome1OrganicBandPlateFor(biome: Biome, band: EnvironmentDepthBand): PainterlyBackgroundManifestEntry | null {
+  if (biome !== 1 || band === 'surface' || !normalBiome1OrganicBands.includes(band)) return null;
+  const organicBand = painterlyBackgroundManifest.find((asset) => (
+    asset.id === normalBiome1OrganicBandPlateId
+    && asset.role === 'bandPlate'
+    && asset.availableInRuntime
+  ));
+  if (!organicBand) return null;
+  const safeOpacity = band === 'upper' ? 0.42 : band === 'mid' ? 0.34 : band === 'lower' ? 0.28 : 0.22;
+  return {
+    ...organicBand,
+    id: `biome1-organic-${band}-reef-band`,
+    band,
+    safeOpacity,
+    notes: `${organicBand.notes} Reused at tuned opacity for B1 ${band} without Phase 11 industrial silhouettes.`,
+  };
+}
+
+function authoredBiomeLandmarkAlpha(biome: Biome, band: EnvironmentDepthBand) {
+  if (band === 'surface') return biome === 1 ? 0.26 : biome === 3 ? 0.98 : 1;
+  if (biome === 2) return 0.74;
+  if (biome === 3) return 0.34;
+  if (biome === 4) return 0.74;
+  return 1;
+}
+
+function authoredBiomeLandmarkHeightMultiplier(biome: Biome, band: EnvironmentDepthBand) {
+  if (band === 'surface') {
+    return biome === 1 ? 0.36 : biome === 2 ? 1.62 : biome === 3 ? 1.58 : biome === 4 ? 1.64 : 1.48;
+  }
+  return biome === 1 ? 0.92 : biome === 2 ? 1 : biome === 3 ? 1.24 : biome === 4 ? 1.14 : 1.2;
+}
+
+function authoredBiomeLandmarkWidthMultiplier(biome: Biome, band: EnvironmentDepthBand) {
+  if (band === 'surface') {
+    return biome === 1 ? 2.7 : biome === 2 ? 1.98 : biome === 3 ? 1.86 : biome === 4 ? 2.42 : 2.4;
+  }
+  return biome === 1 ? 1.48 : biome === 2 ? 3.85 : biome === 3 ? 1.48 : biome === 4 ? 2.05 : 2.05;
+}
+
+function mergePainterlyAssets(...groups: PainterlyBackgroundManifestEntry[][]) {
+  const merged: PainterlyBackgroundManifestEntry[] = [];
+  const seen = new Set<string>();
+  for (const group of groups) {
+    for (const asset of group) {
+      if (seen.has(asset.id)) continue;
+      seen.add(asset.id);
+      merged.push(asset);
+    }
+  }
+  return merged;
+}
+
+function smoothstep(value: number) {
+  const t = Phaser.Math.Clamp(value, 0, 1);
+  return t * t * (3 - 2 * t);
+}
+
+function bandLayerVisibility(activeBand: EnvironmentDepthBand, layerBand: EnvironmentDepthBand) {
+  if (activeBand === 'transitionDeep') return layerBand === 'transitionDeep' ? 1 : layerBand === 'lower' ? 0.2 : 0.05;
+  if (activeBand === 'lower') return layerBand === 'lower' ? 1 : layerBand === 'transitionDeep' ? 0.16 : layerBand === 'mid' ? 0.18 : 0.06;
+  if (activeBand === 'mid') return layerBand === 'mid' ? 1 : layerBand === 'upper' ? 0.22 : layerBand === 'lower' ? 0.2 : 0.08;
+  if (activeBand === 'upper') return layerBand === 'upper' ? 1 : layerBand === 'surface' ? 0.35 : layerBand === 'mid' ? 0.18 : 0.06;
+  return layerBand === 'surface' ? 1 : layerBand === 'upper' ? 0.2 : 0.05;
+}
+
+function painterlyBandPlateFor(band: EnvironmentDepthBand, biome: Biome = state.biome) {
+  const normalBiome1OrganicBand = normalBiome1OrganicBandPlateFor(biome, band);
+  if (normalBiome1OrganicBand) return normalBiome1OrganicBand;
+  const assets = painterlyAssetsFor('bandPlate', band);
+  if (band === 'transitionDeep') {
+    return assets.find((asset) => asset.availableInRuntime && asset.id === 'phase11-transition-deep-gpt-band')
+      ?? assets.find((asset) => asset.availableInRuntime)
+      ?? assets[0]
+      ?? null;
+  }
+  return assets[0] ?? null;
+}
+
+export interface EnvironmentVisualProfile {
+  id: string;
+  biome: Biome;
+  depthBand: EnvironmentDepthBand;
+  activeBand: EnvironmentBandProfile;
+  activeBandBlend: {
+    from: EnvironmentDepthBand;
+    to: EnvironmentDepthBand;
+    progress: number;
+  };
+  bands: EnvironmentBandProfile[];
+  cameraClearColor: string;
+  background: {
+    layers: Array<ParallaxLayerProfile & {
+      index: number;
+      intendedRepeatMode: EnvironmentBackgroundRepeatMode;
+      layerKind: 'scenic' | 'procedural';
+      seamless: boolean;
+      band: EnvironmentDepthBand | 'all';
+    }>;
+    worldSpaceNoise: {
+      repeatMode: EnvironmentBackgroundRepeatMode;
+      cellSize: number;
+      alpha: number;
+      color: number;
+      assets: PainterlyBackgroundManifestEntry[];
+      layers: WaterColumnLayerProfile[];
+      postDarknessVeil: WaterColumnPostDarknessVeilProfile;
+    };
+    anchors: {
+      repeatMode: EnvironmentBackgroundRepeatMode;
+      count: number;
+      assets: PainterlyBackgroundManifestEntry[];
+    };
+    manifest: PainterlyBackgroundManifestEntry[];
+  };
+  surface: {
+    waterlineY: number;
+    fadeDistancePx: number;
+    skyTopColor: number;
+    skyBottomColor: number;
+    waterTopColor: number;
+    waterBottomColor: number;
+    stripeAlphas: [number, number, number];
+  };
+  overlay: ParallaxProfile['overlay'] & {
+    mistStepPx: number;
+  };
+  darkness: {
+    value: number;
+    ambientOpacity: number;
+    maskOpacity: number;
+  };
+}
+
+const parallaxBaseProfiles: Record<Biome, Omit<ParallaxProfile, 'biome' | 'depthBand' | 'layers'> & { layers: Omit<ParallaxLayerProfile, 'alpha' | 'tint' | 'scale' | 'repeatMode'>[]; tint: [number, number, number]; alpha: [number, number, number, number] }> = {
   1: {
     id: 'shallow-sunlit',
     overlay: { alpha: 0.13, color: 0xb5fff5, density: 0.78, drift: 14 },
@@ -519,6 +957,732 @@ const parallaxBaseProfiles: Record<Biome, Omit<ParallaxProfile, 'biome' | 'depth
   },
 };
 
+const shallowsBands: EnvironmentBandProfile[] = [
+  {
+    id: 'surface',
+    startDepth: 0,
+    endDepth: 140,
+    blendPx: 190,
+    topColor: 0x2f93a4,
+    bottomColor: 0x0d6071,
+    hazeColor: 0xbffbf0,
+    hazeAlpha: 0.045,
+    sedimentAlpha: 0.018,
+    causticAlpha: 0.115,
+    silhouetteAlpha: 0.035,
+    anchorDensity: 0.35,
+  },
+  {
+    id: 'upper',
+    startDepth: 90,
+    endDepth: 520,
+    blendPx: 220,
+    topColor: 0x0c7180,
+    bottomColor: 0x0b4b62,
+    hazeColor: 0x9deee4,
+    hazeAlpha: 0.055,
+    sedimentAlpha: 0.03,
+    causticAlpha: 0.075,
+    silhouetteAlpha: 0.06,
+    anchorDensity: 0.56,
+  },
+  {
+    id: 'mid',
+    startDepth: 430,
+    endDepth: 980,
+    blendPx: 250,
+    topColor: 0x0a465f,
+    bottomColor: 0x092f4b,
+    hazeColor: 0x83cfd2,
+    hazeAlpha: 0.07,
+    sedimentAlpha: 0.045,
+    causticAlpha: 0.038,
+    silhouetteAlpha: 0.075,
+    anchorDensity: 0.68,
+  },
+  {
+    id: 'lower',
+    startDepth: 880,
+    endDepth: 1380,
+    blendPx: 270,
+    topColor: 0x082d49,
+    bottomColor: 0x061d36,
+    hazeColor: 0x668ea8,
+    hazeAlpha: 0.085,
+    sedimentAlpha: 0.055,
+    causticAlpha: 0.015,
+    silhouetteAlpha: 0.078,
+    anchorDensity: 0.76,
+  },
+  {
+    id: 'transitionDeep',
+    startDepth: 1260,
+    endDepth: 1720,
+    blendPx: 300,
+    topColor: 0x1e5272,
+    bottomColor: 0x13314e,
+    hazeColor: 0xa8cfe2,
+    hazeAlpha: 0.026,
+    sedimentAlpha: 0.012,
+    causticAlpha: 0.006,
+    silhouetteAlpha: 0.165,
+    anchorDensity: 0.88,
+  },
+];
+
+function lerpColor(a: number, b: number, t: number) {
+  const ar = (a >> 16) & 0xff;
+  const ag = (a >> 8) & 0xff;
+  const ab = a & 0xff;
+  const br = (b >> 16) & 0xff;
+  const bg = (b >> 8) & 0xff;
+  const bb = b & 0xff;
+  return (
+    (Math.round(Phaser.Math.Linear(ar, br, t)) << 16)
+    | (Math.round(Phaser.Math.Linear(ag, bg, t)) << 8)
+    | Math.round(Phaser.Math.Linear(ab, bb, t))
+  );
+}
+
+function blendBands(from: EnvironmentBandProfile, to: EnvironmentBandProfile, progress: number): EnvironmentBandProfile {
+  const t = Phaser.Math.Clamp(progress, 0, 1);
+  return {
+    ...to,
+    topColor: lerpColor(from.topColor, to.topColor, t),
+    bottomColor: lerpColor(from.bottomColor, to.bottomColor, t),
+    hazeColor: lerpColor(from.hazeColor, to.hazeColor, t),
+    hazeAlpha: Phaser.Math.Linear(from.hazeAlpha, to.hazeAlpha, t),
+    sedimentAlpha: Phaser.Math.Linear(from.sedimentAlpha, to.sedimentAlpha, t),
+    causticAlpha: Phaser.Math.Linear(from.causticAlpha, to.causticAlpha, t),
+    silhouetteAlpha: Phaser.Math.Linear(from.silhouetteAlpha, to.silhouetteAlpha, t),
+    anchorDensity: Phaser.Math.Linear(from.anchorDensity, to.anchorDensity, t),
+  };
+}
+
+function shallowsBandForDepth(depth: number) {
+  const index = depth < 120
+    ? 0
+    : depth < 520
+      ? 1
+      : depth < 1040
+        ? 2
+        : depth < 1440
+          ? 3
+          : 4;
+  const active = shallowsBands[index];
+  const previous = shallowsBands[Math.max(0, index - 1)];
+  const blendPx = Math.max(1, active.blendPx / 6);
+  const blendProgress = index === 0 ? 1 : Phaser.Math.Clamp((depth - active.startDepth) / blendPx, 0, 1);
+  return {
+    band: index === 0 ? active : blendBands(previous, active, blendProgress),
+    blend: {
+      from: previous.id,
+      to: active.id,
+      progress: blendProgress,
+    },
+  };
+}
+
+type WaterColumnAlphaMetric = 'hazeAlpha' | 'sedimentAlpha' | 'causticAlpha';
+
+const waterColumnTextureMaskIds = [
+  'broad-fog-mottle',
+  'sediment-flecks',
+  'plankton-speckle',
+  'soft-caustic-ribbons',
+  'lamp-scattering-bloom',
+];
+
+const waterColumnBiomeIntensity: Record<Biome, number> = {
+  1: 1.18,
+  2: 1.08,
+  3: 0.68,
+  4: 0.92,
+};
+
+const waterColumnBiomeBandScales: Record<Biome, Record<EnvironmentDepthBand, Record<WaterColumnLayerKind, number>>> = {
+  1: {
+    surface: { haze: 1.08, sediment: 0.78, plankton: 1.08, caustic: 0.58 },
+    upper: { haze: 0.96, sediment: 0.86, plankton: 0.92, caustic: 0.42 },
+    mid: { haze: 0.42, sediment: 0.62, plankton: 0.34, caustic: 0.08 },
+    lower: { haze: 0.32, sediment: 0.48, plankton: 0.24, caustic: 0.02 },
+    transitionDeep: { haze: 0.16, sediment: 0.22, plankton: 0.14, caustic: 0 },
+  },
+  2: {
+    surface: { haze: 0.56, sediment: 0.45, plankton: 0.68, caustic: 0.42 },
+    upper: { haze: 0.62, sediment: 0.72, plankton: 0.55, caustic: 0.24 },
+    mid: { haze: 0.18, sediment: 0.16, plankton: 0.28, caustic: 0 },
+    lower: { haze: 0.22, sediment: 0.24, plankton: 0.12, caustic: 0 },
+    transitionDeep: { haze: 0.22, sediment: 0.28, plankton: 0.12, caustic: 0 },
+  },
+  3: {
+    surface: { haze: 0.42, sediment: 0.3, plankton: 0.4, caustic: 0.28 },
+    upper: { haze: 0.42, sediment: 0.38, plankton: 0.35, caustic: 0.16 },
+    mid: { haze: 0.56, sediment: 0.66, plankton: 0.28, caustic: 0.03 },
+    lower: { haze: 0.72, sediment: 0.78, plankton: 0.34, caustic: 0 },
+    transitionDeep: { haze: 0.34, sediment: 0.42, plankton: 0.24, caustic: 0 },
+  },
+  4: {
+    surface: { haze: 0.38, sediment: 0.24, plankton: 0.3, caustic: 0.18 },
+    upper: { haze: 0.4, sediment: 0.32, plankton: 0.28, caustic: 0.1 },
+    mid: { haze: 0.5, sediment: 0.52, plankton: 0.22, caustic: 0.02 },
+    lower: { haze: 1.24, sediment: 1.08, plankton: 0.42, caustic: 0 },
+    transitionDeep: { haze: 0.72, sediment: 0.62, plankton: 0.24, caustic: 0 },
+  },
+};
+
+const waterColumnBiomeTints: Record<Biome, Record<WaterColumnLayerKind, number>> = {
+  1: { haze: 0x9ff6ea, sediment: 0x89d7ca, plankton: 0xd1fff2, caustic: 0xe8fff2 },
+  2: { haze: 0x8ed7bd, sediment: 0xb5d6a4, plankton: 0x98f0c7, caustic: 0xc9fff0 },
+  3: { haze: 0x6f8dbb, sediment: 0x98acc8, plankton: 0xd9eaff, caustic: 0x9fc4e6 },
+  4: { haze: 0xaec7da, sediment: 0xb7c4cf, plankton: 0xd5e9f6, caustic: 0xacc9dd },
+};
+
+const waterColumnLayerRecipes: Array<{
+  assetId: string;
+  kind: WaterColumnLayerKind;
+  alphaMetric: WaterColumnAlphaMetric;
+  alphaMultiplier: number;
+  alphaCap: number;
+  blendMode: WaterColumnBlendModeName;
+  scaleT: number;
+  scaleMultiplier: number;
+  tileScaleX: number;
+  tileScaleY: number;
+  parallaxX: number;
+  parallaxY: number;
+  driftX: number;
+  driftY: number;
+  phaseX: number;
+  phaseY: number;
+}> = [
+  {
+    assetId: 'broad-fog-mottle',
+    kind: 'haze',
+    alphaMetric: 'hazeAlpha',
+    alphaMultiplier: 0.58,
+    alphaCap: 0.032,
+    blendMode: 'normal',
+    scaleT: 0.94,
+    scaleMultiplier: 1.9,
+    tileScaleX: 1.34,
+    tileScaleY: 0.86,
+    parallaxX: 0.18,
+    parallaxY: 0.06,
+    driftX: 1.9,
+    driftY: 0.16,
+    phaseX: 97,
+    phaseY: 311,
+  },
+  {
+    assetId: 'sediment-flecks',
+    kind: 'sediment',
+    alphaMetric: 'sedimentAlpha',
+    alphaMultiplier: 0.62,
+    alphaCap: 0.019,
+    blendMode: 'normal',
+    scaleT: 0.56,
+    scaleMultiplier: 1.25,
+    tileScaleX: 1.72,
+    tileScaleY: 0.72,
+    parallaxX: 0.34,
+    parallaxY: 0.15,
+    driftX: -3.1,
+    driftY: 0.52,
+    phaseX: 421,
+    phaseY: 73,
+  },
+  {
+    assetId: 'plankton-speckle',
+    kind: 'plankton',
+    alphaMetric: 'sedimentAlpha',
+    alphaMultiplier: 0.56,
+    alphaCap: 0.012,
+    blendMode: 'add',
+    scaleT: 0.34,
+    scaleMultiplier: 1.05,
+    tileScaleX: 1.18,
+    tileScaleY: 1.06,
+    parallaxX: 0.48,
+    parallaxY: 0.22,
+    driftX: 2.25,
+    driftY: -0.42,
+    phaseX: 733,
+    phaseY: 197,
+  },
+  {
+    assetId: 'soft-caustic-ribbons',
+    kind: 'caustic',
+    alphaMetric: 'causticAlpha',
+    alphaMultiplier: 0.28,
+    alphaCap: 0.018,
+    blendMode: 'add',
+    scaleT: 0.8,
+    scaleMultiplier: 2.05,
+    tileScaleX: 1.36,
+    tileScaleY: 0.82,
+    parallaxX: 0.25,
+    parallaxY: 0.05,
+    driftX: 7.4,
+    driftY: 0.12,
+    phaseX: 251,
+    phaseY: 587,
+  },
+];
+
+function waterColumnTextureMaskAssets() {
+  return waterColumnTextureMaskIds
+    .map((id) => painterlyBackgroundManifest.find((asset) => asset.id === id && asset.role === 'textureMask' && asset.availableInRuntime))
+    .filter((asset): asset is PainterlyBackgroundManifestEntry => Boolean(asset));
+}
+
+function waterColumnDepthGate(kind: WaterColumnLayerKind, depth: number, activeBand: EnvironmentDepthBand) {
+  if (kind === 'caustic') {
+    if (activeBand === 'surface') return Phaser.Math.Clamp((620 - depth) / 620, 0, 1);
+    if (activeBand === 'upper') return Phaser.Math.Clamp((560 - depth) / 520, 0, 0.72);
+    return 0;
+  }
+  if (kind === 'plankton' && (activeBand === 'lower' || activeBand === 'transitionDeep')) return 0.72;
+  if (activeBand === 'transitionDeep') return 0.62;
+  return 1;
+}
+
+function waterColumnMaskLayersFor(biome: Biome, depth: number, activeBand: EnvironmentBandProfile): WaterColumnLayerProfile[] {
+  const assets = waterColumnTextureMaskAssets();
+  const biomeScale = waterColumnBiomeIntensity[biome];
+  const bandScales = waterColumnBiomeBandScales[biome][activeBand.id];
+  const tintSet = waterColumnBiomeTints[biome];
+  return waterColumnLayerRecipes
+    .map((recipe) => {
+      const asset = assets.find((candidate) => candidate.id === recipe.assetId);
+      if (!asset) return null;
+      const sourceAlpha = activeBand[recipe.alphaMetric];
+      const bandScale = bandScales[recipe.kind];
+      const depthGate = waterColumnDepthGate(recipe.kind, depth, activeBand.id);
+      const rectangularPaneGuard = biome === 2 && (activeBand.id === 'mid' || activeBand.id === 'lower')
+        ? recipe.kind === 'haze' || recipe.kind === 'sediment'
+          ? 0.14
+          : recipe.kind === 'plankton'
+            ? 0.42
+            : 0
+        : 1;
+      const alpha = Phaser.Math.Clamp(
+        Math.min(recipe.alphaCap, asset.safeOpacity * 0.28, sourceAlpha * recipe.alphaMultiplier * bandScale * biomeScale * rectangularPaneGuard) * depthGate,
+        0,
+        recipe.alphaCap,
+      );
+      const scale = Phaser.Math.Linear(asset.scaleRange[0], asset.scaleRange[1], recipe.scaleT) * recipe.scaleMultiplier;
+      return {
+        id: `${activeBand.id}-${recipe.assetId}`,
+        kind: recipe.kind,
+        assetId: asset.id,
+        textureKey: asset.textureKey,
+        repeatMode: asset.repeatMode,
+        alpha,
+        color: lerpColor(tintSet[recipe.kind], activeBand.hazeColor, recipe.kind === 'caustic' ? 0.35 : 0.55),
+        blendMode: recipe.blendMode,
+        scale,
+        tileScaleX: recipe.tileScaleX,
+        tileScaleY: recipe.tileScaleY,
+        parallaxX: Phaser.Math.Linear(asset.parallaxRange[0], asset.parallaxRange[1], recipe.parallaxX),
+        parallaxY: recipe.parallaxY,
+        driftX: recipe.driftX,
+        driftY: recipe.driftY,
+        phaseX: recipe.phaseX + biome * 41,
+        phaseY: recipe.phaseY + shallowsBands.findIndex((band) => band.id === activeBand.id) * 67,
+        depthGate,
+        sourceAlpha,
+        bandScale,
+        biomeScale,
+      };
+    })
+    .filter((layer): layer is WaterColumnLayerProfile => Boolean(layer));
+}
+
+function waterColumnPostDarknessVeilFor(biome: Biome, activeBand: EnvironmentBandProfile): WaterColumnPostDarknessVeilProfile {
+  if (biome === 2 && activeBand.id === 'mid') {
+    return {
+      enabled: false,
+      layers: ['horizontal-brine-ribbons', 'suspended-sediment-flecks'],
+      alpha: 0,
+      particleAlpha: 0,
+      color: 0x86bca9,
+      blendMode: 'normal',
+      driftX: -7.4,
+      driftY: 0.22,
+      guardRadius: 176,
+      bandCount: 0,
+      particleCount: 0,
+    };
+  }
+  if (biome === 3 && activeBand.id === 'lower') {
+    return {
+      enabled: true,
+      layers: ['midnight-cold-water-haze', 'sparse-marine-snow'],
+      alpha: 0.052,
+      particleAlpha: 0.014,
+      color: 0x6f8dbb,
+      blendMode: 'normal',
+      driftX: -2.1,
+      driftY: 0.1,
+      guardRadius: 118,
+      bandCount: 10,
+      particleCount: 60,
+    };
+  }
+  if (biome === 4 && activeBand.id === 'lower') {
+    return {
+      enabled: true,
+      layers: ['cold-ruin-veil', 'fine-abyssal-particulate'],
+      alpha: 0.066,
+      particleAlpha: 0.02,
+      color: 0xa4bfd0,
+      blendMode: 'normal',
+      driftX: -2.6,
+      driftY: 0.12,
+      guardRadius: 130,
+      bandCount: 17,
+      particleCount: 108,
+    };
+  }
+  return {
+    enabled: false,
+    layers: [],
+    alpha: 0,
+    particleAlpha: 0,
+    color: activeBand.hazeColor,
+    blendMode: 'normal',
+    driftX: 0,
+    driftY: 0,
+    guardRadius: 0,
+    bandCount: 0,
+    particleCount: 0,
+  };
+}
+
+export function environmentAnchorSilhouettesFor(
+  profile: Pick<EnvironmentVisualProfile, 'activeBand' | 'depthBand'> & { biome?: Biome },
+  viewLeft: number,
+  viewRight: number,
+  viewTop?: number,
+  viewBottom?: number,
+): EnvironmentAnchorSilhouette[] {
+  const band = profile.activeBand;
+  const biome = profile.biome ?? state.biome;
+  const biomeLandmarks = biomeLandmarksFor(biome, band.id);
+  const authoredBiomeLandmarks = biomeLandmarks.filter(isAuthoredRuntimeLandmark);
+  if (band.id === 'surface' && authoredBiomeLandmarks.length === 0) return [];
+  const normalBiome1OrganicLandmarks = normalBiome1OrganicLandmarksFor(biome, band.id);
+  const strictBiome1OrganicLandmark = biome === 1 && band.id !== 'surface' && normalBiome1OrganicLandmarks.length > 0;
+  const strictBiomeNormalLandmarks = band.id !== 'transitionDeep' && biome !== 1 && authoredBiomeLandmarks.length > 0;
+  const brineBiomeNormalLandmark = biome === 2 && strictBiomeNormalLandmarks;
+  const midnightBiomeNormalLandmark = biome === 3 && strictBiomeNormalLandmarks;
+  const normalGameplayLandmarkBudget = brineBiomeNormalLandmark || midnightBiomeNormalLandmark || (biome === 4 && strictBiomeNormalLandmarks)
+    ? 1
+    : Number.POSITIVE_INFINITY;
+  const phase7TransitionPlanes = band.id === 'transitionDeep'
+    ? painterlyLandmarksForBand(band.id).filter((asset) => asset.availableInRuntime && asset.id.startsWith('phase7-transition-'))
+    : [];
+  const phase8TransitionLandmarks = band.id === 'transitionDeep'
+    ? painterlyLandmarksForBand(band.id).filter((asset) => asset.availableInRuntime && asset.id.startsWith('phase8-transition-'))
+    : [];
+  const phase9TransitionLandmarks = band.id === 'transitionDeep'
+    ? painterlyLandmarksForBand(band.id).filter((asset) => asset.availableInRuntime && asset.id.startsWith('phase9-transition-'))
+    : [];
+  const phase10TransitionLandmarks = band.id === 'transitionDeep'
+    ? painterlyLandmarksForBand(band.id).filter((asset) => asset.availableInRuntime && asset.id.startsWith('phase10-transition-'))
+    : [];
+  const phase11TransitionLandmarks = band.id === 'transitionDeep' && biome !== 1
+    ? painterlyLandmarksForBand(band.id).filter((asset) => asset.availableInRuntime && asset.id.startsWith('phase11-transition-'))
+    : [];
+  const spacing = strictBiome1OrganicLandmark
+    ? 980
+    : strictBiomeNormalLandmarks
+    ? (biome === 2 ? 2600 : biome === 3 ? 940 : biome === 4 ? 820 : 1120)
+    : band.id === 'lower' ? 360 : band.id === 'transitionDeep' ? (phase11TransitionLandmarks.length ? 620 : phase10TransitionLandmarks.length ? 1240 : 680) : 560;
+  const startSlot = Math.floor(viewLeft / spacing) - 1;
+  const endSlot = Math.ceil(viewRight / spacing) + 1;
+  const anchors: EnvironmentAnchorSilhouette[] = [];
+  const genericBandLandmarks = genericPainterlyLandmarksForBand(band.id);
+  const landmarkCandidates = biome === 1 && band.id !== 'surface'
+    ? normalBiome1OrganicLandmarks
+    : strictBiomeNormalLandmarks
+      ? authoredBiomeLandmarks
+      : mergePainterlyAssets(biomeLandmarks, genericBandLandmarks, normalBiome1OrganicLandmarks);
+  const availableLandmarks = landmarkCandidates.filter((asset) => asset.availableInRuntime);
+  if (band.id === 'surface' && authoredBiomeLandmarks.length > 0 && viewTop !== undefined && viewBottom !== undefined) {
+    const landmark = authoredBiomeLandmarks[0];
+    const viewWidth = viewRight - viewLeft;
+    const viewHeight = viewBottom - viewTop;
+    const parallaxFactor = Phaser.Math.Linear(landmark.parallaxRange[0], landmark.parallaxRange[1], 0.56);
+    const yParallaxFactor = Phaser.Math.Clamp(parallaxFactor + 0.08, 0.06, 0.32);
+    const height = viewHeight * authoredBiomeLandmarkHeightMultiplier(biome, band.id);
+    const widthScale = authoredBiomeLandmarkWidthMultiplier(biome, band.id);
+    const localX = viewWidth * 0.5;
+    const localY = viewHeight * (biome === 1 ? 0.14 : biome === 2 ? 0.52 : biome === 3 ? 0.54 : biome === 4 ? 0.54 : 0.53);
+    anchors.push({
+      id: `${band.id}-biome-${biome}-immediate`,
+      kind: 'reef',
+      x: viewLeft * parallaxFactor + localX,
+      y: viewTop * yParallaxFactor + localY,
+      width: height * widthScale,
+      height,
+      alpha: authoredBiomeLandmarkAlpha(biome, band.id),
+      color: biome === 1 ? 0xbfe7dc : biome === 2 ? 0xb0895e : biome === 3 ? 0x4c95a2 : 0x79aab8,
+      depthBand: band.id,
+      parallaxFactor,
+      textureKey: landmark.textureKey,
+      assetId: landmark.id,
+      assetStatus: 'available',
+      textureCrop: landmark.trimCrop,
+    });
+    return anchors;
+  }
+  for (let slot = startSlot; slot <= endSlot; slot += 1) {
+    if (!phase10TransitionLandmarks.length && phase7TransitionPlanes.length) {
+      const slotRoll = hash(slot, band.startDepth + band.endDepth, rng.seed + 9031);
+      for (const plane of phase7TransitionPlanes) {
+        const planeIndex = phase7TransitionPlanes.findIndex((candidate) => candidate.id === plane.id);
+        const isFar = plane.id.includes('-far-');
+        const isMid = plane.id.includes('-mid-');
+        const planeRoll = hash(slot + planeIndex * 19, band.endDepth + planeIndex * 37, rng.seed + 9043);
+        if (isFar && slotRoll < 0.16) continue;
+        if (isMid && planeRoll < 0.23) continue;
+        if (!isFar && !isMid && planeRoll < 0.34) continue;
+        const planeParallax = Phaser.Math.Linear(plane.parallaxRange[0], plane.parallaxRange[1], 0.62);
+        const yBase = isFar
+          ? Phaser.Math.Linear(0.22, 0.46, hash(slot, planeIndex, rng.seed + 9059))
+          : isMid
+            ? Phaser.Math.Linear(0.38, 0.72, hash(slot, planeIndex, rng.seed + 9071))
+            : Phaser.Math.Linear(0.18, 0.86, hash(slot, planeIndex, rng.seed + 9083));
+        const height = isFar
+          ? Phaser.Math.Linear(260, 430, planeRoll)
+          : isMid
+            ? Phaser.Math.Linear(220, 360, planeRoll)
+            : Phaser.Math.Linear(145, 260, planeRoll);
+        const widthScale = isFar
+          ? Phaser.Math.Linear(2.2, 3.3, hash(slot + 7, planeIndex, rng.seed + 9097))
+          : isMid
+            ? Phaser.Math.Linear(1.9, 2.75, hash(slot + 11, planeIndex, rng.seed + 9109))
+            : Phaser.Math.Linear(1.35, 2.1, hash(slot + 13, planeIndex, rng.seed + 9121));
+        anchors.push({
+          id: `${band.id}-phase7-${plane.id}-${slot}`,
+          kind: isMid ? 'wreck-rib' : isFar ? 'brine-curtain' : 'cable-chain',
+          x: slot * spacing + Phaser.Math.Linear(0.08, 0.92, hash(slot + planeIndex, band.endDepth, rng.seed + 9133)) * spacing,
+          y: SURFACE_Y + Phaser.Math.Linear(band.startDepth, band.endDepth, yBase) * 6,
+          width: height * widthScale,
+          height,
+          alpha: plane.safeOpacity * Phaser.Math.Linear(0.82, 1.24, planeRoll),
+          color: isFar ? 0x27415f : isMid ? 0x102a49 : 0x6e91a6,
+          depthBand: band.id,
+          parallaxFactor: planeParallax,
+          textureKey: plane.textureKey,
+          assetId: plane.id,
+          assetStatus: 'available',
+          textureCrop: plane.trimCrop,
+        });
+      }
+    }
+    const roll = hash(slot, band.startDepth + band.endDepth, rng.seed + 8039);
+    if ((strictBiome1OrganicLandmark || (strictBiomeNormalLandmarks && (biome === 2 || biome === 3 || biome === 4))) && Math.abs(slot) % 2 === 1) continue;
+    if (strictBiomeNormalLandmarks && anchors.length >= normalGameplayLandmarkBudget) continue;
+    if (!strictBiome1OrganicLandmark && !strictBiomeNormalLandmarks && !phase8TransitionLandmarks.length && !phase9TransitionLandmarks.length && !phase10TransitionLandmarks.length && !phase11TransitionLandmarks.length && roll > band.anchorDensity) continue;
+    const xRoll = hash(slot + 17, band.endDepth, rng.seed + 8093);
+    const yRoll = hash(slot - 23, band.startDepth, rng.seed + 8123);
+    const sizeRoll = hash(slot + 41, band.startDepth + band.endDepth, rng.seed + 8171);
+    const kindRoll = hash(slot - 59, band.endDepth - band.startDepth, rng.seed + 8209);
+    const kind: EnvironmentAnchorSilhouette['kind'] = kindRoll < 0.27
+      ? 'reef'
+      : kindRoll < 0.5
+        ? 'kelp'
+        : kindRoll < 0.72
+          ? 'wreck-rib'
+          : kindRoll < 0.88
+            ? 'cable-chain'
+            : band.id === 'transitionDeep'
+              ? 'brine-curtain'
+              : 'vent-stone';
+    const landmark = availableLandmarks.length
+      ? (() => {
+          if (strictBiomeNormalLandmarks) {
+            const picked = pickWeightedPainterlyLandmark(authoredBiomeLandmarks, slot, band, 12431);
+            if (picked) return picked;
+          }
+          if (strictBiome1OrganicLandmark) {
+            const picked = pickWeightedPainterlyLandmark(normalBiome1OrganicLandmarks, slot, band, 12431);
+            if (picked) return picked;
+          }
+          if (biomeLandmarks.length && hash(slot + 97, band.startDepth + band.endDepth, rng.seed + 12403) < 0.84) {
+            const picked = pickWeightedPainterlyLandmark(biomeLandmarks, slot, band, 12431);
+            if (picked) return picked;
+          }
+          const phase8Landmarks = band.id === 'transitionDeep'
+            ? availableLandmarks.filter((asset) => asset.id.startsWith('phase8-transition-'))
+            : [];
+          const phase9Landmarks = band.id === 'transitionDeep'
+            ? availableLandmarks.filter((asset) => asset.id.startsWith('phase9-transition-'))
+            : [];
+          const phase10Landmarks = band.id === 'transitionDeep'
+            ? availableLandmarks.filter((asset) => asset.id.startsWith('phase10-transition-'))
+            : [];
+          const phase11Landmarks = phase11TransitionLandmarks;
+          if (phase11Landmarks.length) {
+            return phase11Landmarks[Math.floor(hash(slot + 13, band.startDepth + 31, rng.seed + 11311) * phase11Landmarks.length)];
+          }
+          if (phase10Landmarks.length) {
+            return phase10Landmarks[Math.floor(hash(slot + 13, band.startDepth + 31, rng.seed + 10311) * phase10Landmarks.length)];
+          }
+          if (phase9Landmarks.length) {
+            return phase9Landmarks[Math.floor(hash(slot + 13, band.startDepth + 31, rng.seed + 9311) * phase9Landmarks.length)];
+          }
+          if (phase8Landmarks.length) {
+            return phase8Landmarks[Math.floor(hash(slot + 13, band.startDepth + 31, rng.seed + 8311) * phase8Landmarks.length)];
+          }
+          const phase5Landmarks = band.id === 'lower' || band.id === 'transitionDeep'
+            ? availableLandmarks.filter((asset) => asset.id.startsWith('phase5-'))
+            : [];
+          const selectionPool = phase5Landmarks.length && hash(slot - 31, band.endDepth + 17, rng.seed + 8287) < 0.82
+            ? phase5Landmarks
+            : availableLandmarks;
+          return pickWeightedPainterlyLandmark(selectionPool, slot, band, 8269);
+        })()
+      : null;
+    if (!landmark) continue;
+    const phase5DeepAsset = landmark.id.startsWith('phase5-');
+    const phase7DeepAsset = landmark.id.startsWith('phase7-transition-');
+    const phase8DeepAsset = landmark.id.startsWith('phase8-transition-');
+    const phase9DeepAsset = landmark.id.startsWith('phase9-transition-');
+    const phase10DeepAsset = landmark.id.startsWith('phase10-transition-');
+    const phase11DeepAsset = landmark.id.startsWith('phase11-transition-');
+    const normalPhase11Asset = phase11DeepAsset && band.id !== 'transitionDeep';
+    const phase11FarAsset = Boolean(landmark?.id.includes('-far-'));
+    const phase11NearAsset = Boolean(landmark?.id.includes('-near-'));
+    const biomeLandmarkAsset = landmark.id.startsWith('biome-');
+    const surfaceBiomeLandmarkAsset = biomeLandmarkAsset && band.id === 'surface';
+    const heightBoost = band.id === 'lower' ? 1.12 : band.id === 'transitionDeep' ? 1.2 : 1;
+    const authoredBiomeBoost = biomeLandmarkAsset
+      ? authoredBiomeLandmarkHeightMultiplier(biome, band.id)
+      : 1;
+    const authoredDeepBoost = phase11DeepAsset
+      ? normalPhase11Asset
+        ? (phase11FarAsset ? 1.82 : phase11NearAsset ? 2.04 : 1.94)
+        : (phase11FarAsset ? 2.15 : phase11NearAsset ? 2.34 : 2.28)
+      : biomeLandmarkAsset ? authoredBiomeBoost : phase10DeepAsset ? 2.18 : phase9DeepAsset ? 1.74 : phase8DeepAsset ? 1.72 : phase7DeepAsset ? 1.55 : phase5DeepAsset ? (band.id === 'transitionDeep' ? 1.36 : 1.24) : 1;
+    const surfaceBiomeSizeBoost = surfaceBiomeLandmarkAsset
+      ? (biome === 4 ? 1.34 : biome === 1 ? 1.42 : biome === 2 ? 1.55 : 1.5)
+      : 1;
+    const height = Phaser.Math.Linear(110, 260, sizeRoll) * heightBoost * authoredDeepBoost * surfaceBiomeSizeBoost;
+    const widthScale = phase11DeepAsset
+      ? (phase11FarAsset
+        ? Phaser.Math.Linear(3.15, 4.05, hash(slot + 71, band.startDepth, rng.seed + 11243))
+        : phase11NearAsset
+          ? Phaser.Math.Linear(2.62, 3.45, hash(slot + 71, band.startDepth, rng.seed + 11247))
+          : Phaser.Math.Linear(2.82, 3.78, hash(slot + 71, band.startDepth, rng.seed + 11245)))
+      : biomeLandmarkAsset
+      ? authoredBiomeLandmarkWidthMultiplier(biome, band.id)
+      : phase10DeepAsset
+      ? Phaser.Math.Linear(3.6, 4.45, hash(slot + 71, band.startDepth, rng.seed + 10243))
+      : phase9DeepAsset
+      ? Phaser.Math.Linear(2.0, 3.2, hash(slot + 71, band.startDepth, rng.seed + 9243))
+      : phase8DeepAsset
+      ? Phaser.Math.Linear(1.95, 3.15, hash(slot + 71, band.startDepth, rng.seed + 8243))
+      : phase7DeepAsset
+      ? Phaser.Math.Linear(1.75, 2.9, hash(slot + 71, band.startDepth, rng.seed + 8243))
+      : phase5DeepAsset
+      ? Phaser.Math.Linear(1.55, 2.45, hash(slot + 71, band.startDepth, rng.seed + 8243))
+      : Phaser.Math.Linear(0.38, 0.76, hash(slot + 71, band.startDepth, rng.seed + 8243));
+    const width = height * widthScale;
+    const alphaScale = phase11DeepAsset
+      ? normalPhase11Asset
+        ? Phaser.Math.Linear(5.4, 7.2, sizeRoll)
+        : Phaser.Math.Linear(6.8, 8.8, sizeRoll)
+      : biomeLandmarkAsset ? (biome === 2
+        ? Phaser.Math.Linear(5.1, 6.3, sizeRoll)
+        : biome === 3
+          ? Phaser.Math.Linear(3.4, 4.4, sizeRoll)
+          : biome === 4
+            ? Phaser.Math.Linear(1.25, 1.75, sizeRoll)
+            : Phaser.Math.Linear(3.6, 4.8, sizeRoll)) : phase10DeepAsset ? Phaser.Math.Linear(10.4, 12.2, sizeRoll) : phase9DeepAsset ? Phaser.Math.Linear(2.42, 3.12, sizeRoll) : phase8DeepAsset ? Phaser.Math.Linear(2.35, 3.08, sizeRoll) : phase7DeepAsset ? Phaser.Math.Linear(2.25, 2.95, sizeRoll) : phase5DeepAsset ? Phaser.Math.Linear(2.05, 2.7, sizeRoll) : 1;
+    const normalPhase11EntryRamp = 1;
+    const parallaxFactor = Phaser.Math.Linear(landmark.parallaxRange[0], landmark.parallaxRange[1], 0.56);
+    const rawX = slot * spacing + xRoll * spacing;
+    const rawY = SURFACE_Y + Phaser.Math.Linear(band.startDepth, band.endDepth, yRoll) * 6;
+    const yParallaxFactor = Phaser.Math.Clamp(parallaxFactor + 0.08, 0.06, 0.32);
+    const viewWidth = viewRight - viewLeft;
+    const viewHeight = viewTop !== undefined && viewBottom !== undefined ? viewBottom - viewTop : 0;
+    const authoredLocalX = viewWidth > 0
+      ? Phaser.Math.Linear(
+        normalPhase11Asset
+          ? (phase11FarAsset ? viewWidth * 0.42 : phase11NearAsset ? viewWidth * 0.46 : viewWidth * 0.36)
+          : phase11DeepAsset ? (phase11FarAsset ? viewWidth * 0.1 : phase11NearAsset ? viewWidth * 0.42 : viewWidth * 0.24) : surfaceBiomeLandmarkAsset && (biome === 1 || biome === 4) ? viewWidth * 0.32 : brineBiomeNormalLandmark ? viewWidth * 0.42 : midnightBiomeNormalLandmark ? viewWidth * 0.18 : biome === 4 ? viewWidth * 0.22 : viewWidth * 0.18,
+        normalPhase11Asset
+          ? (phase11FarAsset ? viewWidth * 0.66 : phase11NearAsset ? viewWidth * 0.78 : viewWidth * 0.7)
+          : phase11DeepAsset ? (phase11FarAsset ? viewWidth * 0.52 : phase11NearAsset ? viewWidth * 0.9 : viewWidth * 0.78) : surfaceBiomeLandmarkAsset && (biome === 1 || biome === 4) ? viewWidth * 0.68 : brineBiomeNormalLandmark ? viewWidth * 0.58 : midnightBiomeNormalLandmark ? viewWidth * 0.74 : biome === 4 ? viewWidth * 0.62 : viewWidth * 0.68,
+        hash(slot + 29, band.startDepth, rng.seed + (phase11DeepAsset ? 11443 : 10443)),
+      )
+      : 0;
+    const normalPhase11MinVisibleWidth = Math.min(width * 0.7, viewWidth);
+    const normalPhase11MinScreenX = (normalPhase11MinVisibleWidth - width * 0.5);
+    const normalPhase11MaxScreenX = viewWidth - normalPhase11MinVisibleWidth + width * 0.5;
+    const framedAuthoredLandmark = normalPhase11Asset || biomeLandmarkAsset;
+    const clampedAuthoredLocalX = framedAuthoredLandmark && viewWidth > 0
+      ? Phaser.Math.Clamp(authoredLocalX, normalPhase11MinScreenX, normalPhase11MaxScreenX)
+      : authoredLocalX;
+    const authoredScreenX = viewWidth > 0
+      ? viewLeft * parallaxFactor + clampedAuthoredLocalX
+      : rawX;
+    const authoredLocalY = viewTop !== undefined && viewBottom !== undefined && viewHeight > 0
+      ? Phaser.Math.Linear(
+        normalPhase11Asset
+          ? (phase11FarAsset ? viewHeight * 0.4 : phase11NearAsset ? viewHeight * 0.58 : viewHeight * 0.46)
+          : phase11DeepAsset ? (phase11FarAsset ? viewHeight * 0.22 : phase11NearAsset ? viewHeight * 0.5 : viewHeight * 0.34) : surfaceBiomeLandmarkAsset ? (biome === 4 ? viewHeight * 0.36 : biome === 3 ? viewHeight * 0.3 : biome === 2 ? viewHeight * 0.34 : viewHeight * 0.36) : brineBiomeNormalLandmark ? viewHeight * 0.42 : midnightBiomeNormalLandmark ? viewHeight * 0.06 : biome === 4 ? viewHeight * 0.2 : viewHeight * 0.22,
+        normalPhase11Asset
+          ? (phase11FarAsset ? viewHeight * 0.62 : phase11NearAsset ? viewHeight * 0.84 : viewHeight * 0.76)
+          : phase11DeepAsset ? (phase11FarAsset ? viewHeight * 0.5 : phase11NearAsset ? viewHeight * 0.86 : viewHeight * 0.72) : surfaceBiomeLandmarkAsset ? (biome === 4 ? viewHeight * 0.66 : biome === 3 ? viewHeight * 0.68 : biome === 2 ? viewHeight * 0.68 : viewHeight * 0.66) : brineBiomeNormalLandmark ? viewHeight * 0.62 : midnightBiomeNormalLandmark ? viewHeight * 0.5 : biome === 4 ? viewHeight * 0.42 : viewHeight * 0.56,
+        hash(slot + 37, band.endDepth, rng.seed + (phase11DeepAsset ? 11471 : 10471)),
+      )
+      : 0;
+    const normalPhase11MinVisibleHeight = Math.min(height * 0.72, viewHeight);
+    const normalPhase11MinScreenY = (normalPhase11MinVisibleHeight - height * 0.5);
+    const normalPhase11MaxScreenY = viewHeight - normalPhase11MinVisibleHeight + height * 0.5;
+    const clampedAuthoredLocalY = framedAuthoredLandmark && viewHeight > 0
+      ? Phaser.Math.Clamp(authoredLocalY, normalPhase11MinScreenY, normalPhase11MaxScreenY)
+      : authoredLocalY;
+    const authoredScreenY = viewTop !== undefined && viewBottom !== undefined && viewHeight > 0
+      ? viewTop * yParallaxFactor + clampedAuthoredLocalY
+      : rawY;
+    const surfaceBiomeLandmarkAlphaBoost = biomeLandmarkAsset && band.id === 'surface'
+      ? (biome === 2 ? 3.2 : biome === 3 ? 4.7 : biome === 4 ? 18.5 : 12.5)
+      : 1;
+    const anchorAlpha = band.silhouetteAlpha * Phaser.Math.Linear(0.62, 1.16, roll) * alphaScale * normalPhase11EntryRamp * surfaceBiomeLandmarkAlphaBoost;
+    const brineGameplayAlphaCap = biome === 2 && band.id !== 'transitionDeep'
+      ? (biomeLandmarkAsset ? 1 : normalPhase11Asset ? 0.38 : Number.POSITIVE_INFINITY)
+      : Number.POSITIVE_INFINITY;
+    const biomeLandmarkAlphaCap = biomeLandmarkAsset
+      ? band.id === 'surface'
+        ? authoredBiomeLandmarkAlpha(biome, band.id)
+        : authoredBiomeLandmarkAlpha(biome, band.id)
+      : Number.POSITIVE_INFINITY;
+    anchors.push({
+      id: `${band.id}-${slot}`,
+      kind,
+      x: (phase10DeepAsset || phase11DeepAsset || biomeLandmarkAsset) ? authoredScreenX : rawX,
+      y: (phase10DeepAsset || phase11DeepAsset || biomeLandmarkAsset) ? authoredScreenY : rawY,
+      width,
+      height,
+      alpha: Math.min(anchorAlpha, brineGameplayAlphaCap, biomeLandmarkAlphaCap),
+      color: phase11DeepAsset ? 0xe0f4ee : biomeLandmarkAsset ? (biome === 1 ? 0xbfe7dc : biome === 2 ? 0xb0895e : biome === 3 ? 0x4c95a2 : 0x79aab8) : phase10DeepAsset ? 0xb8d7d2 : phase9DeepAsset ? 0x2e6a73 : phase8DeepAsset ? 0x28597a : phase7DeepAsset ? 0x244966 : phase5DeepAsset ? (band.id === 'transitionDeep' ? 0x1d4c6e : 0x17647a) : band.id === 'transitionDeep' ? 0x0a1830 : band.id === 'lower' ? 0x08304a : 0x06283a,
+      depthBand: band.id,
+      parallaxFactor,
+      textureKey: landmark.textureKey,
+      assetId: landmark.id,
+      assetStatus: 'available',
+      textureCrop: landmark.trimCrop,
+    });
+  }
+  return anchors;
+}
+
 export function parallaxProfileFor(biome: Biome = state.biome, depth: number = state.depth): ParallaxProfile {
   const base = parallaxBaseProfiles[biome] ?? parallaxBaseProfiles[3];
   const descent = Phaser.Math.Clamp(depth / 1500, 0, 1);
@@ -536,10 +1700,129 @@ export function parallaxProfileFor(biome: Biome = state.biome, depth: number = s
     },
     layers: base.layers.map((layer, index) => ({
       ...layer,
+      repeatMode: 'repeatXY',
       alpha: base.alpha[index] * murk,
       tint: base.tint[bandIndex],
       scale: 1 + descent * (0.05 + index * 0.012),
     })),
+  };
+}
+
+export function environmentVisualProfileFor(biome: Biome = state.biome, depth: number = state.depth): EnvironmentVisualProfile {
+  const parallax = parallaxProfileFor(biome, depth);
+  const darkness = darknessForDepth(depth, biome);
+  const activeBandState = shallowsBandForDepth(depth);
+  const activeBand = activeBandState.band;
+  const descent = Phaser.Math.Clamp(depth / 1720, 0, 1);
+  const layerBands: EnvironmentDepthBand[] = ['surface', 'upper', 'mid', 'lower', 'transitionDeep'];
+  const layerModes: EnvironmentBackgroundRepeatMode[] = ['bandClampY', 'bandClampY', 'bandClampY', 'bandClampY', 'bandClampY'];
+  const layerAlphaScale = activeBand.id === 'surface'
+    ? 0.46
+    : activeBand.id === 'upper'
+      ? 0.54
+      : activeBand.id === 'mid'
+        ? 0.42
+        : activeBand.id === 'lower'
+          ? 0.43
+          : 1.18;
+  const biomeLayerAlphaScale = activeBand.id === 'lower'
+    ? biome === 3
+      ? 1
+      : biome === 4
+        ? 0.52
+        : 1
+    : activeBand.id === 'mid' && biome === 2
+      ? 0.82
+      : 1;
+  const waterColumnAssets = waterColumnTextureMaskAssets();
+  const waterColumnLayers = waterColumnMaskLayersFor(biome, depth, activeBand);
+  const waterColumnAlpha = waterColumnLayers.reduce((maxAlpha, layer) => Math.max(maxAlpha, layer.alpha), 0);
+  const waterColumnPostDarknessVeil = waterColumnPostDarknessVeilFor(biome, activeBand);
+  return {
+    id: `environment-shallows-column-${activeBand.id}`,
+    biome,
+    depthBand: activeBand.id,
+    activeBand,
+    activeBandBlend: activeBandState.blend,
+    bands: shallowsBands,
+    cameraClearColor: depthColor(depth),
+    background: {
+      layers: layerBands.map((layerBand, index) => {
+        const layer = parallax.layers[Math.min(index, parallax.layers.length - 1)];
+        const suppressUpperMidnightBandPlate = biome === 3 && (activeBand.id === 'surface' || activeBand.id === 'upper');
+        const asset = suppressUpperMidnightBandPlate ? null : painterlyBandPlateFor(layerBand, biome);
+        const layerBandVisibility = bandLayerVisibility(activeBand.id, layerBand);
+        const fallbackPrefix = asset?.fallbackTexturePrefix ?? layer.fallbackPrefix;
+        const parallaxSpeed = asset
+          ? Phaser.Math.Linear(asset.parallaxRange[0], asset.parallaxRange[1], 0.45 + index * 0.08)
+          : layer.horizontalSpeed;
+        return ({
+        ...layer,
+        texturePrefix: asset?.availableInRuntime ? asset.textureKey : '',
+        fallbackPrefix,
+        repeatMode: asset?.repeatMode ?? layerModes[index] ?? 'bandClampY',
+        horizontalSpeed: parallaxSpeed,
+        painterlyAssetId: asset?.id,
+        painterlyAssetStatus: asset ? (asset.availableInRuntime ? 'available' as const : 'expected' as const) : 'fallback' as const,
+        verticalSpeed: 0,
+        alpha: asset
+          ? asset.safeOpacity * layerAlphaScale * biomeLayerAlphaScale * layerBandVisibility * Phaser.Math.Linear(0.96, activeBand.id === 'transitionDeep' ? 1.2 : 0.78, descent)
+          : layer.alpha * layerAlphaScale * biomeLayerAlphaScale * layerBandVisibility * Phaser.Math.Linear(1, 0.78, descent),
+        tint: activeBand.id === 'surface'
+          ? 0xd7fff5
+          : activeBand.id === 'upper'
+            ? 0xaee6da
+            : activeBand.id === 'mid'
+              ? 0x6fa6aa
+              : activeBand.id === 'lower'
+                ? 0x486f86
+                : 0xd7f4ee,
+        scale: (asset ? Phaser.Math.Linear(asset.scaleRange[0], asset.scaleRange[1], 0.4 + index * 0.06) : layer.scale) * Phaser.Math.Linear(1.05, 1.16, descent),
+        index,
+        intendedRepeatMode: layerModes[index] ?? 'bandClampY',
+        layerKind: 'scenic' as const,
+        seamless: false,
+        band: layerBand,
+        });
+      }),
+      worldSpaceNoise: {
+        repeatMode: 'worldSpaceNoise',
+        cellSize: 192,
+        alpha: waterColumnAlpha,
+        color: activeBand.hazeColor,
+        assets: waterColumnAssets,
+        layers: waterColumnLayers,
+        postDarknessVeil: waterColumnPostDarknessVeil,
+      },
+      anchors: {
+        repeatMode: 'anchor',
+        count: environmentAnchorSilhouettesFor({ activeBand, depthBand: activeBand.id, biome }, 0, WORLD_W * TILE).length,
+        assets: mergePainterlyAssets(biomeLandmarksFor(biome, activeBand.id), genericPainterlyLandmarksForBand(activeBand.id), normalBiome1OrganicLandmarksFor(biome, activeBand.id)),
+      },
+      manifest: painterlyBackgroundManifest,
+    },
+    surface: {
+      waterlineY: BARGE_DOCK_Y + 4,
+      fadeDistancePx: 360,
+      skyTopColor: 0x8fcbdc,
+      skyBottomColor: 0x356f82,
+      waterTopColor: shallowsBands[0].topColor,
+      waterBottomColor: shallowsBands[1].bottomColor,
+      stripeAlphas: [0.11, 0.06, 0.025],
+    },
+    overlay: {
+      ...parallax.overlay,
+      alpha: parallax.overlay.alpha * (activeBand.id === 'transitionDeep' ? 0.09 : 0.5),
+      density: parallax.overlay.density * (activeBand.id === 'transitionDeep' ? 0.22 : 0.68),
+      drift: parallax.overlay.drift * 0.7,
+      color: activeBand.hazeColor,
+      mistStepPx: 340,
+    },
+    darkness: {
+      value: darkness,
+      ambientOpacity: activeBand.id === 'transitionDeep' ? ambientDarknessOpacity(darkness) * 0.2 : ambientDarknessOpacity(darkness),
+      maskOpacity: activeBand.id === 'transitionDeep' ? darknessOpacity(darkness) * 0.24 : darknessOpacity(darkness),
+    },
   };
 }
 
@@ -1396,11 +2679,11 @@ export function darknessForDepth(depth: number, biome: Biome) {
 }
 
 export function ambientDarknessOpacity(darkness: number) {
-  return Phaser.Math.Clamp(0.05 + darkness * 0.34, 0, 0.38);
+  return Phaser.Math.Clamp(0.045 + darkness * 0.28, 0, 0.32);
 }
 
 export function darknessOpacity(darkness: number) {
-  return Phaser.Math.Clamp(darkness * 0.95, 0, 1);
+  return Phaser.Math.Clamp(darkness * 0.82, 0, 0.84);
 }
 
 export function upgradeCost(upgrade: Upgrade) {

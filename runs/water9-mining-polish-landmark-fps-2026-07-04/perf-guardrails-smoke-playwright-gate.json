@@ -1,0 +1,401 @@
+{
+  "ok": true,
+  "processedLocalRefreshes": 8,
+  "fullScansDuringRepeatedMining": 0,
+  "guardrail": {
+    "articulatedContact": {
+      "creatureId": "abyssal-serpent",
+      "partId": "tail",
+      "count": 7,
+      "nx": -0.128,
+      "ny": -0.992
+    },
+    "subCollision": true,
+    "localPropRefreshes": 8,
+    "fullScansDuringLocalRefresh": 0,
+    "propRefresh": {
+      "fullScans": 2,
+      "queued": 0,
+      "processed": 8,
+      "removed": 0,
+      "added": 0,
+      "lastReason": "merged:8"
+    },
+    "perf": {
+      "enabled": true,
+      "frame": 15,
+      "terrainDirtyReason": "merged:8",
+      "terrainMaskMutations": 1999,
+      "terrainContactSamples": 8029,
+      "propRefresh": {
+        "fullScans": 2,
+        "queued": 0,
+        "processed": 8,
+        "removed": 0,
+        "added": 0,
+        "lastReason": "merged:8"
+      },
+      "metrics": {
+        "frame.total": {
+          "samples": 19,
+          "avgMs": 12.54,
+          "maxMs": 76.65,
+          "lastMs": 8.5,
+          "context": {}
+        },
+        "worldgen.total": {
+          "samples": 1,
+          "avgMs": 11483.5,
+          "maxMs": 11483.5,
+          "lastMs": 11483.5,
+          "context": {
+            "biome": 3
+          }
+        },
+        "update.fish": {
+          "samples": 12,
+          "avgMs": 0.01,
+          "maxMs": 0.1,
+          "lastMs": 0,
+          "context": {
+            "count": 0
+          }
+        },
+        "update.articulated": {
+          "samples": 12,
+          "avgMs": 0.01,
+          "maxMs": 0.19,
+          "lastMs": 0,
+          "context": {
+            "count": 0,
+            "parts": 0
+          }
+        },
+        "update.total": {
+          "samples": 12,
+          "avgMs": 0.31,
+          "maxMs": 2.65,
+          "lastMs": 0.2,
+          "context": {}
+        },
+        "draw.world": {
+          "samples": 13,
+          "avgMs": 2.24,
+          "maxMs": 13.91,
+          "lastMs": 11.4,
+          "context": {
+            "dirty": true,
+            "chunks": 342
+          }
+        },
+        "draw.props": {
+          "samples": 13,
+          "avgMs": 0.02,
+          "maxMs": 0.19,
+          "lastMs": 0,
+          "context": {
+            "count": 25
+          }
+        },
+        "draw.fish": {
+          "samples": 13,
+          "avgMs": 0,
+          "maxMs": 0.19,
+          "lastMs": 0,
+          "context": {
+            "count": 0
+          }
+        },
+        "draw.articulated": {
+          "samples": 13,
+          "avgMs": 0.16,
+          "maxMs": 0.9,
+          "lastMs": 0.9,
+          "context": {
+            "count": 1,
+            "parts": 8
+          }
+        },
+        "draw.sub": {
+          "samples": 13,
+          "avgMs": 0.13,
+          "maxMs": 0.7,
+          "lastMs": 0.7,
+          "context": {
+            "active": true,
+            "parts": 38
+          }
+        },
+        "draw.total": {
+          "samples": 12,
+          "avgMs": 8.86,
+          "maxMs": 73.34,
+          "lastMs": 8.2,
+          "context": {}
+        },
+        "props.refresh": {
+          "samples": 1,
+          "avgMs": 0.8,
+          "maxMs": 0.8,
+          "lastMs": 0.8,
+          "context": {
+            "queue": 8,
+            "props": 25
+          }
+        }
+      }
+    }
+  },
+  "minedPerf": {
+    "enabled": true,
+    "frame": 14,
+    "terrainDirtyReason": "tile:94,44",
+    "terrainMaskMutations": 1506,
+    "terrainContactSamples": 7958,
+    "propRefresh": {
+      "fullScans": 2,
+      "queued": 0,
+      "processed": 0,
+      "removed": 0,
+      "added": 0,
+      "lastReason": "full-populate"
+    },
+    "metrics": {
+      "frame.total": {
+        "samples": 18,
+        "avgMs": 13.02,
+        "maxMs": 77.04,
+        "lastMs": 9.5,
+        "context": {}
+      },
+      "worldgen.total": {
+        "samples": 1,
+        "avgMs": 11483.5,
+        "maxMs": 11483.5,
+        "lastMs": 11483.5,
+        "context": {
+          "biome": 3
+        }
+      },
+      "update.fish": {
+        "samples": 11,
+        "avgMs": 0.01,
+        "maxMs": 0.1,
+        "lastMs": 0,
+        "context": {
+          "count": 0
+        }
+      },
+      "update.articulated": {
+        "samples": 11,
+        "avgMs": 0.01,
+        "maxMs": 0.19,
+        "lastMs": 0,
+        "context": {
+          "count": 0,
+          "parts": 0
+        }
+      },
+      "update.total": {
+        "samples": 11,
+        "avgMs": 0.33,
+        "maxMs": 2.66,
+        "lastMs": 0.8,
+        "context": {}
+      },
+      "draw.world": {
+        "samples": 11,
+        "avgMs": 0.69,
+        "maxMs": 14.05,
+        "lastMs": 0,
+        "context": {
+          "dirty": false,
+          "chunks": 333
+        }
+      },
+      "draw.props": {
+        "samples": 11,
+        "avgMs": 0.01,
+        "maxMs": 0.19,
+        "lastMs": 0,
+        "context": {
+          "count": 25
+        }
+      },
+      "draw.fish": {
+        "samples": 11,
+        "avgMs": 0,
+        "maxMs": 0.19,
+        "lastMs": 0,
+        "context": {
+          "count": 0
+        }
+      },
+      "draw.articulated": {
+        "samples": 11,
+        "avgMs": 0.01,
+        "maxMs": 0.29,
+        "lastMs": 0,
+        "context": {
+          "count": 0,
+          "parts": 0
+        }
+      },
+      "draw.sub": {
+        "samples": 11,
+        "avgMs": 0.03,
+        "maxMs": 0.19,
+        "lastMs": 0,
+        "context": {
+          "active": false,
+          "parts": 38
+        }
+      },
+      "draw.total": {
+        "samples": 11,
+        "avgMs": 9,
+        "maxMs": 73.71,
+        "lastMs": 7.3,
+        "context": {}
+      }
+    }
+  },
+  "finalPerf": {
+    "enabled": true,
+    "frame": 16,
+    "terrainDirtyReason": "merged:8",
+    "terrainMaskMutations": 1999,
+    "terrainContactSamples": 8597,
+    "propRefresh": {
+      "fullScans": 2,
+      "queued": 0,
+      "processed": 8,
+      "removed": 0,
+      "added": 0,
+      "lastReason": "merged:8"
+    },
+    "metrics": {
+      "frame.total": {
+        "samples": 20,
+        "avgMs": 12.27,
+        "maxMs": 76.27,
+        "lastMs": 9.8,
+        "context": {}
+      },
+      "worldgen.total": {
+        "samples": 1,
+        "avgMs": 11483.5,
+        "maxMs": 11483.5,
+        "lastMs": 11483.5,
+        "context": {
+          "biome": 3
+        }
+      },
+      "update.fish": {
+        "samples": 13,
+        "avgMs": 0.01,
+        "maxMs": 0.1,
+        "lastMs": 0,
+        "context": {
+          "count": 0
+        }
+      },
+      "update.articulated": {
+        "samples": 13,
+        "avgMs": 0.07,
+        "maxMs": 0.4,
+        "lastMs": 0.4,
+        "context": {
+          "count": 1,
+          "parts": 8
+        }
+      },
+      "update.total": {
+        "samples": 13,
+        "avgMs": 0.37,
+        "maxMs": 2.64,
+        "lastMs": 0.7,
+        "context": {}
+      },
+      "draw.world": {
+        "samples": 14,
+        "avgMs": 1.92,
+        "maxMs": 13.84,
+        "lastMs": 0,
+        "context": {
+          "dirty": false,
+          "chunks": 333
+        }
+      },
+      "draw.props": {
+        "samples": 14,
+        "avgMs": 0.02,
+        "maxMs": 0.19,
+        "lastMs": 0,
+        "context": {
+          "count": 25
+        }
+      },
+      "draw.fish": {
+        "samples": 14,
+        "avgMs": 0,
+        "maxMs": 0.19,
+        "lastMs": 0,
+        "context": {
+          "count": 0
+        }
+      },
+      "draw.articulated": {
+        "samples": 14,
+        "avgMs": 0.17,
+        "maxMs": 0.9,
+        "lastMs": 0.2,
+        "context": {
+          "count": 1,
+          "parts": 8
+        }
+      },
+      "draw.sub": {
+        "samples": 14,
+        "avgMs": 0.14,
+        "maxMs": 0.7,
+        "lastMs": 0.2,
+        "context": {
+          "active": true,
+          "parts": 38
+        }
+      },
+      "draw.total": {
+        "samples": 13,
+        "avgMs": 8.62,
+        "maxMs": 72.98,
+        "lastMs": 7.3,
+        "context": {}
+      },
+      "props.refresh": {
+        "samples": 1,
+        "avgMs": 0.8,
+        "maxMs": 0.8,
+        "lastMs": 0.8,
+        "context": {
+          "queue": 8,
+          "props": 25
+        }
+      },
+      "update.sub": {
+        "samples": 1,
+        "avgMs": 0.3,
+        "maxMs": 0.3,
+        "lastMs": 0.3,
+        "context": {
+          "tier": 2
+        }
+      }
+    }
+  },
+  "errors": [],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 204 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5191/\n"
+  ]
+}

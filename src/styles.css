@@ -477,13 +477,13 @@ button.is-controller-focus {
   top: 92px;
   right: 14px;
   z-index: 3;
-  display: none;
+  display: none !important;
   width: min(360px, calc(100vw - 28px));
   pointer-events: none;
 }
 
 .controller-status.is-open {
-  display: block;
+  display: none !important;
 }
 
 .controller-panel {

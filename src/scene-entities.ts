@@ -489,11 +489,22 @@ export function updateLooseItems(this: DeepdiveScene, delta: number) {
       item.y += item.vy * delta;
       item.vx *= 1 - Math.min(0.9, delta * 2.8);
       item.vy *= 1 - Math.min(0.9, delta * 2.8);
+      item.pickupDelay = Math.max(0, (item.pickupDelay ?? 0) - delta);
       if (Number.isFinite(item.life)) item.life -= delta;
-      const subCanPickup = !state.pilotingSub || !state.activeSub || state.activeSub.tier === 1;
-      if (subCanPickup && item.value > 0 && state.cargo.length < cargoCapacity()) {
+      const miningSubVacuum = Boolean(state.pilotingSub && state.activeSub && state.activeSub.tier >= 2);
+      const canPickup = !state.pilotingSub || !state.activeSub || state.activeSub.tier === 1 || miningSubVacuum;
+      if (canPickup && item.value > 0 && !item.collected && state.cargo.length < cargoCapacity()) {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y);
-        if (distance < Math.max(PLAYER_PICKUP_RADIUS, item.radius + PLAYER_COLLISION_RADIUS + 7)) {
+        if (miningSubVacuum && distance < Math.max(86, item.radius + subDef(state.activeSub!.tier).cargo * 2.2)) {
+          const pull = Math.min(1, delta * 5.2);
+          item.vx += ((this.player.x - item.x) / Math.max(1, distance)) * 120 * pull;
+          item.vy += ((this.player.y - item.y) / Math.max(1, distance)) * 120 * pull;
+        }
+        const pickupRadius = miningSubVacuum
+          ? Math.max(30, item.radius + scaledEntity(26))
+          : Math.max(PLAYER_PICKUP_RADIUS, item.radius + PLAYER_COLLISION_RADIUS + 7);
+        if ((item.pickupDelay ?? 0) <= 0 && distance < pickupRadius) {
+          item.collected = true;
           state.cargo.push({
             id: item.id,
             name: item.name,
@@ -503,7 +514,9 @@ export function updateLooseItems(this: DeepdiveScene, delta: number) {
             icon: item.icon,
           });
           state.selectedCargoIndex = state.cargo.length - 1;
-          state.status = `Recovered loose ${item.name} worth ${item.value} credits.`;
+          state.status = miningSubVacuum
+            ? `${subDef(state.activeSub!.tier).name} vacuum recovered ${item.name} worth ${item.value} credits.`
+            : `Recovered loose ${item.name} worth ${item.value} credits.`;
           this.spawnFloatingText(`${item.name} +${item.value}c`, item.color);
           pickedUp = true;
           return false;

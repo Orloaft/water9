@@ -7,7 +7,9 @@ import { rng } from './rng';
 import { cargoCapacity,cargoIconForTile,cargoKindForTile,clampSelectedCargoIndex,clearBleed,clearVenom,fuelMax,hash,hullMax,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenMax,resetOxygenWarnings,scaledEntity,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
-import { subtractTerrainMaskBrush,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
+import { subtractTerrainMaskBrush,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainMaskDensityAt } from './terrain-mask';
+
+const TERRAIN_BREAK_EFFECT_CAP = 72;
 
 export function mineFromSub(this: DeepdiveScene, sub: SubVehicle) {
     if (sub.tier < 2) {
@@ -68,7 +70,10 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     const targets = this.mineTargets(impact.tx, impact.ty);
     if (!targets.length) return;
     const fuelReserve = sub ? sub.fuel : state.fuel;
-    if (fuelReserve > 0) this.drillingThisFrame = true;
+    if (fuelReserve > 0) {
+      this.drillingThisFrame = true;
+      emitDrillContactFeedback(this, impact, targets);
+    }
     if (this.player.mineCooldown > 0) return;
     const fuelCost = miningFuelCost(targets.length);
     if (fuelReserve < fuelCost) {
@@ -351,16 +356,21 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
     const chipX = Number.isFinite(impactX) ? impactX as number : x;
     const chipY = Number.isFinite(impactY) ? impactY as number : y;
     subtractTerrainMaskBrush(this, chipX, chipY, TILE * 0.34, 0.78);
-    if (tileMaskSolidRatio(this, tx, ty) > 0.34) {
+    const solidRatio = tileMaskSolidRatio(this, tx, ty);
+    const releasedFromOpenOreCore = def.value > 0 && tileMaskOpenCoreRatio(this, tx, ty) >= 0.56;
+    if (solidRatio > 0.34 && !releasedFromOpenOreCore) {
       this.damage[ty][tx] = def.hp * 0.28;
       this.terrainDirty = true;
       this.terrainBoundsKey = '';
       this.markTerrainVisualDirty(tx, ty);
       this.refreshFloraAnchorsAround(tx, ty, 5);
-      this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.42, color: def.color, seed: hash(tx, ty, rng.seed) });
-      if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
+      this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.42, color: def.color, seed: hash(tx, ty, rng.seed), kind: 'break' });
+      trimTerrainBreakEffects(this);
       state.status = `Chipped ${def.name}.`;
       return;
+    }
+    if (releasedFromOpenOreCore && solidRatio > 0.34) {
+      clearTerrainMaskTile(this, tx, ty);
     }
     this.world[ty][tx] = 'water';
     this.damage[ty][tx] = 0;
@@ -369,9 +379,9 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
     this.markTerrainVisualDirty(tx, ty);
     this.refreshEnvironmentPropsAround(tx, ty);
     this.refreshFloraAnchorsAround(tx, ty, 6);
-    this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.5, color: def.color, seed: hash(tx, ty, rng.seed) });
-    if (this.terrainBreakEffects.length > 48) this.terrainBreakEffects = this.terrainBreakEffects.slice(-48);
-    this.spawnLoose(tile, def, x, y);
+    this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.5, color: def.color, seed: hash(tx, ty, rng.seed), kind: def.value > 0 ? 'oreGlint' : 'break' });
+    trimTerrainBreakEffects(this);
+    this.spawnLoose(tile, def, x, y, tx, ty);
     if (def.value > 0) {
       state.status = state.cargo.length < cargoCapacity()
         ? `${def.name} broke loose. Swim near it to collect.`
@@ -393,24 +403,95 @@ function tileMaskSolidRatio(scene: DeepdiveScene, tx: number, ty: number) {
     return solid / (TERRAIN_MASK_RES * TERRAIN_MASK_RES);
   }
 
-export function spawnLoose(this: DeepdiveScene, tile: Tile, def: TileDef, x: number, y: number) {
+function tileMaskOpenCoreRatio(scene: DeepdiveScene, tx: number, ty: number) {
+    let open = 0;
+    let samples = 0;
+    for (let ly = 2; ly <= 5; ly += 1) {
+      for (let lx = 2; lx <= 5; lx += 1) {
+        const sx = tx * TERRAIN_MASK_RES + lx;
+        const sy = ty * TERRAIN_MASK_RES + ly;
+        samples += 1;
+        if (terrainMaskDensityAt(scene, sx, sy) < TERRAIN_MASK_SOLID_THRESHOLD) open += 1;
+      }
+    }
+    return samples > 0 ? open / samples : 0;
+  }
+
+function clearTerrainMaskTile(scene: DeepdiveScene, tx: number, ty: number) {
+    if (scene.terrainMask.length !== TERRAIN_MASK_WIDTH * TERRAIN_MASK_HEIGHT) return;
+    for (let ly = 0; ly < TERRAIN_MASK_RES; ly += 1) {
+      const sy = ty * TERRAIN_MASK_RES + ly;
+      if (sy < 0 || sy >= TERRAIN_MASK_HEIGHT) continue;
+      for (let lx = 0; lx < TERRAIN_MASK_RES; lx += 1) {
+        const sx = tx * TERRAIN_MASK_RES + lx;
+        if (sx < 0 || sx >= TERRAIN_MASK_WIDTH) continue;
+        scene.terrainMask[sy * TERRAIN_MASK_WIDTH + sx] = 0;
+      }
+    }
+    scene.terrainDirty = true;
+    scene.terrainBoundsKey = '';
+  }
+
+function trimTerrainBreakEffects(scene: DeepdiveScene) {
+    if (scene.terrainBreakEffects.length > TERRAIN_BREAK_EFFECT_CAP) {
+      scene.terrainBreakEffects.splice(0, scene.terrainBreakEffects.length - TERRAIN_BREAK_EFFECT_CAP);
+    }
+  }
+
+function emitDrillContactFeedback(scene: DeepdiveScene, impact: MiningTunnelTarget, targets: Array<{ x: number; y: number; distance: number }>) {
+    const now = scene.time.now;
+    const oreTarget = targets.find((target) => tiles[scene.getTile(target.x, target.y)].value > 0);
+    const minGap = oreTarget ? 42 : 58;
+    if (now < scene.lastMiningFeedbackAt + minGap) return;
+    scene.lastMiningFeedbackAt = now;
+    const tile = oreTarget ? scene.getTile(oreTarget.x, oreTarget.y) : scene.getTile(impact.tx, impact.ty);
+    const def = tiles[tile];
+    const seedBase = hash(impact.tx * 17 + Math.floor(now / minGap), impact.ty * 23, rng.seed + 9137);
+    const color = def.value > 0 ? def.color : (tile === 'sand' ? 0xb08d66 : def.color);
+    const count = def.value > 0 ? 2 : 1;
+    for (let i = 0; i < count; i += 1) {
+      const side = (hash(impact.tx + i * 11, impact.ty - i * 7, rng.seed + Math.floor(now / minGap)) - 0.5) * TILE * 0.34;
+      const along = (hash(impact.ty + i * 13, impact.tx + i * 5, rng.seed + Math.floor(now / minGap) + 3) - 0.5) * TILE * 0.2;
+      scene.terrainBreakEffects.push({
+        x: impact.x + impact.lateralX * side + impact.dx * along,
+        y: impact.y + impact.lateralY * side + impact.dy * along,
+        age: 0,
+        life: def.value > 0 ? 0.34 : 0.24,
+        color,
+        seed: seedBase + i * 0.173,
+        kind: def.value > 0 ? 'oreGlint' : 'contact',
+      });
+    }
+    trimTerrainBreakEffects(scene);
+  }
+
+export function spawnLoose(this: DeepdiveScene, tile: Tile, def: TileDef, x: number, y: number, tx?: number, ty?: number) {
     const pieces = def.value > 0 ? 1 : 3;
     for (let i = 0; i < pieces; i += 1) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Phaser.Math.FloatBetween(10, 42);
+      const valuable = def.value > 0 && i === 0;
+      const seedX = tx ?? Math.floor(x / TILE);
+      const seedY = ty ?? Math.floor(y / TILE);
+      const deterministicRoll = hash(seedX + i * 17, seedY - i * 23, rng.seed + 9901);
+      const angle = valuable ? deterministicRoll * Math.PI * 2 : Math.random() * Math.PI * 2;
+      const speed = valuable ? 7 + deterministicRoll * 5 : Phaser.Math.FloatBetween(10, 42);
       this.looseItems.push({
-        id: def.value > 0 && i === 0 ? tile : 'stone',
+        id: valuable ? tile : 'stone',
         name: def.name,
-        value: def.value > 0 && i === 0 ? def.value : 0,
-        x: x + Phaser.Math.FloatBetween(-4, 4),
-        y: y + Phaser.Math.FloatBetween(-4, 4),
+        value: valuable ? def.value : 0,
+        x: x + (valuable ? Math.cos(angle) * 3 : Phaser.Math.FloatBetween(-4, 4)),
+        y: y + (valuable ? Math.sin(angle) * 3 : Phaser.Math.FloatBetween(-4, 4)),
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
+        vy: Math.sin(angle) * speed - (valuable ? 5 : 0),
         color: def.color,
-        radius: def.value > 0 ? scaledEntity(5) : Phaser.Math.FloatBetween(scaledEntity(2), scaledEntity(3.5)),
-        life: def.value > 0 ? Infinity : Phaser.Math.FloatBetween(4, 8),
-        kind: def.value > 0 && i === 0 ? cargoKindForTile(tile) : 'rubble',
-        icon: def.value > 0 && i === 0 ? cargoIconForTile(tile) : 'item-icon-stone',
+        radius: valuable ? scaledEntity(7.5) : Phaser.Math.FloatBetween(scaledEntity(2), scaledEntity(3.5)),
+        life: valuable ? Infinity : Phaser.Math.FloatBetween(4, 8),
+        kind: valuable ? cargoKindForTile(tile) : 'rubble',
+        icon: valuable ? cargoIconForTile(tile) : 'item-icon-stone',
+        exposed: valuable,
+        pickupDelay: valuable ? 0.22 : 0,
+        phase: valuable ? deterministicRoll * Math.PI * 2 : Math.random() * Math.PI * 2,
+        sourceTileX: valuable ? seedX : undefined,
+        sourceTileY: valuable ? seedY : undefined,
       });
     }
     if (this.looseItems.length > 220) {

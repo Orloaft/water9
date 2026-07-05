@@ -1,0 +1,3138 @@
+{
+  "schema": "water9/exploration-life-pack@1",
+  "id": "exploration-life-2026-07-04",
+  "targetFaunaCount": 100,
+  "processedFaunaCount": 20,
+  "scope": "asset-only expansion pack; not wired into runtime spawn tables because active code work is in progress",
+  "artDirection": {
+    "reference": "current Water9 shrimp, cuttlefish, and fish: painterly semi-realistic side-view silhouettes, natural marine texture, sparse bioluminescent accents",
+    "sourceBackground": "flat #ff00ff chroma key, normalized border-connected key pixels",
+    "avoid": "white matte, rock/sand backgrounds, procedural geometric shapes, magenta/pink/purple subject colors, transparent fin membranes"
+  },
+  "processing": [
+    "built-in image_gen source generation",
+    "tools/normalize_source_candidate_key.py to exact #ff00ff for border-connected background",
+    "$CODEX_HOME/skills/.system/imagegen/scripts/remove_chroma_key.py with auto-key border, soft matte, despill",
+    "tools/render_source_key_preview.py for review preview"
+  ],
+  "rejectedAttempts": [
+    {
+      "id": "fauna-exp-ember-lace-pipefish",
+      "reason": "magenta/purple baked into translucent fin, unsafe for chroma key"
+    },
+    {
+      "id": "fauna-exp-ember-lace-pipefish-v2",
+      "reason": "magenta visible through lace membrane; changed direction to opaque Ember Needle Pipefish"
+    }
+  ],
+  "entries": [
+    {
+      "id": "fauna-exp-opal-fan-shrimp",
+      "displayName": "Opal Fan Shrimp",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "shrimp / fan-tail crustacean",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-opal-fan-shrimp-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-opal-fan-shrimp.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-opal-fan-shrimp-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "b2643bc1f2a9479329f97e796cca9c66ab91769aba898b81f2a217b0448d04ff"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          52,
+          257,
+          1505,
+          766
+        ],
+        "coverage": 0.187927,
+        "whiteEdgeRatio": 0.0,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "c1556d7fdc54952050f6b4bc78009c484161019e3f559a70c2e5d32325a80dc2"
+      }
+    },
+    {
+      "id": "fauna-exp-velvet-glass-cuttle",
+      "displayName": "Velvet Glass Cuttle",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "compact cuttlefish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-velvet-glass-cuttle-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-velvet-glass-cuttle.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-velvet-glass-cuttle-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "dd7df7f2153383ca0ae21d4ab0aebf92e910e1c7771ff5c52abccc2fb953c675"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          37,
+          160,
+          1483,
+          782
+        ],
+        "coverage": 0.336068,
+        "whiteEdgeRatio": 0.000367,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "2220076a524d7438af69c5dc1cfe34f2c4b9edb148611958faae881e63203e85"
+      }
+    },
+    {
+      "id": "fauna-exp-ember-needle-pipefish",
+      "displayName": "Ember Needle Pipefish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "pipefish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ember-needle-pipefish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ember-needle-pipefish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ember-needle-pipefish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1774,
+        "height": 887,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c5efefb25039f6b2ba389a5b5fe7a0610f8c3824ed76297931598f48258f5c14"
+      },
+      "alphaMetrics": {
+        "width": 1774,
+        "height": 887,
+        "bbox": [
+          72,
+          308,
+          1705,
+          666
+        ],
+        "coverage": 0.116607,
+        "whiteEdgeRatio": 0.0,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "35781e338717a8f2d2340fbc30b329b51beff02d43ea1a73c70660f6323eb113"
+      }
+    },
+    {
+      "id": "fauna-exp-prism-bell-jelly",
+      "displayName": "Prism Bell Jelly",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "opaque jellyfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-prism-bell-jelly-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-prism-bell-jelly.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-prism-bell-jelly-key-preview.png",
+      "sourceMetrics": {
+        "width": 1024,
+        "height": 1536,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "ae9aae0dc64c8009774aa901d8be2f40db0f4f9bfdc95c9f3e393abbbc09d15f"
+      },
+      "alphaMetrics": {
+        "width": 1024,
+        "height": 1536,
+        "bbox": [
+          108,
+          127,
+          878,
+          1395
+        ],
+        "coverage": 0.365676,
+        "whiteEdgeRatio": 0.000367,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "3f254672a3d7d53ffa449dd2c23edfa964f297dff6f0033a4474b5863414885d"
+      }
+    },
+    {
+      "id": "fauna-exp-copper-ribbon-eel",
+      "displayName": "Copper Ribbon Eel",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "ribbon eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-copper-ribbon-eel-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-copper-ribbon-eel.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-copper-ribbon-eel-key-preview.png",
+      "sourceMetrics": {
+        "width": 1774,
+        "height": 887,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "3824765b76e9f72ed7320e4c7f31ff4bc3c366687280a0c54e6a99432fa2aba9"
+      },
+      "alphaMetrics": {
+        "width": 1774,
+        "height": 887,
+        "bbox": [
+          33,
+          273,
+          1727,
+          623
+        ],
+        "coverage": 0.142479,
+        "whiteEdgeRatio": 0.001978,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "730af65152f1c605ee9d1e4331c36e38db1033481d9159e384edf8069bac3e63"
+      }
+    },
+    {
+      "id": "fauna-exp-glass-helm-nautilus",
+      "displayName": "Glass Helm Nautilus",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "nautilus",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-glass-helm-nautilus-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-glass-helm-nautilus.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-glass-helm-nautilus-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "36dbb422ee7e743d662ec4c83b948a7d6e3aa8ff766e63060e211c412abe067d"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          177,
+          107,
+          1378,
+          889
+        ],
+        "coverage": 0.374331,
+        "whiteEdgeRatio": 0.001246,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "46fdfd4d91564b5601d244171d5468fcfd32661b9dba896814cfeca058ccb067"
+      }
+    },
+    {
+      "id": "fauna-exp-cobalt-sawtail-minnow",
+      "displayName": "Cobalt Sawtail Minnow",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "small schooling fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-cobalt-sawtail-minnow-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cobalt-sawtail-minnow.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-cobalt-sawtail-minnow-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "d046b1f660b7c107f947c42f1372efca8570d7566ad14fabec18e762e7b7b743"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          76,
+          237,
+          1403,
+          692
+        ],
+        "coverage": 0.172927,
+        "whiteEdgeRatio": 0.0,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "0711e825167419d544aaf8a91b4ecc27183a57ca0260a63aa501c540f1f6b4f3"
+      }
+    },
+    {
+      "id": "fauna-exp-ivory-spined-cardinal",
+      "displayName": "Ivory Spined Cardinal",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "spined reef fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ivory-spined-cardinal-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ivory-spined-cardinal.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ivory-spined-cardinal-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "3884309b5c573b786083ac15a5c60dfb55aca8438883de08df3b1e853a2f9f77"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          255,
+          73,
+          1259,
+          938
+        ],
+        "coverage": 0.278655,
+        "whiteEdgeRatio": 0.065156,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "3bbc6ce5ae8f19174500f57607e6ce09807c7d45f2cca5067f0747ac279d8cfc"
+      }
+    },
+    {
+      "id": "fauna-exp-vent-pearl-copepod",
+      "displayName": "Vent Pearl Copepod",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "tiny crustacean",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-vent-pearl-copepod-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-vent-pearl-copepod.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-vent-pearl-copepod-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "738a6ed04c71eb3aaabe23e576dd0f459bafca48a286986cfa4dbc4c2db0b3f0"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          61,
+          256,
+          1459,
+          769
+        ],
+        "coverage": 0.139132,
+        "whiteEdgeRatio": 0.000455,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "dff5bc84546ac833e483e391a09f656318380325c1b1afbe75efe87f08c2d405"
+      }
+    },
+    {
+      "id": "fauna-exp-moonmask-lionfish",
+      "displayName": "Moonmask Lionfish",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "spined fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-moonmask-lionfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-moonmask-lionfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-moonmask-lionfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "2fec6583f69b564588306a7db46d9c16d91e18c1ab0d1e6fa4f6f40d8559b2bc"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          116,
+          56,
+          1321,
+          938
+        ],
+        "coverage": 0.342908,
+        "whiteEdgeRatio": 0.020547,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "7fc0521cbc2842e054ded48866b8252d16d2036cf54ef2cb933b10cfe1ecf198"
+      }
+    },
+    {
+      "id": "fauna-exp-amber-comb-blenny",
+      "displayName": "Amber Comb Blenny",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "perching reef fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-amber-comb-blenny-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-amber-comb-blenny.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-amber-comb-blenny-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "eeaa8e3e1b3184e996700f13834bda65fd78126fea8d21e51affbc4640c6bd16"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          91,
+          161,
+          1393,
+          773
+        ],
+        "coverage": 0.301748,
+        "whiteEdgeRatio": 0.007114,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "bc302f506aac2a5852327ba6ca3091ceb56c950c025e2d9045b964063ee9fecb"
+      }
+    },
+    {
+      "id": "fauna-exp-blue-lantern-goby",
+      "displayName": "Blue Lantern Goby",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "small bottom fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-blue-lantern-goby-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-blue-lantern-goby.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-blue-lantern-goby-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "cca3a16b519f5945bb6b1f525ab5c6b749f21c9e24ad7850470c6ca80ec66696"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          85,
+          255,
+          1455,
+          720
+        ],
+        "coverage": 0.23069,
+        "whiteEdgeRatio": 0.019657,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "9fbbb38d54bb83ee039ec0054bc1128799ad616a4cd894565c12307ddaaecfd7"
+      }
+    },
+    {
+      "id": "fauna-exp-obsidian-reef-wrasse",
+      "displayName": "Obsidian Reef Wrasse",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "slender reef fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-obsidian-reef-wrasse-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-obsidian-reef-wrasse.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-obsidian-reef-wrasse-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "6fb8e55047761ecf766f7693ef5fe21f10f57feb16bd43a430d7dbc699fad723"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          69,
+          259,
+          1457,
+          736
+        ],
+        "coverage": 0.246965,
+        "whiteEdgeRatio": 0.000559,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "5168251fb0cd538995f5802b5da14e57b5b1437f9b79196fd28716f18be7f521"
+      }
+    },
+    {
+      "id": "fauna-exp-silver-hinge-crab",
+      "displayName": "Silver Hinge Crab",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "side-view crab",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-silver-hinge-crab-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-silver-hinge-crab.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-silver-hinge-crab-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "8153a9ee96b60736fb102752cf77bd40b95ed625aad87e0bd2221d89830bc5b0"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          81,
+          168,
+          1399,
+          849
+        ],
+        "coverage": 0.315041,
+        "whiteEdgeRatio": 0.002012,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "0c17da990252c47e472a0bb657c86041e5b1da0db2e1b325185c64f21ff8ff98"
+      }
+    },
+    {
+      "id": "fauna-exp-kelp-arrow-squid",
+      "displayName": "Kelp Arrow Squid",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "small squid",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-kelp-arrow-squid-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-kelp-arrow-squid.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-kelp-arrow-squid-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "1ca7fd6d4aaeab7aa48ef8160cf48b492b7fb007c207189b50d41016cbe77078"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          66,
+          271,
+          1482,
+          739
+        ],
+        "coverage": 0.187261,
+        "whiteEdgeRatio": 0.00019,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "e53b68410d7555e762bdc9a7cce3a09d7bcc8d455d3057fe6ba5df8e82e5a2e6"
+      }
+    },
+    {
+      "id": "fauna-exp-basalt-lantern-seahorse",
+      "displayName": "Basalt Lantern Seahorse",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "seahorse",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-basalt-lantern-seahorse-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-basalt-lantern-seahorse.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-basalt-lantern-seahorse-key-preview.png",
+      "sourceMetrics": {
+        "width": 1024,
+        "height": 1536,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "38971f4863d947c1c52b5a87a97c648a4f05e7e5f8f34ed8f2da34af43772e72"
+      },
+      "alphaMetrics": {
+        "width": 1024,
+        "height": 1536,
+        "bbox": [
+          203,
+          97,
+          882,
+          1411
+        ],
+        "coverage": 0.257956,
+        "whiteEdgeRatio": 0.013353,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "7dc0dbfb6bc34c7947693871aae4cfd8f348656ef82ec506a3c4c03b64a15696"
+      }
+    },
+    {
+      "id": "fauna-exp-nacre-thorn-clam",
+      "displayName": "Nacre Thorn Clam",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "sessile bivalve fauna",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-nacre-thorn-clam-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-nacre-thorn-clam.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-nacre-thorn-clam-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "77265094541fc3a8ed5ccdd234e6035a011a6d371ac9bbf6d52cb1d46bc5c03f"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          138,
+          163,
+          1401,
+          857
+        ],
+        "coverage": 0.381313,
+        "whiteEdgeRatio": 0.015116,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "04912e20b36b265b81c6168290febdcf9f99c5c7613d52d6d805884329964e4b"
+      }
+    },
+    {
+      "id": "fauna-exp-aurora-fin-damselfish",
+      "displayName": "Aurora Fin Damselfish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "small oval fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-aurora-fin-damselfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-aurora-fin-damselfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-aurora-fin-damselfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "434f3d45d04b5464e16fbf8110a1d54f9ff46fcad299b2bd69f9370e0748d70a"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          153,
+          147,
+          1346,
+          864
+        ],
+        "coverage": 0.325645,
+        "whiteEdgeRatio": 0.018717,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "cb99c4ee43e240618db958a07f2a12fe3b945051b382ce853cf121b71605de67"
+      }
+    },
+    {
+      "id": "fauna-exp-chimney-ghost-shrimp",
+      "displayName": "Chimney Ghost Shrimp",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "vent shrimp",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-chimney-ghost-shrimp-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-chimney-ghost-shrimp.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-chimney-ghost-shrimp-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "281d4b307a83efc31b6dd9c619dc663d6012850af4b11439ec1763f6e07adf49"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          56,
+          228,
+          1473,
+          792
+        ],
+        "coverage": 0.224822,
+        "whiteEdgeRatio": 0.007081,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "7aa8643fa6ae869b8562d37da64578085f28664c5bdb4a79957e3673091ded57"
+      }
+    },
+    {
+      "id": "fauna-exp-ribbonjaw-cleaner-wrasse",
+      "displayName": "Ribbonjaw Cleaner Wrasse",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "slender wrasse",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ribbonjaw-cleaner-wrasse-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ribbonjaw-cleaner-wrasse.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ribbonjaw-cleaner-wrasse-key-preview.png",
+      "sourceMetrics": {
+        "width": 1881,
+        "height": 836,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "453e69e0890aa31d52f6cc2380dae148800e37d61fd9295983da8a6604a770ee"
+      },
+      "alphaMetrics": {
+        "width": 1881,
+        "height": 836,
+        "bbox": [
+          98,
+          227,
+          1770,
+          599
+        ],
+        "coverage": 0.221432,
+        "whiteEdgeRatio": 0.006067,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "b04b1acb10479c119c23e15d06847ea5468c3d17bde275798c8c7991ab767729"
+      }
+    },
+    {
+      "id": "fauna-exp-brass-knuckle-prawn",
+      "displayName": "Brass Knuckle Prawn",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "stout prawn",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-brass-knuckle-prawn-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-brass-knuckle-prawn.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-brass-knuckle-prawn-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "fac08a6dbe5cf4a05fee5f0a7dec5f09c1c57e7640e8d42643ba8dfcf2f8de26"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          48,
+          217,
+          1471,
+          849
+        ],
+        "coverage": 0.284222,
+        "whiteEdgeRatio": 0.000168,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "6ef21d2c03234e7553a0f042c635ef2ec8fc2520110b4fc0d8460aeb7543c3b2"
+      }
+    },
+    {
+      "id": "fauna-exp-mottle-reef-cowfish",
+      "displayName": "Mottle Reef Cowfish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "boxy fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-mottle-reef-cowfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-mottle-reef-cowfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-mottle-reef-cowfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "cd935334f16b10409e56170d5928975f33a910c45a32c8fa1cd0866de60a2247"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          69,
+          192,
+          1439,
+          785
+        ],
+        "coverage": 0.288626,
+        "whiteEdgeRatio": 0.005004,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "70e436e0a1709e8cb9195ec19e5e64bf0a0b986c8fbec9b8fef2769e6abfda2a"
+      }
+    },
+    {
+      "id": "fauna-exp-glimmer-spine-urchin",
+      "displayName": "Glimmer Spine Urchin",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "round urchin fauna",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-glimmer-spine-urchin-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-glimmer-spine-urchin.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-glimmer-spine-urchin-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "52c04105cbf1c05790a6fc20acb3283069c7c49c3e32747defe90624d917d928"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          151,
+          44,
+          1278,
+          960
+        ],
+        "coverage": 0.288155,
+        "whiteEdgeRatio": 0.029797,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "fbeed728a20c7daa8d2b693d22e2d54408e34dded260db1061b30122cb67c723"
+      }
+    },
+    {
+      "id": "fauna-exp-reef-needle-snipefish",
+      "displayName": "Reef Needle Snipefish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "thin snouted fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-reef-needle-snipefish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-reef-needle-snipefish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-reef-needle-snipefish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1774,
+        "height": 887,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "836ebb04c9e2a173f587139511b192a2554fdee763a2aa0233362096c5a3a53d"
+      },
+      "alphaMetrics": {
+        "width": 1774,
+        "height": 887,
+        "bbox": [
+          59,
+          275,
+          1712,
+          570
+        ],
+        "coverage": 0.109024,
+        "whiteEdgeRatio": 0.002527,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "26f2a9ef37ae444c30aa36d6d98e8131f4092500aa4346e7dc3b5186deb5636b"
+      }
+    },
+    {
+      "id": "fauna-exp-copperglass-cardinal",
+      "displayName": "Copperglass Cardinal",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "round fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-copperglass-cardinal-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-copperglass-cardinal.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-copperglass-cardinal-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "80b003dbcef95d73c4f2c2f6a311e0359b6b0b1d2a9a54a32f6013408ce00600"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          147,
+          135,
+          1392,
+          880
+        ],
+        "coverage": 0.321068,
+        "whiteEdgeRatio": 0.012183,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "2dc1d0039ab335c4636e83b253745a926722fbcff1c2ed89102042422f32cdfa"
+      }
+    },
+    {
+      "id": "fauna-exp-pearl-eye-flounder",
+      "displayName": "Pearl Eye Flounder",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "flatfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-pearl-eye-flounder-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-pearl-eye-flounder.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-pearl-eye-flounder-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "55abf9ee1fbbb96a2b9e2a57cd3851b452e4c9f0d70d47f2d4d1d9c1da60da0a"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          71,
+          142,
+          1462,
+          820
+        ],
+        "coverage": 0.38918,
+        "whiteEdgeRatio": 0.044816,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "484812c15ecf328c7b5d2685a8f60d03fe6f2d7b14b63a425204fd2a4e7e9909"
+      }
+    },
+    {
+      "id": "fauna-exp-saffron-paddle-cuttle",
+      "displayName": "Saffron Paddle Cuttle",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "cuttlefish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-saffron-paddle-cuttle-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-saffron-paddle-cuttle.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-saffron-paddle-cuttle-key-preview.png",
+      "sourceMetrics": {
+        "width": 1665,
+        "height": 945,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "8d45b42f3b76ac03dec68ebddbb1310358f7f4165a42c4227db1db5ce3bbf8c1"
+      },
+      "alphaMetrics": {
+        "width": 1665,
+        "height": 945,
+        "bbox": [
+          94,
+          183,
+          1567,
+          748
+        ],
+        "coverage": 0.322972,
+        "whiteEdgeRatio": 0.014434,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "aa70ab2bdb0764c93a8e2567595e265452e178c83d42e4ef61573653ed134b08"
+      }
+    },
+    {
+      "id": "fauna-exp-teal-mask-filefish",
+      "displayName": "Teal Mask Filefish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "flat oval fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-teal-mask-filefish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-teal-mask-filefish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-teal-mask-filefish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c381ba160eb5deaece9cb76f1a3206970eaf9a50c128f916268e653240a6f7a4"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "bbox": [
+          87,
+          147,
+          1427,
+          859
+        ],
+        "coverage": 0.318863,
+        "whiteEdgeRatio": 0.01497,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "d71b5936e3b7a029200f0ec3cf39b3ec1d6e74c77246230290d2ef3bc91c2b51"
+      }
+    },
+    {
+      "id": "fauna-exp-goldbar-squirrelfish",
+      "displayName": "Goldbar Squirrelfish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "squirrelfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-goldbar-squirrelfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-goldbar-squirrelfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-goldbar-squirrelfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1880,
+        "height": 1129,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "135a1e5c3d7cf848d753d9bca487312b8498f4f16766a0572e83c2c4baf373d5"
+      },
+      "alphaMetrics": {
+        "width": 1880,
+        "height": 1129,
+        "bbox": [
+          201,
+          198,
+          1654,
+          882
+        ],
+        "coverage": 0.242038,
+        "whiteEdgeRatio": 0.013089,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "155692edd49a829285cbb5b11e0f59ee127994fcd4bda1f224d7cd532a2e79cf"
+      }
+    },
+    {
+      "id": "fauna-exp-cinder-vent-clingfish",
+      "displayName": "Cinder Vent Clingfish",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "vent clingfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-cinder-vent-clingfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cinder-vent-clingfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-cinder-vent-clingfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "70d4753045be807ffe885fb641b913b267e7c708c1d9ed144b038558c62f3633"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          107,
+          257,
+          1532,
+          709
+        ],
+        "coverage": 0.265586,
+        "whiteEdgeRatio": 0.0,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "b1835d12131c31d3d02800f9a9f8de0a40d153509e7fdd2d7740b03c7fb6dad7"
+      }
+    },
+    {
+      "id": "fauna-exp-rustscale-hatchetfish",
+      "displayName": "Rustscale Hatchetfish",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "deep hatchetfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-rustscale-hatchetfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-rustscale-hatchetfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-rustscale-hatchetfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "2dcd3d98b5873719cdbae3a21056cd1503d2f868e6b1b7e9f816e876bde8e173"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          251,
+          83,
+          1356,
+          884
+        ],
+        "coverage": 0.266858,
+        "whiteEdgeRatio": 0.015739,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "eb8af4c54d3456c8cbe5ecfa9cb4221c9f043ea898133aa1a3a1f2d39c0329e2"
+      }
+    },
+    {
+      "id": "fauna-exp-lumen-brow-barreleye",
+      "displayName": "Lumen Brow Barreleye",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "barreleye fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-lumen-brow-barreleye-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-lumen-brow-barreleye.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-lumen-brow-barreleye-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "b22a9bc57fdba77baa681316d7a649e526a3f8e01bd75c76e31ad546bc86192b"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          117,
+          222,
+          1465,
+          740
+        ],
+        "coverage": 0.25362,
+        "whiteEdgeRatio": 0.003118,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "f0ff4bfc85052c79ab6c579caead43dbac1061fe36dae21434c6d21c398fb97c"
+      }
+    },
+    {
+      "id": "fauna-exp-ivory-sail-chimaera",
+      "displayName": "Ivory Sail Chimaera",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "deep chimaera fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ivory-sail-chimaera-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ivory-sail-chimaera.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ivory-sail-chimaera-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "d259bef44a555a20fc5206f7cf63fcb9b7348397f531df1854dee42240cf05fd"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          20,
+          176,
+          1554,
+          822
+        ],
+        "coverage": 0.195147,
+        "whiteEdgeRatio": 0.015535,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "3a2283a841040dd9964fed2829cf915bd870eb1c7277870bd4f18d8d96dd3906"
+      }
+    },
+    {
+      "id": "fauna-exp-ashveil-butterflyfish",
+      "displayName": "Ashveil Butterflyfish",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "butterflyfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ashveil-butterflyfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ashveil-butterflyfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ashveil-butterflyfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1880,
+        "height": 1129,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c7d46f01eeb173e2723e5b8f8a8d643c7fd9168473aa5a8c278a24e0e033ecb4"
+      },
+      "alphaMetrics": {
+        "width": 1880,
+        "height": 1129,
+        "bbox": [
+          379,
+          194,
+          1497,
+          930
+        ],
+        "coverage": 0.254231,
+        "whiteEdgeRatio": 0.0097,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "7d02d2848ef96050826aa1d93a4a2b3fda2f162851ee2dbdc843ee9bed1c990f"
+      }
+    },
+    {
+      "id": "fauna-exp-goldcap-tripodfish",
+      "displayName": "Goldcap Tripodfish",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "tripodfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-goldcap-tripodfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-goldcap-tripodfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-goldcap-tripodfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1963,
+        "height": 1149,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "e33f0fd21915276480b056e68be9afbe6f6a7bd3772c0bf745ff9258d4cdcbeb"
+      },
+      "alphaMetrics": {
+        "width": 1963,
+        "height": 1149,
+        "bbox": [
+          238,
+          214,
+          1607,
+          962
+        ],
+        "coverage": 0.074023,
+        "whiteEdgeRatio": 0.0,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "353b98e1fc6bff6694790b4e870e9b636da25fea9f8af5d3b4a55bf98625739d"
+      }
+    },
+    {
+      "id": "fauna-exp-verdigris-parrotfish",
+      "displayName": "Verdigris Parrotfish",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "parrotfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-verdigris-parrotfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-verdigris-parrotfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-verdigris-parrotfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1897,
+        "height": 1119,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "6709acfcfc73e4a09c0cffd37fe6949b52385549f1d1201bd4e89e5f54d704f0"
+      },
+      "alphaMetrics": {
+        "width": 1897,
+        "height": 1119,
+        "bbox": [
+          226,
+          221,
+          1672,
+          887
+        ],
+        "coverage": 0.281756,
+        "whiteEdgeRatio": 0.056973,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "4868d16d93d3116c52d17e42cf81d588daec13df3398ec678d8efbf9df34a5a1"
+      }
+    },
+    {
+      "id": "fauna-exp-cyan-pulse-lanternfish",
+      "displayName": "Cyan Pulse Lanternfish",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "lanternfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-cyan-pulse-lanternfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cyan-pulse-lanternfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-cyan-pulse-lanternfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "472e2d6279ce268bf2eb65762ee730c40ba6a18819bef4ad1ea3e227b38eafd8"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          121,
+          249,
+          1504,
+          682
+        ],
+        "coverage": 0.186351,
+        "whiteEdgeRatio": 0.019008,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "f653cf96f9851345f6a00914c5d811e202ec45412f4b11f3c2a145ce927a96d1"
+      }
+    },
+    {
+      "id": "fauna-exp-scarletline-hawkfish",
+      "displayName": "Scarletline Hawkfish",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "hawkfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-scarletline-hawkfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-scarletline-hawkfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-scarletline-hawkfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1928,
+        "height": 1101,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "954ae647612b118f26ebed35178b1490159b8f52511c956d4a2135802c6c6750"
+      },
+      "alphaMetrics": {
+        "width": 1928,
+        "height": 1101,
+        "bbox": [
+          277,
+          186,
+          1651,
+          888
+        ],
+        "coverage": 0.239244,
+        "whiteEdgeRatio": 0.012165,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "97b2c6932a38f0814b461c849a46f1687eb5e563bd3d606d926902e04739fb5e"
+      }
+    },
+    {
+      "id": "fauna-exp-vent-jade-eelpout",
+      "displayName": "Vent Jade Eelpout",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "eelpout fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-vent-jade-eelpout-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-vent-jade-eelpout.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-vent-jade-eelpout-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "ced61ad06fb75883b9a8a77c41a83a60ac30f1465b74cc9f7a6d286e16b1a4b1"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          40,
+          288,
+          1585,
+          657
+        ],
+        "coverage": 0.206204,
+        "whiteEdgeRatio": 0.005549,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "1f3a17aedd444a153b89ecf253404523b9e1b52926f23de12eeea2164640177c"
+      }
+    },
+    {
+      "id": "fauna-exp-blueglass-anthias",
+      "displayName": "Blueglass Anthias",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "anthias",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-blueglass-anthias-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-blueglass-anthias.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-blueglass-anthias-key-preview.png",
+      "sourceMetrics": {
+        "width": 1940,
+        "height": 1094,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "14f6551e63a7b45442d0048f91cd11e145c88caf4131ca1ab710b611a3c42aff"
+      },
+      "alphaMetrics": {
+        "width": 1940,
+        "height": 1094,
+        "bbox": [
+          286,
+          209,
+          1635,
+          847
+        ],
+        "coverage": 0.192176,
+        "whiteEdgeRatio": 0.031265,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "28a8f5d291f02dbd6ca2fe127de7655ae81eea2e14688e441d5a7a56cfef5d8f"
+      }
+    },
+    {
+      "id": "fauna-exp-tin-plate-searobin",
+      "displayName": "Tin Plate Searobin",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "walking fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-tin-plate-searobin-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-tin-plate-searobin.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-tin-plate-searobin-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "21ccf6b5ee207f21449b63e25dee6d8a71cf9fe9c82fba29fe5786b1ba5e7d51"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          62,
+          174,
+          1580,
+          801
+        ],
+        "coverage": 0.274772,
+        "whiteEdgeRatio": 0.014741,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "d622cfc6600d4763af68fd68b1d20d432744e30d0afe5d9831e4cdb86ff08e06"
+      }
+    },
+    {
+      "id": "fauna-exp-reef-amber-snapper",
+      "displayName": "Reef Amber Snapper",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "snapper",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-reef-amber-snapper-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-reef-amber-snapper.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-reef-amber-snapper-key-preview.png",
+      "sourceMetrics": {
+        "width": 1992,
+        "height": 1133,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c7adc0dac07bcd315f21be9c3850864138ebbef7163380196e687d28bb517d78"
+      },
+      "alphaMetrics": {
+        "width": 1992,
+        "height": 1133,
+        "bbox": [
+          252,
+          204,
+          1711,
+          899
+        ],
+        "coverage": 0.230743,
+        "whiteEdgeRatio": 0.008225,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "63c3ad340e9b8562561713111f15fd31ff417de1e1a4ae7c54bd025dc039399c"
+      }
+    },
+    {
+      "id": "fauna-exp-blackwater-hatchet",
+      "displayName": "Blackwater Hatchet",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "deep hatchetfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-blackwater-hatchet-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-blackwater-hatchet.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-blackwater-hatchet-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "08646d9d0807591d11a38deb6a1654ad144c84a8ccd918cdc8533e4c77056f30"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          265,
+          246,
+          1298,
+          731
+        ],
+        "coverage": 0.150921,
+        "whiteEdgeRatio": 0.040228,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "ab7aa433c02f7217375b91df9c427f1d027c1759dbb28ca17bb4bed58e2f4ca9"
+      }
+    },
+    {
+      "id": "fauna-exp-glassjaw-viperfish",
+      "displayName": "Glassjaw Viperfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "small predator fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-glassjaw-viperfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-glassjaw-viperfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-glassjaw-viperfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "5c295bc0cb8adfae469ec884b750a7b53444772ece060fe2cda74e9351d4f62f"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          45,
+          278,
+          1580,
+          691
+        ],
+        "coverage": 0.162166,
+        "whiteEdgeRatio": 0.00757,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "93ada6d9ea90d3008641afed243d3eb0c4371abbab3b9595d09ac8b061bf3279"
+      }
+    },
+    {
+      "id": "fauna-exp-abyssal-thread-eel",
+      "displayName": "Abyssal Thread Eel",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "thin eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-abyssal-thread-eel-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-abyssal-thread-eel.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-abyssal-thread-eel-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "2c2d1b54ff713c3eb777bd8e6db4f61e5f99ea28e2f73b0beed7a8f4a154899a"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          31,
+          359,
+          1596,
+          598
+        ],
+        "coverage": 0.083198,
+        "whiteEdgeRatio": 0.008103,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "0e352dbb808b9dc8598e6eb0097185598465c57dbdee3cd256efb1da60892114"
+      }
+    },
+    {
+      "id": "fauna-exp-bluefire-dragonet",
+      "displayName": "Bluefire Dragonet",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "ornate bottom fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-bluefire-dragonet-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-bluefire-dragonet.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-bluefire-dragonet-key-preview.png",
+      "sourceMetrics": {
+        "width": 1617,
+        "height": 973,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "43521dd555ab823d0ad6e490881e42409a47521070bd17b610af9cccf802cf7d"
+      },
+      "alphaMetrics": {
+        "width": 1617,
+        "height": 973,
+        "bbox": [
+          176,
+          148,
+          1405,
+          786
+        ],
+        "coverage": 0.243616,
+        "whiteEdgeRatio": 0.006224,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "39f51f4403713d7b4e2f1849e886eeb511949c27abd8049f838b73917bced40f"
+      }
+    },
+    {
+      "id": "fauna-exp-twilight-surgeonfish",
+      "displayName": "Twilight Surgeonfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "surgeonfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-twilight-surgeonfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-twilight-surgeonfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-twilight-surgeonfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1959,
+        "height": 1152,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "9771cf05478fc274c65b490e519d810260ec7ca2b957504f806703979090dfe3"
+      },
+      "alphaMetrics": {
+        "width": 1959,
+        "height": 1152,
+        "bbox": [
+          290,
+          247,
+          1649,
+          868
+        ],
+        "coverage": 0.20385,
+        "whiteEdgeRatio": 0.014242,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "4e997f672385c1fda07f45ba3ee75a7d717e12f9b023642db3cba24cf05d285a"
+      }
+    },
+    {
+      "id": "fauna-exp-obsidian-swallowtail",
+      "displayName": "Obsidian Swallowtail",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "blackwater fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-obsidian-swallowtail-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-obsidian-swallowtail.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-obsidian-swallowtail-key-preview.png",
+      "sourceMetrics": {
+        "width": 1624,
+        "height": 969,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "6a5570d0485b02c0dd7635817d7e40a51315486136ae75e48d1f5602de64f597"
+      },
+      "alphaMetrics": {
+        "width": 1624,
+        "height": 969,
+        "bbox": [
+          101,
+          127,
+          1488,
+          829
+        ],
+        "coverage": 0.26311,
+        "whiteEdgeRatio": 0.002865,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "e9d6400d2a6b286e42d158ed2b931da85ad5043d63668d969575123d9e648c28"
+      }
+    },
+    {
+      "id": "fauna-exp-cobalt-triggerfish",
+      "displayName": "Cobalt Triggerfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "triggerfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-cobalt-triggerfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cobalt-triggerfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-cobalt-triggerfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1974,
+        "height": 1143,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "0393dfc458b400bbc632b7db4c5f26b2110259a9a44a82409254875459005066"
+      },
+      "alphaMetrics": {
+        "width": 1974,
+        "height": 1143,
+        "bbox": [
+          289,
+          184,
+          1631,
+          947
+        ],
+        "coverage": 0.223236,
+        "whiteEdgeRatio": 0.049383,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "9cf2274238ccbe2cd51ca8caa0383bb7d3b61792d749f1aba7218c1e585880bd"
+      }
+    },
+    {
+      "id": "fauna-exp-snowcap-snailfish",
+      "displayName": "Snowcap Snailfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "soft deep fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-snowcap-snailfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-snowcap-snailfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-snowcap-snailfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1639,
+        "height": 959,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "5cc992aacda916b35ed45011a71cb8c1dc9559cc9fab8c48efe43fa556647ad1"
+      },
+      "alphaMetrics": {
+        "width": 1639,
+        "height": 959,
+        "bbox": [
+          73,
+          226,
+          1508,
+          706
+        ],
+        "coverage": 0.278102,
+        "whiteEdgeRatio": 0.012452,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "c183a325877c051bfd9771de8410611c5b5ccee334dcab3a93db3aa7c8d773a2"
+      }
+    },
+    {
+      "id": "fauna-exp-ironmask-ratfish",
+      "displayName": "Ironmask Ratfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "chimaera-like fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ironmask-ratfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ironmask-ratfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ironmask-ratfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1640,
+        "height": 959,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "1c00f1853e453cd2e54dd35ee4c22d1424a2bad9c7c72bc1d44b62c25f2ae85f"
+      },
+      "alphaMetrics": {
+        "width": 1640,
+        "height": 959,
+        "bbox": [
+          37,
+          228,
+          1576,
+          707
+        ],
+        "coverage": 0.164264,
+        "whiteEdgeRatio": 0.000498,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "e74cfdf6637b188176d7051d5ff135bda4f4c5db9e39319f86db4e63e51f5d8c"
+      }
+    },
+    {
+      "id": "fauna-exp-pearlside-grunt",
+      "displayName": "Pearlside Grunt",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "grunt fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-pearlside-grunt-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-pearlside-grunt.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-pearlside-grunt-key-preview.png",
+      "sourceMetrics": {
+        "width": 1992,
+        "height": 1133,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "de36298e39731d47a587f7d59eec2493d3a8b823a03af03fcf7f2372a8cb739b"
+      },
+      "alphaMetrics": {
+        "width": 1992,
+        "height": 1133,
+        "bbox": [
+          285,
+          196,
+          1682,
+          915
+        ],
+        "coverage": 0.243799,
+        "whiteEdgeRatio": 0.014327,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "6e8775b3f33be7054162e9e345dfb593aed14597a1bc51683229e9eb4eb464d4"
+      }
+    },
+    {
+      "id": "fauna-exp-saberfin-smelt",
+      "displayName": "Saberfin Smelt",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "small sharp fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-saberfin-smelt-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-saberfin-smelt.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-saberfin-smelt-key-preview.png",
+      "sourceMetrics": {
+        "width": 1645,
+        "height": 956,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "d960c3521382144fe2aeda1375461f6739d049804ca02a677cdf6bf46bc5d8cf"
+      },
+      "alphaMetrics": {
+        "width": 1645,
+        "height": 956,
+        "bbox": [
+          82,
+          181,
+          1554,
+          661
+        ],
+        "coverage": 0.147724,
+        "whiteEdgeRatio": 0.000255,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "13971d469aeb9ab22b51f605be0e0a670a8559c2be74fde9dd8302e5563a5fd6"
+      }
+    },
+    {
+      "id": "fauna-exp-brassstripe-fusilier",
+      "displayName": "Brassstripe Fusilier",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "fusilier",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-brassstripe-fusilier-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-brassstripe-fusilier.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-brassstripe-fusilier-key-preview.png",
+      "sourceMetrics": {
+        "width": 2056,
+        "height": 1133,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c55cb786cc41b7af14dd9ee7dfbfea4d59391458fb78c4d78e88b40579545e57"
+      },
+      "alphaMetrics": {
+        "width": 2056,
+        "height": 1133,
+        "bbox": [
+          301,
+          313,
+          1749,
+          790
+        ],
+        "coverage": 0.138537,
+        "whiteEdgeRatio": 0.009191,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "3c855f4743240f988772c0d2f5587c925f6cd836a0db2124c93c8a1f4204e7d8"
+      }
+    },
+    {
+      "id": "fauna-exp-starless-lantern-eel",
+      "displayName": "Starless Lantern Eel",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-starless-lantern-eel-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-starless-lantern-eel.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-starless-lantern-eel-key-preview.png",
+      "sourceMetrics": {
+        "width": 1713,
+        "height": 918,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "5c1643adae5be0d636541b4aa0ea9340ec07a262d0aa16a9974d46ec871f52e6"
+      },
+      "alphaMetrics": {
+        "width": 1713,
+        "height": 918,
+        "bbox": [
+          51,
+          302,
+          1659,
+          566
+        ],
+        "coverage": 0.122014,
+        "whiteEdgeRatio": 0.0,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "3b86ecabacc8ce96f535c2589dcef2d1daa13eca651538ec6594b84eb05b8ad9"
+      }
+    },
+    {
+      "id": "fauna-exp-moonspot-drumfish",
+      "displayName": "Moonspot Drumfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "drumfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-moonspot-drumfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-moonspot-drumfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-moonspot-drumfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1909,
+        "height": 1182,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "a619a6a75cf1829a2aac9b92a64ca1e477a1267a73e665762157390d00964a01"
+      },
+      "alphaMetrics": {
+        "width": 1909,
+        "height": 1182,
+        "bbox": [
+          322,
+          173,
+          1583,
+          965
+        ],
+        "coverage": 0.252455,
+        "whiteEdgeRatio": 0.038049,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "80acbf0e93701b88fac947411cc5be7e877e75bd51ff6c6cb2345b665569d028"
+      }
+    },
+    {
+      "id": "fauna-exp-hollow-eye-cusk",
+      "displayName": "Hollow Eye Cusk",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "deep cusk eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-hollow-eye-cusk-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-hollow-eye-cusk.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-hollow-eye-cusk-key-preview.png",
+      "sourceMetrics": {
+        "width": 1698,
+        "height": 926,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "00edf42742673449702d29c01da99d09ef76e12ad9dbae6ef4eb2f85f68cd71e"
+      },
+      "alphaMetrics": {
+        "width": 1698,
+        "height": 926,
+        "bbox": [
+          61,
+          233,
+          1625,
+          716
+        ],
+        "coverage": 0.291699,
+        "whiteEdgeRatio": 0.017094,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "3449f6d694808025d96aa6b4d522422474bb030ddb97e17657771a54f9558627"
+      }
+    },
+    {
+      "id": "fauna-exp-knifecrest-snipe-eel",
+      "displayName": "Knifecrest Snipe Eel",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "snipe eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-knifecrest-snipe-eel-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-knifecrest-snipe-eel.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-knifecrest-snipe-eel-key-preview.png",
+      "sourceMetrics": {
+        "width": 2009,
+        "height": 962,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "206727bf701a6f4debd4800f8426f6830ea3bb3fc72094d896cbcff759242043"
+      },
+      "alphaMetrics": {
+        "width": 2009,
+        "height": 962,
+        "bbox": [
+          121,
+          401,
+          1884,
+          576
+        ],
+        "coverage": 0.061158,
+        "whiteEdgeRatio": 0.012055,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "3e138b0b88c24bd6557ab6316d22de483ba8363d176db07fc6bc0b43e3a75de3"
+      }
+    },
+    {
+      "id": "fauna-exp-rustjaw-blenny",
+      "displayName": "Rustjaw Blenny",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "blenny",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-rustjaw-blenny-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-rustjaw-blenny.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-rustjaw-blenny-key-preview.png",
+      "sourceMetrics": {
+        "width": 2056,
+        "height": 1133,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c28a805ddd6c8bb42336ca5a43968e44c0aad470c2413d2b2ec5a28224d185b4"
+      },
+      "alphaMetrics": {
+        "width": 2056,
+        "height": 1133,
+        "bbox": [
+          344,
+          331,
+          1691,
+          811
+        ],
+        "coverage": 0.178102,
+        "whiteEdgeRatio": 0.033727,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "935332ffd66116d5dbdc43f4fd1bbe924a0ca6025a2a71ad0a9208681192174b"
+      }
+    },
+    {
+      "id": "fauna-exp-onyx-frillshark-fry",
+      "displayName": "Onyx Frillshark Fry",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "small frilled shark",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-onyx-frillshark-fry-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-onyx-frillshark-fry.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-onyx-frillshark-fry-key-preview.png",
+      "sourceMetrics": {
+        "width": 1771,
+        "height": 888,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "6eac6bb029a8057ca87bb747ec0af7bc0b9585dd9279963079db57ff1b01492b"
+      },
+      "alphaMetrics": {
+        "width": 1771,
+        "height": 888,
+        "bbox": [
+          27,
+          279,
+          1708,
+          596
+        ],
+        "coverage": 0.148734,
+        "whiteEdgeRatio": 0.004831,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "67ce5ef552b1b4f4cf161c20ae424543b638160e53c7a06b59b35d3b6f4a7837"
+      }
+    },
+    {
+      "id": "fauna-exp-black-velvet-cusk",
+      "displayName": "Black Velvet Cusk",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "dark fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-black-velvet-cusk-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-black-velvet-cusk.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-black-velvet-cusk-key-preview.png",
+      "sourceMetrics": {
+        "width": 2037,
+        "height": 1011,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "33b92a97ea29fdce8924445c51ecd2e7d039823afc5d4f4905426b81ddfd374d"
+      },
+      "alphaMetrics": {
+        "width": 2037,
+        "height": 1011,
+        "bbox": [
+          196,
+          337,
+          1834,
+          684
+        ],
+        "coverage": 0.193808,
+        "whiteEdgeRatio": 0.000867,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "451a8da6fd480f4219983745b0b2b6b7cc0815d9b94e2bb4a1fb1140b7346413"
+      }
+    },
+    {
+      "id": "fauna-exp-sulfur-eye-hagfish",
+      "displayName": "Sulfur Eye Hagfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "hagfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-sulfur-eye-hagfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-sulfur-eye-hagfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-sulfur-eye-hagfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2222,
+        "height": 1079,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "3d9e1268167ad058016153b457ad7a1de7018bc6d8b5623d8b4db25a018b81b1"
+      },
+      "alphaMetrics": {
+        "width": 2222,
+        "height": 1079,
+        "bbox": [
+          320,
+          388,
+          1916,
+          696
+        ],
+        "coverage": 0.099123,
+        "whiteEdgeRatio": 0.000272,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "28d964d9922cba5a70fbecb222d67d7002a1724bc4baa0df35b69312d672019e"
+      }
+    },
+    {
+      "id": "fauna-exp-halo-dot-lanternfish",
+      "displayName": "Halo Dot Lanternfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "lanternfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-halo-dot-lanternfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-halo-dot-lanternfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-halo-dot-lanternfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2222,
+        "height": 1111,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "2489071f087b56ae78e02aa5d32370d6fe0bfb755c846227675fa9dddbf87888"
+      },
+      "alphaMetrics": {
+        "width": 2222,
+        "height": 1111,
+        "bbox": [
+          391,
+          348,
+          1796,
+          761
+        ],
+        "coverage": 0.128394,
+        "whiteEdgeRatio": 0.0,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "cc5c06eafc5c107c7e23553b97ee07e401c8302745e96fd1586d8866b83fc8c0"
+      }
+    },
+    {
+      "id": "fauna-exp-ivory-ridge-rattail",
+      "displayName": "Ivory Ridge Rattail",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "rattail fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ivory-ridge-rattail-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ivory-ridge-rattail.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ivory-ridge-rattail-key-preview.png",
+      "sourceMetrics": {
+        "width": 2286,
+        "height": 1143,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "7531f19f3253855f5058c029c98c0639ee1f549080809720cfd37d75b7462bef"
+      },
+      "alphaMetrics": {
+        "width": 2286,
+        "height": 1143,
+        "bbox": [
+          313,
+          416,
+          1972,
+          715
+        ],
+        "coverage": 0.071377,
+        "whiteEdgeRatio": 0.00029,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "092f27d7123063c634bb4ce60d16163b00bf898c418a18bf7c71a7fb22ed8551"
+      }
+    },
+    {
+      "id": "fauna-exp-neonbar-dartfish",
+      "displayName": "Neonbar Dartfish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "dartfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-neonbar-dartfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-neonbar-dartfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-neonbar-dartfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2286,
+        "height": 1143,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "bb92cfdbfe6f36dc48912711d381581fb0b384389cdddfa2c2cbef9dfd03bb26"
+      },
+      "alphaMetrics": {
+        "width": 2286,
+        "height": 1143,
+        "bbox": [
+          414,
+          337,
+          1847,
+          761
+        ],
+        "coverage": 0.081421,
+        "whiteEdgeRatio": 0.00026,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "4b72c269126cd1c618b0f03318634b9b80a108290d06fdda93da01bed8e1e5df"
+      }
+    },
+    {
+      "id": "fauna-exp-sable-razorfish",
+      "displayName": "Sable Razorfish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "razorfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-sable-razorfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-sable-razorfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-sable-razorfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1856,
+        "height": 1280,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "5c73d86bda12485aaa2fe1544c7f0950ff5c417c0f7c6d07c00f035a2f57ed03"
+      },
+      "alphaMetrics": {
+        "width": 1856,
+        "height": 1280,
+        "bbox": [
+          367,
+          195,
+          1454,
+          1096
+        ],
+        "coverage": 0.133829,
+        "whiteEdgeRatio": 0.001537,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "210d7bf7425f12a2e7644f0bb964b9c093e1c89f5d8676427f7e026d072b3664"
+      }
+    },
+    {
+      "id": "fauna-exp-ancient-mask-angler",
+      "displayName": "Ancient Mask Angler",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "anglerfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ancient-mask-angler-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ancient-mask-angler.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ancient-mask-angler-key-preview.png",
+      "sourceMetrics": {
+        "width": 1984,
+        "height": 1280,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "54a26fe753f4d615298d4cf1913caac64afdea773406228a8208b50bb4280c2c"
+      },
+      "alphaMetrics": {
+        "width": 1984,
+        "height": 1280,
+        "bbox": [
+          299,
+          286,
+          1680,
+          1021
+        ],
+        "coverage": 0.208295,
+        "whiteEdgeRatio": 0.001762,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "dcc0ecad76f09576d6679d8bf2b386ff1b3f86aee2c7204f51b7edb0e079cb8c"
+      }
+    },
+    {
+      "id": "fauna-exp-mirrorbone-hatchetfish",
+      "displayName": "Mirrorbone Hatchetfish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "abyss hatchetfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-mirrorbone-hatchetfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-mirrorbone-hatchetfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-mirrorbone-hatchetfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 1920,
+        "height": 1280,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "ef29bbb0c89300a73b3fc5041bd8de842fe9e49c5acf0a24fb125e6827e9cf2f"
+      },
+      "alphaMetrics": {
+        "width": 1920,
+        "height": 1280,
+        "bbox": [
+          380,
+          275,
+          1496,
+          1027
+        ],
+        "coverage": 0.170474,
+        "whiteEdgeRatio": 0.00097,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "65c99e12e2fb7a0094f99f7fd8dd9f2b65675b4763d7c29d3ec0675585524831"
+      }
+    },
+    {
+      "id": "fauna-exp-anchorfin-eel",
+      "displayName": "Anchorfin Eel",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "abyss eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-anchorfin-eel-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-anchorfin-eel.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-anchorfin-eel-key-preview.png",
+      "sourceMetrics": {
+        "width": 2451,
+        "height": 1188,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "8cf5ac7a98b760eb0f6fab9ad653c7bebb4c0c198b8bce5d4c9455c54683e4f9"
+      },
+      "alphaMetrics": {
+        "width": 2451,
+        "height": 1188,
+        "bbox": [
+          384,
+          334,
+          2078,
+          933
+        ],
+        "coverage": 0.130766,
+        "whiteEdgeRatio": 0.023938,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "6368e71cc8c0ea784fd22293b8f00c9d1d2efe112fb71ec399afe3762e97b15c"
+      }
+    },
+    {
+      "id": "fauna-exp-glassfin-fangtooth",
+      "displayName": "Glassfin Fangtooth",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "fangtooth fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-glassfin-fangtooth-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-glassfin-fangtooth.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-glassfin-fangtooth-key-preview.png",
+      "sourceMetrics": {
+        "width": 2303,
+        "height": 1330,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "73e266c0b5a3b518ed50bbd895a0eeee38fcf750db312ff75a2d2a88f634889b"
+      },
+      "alphaMetrics": {
+        "width": 2303,
+        "height": 1330,
+        "bbox": [
+          479,
+          273,
+          1814,
+          1011
+        ],
+        "coverage": 0.1719,
+        "whiteEdgeRatio": 0.007675,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "f42a8abcf72f08127efc2ee74c46a2eb3a0893798704bd348a5439dbabb3161c"
+      }
+    },
+    {
+      "id": "fauna-exp-cobalt-gulper-fry",
+      "displayName": "Cobalt Gulper Fry",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "small gulper eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-cobalt-gulper-fry-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cobalt-gulper-fry.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-cobalt-gulper-fry-key-preview.png",
+      "sourceMetrics": {
+        "width": 2515,
+        "height": 1159,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c620d0e24dd5832be6b9506fb570749263f45fca9335dc86b7fee460f2e7de83"
+      },
+      "alphaMetrics": {
+        "width": 2515,
+        "height": 1159,
+        "bbox": [
+          404,
+          442,
+          2119,
+          733
+        ],
+        "coverage": 0.086823,
+        "whiteEdgeRatio": 0.001132,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "2869fb8f63e26c6bc051a8ed979f912cde290c5d0e261b9e1008d02e16ae3b4f"
+      }
+    },
+    {
+      "id": "fauna-exp-bonewhisker-brotula",
+      "displayName": "Bonewhisker Brotula",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "brotula fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-bonewhisker-brotula-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-bonewhisker-brotula.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-bonewhisker-brotula-key-preview.png",
+      "sourceMetrics": {
+        "width": 2527,
+        "height": 1183,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c5875eb02db7bb655f86b7f1f4b200999b2ad986bd6afa3f11d4d37cccbb74a5"
+      },
+      "alphaMetrics": {
+        "width": 2527,
+        "height": 1183,
+        "bbox": [
+          429,
+          385,
+          2095,
+          825
+        ],
+        "coverage": 0.15073,
+        "whiteEdgeRatio": 0.040802,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "9bea5d0b8f1d6523767402911d189b3f85e604acce2c565d1f584b445144457b"
+      }
+    },
+    {
+      "id": "fauna-exp-cinderstripe-cardinal",
+      "displayName": "Cinderstripe Cardinal",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "cardinalfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-cinderstripe-cardinal-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cinderstripe-cardinal.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-cinderstripe-cardinal-key-preview.png",
+      "sourceMetrics": {
+        "width": 2184,
+        "height": 1261,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "dba7e38f07c6ba740661e9c00a55ed79be187f0ae124c03cc919924280b22c8b"
+      },
+      "alphaMetrics": {
+        "width": 2184,
+        "height": 1261,
+        "bbox": [
+          448,
+          268,
+          1706,
+          951
+        ],
+        "coverage": 0.158968,
+        "whiteEdgeRatio": 0.090124,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "ddf23e54ca15a23112860f2fbad1257c39e76f33c3e71181b3f8556ce1ca645e"
+      }
+    },
+    {
+      "id": "fauna-exp-kelpglass-rockfish",
+      "displayName": "Kelpglass Rockfish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "rockfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-kelpglass-rockfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-kelpglass-rockfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-kelpglass-rockfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2275,
+        "height": 1346,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "623a46af54488fdb4aee530eb0715e6be85a09d03b9e69299488aa2c56d0be5c"
+      },
+      "alphaMetrics": {
+        "width": 2275,
+        "height": 1346,
+        "bbox": [
+          443,
+          292,
+          1829,
+          1021
+        ],
+        "coverage": 0.175958,
+        "whiteEdgeRatio": 0.003713,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "ecbf20605bac6ea9fadf677e112d6ce8c16397da7a4c8f077b4faddb89460548"
+      }
+    },
+    {
+      "id": "fauna-exp-ivorymask-goatfish",
+      "displayName": "Ivorymask Goatfish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "goatfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ivorymask-goatfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ivorymask-goatfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ivorymask-goatfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2478,
+        "height": 1207,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "332fbf4631639d176fe88e3bd75c1f1b8c0255f5ce08544875a705ea4a5836cf"
+      },
+      "alphaMetrics": {
+        "width": 2478,
+        "height": 1207,
+        "bbox": [
+          500,
+          359,
+          1937,
+          856
+        ],
+        "coverage": 0.126544,
+        "whiteEdgeRatio": 0.028364,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "060dcd4934fb21da87bc7c758e1e93e3dcb56806ae7915843d8d59b2e91f78ab"
+      }
+    },
+    {
+      "id": "fauna-exp-hadal-needlefish",
+      "displayName": "Hadal Needlefish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "thin needlefish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-hadal-needlefish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-hadal-needlefish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-hadal-needlefish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2649,
+        "height": 1156,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "13b1077620edde87ac38ece1b7d8044957101fe611849baf8fdff4fbc2fdb05a"
+      },
+      "alphaMetrics": {
+        "width": 2649,
+        "height": 1156,
+        "bbox": [
+          434,
+          475,
+          2224,
+          658
+        ],
+        "coverage": 0.034914,
+        "whiteEdgeRatio": 0.092223,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "c88d160512dc1b621d09d89e04cfe3a5e307a27b84296be6acda4e5393543f69"
+      }
+    },
+    {
+      "id": "fauna-exp-blueflame-grouperlet",
+      "displayName": "Blueflame Grouperlet",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "small grouper",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-blueflame-grouperlet-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-blueflame-grouperlet.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-blueflame-grouperlet-key-preview.png",
+      "sourceMetrics": {
+        "width": 2337,
+        "height": 1311,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "77c4d37047308d0365e8905c916652350c039b305c8737fc2733b61ef873b644"
+      },
+      "alphaMetrics": {
+        "width": 2337,
+        "height": 1311,
+        "bbox": [
+          516,
+          333,
+          1819,
+          977
+        ],
+        "coverage": 0.162503,
+        "whiteEdgeRatio": 0.02069,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "4d664a1d72dabc177f87681c87be01f88ac30d33f59bfefcad4b4b6f2e984c3a"
+      }
+    },
+    {
+      "id": "fauna-exp-silverthread-needlefish",
+      "displayName": "Silverthread Needlefish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "needlefish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-silverthread-needlefish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-silverthread-needlefish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-silverthread-needlefish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2777,
+        "height": 1156,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "dfc02918f7f0b63b0330147d091e0f5a6aa2217350382126e71c54a381cce819"
+      },
+      "alphaMetrics": {
+        "width": 2777,
+        "height": 1156,
+        "bbox": [
+          519,
+          481,
+          2265,
+          730
+        ],
+        "coverage": 0.040274,
+        "whiteEdgeRatio": 0.009045,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "d31b08fea1c288462028ab2817ca55533020581ad392417d40f95096fa945165"
+      }
+    },
+    {
+      "id": "fauna-exp-cinder-maw-dragonfish",
+      "displayName": "Cinder Maw Dragonfish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "dragonfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-cinder-maw-dragonfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cinder-maw-dragonfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-cinder-maw-dragonfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2670,
+        "height": 1271,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "abdf0efab06148eab541e607436c1063d346e30d4e45a210f7a5202890480e89"
+      },
+      "alphaMetrics": {
+        "width": 2670,
+        "height": 1271,
+        "bbox": [
+          506,
+          402,
+          2139,
+          842
+        ],
+        "coverage": 0.082732,
+        "whiteEdgeRatio": 0.009119,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "87e330218367b22f7d0845ac905a25408afc6ecad3d8272d0c8f2562ca718fc1"
+      }
+    },
+    {
+      "id": "fauna-exp-copperbelly-damselfish",
+      "displayName": "Copperbelly Damselfish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "damselfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-copperbelly-damselfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-copperbelly-damselfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-copperbelly-damselfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2226,
+        "height": 1376,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "4fe1b71b90358bc6911b76f40a520a44ac8064e0535d7a7b482c2c4c57b0e791"
+      },
+      "alphaMetrics": {
+        "width": 2226,
+        "height": 1376,
+        "bbox": [
+          501,
+          358,
+          1665,
+          1013
+        ],
+        "coverage": 0.144091,
+        "whiteEdgeRatio": 0.014726,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "bfd7782dbaf0dc471d2c6ace3c29fc35d9500912ef3b1b1ee766ac7e4264c7ff"
+      }
+    },
+    {
+      "id": "fauna-exp-cathedral-fin-ribbonfish",
+      "displayName": "Cathedral Fin Ribbonfish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "ribbonfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-cathedral-fin-ribbonfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cathedral-fin-ribbonfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-cathedral-fin-ribbonfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2766,
+        "height": 1289,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "d9a42029f8d49b409092fe60fcb2a0e0ea089b42b17526e14fa48aa5ddab4008"
+      },
+      "alphaMetrics": {
+        "width": 2766,
+        "height": 1289,
+        "bbox": [
+          536,
+          399,
+          2237,
+          927
+        ],
+        "coverage": 0.091608,
+        "whiteEdgeRatio": 0.067323,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "31f21b66470157f13a71701f8b75bf67bf31c842fce59cd25a5b78abfe62b7a1"
+      }
+    },
+    {
+      "id": "fauna-exp-lattice-eye-barreleye",
+      "displayName": "Lattice Eye Barreleye",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "barreleye",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-lattice-eye-barreleye-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-lattice-eye-barreleye.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-lattice-eye-barreleye-key-preview.png",
+      "sourceMetrics": {
+        "width": 2465,
+        "height": 1375,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "9917c645ed8c73658e940ed9058e12376789e6a092977c8841d0d0ad46d8c3fe"
+      },
+      "alphaMetrics": {
+        "width": 2465,
+        "height": 1375,
+        "bbox": [
+          498,
+          360,
+          1915,
+          998
+        ],
+        "coverage": 0.142546,
+        "whiteEdgeRatio": 0.0,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "16c54bffc28b025da60891be2ec096e3856fa53716715316da2096dd310e9c12"
+      }
+    },
+    {
+      "id": "fauna-exp-brineglass-snailfish",
+      "displayName": "Brineglass Snailfish",
+      "kind": "fauna",
+      "biomeBand": 4,
+      "silhouette": "snailfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-brineglass-snailfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-brineglass-snailfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-brineglass-snailfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2686,
+        "height": 1263,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "e78b4c4f7c0c91d956b1c032bac28aa634b3832f463b2240704d64c668374d08"
+      },
+      "alphaMetrics": {
+        "width": 2686,
+        "height": 1263,
+        "bbox": [
+          551,
+          396,
+          2108,
+          851
+        ],
+        "coverage": 0.117608,
+        "whiteEdgeRatio": 0.000902,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "f8714d0194b3a3fc9f8027e71e366f19b01dd7bed425f6ae5fdba5895fc8159d"
+      }
+    },
+    {
+      "id": "fauna-exp-night-reef-boxfish",
+      "displayName": "Night Reef Boxfish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "boxfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-night-reef-boxfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-night-reef-boxfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-night-reef-boxfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2542,
+        "height": 1335,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "d7cc79e48124e990a9ffe489f0c878733ddeb87a8fcfd30ada2fcc3c81f10e2e"
+      },
+      "alphaMetrics": {
+        "width": 2542,
+        "height": 1335,
+        "bbox": [
+          621,
+          333,
+          1859,
+          933
+        ],
+        "coverage": 0.138082,
+        "whiteEdgeRatio": 0.030603,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "35710a0fd41d3edc3da8da336accf354a71bfd313d02128dfd8221e3ac457aa0"
+      }
+    },
+    {
+      "id": "fauna-exp-copper-banded-seahorse",
+      "displayName": "Copper Banded Seahorse",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "seahorse",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-copper-banded-seahorse-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-copper-banded-seahorse.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-copper-banded-seahorse-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 2176,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "ce611ee28473fdb6bd3fe053339afa629ac30ee9ad3ddcb033ed81c77db0ee48"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 2176,
+        "bbox": [
+          480,
+          431,
+          1132,
+          1697
+        ],
+        "coverage": 0.101963,
+        "whiteEdgeRatio": 0.003583,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "a158a81a4c6bcb3c7f4a6489a99696a75fba789b7276d8113055d5e285b9c366"
+      }
+    },
+    {
+      "id": "fauna-exp-midnight-hogfish",
+      "displayName": "Midnight Hogfish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "hogfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-midnight-hogfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-midnight-hogfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-midnight-hogfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2559,
+        "height": 1394,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "de7cfbde7c90aa2a252ff7eb802be03386f901db4313997108e9eb5973ff5e37"
+      },
+      "alphaMetrics": {
+        "width": 2559,
+        "height": 1394,
+        "bbox": [
+          534,
+          344,
+          1998,
+          1042
+        ],
+        "coverage": 0.144384,
+        "whiteEdgeRatio": 0.00352,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "a1f3088a83429a64543573046ac33a7cb11d376a7abf941287efa9f69b8b2176"
+      }
+    },
+    {
+      "id": "fauna-exp-opalstripe-tilefish",
+      "displayName": "Opalstripe Tilefish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "tilefish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-opalstripe-tilefish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-opalstripe-tilefish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-opalstripe-tilefish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2717,
+        "height": 1248,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "48694569abfdd02b42c493e7e1dd6a72a2950a0c583052fad2d01ed7053d08f7"
+      },
+      "alphaMetrics": {
+        "width": 2717,
+        "height": 1248,
+        "bbox": [
+          554,
+          396,
+          2185,
+          916
+        ],
+        "coverage": 0.127676,
+        "whiteEdgeRatio": 0.015923,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "ae5e0c1a9a29c53b923ddb4080a7b0cbfc5dac153631c8073d6fb32341481713"
+      }
+    },
+    {
+      "id": "fauna-exp-shellback-garden-eel",
+      "displayName": "Shellback Garden Eel",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "garden eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-shellback-garden-eel-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-shellback-garden-eel.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-shellback-garden-eel-key-preview.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 2176,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "3ea7267f9920fabea2d89a6ea4783c0d7a83dbe1db2332e08b9860ec646a2dd6"
+      },
+      "alphaMetrics": {
+        "width": 1536,
+        "height": 2176,
+        "bbox": [
+          615,
+          451,
+          1058,
+          1746
+        ],
+        "coverage": 0.037976,
+        "whiteEdgeRatio": 0.006121,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "9639c5825c54e907c1f6f6083ad3b38e15d5dc213a8c0c9c02102a06c58ec68c"
+      }
+    },
+    {
+      "id": "fauna-exp-brightscale-halfbeak",
+      "displayName": "Brightscale Halfbeak",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "surface fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-brightscale-halfbeak-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-brightscale-halfbeak.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-brightscale-halfbeak-key-preview.png",
+      "sourceMetrics": {
+        "width": 3173,
+        "height": 1116,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "8bb219c77b5cb7b5abeb5b027c49c87c920edae7176787090a67f930c988e0e1"
+      },
+      "alphaMetrics": {
+        "width": 3173,
+        "height": 1116,
+        "bbox": [
+          589,
+          404,
+          2602,
+          696
+        ],
+        "coverage": 0.066911,
+        "whiteEdgeRatio": 0.007809,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "0f36358e12bb4f05e7d867f3fc52759278ec8cb0e08bab189ca999beb9ba3b22"
+      }
+    },
+    {
+      "id": "fauna-exp-lumeneye-squirrelfish",
+      "displayName": "Lumeneye Squirrelfish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "squirrelfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-lumeneye-squirrelfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-lumeneye-squirrelfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-lumeneye-squirrelfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2664,
+        "height": 1471,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "a9f274ac7a45b34335190c0f07e2545f1bdaf44c4aa056566aed27f12b3a8b69"
+      },
+      "alphaMetrics": {
+        "width": 2664,
+        "height": 1471,
+        "bbox": [
+          610,
+          381,
+          2024,
+          1048
+        ],
+        "coverage": 0.122016,
+        "whiteEdgeRatio": 0.051323,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "75a6d4ab3ae96936fea16dbc50c300556c3e9512021ed2bce66cab8a582a1090"
+      }
+    },
+    {
+      "id": "fauna-exp-opal-eye-mudskipper",
+      "displayName": "Opal Eye Mudskipper",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "bottom fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-opal-eye-mudskipper-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-opal-eye-mudskipper.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-opal-eye-mudskipper-key-preview.png",
+      "sourceMetrics": {
+        "width": 2772,
+        "height": 1412,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "c1d96abc7d98aa860cc12d77dacaadea47233b99420ff68ec8b493abb1ad410b"
+      },
+      "alphaMetrics": {
+        "width": 2772,
+        "height": 1412,
+        "bbox": [
+          616,
+          493,
+          2135,
+          900
+        ],
+        "coverage": 0.086268,
+        "whiteEdgeRatio": 0.006495,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "bbbdfcf64c0c05991cc56bd3c562542650443b5225b0b1c532117bb21fa02279"
+      }
+    },
+    {
+      "id": "fauna-exp-tideglass-cardinal",
+      "displayName": "Tideglass Cardinal",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "small cardinalfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-tideglass-cardinal-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-tideglass-cardinal.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-tideglass-cardinal-key-preview.png",
+      "sourceMetrics": {
+        "width": 2707,
+        "height": 1446,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "5973461a08c02ff99d15d67dabc1e6e17fb88d0440be62ecb358a8404e410607"
+      },
+      "alphaMetrics": {
+        "width": 2707,
+        "height": 1446,
+        "bbox": [
+          636,
+          374,
+          1984,
+          1058
+        ],
+        "coverage": 0.111036,
+        "whiteEdgeRatio": 0.044214,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "156b101f59199dbf2b4a895bf67c98e14267cbe845bac11c64624e53ba30be4d"
+      }
+    },
+    {
+      "id": "fauna-exp-amber-snout-boxfish",
+      "displayName": "Amber Snout Boxfish",
+      "kind": "fauna",
+      "biomeBand": 1,
+      "silhouette": "boxfish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-amber-snout-boxfish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-amber-snout-boxfish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-amber-snout-boxfish-key-preview.png",
+      "sourceMetrics": {
+        "width": 2560,
+        "height": 1536,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "9d21a8183a21c7fefa54cccf743e54c70c70d27759dc1fc47c9e09da7caa7eb0"
+      },
+      "alphaMetrics": {
+        "width": 2560,
+        "height": 1536,
+        "bbox": [
+          633,
+          430,
+          1898,
+          1024
+        ],
+        "coverage": 0.109279,
+        "whiteEdgeRatio": 0.081714,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "caf36df44fc86ea43e6519def4d5269bc3173fa1bb8da380ddb4c719980de7ab"
+      }
+    },
+    {
+      "id": "fauna-exp-lumen-kite-ray",
+      "displayName": "Lumen Kite Ray",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "small ray",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-lumen-kite-ray-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-lumen-kite-ray.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-lumen-kite-ray-key-preview.png",
+      "sourceMetrics": {
+        "width": 2560,
+        "height": 1664,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "767ca6613044b544970d3cf43a612135e7bcbcac08aac50b87eeebb1556ed232"
+      },
+      "alphaMetrics": {
+        "width": 2560,
+        "height": 1664,
+        "bbox": [
+          566,
+          425,
+          1911,
+          1234
+        ],
+        "coverage": 0.080783,
+        "whiteEdgeRatio": 0.035058,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "4276f09b772a23c7d7a8435186b335cce10ecab68b9bb303a037552394efab65"
+      }
+    },
+    {
+      "id": "fauna-exp-ventstripe-moray",
+      "displayName": "Ventstripe Moray",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "moray eel",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ventstripe-moray-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ventstripe-moray.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ventstripe-moray-key-preview.png",
+      "sourceMetrics": {
+        "width": 3452,
+        "height": 1172,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "7e1f80cfebdd04c5406aeaf4b7f179cec07b11a247221efbab0b6d299390d184"
+      },
+      "alphaMetrics": {
+        "width": 3452,
+        "height": 1172,
+        "bbox": [
+          706,
+          427,
+          2727,
+          735
+        ],
+        "coverage": 0.085273,
+        "whiteEdgeRatio": 0.031029,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "131d830c7dde614bcaeb2c5bf7146ab874c7b86244a540eed3a2f509257454b6"
+      }
+    },
+    {
+      "id": "fauna-exp-silvercap-grenadier",
+      "displayName": "Silvercap Grenadier",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "grenadier fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-silvercap-grenadier-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-silvercap-grenadier.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-silvercap-grenadier-key-preview.png",
+      "sourceMetrics": {
+        "width": 3452,
+        "height": 1172,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "96ba6c01c6589dbff4fa14564fd3e09b25e4e5e16c49dd9b2bf546f32d482576"
+      },
+      "alphaMetrics": {
+        "width": 3452,
+        "height": 1172,
+        "bbox": [
+          733,
+          379,
+          2695,
+          749
+        ],
+        "coverage": 0.06629,
+        "whiteEdgeRatio": 0.078917,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "7ddc72aefafbd39e42a4a21d2d810becabe1c49eeb8b66395cc3ad5a232b6d2f"
+      }
+    },
+    {
+      "id": "fauna-exp-ghostfin-croaker",
+      "displayName": "Ghostfin Croaker",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "croaker fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ghostfin-croaker-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ghostfin-croaker.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ghostfin-croaker-key-preview.png",
+      "sourceMetrics": {
+        "width": 2798,
+        "height": 1399,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "638298a288576b860c2430da4c1fe5c0343c3a55e2be7d9b5798336fe8570704"
+      },
+      "alphaMetrics": {
+        "width": 2798,
+        "height": 1399,
+        "bbox": [
+          597,
+          371,
+          2195,
+          1006
+        ],
+        "coverage": 0.134696,
+        "whiteEdgeRatio": 0.047291,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "25c0cd86765ad41ef6e1d90defedb5df620778ebb3501768e7a7314c981df2f3"
+      }
+    },
+    {
+      "id": "fauna-exp-bonefin-lantern-shark",
+      "displayName": "Bonefin Lantern Shark",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "small shark",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-bonefin-lantern-shark-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-bonefin-lantern-shark.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-bonefin-lantern-shark-key-preview.png",
+      "sourceMetrics": {
+        "width": 3242,
+        "height": 1249,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "3e8c71ddfbf05dcbb6bc6ad8236948a45d4c0fac25da2b710b707eb1e251590f"
+      },
+      "alphaMetrics": {
+        "width": 3242,
+        "height": 1249,
+        "bbox": [
+          726,
+          423,
+          2482,
+          825
+        ],
+        "coverage": 0.072809,
+        "whiteEdgeRatio": 0.01029,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "910d412dab4d3e3981f5507915c275d564220557e871e45f970076c5c88d8b8c"
+      }
+    },
+    {
+      "id": "fauna-exp-ghostplate-sea-moth",
+      "displayName": "Ghostplate Sea Moth",
+      "kind": "fauna",
+      "biomeBand": 2,
+      "silhouette": "sea moth fish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-ghostplate-sea-moth-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ghostplate-sea-moth.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-ghostplate-sea-moth-key-preview.png",
+      "sourceMetrics": {
+        "width": 2608,
+        "height": 1633,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "e2e32dd1c8274ad731442f0c0dbb1ee553eeebd4be8fc1df1ccfb2a3fd8ff00d"
+      },
+      "alphaMetrics": {
+        "width": 2608,
+        "height": 1633,
+        "bbox": [
+          629,
+          498,
+          1992,
+          1136
+        ],
+        "coverage": 0.093157,
+        "whiteEdgeRatio": 0.024212,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "122eb58932cf4e77d96bb4b35423db77519bed278906c4555524ce5de29bf385"
+      }
+    },
+    {
+      "id": "fauna-exp-emberjaw-bristlefish",
+      "displayName": "Emberjaw Bristlefish",
+      "kind": "fauna",
+      "biomeBand": 3,
+      "silhouette": "bristlefish",
+      "status": "processed",
+      "source": "public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-emberjaw-bristlefish-source-chroma.png",
+      "alpha": "public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-emberjaw-bristlefish.png",
+      "keyPreview": "public/review/exploration-life-2026-07-04/fauna-exp-emberjaw-bristlefish-key-preview.png",
+      "sourceMetrics": {
+        "width": 3054,
+        "height": 1399,
+        "exactMagentaBorderRatio": 1.0,
+        "sha256": "8a1a5872941b2824907278bcf7dd715f6f300f8900d4741ac8239e139b854bf4"
+      },
+      "alphaMetrics": {
+        "width": 3054,
+        "height": 1399,
+        "bbox": [
+          768,
+          463,
+          2280,
+          892
+        ],
+        "coverage": 0.061542,
+        "whiteEdgeRatio": 0.027594,
+        "magentaEdgeRatio": 0.0,
+        "sha256": "614758816701e2418496fa0ed0c90bbb95e4424562a05fde558fd41c8b0d6421"
+      }
+    }
+  ],
+  "processed": 100,
+  "summary": {
+    "processed": 100,
+    "target": 100,
+    "maxMagentaEdgeRatio": 0.0,
+    "maxWhiteEdgeRatio": 0.092223,
+    "minExactMagentaBorderRatio": 1.0
+  }
+}

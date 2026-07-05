@@ -1,0 +1,1519 @@
+{
+  "schema": "water9/background-phase3-assets@1",
+  "generatedAt": "2026-07-04T21:37:54.771602Z",
+  "generatedBy": "tools/build_phase3_background_assets.py",
+  "sourceAtlas": {
+    "path": "tools/source-inbox/water9-phase3-band-plate-atlas.png",
+    "status": "present",
+    "layout": "vertical",
+    "size": [
+      864,
+      1821
+    ],
+    "expectedBands": [
+      "surface",
+      "upper",
+      "mid",
+      "lower",
+      "transitionDeep"
+    ]
+  },
+  "landmarkSourceAtlas": {
+    "path": "tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey.png",
+    "status": "present",
+    "layout": "grid2x5",
+    "size": [
+      1254,
+      1254
+    ],
+    "expectedLandmarks": [
+      "kelp-curtain-cluster",
+      "drowned-mine-structure",
+      "reef-arch-distance",
+      "cable-buoy-chain",
+      "vent-brine-curtain"
+    ],
+    "chromaKey": "#ff00ff"
+  },
+  "maskSourceAtlas": {
+    "path": "tools/source-inbox/water9-phase3-atmospheric-mask-atlas.png",
+    "status": "present",
+    "layout": "grid3x2",
+    "size": [
+      1536,
+      1024
+    ],
+    "expectedMasks": [
+      "sediment-flecks",
+      "broad-fog-mottle",
+      "soft-caustic-ribbons",
+      "plankton-speckle",
+      "lamp-scattering-bloom"
+    ],
+    "unusedPanelCount": 1
+  },
+  "outputDir": "public/assets/generated/background-phase3",
+  "manifestPath": "public/assets/generated/background-phase3/background-phase3.manifest.json",
+  "assets": [
+    {
+      "id": "surface",
+      "role": "bandPlate",
+      "band": "surface",
+      "label": "surface underside shimmer",
+      "repeatMode": "bandClampY",
+      "path": "public/assets/generated/background-phase3/water9-phase3-band-surface.png",
+      "status": "rejected",
+      "safeOpacity": 0.48,
+      "scaleRange": [
+        1.0,
+        1.08
+      ],
+      "parallaxRange": [
+        0.0,
+        0.03
+      ],
+      "readabilityRisk": "low",
+      "sourceCrop": [
+        0,
+        0,
+        864,
+        364
+      ],
+      "size": [
+        864,
+        364
+      ]
+    },
+    {
+      "id": "upper",
+      "role": "bandPlate",
+      "band": "upper",
+      "label": "upper water reef distance",
+      "repeatMode": "bandClampY",
+      "path": "public/assets/generated/background-phase3/water9-phase3-band-upper.png",
+      "status": "ready",
+      "safeOpacity": 0.42,
+      "scaleRange": [
+        1.0,
+        1.1
+      ],
+      "parallaxRange": [
+        0.0,
+        0.04
+      ],
+      "readabilityRisk": "low",
+      "sourceCrop": [
+        0,
+        364,
+        864,
+        728
+      ],
+      "size": [
+        864,
+        364
+      ]
+    },
+    {
+      "id": "mid",
+      "role": "bandPlate",
+      "band": "mid",
+      "label": "mid blue-green industrial reef haze",
+      "repeatMode": "bandClampY",
+      "path": "public/assets/generated/background-phase3/water9-phase3-band-mid.png",
+      "status": "ready",
+      "safeOpacity": 0.36,
+      "scaleRange": [
+        1.0,
+        1.12
+      ],
+      "parallaxRange": [
+        0.01,
+        0.06
+      ],
+      "readabilityRisk": "medium",
+      "sourceCrop": [
+        0,
+        728,
+        864,
+        1093
+      ],
+      "size": [
+        864,
+        365
+      ]
+    },
+    {
+      "id": "lower",
+      "role": "bandPlate",
+      "band": "lower",
+      "label": "lower cold quiet silhouettes",
+      "repeatMode": "bandClampY",
+      "path": "public/assets/generated/background-phase3/water9-phase3-band-lower.png",
+      "status": "ready",
+      "safeOpacity": 0.32,
+      "scaleRange": [
+        1.0,
+        1.12
+      ],
+      "parallaxRange": [
+        0.01,
+        0.05
+      ],
+      "readabilityRisk": "medium",
+      "sourceCrop": [
+        0,
+        1093,
+        864,
+        1457
+      ],
+      "size": [
+        864,
+        364
+      ]
+    },
+    {
+      "id": "transitionDeep",
+      "role": "bandPlate",
+      "band": "transitionDeep",
+      "label": "Phase 7 transition-deep asymmetric void field",
+      "repeatMode": "bandClampY",
+      "path": "public/assets/generated/background-phase3/water9-phase3-band-transition-deep.png",
+      "status": "ready",
+      "safeOpacity": 0.12,
+      "scaleRange": [
+        1.04,
+        1.16
+      ],
+      "parallaxRange": [
+        0.002,
+        0.016
+      ],
+      "readabilityRisk": "medium",
+      "sourceCrop": [
+        0,
+        1457,
+        864,
+        1821
+      ],
+      "size": [
+        864,
+        364
+      ],
+      "authoredPhase": 7,
+      "notes": "Phase 7 replaces the horizontal shelf read with asymmetric far voids and diagonal pressure columns."
+    },
+    {
+      "id": "kelp-curtain-cluster",
+      "role": "landmark",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase3-landmark-kelp-curtain-cluster.png",
+      "status": "ready",
+      "safeOpacity": 0.14,
+      "scaleRange": [
+        0.85,
+        1.6
+      ],
+      "parallaxRange": [
+        0.05,
+        0.22
+      ],
+      "readabilityRisk": "medium",
+      "sourceCrop": [
+        0,
+        0,
+        627,
+        251
+      ],
+      "trimCrop": [
+        89,
+        44,
+        532,
+        251
+      ],
+      "size": [
+        443,
+        207
+      ],
+      "chromaKey": {
+        "color": "#ff00ff",
+        "tolerance": 32
+      }
+    },
+    {
+      "id": "drowned-mine-structure",
+      "role": "landmark",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase3-landmark-drowned-mine-structure.png",
+      "status": "ready",
+      "safeOpacity": 0.12,
+      "scaleRange": [
+        0.85,
+        1.6
+      ],
+      "parallaxRange": [
+        0.05,
+        0.22
+      ],
+      "readabilityRisk": "medium",
+      "sourceCrop": [
+        0,
+        502,
+        627,
+        752
+      ],
+      "trimCrop": [
+        145,
+        502,
+        508,
+        752
+      ],
+      "size": [
+        363,
+        250
+      ],
+      "chromaKey": {
+        "color": "#ff00ff",
+        "tolerance": 32
+      }
+    },
+    {
+      "id": "reef-arch-distance",
+      "role": "landmark",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase3-landmark-reef-arch-distance.png",
+      "status": "ready",
+      "safeOpacity": 0.16,
+      "scaleRange": [
+        0.85,
+        1.6
+      ],
+      "parallaxRange": [
+        0.05,
+        0.22
+      ],
+      "readabilityRisk": "medium",
+      "sourceCrop": [
+        627,
+        0,
+        1254,
+        251
+      ],
+      "trimCrop": [
+        725,
+        140,
+        1109,
+        251
+      ],
+      "size": [
+        384,
+        111
+      ],
+      "chromaKey": {
+        "color": "#ff00ff",
+        "tolerance": 32
+      }
+    },
+    {
+      "id": "cable-buoy-chain",
+      "role": "landmark",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase3-landmark-cable-buoy-chain.png",
+      "status": "ready",
+      "safeOpacity": 0.1,
+      "scaleRange": [
+        0.85,
+        1.6
+      ],
+      "parallaxRange": [
+        0.05,
+        0.22
+      ],
+      "readabilityRisk": "medium",
+      "sourceCrop": [
+        627,
+        502,
+        1254,
+        752
+      ],
+      "trimCrop": [
+        677,
+        502,
+        1130,
+        752
+      ],
+      "size": [
+        453,
+        250
+      ],
+      "chromaKey": {
+        "color": "#ff00ff",
+        "tolerance": 32
+      }
+    },
+    {
+      "id": "vent-brine-curtain",
+      "role": "landmark",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase3-landmark-vent-brine-curtain.png",
+      "status": "ready",
+      "safeOpacity": 0.11,
+      "scaleRange": [
+        0.85,
+        1.6
+      ],
+      "parallaxRange": [
+        0.05,
+        0.22
+      ],
+      "readabilityRisk": "medium",
+      "sourceCrop": [
+        627,
+        752,
+        1254,
+        1003
+      ],
+      "trimCrop": [
+        734,
+        752,
+        1066,
+        1001
+      ],
+      "size": [
+        332,
+        249
+      ],
+      "chromaKey": {
+        "color": "#ff00ff",
+        "tolerance": 32
+      }
+    },
+    {
+      "id": "biome-shallows-shell-survey-terrace",
+      "role": "landmark",
+      "band": "upper",
+      "label": "Biome 1 shell fossil terrace and drowned survey frame",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-biome-landmark-shallows-shell-survey-terrace.png",
+      "status": "ready",
+      "safeOpacity": 0.18,
+      "scaleRange": [
+        1.08,
+        1.72
+      ],
+      "parallaxRange": [
+        0.055,
+        0.13
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        960,
+        520
+      ],
+      "trimCrop": [
+        90,
+        112,
+        769,
+        281
+      ],
+      "authoredPhase": 12,
+      "biomeLandmark": true,
+      "notes": "Rejected from runtime on 2026-07-04: flat procedural shell arches, circular pads, and rectangular linework did not match generated/painterly distant background art."
+    },
+    {
+      "id": "biome1-organic-shallow-reef-band",
+      "role": "bandPlate",
+      "band": "upper",
+      "label": "Biome 1 organic shallow reef shelf band",
+      "repeatMode": "bandClampY",
+      "path": "public/assets/generated/background-phase3/water9-biome1-organic-shallow-reef-band.png",
+      "status": "ready",
+      "safeOpacity": 0.34,
+      "scaleRange": [
+        1.0,
+        1.12
+      ],
+      "parallaxRange": [
+        0.004,
+        0.026
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        1152,
+        432
+      ],
+      "sourcePath": "public/assets/generated/bg-shallow.png",
+      "sourceInputs": [
+        "public/assets/generated/bg-shallow.png",
+        "public/assets/generated/parallax-shallow-0.png",
+        "public/assets/generated/parallax-shallow-1.png",
+        "public/assets/generated/parallax-shallow-2.png",
+        "public/assets/generated/parallax-shallow-3.png"
+      ],
+      "authoredPhase": 13,
+      "organicBiome1Replacement": true,
+      "transparentPixels": 756,
+      "semiTransparentPixels": 496908,
+      "opaquePixels": 0,
+      "notes": "Organic B1 normal-band bitmap composited from existing shallow painterly/parallax sources; it replaces Phase 11 industrial transition band art for biome 1 upper/mid/lower gameplay."
+    },
+    {
+      "id": "biome-shallows-organic-reef-shelf",
+      "role": "landmark",
+      "band": "upper",
+      "label": "Biome 1 organic shallow reef overhang shelf",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-biome-landmark-shallows-organic-reef-shelf.png",
+      "status": "ready",
+      "safeOpacity": 0.2,
+      "scaleRange": [
+        1.02,
+        1.62
+      ],
+      "parallaxRange": [
+        0.048,
+        0.118
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        1280,
+        520
+      ],
+      "sourcePath": "public/assets/generated/bg-shallow.png",
+      "sourceInputs": [
+        "public/assets/generated/bg-shallow.png",
+        "public/assets/generated/parallax-shallow-0.png",
+        "public/assets/generated/parallax-shallow-1.png",
+        "public/assets/generated/parallax-shallow-2.png",
+        "public/assets/generated/parallax-shallow-3.png"
+      ],
+      "authoredPhase": 13,
+      "biomeLandmark": true,
+      "organicBiome1Replacement": true,
+      "transparentPixels": 44800,
+      "semiTransparentPixels": 620800,
+      "opaquePixels": 0,
+      "notes": "Transparent organic shallow reef/overhang shelf bitmap built from existing shallow painterly sources; contains no Phase 11 station/gantry crops, portholes, circular hatches, rectangular panels, or shell-arch placeholder geometry."
+    },
+    {
+      "id": "biome-brine-vent-sulfide-shelf",
+      "role": "landmark",
+      "band": "mid",
+      "label": "Biome 2 horizontal brine sulfide shelf",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-biome-landmark-brine-shelf-gpt.png",
+      "status": "ready",
+      "safeOpacity": 0.24,
+      "scaleRange": [
+        1.08,
+        1.72
+      ],
+      "parallaxRange": [
+        0.065,
+        0.14
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        960,
+        520
+      ],
+      "authoredPhase": 12,
+      "biomeLandmark": true,
+      "notes": "Runtime restoration rebuilds the existing painterly GPT brine shelf as a wide, low vertical profile cutout. The upper chimney field is cropped out of the runtime PNG so normal gameplay reads as a horizontal sulfide shelf, not a vertical curtain or shaft.",
+      "sourcePath": "tools/source-inbox/water9-biome2-brine-shelf-gpt-source.png",
+      "sourceCrop": [
+        80,
+        420,
+        1600,
+        852
+      ],
+      "transparentPixels": 274769,
+      "semiTransparentPixels": 102591
+    },
+    {
+      "id": "biome-midnight-black-coral-ribs",
+      "role": "landmark",
+      "band": "lower",
+      "label": "Biome 3 black coral ribs distant gantry cutout",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-biome-landmark-midnight-black-coral-ribs.png",
+      "status": "ready",
+      "safeOpacity": 0.28,
+      "scaleRange": [
+        1.12,
+        1.86
+      ],
+      "parallaxRange": [
+        0.038,
+        0.09
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        1495,
+        998
+      ],
+      "sourcePath": "tools/source-inbox/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt-source.png",
+      "authoredPhase": 12,
+      "biomeLandmark": true,
+      "notes": "Runtime restoration rebuilds the Phase 11 collapsed gantry source with a hard magenta matte removal, transparent RGB decontamination, and feathered texture edges so the source rectangle is not visible during normal gameplay.",
+      "sourceCrop": [
+        30,
+        22,
+        1525,
+        1020
+      ],
+      "transparentPixels": 925015,
+      "semiTransparentPixels": 35205
+    },
+    {
+      "id": "biome-ruins-vault-causeway-lattice",
+      "role": "landmark",
+      "band": "lower",
+      "label": "Biome 4 vault causeway distant station cutout",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-biome-landmark-ruins-vault-causeway-lattice.png",
+      "status": "ready",
+      "safeOpacity": 0.3,
+      "scaleRange": [
+        1.1,
+        1.82
+      ],
+      "parallaxRange": [
+        0.035,
+        0.085
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        1392,
+        964
+      ],
+      "sourcePath": "tools/source-inbox/water9-phase11-transition-far-drowned-signal-station-gpt-source.png",
+      "authoredPhase": 12,
+      "biomeLandmark": true,
+      "notes": "Runtime restoration rebuilds the Phase 11 drowned station source with a hard magenta matte removal, transparent RGB decontamination, and feathered texture edges so the source rectangle is not visible during normal gameplay.",
+      "sourceCrop": [
+        68,
+        60,
+        1460,
+        1024
+      ],
+      "transparentPixels": 869414,
+      "semiTransparentPixels": 17582
+    },
+    {
+      "id": "sediment-flecks",
+      "role": "textureMask",
+      "repeatMode": "worldSpaceNoise",
+      "path": "public/assets/generated/background-phase3/water9-phase3-mask-sediment-flecks.png",
+      "status": "ready",
+      "safeOpacity": 0.08,
+      "scaleRange": [
+        0.75,
+        1.4
+      ],
+      "parallaxRange": [
+        0.45,
+        0.75
+      ],
+      "readabilityRisk": "low",
+      "sourceCrop": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "colorMode": "L"
+    },
+    {
+      "id": "broad-fog-mottle",
+      "role": "textureMask",
+      "repeatMode": "worldSpaceNoise",
+      "path": "public/assets/generated/background-phase3/water9-phase3-mask-broad-fog-mottle.png",
+      "status": "ready",
+      "safeOpacity": 0.1,
+      "scaleRange": [
+        0.75,
+        1.4
+      ],
+      "parallaxRange": [
+        0.45,
+        0.75
+      ],
+      "readabilityRisk": "low",
+      "sourceCrop": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "colorMode": "L"
+    },
+    {
+      "id": "soft-caustic-ribbons",
+      "role": "textureMask",
+      "repeatMode": "worldSpaceNoise",
+      "path": "public/assets/generated/background-phase3/water9-phase3-mask-soft-caustic-ribbons.png",
+      "status": "ready",
+      "safeOpacity": 0.08,
+      "scaleRange": [
+        0.75,
+        1.4
+      ],
+      "parallaxRange": [
+        0.45,
+        0.75
+      ],
+      "readabilityRisk": "low",
+      "sourceCrop": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "colorMode": "L"
+    },
+    {
+      "id": "plankton-speckle",
+      "role": "textureMask",
+      "repeatMode": "worldSpaceNoise",
+      "path": "public/assets/generated/background-phase3/water9-phase3-mask-plankton-speckle.png",
+      "status": "ready",
+      "safeOpacity": 0.06,
+      "scaleRange": [
+        0.75,
+        1.4
+      ],
+      "parallaxRange": [
+        0.45,
+        0.75
+      ],
+      "readabilityRisk": "low",
+      "sourceCrop": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "colorMode": "L"
+    },
+    {
+      "id": "lamp-scattering-bloom",
+      "role": "textureMask",
+      "repeatMode": "worldSpaceNoise",
+      "path": "public/assets/generated/background-phase3/water9-phase3-mask-lamp-scattering-bloom.png",
+      "status": "ready",
+      "safeOpacity": 0.07,
+      "scaleRange": [
+        0.75,
+        1.4
+      ],
+      "parallaxRange": [
+        0.45,
+        0.75
+      ],
+      "readabilityRisk": "low",
+      "sourceCrop": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "colorMode": "L"
+    },
+    {
+      "id": "phase5-lower-drowned-gantry-wide",
+      "role": "landmark",
+      "band": "lower",
+      "label": "Phase 5 lower drowned gantry and reef ribs",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase5-lower-drowned-gantry-wide.png",
+      "status": "ready",
+      "safeOpacity": 0.24,
+      "scaleRange": [
+        1.15,
+        1.85
+      ],
+      "parallaxRange": [
+        0.025,
+        0.075
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        760,
+        300
+      ],
+      "authoredPhase": 5,
+      "notes": "Purpose-built Phase 5 lower/deep authored cutout for drowned-industrial and reef structure outside the lamp volume."
+    },
+    {
+      "id": "phase5-lower-cable-reef-span",
+      "role": "landmark",
+      "band": "lower",
+      "label": "Phase 5 lower cable span over reef debris",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase5-lower-cable-reef-span.png",
+      "status": "ready",
+      "safeOpacity": 0.22,
+      "scaleRange": [
+        1.05,
+        1.7
+      ],
+      "parallaxRange": [
+        0.03,
+        0.085
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        720,
+        270
+      ],
+      "authoredPhase": 5,
+      "notes": "Purpose-built Phase 5 lower/deep authored cutout for drowned-industrial and reef structure outside the lamp volume."
+    },
+    {
+      "id": "phase5-transition-pressure-ribs-wide",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 5 transition-deep pressure ribs",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase5-transition-pressure-ribs-wide.png",
+      "status": "ready",
+      "safeOpacity": 0.26,
+      "scaleRange": [
+        1.2,
+        1.95
+      ],
+      "parallaxRange": [
+        0.018,
+        0.06
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        800,
+        330
+      ],
+      "authoredPhase": 5,
+      "notes": "Purpose-built Phase 5 lower/deep authored cutout for drowned-industrial and reef structure outside the lamp volume."
+    },
+    {
+      "id": "phase5-transition-brine-curtain-ruin",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 5 transition-deep brine curtain ruin",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase5-transition-brine-curtain-ruin.png",
+      "status": "ready",
+      "safeOpacity": 0.23,
+      "scaleRange": [
+        1.1,
+        1.8
+      ],
+      "parallaxRange": [
+        0.02,
+        0.065
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        690,
+        340
+      ],
+      "authoredPhase": 5,
+      "notes": "Purpose-built Phase 5 lower/deep authored cutout for drowned-industrial and reef structure outside the lamp volume."
+    },
+    {
+      "id": "phase7-transition-far-void-haze",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 7 transition-deep far void and pressure haze",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase7-transition-far-void-haze.png",
+      "status": "ready",
+      "safeOpacity": 0.13,
+      "scaleRange": [
+        1.18,
+        1.55
+      ],
+      "parallaxRange": [
+        0.006,
+        0.018
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        900,
+        430
+      ],
+      "authoredPhase": 7,
+      "notes": "Phase 7 authored transition-deep depth plane: far/mid/near underwater layering with distinct parallax."
+    },
+    {
+      "id": "phase7-transition-mid-occluding-silhouettes",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 7 transition-deep mid occluding silhouettes",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase7-transition-mid-occluding-silhouettes.png",
+      "status": "ready",
+      "safeOpacity": 0.24,
+      "scaleRange": [
+        1.04,
+        1.36
+      ],
+      "parallaxRange": [
+        0.034,
+        0.075
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        860,
+        390
+      ],
+      "authoredPhase": 7,
+      "notes": "Phase 7 authored transition-deep depth plane: far/mid/near underwater layering with distinct parallax."
+    },
+    {
+      "id": "phase7-transition-near-suspended-matter",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 7 transition-deep near suspended debris and matter",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase7-transition-near-suspended-matter.png",
+      "status": "ready",
+      "safeOpacity": 0.2,
+      "scaleRange": [
+        0.86,
+        1.18
+      ],
+      "parallaxRange": [
+        0.075,
+        0.145
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        760,
+        360
+      ],
+      "authoredPhase": 7,
+      "notes": "Phase 7 authored transition-deep depth plane: far/mid/near underwater layering with distinct parallax."
+    },
+    {
+      "id": "phase8-transition-drowned-mining-gantry",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 8 transition-deep drowned mining gantry",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase8-transition-drowned-mining-gantry.png",
+      "status": "ready",
+      "safeOpacity": 0.3,
+      "scaleRange": [
+        1.28,
+        2.0
+      ],
+      "parallaxRange": [
+        0.085,
+        0.16
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        860,
+        420
+      ],
+      "authoredPhase": 8,
+      "depthLane": "mid",
+      "notes": "Phase 8 painterly transition-deep swim-by landmark with recognizable underwater place identity and authored light-response silhouettes."
+    },
+    {
+      "id": "phase8-transition-reef-arch-remnant",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 8 transition-deep reef arch remnant",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase8-transition-reef-arch-remnant.png",
+      "status": "ready",
+      "safeOpacity": 0.27,
+      "scaleRange": [
+        1.18,
+        1.85
+      ],
+      "parallaxRange": [
+        0.045,
+        0.09
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        820,
+        420
+      ],
+      "authoredPhase": 8,
+      "depthLane": "far",
+      "notes": "Phase 8 painterly transition-deep swim-by landmark with recognizable underwater place identity and authored light-response silhouettes."
+    },
+    {
+      "id": "phase8-transition-cable-buoy-chain",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 8 transition-deep cable buoy chain",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase8-transition-cable-buoy-chain.png",
+      "status": "ready",
+      "safeOpacity": 0.31,
+      "scaleRange": [
+        1.12,
+        1.72
+      ],
+      "parallaxRange": [
+        0.13,
+        0.22
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        760,
+        390
+      ],
+      "authoredPhase": 8,
+      "depthLane": "near",
+      "notes": "Phase 8 painterly transition-deep swim-by landmark with recognizable underwater place identity and authored light-response silhouettes."
+    },
+    {
+      "id": "phase8-transition-brine-curtain-ruin",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 8 transition-deep brine curtain ruin",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase8-transition-brine-curtain-ruin.png",
+      "status": "ready",
+      "safeOpacity": 0.29,
+      "scaleRange": [
+        1.16,
+        1.8
+      ],
+      "parallaxRange": [
+        0.08,
+        0.155
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        820,
+        430
+      ],
+      "authoredPhase": 8,
+      "depthLane": "mid",
+      "notes": "Phase 8 painterly transition-deep swim-by landmark with recognizable underwater place identity and authored light-response silhouettes."
+    },
+    {
+      "id": "phase8-transition-trench-vent-lattice",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 8 transition-deep trench vent lattice",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase8-transition-trench-vent-lattice.png",
+      "status": "ready",
+      "safeOpacity": 0.28,
+      "scaleRange": [
+        1.1,
+        1.68
+      ],
+      "parallaxRange": [
+        0.09,
+        0.17
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        780,
+        410
+      ],
+      "authoredPhase": 8,
+      "depthLane": "mid",
+      "notes": "Phase 8 painterly transition-deep swim-by landmark with recognizable underwater place identity and authored light-response silhouettes."
+    },
+    {
+      "id": "phase8-transition-collapsed-sub-elevator",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 8 transition-deep collapsed sub elevator",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase8-transition-collapsed-sub-elevator.png",
+      "status": "ready",
+      "safeOpacity": 0.3,
+      "scaleRange": [
+        1.2,
+        1.9
+      ],
+      "parallaxRange": [
+        0.075,
+        0.15
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        840,
+        430
+      ],
+      "authoredPhase": 8,
+      "depthLane": "mid",
+      "notes": "Phase 8 painterly transition-deep swim-by landmark with recognizable underwater place identity and authored light-response silhouettes."
+    },
+    {
+      "id": "phase8-transition-rib-field",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 8 transition-deep whale-bone industrial rib field",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase8-transition-rib-field.png",
+      "status": "ready",
+      "safeOpacity": 0.26,
+      "scaleRange": [
+        1.22,
+        1.96
+      ],
+      "parallaxRange": [
+        0.04,
+        0.085
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        860,
+        390
+      ],
+      "authoredPhase": 8,
+      "depthLane": "far",
+      "notes": "Phase 8 painterly transition-deep swim-by landmark with recognizable underwater place identity and authored light-response silhouettes."
+    },
+    {
+      "id": "phase8-transition-pipe-cathedral",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 8 transition-deep broken pipe cathedral",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase8-transition-pipe-cathedral.png",
+      "status": "ready",
+      "safeOpacity": 0.32,
+      "scaleRange": [
+        1.18,
+        1.86
+      ],
+      "parallaxRange": [
+        0.12,
+        0.21
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        820,
+        430
+      ],
+      "authoredPhase": 8,
+      "depthLane": "near",
+      "notes": "Phase 8 painterly transition-deep swim-by landmark with recognizable underwater place identity and authored light-response silhouettes."
+    },
+    {
+      "id": "phase9-transition-organic-drowned-gantry",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 9 organic-softened drowned gantry reef",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase9-transition-organic-drowned-gantry.png",
+      "status": "ready",
+      "safeOpacity": 0.31,
+      "scaleRange": [
+        1.3,
+        2.04
+      ],
+      "parallaxRange": [
+        0.085,
+        0.16
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        860,
+        420
+      ],
+      "authoredPhase": 9,
+      "depthLane": "mid",
+      "sourcePhase8AssetId": "phase8-transition-drowned-mining-gantry",
+      "notes": "Phase 9 organic softening pass: eroded contours, reef/kelp overgrowth, silt, asymmetry, mottled internal value, and softened dissolved edges while preserving Phase 8 swim-by landmark identity."
+    },
+    {
+      "id": "phase9-transition-organic-reef-arch",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 9 organic-softened reef arch grotto",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase9-transition-organic-reef-arch.png",
+      "status": "ready",
+      "safeOpacity": 0.28,
+      "scaleRange": [
+        1.2,
+        1.9
+      ],
+      "parallaxRange": [
+        0.045,
+        0.09
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        820,
+        420
+      ],
+      "authoredPhase": 9,
+      "depthLane": "far",
+      "sourcePhase8AssetId": "phase8-transition-reef-arch-remnant",
+      "notes": "Phase 9 organic softening pass: eroded contours, reef/kelp overgrowth, silt, asymmetry, mottled internal value, and softened dissolved edges while preserving Phase 8 swim-by landmark identity."
+    },
+    {
+      "id": "phase9-transition-organic-cable-kelp-chain",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 9 organic-softened cable kelp chain",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase9-transition-organic-cable-kelp-chain.png",
+      "status": "ready",
+      "safeOpacity": 0.32,
+      "scaleRange": [
+        1.14,
+        1.76
+      ],
+      "parallaxRange": [
+        0.13,
+        0.22
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        760,
+        390
+      ],
+      "authoredPhase": 9,
+      "depthLane": "near",
+      "sourcePhase8AssetId": "phase8-transition-cable-buoy-chain",
+      "notes": "Phase 9 organic softening pass: eroded contours, reef/kelp overgrowth, silt, asymmetry, mottled internal value, and softened dissolved edges while preserving Phase 8 swim-by landmark identity."
+    },
+    {
+      "id": "phase9-transition-organic-brine-curtain",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 9 organic-softened brine curtain reef",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase9-transition-organic-brine-curtain.png",
+      "status": "ready",
+      "safeOpacity": 0.3,
+      "scaleRange": [
+        1.18,
+        1.86
+      ],
+      "parallaxRange": [
+        0.08,
+        0.155
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        820,
+        430
+      ],
+      "authoredPhase": 9,
+      "depthLane": "mid",
+      "sourcePhase8AssetId": "phase8-transition-brine-curtain-ruin",
+      "notes": "Phase 9 organic softening pass: eroded contours, reef/kelp overgrowth, silt, asymmetry, mottled internal value, and softened dissolved edges while preserving Phase 8 swim-by landmark identity."
+    },
+    {
+      "id": "phase9-transition-organic-vent-garden",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 9 organic-softened trench vent garden",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase9-transition-organic-vent-garden.png",
+      "status": "ready",
+      "safeOpacity": 0.29,
+      "scaleRange": [
+        1.12,
+        1.74
+      ],
+      "parallaxRange": [
+        0.09,
+        0.17
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        780,
+        410
+      ],
+      "authoredPhase": 9,
+      "depthLane": "mid",
+      "sourcePhase8AssetId": "phase8-transition-trench-vent-lattice",
+      "notes": "Phase 9 organic softening pass: eroded contours, reef/kelp overgrowth, silt, asymmetry, mottled internal value, and softened dissolved edges while preserving Phase 8 swim-by landmark identity."
+    },
+    {
+      "id": "phase9-transition-organic-collapsed-elevator",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 9 organic-softened collapsed elevator reef",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase9-transition-organic-collapsed-elevator.png",
+      "status": "ready",
+      "safeOpacity": 0.31,
+      "scaleRange": [
+        1.22,
+        1.94
+      ],
+      "parallaxRange": [
+        0.075,
+        0.15
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        840,
+        430
+      ],
+      "authoredPhase": 9,
+      "depthLane": "mid",
+      "sourcePhase8AssetId": "phase8-transition-collapsed-sub-elevator",
+      "notes": "Phase 9 organic softening pass: eroded contours, reef/kelp overgrowth, silt, asymmetry, mottled internal value, and softened dissolved edges while preserving Phase 8 swim-by landmark identity."
+    },
+    {
+      "id": "phase9-transition-organic-rib-reef",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 9 organic-softened rib reef field",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase9-transition-organic-rib-reef.png",
+      "status": "ready",
+      "safeOpacity": 0.27,
+      "scaleRange": [
+        1.24,
+        2.0
+      ],
+      "parallaxRange": [
+        0.04,
+        0.085
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        860,
+        390
+      ],
+      "authoredPhase": 9,
+      "depthLane": "far",
+      "sourcePhase8AssetId": "phase8-transition-rib-field",
+      "notes": "Phase 9 organic softening pass: eroded contours, reef/kelp overgrowth, silt, asymmetry, mottled internal value, and softened dissolved edges while preserving Phase 8 swim-by landmark identity."
+    },
+    {
+      "id": "phase9-transition-organic-pipe-reef",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 9 organic-softened pipe reef cathedral",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase9-transition-organic-pipe-reef.png",
+      "status": "ready",
+      "safeOpacity": 0.33,
+      "scaleRange": [
+        1.2,
+        1.9
+      ],
+      "parallaxRange": [
+        0.12,
+        0.21
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        820,
+        430
+      ],
+      "authoredPhase": 9,
+      "depthLane": "near",
+      "sourcePhase8AssetId": "phase8-transition-pipe-cathedral",
+      "notes": "Phase 9 organic softening pass: eroded contours, reef/kelp overgrowth, silt, asymmetry, mottled internal value, and softened dissolved edges while preserving Phase 8 swim-by landmark identity."
+    },
+    {
+      "id": "phase10-transition-drowned-signal-station",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 10 transition-deep drowned signal station",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase10-transition-drowned-signal-station.png",
+      "status": "ready",
+      "safeOpacity": 0.56,
+      "scaleRange": [
+        1.52,
+        2.18
+      ],
+      "parallaxRange": [
+        0.048,
+        0.082
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        1220,
+        520
+      ],
+      "authoredPhase": 10,
+      "depthLane": "far-mid",
+      "composition": "drowned signal station: tower, gantry, pods, cables, shelf, controlled local haze",
+      "notes": "Phase 10 hand-authored vertical slice: one cohesive distant transition-deep station encounter with internal value structure, grayscale-readable tower/gantry/pod identity, and local integrated fog/rim lighting."
+    },
+    {
+      "id": "phase11-transition-deep-gpt-band",
+      "role": "bandPlate",
+      "band": "transitionDeep",
+      "label": "Phase 11 GPT transition-deep band plate",
+      "repeatMode": "bandClampY",
+      "path": "public/assets/generated/background-phase3/water9-phase11-band-transition-deep-gpt.png",
+      "status": "ready",
+      "safeOpacity": 0.18,
+      "scaleRange": [
+        1.02,
+        1.14
+      ],
+      "parallaxRange": [
+        0.002,
+        0.018
+      ],
+      "readabilityRisk": "low",
+      "sourcePath": "tools/source-inbox/water9-phase11-band-transition-deep-gpt-source.png",
+      "sourceCrop": [
+        0,
+        118,
+        1672,
+        822
+      ],
+      "size": [
+        864,
+        364
+      ],
+      "authoredPhase": 11,
+      "notes": "Phase 11 real GPT bitmap band plate; cropped/downsampled from the approved opaque generated source, not redrawn in code."
+    },
+    {
+      "id": "phase11-transition-far-drowned-signal-station",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 11 GPT far drowned signal station",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase11-transition-far-drowned-signal-station-gpt.png",
+      "status": "ready",
+      "safeOpacity": 0.42,
+      "scaleRange": [
+        1.35,
+        2.05
+      ],
+      "parallaxRange": [
+        0.035,
+        0.07
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        1389,
+        958
+      ],
+      "sourcePath": "tools/source-inbox/water9-phase11-transition-far-drowned-signal-station-gpt-source.png",
+      "sourceCrop": [
+        70,
+        66,
+        1459,
+        1024
+      ],
+      "authoredPhase": 11,
+      "depthLane": "far",
+      "transparentPixels": 863930,
+      "notes": "Phase 11 real GPT bitmap landmark; #ff00ff/magenta source matte converted to alpha and rendered directly by Phaser texture."
+    },
+    {
+      "id": "phase11-transition-mid-collapsed-gantry-brine-reef",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 11 GPT mid collapsed gantry brine reef",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt.png",
+      "status": "ready",
+      "safeOpacity": 0.38,
+      "scaleRange": [
+        1.18,
+        1.85
+      ],
+      "parallaxRange": [
+        0.07,
+        0.13
+      ],
+      "readabilityRisk": "low",
+      "size": [
+        1392,
+        989
+      ],
+      "sourcePath": "tools/source-inbox/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt-source.png",
+      "sourceCrop": [
+        68,
+        24,
+        1460,
+        1013
+      ],
+      "authoredPhase": 11,
+      "depthLane": "mid",
+      "transparentPixels": 850296,
+      "notes": "Phase 11 real GPT bitmap landmark; #ff00ff/magenta source matte converted to alpha and rendered directly by Phaser texture."
+    },
+    {
+      "id": "phase11-transition-near-pipe-cable-cathedral",
+      "role": "landmark",
+      "band": "transitionDeep",
+      "label": "Phase 11 GPT near pipe cable cathedral",
+      "repeatMode": "anchor",
+      "path": "public/assets/generated/background-phase3/water9-phase11-transition-near-pipe-cable-cathedral-gpt.png",
+      "status": "ready",
+      "safeOpacity": 0.32,
+      "scaleRange": [
+        1.0,
+        1.55
+      ],
+      "parallaxRange": [
+        0.12,
+        0.22
+      ],
+      "readabilityRisk": "medium",
+      "size": [
+        1445,
+        1024
+      ],
+      "sourcePath": "tools/source-inbox/water9-phase11-transition-near-pipe-cable-cathedral-gpt-source.png",
+      "sourceCrop": [
+        45,
+        0,
+        1490,
+        1024
+      ],
+      "authoredPhase": 11,
+      "depthLane": "near",
+      "transparentPixels": 827498,
+      "notes": "Phase 11 real GPT bitmap landmark; #ff00ff/magenta source matte converted to alpha and rendered directly by Phaser texture."
+    }
+  ],
+  "notes": [
+    "Band plates are generated only by slicing the source atlas; no fake scenic art is synthesized.",
+    "Landmark entries are generated only by removing #ff00ff chroma key from a source atlas; no placeholder art is synthesized.",
+    "Mask entries are generated only by slicing a grayscale source atlas; no placeholder art is synthesized.",
+    "Phase 5 appends authored lower/transition-deep landmark cutouts to reduce flat lamp-slab reads while preserving gameplay clarity.",
+    "Phase 7 replaces transition-deep slab reads with authored far/mid/near underwater depth planes and visible parallax separation.",
+    "Phase 8 restores recognizable painterly transition-deep swim-by landmarks while preserving Phase 7 far/mid/near atmosphere.",
+    "Phase 9 keeps Phase 8 transition-deep swim-by landmarks but organically softens them with eroded contours, reef/kelp growth, silt, asymmetry, and painterly value variation.",
+    "Phase 10 adds one hand-authored transition-deep drowned signal station landmark as the new quality-bar vertical slice; Phase 8/9 landmarks remain as fallback/scaffolding.",
+    "Phase 11 integrates real GPT-generated transition-deep bitmap assets as ready runtime textures; Phase 8/9/10 remain fallback/scaffolding.",
+    "Biome landmark implementation adds first-pass authored cutouts for all four public biomes and restricts runtime selection by biome/band.",
+    "Biome 2 rejection follow-up retires the broad Brine Vent Shelf landmark and replaces it with separated vertical cluster-field composition.",
+    "Biome 2 GPT vertical brine chimney integrates the second generated bitmap source as a ready manifest-backed landmark.",
+    "Distant landmark runtime restoration rebuilds B2 as a wide horizontal shelf and hard-cleans B3/B4 magenta mattes so normal gameplay does not show rectangular bitmap windows.",
+    "Biome 1 organic shallow replacement assets are generated from existing shallow painterly sources and are used instead of Phase 11 transition assets in normal B1 bands."
+  ]
+}

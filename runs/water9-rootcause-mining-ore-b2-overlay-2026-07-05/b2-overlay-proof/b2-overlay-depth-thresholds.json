@@ -1,0 +1,55 @@
+{
+  "schema": "water9-b2-overlay-depth-thresholds@1",
+  "derivedFrom": [
+    "src/scene.ts:1023-1025 state.depth = floor((player.y - SURFACE_Y) / TILE) * 6",
+    "src/helpers.ts:1062-1071 shallowsBandForDepth depth selector",
+    "src/scene-rendering.ts:60-65 foreground terrain alpha selector"
+  ],
+  "biome": 2,
+  "runtimeStateDepthStepMeters": 6,
+  "computedDepthBandAndTerrainAlpha": [
+    {
+      "stateDepthMeters": 516,
+      "depthBand": "upper",
+      "terrainAlpha": 1,
+      "terrainEdgesAlpha": 1,
+      "oreOverburdenAlpha": 1
+    },
+    {
+      "stateDepthMeters": 522,
+      "depthBand": "mid",
+      "terrainAlpha": 0.08,
+      "terrainEdgesAlpha": 0.025,
+      "oreOverburdenAlpha": 0.08
+    },
+    {
+      "stateDepthMeters": 1038,
+      "depthBand": "mid",
+      "terrainAlpha": 0.08,
+      "terrainEdgesAlpha": 0.025,
+      "oreOverburdenAlpha": 0.08
+    },
+    {
+      "stateDepthMeters": 1044,
+      "depthBand": "lower",
+      "terrainAlpha": 1,
+      "terrainEdgesAlpha": 1,
+      "oreOverburdenAlpha": 1
+    },
+    {
+      "stateDepthMeters": 1434,
+      "depthBand": "lower",
+      "terrainAlpha": 1,
+      "terrainEdgesAlpha": 1,
+      "oreOverburdenAlpha": 1
+    },
+    {
+      "stateDepthMeters": 1440,
+      "depthBand": "transitionDeep",
+      "terrainAlpha": 0.48,
+      "terrainEdgesAlpha": 0.24,
+      "oreOverburdenAlpha": 0.48
+    }
+  ],
+  "notes": "The bad Biome 2 mid-band starts at the first reachable state.depth value >= 520 (522m) and ends at the last state.depth value < 1040 (1038m). 1044m is the first lower-band state depth."
+}

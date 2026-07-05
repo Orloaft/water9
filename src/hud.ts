@@ -53,15 +53,16 @@ export function renderHud() {
   shell.classList.toggle('is-cargo-open', cargoActive);
   shell.classList.toggle('is-sonar-map-open', state.sonarMapOpen);
   shell.classList.toggle('is-biome-loading', state.biomeLoading.active);
-  shell.classList.toggle('is-controller-known', state.controller.connected || Boolean(state.controller.message));
+  shell.classList.toggle('is-controller-known', false);
   shell.classList.toggle('is-debug-ui', debugUi);
   shell.classList.toggle('is-load-error', state.saveLoad.phase === 'error');
   titleScreen.classList.toggle('is-hidden', state.started);
   titleScreen.classList.toggle('is-options', state.titlePanel === 'options');
   titleScreen.classList.toggle('is-controls', state.titlePanel === 'controls');
   setStableHtml(titleScreen, state.started ? '' : titlePanel());
-  controllerStatus.classList.toggle('is-open', state.controller.connected || Boolean(state.controller.message));
-  setStableHtml(controllerStatus, state.controller.connected || state.controller.message ? controllerPanel() : '');
+  const showControllerStatus = false;
+  controllerStatus.classList.toggle('is-open', showControllerStatus);
+  setStableHtml(controllerStatus, showControllerStatus ? controllerPanel() : '');
   const cargoValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
   const statusFlags = [
     state.saveLoad.phase === 'error' ? `SAVE ERROR: ${state.saveLoad.message}` : '',
@@ -234,6 +235,7 @@ export function updateFpsTracker(deltaMs: number) {
 export function debugPresentationEnabled() {
   if (typeof window === 'undefined') return false;
   const params = new URLSearchParams(window.location.search);
+  if (params.get('perfHud') === '0') return params.has('debug') || window.localStorage?.getItem('water9:debug') === '1';
   return params.has('debug') || params.has('perf') || window.localStorage?.getItem('water9:debug') === '1';
 }
 
@@ -1204,7 +1206,7 @@ export function pauseMenuPanel() {
       <button data-save-game data-focus-key="pause-save">Save game</button>
       <button data-load-game data-focus-key="pause-load" ${hasSavedGame() ? '' : 'disabled'}>Load game</button>
       <button data-logbook>${state.logbookOpen ? 'Close logbook' : 'Open logbook'}</button>
-      ${debugPresentationEnabled() ? '<button data-gold data-focus-key="pause-gold">+1k credits</button>' : ''}
+      <button data-gold data-focus-key="pause-gold">+1k credits</button>
       <button data-restart>Restart run</button>
     </div>
     <section class="pause-controls">

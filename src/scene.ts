@@ -26,8 +26,9 @@ import { createPerfTelemetry,markTerrainDirty,measurePerf,updatePerfHud } from '
 import type { PerfTelemetry } from './perf';
 
 export class DeepdiveScene extends Phaser.Scene {
-  parallaxLayers: Phaser.GameObjects.TileSprite[] = [];
+  parallaxLayers: Phaser.GameObjects.Image[] = [];
   parallaxBackdrop!: Phaser.GameObjects.Graphics;
+  waterColumnLayers: Phaser.GameObjects.TileSprite[] = [];
   terrain!: Phaser.GameObjects.Graphics;
   terrainEdges!: Phaser.GameObjects.Graphics;
   oreOverburden!: Phaser.GameObjects.Graphics;
@@ -55,6 +56,8 @@ export class DeepdiveScene extends Phaser.Scene {
   actualGptOreSpritesByKey = new Map<string, Phaser.GameObjects.Image>();
   actualGptOreMasksByKey = new Map<string, { graphics: Phaser.GameObjects.Graphics; mask: Phaser.Display.Masks.GeometryMask }>();
   environmentSprites: Phaser.GameObjects.Image[] = [];
+  backgroundAnchorSprites: Phaser.GameObjects.Image[] = [];
+  backgroundReviewNoBeam = false;
   environmentProps: EnvironmentProp[] = [];
   fish: Fish[] = [];
   articulatedCreatures: ArticulatedCreature[] = [];
@@ -71,13 +74,14 @@ export class DeepdiveScene extends Phaser.Scene {
   floatingTexts: FloatingText[] = [];
   flares: Flare[] = [];
   sonarPings: Array<{ x: number; y: number; age: number; life: number }> = [];
-  terrainBreakEffects: Array<{ x: number; y: number; age: number; life: number; color: number; seed: number }> = [];
+  terrainBreakEffects: Array<{ x: number; y: number; age: number; life: number; color: number; seed: number; kind?: 'break' | 'contact' | 'oreGlint' }> = [];
   menuLoop?: Phaser.Sound.BaseSound;
   ambientLoop?: Phaser.Sound.BaseSound;
   miningLoop?: Phaser.Sound.BaseSound;
   oxygenLoop?: Phaser.Sound.BaseSound;
   creatureCallTimer = 0;
   drillingThisFrame = false;
+  lastMiningFeedbackAt = 0;
   lastFishBiteSfxAt = -Infinity;
   terrainBoundsKey = '';
   terrainDirty = true;
@@ -126,12 +130,19 @@ export class DeepdiveScene extends Phaser.Scene {
     this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,H,M,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
     this.installGamepadEvents();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.shutdown());
-    this.parallaxLayers = [0, 1, 2, 3].map((index) => this.add
-      .tileSprite(0, 0, 1, 1, `parallax-shallow-${index}`)
+    this.parallaxLayers = [0, 1, 2, 3, 4].map((index) => this.add
+      .image(0, 0, `parallax-shallow-${Math.min(index, 3)}`)
       .setOrigin(0)
       .setDepth(-12 + index)
       .setScrollFactor(1));
     this.parallaxBackdrop = this.add.graphics().setDepth(-7.5);
+    this.waterColumnLayers = [0, 1, 2, 3].map((index) => this.add
+      .tileSprite(0, 0, 1, 1, 'parallax-shallow-0')
+      .setOrigin(0)
+      .setDepth(-6.85 + index * 0.03)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setScrollFactor(1)
+      .setVisible(false));
     this.terrain = this.add.graphics().setDepth(0);
     this.terrainEdges = this.add.graphics().setDepth(0.82);
     this.oreOverburden = this.add.graphics().setDepth(0.84);
@@ -546,6 +557,23 @@ export class DeepdiveScene extends Phaser.Scene {
   }
 
   pollBrowserGamepads(forceRender = false) {
+    const suppressControllerStatus = typeof window !== 'undefined'
+      && Boolean((window as Window & { __WATER9_SUPPRESS_CONTROLLER_STATUS__?: boolean }).__WATER9_SUPPRESS_CONTROLLER_STATUS__);
+    if (suppressControllerStatus) {
+      state.controller = {
+        ...state.controller,
+        connected: false,
+        name: '',
+        index: -1,
+        rawPadCount: 0,
+        connectedPadCount: 0,
+        buttons: [],
+        axes: [],
+        message: '',
+        hint: '',
+      };
+      return [];
+    }
     const apiSupported = typeof navigator !== 'undefined' && typeof navigator.getGamepads === 'function';
     const pollAt = performance.now();
     state.controller = {
@@ -1072,9 +1100,15 @@ export class DeepdiveScene extends Phaser.Scene {
       }
     }
     checkOxygenWarnings();
-    this.terrainBreakEffects = this.terrainBreakEffects
-      .map((effect) => ({ ...effect, age: effect.age + delta }))
-      .filter((effect) => effect.age < effect.life);
+    let liveBreakEffectCount = 0;
+    for (const effect of this.terrainBreakEffects) {
+      effect.age += delta;
+      if (effect.age < effect.life) {
+        this.terrainBreakEffects[liveBreakEffectCount] = effect;
+        liveBreakEffectCount += 1;
+      }
+    }
+    this.terrainBreakEffects.length = liveBreakEffectCount;
 
     const apexSpecies = currentApexSpecies();
     if (state.depth > 1520 && !state.scannedSpecies.has(apexSpecies)) {
@@ -1150,11 +1184,12 @@ export class DeepdiveScene extends Phaser.Scene {
 
   getTile(x: number, y: number): Tile {
     if (x < 0 || x >= WORLD_W || y < 0 || y >= WORLD_H) return 'bedrock';
-    return this.world[y][x];
+    return this.world[y]?.[x] ?? 'bedrock';
   }
 
   setTile(x: number, y: number, tile: Tile) {
     if (x < 0 || x >= WORLD_W || y < 0 || y >= WORLD_H) return;
+    if (!this.world[y]) return;
     this.world[y][x] = tile;
     syncTerrainMaskTile(this, x, y);
     this.markTerrainVisualDirty(x, y);
@@ -1245,7 +1280,9 @@ export interface DeepdiveScene {
 Object.assign(DeepdiveScene.prototype, renderingNs);
 export interface DeepdiveScene {
   draw: OmitThisParameter<typeof renderingNs.draw>;
+  updateForegroundTerrainPresentation: OmitThisParameter<typeof renderingNs.updateForegroundTerrainPresentation>;
   drawParallax: OmitThisParameter<typeof renderingNs.drawParallax>;
+  drawWaterColumn: OmitThisParameter<typeof renderingNs.drawWaterColumn>;
   drawGameOver: OmitThisParameter<typeof renderingNs.drawGameOver>;
   drawWorld: OmitThisParameter<typeof renderingNs.drawWorld>;
   terrainBrushSpriteAt: (index: number, textureKey: string) => Phaser.GameObjects.Image;

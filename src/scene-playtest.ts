@@ -4,13 +4,13 @@ import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,SURFACE_Y,
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,createConsumableItem,createSubVehicle,darknessAtDepth,fuelMax,hash,isOreTile,oxygenMax,parallaxProfileFor,refillAtBoat,restart,scaledDepthPx,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
+import { biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,createConsumableItem,createSubVehicle,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fuelMax,hash,isOreTile,oxygenMax,parallaxProfileFor,refillAtBoat,restart,scaledDepthPx,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
 import { usesLargeThreatRippleTurning } from './scene-articulated';
 import type { DeepdiveScene } from './scene';
-import { rebuildTerrainMask,sampleTerrainSurfaceAnchors,subtractTerrainMaskBrush,validateTerrainSurfaceAnchor } from './terrain-mask';
+import { rebuildTerrainMask,sampleTerrainSurfaceAnchors,subtractTerrainMaskBrush,TERRAIN_MASK_RES,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
 import { perfSnapshot } from './perf';
 
 function refreshPlaytestCamera(scene: DeepdiveScene) {
@@ -22,7 +22,516 @@ function clearPlaytestFloatingText(scene: DeepdiveScene) {
   scene.floatingTexts = [];
 }
 
+function reachableOpenWaterPoint(scene: DeepdiveScene, targetDepthMeters: number) {
+  const visited = new Set<string>();
+  const queue: Array<{ x: number; y: number }> = [];
+  const queued = new Set<string>();
+  const enqueue = (x: number, y: number) => {
+    if (x < 0 || x >= WORLD_W || y < 0 || y >= WORLD_H) return;
+    const key = `${x},${y}`;
+    if (queued.has(key)) return;
+    if (tiles[scene.getTile(x, y)].solid) return;
+    queued.add(key);
+    queue.push({ x, y });
+  };
+  const center = Math.floor(WORLD_W / 2);
+  const playerTileX = Math.floor(scene.player.x / TILE);
+  const playerTileY = Math.floor(scene.player.y / TILE);
+  for (let y = Math.max(1, playerTileY - 4); y <= Math.min(WORLD_H - 2, playerTileY + 8); y += 1) {
+    for (let x = playerTileX - 12; x <= playerTileX + 12; x += 1) enqueue(x, y);
+  }
+  for (let y = 1; y <= 10; y += 1) {
+    for (let x = center - 18; x <= center + 18; x += 1) enqueue(x, y);
+  }
+  const targetY = Phaser.Math.Clamp(Math.round((SURFACE_Y + (targetDepthMeters / 6) * TILE) / TILE), 4, WORLD_H - 2);
+  let best: { x: number; y: number; score: number; localWaterRatio: number } | null = null;
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const current = queue[cursor];
+    const key = `${current.x},${current.y}`;
+    if (visited.has(key)) continue;
+    visited.add(key);
+
+    let localWater = 0;
+    let localCells = 0;
+    for (let y = current.y - 8; y <= current.y + 8; y += 1) {
+      for (let x = current.x - 13; x <= current.x + 13; x += 1) {
+        if (x < 0 || x >= WORLD_W || y < 0 || y >= WORLD_H) continue;
+        localCells += 1;
+        if (!tiles[scene.getTile(x, y)].solid) localWater += 1;
+      }
+    }
+    const localWaterRatio = localCells > 0 ? localWater / localCells : 0;
+    const depthPenalty = Math.abs(current.y - targetY) * 9;
+    const centerPenalty = Math.abs(current.x - center) * 0.08;
+    const surfacePenalty = current.y < 8 ? 120 : 0;
+    const score = localWaterRatio * 120 - depthPenalty - centerPenalty - surfacePenalty;
+    if (!best || score > best.score) best = { ...current, score, localWaterRatio };
+
+    for (const next of [
+      { x: current.x + 1, y: current.y },
+      { x: current.x - 1, y: current.y },
+      { x: current.x, y: current.y + 1 },
+      { x: current.x, y: current.y - 1 },
+    ]) {
+      if (next.x < 0 || next.x >= WORLD_W || next.y < 0 || next.y >= WORLD_H) continue;
+      if (visited.has(`${next.x},${next.y}`)) continue;
+      if (tiles[scene.getTile(next.x, next.y)].solid) continue;
+      queue.push(next);
+    }
+  }
+  return best;
+}
+
+function colorHex(value: number) {
+  return `#${value.toString(16).padStart(6, '0')}`;
+}
+
+function textureSourceDimensions(scene: DeepdiveScene, key: string) {
+  if (!scene.textures.exists(key)) return { width: 0, height: 0 };
+  const source = scene.textures.get(key).getSourceImage();
+  return {
+    width: Math.max(0, source.width),
+    height: Math.max(0, source.height),
+  };
+}
+
+function renderedBackgroundAnchorSprites(scene: DeepdiveScene) {
+  const camera = scene.cameras.main;
+  return scene.backgroundAnchorSprites
+    .filter((sprite) => sprite.active && sprite.visible && sprite.texture?.key)
+    .map((sprite, index) => {
+      const key = sprite.texture.key;
+      const bounds = sprite.getBounds();
+      return {
+        index,
+        textureKey: key,
+        sourceDimensions: textureSourceDimensions(scene, key),
+        x: roundMetric(sprite.x),
+        y: roundMetric(sprite.y),
+        width: roundMetric(sprite.displayWidth),
+        height: roundMetric(sprite.displayHeight),
+        alpha: roundMetric(sprite.alpha),
+        tint: `#${sprite.tintTopLeft.toString(16).padStart(6, '0')}`,
+        blendMode: sprite.blendMode,
+        crop: sprite.isCropped ? {
+          x: roundMetric(sprite.frame.cutX),
+          y: roundMetric(sprite.frame.cutY),
+          width: roundMetric(sprite.frame.cutWidth),
+          height: roundMetric(sprite.frame.cutHeight),
+        } : null,
+        bounds: {
+          x: roundMetric(bounds.x),
+          y: roundMetric(bounds.y),
+          width: roundMetric(bounds.width),
+          height: roundMetric(bounds.height),
+        },
+        screenBounds: {
+          x: roundMetric((bounds.x - camera.worldView.x) * camera.zoom),
+          y: roundMetric((bounds.y - camera.worldView.y) * camera.zoom),
+          width: roundMetric(bounds.width * camera.zoom),
+          height: roundMetric(bounds.height * camera.zoom),
+        },
+        generatedBackgroundTexture: key.startsWith('water9-') && (
+          key.includes('biome-landmark')
+          || key.includes('phase3-landmark')
+          || key.includes('phase5-')
+          || key.includes('phase7-')
+          || key.includes('phase8-')
+          || key.includes('phase9-')
+          || key.includes('phase10-')
+          || key.includes('phase11-')
+        ),
+      };
+    });
+}
+
+function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stagedWaterWindow = false) {
+  refreshPlaytestCamera(scene);
+  const camera = scene.cameras.main;
+  const view = camera.worldView;
+  const profile = environmentVisualProfileFor(state.biome, state.depth);
+  const padding = 24;
+  const anchors = environmentAnchorSilhouettesFor(profile, view.x, view.right, view.y, view.bottom);
+  return {
+    label,
+    activeProfile: {
+      id: profile.id,
+      biome: profile.biome,
+      depthBand: profile.depthBand,
+      activeBand: profile.activeBand.id,
+      activeBandBlend: {
+        from: profile.activeBandBlend.from,
+        to: profile.activeBandBlend.to,
+        progress: roundMetric(profile.activeBandBlend.progress),
+      },
+      cameraClearColor: profile.cameraClearColor,
+    },
+    activeBand: {
+      id: profile.activeBand.id,
+      topColor: colorHex(profile.activeBand.topColor),
+      bottomColor: colorHex(profile.activeBand.bottomColor),
+      hazeColor: colorHex(profile.activeBand.hazeColor),
+      hazeAlpha: roundMetric(profile.activeBand.hazeAlpha),
+      sedimentAlpha: roundMetric(profile.activeBand.sedimentAlpha),
+      causticAlpha: roundMetric(profile.activeBand.causticAlpha),
+      silhouetteAlpha: roundMetric(profile.activeBand.silhouetteAlpha),
+      anchorDensity: roundMetric(profile.activeBand.anchorDensity),
+    },
+    repeatModes: {
+      layers: profile.background.layers.map((layer) => layer.repeatMode),
+      worldSpaceNoise: profile.background.worldSpaceNoise.repeatMode,
+      anchors: profile.background.anchors.repeatMode,
+    },
+    bands: profile.bands.map((band) => ({
+      id: band.id,
+      startDepth: band.startDepth,
+      endDepth: band.endDepth,
+      blendPx: band.blendPx,
+      hazeAlpha: roundMetric(band.hazeAlpha),
+      sedimentAlpha: roundMetric(band.sedimentAlpha),
+      causticAlpha: roundMetric(band.causticAlpha),
+      silhouetteAlpha: roundMetric(band.silhouetteAlpha),
+      anchorDensity: roundMetric(band.anchorDensity),
+    })),
+    world: {
+      biome: state.biome,
+      biomeName: biomeName(),
+      depth: state.depth,
+      playerX: roundMetric(scene.player.x),
+      playerY: roundMetric(scene.player.y),
+      stagedWaterWindow,
+    },
+    camera: {
+      x: roundMetric(view.x),
+      y: roundMetric(view.y),
+      right: roundMetric(view.right),
+      bottom: roundMetric(view.bottom),
+      width: roundMetric(view.width),
+      height: roundMetric(view.height),
+      zoom: roundMetric(camera.zoom),
+    },
+    surface: {
+      ...profile.surface,
+      skyTopColor: colorHex(profile.surface.skyTopColor),
+      skyBottomColor: colorHex(profile.surface.skyBottomColor),
+      waterTopColor: colorHex(profile.surface.waterTopColor),
+      waterBottomColor: colorHex(profile.surface.waterBottomColor),
+    },
+    overlay: {
+      alpha: roundMetric(profile.overlay.alpha),
+      color: colorHex(profile.overlay.color),
+      density: roundMetric(profile.overlay.density),
+      drift: roundMetric(profile.overlay.drift),
+      mistStepPx: profile.overlay.mistStepPx,
+    },
+    darkness: {
+      value: roundMetric(profile.darkness.value),
+      ambientOpacity: roundMetric(profile.darkness.ambientOpacity),
+      maskOpacity: roundMetric(profile.darkness.maskOpacity),
+    },
+    worldSpaceNoise: {
+      ...profile.background.worldSpaceNoise,
+      alpha: roundMetric(profile.background.worldSpaceNoise.alpha),
+      color: colorHex(profile.background.worldSpaceNoise.color),
+      postDarknessVeil: {
+        ...profile.background.worldSpaceNoise.postDarknessVeil,
+        alpha: roundMetric(profile.background.worldSpaceNoise.postDarknessVeil.alpha),
+        particleAlpha: roundMetric(profile.background.worldSpaceNoise.postDarknessVeil.particleAlpha),
+        color: colorHex(profile.background.worldSpaceNoise.postDarknessVeil.color),
+      },
+      assets: profile.background.worldSpaceNoise.assets.map((asset) => ({
+        id: asset.id,
+        label: asset.label,
+        role: asset.role,
+        band: asset.band,
+        repeatMode: asset.repeatMode,
+        safeOpacity: asset.safeOpacity,
+        scaleRange: asset.scaleRange,
+        parallaxRange: asset.parallaxRange,
+        readabilityRisk: asset.readabilityRisk,
+        availableInRuntime: asset.availableInRuntime,
+        path: asset.path,
+        sourcePath: asset.sourcePath,
+        sourceStatus: asset.sourceStatus,
+      })),
+      layers: profile.background.worldSpaceNoise.layers.map((layer) => ({
+        id: layer.id,
+        kind: layer.kind,
+        assetId: layer.assetId,
+        textureKey: layer.textureKey,
+        repeatMode: layer.repeatMode,
+        alpha: roundMetric(layer.alpha),
+        color: colorHex(layer.color),
+        blendMode: layer.blendMode,
+        scale: roundMetric(layer.scale),
+        tileScaleX: roundMetric(layer.tileScaleX),
+        tileScaleY: roundMetric(layer.tileScaleY),
+        parallaxX: roundMetric(layer.parallaxX),
+        parallaxY: roundMetric(layer.parallaxY),
+        driftX: roundMetric(layer.driftX),
+        driftY: roundMetric(layer.driftY),
+        phaseX: roundMetric(layer.phaseX),
+        phaseY: roundMetric(layer.phaseY),
+        depthGate: roundMetric(layer.depthGate),
+        sourceAlpha: roundMetric(layer.sourceAlpha),
+        bandScale: roundMetric(layer.bandScale),
+        biomeScale: roundMetric(layer.biomeScale),
+        loaded: scene.textures.exists(layer.textureKey),
+      })),
+    },
+    waterColumnLayers: {
+      poolSize: scene.waterColumnLayers.length,
+      visibleCount: profile.background.worldSpaceNoise.layers.filter((layer) => layer.alpha > 0.0008 && scene.textures.exists(layer.textureKey)).length,
+      items: profile.background.worldSpaceNoise.layers.map((layer) => {
+        const poolIndex = scene.waterColumnLayers.findIndex((sprite) => (
+          sprite.visible
+          && (sprite.texture.key === layer.textureKey || sprite.getData('waterColumnSourceTextureKey') === layer.textureKey)
+        ));
+        const sprite = poolIndex >= 0 ? scene.waterColumnLayers[poolIndex] : null;
+        return {
+          id: layer.id,
+          kind: layer.kind,
+          assetId: layer.assetId,
+          textureKey: layer.textureKey,
+          runtimeTextureKey: sprite?.getData('waterColumnRuntimeTextureKey') ?? null,
+          loaded: scene.textures.exists(layer.textureKey),
+          visible: Boolean(sprite?.visible) && layer.alpha > 0.0008,
+          poolIndex,
+          alpha: roundMetric(layer.alpha),
+          spriteAlpha: sprite ? roundMetric(sprite.alpha) : 0,
+          color: colorHex(layer.color),
+          blendMode: layer.blendMode,
+          spriteBlendMode: sprite?.getData('waterColumnBlendMode') ?? null,
+          scale: roundMetric(layer.scale),
+          tileScaleX: sprite ? roundMetric(sprite.tileScaleX) : null,
+          tileScaleY: sprite ? roundMetric(sprite.tileScaleY) : null,
+          tilePositionX: sprite ? roundMetric(sprite.tilePositionX) : null,
+          tilePositionY: sprite ? roundMetric(sprite.tilePositionY) : null,
+          parallaxX: roundMetric(layer.parallaxX),
+          parallaxY: roundMetric(layer.parallaxY),
+          driftX: roundMetric(layer.driftX),
+          driftY: roundMetric(layer.driftY),
+          phaseX: roundMetric(layer.phaseX),
+          phaseY: roundMetric(layer.phaseY),
+          depthGate: roundMetric(layer.depthGate),
+          sourceAlpha: roundMetric(layer.sourceAlpha),
+          bandScale: roundMetric(layer.bandScale),
+          biomeScale: roundMetric(layer.biomeScale),
+        };
+      }),
+    },
+    anchors: {
+      repeatMode: profile.background.anchors.repeatMode,
+      profileCount: profile.background.anchors.count,
+      visibleCount: anchors.length,
+      assets: profile.background.anchors.assets.map((asset) => ({
+        id: asset.id,
+        label: asset.label,
+        role: asset.role,
+        band: asset.band,
+        repeatMode: asset.repeatMode,
+        safeOpacity: asset.safeOpacity,
+        scaleRange: asset.scaleRange,
+        parallaxRange: asset.parallaxRange,
+        readabilityRisk: asset.readabilityRisk,
+        availableInRuntime: asset.availableInRuntime,
+        path: asset.path,
+        sourcePath: asset.sourcePath,
+        sourceStatus: asset.sourceStatus,
+      })),
+      items: anchors.map((anchor) => ({
+        id: anchor.id,
+        kind: anchor.kind,
+        depthBand: anchor.depthBand,
+        x: roundMetric(anchor.x),
+        y: roundMetric(anchor.y),
+        width: roundMetric(anchor.width),
+        height: roundMetric(anchor.height),
+        alpha: roundMetric(anchor.alpha),
+        color: colorHex(anchor.color),
+        parallaxFactor: roundMetric(anchor.parallaxFactor),
+        assetId: anchor.assetId ?? null,
+        assetStatus: anchor.assetStatus ?? null,
+        textureKey: anchor.textureKey ?? null,
+      })),
+    },
+    renderedBitmapAnchors: renderedBackgroundAnchorSprites(scene),
+    manifest: profile.background.manifest.map((asset) => ({
+      id: asset.id,
+      label: asset.label,
+      textureKey: asset.textureKey,
+      path: asset.path,
+      sourcePath: asset.sourcePath,
+      sourceStatus: asset.sourceStatus,
+      role: asset.role,
+      band: asset.band,
+      repeatMode: asset.repeatMode,
+      safeOpacity: asset.safeOpacity,
+      scaleRange: asset.scaleRange,
+      parallaxRange: asset.parallaxRange,
+      readabilityRisk: asset.readabilityRisk,
+      availableInRuntime: asset.availableInRuntime,
+      fallbackTexturePrefix: asset.fallbackTexturePrefix ?? null,
+    })),
+    layers: profile.background.layers.map((layer) => {
+      const exactKey = scene.textures.exists(layer.texturePrefix) ? layer.texturePrefix : '';
+      const key = exactKey;
+      const source = textureSourceDimensions(scene, key);
+      const coverScale = Math.max((view.width + padding * 2) / Math.max(1, source.width), (view.height + padding * 2) / Math.max(1, source.height), 1) * layer.scale;
+      const scaledHeight = source.height * coverScale;
+      const verticalRepeatsInView = scaledHeight > 0 ? (view.height + padding * 2) / scaledHeight : null;
+      return {
+        index: layer.index,
+        textureKey: key,
+        texturePrefix: layer.texturePrefix,
+        fallbackPrefix: layer.fallbackPrefix,
+        painterlyAssetId: layer.painterlyAssetId ?? null,
+        painterlyAssetStatus: layer.painterlyAssetStatus ?? null,
+        sourceDimensions: source,
+        intendedRepeatMode: layer.intendedRepeatMode,
+        activeRepeatMode: layer.repeatMode,
+        layerKind: layer.layerKind,
+        seamless: layer.seamless,
+        band: layer.band,
+        horizontalSpeed: roundMetric(layer.horizontalSpeed),
+        verticalSpeed: roundMetric(layer.verticalSpeed),
+        phaseX: roundMetric(layer.phaseX),
+        phaseY: roundMetric(layer.phaseY),
+        alpha: roundMetric(layer.alpha),
+        tint: colorHex(layer.tint),
+        scale: roundMetric(layer.scale),
+        tileScale: roundMetric(coverScale),
+        scaledSourceHeight: roundMetric(scaledHeight),
+        verticalRepeatsInView: verticalRepeatsInView === null ? null : roundMetric(verticalRepeatsInView),
+        repeatYEnabled: layer.repeatMode === 'repeatXY',
+        shortSourceForViewport: source.height > 0 && source.height < view.height * 0.5,
+        obviousSingleViewportYRepeat: layer.repeatMode === 'repeatXY' && verticalRepeatsInView !== null && verticalRepeatsInView > 1.15,
+        yRepeatRiskFromMetadata: layer.repeatMode === 'repeatXY' && !layer.seamless && source.height > 0 && source.height < view.height * 0.5 && Math.abs(layer.verticalSpeed) > 0,
+        scenicRepeatYViolation: layer.layerKind === 'scenic' && !layer.seamless && layer.repeatMode === 'repeatXY',
+      };
+    }),
+  };
+}
+
+function stageBackgroundReview(scene: DeepdiveScene, value?: unknown) {
+  const payload = typeof value === 'object' && value !== null ? value as { label?: string; depth?: number; reviewX?: number; clearWaterWindow?: boolean; zoom?: number } : {};
+  const reviewDepth = Phaser.Math.Clamp(Number(payload.depth) || 0, 0, Math.floor((WORLD_H * TILE - SURFACE_Y - TILE) / 6));
+  const reviewX = Phaser.Math.Clamp(Number.isFinite(payload.reviewX) ? Number(payload.reviewX) : WORLD_W * TILE * 0.5, 760, WORLD_W * TILE - 760);
+  const reviewY = Phaser.Math.Clamp(SURFACE_Y + reviewDepth * 6, 40, WORLD_H * TILE - 40);
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.controller = {
+    ...state.controller,
+    connected: false,
+    name: '',
+    index: -1,
+    message: '',
+    hint: '',
+    buttons: [],
+    axes: [],
+    lastAction: '',
+  };
+  state.biomeLoading.active = false;
+  state.biomeLoading.phase = 'idle';
+  state.biomeLoading.progress = 0;
+  state.depth = Math.max(0, Math.round((reviewY - SURFACE_Y) / 6));
+  state.oxygen = oxygenMax();
+  state.fuel = fuelMax();
+  scene.player.x = reviewX;
+  scene.player.y = reviewY;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  const brineReviewFacing = Number(state.biome) === 2;
+  scene.player.facing.set(brineReviewFacing ? 0.08 : 1, brineReviewFacing ? 1 : 0).normalize();
+  scene.player.facingSign = 1;
+  scene.backgroundReviewNoBeam = brineReviewFacing;
+  scene.fish = [];
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  scene.bobbits = [];
+  scene.hazards = [];
+  scene.larvae = [];
+  scene.nestEggs = [];
+  scene.looseItems = [];
+  scene.environmentProps = [];
+  scene.terrainBreakEffects = [];
+  clearPlaytestFloatingText(scene);
+  scene.cameras.main.setZoom(Phaser.Math.Clamp(Number(payload.zoom) || 1, 0.75, 1.65));
+  scene.cameras.main.centerOn(reviewX, reviewY);
+  refreshPlaytestCamera(scene);
+  const stagedWaterWindow = payload.clearWaterWindow !== false;
+  if (stagedWaterWindow) {
+    const view = scene.cameras.main.worldView;
+    const startX = Math.max(1, Math.floor(view.x / TILE) - 1);
+    const endX = Math.min(WORLD_W - 2, Math.ceil(view.right / TILE) + 1);
+    const startY = Math.max(7, Math.floor(view.y / TILE) - 1);
+    const endY = Math.min(WORLD_H - 2, Math.ceil(view.bottom / TILE) + 1);
+    for (let y = startY; y <= endY; y += 1) {
+      for (let x = startX; x <= endX; x += 1) scene.setTile(x, y, 'water');
+    }
+    const floorY = Math.max(startY + 2, endY - 2);
+    if (state.biome !== 2) {
+      for (let y = floorY; y <= endY; y += 1) {
+        for (let x = startX; x <= endX; x += 1) {
+          const noise = hash(x * 17, y * 19, rng.seed + 9911);
+          const capNoise = hash(x * 23, y * 29, rng.seed + 9917);
+          if (y === floorY && capNoise < 0.72) {
+            scene.setTile(x, y, 'water');
+          } else {
+            scene.setTile(x, y, noise > 0.78 ? 'anchorstone' : 'stone');
+          }
+        }
+      }
+      for (let y = startY; y <= endY; y += 1) {
+        for (let x = startX; x <= Math.min(startX + 2, endX); x += 1) scene.setTile(x, y, 'stone');
+        for (let x = Math.max(endX - 2, startX); x <= endX; x += 1) scene.setTile(x, y, 'stone');
+      }
+    }
+    if (state.biome !== 2) {
+      const oreX = Phaser.Math.Clamp(startX + 9, startX + 4, endX - 8);
+      const oreY = Phaser.Math.Clamp(floorY - 1, startY + 2, endY - 2);
+      const edgeAnchorTiles: Array<[number, number, Tile]> = [
+        [0, 0, 'stone'],
+        [1, 0, 'anchorstone'],
+        [0, 1, 'anchorstone'],
+        [2, 1, 'stone'],
+      ];
+      for (const [dx, dy, tile] of edgeAnchorTiles) scene.setTile(oreX + dx, oreY + dy, tile);
+      const playerTileX = Math.floor(scene.player.x / TILE);
+      const playerTileY = Math.floor(scene.player.y / TILE);
+      const faceX = Phaser.Math.Clamp(playerTileX + 9, startX + 6, endX - 10);
+      const faceTop = Phaser.Math.Clamp(playerTileY - 5, startY + 2, endY - 9);
+      for (let y = faceTop; y <= faceTop + 10; y += 1) {
+        for (let x = faceX; x <= faceX + 6; x += 1) {
+          const edge = x === faceX || y === faceTop || y === faceTop + 10;
+          const n = hash(x * 29, y * 31, rng.seed + 9931);
+          scene.setTile(x, y, edge || n > 0.64 ? 'stone' : 'sand');
+        }
+      }
+      const reviewOre: Array<[number, number, Tile]> = [
+        [0, 0, 'copper'],
+        [1, 0, 'quartz'],
+        [0, 1, 'quartz'],
+        [2, 1, 'copper'],
+        [1, 2, 'copper'],
+      ];
+      for (const [dx, dy, tile] of reviewOre) scene.setTile(faceX + dx, faceTop + 3 + dy, tile);
+    }
+    rebuildTerrainMask(scene);
+    scene.terrainBoundsKey = '';
+    scene.terrainDirty = true;
+  }
+  renderHud();
+  scene.draw();
+  return backgroundReviewSnapshot(scene, String(payload.label ?? 'background-review'), stagedWaterWindow);
+}
+
 type TerrainReviewStage = 'intact' | 'damage' | 'break' | 'after';
+type MiningPolishReviewStage = 'setup' | 'drill' | 'collect';
 type ShapeFirstOreProofDeposit = { tile: Tile; x: number; y: number; width: number; height: number };
 type ShapeFirstOreProofScene = DeepdiveScene & { shapeFirstOreProofDeposits?: ShapeFirstOreProofDeposit[] };
 const SHAPE_FIRST_ORE_TIERS: Tile[] = ['copper', 'quartz', 'ruby', 'cobalt', 'sunstone', 'relic', 'alienAlloy', 'drownedIdol', 'precursorEngine', 'abyssalCrown', 'ruinCore'];
@@ -172,6 +681,150 @@ function stageTerrainReview(scene: DeepdiveScene, stage: TerrainReviewStage = 'i
         ? 'Terrain mining review: fresh break event.'
         : 'Terrain mining review: settled mined opening.';
   renderHud();
+}
+
+function stageMiningPolishReview(scene: DeepdiveScene, stage: MiningPolishReviewStage = 'setup') {
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const centerY = Math.floor((SURFACE_Y + 360) / TILE);
+  const oreX = centerX + 4;
+  const oreY = centerY;
+  const target = {
+    tileX: oreX,
+    tileY: oreY,
+    worldX: oreX * TILE + TILE * 0.5,
+    worldY: oreY * TILE + TILE * 0.5,
+  };
+  if (stage === 'drill') {
+    const beforeCargo = state.cargo.length;
+    const repeats = 1;
+    state.fuel = Math.max(state.fuel, 80);
+    state.oxygen = Math.max(state.oxygen, 80);
+    state.upgrades.laser = Math.max(state.upgrades.laser, 3);
+    for (let i = 0; i < repeats; i += 1) {
+      scene.player.mineCooldown = 0;
+      scene.mineAt(target.worldX, target.worldY);
+    }
+    scene.draw();
+    const sx = Math.floor((target.worldX / TILE) * TERRAIN_MASK_RES);
+    const sy = Math.floor((target.worldY / TILE) * TERRAIN_MASK_RES);
+    return {
+      stage,
+      target: { ...target, tile: scene.getTile(oreX, oreY) },
+      damage: scene.damage[oreY]?.[oreX] ?? null,
+      centerMaskDensity: terrainMaskDensityAt(scene, sx, sy),
+      terrainBreakEffects: scene.terrainBreakEffects.length,
+      looseItems: scene.looseItems.filter((item) => item.value > 0).length,
+      beforeCargo,
+      afterCargo: state.cargo.length,
+      status: state.status,
+    };
+  }
+  if (stage === 'collect') {
+    const beforeCargo = state.cargo.length;
+    const beforeValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
+    const item = scene.looseItems.find((candidate) => candidate.value > 0 && !candidate.collected) ?? null;
+    if (item) {
+      item.pickupDelay = 0;
+      scene.player.x = item.x;
+      scene.player.y = item.y;
+      scene.player.vx = 0;
+      scene.player.vy = 0;
+      scene.updateLooseItems(1 / 60);
+      scene.updateLooseItems(1 / 60);
+    }
+    const afterCargo = state.cargo.length;
+    const afterValue = state.cargo.reduce((sum, cargo) => sum + cargo.value, 0);
+    renderHud();
+    scene.draw();
+    return {
+      stage,
+      beforeCargo,
+      afterCargo,
+      beforeValue,
+      afterValue,
+      collectedOnce: afterCargo === beforeCargo + (item ? 1 : 0),
+      remainingValuableLooseItems: scene.looseItems.filter((candidate) => candidate.value > 0 && !candidate.collected).length,
+    };
+  }
+
+  if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
+    scene.generateWorld();
+    scene.worldReady = true;
+  }
+  const left = centerX - 10;
+  const right = centerX + 12;
+  const top = centerY - 7;
+  const bottom = centerY + 7;
+  for (let y = top; y <= bottom; y += 1) {
+    for (let x = left; x <= right; x += 1) {
+      const wall = x >= oreX - 1 && x <= oreX + 6 && y >= oreY - 4 && y <= oreY + 4;
+      scene.setTile(x, y, wall ? 'stone' : 'water');
+      if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+    }
+  }
+  scene.setTile(oreX, oreY, 'copper');
+  scene.setTile(oreX + 1, oreY, 'quartz');
+  scene.setTile(oreX, oreY - 1, 'stone');
+  scene.setTile(oreX, oreY + 1, 'stone');
+  rebuildTerrainMask(scene);
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.radioOpen = false;
+  state.logbookOpen = false;
+  state.cargoOpen = true;
+  state.activeSub = null;
+  state.pilotingSub = false;
+  state.depth = Math.max(0, Math.round((oreY * TILE - SURFACE_Y) / 6));
+  state.fuel = fuelMax();
+  state.oxygen = oxygenMax();
+  state.cargo = [];
+  state.selectedCargoIndex = 0;
+  state.upgrades.laser = Math.max(state.upgrades.laser, 3);
+  scene.player.x = oreX * TILE - 36;
+  scene.player.y = oreY * TILE + TILE * 0.5;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.mineCooldown = 0;
+  scene.player.facing.set(1, 0);
+  scene.player.facingSign = 1;
+  scene.fish = [];
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  scene.bobbits = [];
+  scene.hazards = [];
+  scene.larvae = [];
+  scene.nestEggs = [];
+  scene.looseItems = [];
+  scene.environmentProps = [];
+  scene.terrainBreakEffects = [];
+  scene.lastMiningFeedbackAt = 0;
+  clearPlaytestFloatingText(scene);
+  scene.terrainBoundsKey = '';
+  scene.terrainDirty = true;
+  scene.cameras.main.setZoom(3);
+  scene.cameras.main.centerOn(oreX * TILE - 6, oreY * TILE + TILE * 0.5);
+  refreshPlaytestCamera(scene);
+  state.status = 'Mining polish proof: ore is embedded in the cut face.';
+  renderHud();
+  scene.draw();
+  return {
+    stage,
+    target: {
+      tileX: oreX,
+      tileY: oreY,
+      worldX: target.worldX,
+      worldY: target.worldY,
+      tile: scene.getTile(oreX, oreY),
+    },
+    player: {
+      x: Math.round(scene.player.x),
+      y: Math.round(scene.player.y),
+    },
+  };
 }
 
 function stageOreDepositReview(scene: DeepdiveScene, focusTile: Tile = 'sunstone', focusCamera = false, shapeFirstSlice = false, shapeFirstGroup = -1, shapeFirstCameraOffsetY = 0) {
@@ -328,7 +981,7 @@ function stageOreDepositReview(scene: DeepdiveScene, focusTile: Tile = 'sunstone
   refreshPlaytestCamera(scene);
 }
 
-function stagePerfGuardrailReview(scene: DeepdiveScene) {
+function stagePerfGuardrailReview(scene: DeepdiveScene, cleanupVisualActors = false) {
   const centerX = Math.floor(WORLD_W * 0.5);
   const centerY = Math.floor((SURFACE_Y + 720) / TILE);
   for (let y = centerY - 8; y <= centerY + 8; y += 1) {
@@ -370,7 +1023,7 @@ function stagePerfGuardrailReview(scene: DeepdiveScene) {
   const fullBefore = scene.perfTelemetry?.propRefresh.fullScans ?? 0;
   for (let i = 0; i < 8; i += 1) {
     const tx = centerX - 4 + i;
-    scene.world[centerY][tx] = 'water';
+    scene.setTile(tx, centerY, 'water');
     scene.refreshEnvironmentPropsAround(tx, centerY);
   }
   scene.processEnvironmentPropRefreshQueue();
@@ -390,7 +1043,7 @@ function stagePerfGuardrailReview(scene: DeepdiveScene) {
   scene.cameras.main.centerOn(rockX, rockY);
   refreshPlaytestCamera(scene);
   scene.draw();
-  return {
+  const result = {
     articulatedContact,
     subCollision,
     localPropRefreshes: (scene.perfTelemetry?.propRefresh.processed ?? 0) - refreshBefore,
@@ -398,6 +1051,17 @@ function stagePerfGuardrailReview(scene: DeepdiveScene) {
     propRefresh: scene.perfTelemetry?.propRefresh ?? null,
     perf: perfSnapshot(scene),
   };
+  if (cleanupVisualActors) {
+    for (const item of scene.articulatedCreatures) {
+      item.parts.forEach((part) => part.sprite?.setVisible(false));
+      item.socketOverlays.forEach((overlay) => overlay.sprite?.setVisible(false));
+    }
+    scene.articulatedCreatures = [];
+    scene.articulatedBridges.clear();
+    scene.actors.clear();
+    scene.draw();
+  }
+  return result;
 }
 
 function stageArticulatedContactPolishReview(scene: DeepdiveScene) {
@@ -841,6 +1505,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         controller: { ...state.controller },
         biomeLoading: { ...state.biomeLoading },
         sonarPings: this.sonarPings.length,
+        terrainBreakEffects: this.terrainBreakEffects.length,
       },
       camera: {
         x: roundMetric(camera.worldView.x),
@@ -871,6 +1536,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           scale: roundMetric(layer.scale),
         })),
       },
+      environmentVisualProfile: backgroundReviewSnapshot(this, 'snapshot', false),
       sceneDepths: {
         articulatedBridges: roundMetric(this.articulatedBridges?.depth ?? null),
         actors: roundMetric(this.actors?.depth ?? null),
@@ -885,6 +1551,22 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         mineCooldown: roundMetric(this.player.mineCooldown),
         scanTarget: this.player.scanTarget ? this.player.scanTarget.species : '',
       },
+      looseItems: this.looseItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        value: item.value,
+        kind: item.kind,
+        x: roundMetric(item.x),
+        y: roundMetric(item.y),
+        radius: roundMetric(item.radius),
+        life: Number.isFinite(item.life) ? roundMetric(item.life) : 'infinite',
+        exposed: Boolean(item.exposed),
+        pickupDelay: roundMetric(item.pickupDelay ?? 0),
+        collected: Boolean(item.collected),
+        sourceTileX: item.sourceTileX ?? null,
+        sourceTileY: item.sourceTileY ?? null,
+        ...screenFor(item.x, item.y),
+      })),
       fish: this.fish.map((fish) => ({
         species: fish.species,
         x: roundMetric(fish.x),
@@ -1358,7 +2040,9 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       this.player.vy = 0;
       state.docked = false;
       state.atBoat = false;
-      state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+      state.paused = false;
+      state.radioOpen = false;
+      state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
       if (state.activeSub && state.pilotingSub) {
         state.activeSub.x = this.player.x;
         state.activeSub.y = this.player.y;
@@ -1371,6 +2055,54 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         state.carrierSub.vx = 0;
         state.carrierSub.vy = 0;
       }
+    } else if (command === 'teleportToReachableDepth') {
+      const targetDepthMeters = Phaser.Math.Clamp(Number(value) || 0, 0, Math.floor((WORLD_H * TILE - SURFACE_Y - TILE) / 6));
+      const point = reachableOpenWaterPoint(this, targetDepthMeters);
+      if (!point) return { ok: false, reason: 'no-reachable-water' };
+      this.player.x = point.x * TILE + TILE * 0.5;
+      this.player.y = point.y * TILE + TILE * 0.5;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.radioOpen = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.sonarMapOpen = false;
+      state.controller.message = '';
+      state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
+      this.cameras.main.centerOn(this.player.x, this.player.y);
+      refreshPlaytestCamera(this);
+      return {
+        ok: true,
+        targetDepthMeters: Math.round(targetDepthMeters),
+        depthMeters: state.depth,
+        tileX: point.x,
+        tileY: point.y,
+        localWaterRatio: roundMetric(point.localWaterRatio),
+      };
+    } else if (command === 'centerCameraOnPlayer') {
+      this.cameras.main.centerOn(this.player.x, this.player.y);
+      refreshPlaytestCamera(this);
+      return { ok: true, x: Math.round(this.player.x), y: Math.round(this.player.y) };
+    } else if (command === 'clearProofOverlays') {
+      state.radioOpen = false;
+      state.radioIndex = 0;
+      state.paused = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.sonarMapOpen = false;
+      state.biomeLoading.active = false;
+      state.biomeLoading.phase = 'idle';
+      state.controller.connected = false;
+      state.controller.name = '';
+      state.controller.message = '';
+      state.controller.hint = '';
+      state.controller.connectedPadCount = 0;
+      clearPlaytestFloatingText(this);
+      renderHud();
+      return { ok: true };
     } else if (command === 'teleportToFlora') {
       const payload = typeof value === 'object' && value !== null ? value as { index?: number } : {};
       const candidates = this.flora.filter((flora) => !flora.dead && flora.surface);
@@ -1410,6 +2142,10 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
 	        ? payload.stage
 	        : 'intact';
 	      stageTerrainReview(this, stage);
+    } else if (command === 'miningPolishReview') {
+      const payload = typeof value === 'object' && value !== null ? value as { stage?: MiningPolishReviewStage } : {};
+      const stage = payload.stage === 'collect' || payload.stage === 'drill' ? payload.stage : 'setup';
+      return stageMiningPolishReview(this, stage);
     } else if (command === 'oreDepositReview') {
       const payload = typeof value === 'object' && value !== null ? value as { focusTile?: Tile; focusCamera?: boolean; shapeFirstSlice?: boolean; shapeFirstGroup?: number; shapeFirstCameraOffsetY?: number } : {};
       const focusTile = payload.focusTile && isOreTile(payload.focusTile) ? payload.focusTile : 'sunstone';
@@ -1421,6 +2157,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         Number.isFinite(payload.shapeFirstGroup) ? Number(payload.shapeFirstGroup) : -1,
         Number.isFinite(payload.shapeFirstCameraOffsetY) ? Number(payload.shapeFirstCameraOffsetY) : 0,
       );
+    } else if (command === 'backgroundReview') {
+      return stageBackgroundReview(this, value);
     } else if (command === 'lightingVisibilityReview') {
       return stageLightingVisibilityReview(this);
 	    } else if (command === 'terrainMineAt') {
@@ -1473,7 +2211,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
     } else if (command === 'tickSystems') {
       this.updateSystems(Phaser.Math.Clamp(Number(value) || 0.25, 0, 5));
     } else if (command === 'perfGuardrailReview') {
-      return stagePerfGuardrailReview(this);
+      const payload = typeof value === 'object' && value !== null ? value as { cleanupVisualActors?: boolean } : {};
+      return stagePerfGuardrailReview(this, payload.cleanupVisualActors === true);
     } else if (command === 'biomeLoadingReview') {
       return { ...state.biomeLoading, worldReady: this.worldReady };
     } else if (command === 'teleportToArticulated') {

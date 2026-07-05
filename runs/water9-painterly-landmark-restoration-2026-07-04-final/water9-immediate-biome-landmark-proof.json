@@ -1,0 +1,456 @@
+{
+  "schema": "water9/immediate-biome-landmark-proof@1",
+  "timestamp": "2026-07-04T17:52:01.868Z",
+  "repoRoot": "/mnt/nxt-dev/water9",
+  "head": "7776913",
+  "sourceSelector": "#game canvas",
+  "baseUrl": "http://127.0.0.1:5234/",
+  "gitStatusBefore": " M package.json\n M src/helpers.ts\n M src/hud.ts\n M src/scene-playtest.ts\n M src/scene-rendering.ts\n M src/scene.ts\n M src/styles.css\n M src/types.ts\n?? public/assets/generated/background-phase3/\n?? runs/water9-biome-2-3-landmark-redo-2026-07-03-correction/\n?? runs/water9-biome-2-3-landmark-redo-2026-07-03/\n?? runs/water9-biome-background-screenshot-assessment-2026-07-03/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-iter1/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-iter2/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local1/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local2/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local3/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local4/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local5/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local6/\n?? runs/water9-biome-landmark-implementation-2026-07-03/\n?? runs/water9-biome2-brine-shelf-acceptance-loop-2026-07-04/\n?? runs/water9-biome2-brine-shelf-acceptance-loop-final-2026-07-04/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-codex-current/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-final/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-iter2/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-iter3/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-rerun/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03/\n?? runs/water9-biome2-brine-shelf-kill-shelf-2026-07-03/\n?? runs/water9-biome2-brine-shelf-remove-shelf-asset-2026-07-03/\n?? runs/water9-biome2-brine-shelf-rethink-2026-07-03/\n?? runs/water9-biome2-brine-shelf-rethink-followup-2026-07-03/\n?? runs/water9-biome2-brine-shelf-silhouette-2026-07-03/\n?? runs/water9-biome2-fogged-landmark-recovery-2026-07-04/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final3/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-pass/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-pass2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof3/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof4/\n?? runs/water9-biome2-gpt-integration-2026-07-04/\n?? runs/water9-biome2-imagen-asset-reset-2026-07-03.direct-asset-on-black.png\n?? runs/water9-biome2-visibility-fix-2026-07-04-add/\n?? runs/water9-biome2-visibility-fix-2026-07-04-crop/\n?? runs/water9-biome2-visibility-fix-2026-07-04-final/\n?? runs/water9-biome2-visibility-fix-2026-07-04/\n?? runs/water9-immediate-biome-landmark-proof-2026-07-04/\n?? runs/water9-landmark-debug-ui-test-menu-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof2-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof3-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof4-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-final/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-pass2/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-pass3/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-recovery/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-recovery2/\n?? runs/water9-painterly-restoration-after-2026-07-04/\n?? runs/water9-painterly-restoration-before-2026-07-04/\n?? runs/water9-painterly-restoration-final-2026-07-04/\n?? runs/water9-painterly-restoration-final2-2026-07-04/\n?? runs/water9-painterly-restoration-final3-2026-07-04/\n?? runs/water9-painterly-restoration-final4-2026-07-04/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-depth10-diagnostic/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final2/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final3/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass2/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass3/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass4/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass5/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass6/\n?? runs/water9-painterly-runtime-restoration-2026-07-04/\n?? runs/water9-phase11-normal-entry-patch-2026-07-03/\n?? tools/build_biome2_brine_shelf_gpt_asset.py\n?? tools/build_biome_landmark_assets.py\n?? tools/build_ore_reference_board.mjs\n?? tools/build_phase10_authored_distant_landmark.py\n?? tools/build_phase11_gpt_background_assets.py\n?? tools/build_phase3_background_assets.py\n?? tools/build_phase3_background_proof_sheets.py\n?? tools/build_phase5_deep_background_assets.py\n?? tools/build_phase7_authored_depth_planes.py\n?? tools/build_phase8_painterly_landmarks.py\n?? tools/build_phase9_organic_softened_landmarks.py\n?? tools/extract_actual_gpt_ore_assets.py\n?? tools/review_background_phase1.mjs\n?? tools/review_biome_landmark_implementation.mjs\n?? tools/review_immediate_biome_landmark_proof.mjs\n?? tools/review_normal_biome12_background_slice.mjs\n?? tools/review_ore_fossil_proof.mjs\n?? tools/review_ore_gameplay_rectification.mjs\n?? tools/review_ore_gpt_stamp_integration.mjs\n?? tools/review_ore_shape_first_slice.mjs\n?? tools/review_ore_strata_pockets.mjs\n?? tools/review_phase10_authored_landmark.mjs\n?? tools/review_phase11_gpt_background_assets.mjs\n?? tools/review_phase12_background_readability.mjs\n?? tools/review_phase14_foreground_terrain_presentation.mjs\n?? tools/review_phase15_shallow_deep_screenshot_proof.mjs\n?? tools/source-inbox/water9-biome2-brine-shelf-gpt-source.png\n?? tools/source-inbox/water9-biome2-brine-vertical-chimney-gpt-source.png\n?? tools/source-inbox/water9-phase11-band-transition-deep-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-far-drowned-signal-station-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-near-pipe-cable-cathedral-gpt-source.png\n?? tools/source-inbox/water9-phase3-atmospheric-mask-atlas---609c96d6-5a01-4e47-ae46-45a1452ff190.png\n?? tools/source-inbox/water9-phase3-atmospheric-mask-atlas.png\n?? tools/source-inbox/water9-phase3-band-plate-atlas.png\n?? tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey---40a0eb72-7348-4635-86e4-bc2d2d41b31c.png\n?? tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey.png",
+  "gitStatusAfter": " M package.json\n M src/helpers.ts\n M src/hud.ts\n M src/scene-playtest.ts\n M src/scene-rendering.ts\n M src/scene.ts\n M src/styles.css\n M src/types.ts\n?? public/assets/generated/background-phase3/\n?? runs/water9-biome-2-3-landmark-redo-2026-07-03-correction/\n?? runs/water9-biome-2-3-landmark-redo-2026-07-03/\n?? runs/water9-biome-background-screenshot-assessment-2026-07-03/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-iter1/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-iter2/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local1/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local2/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local3/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local4/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local5/\n?? runs/water9-biome-landmark-acceptance-loop-2026-07-03-local6/\n?? runs/water9-biome-landmark-implementation-2026-07-03/\n?? runs/water9-biome2-brine-shelf-acceptance-loop-2026-07-04/\n?? runs/water9-biome2-brine-shelf-acceptance-loop-final-2026-07-04/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-codex-current/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-final/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-iter2/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-iter3/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03-rerun/\n?? runs/water9-biome2-brine-shelf-composition-redesign-2026-07-03/\n?? runs/water9-biome2-brine-shelf-kill-shelf-2026-07-03/\n?? runs/water9-biome2-brine-shelf-remove-shelf-asset-2026-07-03/\n?? runs/water9-biome2-brine-shelf-rethink-2026-07-03/\n?? runs/water9-biome2-brine-shelf-rethink-followup-2026-07-03/\n?? runs/water9-biome2-brine-shelf-silhouette-2026-07-03/\n?? runs/water9-biome2-fogged-landmark-recovery-2026-07-04/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-final3/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-pass/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-codex-pass2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof2/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof3/\n?? runs/water9-biome2-fogged-landmark-reintegration-2026-07-04-local-proof4/\n?? runs/water9-biome2-gpt-integration-2026-07-04/\n?? runs/water9-biome2-imagen-asset-reset-2026-07-03.direct-asset-on-black.png\n?? runs/water9-biome2-visibility-fix-2026-07-04-add/\n?? runs/water9-biome2-visibility-fix-2026-07-04-crop/\n?? runs/water9-biome2-visibility-fix-2026-07-04-final/\n?? runs/water9-biome2-visibility-fix-2026-07-04/\n?? runs/water9-immediate-biome-landmark-proof-2026-07-04/\n?? runs/water9-landmark-debug-ui-test-menu-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof2-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof3-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-final-proof4-2026-07-04/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-final/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-pass2/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04-pass3/\n?? runs/water9-painterly-bitmap-landmark-restoration-2026-07-04/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-final/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-recovery/\n?? runs/water9-painterly-landmark-restoration-2026-07-04-recovery2/\n?? runs/water9-painterly-restoration-after-2026-07-04/\n?? runs/water9-painterly-restoration-before-2026-07-04/\n?? runs/water9-painterly-restoration-final-2026-07-04/\n?? runs/water9-painterly-restoration-final2-2026-07-04/\n?? runs/water9-painterly-restoration-final3-2026-07-04/\n?? runs/water9-painterly-restoration-final4-2026-07-04/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-depth10-diagnostic/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final2/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-final3/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass2/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass3/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass4/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass5/\n?? runs/water9-painterly-runtime-restoration-2026-07-04-pass6/\n?? runs/water9-painterly-runtime-restoration-2026-07-04/\n?? runs/water9-phase11-normal-entry-patch-2026-07-03/\n?? tools/build_biome2_brine_shelf_gpt_asset.py\n?? tools/build_biome_landmark_assets.py\n?? tools/build_ore_reference_board.mjs\n?? tools/build_phase10_authored_distant_landmark.py\n?? tools/build_phase11_gpt_background_assets.py\n?? tools/build_phase3_background_assets.py\n?? tools/build_phase3_background_proof_sheets.py\n?? tools/build_phase5_deep_background_assets.py\n?? tools/build_phase7_authored_depth_planes.py\n?? tools/build_phase8_painterly_landmarks.py\n?? tools/build_phase9_organic_softened_landmarks.py\n?? tools/extract_actual_gpt_ore_assets.py\n?? tools/review_background_phase1.mjs\n?? tools/review_biome_landmark_implementation.mjs\n?? tools/review_immediate_biome_landmark_proof.mjs\n?? tools/review_normal_biome12_background_slice.mjs\n?? tools/review_ore_fossil_proof.mjs\n?? tools/review_ore_gameplay_rectification.mjs\n?? tools/review_ore_gpt_stamp_integration.mjs\n?? tools/review_ore_shape_first_slice.mjs\n?? tools/review_ore_strata_pockets.mjs\n?? tools/review_phase10_authored_landmark.mjs\n?? tools/review_phase11_gpt_background_assets.mjs\n?? tools/review_phase12_background_readability.mjs\n?? tools/review_phase14_foreground_terrain_presentation.mjs\n?? tools/review_phase15_shallow_deep_screenshot_proof.mjs\n?? tools/source-inbox/water9-biome2-brine-shelf-gpt-source.png\n?? tools/source-inbox/water9-biome2-brine-vertical-chimney-gpt-source.png\n?? tools/source-inbox/water9-phase11-band-transition-deep-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-far-drowned-signal-station-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt-source.png\n?? tools/source-inbox/water9-phase11-transition-near-pipe-cable-cathedral-gpt-source.png\n?? tools/source-inbox/water9-phase3-atmospheric-mask-atlas---609c96d6-5a01-4e47-ae46-45a1452ff190.png\n?? tools/source-inbox/water9-phase3-atmospheric-mask-atlas.png\n?? tools/source-inbox/water9-phase3-band-plate-atlas.png\n?? tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey---40a0eb72-7348-4635-86e4-bc2d2d41b31c.png\n?? tools/source-inbox/water9-phase3-landmark-cutout-atlas-chromakey.png",
+  "contactSheet": {
+    "path": "/mnt/nxt-dev/water9/runs/water9-painterly-landmark-restoration-2026-07-04-final/water9-immediate-biome-landmark-contact-sheet.png",
+    "htmlPath": "/mnt/nxt-dev/water9/runs/water9-painterly-landmark-restoration-2026-07-04-final/water9-immediate-biome-landmark-contact-sheet.html",
+    "bytes": 341791
+  },
+  "captures": [
+    {
+      "biome": 1,
+      "biomeName": "The Shallows",
+      "depth": 12,
+      "depthBand": "surface",
+      "filename": "water9-biome1-first-water-landmark.png",
+      "screenshotPath": "/mnt/nxt-dev/water9/runs/water9-painterly-landmark-restoration-2026-07-04-final/water9-biome1-first-water-landmark.png",
+      "screenshotBytes": 167349,
+      "landmarkId": "biome-shallows-shell-survey-terrace",
+      "expectedTextureKey": "water9-biome-landmark-shallows-shell-survey-terrace",
+      "textureKey": "water9-biome-landmark-shallows-shell-survey-terrace",
+      "selectedAnchor": {
+        "id": "surface-biome-1-immediate",
+        "kind": "reef",
+        "depthBand": "surface",
+        "x": 680.018,
+        "y": 379.68,
+        "width": 1885.925,
+        "height": 827.16,
+        "alpha": 0.96,
+        "color": "#bfe7dc",
+        "parallaxFactor": 0.097,
+        "assetId": "biome-shallows-shell-survey-terrace",
+        "assetStatus": "available",
+        "textureKey": "water9-biome-landmark-shallows-shell-survey-terrace"
+      },
+      "renderedBitmap": {
+        "index": 0,
+        "textureKey": "water9-biome-landmark-shallows-shell-survey-terrace",
+        "sourceDimensions": {
+          "width": 960,
+          "height": 520
+        },
+        "x": 1669.706,
+        "y": 329.463,
+        "width": 1885.925,
+        "height": 827.16,
+        "alpha": 0.96,
+        "tint": "#ffffff",
+        "blendMode": 0,
+        "crop": null,
+        "bounds": {
+          "x": 726.744,
+          "y": -84.117,
+          "width": 1885.925,
+          "height": 827.16
+        },
+        "screenBounds": {
+          "x": -551.363,
+          "y": -99.258,
+          "width": 2225.391,
+          "height": 976.049
+        },
+        "generatedBackgroundTexture": true
+      },
+      "bitmapRuntimeProof": {
+        "worldSpaceNoiseDisabled": true,
+        "allScenicLayersUseGeneratedTextures": true,
+        "noProceduralLayerKind": true,
+        "noParallaxFallbackTextures": true,
+        "layers": [
+          {
+            "index": 0,
+            "textureKey": "water9-phase3-band-surface",
+            "painterlyAssetId": "surface",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-normal-upper-gpt-band",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-normal-mid-gpt-band",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 3,
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-normal-lower-gpt-band",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 4,
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          }
+        ]
+      },
+      "pixelStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 975,
+        "variedSamples": 974,
+        "lumaRange": 109,
+        "alphaCoverage": 1
+      },
+      "pass": true
+    },
+    {
+      "biome": 2,
+      "biomeName": "Brine Chimney Cluster Field",
+      "depth": 12,
+      "depthBand": "surface",
+      "filename": "water9-biome2-first-water-landmark.png",
+      "screenshotPath": "/mnt/nxt-dev/water9/runs/water9-painterly-landmark-restoration-2026-07-04-final/water9-biome2-first-water-landmark.png",
+      "screenshotBytes": 155651,
+      "landmarkId": "biome-brine-vertical-chimney-gpt",
+      "expectedTextureKey": "water9-biome-landmark-brine-vertical-chimney-gpt",
+      "textureKey": "water9-biome-landmark-brine-vertical-chimney-gpt",
+      "selectedAnchor": {
+        "id": "surface-biome-2-immediate",
+        "kind": "reef",
+        "depthBand": "surface",
+        "x": 618.15,
+        "y": 320.22,
+        "width": 1599.914,
+        "height": 842.06,
+        "alpha": 0.96,
+        "color": "#b0895e",
+        "parallaxFactor": 0.099,
+        "assetId": "biome-brine-vertical-chimney-gpt",
+        "assetStatus": "available",
+        "textureKey": "water9-biome-landmark-brine-vertical-chimney-gpt"
+      },
+      "renderedBitmap": {
+        "index": 0,
+        "textureKey": "water9-biome-landmark-brine-vertical-chimney-gpt",
+        "sourceDimensions": {
+          "width": 960,
+          "height": 520
+        },
+        "x": 1605.427,
+        "y": 235.1,
+        "width": 1599.914,
+        "height": 842.06,
+        "alpha": 0.96,
+        "tint": "#ffffff",
+        "blendMode": 0,
+        "crop": null,
+        "bounds": {
+          "x": 805.47,
+          "y": -185.93,
+          "width": 1599.914,
+          "height": 842.06
+        },
+        "screenBounds": {
+          "x": -616.315,
+          "y": -251.005,
+          "width": 2159.884,
+          "height": 1136.781
+        },
+        "generatedBackgroundTexture": true
+      },
+      "bitmapRuntimeProof": {
+        "worldSpaceNoiseDisabled": true,
+        "allScenicLayersUseGeneratedTextures": true,
+        "noProceduralLayerKind": true,
+        "noParallaxFallbackTextures": true,
+        "layers": [
+          {
+            "index": 0,
+            "textureKey": "water9-phase3-band-surface",
+            "painterlyAssetId": "surface",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 3,
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 4,
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          }
+        ]
+      },
+      "pixelStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 975,
+        "variedSamples": 973,
+        "lumaRange": 95,
+        "alphaCoverage": 1
+      },
+      "pass": true
+    },
+    {
+      "biome": 3,
+      "biomeName": "Midnight Trench",
+      "depth": 12,
+      "depthBand": "surface",
+      "filename": "water9-biome3-first-water-landmark.png",
+      "screenshotPath": "/mnt/nxt-dev/water9/runs/water9-painterly-landmark-restoration-2026-07-04-final/water9-biome3-first-water-landmark.png",
+      "screenshotBytes": 148656,
+      "landmarkId": "biome-midnight-black-coral-ribs",
+      "expectedTextureKey": "water9-biome-landmark-midnight-black-coral-ribs",
+      "textureKey": "water9-biome-landmark-midnight-black-coral-ribs",
+      "selectedAnchor": {
+        "id": "surface-biome-3-immediate",
+        "kind": "reef",
+        "depthBand": "surface",
+        "x": 596.625,
+        "y": 343.94,
+        "width": 1387.146,
+        "height": 806.48,
+        "alpha": 0.92,
+        "color": "#4c95a2",
+        "parallaxFactor": 0.067,
+        "assetId": "biome-midnight-black-coral-ribs",
+        "assetStatus": "available",
+        "textureKey": "water9-biome-landmark-midnight-black-coral-ribs"
+      },
+      "renderedBitmap": {
+        "index": 0,
+        "textureKey": "water9-biome-landmark-midnight-black-coral-ribs",
+        "sourceDimensions": {
+          "width": 1392,
+          "height": 989
+        },
+        "x": 1619.062,
+        "y": 255.493,
+        "width": 1387.146,
+        "height": 806.48,
+        "alpha": 0.92,
+        "tint": "#ffffff",
+        "blendMode": 0,
+        "crop": null,
+        "bounds": {
+          "x": 925.489,
+          "y": -147.747,
+          "width": 1387.146,
+          "height": 806.48
+        },
+        "screenBounds": {
+          "x": -454.29,
+          "y": -199.458,
+          "width": 1872.647,
+          "height": 1088.748
+        },
+        "generatedBackgroundTexture": true
+      },
+      "bitmapRuntimeProof": {
+        "worldSpaceNoiseDisabled": true,
+        "allScenicLayersUseGeneratedTextures": true,
+        "noProceduralLayerKind": true,
+        "noParallaxFallbackTextures": true,
+        "layers": [
+          {
+            "index": 0,
+            "textureKey": "water9-phase3-band-surface",
+            "painterlyAssetId": "surface",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 3,
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 4,
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          }
+        ]
+      },
+      "pixelStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 975,
+        "variedSamples": 973,
+        "lumaRange": 139,
+        "alphaCoverage": 1
+      },
+      "pass": true
+    },
+    {
+      "biome": 4,
+      "biomeName": "Ancient Ruins",
+      "depth": 12,
+      "depthBand": "surface",
+      "filename": "water9-biome4-first-water-landmark.png",
+      "screenshotPath": "/mnt/nxt-dev/water9/runs/water9-painterly-landmark-restoration-2026-07-04-final/water9-biome4-first-water-landmark.png",
+      "screenshotBytes": 150230,
+      "landmarkId": "biome-ruins-vault-causeway-lattice",
+      "expectedTextureKey": "water9-biome-landmark-ruins-vault-causeway-lattice",
+      "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice",
+      "selectedAnchor": {
+        "id": "surface-biome-4-immediate",
+        "kind": "reef",
+        "depthBand": "surface",
+        "x": 661.122,
+        "y": 393.24,
+        "width": 1980.574,
+        "height": 908.52,
+        "alpha": 0.94,
+        "color": "#79aab8",
+        "parallaxFactor": 0.063,
+        "assetId": "biome-ruins-vault-causeway-lattice",
+        "assetStatus": "available",
+        "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice"
+      },
+      "renderedBitmap": {
+        "index": 0,
+        "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice",
+        "sourceDimensions": {
+          "width": 1389,
+          "height": 958
+        },
+        "x": 1688.074,
+        "y": 340.948,
+        "width": 1980.574,
+        "height": 908.52,
+        "alpha": 0.94,
+        "tint": "#ffffff",
+        "blendMode": 0,
+        "crop": null,
+        "bounds": {
+          "x": 697.787,
+          "y": -113.312,
+          "width": 1980.574,
+          "height": 908.52
+        },
+        "screenBounds": {
+          "x": -585.531,
+          "y": -133.708,
+          "width": 2337.077,
+          "height": 1072.054
+        },
+        "generatedBackgroundTexture": true
+      },
+      "bitmapRuntimeProof": {
+        "worldSpaceNoiseDisabled": true,
+        "allScenicLayersUseGeneratedTextures": true,
+        "noProceduralLayerKind": true,
+        "noParallaxFallbackTextures": true,
+        "layers": [
+          {
+            "index": 0,
+            "textureKey": "water9-phase3-band-surface",
+            "painterlyAssetId": "surface",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 3,
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          },
+          {
+            "index": 4,
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "painterlyAssetStatus": "available",
+            "layerKind": "scenic"
+          }
+        ]
+      },
+      "pixelStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 975,
+        "variedSamples": 972,
+        "lumaRange": 121,
+        "alphaCoverage": 1
+      },
+      "pass": true
+    }
+  ],
+  "commandsRun": [
+    "WATER9_IMMEDIATE_LANDMARK_OUT_DIR=/mnt/nxt-dev/water9/runs/water9-painterly-landmark-restoration-2026-07-04-final WATER9_IMMEDIATE_LANDMARK_PORT=5234 node tools/review_immediate_biome_landmark_proof.mjs"
+  ]
+}

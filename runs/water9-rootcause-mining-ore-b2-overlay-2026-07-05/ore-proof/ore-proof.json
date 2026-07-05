@@ -1,0 +1,811 @@
+{
+  "baseUrl": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+  "setup": {
+    "stage": "setup",
+    "target": {
+      "tileX": 56,
+      "tileY": 19,
+      "worldX": 1356,
+      "worldY": 468,
+      "tile": "copper"
+    },
+    "player": {
+      "x": 1308,
+      "y": 468
+    }
+  },
+  "before": {
+    "state": {
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "credits": 0,
+      "depth": 90,
+      "maxDepth": 90,
+      "oxygen": 149,
+      "oxygenMax": 150,
+      "hull": 100,
+      "fuel": 100,
+      "fuelMax": 100,
+      "cargo": 0,
+      "cargoCapacity": 6,
+      "sonarRevealed": 81,
+      "chartingProgress": {
+        "scanned": 0,
+        "requiredScans": 5,
+        "depth": 90,
+        "requiredDepth": 1100,
+        "sonarCells": 81,
+        "requiredSonarCells": 3200,
+        "apex": "Gulper Eel",
+        "apexScanned": false,
+        "hostileScanned": false,
+        "threatOk": false,
+        "complete": false,
+        "missing": "survey scans"
+      },
+      "canTravelToNextBiome": false,
+      "atBoat": false,
+      "docked": false,
+      "started": true,
+      "lost": false,
+      "won": false,
+      "venom": {
+        "active": false,
+        "source": "",
+        "tick": 0
+      },
+      "bleed": {
+        "active": false,
+        "source": "",
+        "duration": 0,
+        "stacks": 0,
+        "recentBites": 0,
+        "recentTimer": 0
+      },
+      "activeQuestId": "",
+      "questBoard": [
+        {
+          "id": "depth-808076-2",
+          "kind": "depth",
+          "title": "Pressure Line Survey",
+          "client": "Barge Cartography",
+          "text": "Reach 1009 m and transmit a pressure profile from this trench.",
+          "reward": 1360,
+          "target": 1009,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "scan-808076-2",
+          "kind": "scan",
+          "title": "Live Catalog Sweep",
+          "client": "Marine Biology Desk",
+          "text": "Scan 4 new lifeforms before leaving the claim.",
+          "reward": 1560,
+          "target": 4,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "ore-808076-2",
+          "kind": "ore",
+          "title": "Ore Purchase Order",
+          "client": "Geology Buyer",
+          "text": "Sell 1,850 credits of recovered ore to satisfy an urgent assay order.",
+          "reward": 1820,
+          "target": 1850,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "nest-808076-2",
+          "kind": "nest",
+          "title": "Rare: Nest Extermination",
+          "client": "Corporate Hazard Office",
+          "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+          "reward": 5100,
+          "target": 1,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false,
+          "rare": true
+        }
+      ],
+      "forwardOutpost": {
+        "active": false,
+        "x": 0,
+        "y": 0,
+        "biome": 3,
+        "depth": 0,
+        "oxygenRadius": 118,
+        "oxygenRate": 18,
+        "charge": 0,
+        "maxCharge": 160,
+        "floraSpecies": ""
+      },
+      "upgrades": {
+        "oxygen": 0,
+        "cargo": 0,
+        "laser": 3,
+        "lamp": 0,
+        "scanner": 0,
+        "suit": 0,
+        "speed": 0,
+        "thermal": 0
+      },
+      "subOwned": {
+        "1": false,
+        "2": false,
+        "3": false
+      },
+      "selectedSubTier": null,
+      "marlinVoucherAvailable": false,
+      "marlinEffectiveCost": 62000,
+      "activeSub": null,
+      "carrierSub": null,
+      "hasSavedGame": false,
+      "saveLoad": {
+        "phase": "idle",
+        "requestId": 0,
+        "completedId": 0,
+        "message": ""
+      }
+    },
+    "ui": {
+      "paused": false,
+      "sonarMapOpen": false,
+      "sonarMapPanX": 0,
+      "sonarMapPanY": 0,
+      "sonarMapZoom": 1,
+      "radioOpen": false,
+      "logbookOpen": false,
+      "cargoOpen": false,
+      "floatingTextCount": 0,
+      "status": "Mining polish proof: ore is embedded in the cut face.",
+      "controller": {
+        "connected": false,
+        "name": "",
+        "index": -1,
+        "lastSeenAt": 0,
+        "lastInputAt": 0,
+        "message": "No browser gamepad visible yet",
+        "apiSupported": true,
+        "secureContext": true,
+        "hasFocus": true,
+        "lastPollAt": 10659.70000000298,
+        "lastGestureAt": 0,
+        "rawPadCount": 0,
+        "connectedPadCount": 0,
+        "buttons": [],
+        "axes": [],
+        "lastAction": "",
+        "lastActionAt": 0,
+        "hint": "Click the game, then press any controller button. Some browsers hide pads until a button is pressed."
+      },
+      "biomeLoading": {
+        "active": false,
+        "biome": 2,
+        "title": "Brine Vent Shelf",
+        "status": "Barge systems synchronized.",
+        "progress": 1,
+        "phase": "idle",
+        "startedAt": 2023.3000000044703,
+        "completedAt": 7340.20000000298
+      },
+      "sonarPings": 0,
+      "terrainBreakEffects": 0
+    },
+    "player": {
+      "x": 1308,
+      "y": 468,
+      "vx": 0,
+      "vy": 0,
+      "mineCooldown": 0,
+      "scanTarget": ""
+    },
+    "looseItems": [],
+    "terrainLookReview": {
+      "biome": 2,
+      "depthBand": "upper",
+      "depthMeters": 60,
+      "lookId": "brine-vents",
+      "palette": {
+        "rim": 7823954,
+        "sandRim": 4931382,
+        "growth": 15107151,
+        "glow": 16752466,
+        "moss": 3425592,
+        "shadow": 131843
+      },
+      "stampPools": {
+        "fringe": [
+          "terrain-stamp-fringe-brine",
+          "terrain-stamp-fringe-brine",
+          "terrain-stamp-fringe-teal"
+        ],
+        "flora": [
+          "terrain-stamp-plant-brine"
+        ],
+        "materialAccent": [
+          "terrain-stamp-ore-copper",
+          "terrain-stamp-ore-quartz",
+          "terrain-stamp-seam-gold"
+        ],
+        "activeEnvironment": []
+      },
+      "density": {
+        "edgeStamp": 0.9,
+        "proceduralFringeAlpha": 1.05
+      },
+      "cameraSlice": {
+        "tileBounds": {
+          "startX": 47,
+          "endX": 62,
+          "startY": 15,
+          "endY": 24
+        },
+        "visibleOreCount": 2,
+        "anchorstoneCount": 0,
+        "destructibleCount": 72,
+        "bobbitBurrowCount": 0,
+        "encounterReservationCount": 0
+      }
+    }
+  },
+  "adjacentMining": {
+    "target": {
+      "worldX": 1332,
+      "worldY": 468,
+      "repeats": 4
+    },
+    "state": {
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "credits": 0,
+      "depth": 90,
+      "maxDepth": 90,
+      "oxygen": 148,
+      "oxygenMax": 150,
+      "hull": 100,
+      "fuel": 99,
+      "fuelMax": 100,
+      "cargo": 0,
+      "cargoCapacity": 6,
+      "sonarRevealed": 81,
+      "chartingProgress": {
+        "scanned": 0,
+        "requiredScans": 5,
+        "depth": 90,
+        "requiredDepth": 1100,
+        "sonarCells": 81,
+        "requiredSonarCells": 3200,
+        "apex": "Gulper Eel",
+        "apexScanned": false,
+        "hostileScanned": false,
+        "threatOk": false,
+        "complete": false,
+        "missing": "survey scans"
+      },
+      "canTravelToNextBiome": false,
+      "atBoat": false,
+      "docked": false,
+      "started": true,
+      "lost": false,
+      "won": false,
+      "venom": {
+        "active": false,
+        "source": "",
+        "tick": 0
+      },
+      "bleed": {
+        "active": false,
+        "source": "",
+        "duration": 0,
+        "stacks": 0,
+        "recentBites": 0,
+        "recentTimer": 0
+      },
+      "activeQuestId": "",
+      "questBoard": [
+        {
+          "id": "depth-808076-2",
+          "kind": "depth",
+          "title": "Pressure Line Survey",
+          "client": "Barge Cartography",
+          "text": "Reach 1009 m and transmit a pressure profile from this trench.",
+          "reward": 1360,
+          "target": 1009,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "scan-808076-2",
+          "kind": "scan",
+          "title": "Live Catalog Sweep",
+          "client": "Marine Biology Desk",
+          "text": "Scan 4 new lifeforms before leaving the claim.",
+          "reward": 1560,
+          "target": 4,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "ore-808076-2",
+          "kind": "ore",
+          "title": "Ore Purchase Order",
+          "client": "Geology Buyer",
+          "text": "Sell 1,850 credits of recovered ore to satisfy an urgent assay order.",
+          "reward": 1820,
+          "target": 1850,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "nest-808076-2",
+          "kind": "nest",
+          "title": "Rare: Nest Extermination",
+          "client": "Corporate Hazard Office",
+          "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+          "reward": 5100,
+          "target": 1,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false,
+          "rare": true
+        }
+      ],
+      "forwardOutpost": {
+        "active": false,
+        "x": 0,
+        "y": 0,
+        "biome": 3,
+        "depth": 0,
+        "oxygenRadius": 118,
+        "oxygenRate": 18,
+        "charge": 0,
+        "maxCharge": 160,
+        "floraSpecies": ""
+      },
+      "upgrades": {
+        "oxygen": 0,
+        "cargo": 0,
+        "laser": 3,
+        "lamp": 0,
+        "scanner": 0,
+        "suit": 0,
+        "speed": 0,
+        "thermal": 0
+      },
+      "subOwned": {
+        "1": false,
+        "2": false,
+        "3": false
+      },
+      "selectedSubTier": null,
+      "marlinVoucherAvailable": false,
+      "marlinEffectiveCost": 62000,
+      "activeSub": null,
+      "carrierSub": null,
+      "hasSavedGame": false,
+      "saveLoad": {
+        "phase": "idle",
+        "requestId": 0,
+        "completedId": 0,
+        "message": ""
+      }
+    },
+    "ui": {
+      "paused": false,
+      "sonarMapOpen": false,
+      "sonarMapPanX": 0,
+      "sonarMapPanY": 0,
+      "sonarMapZoom": 1,
+      "radioOpen": false,
+      "logbookOpen": false,
+      "cargoOpen": false,
+      "floatingTextCount": 0,
+      "status": "Mining polish proof: ore is embedded in the cut face.",
+      "controller": {
+        "connected": false,
+        "name": "",
+        "index": -1,
+        "lastSeenAt": 0,
+        "lastInputAt": 0,
+        "message": "No browser gamepad visible yet",
+        "apiSupported": true,
+        "secureContext": true,
+        "hasFocus": true,
+        "lastPollAt": 10715.70000000298,
+        "lastGestureAt": 0,
+        "rawPadCount": 0,
+        "connectedPadCount": 0,
+        "buttons": [],
+        "axes": [],
+        "lastAction": "",
+        "lastActionAt": 0,
+        "hint": "Click the game, then press any controller button. Some browsers hide pads until a button is pressed."
+      },
+      "biomeLoading": {
+        "active": false,
+        "biome": 2,
+        "title": "Brine Vent Shelf",
+        "status": "Barge systems synchronized.",
+        "progress": 1,
+        "phase": "idle",
+        "startedAt": 2023.3000000044703,
+        "completedAt": 7340.20000000298
+      },
+      "sonarPings": 0,
+      "terrainBreakEffects": 1
+    },
+    "player": {
+      "x": 1308,
+      "y": 468,
+      "vx": 0,
+      "vy": 0,
+      "mineCooldown": 0.385,
+      "scanTarget": ""
+    },
+    "looseItems": [],
+    "terrainLookReview": {
+      "biome": 2,
+      "depthBand": "upper",
+      "depthMeters": 60,
+      "lookId": "brine-vents",
+      "palette": {
+        "rim": 7823954,
+        "sandRim": 4931382,
+        "growth": 15107151,
+        "glow": 16752466,
+        "moss": 3425592,
+        "shadow": 131843
+      },
+      "stampPools": {
+        "fringe": [
+          "terrain-stamp-fringe-brine",
+          "terrain-stamp-fringe-brine",
+          "terrain-stamp-fringe-teal"
+        ],
+        "flora": [
+          "terrain-stamp-plant-brine"
+        ],
+        "materialAccent": [
+          "terrain-stamp-ore-copper",
+          "terrain-stamp-ore-quartz",
+          "terrain-stamp-seam-gold"
+        ],
+        "activeEnvironment": []
+      },
+      "density": {
+        "edgeStamp": 0.9,
+        "proceduralFringeAlpha": 1.05
+      },
+      "cameraSlice": {
+        "tileBounds": {
+          "startX": 47,
+          "endX": 62,
+          "startY": 15,
+          "endY": 24
+        },
+        "visibleOreCount": 2,
+        "anchorstoneCount": 0,
+        "destructibleCount": 72,
+        "bobbitBurrowCount": 0,
+        "encounterReservationCount": 0
+      }
+    }
+  },
+  "oreMining": {
+    "setup": {
+      "stage": "setup",
+      "target": {
+        "tileX": 56,
+        "tileY": 19,
+        "worldX": 1356,
+        "worldY": 468,
+        "tile": "copper"
+      },
+      "player": {
+        "x": 1308,
+        "y": 468
+      }
+    },
+    "target": {
+      "worldX": 1356,
+      "worldY": 468,
+      "repeats": 8
+    },
+    "state": {
+      "biome": 2,
+      "biomeName": "Brine Vent Shelf",
+      "credits": 0,
+      "depth": 90,
+      "maxDepth": 90,
+      "oxygen": 149,
+      "oxygenMax": 150,
+      "hull": 100,
+      "fuel": 98,
+      "fuelMax": 100,
+      "cargo": 0,
+      "cargoCapacity": 6,
+      "sonarRevealed": 81,
+      "chartingProgress": {
+        "scanned": 0,
+        "requiredScans": 5,
+        "depth": 90,
+        "requiredDepth": 1100,
+        "sonarCells": 81,
+        "requiredSonarCells": 3200,
+        "apex": "Gulper Eel",
+        "apexScanned": false,
+        "hostileScanned": false,
+        "threatOk": false,
+        "complete": false,
+        "missing": "survey scans"
+      },
+      "canTravelToNextBiome": false,
+      "atBoat": false,
+      "docked": false,
+      "started": true,
+      "lost": false,
+      "won": false,
+      "venom": {
+        "active": false,
+        "source": "",
+        "tick": 0
+      },
+      "bleed": {
+        "active": false,
+        "source": "",
+        "duration": 0,
+        "stacks": 0,
+        "recentBites": 0,
+        "recentTimer": 0
+      },
+      "activeQuestId": "",
+      "questBoard": [
+        {
+          "id": "depth-808076-2",
+          "kind": "depth",
+          "title": "Pressure Line Survey",
+          "client": "Barge Cartography",
+          "text": "Reach 1009 m and transmit a pressure profile from this trench.",
+          "reward": 1360,
+          "target": 1009,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "scan-808076-2",
+          "kind": "scan",
+          "title": "Live Catalog Sweep",
+          "client": "Marine Biology Desk",
+          "text": "Scan 4 new lifeforms before leaving the claim.",
+          "reward": 1560,
+          "target": 4,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "ore-808076-2",
+          "kind": "ore",
+          "title": "Ore Purchase Order",
+          "client": "Geology Buyer",
+          "text": "Sell 1,850 credits of recovered ore to satisfy an urgent assay order.",
+          "reward": 1820,
+          "target": 1850,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false
+        },
+        {
+          "id": "nest-808076-2",
+          "kind": "nest",
+          "title": "Rare: Nest Extermination",
+          "client": "Corporate Hazard Office",
+          "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+          "reward": 5100,
+          "target": 1,
+          "progress": 0,
+          "startValue": 0,
+          "accepted": false,
+          "completed": false,
+          "claimed": false,
+          "rare": true
+        }
+      ],
+      "forwardOutpost": {
+        "active": false,
+        "x": 0,
+        "y": 0,
+        "biome": 3,
+        "depth": 0,
+        "oxygenRadius": 118,
+        "oxygenRate": 18,
+        "charge": 0,
+        "maxCharge": 160,
+        "floraSpecies": ""
+      },
+      "upgrades": {
+        "oxygen": 0,
+        "cargo": 0,
+        "laser": 3,
+        "lamp": 0,
+        "scanner": 0,
+        "suit": 0,
+        "speed": 0,
+        "thermal": 0
+      },
+      "subOwned": {
+        "1": false,
+        "2": false,
+        "3": false
+      },
+      "selectedSubTier": null,
+      "marlinVoucherAvailable": false,
+      "marlinEffectiveCost": 62000,
+      "activeSub": null,
+      "carrierSub": null,
+      "hasSavedGame": false,
+      "saveLoad": {
+        "phase": "idle",
+        "requestId": 0,
+        "completedId": 0,
+        "message": ""
+      }
+    },
+    "ui": {
+      "paused": false,
+      "sonarMapOpen": false,
+      "sonarMapPanX": 0,
+      "sonarMapPanY": 0,
+      "sonarMapZoom": 1,
+      "radioOpen": false,
+      "logbookOpen": false,
+      "cargoOpen": false,
+      "floatingTextCount": 0,
+      "status": "Copper broke loose. Swim near it to collect.",
+      "controller": {
+        "connected": false,
+        "name": "",
+        "index": -1,
+        "lastSeenAt": 0,
+        "lastInputAt": 0,
+        "message": "",
+        "apiSupported": true,
+        "secureContext": true,
+        "hasFocus": true,
+        "lastPollAt": 14293.80000000447,
+        "lastGestureAt": 0,
+        "rawPadCount": 0,
+        "connectedPadCount": 0,
+        "buttons": [],
+        "axes": [],
+        "lastAction": "",
+        "lastActionAt": 0,
+        "hint": ""
+      },
+      "biomeLoading": {
+        "active": false,
+        "biome": 2,
+        "title": "Brine Vent Shelf",
+        "status": "Barge systems synchronized.",
+        "progress": 1,
+        "phase": "idle",
+        "startedAt": 2023.3000000044703,
+        "completedAt": 7340.20000000298
+      },
+      "sonarPings": 0,
+      "terrainBreakEffects": 2
+    },
+    "player": {
+      "x": 1308,
+      "y": 468,
+      "vx": 0,
+      "vy": 0,
+      "mineCooldown": 0.385,
+      "scanTarget": ""
+    },
+    "looseItems": [
+      {
+        "id": "copper",
+        "name": "Copper",
+        "value": 14,
+        "kind": "ore",
+        "x": 1357.001,
+        "y": 470.828,
+        "radius": 5.4,
+        "life": "infinite",
+        "exposed": true,
+        "pickupDelay": 0.22,
+        "collected": false,
+        "sourceTileX": 56,
+        "sourceTileY": 19,
+        "screenX": 821.405,
+        "screenY": 369.363
+      }
+    ],
+    "terrainLookReview": {
+      "biome": 2,
+      "depthBand": "upper",
+      "depthMeters": 60,
+      "lookId": "brine-vents",
+      "palette": {
+        "rim": 7823954,
+        "sandRim": 4931382,
+        "growth": 15107151,
+        "glow": 16752466,
+        "moss": 3425592,
+        "shadow": 131843
+      },
+      "stampPools": {
+        "fringe": [
+          "terrain-stamp-fringe-brine",
+          "terrain-stamp-fringe-brine",
+          "terrain-stamp-fringe-teal"
+        ],
+        "flora": [
+          "terrain-stamp-plant-brine"
+        ],
+        "materialAccent": [
+          "terrain-stamp-ore-copper",
+          "terrain-stamp-ore-quartz",
+          "terrain-stamp-seam-gold"
+        ],
+        "activeEnvironment": []
+      },
+      "density": {
+        "edgeStamp": 0.9,
+        "proceduralFringeAlpha": 1.05
+      },
+      "cameraSlice": {
+        "tileBounds": {
+          "startX": 47,
+          "endX": 62,
+          "startY": 15,
+          "endY": 24
+        },
+        "visibleOreCount": 1,
+        "anchorstoneCount": 0,
+        "destructibleCount": 71,
+        "bobbitBurrowCount": 0,
+        "encounterReservationCount": 0
+      }
+    }
+  },
+  "screenshots": [
+    "01-before-adjacent-mining.png",
+    "02-after-mining-adjacent-rock.png",
+    "03-after-mining-visible-ore.png"
+  ]
+}

@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import type { Fish,Flora,TerrainBrushPlacement,TerrainVisualChunk,Tile } from './types';
-import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FLARE_LIGHT_RADIUS,PLAYER_DRAW_SCALE,SONAR_ATTRACT_RADIUS,SONAR_REVEAL_RADIUS_TILES,SUB_BOARD_SECONDS,TILE,WORLD_H,WORLD_W } from './constants';
+import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FLARE_LIGHT_RADIUS,PLAYER_DRAW_SCALE,SONAR_ATTRACT_RADIUS,SONAR_REVEAL_RADIUS_TILES,SUB_BOARD_SECONDS,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,parallaxProfileFor,scaledEntity,sonarKey,sonarTileColor,specialRoomEffectCenter,spriteManifests,subDef,swimPose,swimTopSpeed,terrainBodyColorForTile,terrainLookForBiome } from './helpers';
+import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,scaledEntity,sonarKey,sonarTileColor,specialRoomEffectCenter,spriteManifests,subDef,swimPose,swimTopSpeed,terrainBodyColorForTile,terrainLookForBiome } from './helpers';
 import type { DeepdiveScene } from './scene';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { hideSubmarinePartSprites,renderSubmarineParts } from './submarine-parts';
@@ -14,9 +14,16 @@ import { ACTUAL_GPT_ORE_STAMPS,type ActualGptOreTile } from './ore-actual-gpt-st
 
 const TERRAIN_VISIBILITY_WASH_ALPHA = 0.034;
 const TERRAIN_VISIBILITY_GLOW_ALPHA = 0.052;
+const TRANSITION_DEEP_TERRAIN_ALPHA = 0.48;
+const TRANSITION_DEEP_TERRAIN_EDGE_ALPHA = 0.24;
+const TRANSITION_DEEP_ORE_OVERBURDEN_ALPHA = 0.48;
+const BRINE_MID_TERRAIN_ALPHA = 0.08;
+const BRINE_MID_TERRAIN_EDGE_ALPHA = 0.025;
+const BRINE_MID_ORE_OVERBURDEN_ALPHA = 0.08;
 
 export function draw(this: DeepdiveScene, ) {
     const camera = this.cameras.main;
+    const environmentProfile = environmentVisualProfileFor(state.biome, state.depth);
     this.articulatedBridges.clear();
     this.actors.clear();
     this.darkness.clear();
@@ -24,14 +31,16 @@ export function draw(this: DeepdiveScene, ) {
     this.overlay.clear();
     this.parallaxBackdrop.clear();
     camera.setBackgroundColor(depthColor(state.depth));
-	    this.drawParallax(camera);
+	    this.updateForegroundTerrainPresentation(environmentProfile);
+	    measurePerf(this, 'draw.parallax', () => this.drawParallax(camera, environmentProfile));
+    measurePerf(this, 'draw.waterColumn', () => this.drawWaterColumn(camera, environmentProfile));
 	    measurePerf(this, 'draw.world', () => this.drawWorld(camera), { dirty: this.terrainDirty, chunks: this.terrainVisualDirtyChunks.size });
 	    measurePerf(this, 'draw.props', () => this.drawEnvironmentProps(camera), { count: this.environmentProps.length });
     this.drawBobbitBurrows(camera);
-	    this.drawTerrainBreakEffects(camera);
-	    this.drawSpecialRooms(camera);
+	    measurePerf(this, 'draw.terrainBreakEffects', () => this.drawTerrainBreakEffects(camera), { count: this.terrainBreakEffects.length });
+	    measurePerf(this, 'draw.specialRooms', () => this.drawSpecialRooms(camera), { count: this.specialRooms.length });
     this.drawBoat();
-    this.drawLooseItems(camera);
+    measurePerf(this, 'draw.looseItems', () => this.drawLooseItems(camera), { count: this.looseItems.length });
     this.drawHazards();
     this.drawNestEggs(camera);
     this.drawLarvae(camera);
@@ -44,8 +53,16 @@ export function draw(this: DeepdiveScene, ) {
     this.drawForwardOutpost(camera);
     this.drawBiomeVisibilityCues(camera);
     this.drawSonarPings();
-    this.drawDarkness(camera);
+    measurePerf(this, 'draw.darkness', () => this.drawDarkness(camera));
     this.drawGameOver(camera);
+  }
+
+export function updateForegroundTerrainPresentation(this: DeepdiveScene, profile = environmentVisualProfileFor(state.biome, state.depth)) {
+    const transitionDeep = profile.depthBand === 'transitionDeep';
+    const brineMidLandmark = profile.biome === 2 && profile.depthBand === 'mid';
+    this.terrain.setAlpha(transitionDeep ? TRANSITION_DEEP_TERRAIN_ALPHA : brineMidLandmark ? BRINE_MID_TERRAIN_ALPHA : 1);
+    this.terrainEdges.setAlpha(transitionDeep ? TRANSITION_DEEP_TERRAIN_EDGE_ALPHA : brineMidLandmark ? BRINE_MID_TERRAIN_EDGE_ALPHA : 1);
+    this.oreOverburden.setAlpha(transitionDeep ? TRANSITION_DEEP_ORE_OVERBURDEN_ALPHA : brineMidLandmark ? BRINE_MID_ORE_OVERBURDEN_ALPHA : 1);
   }
 
 export function drawForwardOutpost(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
@@ -67,143 +84,387 @@ export function drawForwardOutpost(this: DeepdiveScene, camera: Phaser.Cameras.S
     this.actors.lineBetween(outpost.x, outpost.y - 11, outpost.x, outpost.y + 11);
   }
 
-export function drawParallax(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+export function drawParallax(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile = environmentVisualProfileFor(state.biome, state.depth)) {
     const view = camera.worldView;
-    const profile = parallaxProfileFor(state.biome, state.depth);
     const padding = 24;
     for (let i = 0; i < this.parallaxLayers.length; i += 1) {
       const layer = this.parallaxLayers[i];
-      const layerProfile = profile.layers[i] ?? profile.layers[profile.layers.length - 1];
-      const key = this.textures.exists(`${layerProfile.texturePrefix}-${i}`)
-        ? `${layerProfile.texturePrefix}-${i}`
-        : `${layerProfile.fallbackPrefix}-${i}`;
+      const layerProfile = profile.background.layers[i] ?? profile.background.layers[profile.background.layers.length - 1];
+      const key = this.textures.exists(layerProfile.texturePrefix) ? layerProfile.texturePrefix : '';
+      if (!key) {
+        layer.setVisible(false);
+        continue;
+      }
+      layer.setVisible(true);
       if (layer.texture.key !== key) layer.setTexture(key);
       const source = this.textures.get(key).getSourceImage();
       const sourceWidth = Math.max(1, source.width);
       const sourceHeight = Math.max(1, source.height);
       const coverScale = Math.max((view.width + padding * 2) / sourceWidth, (view.height + padding * 2) / sourceHeight, 1) * layerProfile.scale;
+      const band = profile.bands.find((candidate) => candidate.id === layerProfile.band);
+      const bandTop = band ? SURFACE_Y + band.startDepth * 6 - band.blendPx : view.y - padding;
+      const bandBottom = band ? SURFACE_Y + band.endDepth * 6 + band.blendPx : view.bottom + padding;
+      const bandFade = band
+        ? Phaser.Math.Clamp((view.bottom - bandTop) / Math.max(1, band.blendPx), 0, 1)
+          * Phaser.Math.Clamp((bandBottom - view.y) / Math.max(1, band.blendPx), 0, 1)
+        : 1;
+      const displayAlpha = layerProfile.alpha * bandFade;
+      if (displayAlpha <= 0.04) {
+        layer.setVisible(false);
+        continue;
+      }
+      const targetWidth = view.width + padding * 2;
+      const targetHeight = view.height + padding * 2;
+      const displayWidth = sourceWidth * coverScale;
+      const displayHeight = sourceHeight * coverScale;
+      const overflowX = Math.max(0, displayWidth - targetWidth);
+      const overflowY = Math.max(0, displayHeight - targetHeight);
       layer
-        .setPosition(view.x - padding, view.y - padding)
-        .setSize(view.width + padding * 2, view.height + padding * 2)
-        .setAlpha(layerProfile.alpha)
+        .setPosition(view.x - padding - overflowX * 0.5, view.y - padding - overflowY * 0.5)
+        .setAlpha(displayAlpha)
         .setTint(layerProfile.tint);
-      layer.tilePositionX = camera.scrollX * layerProfile.horizontalSpeed + layerProfile.phaseX;
-      layer.tilePositionY = camera.scrollY * layerProfile.verticalSpeed + layerProfile.phaseY;
-      layer.tileScaleX = coverScale;
-      layer.tileScaleY = coverScale;
+      setImageDisplaySizeIfChanged(layer, displayWidth, displayHeight);
     }
-    drawSurfaceAtmosphere(this, camera);
-    drawParallaxOverlay(this, camera, profile);
+    measurePerf(this, 'draw.backgroundAnchors', () => drawBackgroundAnchors(this, camera, profile));
   }
 
-function drawSurfaceAtmosphere(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
-  const view = camera.worldView;
-  const waterlineY = BARGE_DOCK_Y + 4;
-  if (view.bottom < 0 || view.y > waterlineY + 260) return;
-
-  const left = view.x;
-  const width = view.width;
-  const skyTop = Math.max(view.y, 0);
-  const skyBottom = Math.min(view.bottom, waterlineY);
-  if (skyBottom > skyTop) {
-    scene.parallaxBackdrop.fillGradientStyle(
-      0x8fcbdc,
-      0x8fcbdc,
-      0x356f82,
-      0x356f82,
-      0.86,
-      0.86,
-      0.72,
-      0.72,
-    );
-    scene.parallaxBackdrop.fillRect(left, skyTop, width, skyBottom - skyTop);
-    const sunX = WORLD_W * TILE * 0.5 - 230;
-    scene.parallaxBackdrop.fillStyle(0xffe7a8, 0.08);
-    scene.parallaxBackdrop.fillEllipse(sunX, 22, 210, 52);
-    scene.parallaxBackdrop.fillStyle(0xf5ffff, 0.045);
-    scene.parallaxBackdrop.fillRect(left, waterlineY - 16, width, 11);
+function waterColumnAlphaTextureKey(scene: DeepdiveScene, textureKey: string) {
+  const alphaKey = `${textureKey}-water-column-alpha`;
+  if (scene.textures.exists(alphaKey)) return alphaKey;
+  if (!scene.textures.exists(textureKey)) return '';
+  const sourceImage = scene.textures.get(textureKey).getSourceImage() as CanvasImageSource & { width: number; height: number };
+  const width = Math.max(1, sourceImage.width);
+  const height = Math.max(1, sourceImage.height);
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext('2d', { willReadFrequently: true });
+  if (!context) return textureKey;
+  context.drawImage(sourceImage, 0, 0, width, height);
+  const image = context.getImageData(0, 0, width, height);
+  const data = image.data;
+  for (let index = 0; index < data.length; index += 4) {
+    const luma = data[index] * 0.2126 + data[index + 1] * 0.7152 + data[index + 2] * 0.0722;
+    data[index] = 255;
+    data[index + 1] = 255;
+    data[index + 2] = 255;
+    data[index + 3] = Phaser.Math.Clamp((luma - 6) * 1.58, 0, 255);
   }
-
-  const waterTop = Math.max(view.y, waterlineY);
-  const waterBottom = Math.min(view.bottom, waterlineY + 260);
-  if (waterBottom > waterTop) {
-    scene.parallaxBackdrop.fillGradientStyle(
-      0x0e6170,
-      0x0e6170,
-      0x062b3a,
-      0x062b3a,
-      0.5,
-      0.5,
-      0.62,
-      0.62,
-    );
-    scene.parallaxBackdrop.fillRect(left, waterTop, width, waterBottom - waterTop);
-  }
-
-  scene.parallaxBackdrop.fillStyle(0xdffcff, 0.24);
-  scene.parallaxBackdrop.fillRect(left, waterlineY - 2, width, 2);
-  scene.parallaxBackdrop.fillStyle(0x7ee6ef, 0.14);
-  scene.parallaxBackdrop.fillRect(left, waterlineY, width, 4);
-  scene.parallaxBackdrop.fillStyle(0x052234, 0.08);
-  scene.parallaxBackdrop.fillRect(left, waterlineY + 4, width, 9);
+  context.putImageData(image, 0, 0);
+  scene.textures.addCanvas(alphaKey, canvas);
+  return alphaKey;
 }
 
-function drawParallaxOverlay(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof parallaxProfileFor>) {
-  const view = camera.worldView;
-  const bandAlpha = state.biome === 1
-    ? 0.06
-    : state.biome === 2
-      ? 0.08
-      : 0.12;
-  scene.parallaxBackdrop.fillGradientStyle(
-    0x052234,
-    0x073047,
-    0x020813,
-    0x020813,
-    bandAlpha * 0.55,
-    bandAlpha * 0.44,
-    bandAlpha,
-    bandAlpha * 1.18,
-  );
-  scene.parallaxBackdrop.fillRect(view.x, view.y, view.width, view.height);
-  const mistStep = state.biome >= 3 ? 168 : 220;
-  const mistStart = Math.floor(view.y / mistStep) * mistStep - mistStep;
-  for (let y = mistStart; y <= view.bottom + mistStep; y += mistStep) {
-    const roll = hash(Math.floor(view.x / 512), Math.floor(y / mistStep), rng.seed + 2447 + state.biome * 97);
-    const alpha = bandAlpha * Phaser.Math.Linear(0.32, 0.78, roll);
-    scene.parallaxBackdrop.fillStyle(profile.overlay.color, alpha);
-    scene.parallaxBackdrop.fillEllipse(
-      view.centerX + Math.sin(roll * 12.4 + scene.time.now * 0.00012) * view.width * 0.28,
-      y + roll * mistStep,
-      view.width * Phaser.Math.Linear(0.72, 1.18, roll),
-      Phaser.Math.Linear(54, 96, roll),
-    );
-  }
-  const cellSize = 256;
-  const startX = Math.floor(view.x / cellSize) - 1;
-  const endX = Math.ceil(view.right / cellSize) + 1;
-  const startY = Math.floor(view.y / cellSize) - 1;
-  const endY = Math.ceil(view.bottom / cellSize) + 1;
-  const time = scene.time.now * 0.001;
-  const seed = rng.seed + profile.biome * 1009;
-  for (let cy = startY; cy <= endY; cy += 1) {
-    for (let cx = startX; cx <= endX; cx += 1) {
-      const roll = hash(cx, cy, seed);
-      if (roll > profile.overlay.density) continue;
-      const rollB = hash(cx + 19, cy - 23, seed + 41);
-      const rollC = hash(cx - 31, cy + 7, seed + 97);
-      const x = cx * cellSize + rollB * cellSize + Math.sin(time * 0.17 + roll * 9) * profile.overlay.drift;
-      const y = cy * cellSize + rollC * cellSize + Math.cos(time * 0.13 + rollB * 11) * profile.overlay.drift;
-      const alpha = profile.overlay.alpha * Phaser.Math.Linear(0.45, 1, rollC);
-      const streakLength = Phaser.Math.Linear(26, 74, rollB);
-      const slope = Phaser.Math.Linear(-0.38, 0.26, roll);
-      scene.parallaxBackdrop.lineStyle(1, profile.overlay.color, alpha);
-      scene.parallaxBackdrop.lineBetween(x - streakLength * 0.5, y - streakLength * slope * 0.5, x + streakLength * 0.5, y + streakLength * slope * 0.5);
-      if (rollB > 0.72) {
-        scene.parallaxBackdrop.fillStyle(profile.overlay.color, alpha * 0.58);
-        scene.parallaxBackdrop.fillCircle(x + 18, y - 9, Phaser.Math.Linear(1.1, 2.4, roll));
-      }
+function backgroundAnchorSoftEdgeTextureKey(scene: DeepdiveScene, textureKey: string, fadePx: number) {
+  const softKey = `${textureKey}-soft-edge-${Math.round(fadePx)}`;
+  if (scene.textures.exists(softKey)) return softKey;
+  if (!scene.textures.exists(textureKey)) return '';
+  const sourceImage = scene.textures.get(textureKey).getSourceImage() as CanvasImageSource & { width: number; height: number };
+  const width = Math.max(1, sourceImage.width);
+  const height = Math.max(1, sourceImage.height);
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext('2d', { willReadFrequently: true });
+  if (!context) return textureKey;
+  context.drawImage(sourceImage, 0, 0, width, height);
+  const image = context.getImageData(0, 0, width, height);
+  const data = image.data;
+  const edgeFadePx = Math.max(1, fadePx);
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const index = (y * width + x) * 4;
+      const edgeDistance = Math.min(x, y, width - 1 - x, height - 1 - y);
+      const edgeT = Phaser.Math.Clamp(edgeDistance / edgeFadePx, 0, 1);
+      data[index + 3] = Math.round(data[index + 3] * Phaser.Math.SmoothStep(edgeT, 0, 1));
     }
+  }
+  context.putImageData(image, 0, 0);
+  scene.textures.addCanvas(softKey, canvas);
+  return softKey;
+}
+
+function waterColumnBlendMode(blendMode: 'normal' | 'add') {
+  return blendMode === 'normal' ? Phaser.BlendModes.NORMAL : Phaser.BlendModes.ADD;
+}
+
+function setTileSpriteSizeIfChanged(sprite: Phaser.GameObjects.TileSprite, width: number, height: number) {
+  if (Math.abs(sprite.width - width) > 0.5 || Math.abs(sprite.height - height) > 0.5) {
+    sprite.setSize(width, height);
+  }
+}
+
+function setImageDisplaySizeIfChanged(image: Phaser.GameObjects.Image, width: number, height: number) {
+  if (Math.abs(image.displayWidth - width) > 0.5 || Math.abs(image.displayHeight - height) > 0.5) {
+    image.setDisplaySize(width, height);
+  }
+}
+
+function waterColumnPassDisabled() {
+  if (typeof window === 'undefined') return false;
+  const runtimeWindow = window as typeof window & { __WATER_COLUMN_DISABLED__?: boolean };
+  if (runtimeWindow.__WATER_COLUMN_DISABLED__) return true;
+  return new URLSearchParams(window.location.search).get('waterColumn') === '0';
+}
+
+function waterColumnVisibleSpriteBudget() {
+  return 1;
+}
+
+function drawGuardedHorizontalBand(
+  graphics: Phaser.GameObjects.Graphics,
+  view: Phaser.Geom.Rectangle,
+  y: number,
+  width: number,
+  color: number,
+  alpha: number,
+  guardX: number,
+  guardY: number,
+  guardRadius: number,
+) {
+  const left = view.x - 56;
+  const right = view.right + 56;
+  graphics.lineStyle(width, color, alpha);
+  const verticalGap = Math.abs(y - guardY);
+  const protectedRadius = guardRadius + width * 0.46;
+  if (protectedRadius > 0 && verticalGap < protectedRadius) {
+    const horizontalGap = Math.sqrt(Math.max(0, protectedRadius * protectedRadius - verticalGap * verticalGap));
+    const leftEnd = Math.max(left, guardX - horizontalGap);
+    const rightStart = Math.min(right, guardX + horizontalGap);
+    if (leftEnd - left > 1) graphics.lineBetween(left, y, leftEnd, y);
+    if (right - rightStart > 1) graphics.lineBetween(rightStart, y, right, y);
+    return;
+  }
+  graphics.lineBetween(left, y, right, y);
+}
+
+function drawGuardedScreenVeil(
+  graphics: Phaser.GameObjects.Graphics,
+  view: Phaser.Geom.Rectangle,
+  color: number,
+  alpha: number,
+  guardX: number,
+  guardY: number,
+  guardRadius: number,
+) {
+  const left = view.x - 56;
+  const right = view.right + 56;
+  const top = view.y - 56;
+  const bottom = view.bottom + 56;
+  const stripHeight = 6;
+  graphics.fillStyle(color, alpha);
+  for (let y = top; y < bottom; y += stripHeight) {
+    const h = Math.min(stripHeight, bottom - y);
+    const sampleY = y + h * 0.5;
+    const verticalGap = Math.abs(sampleY - guardY);
+    if (guardRadius > 0 && verticalGap < guardRadius) {
+      const horizontalGap = Math.sqrt(Math.max(0, guardRadius * guardRadius - verticalGap * verticalGap));
+      const leftEnd = Math.max(left, guardX - horizontalGap);
+      const rightStart = Math.min(right, guardX + horizontalGap);
+      if (leftEnd - left > 1) graphics.fillRect(left, y, leftEnd - left, h);
+      if (right - rightStart > 1) graphics.fillRect(rightStart, y, right - rightStart, h);
+    } else {
+      graphics.fillRect(left, y, right - left, h);
+    }
+  }
+}
+
+export function drawWaterColumn(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile = environmentVisualProfileFor(state.biome, state.depth)) {
+  if (waterColumnPassDisabled()) {
+    for (const layer of this.waterColumnLayers) layer.setVisible(false);
+    return;
+  }
+  const view = camera.worldView;
+  const padding = 32;
+  const driftTime = this.time.now / 1000;
+  this.parallaxBackdrop.setDepth(-6.79);
+  drawWaterColumnVolumeGraphics(this, camera, profile, driftTime);
+  let spriteIndex = 0;
+  const activeLayerProfiles = profile.background.worldSpaceNoise.layers
+    .map((layerProfile) => ({
+      layerProfile,
+      displayAlpha: Phaser.Math.Clamp(layerProfile.alpha, 0, 0.04),
+    }))
+    .filter(({ layerProfile, displayAlpha }) => this.textures.exists(layerProfile.textureKey) && displayAlpha > 0.03)
+    .sort((a, b) => b.displayAlpha - a.displayAlpha)
+    .slice(0, waterColumnVisibleSpriteBudget());
+  for (const { layerProfile, displayAlpha } of activeLayerProfiles) {
+    const textureKey = waterColumnAlphaTextureKey(this, layerProfile.textureKey);
+    if (!textureKey) continue;
+    const cached = this.waterColumnLayers[spriteIndex];
+    const layer = cached?.scene
+      ? cached
+      : this.add.tileSprite(0, 0, 1, 1, textureKey)
+        .setOrigin(0)
+        .setDepth(-6.85 + spriteIndex * 0.03)
+        .setBlendMode(waterColumnBlendMode(layerProfile.blendMode))
+        .setScrollFactor(1);
+    this.waterColumnLayers[spriteIndex] = layer;
+    if (layer.texture.key !== textureKey) layer.setTexture(textureKey);
+    layer.setData('waterColumnSourceTextureKey', layerProfile.textureKey);
+    layer.setData('waterColumnRuntimeTextureKey', textureKey);
+    layer.setData('waterColumnBlendMode', layerProfile.blendMode);
+    layer
+      .setVisible(true)
+      .setDepth(-6.76 + spriteIndex * 0.03)
+      .setPosition(view.x - padding, view.y - padding)
+      .setAlpha(displayAlpha)
+      .setTint(layerProfile.color)
+      .setBlendMode(waterColumnBlendMode(layerProfile.blendMode));
+    setTileSpriteSizeIfChanged(layer, view.width + padding * 2, view.height + padding * 2);
+    layer.tileScaleX = layerProfile.scale * layerProfile.tileScaleX;
+    layer.tileScaleY = layerProfile.scale * layerProfile.tileScaleY;
+    const steppedDriftTime = Math.floor(driftTime * 8) / 8;
+    layer.tilePositionX = camera.scrollX * layerProfile.parallaxX + steppedDriftTime * layerProfile.driftX + layerProfile.phaseX;
+    layer.tilePositionY = camera.scrollY * layerProfile.parallaxY + steppedDriftTime * layerProfile.driftY + layerProfile.phaseY;
+    spriteIndex += 1;
+  }
+  for (let i = spriteIndex; i < this.waterColumnLayers.length; i += 1) {
+    this.waterColumnLayers[i].setVisible(false);
+  }
+}
+
+function drawWaterColumnVolumeGraphics(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof environmentVisualProfileFor>, driftTime: number) {
+  const view = camera.worldView;
+  const band = profile.activeBand.id;
+  const biome = profile.biome;
+  const columnAlpha = profile.background.worldSpaceNoise.alpha;
+  if (columnAlpha <= 0.003) return;
+
+  const graphics = scene.parallaxBackdrop;
+  const shallow = band === 'surface' || band === 'upper';
+  const brineMid = biome === 2 && band === 'mid';
+  const ruinLower = biome === 4 && band === 'lower';
+  const quietDeep = biome === 3 && band === 'lower';
+  const lineCount = brineMid ? 2 : ruinLower ? 4 : shallow ? 1 : quietDeep ? 1 : 1;
+  const particleCount = brineMid ? 8 : ruinLower ? 12 : shallow ? 6 : quietDeep ? 4 : 6;
+  const ribbonColor = brineMid ? 0x83b8a6 : ruinLower ? 0x9db7c8 : profile.activeBand.hazeColor;
+  const particleColor = brineMid ? 0xb5d0b2 : ruinLower ? 0xc5d9e5 : 0xd8fff3;
+  const baseLineAlpha = brineMid ? 0.01 : ruinLower ? 0.026 : shallow ? 0.013 : 0.007;
+  const baseParticleAlpha = brineMid ? 0.006 : ruinLower ? 0.01 : shallow ? 0.009 : 0.005;
+
+  if (shallow) {
+    const mottleCount = 1;
+    for (let i = 0; i < mottleCount; i += 1) {
+      const roll = hash(i + 601, biome * 59 + profile.activeBand.startDepth, rng.seed + 2519);
+      const x = view.x + Phaser.Math.Wrap(roll + driftTime * 0.01 * (i % 2 === 0 ? 1 : -0.45), 0, 1) * view.width;
+      const yRoll = hash(i + 619, profile.activeBand.endDepth, rng.seed + 2521);
+      const y = view.y + Phaser.Math.Wrap(yRoll + driftTime * 0.006 * (i % 3 - 1), 0, 1) * view.height;
+      const width = Phaser.Math.Linear(230, 560, hash(i + 631, biome, rng.seed + 2531));
+      const height = Phaser.Math.Linear(64, 148, hash(i + 641, biome, rng.seed + 2539));
+      const lightMottle = i % 3 !== 0;
+      const color = lightMottle ? (i % 2 === 0 ? profile.activeBand.hazeColor : 0x64cfc7) : 0x062f3a;
+      const alpha = (lightMottle ? 0.012 : 0.018) * Phaser.Math.Linear(0.46, 1, hash(i + 653, biome, rng.seed + 2543));
+      graphics.fillStyle(color, alpha);
+      graphics.fillEllipse(x, y, width, height);
+    }
+
+    const ribbonCount = 1;
+    for (let i = 0; i < ribbonCount; i += 1) {
+      const roll = hash(i + 677, profile.activeBand.startDepth + biome * 83, rng.seed + 2551);
+      const y = view.y + Phaser.Math.Wrap(roll + driftTime * 0.018 * (i % 2 === 0 ? 1 : -0.62), 0, 1) * view.height;
+      const slope = Phaser.Math.Linear(-0.22, 0.16, hash(i + 691, biome, rng.seed + 2557));
+      const width = Phaser.Math.Linear(14, 38, hash(i + 701, profile.activeBand.endDepth, rng.seed + 2579));
+      const alpha = Phaser.Math.Linear(0.006, 0.014, hash(i + 719, biome, rng.seed + 2591));
+      graphics.lineStyle(width, i % 2 === 0 ? 0x8fe9df : 0x0a5361, alpha);
+      graphics.lineBetween(view.x - 120, y, view.right + 120, y + slope * (view.width + 240));
+    }
+  }
+
+  if (brineMid) {
+    for (let i = 0; i < 2; i += 1) {
+      const roll = hash(i + 739, profile.activeBand.startDepth + biome * 97, rng.seed + 2609);
+      const y = view.y + Phaser.Math.Wrap(roll + driftTime * 0.012 * (i % 2 === 0 ? 1 : -0.75), 0, 1) * view.height;
+      const slope = Phaser.Math.Linear(-0.035, 0.028, hash(i + 743, biome, rng.seed + 2617));
+      const width = Phaser.Math.Linear(18, 42, hash(i + 751, profile.activeBand.endDepth, rng.seed + 2621));
+      const alpha = Phaser.Math.Linear(0.005, 0.011, hash(i + 757, biome, rng.seed + 2633));
+      graphics.lineStyle(width, i % 2 === 0 ? 0x20483f : 0x6ca491, alpha);
+      graphics.lineBetween(view.x - 140, y, view.right + 140, y + slope * (view.width + 280));
+    }
+  }
+
+  if (ruinLower) {
+    graphics.fillStyle(0x06141c, 0.68);
+    graphics.fillRect(view.x - 24, view.y - 24, view.width + 48, view.height + 48);
+    for (let i = 0; i < 4; i += 1) {
+      const x = view.x + view.width * (0.12 + i * 0.22);
+      const width = 62 + i * 22;
+      graphics.lineStyle(width, 0x06151d, 0.14 + i * 0.018);
+      graphics.lineBetween(x, view.y - 140, x + view.width * 0.42, view.bottom + 140);
+    }
+    for (let i = 0; i < 6; i += 1) {
+      const roll = hash(i + 773, profile.activeBand.endDepth, rng.seed + 2647);
+      const y = view.y + Phaser.Math.Wrap(roll + driftTime * 0.005 * (i % 2 === 0 ? 1 : -0.5), 0, 1) * view.height;
+      graphics.lineStyle(Phaser.Math.Linear(28, 82, roll), i % 2 === 0 ? 0x88aebf : 0x173b4d, Phaser.Math.Linear(0.018, 0.05, hash(i + 787, biome, rng.seed + 2659)));
+      graphics.lineBetween(view.x - 120, y, view.right + 120, y + Phaser.Math.Linear(-0.03, 0.045, roll) * (view.width + 240));
+    }
+  }
+
+  for (let i = 0; i < lineCount; i += 1) {
+    const roll = hash(i + 17, biome * 101 + profile.activeBand.startDepth, rng.seed + 2237);
+    const speed = brineMid ? 0.018 : shallow ? 0.024 : 0.01;
+    const yT = Phaser.Math.Wrap(roll + driftTime * speed * (i % 2 === 0 ? 1 : -0.55), 0, 1);
+    const y = view.y + yT * view.height;
+    const slope = brineMid ? Phaser.Math.Linear(-0.018, 0.018, roll) : shallow ? Phaser.Math.Linear(-0.11, 0.07, roll) : Phaser.Math.Linear(-0.035, 0.035, roll);
+    const width = Phaser.Math.Linear(brineMid ? 10 : ruinLower ? 22 : 16, brineMid ? 28 : ruinLower ? 56 : 40, hash(i + 53, biome, rng.seed + 2249));
+    const alpha = baseLineAlpha * Phaser.Math.Linear(0.44, 1, hash(i + 71, profile.activeBand.endDepth, rng.seed + 2267));
+    graphics.lineStyle(width, ribbonColor, alpha);
+    graphics.lineBetween(view.x - 96, y, view.right + 96, y + slope * (view.width + 192));
+  }
+
+  for (let i = 0; i < particleCount; i += 1) {
+    const xRoll = hash(i + 101, biome * 19 + profile.activeBand.endDepth, rng.seed + 2309);
+    const yRoll = hash(i + 149, biome * 23 + profile.activeBand.startDepth, rng.seed + 2311);
+    const x = view.x + Phaser.Math.Wrap(xRoll + driftTime * 0.003 * (i % 3 - 1), 0, 1) * view.width;
+    const y = view.y + Phaser.Math.Wrap(yRoll + driftTime * 0.006 * (i % 2 === 0 ? 1 : -0.4), 0, 1) * view.height;
+    const radius = Phaser.Math.Linear(0.65, shallow ? 1.65 : 1.25, hash(i + 181, biome, rng.seed + 2333));
+    const alpha = baseParticleAlpha * Phaser.Math.Linear(0.35, 1, hash(i + 211, profile.activeBand.startDepth, rng.seed + 2347));
+    graphics.fillStyle(particleColor, alpha);
+    graphics.fillCircle(x, y, radius);
+  }
+}
+
+function drawBackgroundAnchors(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof environmentVisualProfileFor>) {
+  const view = camera.worldView;
+  const anchors = environmentAnchorSilhouettesFor(profile, view.x, view.right, view.y, view.bottom);
+  let spriteIndex = 0;
+  for (const anchor of anchors) {
+    const parallaxX = anchor.x + view.x * (1 - anchor.parallaxFactor);
+    const parallaxY = anchor.y + view.y * (1 - Phaser.Math.Clamp(anchor.parallaxFactor + 0.08, 0.06, 0.32));
+    if (parallaxY + anchor.height * 0.5 < view.y - 80 || parallaxY - anchor.height * 0.5 > view.bottom + 80) continue;
+    if (anchor.textureKey && scene.textures.exists(anchor.textureKey)) {
+      const ruinVaultAnchor = profile.biome === 4 && anchor.assetId === 'biome-ruins-vault-causeway-lattice';
+      const biome1OrganicAnchor = profile.biome === 1 && anchor.assetId === 'biome-shallows-organic-reef-shelf';
+      const textureKey = ruinVaultAnchor
+        ? backgroundAnchorSoftEdgeTextureKey(scene, anchor.textureKey, 540)
+        : biome1OrganicAnchor
+          ? backgroundAnchorSoftEdgeTextureKey(scene, anchor.textureKey, 220)
+          : anchor.textureKey;
+      if (!textureKey) continue;
+      const cached = scene.backgroundAnchorSprites[spriteIndex];
+      const sprite = cached?.scene ? cached : scene.add.image(parallaxX, parallaxY, textureKey).setDepth(-8.4).setOrigin(0.5);
+      scene.backgroundAnchorSprites[spriteIndex] = sprite;
+      const crop = anchor.textureCrop;
+      sprite
+        .setTexture(textureKey)
+        .setDepth(biome1OrganicAnchor ? -6.77 : -7.3)
+        .setVisible(true)
+        .setPosition(parallaxX, parallaxY)
+        .setAlpha(Phaser.Math.Clamp(anchor.alpha * (ruinVaultAnchor ? (profile.activeBand.id === 'lower' ? 0.06 : 0.2) : 1), 0, 1))
+        .setTint(ruinVaultAnchor ? 0x718fa2 : 0xffffff)
+        .setBlendMode(Phaser.BlendModes.NORMAL);
+      if (crop) {
+        sprite.setCrop(crop[0], crop[1], crop[2], crop[3]);
+      } else {
+        sprite.setCrop();
+      }
+      sprite.displayWidth = anchor.width;
+      sprite.displayHeight = anchor.height;
+      spriteIndex += 1;
+    }
+  }
+  for (let i = spriteIndex; i < scene.backgroundAnchorSprites.length; i += 1) {
+    scene.backgroundAnchorSprites[i].setVisible(false);
   }
 }
 
@@ -287,20 +548,24 @@ export function drawTerrainBreakEffects(this: DeepdiveScene, camera: Phaser.Came
     for (const effect of this.terrainBreakEffects) {
       if (effect.x < view.x - 60 || effect.x > view.right + 60 || effect.y < view.y - 60 || effect.y > view.bottom + 60) continue;
       const t = Phaser.Math.Clamp(effect.age / effect.life, 0, 1);
-      const alpha = (1 - t) * 0.72;
-      const radius = TILE * (0.44 + t * 0.72);
+      const contact = effect.kind === 'contact' || effect.kind === 'oreGlint';
+      const oreGlint = effect.kind === 'oreGlint';
+      const alpha = (1 - t) * (contact ? 0.58 : 0.72);
+      const radius = contact ? TILE * (0.16 + t * 0.36) : TILE * (0.44 + t * 0.72);
       const palette = terrainAccentPalette();
-      this.actors.fillStyle(palette.glow, alpha * 0.12);
+      this.actors.fillStyle(oreGlint ? effect.color : palette.glow, alpha * (contact ? 0.09 : 0.12));
       this.actors.fillCircle(effect.x, effect.y, radius);
-      this.actors.lineStyle(2, palette.rim, alpha * 0.36);
+      this.actors.lineStyle(contact ? 1 : 2, oreGlint ? 0xfff7df : palette.rim, alpha * (contact ? 0.5 : 0.36));
       this.actors.strokeCircle(effect.x, effect.y, radius * 0.92);
-      for (let i = 0; i < 13; i += 1) {
+      const chipCount = contact ? 8 : 13;
+      for (let i = 0; i < chipCount; i += 1) {
         const angle = effect.seed * Math.PI * 2 + i * 1.137;
-        const travel = TILE * (0.12 + t * (0.72 + (i % 4) * 0.1));
+        const travel = TILE * (contact ? 0.08 + t * (0.34 + (i % 4) * 0.07) : 0.12 + t * (0.72 + (i % 4) * 0.1));
         const chipX = effect.x + Math.cos(angle) * travel;
         const chipY = effect.y + Math.sin(angle) * travel;
-        this.actors.fillStyle(i % 4 === 0 ? palette.rim : 0x050b10, alpha * (i % 4 === 0 ? 0.42 : 0.58));
-        this.actors.fillRect(Math.floor(chipX), Math.floor(chipY), i % 4 === 0 ? 2 : 1, i % 3 === 0 ? 2 : 1);
+        const brightChip = oreGlint && i % 3 === 0;
+        this.actors.fillStyle(brightChip ? 0xfff7df : i % 4 === 0 ? effect.color : 0x050b10, alpha * (brightChip ? 0.72 : i % 4 === 0 ? 0.42 : 0.58));
+        this.actors.fillRect(Math.floor(chipX), Math.floor(chipY), brightChip || i % 4 === 0 ? 2 : 1, i % 3 === 0 ? 2 : 1);
       }
     }
   }
@@ -418,6 +683,7 @@ function drawTerrainOrganicBoundary(
     const cellMap = new Map<string, { sx: number; sy: number; color: number }>();
     for (const cell of cells) cellMap.set(`${cell.sx}:${cell.sy}`, cell);
     for (const cell of cells) {
+      if (((cell.sx + cell.sy) & 1) === 1) continue;
       const cx = (cell.sx + 0.5) * TERRAIN_MASK_CELL;
       const cy = (cell.sy + 0.5) * TERRAIN_MASK_CELL;
       const neighbors = [
@@ -434,6 +700,7 @@ function drawTerrainOrganicBoundary(
       }
     }
     for (const cell of cells) {
+      if (((cell.sx + cell.sy) & 1) === 1) continue;
       const cx = (cell.sx + 0.5) * TERRAIN_MASK_CELL;
       const cy = (cell.sy + 0.5) * TERRAIN_MASK_CELL;
       const seed = hash(cell.sx * 131, cell.sy * 137, rng.seed + 5321);
@@ -462,6 +729,7 @@ function drawTerrainEcologyFringe(
     for (const cell of cells) cellMap.set(`${cell.sx}:${cell.sy}`, cell);
 
     for (const cell of cells) {
+      if ((cell.sx + cell.sy) % 3 !== 0) continue;
       const support = terrainLocalSolidSupport(scene, cell.sx, cell.sy, 3);
       if (support < 14) continue;
       const seed = hash(cell.sx * 269, cell.sy * 271, rng.seed + 6201);
@@ -492,6 +760,7 @@ function drawTerrainEcologyFringe(
     }
 
     for (const cell of cells) {
+      if ((cell.sx + cell.sy) % 3 !== 0) continue;
       const exposed = terrainMaskExposureVector(scene, cell.sx, cell.sy);
       if (exposed.count === 0) continue;
       const support = terrainLocalSolidSupport(scene, cell.sx, cell.sy, 3);
@@ -543,6 +812,7 @@ function drawTerrainMaskEdgeFray(scene: DeepdiveScene, minSx: number, maxSx: num
         const west = terrainMaskDensityAt(scene, sx - 1, sy) < TERRAIN_MASK_SOLID_THRESHOLD;
         const east = terrainMaskDensityAt(scene, sx + 1, sy) < TERRAIN_MASK_SOLID_THRESHOLD;
         if (!north && !south && !west && !east) continue;
+        if (((sx + sy) & 1) === 1) continue;
         const wx = sx * TERRAIN_MASK_CELL;
         const wy = sy * TERRAIN_MASK_CELL;
         const tx = Math.floor(sx / TERRAIN_MASK_RES);
@@ -3374,7 +3644,17 @@ export function drawSub(this: DeepdiveScene, ) {
     }
     const def = subDef(sub.tier);
     const speed = Math.hypot(sub.vx, sub.vy);
-    const renderedSubParts = renderSubmarineParts(this, this.subPartSprites, sub);
+    const subNeedsPartRig = speed > 3
+      || sub.boardProgress > 0
+      || (state.pilotingSub && sub.tier >= 2 && this.drillingThisFrame)
+      || this.sonarPings.length > 0
+      || this.player.scanCooldown > 0
+      || this.player.sonarCooldown > 0
+      || sub.weaponCooldown > 0
+      || sub.hull <= def.hull * 0.62
+      || state.carrierSub === sub;
+    const renderedSubParts = subNeedsPartRig ? renderSubmarineParts(this, this.subPartSprites, sub) : false;
+    if (!renderedSubParts) hideSubmarinePartSprites(this.subPartSprites);
     this.subSprite
       ?.setTexture(`sub-tier${sub.tier}`)
       .setVisible(!renderedSubParts)
@@ -3416,6 +3696,7 @@ export function drawSub(this: DeepdiveScene, ) {
 export function drawDarkness(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
     const darkness = darknessAtDepth();
     if (darkness <= 0) return;
+    const profile = environmentVisualProfileFor(state.biome, state.depth);
     const view = camera.worldView;
     const left = view.x;
     const right = view.right;
@@ -3454,6 +3735,8 @@ export function drawDarkness(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D
       if (cursor < right) this.darkness.fillRect(cursor, y, right - cursor, nextY - y);
     }
 
+    drawPostDarknessWaterColumnVeil(this, camera, profile);
+
     const edgeAlpha = Math.min(0.5, darkness * 0.34);
     this.lampGloom.lineStyle(8, 0x020509, edgeAlpha);
     this.lampGloom.lineBetween(beam[0].x, beam[0].y, beam[1].x, beam[1].y);
@@ -3465,108 +3748,78 @@ export function drawDarkness(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D
     this.lampGloom.strokeCircle(cx, cy, haloRadius);
   }
 
-export function drawBiomeVisibilityCues(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
-    const darkness = darknessAtDepth();
-    if (darkness <= 0.08 || state.biome < 2) return;
+function drawPostDarknessWaterColumnVeil(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof environmentVisualProfileFor>) {
+    if (waterColumnPassDisabled()) return;
+    const veil = profile.background.worldSpaceNoise.postDarknessVeil;
+    if (!veil.enabled || veil.alpha <= 0) return;
     const view = camera.worldView;
-    const palette = terrainAccentPalette();
-    const profile = biomeVisibilityProfile();
-    const depthFade = Phaser.Math.Clamp((state.depth - 120) / 1280, 0, 1);
-    const ambient = Phaser.Math.Clamp(profile.ambientBase + darkness * profile.ambientScale - depthFade * 0.025, 0, profile.ambientMax);
-    const cx = this.player.x;
-    const cy = this.player.y;
-    const radius = lightRadius() + profile.silhouetteReach;
-    const startX = Math.max(0, Math.floor((view.x - 12) / TILE));
-    const endX = Math.min(WORLD_W - 1, Math.ceil((view.right + 12) / TILE));
-    const startY = Math.max(0, Math.floor((view.y - 12) / TILE));
-    const endY = Math.min(WORLD_H - 1, Math.ceil((view.bottom + 12) / TILE));
-    for (let y = startY; y <= endY; y += 1) {
-      for (let x = startX; x <= endX; x += 1) {
-        const tile = this.getTile(x, y);
-        if (tile === 'water') continue;
-        const exposed =
-          this.getTile(x, y - 1) === 'water'
-          || this.getTile(x, y + 1) === 'water'
-          || this.getTile(x - 1, y) === 'water'
-          || this.getTile(x + 1, y) === 'water';
-        if (!exposed) continue;
-        const wx = x * TILE + TILE * 0.5;
-        const wy = y * TILE + TILE * 0.5;
-        const distance = Phaser.Math.Distance.Between(cx, cy, wx, wy);
-        if (distance > radius) continue;
-        const proximity = 1 - Phaser.Math.Clamp((distance - lightRadius() * 0.65) / Math.max(1, radius - lightRadius() * 0.65), 0, 1);
-        const alpha = ambient * Phaser.Math.Linear(0.36, 1, proximity);
-        const pulse = 0.75 + Math.sin(this.time.now * 0.0016 + x * 0.47 + y * 0.31) * 0.25;
-        const sparkleSeed = hash(x * 19, y * 23, rng.seed + state.biome * 1801);
-        if (sparkleSeed > profile.accentThreshold) {
-          const accentAlpha = profile.accentAlpha * pulse * Phaser.Math.Linear(0.35, 1, proximity);
-          this.lampGloom.fillStyle(sparkleSeed > 0.985 ? palette.glow : profile.accent, accentAlpha);
-          this.lampGloom.fillCircle(
-            wx + (hash(x, y, rng.seed + 1807) - 0.5) * TILE * 0.52,
-            wy + (hash(y, x, rng.seed + 1811) - 0.5) * TILE * 0.52,
-            Phaser.Math.Linear(1.2, 2.7, sparkleSeed),
-          );
-        } else if (sparkleSeed > profile.accentThreshold - 0.035 && alpha > 0.018) {
-          this.lampGloom.fillStyle(profile.silhouette, alpha * 0.12);
-          this.lampGloom.fillCircle(
-            wx + (hash(x, y, rng.seed + 1877) - 0.5) * TILE * 0.56,
-            wy + (hash(y, x, rng.seed + 1879) - 0.5) * TILE * 0.56,
-            Phaser.Math.Linear(0.8, 1.8, sparkleSeed),
-          );
-        }
+    const time = scene.time.now / 1000;
+    const guardX = scene.player.x;
+    const guardY = scene.player.y;
+    const guardRadius = veil.guardRadius;
+    const brineMid = profile.biome === 2 && profile.activeBand.id === 'mid';
+    const midnightLower = profile.biome === 3 && profile.activeBand.id === 'lower';
+    const ruinLower = profile.biome === 4 && profile.activeBand.id === 'lower';
+
+    if (brineMid) {
+      drawGuardedScreenVeil(scene.lampGloom, view, 0x102823, 0.075, guardX, guardY, guardRadius);
+    } else if (ruinLower) {
+      drawGuardedScreenVeil(scene.lampGloom, view, 0x06151d, 0.34, guardX, guardY, guardRadius);
+    } else if (midnightLower) {
+      drawGuardedScreenVeil(scene.lampGloom, view, 0x07182a, 0.075, guardX, guardY, guardRadius);
+    }
+
+    if (brineMid || midnightLower || ruinLower) {
+      const broadCount = brineMid ? 12 : ruinLower ? 10 : 8;
+      for (let i = 0; i < broadCount; i += 1) {
+        const roll = hash(i + 271, profile.biome * 47 + profile.activeBand.startDepth, rng.seed + 2381);
+        const yT = Phaser.Math.Wrap(roll + time * (brineMid ? 0.011 : midnightLower ? 0.004 : 0.005) * (i % 2 === 0 ? 1 : -0.68) + camera.scrollY * 0.00008, 0, 1);
+        const y = view.y + yT * view.height;
+        const width = Phaser.Math.Linear(
+          brineMid ? 32 : midnightLower ? 28 : 38,
+          brineMid ? 104 : midnightLower ? 76 : 132,
+          hash(i + 283, profile.activeBand.endDepth, rng.seed + 2387),
+        );
+        const alpha = veil.alpha * Phaser.Math.Linear(0.42, brineMid ? 1.24 : ruinLower ? 1.02 : 0.94, hash(i + 293, profile.biome, rng.seed + 2393));
+        const color = brineMid
+          ? (i % 2 === 0 ? 0x6fa491 : 0x244e45)
+          : midnightLower
+            ? (i % 2 === 0 ? 0x4c6d90 : 0x1d344f)
+            : (i % 2 === 0 ? 0x8fb1c5 : 0x27485c);
+        drawGuardedHorizontalBand(scene.lampGloom, view, y, width, color, alpha, guardX, guardY, guardRadius);
       }
     }
 
-    for (const prop of this.environmentProps) {
-      if (prop.x < view.x - 80 || prop.x > view.right + 80 || prop.y < view.y - 80 || prop.y > view.bottom + 80) continue;
-      const distance = Phaser.Math.Distance.Between(cx, cy, prop.x, prop.y);
-      if (distance > radius + 80) continue;
-      const seed = hash(Math.round(prop.x), Math.round(prop.y), rng.seed + state.biome * 2111);
-      if (seed < 0.72) continue;
-      const pulse = 0.55 + Math.sin(this.time.now * 0.0018 + seed * 9) * 0.2;
-      this.lampGloom.lineStyle(1, profile.accent, profile.propAlpha * pulse);
-      this.lampGloom.strokeEllipse(prop.x, prop.y, Math.min(prop.width * 0.72, 52), Math.min(prop.height * 0.38, 24));
+    for (let i = 0; i < veil.bandCount; i += 1) {
+      const roll = hash(i + 307, profile.biome * 37 + profile.activeBand.startDepth, rng.seed + 2411);
+      const yT = Phaser.Math.Wrap(roll + time * 0.006 * (i % 2 === 0 ? 1 : -0.7) + camera.scrollY * 0.00006, 0, 1);
+      const y = view.y + yT * view.height;
+      const width = Phaser.Math.Linear(
+        brineMid ? 10 : ruinLower ? 14 : midnightLower ? 7 : 2,
+        brineMid ? 34 : ruinLower ? 42 : midnightLower ? 20 : 5,
+        hash(i + 331, profile.activeBand.endDepth, rng.seed + 2423),
+      );
+      const alpha = veil.alpha * Phaser.Math.Linear(0.38, brineMid ? 1.12 : ruinLower ? 0.95 : midnightLower ? 0.92 : 1, hash(i + 347, profile.biome, rng.seed + 2437));
+      drawGuardedHorizontalBand(scene.lampGloom, view, y, width, veil.color, alpha, guardX, guardY, guardRadius);
+    }
+
+    for (let i = 0; i < veil.particleCount; i += 1) {
+      const xRoll = hash(i + 373, profile.biome * 41 + profile.activeBand.endDepth, rng.seed + 2459);
+      const yRoll = hash(i + 397, profile.biome * 43 + profile.activeBand.startDepth, rng.seed + 2467);
+      const x = view.x + Phaser.Math.Wrap(xRoll + time * veil.driftX * 0.0008, 0, 1) * view.width;
+      const y = view.y + Phaser.Math.Wrap(yRoll + time * veil.driftY * 0.003, 0, 1) * view.height;
+      const dx = x - guardX;
+      const dy = y - guardY;
+      if (dx * dx + dy * dy < guardRadius * guardRadius) continue;
+      const radius = Phaser.Math.Linear(0.55, brineMid ? 1.85 : ruinLower ? 1.55 : midnightLower ? 1.25 : 1.15, hash(i + 419, profile.biome, rng.seed + 2473));
+      const alpha = veil.particleAlpha * Phaser.Math.Linear(0.35, 1, hash(i + 431, profile.activeBand.startDepth, rng.seed + 2477));
+      scene.lampGloom.fillStyle(veil.color, alpha);
+      scene.lampGloom.fillCircle(x, y, radius);
     }
   }
 
-function biomeVisibilityProfile() {
-    if (state.biome === 2) {
-      return {
-        ambientBase: 0.026,
-        ambientScale: 0.11,
-        ambientMax: 0.13,
-        silhouetteReach: 152,
-        silhouette: 0x8a6f58,
-        accent: 0xff9f52,
-        accentAlpha: 0.06,
-        accentThreshold: 0.958,
-        propAlpha: 0.055,
-      };
-    }
-    if (state.biome === 3) {
-      return {
-        ambientBase: 0.02,
-        ambientScale: 0.095,
-        ambientMax: 0.115,
-        silhouetteReach: 136,
-        silhouette: 0x7668a8,
-        accent: 0xa981ff,
-        accentAlpha: 0.052,
-        accentThreshold: 0.964,
-        propAlpha: 0.048,
-      };
-    }
-    return {
-      ambientBase: 0.016,
-      ambientScale: 0.082,
-      ambientMax: 0.098,
-      silhouetteReach: 122,
-      silhouette: 0x7895b8,
-      accent: 0x9ec7ff,
-      accentAlpha: 0.044,
-      accentThreshold: 0.97,
-      propAlpha: 0.041,
-    };
+export function drawBiomeVisibilityCues(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+    void camera;
   }
 
 export function lampIntervalsAtY(this: DeepdiveScene, 
@@ -4015,12 +4268,30 @@ export function drawLooseItems(this: DeepdiveScene, camera: Phaser.Cameras.Scene
         }
         continue;
       }
-      const alpha = item.value > 0 ? 0.95 : Phaser.Math.Clamp(item.life / 4, 0, 0.46);
+      if (item.value > 0) {
+        const bob = Math.sin(this.time.now * 0.006 + (item.phase ?? 0)) * 1.2;
+        const pulse = 0.72 + Math.sin(this.time.now * 0.01 + (item.phase ?? 0)) * 0.18;
+        const x = item.x;
+        const y = item.y + bob;
+        const r = item.radius;
+        this.actors.fillStyle(0x02070a, 0.42);
+        this.actors.fillCircle(x, y + r * 0.38, r * 1.16);
+        this.actors.fillStyle(item.color, 0.12 + pulse * 0.08);
+        this.actors.fillCircle(x, y, r * 2.15);
+        this.actors.lineStyle(1.4, 0xfff7df, 0.5 + pulse * 0.18);
+        this.actors.strokeCircle(x, y, r + 3);
+        this.actors.fillStyle(item.color, 0.96);
+        this.actors.fillTriangle(x, y - r, x + r * 0.88, y - r * 0.05, x, y + r * 0.95);
+        this.actors.fillStyle(0x061016, 0.42);
+        this.actors.fillTriangle(x, y + r * 0.95, x - r * 0.9, y + r * 0.04, x, y - r);
+        this.actors.lineStyle(1, 0xfff7df, 0.6);
+        this.actors.lineBetween(x - r * 0.12, y - r * 0.72, x + r * 0.54, y - r * 0.08);
+        this.actors.lineStyle(1, 0x02070a, 0.45);
+        this.actors.strokeCircle(x, y, r * 0.96);
+        continue;
+      }
+      const alpha = Phaser.Math.Clamp(item.life / 4, 0, 0.46);
       this.actors.fillStyle(item.color, alpha);
       this.actors.fillCircle(item.x, item.y, item.radius);
-      if (item.value > 0) {
-        this.actors.lineStyle(1, 0xfff7df, 0.55);
-        this.actors.strokeCircle(item.x, item.y, item.radius + 2);
-      }
     }
   }

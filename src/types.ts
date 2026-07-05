@@ -20,6 +20,10 @@ export type Tile =
 export type UpgradeId = 'oxygen' | 'cargo' | 'laser' | 'lamp' | 'scanner' | 'suit' | 'speed' | 'thermal';
 export type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
 export type Biome = 1 | 2 | 3 | 4;
+export type EnvironmentDepthBand = 'surface' | 'upper' | 'mid' | 'lower' | 'transitionDeep';
+export type EnvironmentBackgroundRepeatMode = 'repeatXY' | 'repeatXClampY' | 'bandClampY' | 'worldSpaceNoise' | 'anchor';
+export type EnvironmentPainterlyBackgroundRole = 'bandPlate' | 'landmark' | 'textureMask' | 'moodReference';
+export type EnvironmentReadabilityRisk = 'low' | 'medium' | 'high';
 export type BargeTab = 'services' | 'items' | 'upgrades' | 'subs' | 'quests';
 export type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 export type ArticulatedCreatureState = 'patrol' | 'stalk' | 'lunge' | 'grab' | 'recover';
@@ -49,11 +53,16 @@ export type PlaytestCommand =
   | 'buySub'
   | 'refill'
   | 'teleportDepth'
+  | 'teleportToReachableDepth'
+  | 'centerCameraOnPlayer'
+  | 'clearProofOverlays'
   | 'teleportToFlora'
   | 'terrainReview'
   | 'terrainLookReview'
   | 'terrainMiningReview'
+  | 'miningPolishReview'
   | 'oreDepositReview'
+  | 'backgroundReview'
   | 'lightingVisibilityReview'
   | 'terrainMineAt'
   | 'perfGuardrailReview'
@@ -717,6 +726,12 @@ export interface LooseItem {
   utility?: ThrownUtility;
   landed?: boolean;
   fuse?: number;
+  exposed?: boolean;
+  pickupDelay?: number;
+  collected?: boolean;
+  phase?: number;
+  sourceTileX?: number;
+  sourceTileY?: number;
 }
 
 export interface FloatingText {
