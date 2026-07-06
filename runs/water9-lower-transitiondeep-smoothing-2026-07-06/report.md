@@ -105,7 +105,7 @@ for p in $(seq 5180 5199); do ss -ltn "sport = :$p"; done
 
 ## Commit
 
-Commit hash: 0ef046b
+Commit hash: b235a50 (implementation/proof commit; this report hash line was finalized in a follow-up report-only commit)
 
 ## Caveats/blockers
 
