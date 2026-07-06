@@ -834,6 +834,174 @@ function stageMiningPolishReview(scene: DeepdiveScene, stage: MiningPolishReview
   };
 }
 
+type LooseCollectibleSummary = {
+  total: number;
+  byKind: Record<string, number>;
+  byId: Record<string, number>;
+  byValue: Record<string, number>;
+  items: Array<{
+    id: string;
+    kind: string;
+    value: number;
+    sourceTileX: number | null;
+    sourceTileY: number | null;
+  }>;
+};
+
+function looseCollectibleSummary(scene: DeepdiveScene): LooseCollectibleSummary {
+  const items = scene.looseItems
+    .filter((item) => !item.collected && (item.kind === 'ore' || item.kind === 'artifact'))
+    .map((item) => ({
+      id: item.id,
+      kind: item.kind,
+      value: item.value,
+      sourceTileX: item.sourceTileX ?? null,
+      sourceTileY: item.sourceTileY ?? null,
+    }));
+  const increment = (bucket: Record<string, number>, key: string) => {
+    bucket[key] = (bucket[key] ?? 0) + 1;
+  };
+  const byKind: Record<string, number> = {};
+  const byId: Record<string, number> = {};
+  const byValue: Record<string, number> = {};
+  for (const item of items) {
+    increment(byKind, item.kind);
+    increment(byId, item.id);
+    increment(byValue, String(item.value));
+  }
+  return { total: items.length, byKind, byId, byValue, items };
+}
+
+function stageStrayOreDropCase(scene: DeepdiveScene, targetTile: Tile, repeats: number) {
+  if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
+    scene.generateWorld();
+    scene.worldReady = true;
+  }
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const centerY = Math.floor((SURFACE_Y + 520) / TILE);
+  const targetX = centerX + 4;
+  const targetY = centerY;
+  const left = centerX - 8;
+  const right = centerX + 12;
+  const top = centerY - 7;
+  const bottom = centerY + 7;
+  const actualOreTarget = isOreTile(targetTile);
+  const wallStartX = targetX;
+  for (let y = top; y <= bottom; y += 1) {
+    for (let x = left; x <= right; x += 1) {
+      const wall = x >= wallStartX && x <= targetX + 6 && y >= targetY - 4 && y <= targetY + 4;
+      scene.setTile(x, y, wall ? 'stone' : 'water');
+      if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+    }
+  }
+  const nearbyOre: Array<[number, number, Tile]> = actualOreTarget
+    ? [
+        [targetX, targetY - 1, 'quartz'],
+        [targetX, targetY + 1, 'ruby'],
+        [targetX + 1, targetY - 2, 'cobalt'],
+      ]
+    : [
+        [targetX, targetY - 1, 'copper'],
+        [targetX, targetY + 1, 'quartz'],
+        [targetX + 1, targetY - 2, 'ruby'],
+      ];
+  for (const [x, y, tile] of nearbyOre) scene.setTile(x, y, tile);
+  scene.setTile(targetX, targetY, targetTile);
+  if (actualOreTarget && scene.damage[targetY]?.[targetX] !== undefined) {
+    scene.damage[targetY][targetX] = tiles[targetTile].hp * 0.68;
+  }
+  rebuildTerrainMask(scene);
+
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.radioOpen = false;
+  state.logbookOpen = false;
+  state.cargoOpen = true;
+  state.activeSub = null;
+  state.pilotingSub = false;
+  state.depth = Math.max(0, Math.round((targetY * TILE - SURFACE_Y) / 6));
+  state.fuel = fuelMax();
+  state.oxygen = oxygenMax();
+  state.cargo = [];
+  state.selectedCargoIndex = 0;
+  state.upgrades.laser = Math.max(state.upgrades.laser, 5);
+  scene.player.x = targetX * TILE - 20;
+  scene.player.y = targetY * TILE + TILE * 0.5;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.mineCooldown = 0;
+  scene.player.facing.set(1, 0);
+  scene.player.facingSign = 1;
+  scene.fish = [];
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  scene.bobbits = [];
+  scene.hazards = [];
+  scene.larvae = [];
+  scene.nestEggs = [];
+  scene.looseItems = [];
+  scene.environmentProps = [];
+  scene.terrainBreakEffects = [];
+  scene.lastMiningFeedbackAt = 0;
+  clearPlaytestFloatingText(scene);
+  scene.terrainBoundsKey = '';
+  scene.terrainDirty = true;
+  scene.cameras.main.setZoom(3);
+  scene.cameras.main.centerOn(targetX * TILE - 6, targetY * TILE + TILE * 0.5);
+  refreshPlaytestCamera(scene);
+
+  const before = looseCollectibleSummary(scene);
+  const worldX = targetX * TILE + TILE * 0.5;
+  const worldY = targetY * TILE + TILE * 0.5;
+  const probeTargets = scene.mineTargets(targetX, targetY, worldX, worldY).map((target) => ({
+    ...target,
+    tile: scene.getTile(target.x, target.y),
+  }));
+  const centerSx = Math.floor((worldX / TILE) * TERRAIN_MASK_RES);
+  const centerSy = Math.floor((worldY / TILE) * TERRAIN_MASK_RES);
+  const probe = {
+    tileAtTarget: scene.getTile(targetX, targetY),
+    centerMaskDensity: terrainMaskDensityAt(scene, centerSx, centerSy),
+    mineTargets: probeTargets,
+  };
+  for (let i = 0; i < repeats; i += 1) {
+    scene.player.mineCooldown = 0;
+    scene.mineAt(worldX, worldY);
+  }
+  scene.draw();
+  const after = looseCollectibleSummary(scene);
+  return {
+    target: {
+      tileX: targetX,
+      tileY: targetY,
+      requestedTile: targetTile,
+      currentTile: scene.getTile(targetX, targetY),
+      worldX,
+      worldY,
+    },
+    nearbyOre: nearbyOre.map(([x, y, tile]) => ({ x, y, tile, currentTile: scene.getTile(x, y) })),
+    repeats,
+    probe,
+    targetDamage: scene.damage[targetY]?.[targetX] ?? null,
+    fuelAfter: state.fuel,
+    before,
+    after,
+    status: state.status,
+  };
+}
+
+function stageStrayOreDropReview(scene: DeepdiveScene) {
+  const plainStone = stageStrayOreDropCase(scene, 'stone', 1);
+  const plainSand = stageStrayOreDropCase(scene, 'sand', 1);
+  const actualOre = stageStrayOreDropCase(scene, 'copper', 1);
+  renderHud();
+  return { plainStone, plainSand, actualOre };
+}
+
 function stageOreDepositReview(scene: DeepdiveScene, focusTile: Tile = 'sunstone', focusCamera = false, shapeFirstSlice = false, shapeFirstGroup = -1, shapeFirstCameraOffsetY = 0) {
   if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
     scene.generateWorld();
@@ -2276,6 +2444,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       return stageBackgroundReview(this, value);
     } else if (command === 'lightingVisibilityReview') {
       return stageLightingVisibilityReview(this);
+    } else if (command === 'strayOreDropReview') {
+      return stageStrayOreDropReview(this);
 	    } else if (command === 'terrainMineAt') {
 	      const payload = typeof value === 'object' && value !== null ? value as { worldX?: number; worldY?: number; repeats?: number } : {};
 	      const repeats = Phaser.Math.Clamp(Math.floor(Number(payload.repeats) || 1), 1, 12);

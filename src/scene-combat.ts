@@ -12,6 +12,7 @@ import { subtractTerrainMaskBrush,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_M
 const TERRAIN_BREAK_EFFECT_CAP = 72;
 const OPENED_ORE_CORE_RELEASE_RATIO = 0.56;
 const OPENED_ORE_SOLID_RELEASE_RATIO = 0.34;
+const OPENED_ORE_DAMAGE_RELEASE_RATIO = 0.7;
 
 export function mineFromSub(this: DeepdiveScene, sub: SubVehicle) {
     if (sub.tier < 2) {
@@ -69,7 +70,8 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     if (this.cutLifeTarget(worldX, worldY, sub)) return;
     const impact = miningTunnelTarget(this, angle, range);
     if (!impact) return;
-    const targets = this.mineTargets(impact.tx, impact.ty, impact.x, impact.y);
+    const aimedTile = this.getTile(Math.floor(worldX / TILE), Math.floor(worldY / TILE));
+    const targets = this.mineTargets(impact.tx, impact.ty, impact.x, impact.y, !tiles[aimedTile].solid || isOreTile(aimedTile));
     if (!targets.length) return;
     const fuelReserve = sub ? sub.fuel : state.fuel;
     if (fuelReserve > 0) {
@@ -99,7 +101,7 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
         this.breakTile(target.x, target.y, tile, def, impact.x, impact.y);
       }
     }
-    releaseOpenedOreTiles(this, impact);
+    releaseOpenedOreTiles(this, impact, targets);
     this.terrainDirty = true;
     this.player.mineCooldown = mineCooldown();
     if (sub) sub.oxygen = Math.max(0, sub.oxygen - (0.08 + targets.length * 0.02));
@@ -175,16 +177,25 @@ function carveMiningTunnel(scene: DeepdiveScene, impact: MiningTunnelTarget) {
     }
   }
 
-function releaseOpenedOreTiles(scene: DeepdiveScene, impact: MiningTunnelTarget) {
+function releaseOpenedOreTiles(scene: DeepdiveScene, impact: MiningTunnelTarget, targets: Array<{ x: number; y: number }>) {
+    const minedTiles = new Set(targets.map((target) => `${target.x},${target.y}`));
     for (let y = impact.ty - 3; y <= impact.ty + 3; y += 1) {
       for (let x = impact.tx - 3; x <= impact.tx + 3; x += 1) {
+        if (!minedTiles.has(`${x},${y}`)) continue;
         const tile = scene.getTile(x, y);
         if (!isOreTile(tile)) continue;
         const def = tiles[tile];
         if (!def.solid || def.value <= 0) continue;
         const openCoreRatio = tileMaskOpenCoreRatio(scene, x, y);
         const solidRatio = tileMaskSolidRatio(scene, x, y);
-        if (openCoreRatio < OPENED_ORE_CORE_RELEASE_RATIO && solidRatio > OPENED_ORE_SOLID_RELEASE_RATIO) continue;
+        const damageRatio = Number.isFinite(def.hp) && def.hp > 0
+          ? (scene.damage[y]?.[x] ?? 0) / def.hp
+          : 0;
+        const minedOpenOre = damageRatio >= OPENED_ORE_DAMAGE_RELEASE_RATIO;
+        if (!minedOpenOre && openCoreRatio < OPENED_ORE_CORE_RELEASE_RATIO && solidRatio > OPENED_ORE_SOLID_RELEASE_RATIO) continue;
+        if (minedOpenOre && openCoreRatio < OPENED_ORE_CORE_RELEASE_RATIO && solidRatio > OPENED_ORE_SOLID_RELEASE_RATIO) {
+          clearTerrainMaskTile(scene, x, y);
+        }
         scene.breakTile(x, y, tile, def, impact.x, impact.y);
       }
     }
@@ -348,10 +359,10 @@ export function nearestNestCutTarget(this: DeepdiveScene, worldX: number, worldY
     return nearest?.target ?? null;
   }
 
-export function mineTargets(this: DeepdiveScene, tx: number, ty: number, impactX = tx * TILE + TILE * 0.5, impactY = ty * TILE + TILE * 0.5) {
+export function mineTargets(this: DeepdiveScene, tx: number, ty: number, impactX = tx * TILE + TILE * 0.5, impactY = ty * TILE + TILE * 0.5, allowVisibleOreTarget = true) {
     const maxBlocks = 1;
     const radius = maxBlocks > 1 ? 1 : 0;
-    const oreTarget = visibleOreTargetNear(this, tx, ty, impactX, impactY);
+    const oreTarget = allowVisibleOreTarget ? visibleOreTargetNear(this, tx, ty, impactX, impactY) : null;
     if (oreTarget) return [oreTarget];
     const targets: Array<{ x: number; y: number; distance: number }> = [];
     for (let y = ty - radius; y <= ty + radius; y += 1) {

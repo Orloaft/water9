@@ -64,6 +64,7 @@ export type PlaytestCommand =
   | 'oreDepositReview'
   | 'backgroundReview'
   | 'lightingVisibilityReview'
+  | 'strayOreDropReview'
   | 'terrainMineAt'
   | 'perfGuardrailReview'
   | 'biomeLoadingReview'
