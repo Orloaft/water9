@@ -163,6 +163,7 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
         from: profile.activeBandBlend.from,
         to: profile.activeBandBlend.to,
         progress: roundMetric(profile.activeBandBlend.progress),
+        lowerToTransitionDeep: profile.activeBandBlend.from === 'lower' && profile.activeBandBlend.to === 'transitionDeep',
       },
       cameraClearColor: profile.cameraClearColor,
     },
@@ -324,6 +325,10 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
       repeatMode: profile.background.anchors.repeatMode,
       profileCount: profile.background.anchors.count,
       visibleCount: anchors.length,
+      transitionBlendCounts: {
+        outgoingLower: anchors.filter((anchor) => anchor.transitionBlendRole === 'outgoingLower').length,
+        incomingTransition: anchors.filter((anchor) => anchor.transitionBlendRole === 'incomingTransition').length,
+      },
       assets: profile.background.anchors.assets.map((asset) => ({
         id: asset.id,
         label: asset.label,
@@ -353,6 +358,8 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
         assetId: anchor.assetId ?? null,
         assetStatus: anchor.assetStatus ?? null,
         textureKey: anchor.textureKey ?? null,
+        transitionBlendRole: anchor.transitionBlendRole ?? null,
+        transitionBlendAlpha: anchor.transitionBlendAlpha !== undefined ? roundMetric(anchor.transitionBlendAlpha) : null,
       })),
     },
     renderedBitmapAnchors: renderedBackgroundAnchorSprites(scene),

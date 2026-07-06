@@ -1,0 +1,4274 @@
+{
+  "generatedAt": "2026-07-06T14:27:09.615Z",
+  "baseUrl": "http://localhost:5180/",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "blendWindow": {
+    "startDepth": 1360,
+    "cutoffDepth": 1440,
+    "endDepth": 1520,
+    "incomingTransitionAnchorCapDuringBlend": 2
+  },
+  "captures": [
+    {
+      "label": "b2-1340m-lower-before-blend",
+      "biome": 2,
+      "biomeLabel": "B2 Brine",
+      "depth": 1340,
+      "depthKey": "lower-before-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1340m-lower-before-blend-canvas-color.png",
+      "colorBytes": 436588,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1340m-lower-before-blend-canvas-grayscale.png",
+      "grayscaleBytes": 294561,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 14.356,
+        "lumaRange": 171.715
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-lower",
+        "biome": 2,
+        "depthBand": "lower",
+        "activeBand": "lower",
+        "activeBandBlend": {
+          "from": "mid",
+          "to": "lower",
+          "progress": 1,
+          "lowerToTransitionDeep": false
+        },
+        "cameraClearColor": "#110f18"
+      },
+      "activeBand": {
+        "id": "lower",
+        "topColor": "#082d49",
+        "bottomColor": "#061d36",
+        "hazeColor": "#668ea8",
+        "hazeAlpha": 0.085,
+        "sedimentAlpha": 0.055,
+        "causticAlpha": 0.015,
+        "silhouetteAlpha": 0.078,
+        "anchorDensity": 0.76
+      },
+      "anchors": {
+        "profileCount": 1,
+        "visibleCount": 1,
+        "transitionBlendCounts": {
+          "outgoingLower": 0,
+          "incomingTransition": 0
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-brine-vent-sulfide-shelf"
+        ],
+        "outgoingLowerAssetIds": [],
+        "incomingTransitionAssetIds": [],
+        "incomingTransitionCount": 0,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-brine-shelf-gpt"
+        ],
+        "items": [
+          {
+            "id": "lower-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.434,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 658.859,
+            "y": 1827.702,
+            "width": 576.415,
+            "height": 149.718,
+            "parallaxFactor": 0.107
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-brine-shelf-gpt",
+            "sourceDimensions": {
+              "width": 960,
+              "height": 520
+            },
+            "x": 1201.803,
+            "y": 8117.07,
+            "width": 576.415,
+            "height": 149.718,
+            "alpha": 0.434,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 913.596,
+              "y": 8042.211,
+              "width": 576.415,
+              "height": 149.718
+            },
+            "screenBounds": {
+              "x": 305.596,
+              "y": 306.211,
+              "width": 576.415,
+              "height": 149.718
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.01,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.009,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.023,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.113,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.01,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.32,
+        "maskOpacity": 0.82
+      },
+      "overlay": {
+        "alpha": 0.09,
+        "color": "#668ea8",
+        "density": 0.617,
+        "drift": 7,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.002,
+        "layers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.002,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.001,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.001,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#668ea8",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b2-1380m-blend-entry",
+      "biome": 2,
+      "biomeLabel": "B2 Brine",
+      "depth": 1380,
+      "depthKey": "blend-entry",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1380m-blend-entry-canvas-color.png",
+      "colorBytes": 482760,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1380m-blend-entry-canvas-grayscale.png",
+      "grayscaleBytes": 308678,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 13.069,
+        "lumaRange": 171.928
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-lower",
+        "biome": 2,
+        "depthBand": "lower",
+        "activeBand": "lower",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.043,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#110f18"
+      },
+      "activeBand": {
+        "id": "lower",
+        "topColor": "#092f4b",
+        "bottomColor": "#071e37",
+        "hazeColor": "#6991aa",
+        "hazeAlpha": 0.082,
+        "sedimentAlpha": 0.053,
+        "causticAlpha": 0.015,
+        "silhouetteAlpha": 0.082,
+        "anchorDensity": 0.765
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-brine-vent-sulfide-shelf",
+          "phase11-transition-near-pipe-cable-cathedral"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-brine-vent-sulfide-shelf"
+        ],
+        "incomingTransitionAssetIds": [
+          "phase11-transition-near-pipe-cable-cathedral"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-brine-shelf-gpt",
+          "water9-phase11-transition-near-pipe-cable-cathedral-gpt"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.416,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.957,
+            "x": 658.859,
+            "y": 1872.582,
+            "width": 576.415,
+            "height": 149.718,
+            "parallaxFactor": 0.107
+          },
+          {
+            "id": "transitionDeep--1-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.037,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.043,
+            "x": 1030.555,
+            "y": 2667.462,
+            "width": 1501.405,
+            "height": 547.213,
+            "parallaxFactor": 0.176
+          },
+          {
+            "id": "transitionDeep-0-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.038,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.043,
+            "x": 778.488,
+            "y": 2617.808,
+            "width": 1627.604,
+            "height": 477.271,
+            "parallaxFactor": 0.176
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-brine-shelf-gpt",
+            "sourceDimensions": {
+              "width": 960,
+              "height": 520
+            },
+            "x": 1201.803,
+            "y": 8357.07,
+            "width": 576.415,
+            "height": 149.718,
+            "alpha": 0.416,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 913.596,
+              "y": 8282.211,
+              "width": 576.415,
+              "height": 149.718
+            },
+            "screenBounds": {
+              "x": 305.596,
+              "y": 306.211,
+              "width": 576.415,
+              "height": 149.718
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1531.547,
+            "y": 8601.606,
+            "width": 1501.405,
+            "height": 547.213,
+            "alpha": 0.037,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 780.845,
+              "y": 8328,
+              "width": 1501.405,
+              "height": 547.213
+            },
+            "screenBounds": {
+              "x": 172.845,
+              "y": 352,
+              "width": 1501.405,
+              "height": 547.213
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1279.48,
+            "y": 8551.952,
+            "width": 1627.604,
+            "height": 477.271,
+            "alpha": 0.038,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 465.679,
+              "y": 8313.316,
+              "width": 1627.604,
+              "height": 477.271
+            },
+            "screenBounds": {
+              "x": -142.321,
+              "y": 337.316,
+              "width": 1627.604,
+              "height": 477.271
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.011,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.009,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.024,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.116,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.013,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.309,
+        "maskOpacity": 0.793
+      },
+      "overlay": {
+        "alpha": 0.088,
+        "color": "#6991aa",
+        "density": 0.603,
+        "drift": 7,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.002,
+        "layers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.002,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.001,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.001,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#6991aa",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b2-1440m-cutoff-mid-blend",
+      "biome": 2,
+      "biomeLabel": "B2 Brine",
+      "depth": 1440,
+      "depthKey": "cutoff-mid-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1440m-cutoff-mid-blend-canvas-color.png",
+      "colorBytes": 437980,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1440m-cutoff-mid-blend-canvas-grayscale.png",
+      "grayscaleBytes": 288661,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 14.201,
+        "lumaRange": 171.928
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 2,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.5,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#110f18"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#13405e",
+        "bottomColor": "#0d2742",
+        "hazeColor": "#87afc5",
+        "hazeAlpha": 0.056,
+        "sedimentAlpha": 0.034,
+        "causticAlpha": 0.01,
+        "silhouetteAlpha": 0.122,
+        "anchorDensity": 0.82
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-brine-vent-sulfide-shelf",
+          "phase11-transition-near-pipe-cable-cathedral"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-brine-vent-sulfide-shelf"
+        ],
+        "incomingTransitionAssetIds": [
+          "phase11-transition-near-pipe-cable-cathedral"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-brine-shelf-gpt",
+          "water9-phase11-transition-near-pipe-cable-cathedral-gpt"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.217,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.5,
+            "x": 658.859,
+            "y": 1939.902,
+            "width": 576.415,
+            "height": 149.718,
+            "parallaxFactor": 0.107
+          },
+          {
+            "id": "transitionDeep--1-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.436,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.5,
+            "x": 1030.555,
+            "y": 2759.622,
+            "width": 1501.405,
+            "height": 547.213,
+            "parallaxFactor": 0.176
+          },
+          {
+            "id": "transitionDeep-0-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.442,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.5,
+            "x": 778.488,
+            "y": 2709.968,
+            "width": 1627.604,
+            "height": 477.271,
+            "parallaxFactor": 0.176
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-brine-shelf-gpt",
+            "sourceDimensions": {
+              "width": 960,
+              "height": 520
+            },
+            "x": 1201.803,
+            "y": 8717.07,
+            "width": 576.415,
+            "height": 149.718,
+            "alpha": 0.217,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 913.596,
+              "y": 8642.211,
+              "width": 576.415,
+              "height": 149.718
+            },
+            "screenBounds": {
+              "x": 305.596,
+              "y": 306.211,
+              "width": 576.415,
+              "height": 149.718
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1531.547,
+            "y": 8961.606,
+            "width": 1501.405,
+            "height": 547.213,
+            "alpha": 0.436,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 780.845,
+              "y": 8688,
+              "width": 1501.405,
+              "height": 547.213
+            },
+            "screenBounds": {
+              "x": 172.845,
+              "y": 352,
+              "width": 1501.405,
+              "height": 547.213
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1279.48,
+            "y": 8911.952,
+            "width": 1627.604,
+            "height": 477.271,
+            "alpha": 0.442,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 465.679,
+              "y": 8673.316,
+              "width": 1627.604,
+              "height": 477.271
+            },
+            "screenBounds": {
+              "x": -142.321,
+              "y": 337.316,
+              "width": 1627.604,
+              "height": 477.271
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.025,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.022,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.039,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.179,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.098,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.192,
+        "maskOpacity": 0.508
+      },
+      "overlay": {
+        "alpha": 0.055,
+        "color": "#87afc5",
+        "density": 0.414,
+        "drift": 7,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.005,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.005,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.004,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.002,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#87afc5",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b2-1500m-transition-late-blend",
+      "biome": 2,
+      "biomeLabel": "B2 Brine",
+      "depth": 1500,
+      "depthKey": "transition-late-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1500m-transition-late-blend-canvas-color.png",
+      "colorBytes": 438540,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1500m-transition-late-blend-canvas-grayscale.png",
+      "grayscaleBytes": 292045,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 14.195,
+        "lumaRange": 173
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 2,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.957,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#110f18"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#1d5070",
+        "bottomColor": "#12304d",
+        "hazeColor": "#a5cce0",
+        "hazeAlpha": 0.029,
+        "sedimentAlpha": 0.014,
+        "causticAlpha": 0.006,
+        "silhouetteAlpha": 0.161,
+        "anchorDensity": 0.875
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-brine-vent-sulfide-shelf",
+          "phase11-transition-near-pipe-cable-cathedral"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-brine-vent-sulfide-shelf"
+        ],
+        "incomingTransitionAssetIds": [
+          "phase11-transition-near-pipe-cable-cathedral"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-brine-shelf-gpt",
+          "water9-phase11-transition-near-pipe-cable-cathedral-gpt"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.019,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.043,
+            "x": 658.859,
+            "y": 2007.222,
+            "width": 576.415,
+            "height": 149.718,
+            "parallaxFactor": 0.107
+          },
+          {
+            "id": "transitionDeep--1-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.834,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.957,
+            "x": 1030.555,
+            "y": 2851.782,
+            "width": 1501.405,
+            "height": 547.213,
+            "parallaxFactor": 0.176
+          },
+          {
+            "id": "transitionDeep-0-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.846,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.957,
+            "x": 778.488,
+            "y": 2802.128,
+            "width": 1627.604,
+            "height": 477.271,
+            "parallaxFactor": 0.176
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-brine-shelf-gpt",
+            "sourceDimensions": {
+              "width": 960,
+              "height": 520
+            },
+            "x": 1201.803,
+            "y": 9077.07,
+            "width": 576.415,
+            "height": 149.718,
+            "alpha": 0.019,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 913.596,
+              "y": 9002.211,
+              "width": 576.415,
+              "height": 149.718
+            },
+            "screenBounds": {
+              "x": 305.596,
+              "y": 306.211,
+              "width": 576.415,
+              "height": 149.718
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1531.547,
+            "y": 9321.606,
+            "width": 1501.405,
+            "height": 547.213,
+            "alpha": 0.834,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 780.845,
+              "y": 9048,
+              "width": 1501.405,
+              "height": 547.213
+            },
+            "screenBounds": {
+              "x": 172.845,
+              "y": 352,
+              "width": 1501.405,
+              "height": 547.213
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1279.48,
+            "y": 9271.952,
+            "width": 1627.604,
+            "height": 477.271,
+            "alpha": 0.846,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 465.679,
+              "y": 9033.316,
+              "width": 1627.604,
+              "height": 477.271
+            },
+            "screenBounds": {
+              "x": -142.321,
+              "y": 337.316,
+              "width": 1627.604,
+              "height": 477.271
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.032,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.028,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.027,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.101,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.233,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.075,
+        "maskOpacity": 0.224
+      },
+      "overlay": {
+        "alpha": 0.02,
+        "color": "#a5cce0",
+        "density": 0.223,
+        "drift": 7,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.002,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.002,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.002,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.001,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#a5cce0",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b2-1560m-transition-after-blend",
+      "biome": 2,
+      "biomeLabel": "B2 Brine",
+      "depth": 1560,
+      "depthKey": "transition-after-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1560m-transition-after-blend-canvas-color.png",
+      "colorBytes": 439098,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b2-1560m-transition-after-blend-canvas-grayscale.png",
+      "grayscaleBytes": 292269,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 14.216,
+        "lumaRange": 172.856
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 2,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 1,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#110f18"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#1e5272",
+        "bottomColor": "#13314e",
+        "hazeColor": "#a8cfe2",
+        "hazeAlpha": 0.026,
+        "sedimentAlpha": 0.012,
+        "causticAlpha": 0.006,
+        "silhouetteAlpha": 0.165,
+        "anchorDensity": 0.88
+      },
+      "anchors": {
+        "profileCount": 8,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 0,
+          "incomingTransition": 0
+        },
+        "visibleLandmarkAssetIds": [
+          "phase11-transition-near-pipe-cable-cathedral"
+        ],
+        "outgoingLowerAssetIds": [],
+        "incomingTransitionAssetIds": [],
+        "incomingTransitionCount": 0,
+        "renderedBitmapAssetIds": [
+          "water9-phase11-transition-near-pipe-cable-cathedral-gpt"
+        ],
+        "items": [
+          {
+            "id": "transitionDeep--1",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.871,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 1030.555,
+            "y": 2943.942,
+            "width": 1501.405,
+            "height": 547.213,
+            "parallaxFactor": 0.176
+          },
+          {
+            "id": "transitionDeep-0",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.884,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 778.488,
+            "y": 2894.288,
+            "width": 1627.604,
+            "height": 477.271,
+            "parallaxFactor": 0.176
+          },
+          {
+            "id": "transitionDeep-4",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 1.036,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 1071.079,
+            "y": 2812.258,
+            "width": 1765.858,
+            "height": 570.747,
+            "parallaxFactor": 0.176
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1531.547,
+            "y": 9681.606,
+            "width": 1501.405,
+            "height": 547.213,
+            "alpha": 0.871,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 780.845,
+              "y": 9408,
+              "width": 1501.405,
+              "height": 547.213
+            },
+            "screenBounds": {
+              "x": 172.845,
+              "y": 352,
+              "width": 1501.405,
+              "height": 547.213
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1279.48,
+            "y": 9631.952,
+            "width": 1627.604,
+            "height": 477.271,
+            "alpha": 0.884,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 465.679,
+              "y": 9393.316,
+              "width": 1627.604,
+              "height": 477.271
+            },
+            "screenBounds": {
+              "x": -142.321,
+              "y": 337.316,
+              "width": 1627.604,
+              "height": 477.271
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-transition-near-pipe-cable-cathedral-gpt",
+            "sourceDimensions": {
+              "width": 1445,
+              "height": 1024
+            },
+            "x": 1572.071,
+            "y": 9549.922,
+            "width": 1765.858,
+            "height": 570.747,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 689.142,
+              "y": 9264.548,
+              "width": 1765.858,
+              "height": 570.747
+            },
+            "screenBounds": {
+              "x": 81.142,
+              "y": 208.548,
+              "width": 1765.858,
+              "height": 570.747
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.033,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.029,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.025,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.089,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.25,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.064,
+        "maskOpacity": 0.197
+      },
+      "overlay": {
+        "alpha": 0.017,
+        "color": "#a8cfe2",
+        "density": 0.204,
+        "drift": 7,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.002,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.002,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.001,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.001,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#a8cfe2",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b3-1340m-lower-before-blend",
+      "biome": 3,
+      "biomeLabel": "B3 Midnight",
+      "depth": 1340,
+      "depthKey": "lower-before-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1340m-lower-before-blend-canvas-color.png",
+      "colorBytes": 377848,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1340m-lower-before-blend-canvas-grayscale.png",
+      "grayscaleBytes": 218472,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 9.859,
+        "lumaRange": 173
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-lower",
+        "biome": 3,
+        "depthBand": "lower",
+        "activeBand": "lower",
+        "activeBandBlend": {
+          "from": "mid",
+          "to": "lower",
+          "progress": 1,
+          "lowerToTransitionDeep": false
+        },
+        "cameraClearColor": "#090913"
+      },
+      "activeBand": {
+        "id": "lower",
+        "topColor": "#082d49",
+        "bottomColor": "#061d36",
+        "hazeColor": "#668ea8",
+        "hazeAlpha": 0.085,
+        "sedimentAlpha": 0.055,
+        "causticAlpha": 0.015,
+        "silhouetteAlpha": 0.078,
+        "anchorDensity": 0.76
+      },
+      "anchors": {
+        "profileCount": 1,
+        "visibleCount": 1,
+        "transitionBlendCounts": {
+          "outgoingLower": 0,
+          "incomingTransition": 0
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-midnight-black-coral-ribs"
+        ],
+        "outgoingLowerAssetIds": [],
+        "incomingTransitionAssetIds": [],
+        "incomingTransitionCount": 0,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-midnight-black-coral-ribs"
+        ],
+        "items": [
+          {
+            "id": "lower-0",
+            "assetId": "biome-midnight-black-coral-ribs",
+            "alpha": 0.34,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 809.824,
+            "y": 1520.433,
+            "width": 475.779,
+            "height": 321.472,
+            "parallaxFactor": 0.067
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-midnight-black-coral-ribs",
+            "sourceDimensions": {
+              "width": 1495,
+              "height": 998
+            },
+            "x": 1377.015,
+            "y": 8118.312,
+            "width": 475.779,
+            "height": 321.472,
+            "alpha": 0.34,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 1139.125,
+              "y": 7957.576,
+              "width": 475.779,
+              "height": 321.472
+            },
+            "screenBounds": {
+              "x": 531.125,
+              "y": 221.576,
+              "width": 475.779,
+              "height": 321.472
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.01,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.009,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.023,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.113,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.01,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.32,
+        "maskOpacity": 0.82
+      },
+      "overlay": {
+        "alpha": 0.068,
+        "color": "#668ea8",
+        "density": 0.474,
+        "drift": 4.9,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.024,
+        "layers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.024,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.018,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.005,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": true,
+          "layers": [
+            "midnight-cold-water-haze",
+            "sparse-marine-snow"
+          ],
+          "alpha": 0.052,
+          "particleAlpha": 0.014,
+          "color": "#6f8dbb",
+          "blendMode": "normal",
+          "driftX": -2.1,
+          "driftY": 0.1,
+          "guardRadius": 118,
+          "bandCount": 10,
+          "particleCount": 60
+        }
+      }
+    },
+    {
+      "label": "b3-1380m-blend-entry",
+      "biome": 3,
+      "biomeLabel": "B3 Midnight",
+      "depth": 1380,
+      "depthKey": "blend-entry",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1380m-blend-entry-canvas-color.png",
+      "colorBytes": 386245,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1380m-blend-entry-canvas-grayscale.png",
+      "grayscaleBytes": 227332,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 9.731,
+        "lumaRange": 172.704
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-lower",
+        "biome": 3,
+        "depthBand": "lower",
+        "activeBand": "lower",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.043,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#090913"
+      },
+      "activeBand": {
+        "id": "lower",
+        "topColor": "#092f4b",
+        "bottomColor": "#071e37",
+        "hazeColor": "#6991aa",
+        "hazeAlpha": 0.082,
+        "sedimentAlpha": 0.053,
+        "causticAlpha": 0.015,
+        "silhouetteAlpha": 0.082,
+        "anchorDensity": 0.765
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-midnight-black-coral-ribs",
+          "phase11-transition-far-drowned-signal-station"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-midnight-black-coral-ribs"
+        ],
+        "incomingTransitionAssetIds": [
+          "phase11-transition-far-drowned-signal-station"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-midnight-black-coral-ribs",
+          "water9-phase11-transition-far-drowned-signal-station-gpt"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-midnight-black-coral-ribs",
+            "alpha": 0.325,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.957,
+            "x": 809.824,
+            "y": 1555.741,
+            "width": 475.779,
+            "height": 321.472,
+            "parallaxFactor": 0.067
+          },
+          {
+            "id": "transitionDeep--1-incomingTransition",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 0.052,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.043,
+            "x": 358.46,
+            "y": 1295.802,
+            "width": 1215.377,
+            "height": 358.348,
+            "parallaxFactor": 0.055
+          },
+          {
+            "id": "transitionDeep-1-incomingTransition",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 0.045,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.043,
+            "x": 652.46,
+            "y": 1363.498,
+            "width": 1367.75,
+            "height": 354.412,
+            "parallaxFactor": 0.055
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-midnight-black-coral-ribs",
+            "sourceDimensions": {
+              "width": 1495,
+              "height": 998
+            },
+            "x": 1377.015,
+            "y": 8358.312,
+            "width": 475.779,
+            "height": 321.472,
+            "alpha": 0.325,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 1139.125,
+              "y": 8197.576,
+              "width": 475.779,
+              "height": 321.472
+            },
+            "screenBounds": {
+              "x": 531.125,
+              "y": 221.576,
+              "width": 475.779,
+              "height": 321.472
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 933.264,
+            "y": 8198.232,
+            "width": 1215.377,
+            "height": 358.348,
+            "alpha": 0.052,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 325.575,
+              "y": 8019.058,
+              "width": 1215.377,
+              "height": 358.348
+            },
+            "screenBounds": {
+              "x": -282.425,
+              "y": 43.058,
+              "width": 1215.377,
+              "height": 358.348
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 1227.263,
+            "y": 8265.929,
+            "width": 1367.75,
+            "height": 354.412,
+            "alpha": 0.045,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 543.388,
+              "y": 8088.723,
+              "width": 1367.75,
+              "height": 354.412
+            },
+            "screenBounds": {
+              "x": -64.612,
+              "y": 112.723,
+              "width": 1367.75,
+              "height": 354.412
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.011,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.009,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.024,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.116,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.013,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.309,
+        "maskOpacity": 0.793
+      },
+      "overlay": {
+        "alpha": 0.066,
+        "color": "#6991aa",
+        "density": 0.463,
+        "drift": 4.9,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.023,
+        "layers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.023,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.017,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.005,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": true,
+          "layers": [
+            "midnight-cold-water-haze",
+            "sparse-marine-snow"
+          ],
+          "alpha": 0.052,
+          "particleAlpha": 0.014,
+          "color": "#6f8dbb",
+          "blendMode": "normal",
+          "driftX": -2.1,
+          "driftY": 0.1,
+          "guardRadius": 118,
+          "bandCount": 10,
+          "particleCount": 60
+        }
+      }
+    },
+    {
+      "label": "b3-1440m-cutoff-mid-blend",
+      "biome": 3,
+      "biomeLabel": "B3 Midnight",
+      "depth": 1440,
+      "depthKey": "cutoff-mid-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1440m-cutoff-mid-blend-canvas-color.png",
+      "colorBytes": 423805,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1440m-cutoff-mid-blend-canvas-grayscale.png",
+      "grayscaleBytes": 245528,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 8.791,
+        "lumaRange": 172.777
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 3,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.5,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#090913"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#13405e",
+        "bottomColor": "#0d2742",
+        "hazeColor": "#87afc5",
+        "hazeAlpha": 0.056,
+        "sedimentAlpha": 0.034,
+        "causticAlpha": 0.01,
+        "silhouetteAlpha": 0.122,
+        "anchorDensity": 0.82
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-midnight-black-coral-ribs",
+          "phase11-transition-far-drowned-signal-station"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-midnight-black-coral-ribs"
+        ],
+        "incomingTransitionAssetIds": [
+          "phase11-transition-far-drowned-signal-station"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-midnight-black-coral-ribs",
+          "water9-phase11-transition-far-drowned-signal-station-gpt"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-midnight-black-coral-ribs",
+            "alpha": 0.17,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.5,
+            "x": 809.824,
+            "y": 1608.705,
+            "width": 475.779,
+            "height": 321.472,
+            "parallaxFactor": 0.067
+          },
+          {
+            "id": "transitionDeep--1-incomingTransition",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 0.606,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.5,
+            "x": 358.46,
+            "y": 1344.258,
+            "width": 1215.377,
+            "height": 358.348,
+            "parallaxFactor": 0.055
+          },
+          {
+            "id": "transitionDeep-1-incomingTransition",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 0.52,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.5,
+            "x": 652.46,
+            "y": 1411.954,
+            "width": 1367.75,
+            "height": 354.412,
+            "parallaxFactor": 0.055
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-midnight-black-coral-ribs",
+            "sourceDimensions": {
+              "width": 1495,
+              "height": 998
+            },
+            "x": 1377.015,
+            "y": 8718.312,
+            "width": 475.779,
+            "height": 321.472,
+            "alpha": 0.17,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 1139.125,
+              "y": 8557.576,
+              "width": 475.779,
+              "height": 321.472
+            },
+            "screenBounds": {
+              "x": 531.125,
+              "y": 221.576,
+              "width": 475.779,
+              "height": 321.472
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 933.264,
+            "y": 8558.232,
+            "width": 1215.377,
+            "height": 358.348,
+            "alpha": 0.606,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 325.575,
+              "y": 8379.058,
+              "width": 1215.377,
+              "height": 358.348
+            },
+            "screenBounds": {
+              "x": -282.425,
+              "y": 43.058,
+              "width": 1215.377,
+              "height": 358.348
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 1227.263,
+            "y": 8625.929,
+            "width": 1367.75,
+            "height": 354.412,
+            "alpha": 0.52,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 543.388,
+              "y": 8448.723,
+              "width": 1367.75,
+              "height": 354.412
+            },
+            "screenBounds": {
+              "x": -64.612,
+              "y": 112.723,
+              "width": 1367.75,
+              "height": 354.412
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.025,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.022,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.039,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.179,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.098,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.192,
+        "maskOpacity": 0.508
+      },
+      "overlay": {
+        "alpha": 0.041,
+        "color": "#87afc5",
+        "density": 0.318,
+        "drift": 4.9,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.005,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.005,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.004,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.002,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#87afc5",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b3-1500m-transition-late-blend",
+      "biome": 3,
+      "biomeLabel": "B3 Midnight",
+      "depth": 1500,
+      "depthKey": "transition-late-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1500m-transition-late-blend-canvas-color.png",
+      "colorBytes": 403260,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1500m-transition-late-blend-canvas-grayscale.png",
+      "grayscaleBytes": 238937,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 9.385,
+        "lumaRange": 172.993
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 3,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.957,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#090913"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#1d5070",
+        "bottomColor": "#12304d",
+        "hazeColor": "#a5cce0",
+        "hazeAlpha": 0.029,
+        "sedimentAlpha": 0.014,
+        "causticAlpha": 0.006,
+        "silhouetteAlpha": 0.161,
+        "anchorDensity": 0.875
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-midnight-black-coral-ribs",
+          "phase11-transition-far-drowned-signal-station"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-midnight-black-coral-ribs"
+        ],
+        "incomingTransitionAssetIds": [
+          "phase11-transition-far-drowned-signal-station"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-midnight-black-coral-ribs",
+          "water9-phase11-transition-far-drowned-signal-station-gpt"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-midnight-black-coral-ribs",
+            "alpha": 0.015,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.043,
+            "x": 809.824,
+            "y": 1661.668,
+            "width": 475.779,
+            "height": 321.472,
+            "parallaxFactor": 0.067
+          },
+          {
+            "id": "transitionDeep--1-incomingTransition",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 1.159,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.957,
+            "x": 358.46,
+            "y": 1392.714,
+            "width": 1215.377,
+            "height": 358.348,
+            "parallaxFactor": 0.055
+          },
+          {
+            "id": "transitionDeep-1-incomingTransition",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 0.996,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.957,
+            "x": 652.46,
+            "y": 1460.41,
+            "width": 1367.75,
+            "height": 354.412,
+            "parallaxFactor": 0.055
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-midnight-black-coral-ribs",
+            "sourceDimensions": {
+              "width": 1495,
+              "height": 998
+            },
+            "x": 1377.015,
+            "y": 9078.312,
+            "width": 475.779,
+            "height": 321.472,
+            "alpha": 0.015,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 1139.125,
+              "y": 8917.576,
+              "width": 475.779,
+              "height": 321.472
+            },
+            "screenBounds": {
+              "x": 531.125,
+              "y": 221.576,
+              "width": 475.779,
+              "height": 321.472
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 933.264,
+            "y": 8918.232,
+            "width": 1215.377,
+            "height": 358.348,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 325.575,
+              "y": 8739.058,
+              "width": 1215.377,
+              "height": 358.348
+            },
+            "screenBounds": {
+              "x": -282.425,
+              "y": 43.058,
+              "width": 1215.377,
+              "height": 358.348
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 1227.263,
+            "y": 8985.929,
+            "width": 1367.75,
+            "height": 354.412,
+            "alpha": 0.996,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 543.388,
+              "y": 8808.723,
+              "width": 1367.75,
+              "height": 354.412
+            },
+            "screenBounds": {
+              "x": -64.612,
+              "y": 112.723,
+              "width": 1367.75,
+              "height": 354.412
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.032,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.028,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.027,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.101,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.233,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.075,
+        "maskOpacity": 0.224
+      },
+      "overlay": {
+        "alpha": 0.015,
+        "color": "#a5cce0",
+        "density": 0.171,
+        "drift": 4.9,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.002,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.002,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.002,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.001,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#a5cce0",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b3-1560m-transition-after-blend",
+      "biome": 3,
+      "biomeLabel": "B3 Midnight",
+      "depth": 1560,
+      "depthKey": "transition-after-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1560m-transition-after-blend-canvas-color.png",
+      "colorBytes": 394880,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b3-1560m-transition-after-blend-canvas-grayscale.png",
+      "grayscaleBytes": 233812,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 9.567,
+        "lumaRange": 172.495
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 3,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 1,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#090913"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#1e5272",
+        "bottomColor": "#13314e",
+        "hazeColor": "#a8cfe2",
+        "hazeAlpha": 0.026,
+        "sedimentAlpha": 0.012,
+        "causticAlpha": 0.006,
+        "silhouetteAlpha": 0.165,
+        "anchorDensity": 0.88
+      },
+      "anchors": {
+        "profileCount": 8,
+        "visibleCount": 4,
+        "transitionBlendCounts": {
+          "outgoingLower": 0,
+          "incomingTransition": 0
+        },
+        "visibleLandmarkAssetIds": [
+          "phase11-transition-far-drowned-signal-station",
+          "phase11-transition-mid-collapsed-gantry-brine-reef"
+        ],
+        "outgoingLowerAssetIds": [],
+        "incomingTransitionAssetIds": [],
+        "incomingTransitionCount": 0,
+        "renderedBitmapAssetIds": [
+          "water9-phase11-transition-far-drowned-signal-station-gpt",
+          "water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt"
+        ],
+        "items": [
+          {
+            "id": "transitionDeep--1",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 1.211,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 358.46,
+            "y": 1441.17,
+            "width": 1215.377,
+            "height": 358.348,
+            "parallaxFactor": 0.055
+          },
+          {
+            "id": "transitionDeep-1",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 1.041,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 652.46,
+            "y": 1508.866,
+            "width": 1367.75,
+            "height": 354.412,
+            "parallaxFactor": 0.055
+          },
+          {
+            "id": "transitionDeep-2",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 1.321,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 425.36,
+            "y": 1398.675,
+            "width": 1890.788,
+            "height": 470.214,
+            "parallaxFactor": 0.055
+          },
+          {
+            "id": "transitionDeep-5",
+            "assetId": "phase11-transition-mid-collapsed-gantry-brine-reef",
+            "alpha": 0.853,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 604.354,
+            "y": 2007.808,
+            "width": 1038.879,
+            "height": 324.864,
+            "parallaxFactor": 0.104
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 933.264,
+            "y": 9278.232,
+            "width": 1215.377,
+            "height": 358.348,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 325.575,
+              "y": 9099.058,
+              "width": 1215.377,
+              "height": 358.348
+            },
+            "screenBounds": {
+              "x": -282.425,
+              "y": 43.058,
+              "width": 1215.377,
+              "height": 358.348
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 1227.263,
+            "y": 9345.929,
+            "width": 1367.75,
+            "height": 354.412,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 543.388,
+              "y": 9168.723,
+              "width": 1367.75,
+              "height": 354.412
+            },
+            "screenBounds": {
+              "x": -64.612,
+              "y": 112.723,
+              "width": 1367.75,
+              "height": 354.412
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt",
+            "sourceDimensions": {
+              "width": 1389,
+              "height": 958
+            },
+            "x": 1000.163,
+            "y": 9235.737,
+            "width": 1890.788,
+            "height": 470.214,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 54.769,
+              "y": 9000.63,
+              "width": 1890.788,
+              "height": 470.214
+            },
+            "screenBounds": {
+              "x": -553.231,
+              "y": -55.37,
+              "width": 1890.788,
+              "height": 470.214
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 3,
+            "textureKey": "water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 989
+            },
+            "x": 1149.365,
+            "y": 9401.126,
+            "width": 1038.879,
+            "height": 324.864,
+            "alpha": 0.853,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 629.925,
+              "y": 9238.694,
+              "width": 1038.879,
+              "height": 324.864
+            },
+            "screenBounds": {
+              "x": 21.925,
+              "y": 182.694,
+              "width": 1038.879,
+              "height": 324.864
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.033,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.029,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.025,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.089,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.25,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.064,
+        "maskOpacity": 0.197
+      },
+      "overlay": {
+        "alpha": 0.013,
+        "color": "#a8cfe2",
+        "density": 0.157,
+        "drift": 4.9,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.002,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.002,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.001,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.001,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#a8cfe2",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b4-1340m-lower-before-blend",
+      "biome": 4,
+      "biomeLabel": "B4 Ruins",
+      "depth": 1340,
+      "depthKey": "lower-before-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1340m-lower-before-blend-canvas-color.png",
+      "colorBytes": 458866,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1340m-lower-before-blend-canvas-grayscale.png",
+      "grayscaleBytes": 261896,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 20.16,
+        "lumaRange": 172.495
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-lower",
+        "biome": 4,
+        "depthBand": "lower",
+        "activeBand": "lower",
+        "activeBandBlend": {
+          "from": "mid",
+          "to": "lower",
+          "progress": 1,
+          "lowerToTransitionDeep": false
+        },
+        "cameraClearColor": "#06070d"
+      },
+      "activeBand": {
+        "id": "lower",
+        "topColor": "#082d49",
+        "bottomColor": "#061d36",
+        "hazeColor": "#668ea8",
+        "hazeAlpha": 0.085,
+        "sedimentAlpha": 0.055,
+        "causticAlpha": 0.015,
+        "silhouetteAlpha": 0.078,
+        "anchorDensity": 0.76
+      },
+      "anchors": {
+        "profileCount": 1,
+        "visibleCount": 1,
+        "transitionBlendCounts": {
+          "outgoingLower": 0,
+          "incomingTransition": 0
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-ruins-vault-causeway-lattice"
+        ],
+        "outgoingLowerAssetIds": [],
+        "incomingTransitionAssetIds": [],
+        "incomingTransitionCount": 0,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540"
+        ],
+        "items": [
+          {
+            "id": "lower-0",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.104,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 620.921,
+            "y": 1407.183,
+            "width": 463.647,
+            "height": 226.169,
+            "parallaxFactor": 0.063
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1190.617,
+            "y": 8036.935,
+            "width": 463.647,
+            "height": 226.169,
+            "alpha": 0.006,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 958.794,
+              "y": 7923.851,
+              "width": 463.647,
+              "height": 226.169
+            },
+            "screenBounds": {
+              "x": 350.794,
+              "y": 187.851,
+              "width": 463.647,
+              "height": 226.169
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.005,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.005,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.012,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.059,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.005,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.32,
+        "maskOpacity": 0.82
+      },
+      "overlay": {
+        "alpha": 0.079,
+        "color": "#668ea8",
+        "density": 0.416,
+        "drift": 3.5,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.028,
+        "layers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.028,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.019,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.009,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": true,
+          "layers": [
+            "cold-ruin-veil",
+            "fine-abyssal-particulate"
+          ],
+          "alpha": 0.066,
+          "particleAlpha": 0.02,
+          "color": "#a4bfd0",
+          "blendMode": "normal",
+          "driftX": -2.6,
+          "driftY": 0.12,
+          "guardRadius": 130,
+          "bandCount": 17,
+          "particleCount": 108
+        }
+      }
+    },
+    {
+      "label": "b4-1380m-blend-entry",
+      "biome": 4,
+      "biomeLabel": "B4 Ruins",
+      "depth": 1380,
+      "depthKey": "blend-entry",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1380m-blend-entry-canvas-color.png",
+      "colorBytes": 469906,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1380m-blend-entry-canvas-grayscale.png",
+      "grayscaleBytes": 272764,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 20.043,
+        "lumaRange": 171.715
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-lower",
+        "biome": 4,
+        "depthBand": "lower",
+        "activeBand": "lower",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.043,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#06070d"
+      },
+      "activeBand": {
+        "id": "lower",
+        "topColor": "#092f4b",
+        "bottomColor": "#071e37",
+        "hazeColor": "#6991aa",
+        "hazeAlpha": 0.082,
+        "sedimentAlpha": 0.053,
+        "causticAlpha": 0.015,
+        "silhouetteAlpha": 0.082,
+        "anchorDensity": 0.765
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-ruins-vault-causeway-lattice",
+          "phase10-transition-drowned-signal-station"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-ruins-vault-causeway-lattice"
+        ],
+        "incomingTransitionAssetIds": [
+          "biome-ruins-vault-causeway-lattice",
+          "phase10-transition-drowned-signal-station"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+          "water9-phase10-transition-drowned-signal-station"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.1,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.957,
+            "x": 620.921,
+            "y": 1441.503,
+            "width": 463.647,
+            "height": 226.169,
+            "parallaxFactor": 0.063
+          },
+          {
+            "id": "transitionDeep-0-incomingTransition",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.008,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.043,
+            "x": 539.086,
+            "y": 1377.914,
+            "width": 432.531,
+            "height": 210.99,
+            "parallaxFactor": 0.063
+          },
+          {
+            "id": "transitionDeep-1-incomingTransition",
+            "assetId": "phase10-transition-drowned-signal-station",
+            "alpha": 0.073,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.043,
+            "x": 784.401,
+            "y": 1388.435,
+            "width": 1680.236,
+            "height": 414.73,
+            "parallaxFactor": 0.067
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1190.617,
+            "y": 8276.935,
+            "width": 463.647,
+            "height": 226.169,
+            "alpha": 0.006,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 958.794,
+              "y": 8163.851,
+              "width": 463.647,
+              "height": 226.169
+            },
+            "screenBounds": {
+              "x": 350.794,
+              "y": 187.851,
+              "width": 463.647,
+              "height": 226.169
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1108.782,
+            "y": 8213.346,
+            "width": 432.531,
+            "height": 210.99,
+            "alpha": 0,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 892.516,
+              "y": 8107.851,
+              "width": 432.531,
+              "height": 210.99
+            },
+            "screenBounds": {
+              "x": 284.516,
+              "y": 131.851,
+              "width": 432.531,
+              "height": 210.99
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase10-transition-drowned-signal-station",
+            "sourceDimensions": {
+              "width": 1220,
+              "height": 520
+            },
+            "x": 1351.641,
+            "y": 8191.644,
+            "width": 1680.236,
+            "height": 414.73,
+            "alpha": 0.073,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 511.523,
+              "y": 7984.279,
+              "width": 1680.236,
+              "height": 414.73
+            },
+            "screenBounds": {
+              "x": -96.477,
+              "y": 8.279,
+              "width": 1680.236,
+              "height": 414.73
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.006,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.005,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.013,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.063,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.007,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.309,
+        "maskOpacity": 0.793
+      },
+      "overlay": {
+        "alpha": 0.077,
+        "color": "#6991aa",
+        "density": 0.407,
+        "drift": 3.5,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.028,
+        "layers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.028,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.019,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.008,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": true,
+          "layers": [
+            "cold-ruin-veil",
+            "fine-abyssal-particulate"
+          ],
+          "alpha": 0.066,
+          "particleAlpha": 0.02,
+          "color": "#a4bfd0",
+          "blendMode": "normal",
+          "driftX": -2.6,
+          "driftY": 0.12,
+          "guardRadius": 130,
+          "bandCount": 17,
+          "particleCount": 108
+        }
+      }
+    },
+    {
+      "label": "b4-1440m-cutoff-mid-blend",
+      "biome": 4,
+      "biomeLabel": "B4 Ruins",
+      "depth": 1440,
+      "depthKey": "cutoff-mid-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1440m-cutoff-mid-blend-canvas-color.png",
+      "colorBytes": 461038,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1440m-cutoff-mid-blend-canvas-grayscale.png",
+      "grayscaleBytes": 260869,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 20.015,
+        "lumaRange": 171.715
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 4,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.5,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#06070d"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#13405e",
+        "bottomColor": "#0d2742",
+        "hazeColor": "#87afc5",
+        "hazeAlpha": 0.056,
+        "sedimentAlpha": 0.034,
+        "causticAlpha": 0.01,
+        "silhouetteAlpha": 0.122,
+        "anchorDensity": 0.82
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-ruins-vault-causeway-lattice",
+          "phase10-transition-drowned-signal-station"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-ruins-vault-causeway-lattice"
+        ],
+        "incomingTransitionAssetIds": [
+          "biome-ruins-vault-causeway-lattice",
+          "phase10-transition-drowned-signal-station"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+          "water9-phase10-transition-drowned-signal-station"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.052,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.5,
+            "x": 620.921,
+            "y": 1492.983,
+            "width": 463.647,
+            "height": 226.169,
+            "parallaxFactor": 0.063
+          },
+          {
+            "id": "transitionDeep-0-incomingTransition",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.088,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.5,
+            "x": 539.086,
+            "y": 1429.394,
+            "width": 432.531,
+            "height": 210.99,
+            "parallaxFactor": 0.063
+          },
+          {
+            "id": "transitionDeep-1-incomingTransition",
+            "assetId": "phase10-transition-drowned-signal-station",
+            "alpha": 0.844,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.5,
+            "x": 784.401,
+            "y": 1441.369,
+            "width": 1680.236,
+            "height": 414.73,
+            "parallaxFactor": 0.067
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1190.617,
+            "y": 8636.935,
+            "width": 463.647,
+            "height": 226.169,
+            "alpha": 0.01,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 958.794,
+              "y": 8523.851,
+              "width": 463.647,
+              "height": 226.169
+            },
+            "screenBounds": {
+              "x": 350.794,
+              "y": 187.851,
+              "width": 463.647,
+              "height": 226.169
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1108.782,
+            "y": 8573.346,
+            "width": 432.531,
+            "height": 210.99,
+            "alpha": 0.018,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 892.516,
+              "y": 8467.851,
+              "width": 432.531,
+              "height": 210.99
+            },
+            "screenBounds": {
+              "x": 284.516,
+              "y": 131.851,
+              "width": 432.531,
+              "height": 210.99
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase10-transition-drowned-signal-station",
+            "sourceDimensions": {
+              "width": 1220,
+              "height": 520
+            },
+            "x": 1351.641,
+            "y": 8551.644,
+            "width": 1680.236,
+            "height": 414.73,
+            "alpha": 0.844,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 511.523,
+              "y": 8344.279,
+              "width": 1680.236,
+              "height": 414.73
+            },
+            "screenBounds": {
+              "x": -96.477,
+              "y": 8.279,
+              "width": 1680.236,
+              "height": 414.73
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.019,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.016,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.029,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.136,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.074,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.192,
+        "maskOpacity": 0.508
+      },
+      "overlay": {
+        "alpha": 0.048,
+        "color": "#87afc5",
+        "density": 0.279,
+        "drift": 3.5,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.013,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.013,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.007,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.003,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#87afc5",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b4-1500m-transition-late-blend",
+      "biome": 4,
+      "biomeLabel": "B4 Ruins",
+      "depth": 1500,
+      "depthKey": "transition-late-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1500m-transition-late-blend-canvas-color.png",
+      "colorBytes": 461280,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1500m-transition-late-blend-canvas-grayscale.png",
+      "grayscaleBytes": 268941,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 20.009,
+        "lumaRange": 171.928
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 4,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.957,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#06070d"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#1d5070",
+        "bottomColor": "#12304d",
+        "hazeColor": "#a5cce0",
+        "hazeAlpha": 0.029,
+        "sedimentAlpha": 0.014,
+        "causticAlpha": 0.006,
+        "silhouetteAlpha": 0.161,
+        "anchorDensity": 0.875
+      },
+      "anchors": {
+        "profileCount": 3,
+        "visibleCount": 3,
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 2
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-ruins-vault-causeway-lattice",
+          "phase10-transition-drowned-signal-station"
+        ],
+        "outgoingLowerAssetIds": [
+          "biome-ruins-vault-causeway-lattice"
+        ],
+        "incomingTransitionAssetIds": [
+          "biome-ruins-vault-causeway-lattice",
+          "phase10-transition-drowned-signal-station"
+        ],
+        "incomingTransitionCount": 2,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+          "water9-phase10-transition-drowned-signal-station"
+        ],
+        "items": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.004,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.043,
+            "x": 620.921,
+            "y": 1544.463,
+            "width": 463.647,
+            "height": 226.169,
+            "parallaxFactor": 0.063
+          },
+          {
+            "id": "transitionDeep-0-incomingTransition",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.169,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.957,
+            "x": 539.086,
+            "y": 1480.874,
+            "width": 432.531,
+            "height": 210.99,
+            "parallaxFactor": 0.063
+          },
+          {
+            "id": "transitionDeep-1-incomingTransition",
+            "assetId": "phase10-transition-drowned-signal-station",
+            "alpha": 1.615,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.957,
+            "x": 784.401,
+            "y": 1494.304,
+            "width": 1680.236,
+            "height": 414.73,
+            "parallaxFactor": 0.067
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1190.617,
+            "y": 8996.935,
+            "width": 463.647,
+            "height": 226.169,
+            "alpha": 0.001,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 958.794,
+              "y": 8883.851,
+              "width": 463.647,
+              "height": 226.169
+            },
+            "screenBounds": {
+              "x": 350.794,
+              "y": 187.851,
+              "width": 463.647,
+              "height": 226.169
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1108.782,
+            "y": 8933.346,
+            "width": 432.531,
+            "height": 210.99,
+            "alpha": 0.034,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 892.516,
+              "y": 8827.851,
+              "width": 432.531,
+              "height": 210.99
+            },
+            "screenBounds": {
+              "x": 284.516,
+              "y": 131.851,
+              "width": 432.531,
+              "height": 210.99
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-phase10-transition-drowned-signal-station",
+            "sourceDimensions": {
+              "width": 1220,
+              "height": 520
+            },
+            "x": 1351.641,
+            "y": 8911.644,
+            "width": 1680.236,
+            "height": 414.73,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 511.523,
+              "y": 8704.279,
+              "width": 1680.236,
+              "height": 414.73
+            },
+            "screenBounds": {
+              "x": -96.477,
+              "y": 8.279,
+              "width": 1680.236,
+              "height": 414.73
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.032,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.028,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.026,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.099,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.228,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.075,
+        "maskOpacity": 0.224
+      },
+      "overlay": {
+        "alpha": 0.018,
+        "color": "#a5cce0",
+        "density": 0.15,
+        "drift": 3.5,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.007,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.007,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.003,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.001,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#a5cce0",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "label": "b4-1560m-transition-after-blend",
+      "biome": 4,
+      "biomeLabel": "B4 Ruins",
+      "depth": 1560,
+      "depthKey": "transition-after-blend",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1560m-transition-after-blend-canvas-color.png",
+      "colorBytes": 461405,
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/b4-1560m-transition-after-blend-canvas-grayscale.png",
+      "grayscaleBytes": 267829,
+      "metrics": {
+        "ok": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 256000,
+        "nonTransparent": 256000,
+        "meanLuma": 20.009,
+        "lumaRange": 171.928
+      },
+      "activeProfile": {
+        "id": "environment-shallows-column-transitionDeep",
+        "biome": 4,
+        "depthBand": "transitionDeep",
+        "activeBand": "transitionDeep",
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 1,
+          "lowerToTransitionDeep": true
+        },
+        "cameraClearColor": "#06070d"
+      },
+      "activeBand": {
+        "id": "transitionDeep",
+        "topColor": "#1e5272",
+        "bottomColor": "#13314e",
+        "hazeColor": "#a8cfe2",
+        "hazeAlpha": 0.026,
+        "sedimentAlpha": 0.012,
+        "causticAlpha": 0.006,
+        "silhouetteAlpha": 0.165,
+        "anchorDensity": 0.88
+      },
+      "anchors": {
+        "profileCount": 8,
+        "visibleCount": 6,
+        "transitionBlendCounts": {
+          "outgoingLower": 0,
+          "incomingTransition": 0
+        },
+        "visibleLandmarkAssetIds": [
+          "biome-ruins-vault-causeway-lattice",
+          "phase11-transition-mid-collapsed-gantry-brine-reef",
+          "phase10-transition-drowned-signal-station"
+        ],
+        "outgoingLowerAssetIds": [],
+        "incomingTransitionAssetIds": [],
+        "incomingTransitionCount": 0,
+        "renderedBitmapAssetIds": [
+          "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+          "water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt",
+          "water9-phase10-transition-drowned-signal-station"
+        ],
+        "items": [
+          {
+            "id": "transitionDeep-0",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.177,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 539.086,
+            "y": 1532.354,
+            "width": 432.531,
+            "height": 210.99,
+            "parallaxFactor": 0.063
+          },
+          {
+            "id": "transitionDeep-1",
+            "assetId": "phase11-transition-mid-collapsed-gantry-brine-reef",
+            "alpha": 1.144,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 682.332,
+            "y": 2120.8,
+            "width": 1233.081,
+            "height": 433.754,
+            "parallaxFactor": 0.104
+          },
+          {
+            "id": "transitionDeep-2",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.224,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 455.538,
+            "y": 1531.261,
+            "width": 560.211,
+            "height": 273.274,
+            "parallaxFactor": 0.063
+          },
+          {
+            "id": "transitionDeep-3",
+            "assetId": "phase10-transition-drowned-signal-station",
+            "alpha": 1.518,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 622.399,
+            "y": 1529.259,
+            "width": 1493.178,
+            "height": 365.089,
+            "parallaxFactor": 0.067
+          },
+          {
+            "id": "transitionDeep-4",
+            "assetId": "phase10-transition-drowned-signal-station",
+            "alpha": 1.241,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 667.128,
+            "y": 1491.595,
+            "width": 2069.364,
+            "height": 554.849,
+            "parallaxFactor": 0.067
+          },
+          {
+            "id": "transitionDeep-5",
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "alpha": 0.218,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null,
+            "x": 681.175,
+            "y": 1496.099,
+            "width": 526.432,
+            "height": 256.796,
+            "parallaxFactor": 0.063
+          }
+        ],
+        "renderedBitmapAnchors": [
+          {
+            "index": 0,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1108.782,
+            "y": 9293.346,
+            "width": 432.531,
+            "height": 210.99,
+            "alpha": 0.035,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 892.516,
+              "y": 9187.851,
+              "width": 432.531,
+              "height": 210.99
+            },
+            "screenBounds": {
+              "x": 284.516,
+              "y": 131.851,
+              "width": 432.531,
+              "height": 210.99
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 1,
+            "textureKey": "water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 989
+            },
+            "x": 1227.343,
+            "y": 9514.118,
+            "width": 1233.081,
+            "height": 433.754,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 610.803,
+              "y": 9297.241,
+              "width": 1233.081,
+              "height": 433.754
+            },
+            "screenBounds": {
+              "x": 2.803,
+              "y": 241.241,
+              "width": 1233.081,
+              "height": 433.754
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 2,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1025.234,
+            "y": 9292.253,
+            "width": 560.211,
+            "height": 273.274,
+            "alpha": 0.045,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 745.128,
+              "y": 9155.616,
+              "width": 560.211,
+              "height": 273.274
+            },
+            "screenBounds": {
+              "x": 137.128,
+              "y": 99.616,
+              "width": 560.211,
+              "height": 273.274
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 3,
+            "textureKey": "water9-phase10-transition-drowned-signal-station",
+            "sourceDimensions": {
+              "width": 1220,
+              "height": 520
+            },
+            "x": 1189.639,
+            "y": 9253.664,
+            "width": 1493.178,
+            "height": 365.089,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 443.05,
+              "y": 9071.12,
+              "width": 1493.178,
+              "height": 365.089
+            },
+            "screenBounds": {
+              "x": -164.95,
+              "y": 15.12,
+              "width": 1493.178,
+              "height": 365.089
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 4,
+            "textureKey": "water9-phase10-transition-drowned-signal-station",
+            "sourceDimensions": {
+              "width": 1220,
+              "height": 520
+            },
+            "x": 1234.368,
+            "y": 9216.001,
+            "width": 2069.364,
+            "height": 554.849,
+            "alpha": 1,
+            "tint": "#ffffff",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 199.686,
+              "y": 8938.576,
+              "width": 2069.364,
+              "height": 554.849
+            },
+            "screenBounds": {
+              "x": -408.314,
+              "y": -117.424,
+              "width": 2069.364,
+              "height": 554.849
+            },
+            "generatedBackgroundTexture": true
+          },
+          {
+            "index": 5,
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice-soft-edge-540",
+            "sourceDimensions": {
+              "width": 1392,
+              "height": 964
+            },
+            "x": 1250.871,
+            "y": 9257.091,
+            "width": 526.432,
+            "height": 256.796,
+            "alpha": 0.044,
+            "tint": "#718fa2",
+            "blendMode": 0,
+            "crop": null,
+            "bounds": {
+              "x": 987.656,
+              "y": 9128.693,
+              "width": 526.432,
+              "height": 256.796
+            },
+            "screenBounds": {
+              "x": 379.656,
+              "y": 72.693,
+              "width": 526.432,
+              "height": 256.796
+            },
+            "generatedBackgroundTexture": true
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "painterlyAssetId": "surface",
+          "alpha": 0.033,
+          "band": "surface",
+          "textureKey": "",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 1,
+          "painterlyAssetId": "upper",
+          "alpha": 0.029,
+          "band": "upper",
+          "textureKey": "water9-phase3-band-upper",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 2,
+          "painterlyAssetId": "mid",
+          "alpha": 0.025,
+          "band": "mid",
+          "textureKey": "water9-phase3-band-mid",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 3,
+          "painterlyAssetId": "lower",
+          "alpha": 0.089,
+          "band": "lower",
+          "textureKey": "water9-phase3-band-lower",
+          "activeRepeatMode": "bandClampY"
+        },
+        {
+          "index": 4,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band",
+          "alpha": 0.25,
+          "band": "transitionDeep",
+          "textureKey": "water9-phase11-band-transition-deep-gpt",
+          "activeRepeatMode": "bandClampY"
+        }
+      ],
+      "darkness": {
+        "value": 1,
+        "ambientOpacity": 0.064,
+        "maskOpacity": 0.197
+      },
+      "overlay": {
+        "alpha": 0.015,
+        "color": "#a8cfe2",
+        "density": 0.138,
+        "drift": 3.5,
+        "mistStepPx": 340
+      },
+      "worldSpaceNoise": {
+        "alpha": 0.006,
+        "layers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "alpha": 0.006,
+            "assetId": "broad-fog-mottle"
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "alpha": 0.003,
+            "assetId": "sediment-flecks"
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "alpha": 0.001,
+            "assetId": "plankton-speckle"
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "alpha": 0,
+            "assetId": "soft-caustic-ribbons"
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#a8cfe2",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    }
+  ],
+  "contactSheet": {
+    "htmlPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/lower-transitiondeep-smoothing-contact-sheet.html",
+    "pngPath": "/mnt/nxt-dev/water9/runs/water9-lower-transitiondeep-smoothing-2026-07-06/lower-transitiondeep-smoothing-contact-sheet.png"
+  },
+  "runtimeErrors": []
+}

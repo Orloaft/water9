@@ -55,10 +55,12 @@ export function draw(this: DeepdiveScene, ) {
   }
 
 export function updateForegroundTerrainPresentation(this: DeepdiveScene, profile = environmentVisualProfileFor(state.biome, state.depth)) {
-    const transitionDeep = profile.depthBand === 'transitionDeep';
-    this.terrain.setAlpha(transitionDeep ? TRANSITION_DEEP_TERRAIN_ALPHA : 1);
-    this.terrainEdges.setAlpha(transitionDeep ? TRANSITION_DEEP_TERRAIN_EDGE_ALPHA : 1);
-    this.oreOverburden.setAlpha(transitionDeep ? TRANSITION_DEEP_ORE_OVERBURDEN_ALPHA : 1);
+    const transitionDeepBlend = profile.activeBandBlend.from === 'lower' && profile.activeBandBlend.to === 'transitionDeep'
+      ? profile.activeBandBlend.progress
+      : profile.depthBand === 'transitionDeep' ? 1 : 0;
+    this.terrain.setAlpha(Phaser.Math.Linear(1, TRANSITION_DEEP_TERRAIN_ALPHA, transitionDeepBlend));
+    this.terrainEdges.setAlpha(Phaser.Math.Linear(1, TRANSITION_DEEP_TERRAIN_EDGE_ALPHA, transitionDeepBlend));
+    this.oreOverburden.setAlpha(Phaser.Math.Linear(1, TRANSITION_DEEP_ORE_OVERBURDEN_ALPHA, transitionDeepBlend));
   }
 
 export function drawForwardOutpost(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
