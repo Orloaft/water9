@@ -50,6 +50,9 @@ export class DeepdiveScene extends Phaser.Scene {
   world: Tile[][] = [];
   damage: number[][] = [];
   terrainMask = new Uint8Array();
+  legacySwimmerReachableWater = new Uint8Array();
+  legacySwimmerSpawnValidated = 0;
+  legacySwimmerSpawnFallbacks = 0;
   tileSprites: Phaser.GameObjects.Image[] = [];
   terrainBrushSprites: Phaser.GameObjects.Image[] = [];
   terrainBrushSpritesByKey = new Map<string, Phaser.GameObjects.Image>();
@@ -1265,6 +1268,7 @@ export interface DeepdiveScene {
   findFaunaAnchorInBand: OmitThisParameter<typeof worldgenNs.findFaunaAnchorInBand>;
   findVentAnchorInBand: OmitThisParameter<typeof worldgenNs.findVentAnchorInBand>;
   findRockTopAnchorInBand: OmitThisParameter<typeof worldgenNs.findRockTopAnchorInBand>;
+  findLegacySwimmerOpenWaterInBand: OmitThisParameter<typeof worldgenNs.findLegacySwimmerOpenWaterInBand>;
   findOpenWaterInBand: OmitThisParameter<typeof worldgenNs.findOpenWaterInBand>;
   carveStarterCaverns: OmitThisParameter<typeof worldgenNs.carveStarterCaverns>;
   carveDeepTunnelNetwork: OmitThisParameter<typeof worldgenNs.carveDeepTunnelNetwork>;

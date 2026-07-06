@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { Bobbit,BobbitBurrow,EncounterReservation,EncounterReservationRole,EnvironmentProp,Fish,FishSpecies,Flora,FloraSpecies,Hazard,SpecialRoom,TerrainSurfaceAnchor,Tile,VeinRule } from './types';
+import type { Bobbit,BobbitBurrow,EncounterReservation,EncounterReservationRole,EnvironmentProp,Fish,FishPattern,FishSpecies,Flora,FloraSpecies,Hazard,SpecialRoom,TerrainSurfaceAnchor,Tile,VeinRule } from './types';
 import { BIOLUME_CAVERN_CHANCE,BOBBIT_ESCAPE_SECONDS,deepScale,EGG_HP,NEST_CHAMBER_CHANCE,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles } from './content';
 import { state } from './state';
@@ -7,7 +7,7 @@ import { rng } from './rng';
 import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,isOreTile,oreEnvironmentAssetKey,scaledDepthPx,scaledEntity,terrainLookForBiome,veinRuleAt,veinRulesForBiome } from './helpers';
 import { fishBehaviorProfile,type FaunaBehaviorProfile } from './fauna-behavior';
 import type { DeepdiveScene } from './scene';
-import { ensureTerrainMask,findNearbyTerrainSurfaceAnchor,findTerrainSurfaceAnchorInBand,rebuildTerrainMask,sampleTerrainSurfaceAnchors,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
+import { ensureTerrainMask,findNearbyTerrainSurfaceAnchor,findTerrainSurfaceAnchorInBand,rebuildTerrainMask,sampleTerrainSurfaceAnchors,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskContactForAabb,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
 import { markTerrainDirty,measurePerf } from './perf';
 
 export function generateWorld(this: DeepdiveScene, ) {
@@ -15,6 +15,9 @@ export function generateWorld(this: DeepdiveScene, ) {
 	    this.damage = [];
 	    // Scene restarts reuse this instance; invalidate the previous biome's mask until the new world is fully carved.
 	    this.terrainMask = new Uint8Array();
+      this.legacySwimmerReachableWater = new Uint8Array();
+      this.legacySwimmerSpawnValidated = 0;
+      this.legacySwimmerSpawnFallbacks = 0;
 		    this.looseItems = [];
 	    this.environmentProps = [];
 	    this.articulatedCreatures = [];
@@ -901,9 +904,9 @@ export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
     const profile = fishBehaviorProfile(species);
     for (let i = 0; i < species.count; i += 1) {
       const point = profile.behaviorClass === 'legacySwimmer'
-        ? this.findOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY))
+        ? this.findLegacySwimmerOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), species)
         : this.findFaunaAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), i, species);
-      const faunaPoint = point as { x: number; y: number; surface?: TerrainSurfaceAnchor; rootOffsetX?: number; rootOffsetY?: number };
+      const faunaPoint = point as { x: number; y: number; surface?: TerrainSurfaceAnchor; rootOffsetX?: number; rootOffsetY?: number; navSpawnValidated?: boolean; navSpawnFallback?: boolean };
       const angle = Math.random() * Math.PI * 2;
       const assetKey = fishAssetKey(species);
       const facingSign = Math.cos(angle) < 0 ? -1 : 1;
@@ -943,6 +946,8 @@ export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
         visualAngle: angle,
         visualFacingSign: facingSign,
         behaviorClass: profile.behaviorClass,
+        navSpawnValidated: profile.behaviorClass === 'legacySwimmer' ? Boolean(faunaPoint.navSpawnValidated) : undefined,
+        navSpawnFallback: profile.behaviorClass === 'legacySwimmer' ? Boolean(faunaPoint.navSpawnFallback) : undefined,
         terrainAffinity: profile.terrainAffinity,
         surface,
         anchor: surface?.anchor,
@@ -1354,6 +1359,223 @@ export function findRockTopAnchorInBand(this: DeepdiveScene, minY: number, maxY:
       return { x: tx * TILE + TILE * 0.5, y: (ty + 1) * TILE + 2 };
     }
     return this.findFloraAnchorInBand(minY, maxY) ?? this.findOpenWaterInBand(minY, maxY);
+  }
+
+type LegacySwimmerSpawnPoint = {
+  x: number;
+  y: number;
+  navSpawnValidated: boolean;
+  navSpawnFallback: boolean;
+};
+
+const LEGACY_SPAWN_ENVELOPES: Record<FishPattern, { padding: number; length: number; width: number; alternates: number }> = {
+  school: { padding: 9, length: 110, width: 30, alternates: 1 },
+  glide: { padding: 8, length: 145, width: 24, alternates: 1 },
+  stalk: { padding: 10, length: 130, width: 28, alternates: 2 },
+  circle: { padding: 7, length: 92, width: 38, alternates: 2 },
+  sway: { padding: 7, length: 82, width: 26, alternates: 2 },
+};
+
+export function findLegacySwimmerOpenWaterInBand(this: DeepdiveScene, minY: number, maxY: number, species: FishSpecies): LegacySwimmerSpawnPoint {
+    const radius = scaledEntity(species.radius);
+    const envelope = LEGACY_SPAWN_ENVELOPES[species.pattern];
+    const reachableWater = legacyReachableWaterMap(this);
+    let fallback: LegacySwimmerSpawnPoint | null = null;
+    for (let attempt = 0; attempt < 420; attempt += 1) {
+      const tx = Phaser.Math.Between(4, WORLD_W - 5);
+      const ty = Math.floor(Phaser.Math.Between(minY, maxY) / TILE);
+      if (ty < 1 || ty >= WORLD_H - 1) continue;
+      const x = tx * TILE + TILE * 0.5;
+      const y = ty * TILE + TILE * 0.5;
+      if (!legacySwimmerSpawnClear(this, tx, ty, x, y, radius, envelope.padding, reachableWater)) continue;
+      fallback ??= {
+        x,
+        y,
+        navSpawnValidated: legacySwimmerPocketClear(this, x, y, radius, envelope.padding),
+        navSpawnFallback: true,
+      };
+      if (!legacySwimmerCorridorClear(this, x, y, radius, species.pattern, envelope)) continue;
+      this.legacySwimmerSpawnValidated += 1;
+      return { x, y, navSpawnValidated: true, navSpawnFallback: false };
+    }
+    const scanned = scanLegacySwimmerFallback(this, minY, maxY, radius, species.pattern, envelope, reachableWater);
+    const chosen = scanned?.navSpawnValidated ? scanned : fallback ?? scanned;
+    if (chosen) {
+      if (chosen.navSpawnValidated) this.legacySwimmerSpawnValidated += 1;
+      else this.legacySwimmerSpawnFallbacks += 1;
+      return chosen;
+    }
+    this.legacySwimmerSpawnFallbacks += 1;
+    return { ...this.findOpenWaterInBand(minY, maxY), navSpawnValidated: false, navSpawnFallback: true };
+  }
+
+function legacyReachableWaterMap(scene: DeepdiveScene) {
+    if (scene.legacySwimmerReachableWater.length === WORLD_W * WORLD_H) return scene.legacySwimmerReachableWater;
+    const visited = new Uint8Array(WORLD_W * WORLD_H);
+    let bestTiles: number[] = [];
+    const queue: number[] = [];
+    for (let y = 0; y < WORLD_H; y += 1) {
+      for (let x = 0; x < WORLD_W; x += 1) {
+        const start = y * WORLD_W + x;
+        if (visited[start] || scene.getTile(x, y) !== 'water') continue;
+        const tilesInComponent: number[] = [];
+        visited[start] = 1;
+        queue.length = 0;
+        queue.push(start);
+        for (let head = 0; head < queue.length; head += 1) {
+          const index = queue[head];
+          tilesInComponent.push(index);
+          const cx = index % WORLD_W;
+          const cy = Math.floor(index / WORLD_W);
+          const neighbors = [index - 1, index + 1, index - WORLD_W, index + WORLD_W];
+          for (const next of neighbors) {
+            const nx = next % WORLD_W;
+            const ny = Math.floor(next / WORLD_W);
+            if (nx < 0 || nx >= WORLD_W || ny < 0 || ny >= WORLD_H) continue;
+            if (Math.abs(nx - cx) + Math.abs(ny - cy) !== 1) continue;
+            if (visited[next] || scene.getTile(nx, ny) !== 'water') continue;
+            visited[next] = 1;
+            queue.push(next);
+          }
+        }
+        if (tilesInComponent.length > bestTiles.length) bestTiles = tilesInComponent;
+      }
+    }
+    const reachable = new Uint8Array(WORLD_W * WORLD_H);
+    for (const index of bestTiles) reachable[index] = 1;
+    scene.legacySwimmerReachableWater = reachable;
+    return reachable;
+  }
+
+function legacySwimmerSpawnClear(
+  scene: DeepdiveScene,
+  tx: number,
+  ty: number,
+  x: number,
+  y: number,
+  radius: number,
+  padding: number,
+  reachableWater: Uint8Array,
+) {
+    if (scene.getTile(tx, ty) !== 'water') return false;
+    if (!reachableWater[ty * WORLD_W + tx]) return false;
+    if (!ensureTerrainMask(scene)) return false;
+    const half = Math.max(7, radius + padding);
+    return !terrainMaskContactForAabb(scene, x, y, half, half, { maxSamples: 22, includeBounds: true });
+  }
+
+function legacySwimmerCorridorClear(
+  scene: DeepdiveScene,
+  x: number,
+  y: number,
+  radius: number,
+  pattern: FishPattern,
+  envelope: { padding: number; length: number; width: number; alternates: number },
+) {
+    const axes = legacySwimmerCorridorAxes(pattern);
+    let clearAxes = 0;
+    for (const axis of axes) {
+      if (legacySwimmerAxisClear(scene, x, y, radius, envelope, axis.x, axis.y)) clearAxes += 1;
+      if (clearAxes >= Math.max(1, envelope.alternates)) return true;
+    }
+    return false;
+  }
+
+function legacySwimmerPocketClear(scene: DeepdiveScene, x: number, y: number, radius: number, padding: number) {
+    let clear = 0;
+    const ring = Math.max(26, radius + padding * 1.8);
+    const sampleRadius = Math.max(6, radius + padding * 0.35);
+    for (let i = 0; i < 8; i += 1) {
+      const angle = (Math.PI * 2 * i) / 8;
+      const sx = x + Math.cos(angle) * ring;
+      const sy = y + Math.sin(angle) * ring;
+      const tx = Math.floor(sx / TILE);
+      const ty = Math.floor(sy / TILE);
+      if (tx < 1 || tx >= WORLD_W - 1 || ty < 1 || ty >= WORLD_H - 1) continue;
+      if (scene.getTile(tx, ty) !== 'water') continue;
+      if (terrainMaskContactForAabb(scene, sx, sy, sampleRadius, sampleRadius, { maxSamples: 14, includeBounds: true })) continue;
+      clear += 1;
+    }
+    return clear >= 3;
+  }
+
+function legacySwimmerCorridorAxes(pattern: FishPattern) {
+    if (pattern === 'glide') return [{ x: 1, y: 0 }, { x: 0.72, y: 0.28 }, { x: 0.72, y: -0.28 }, { x: 0, y: 1 }];
+    if (pattern === 'school') return [{ x: 1, y: 0 }, { x: 0.92, y: 0.22 }, { x: 0.92, y: -0.22 }];
+    if (pattern === 'stalk') return [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: 0.7, y: 0.7 }, { x: 0.7, y: -0.7 }];
+    if (pattern === 'circle') return [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: 0.7, y: 0.7 }, { x: 0.7, y: -0.7 }];
+    return [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: 0.86, y: 0.38 }];
+  }
+
+function legacySwimmerAxisClear(
+  scene: DeepdiveScene,
+  x: number,
+  y: number,
+  radius: number,
+  envelope: { padding: number; length: number; width: number },
+  axisX: number,
+  axisY: number,
+) {
+    const len = Math.max(1, Math.hypot(axisX, axisY));
+    const dx = axisX / len;
+    const dy = axisY / len;
+    const nx = -dy;
+    const ny = dx;
+    const sampleRadius = Math.max(7, radius + envelope.padding * 0.55);
+    const offsets = [-envelope.width * 0.5, 0, envelope.width * 0.5];
+    let samples = 0;
+    let clear = 0;
+    let centerClear = 0;
+    for (let step = -2; step <= 2; step += 1) {
+      const along = (step / 2) * envelope.length;
+      for (const lateral of offsets) {
+        samples += 1;
+        const sx = x + dx * along + nx * lateral;
+        const sy = y + dy * along + ny * lateral;
+        const tx = Math.floor(sx / TILE);
+        const ty = Math.floor(sy / TILE);
+        const clearSample = tx >= 1 && tx < WORLD_W - 1 && ty >= 1 && ty < WORLD_H - 1
+          && scene.getTile(tx, ty) === 'water'
+          && !terrainMaskContactForAabb(scene, sx, sy, sampleRadius, sampleRadius, { maxSamples: 16, includeBounds: true });
+        if (clearSample) {
+          clear += 1;
+          if (lateral === 0) centerClear += 1;
+        }
+      }
+    }
+    return centerClear >= 4 && clear / Math.max(1, samples) >= 0.68;
+  }
+
+function scanLegacySwimmerFallback(
+  scene: DeepdiveScene,
+  minY: number,
+  maxY: number,
+  radius: number,
+  pattern: FishPattern,
+  envelope: { padding: number; length: number; width: number; alternates: number },
+  reachableWater: Uint8Array,
+) {
+    const minTy = Math.max(1, Math.floor(minY / TILE));
+    const maxTy = Math.min(WORLD_H - 2, Math.ceil(maxY / TILE));
+    const centerX = Math.floor(WORLD_W / 2);
+    for (let spread = 0; spread < WORLD_W; spread += 1) {
+      for (let ty = minTy; ty <= maxTy; ty += 2) {
+        for (const tx of [centerX - spread, centerX + spread]) {
+          if (tx < 4 || tx >= WORLD_W - 4) continue;
+          const x = tx * TILE + TILE * 0.5;
+          const y = ty * TILE + TILE * 0.5;
+          if (!legacySwimmerSpawnClear(scene, tx, ty, x, y, radius, envelope.padding * 0.65, reachableWater)) continue;
+          return {
+            x,
+            y,
+            navSpawnValidated: legacySwimmerCorridorClear(scene, x, y, radius, pattern, envelope)
+              || legacySwimmerPocketClear(scene, x, y, radius, envelope.padding),
+            navSpawnFallback: true,
+          };
+        }
+      }
+    }
+    return null;
   }
 
 export function findOpenWaterInBand(this: DeepdiveScene, minY: number, maxY: number) {

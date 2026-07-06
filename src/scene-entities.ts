@@ -1,12 +1,68 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature,Bobbit,ControlState,Fish,Larva,LooseItem,NestEgg,ScanTarget } from './types';
+import type { ArticulatedCreature,Bobbit,ControlState,Fish,FishPattern,Larva,LooseItem,NestEgg,ScanTarget } from './types';
 import { BLEED_DURATION,BLEED_RECENT_WINDOW,BLEED_TRIGGER_BITES,BOBBIT_DETECT_RADIUS,BOBBIT_ESCAPE_SECONDS,BOBBIT_LATCH_RADIUS,DYNAMITE_LAND_FUSE,EGG_DETECTION_RADIUS,EGG_HATCH_SECONDS,FISH_BITE_SFX_GAP_MS,NEST_CLEAR_REWARD,OASIS_OXYGEN_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_CONTACT_RADIUS,PLAYER_PICKUP_RADIUS,TARGET_DEPTH,THROWN_ITEM_GRAVITY,THROWN_ITEM_MAX_FALL_SPEED,TILE,WORLD_H } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { bargeSolidAtWorld,cargoCapacity,currentApexSpecies,oxygenMax,pointInRoom,predatorBiteCooldown,rarityColor,rarityLabel,resetOxygenWarnings,scaledEntity,scannableRarity,scanReward,subDef,updateFacingFromVelocity,updateFishVisualFacing,venomousFish } from './helpers';
 import { biomeName,renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
-import { findNearbyTerrainSurfaceAnchor,validateTerrainSurfaceAnchor } from './terrain-mask';
+import { TERRAIN_MASK_RES,terrainMaskContactForAabb,terrainMaskDensityAt,validateTerrainSurfaceAnchor,findNearbyTerrainSurfaceAnchor } from './terrain-mask';
+
+type LegacyNavEnvelope = {
+  feelerAngles: number[];
+  horizon: number;
+  sideBias: number;
+  avoidance: number;
+  waypointRadius: number;
+  reseedCooldown: number;
+};
+
+const LEGACY_NAV_ENVELOPES: Record<FishPattern, LegacyNavEnvelope> = {
+  school: { feelerAngles: [0, -0.52, 0.52, -0.96, 0.96], horizon: 1.08, sideBias: 0.34, avoidance: 1.15, waypointRadius: 95, reseedCooldown: 2.6 },
+  glide: { feelerAngles: [0, -0.36, 0.36, -0.72, 0.72], horizon: 1.45, sideBias: 0.2, avoidance: 0.92, waypointRadius: 130, reseedCooldown: 3.1 },
+  stalk: { feelerAngles: [0, -0.48, 0.48, -0.9, 0.9], horizon: 1.28, sideBias: 0.26, avoidance: 1.05, waypointRadius: 120, reseedCooldown: 2.3 },
+  circle: { feelerAngles: [0, -0.56, 0.56, -1.05, 1.05], horizon: 1.02, sideBias: 0.42, avoidance: 1.2, waypointRadius: 90, reseedCooldown: 2.4 },
+  sway: { feelerAngles: [0, -0.5, 0.5, -0.88, 0.88], horizon: 0.95, sideBias: 0.36, avoidance: 1.1, waypointRadius: 84, reseedCooldown: 2.5 },
+};
+
+function legacyFishContact(scene: DeepdiveScene, fish: Fish, x = fish.x, y = fish.y, padding = 1.5) {
+  const half = Math.max(6, fish.radius + padding);
+  const contact = terrainMaskContactForAabb(scene, x, y, half, half, { maxSamples: 24, includeBounds: true });
+  if (contact) return contact;
+  const tx = Math.floor(x / TILE);
+  const ty = Math.floor(y / TILE);
+  if (scene.getTile(tx, ty) !== 'water') {
+    const centerX = tx * TILE + TILE * 0.5;
+    const centerY = ty * TILE + TILE * 0.5;
+    const nx = x === centerX && y === centerY ? -(fish.vx || 1) : x - centerX;
+    const ny = x === centerX && y === centerY ? -(fish.vy || 0) : y - centerY;
+    const len = Math.max(1, Math.hypot(nx, ny));
+    return { count: 1, samples: 1, nx: nx / len, ny: ny / len, density: 255 };
+  }
+  if (bargeSolidAtWorld(x, y)) {
+    return { count: 1, samples: 1, nx: 0, ny: 1, density: 255 };
+  }
+  return null;
+}
+
+function legacyFishClearAt(scene: DeepdiveScene, fish: Fish, x: number, y: number, padding = 4) {
+  const tx = Math.floor(x / TILE);
+  const ty = Math.floor(y / TILE);
+  if (scene.getTile(tx, ty) !== 'water' || bargeSolidAtWorld(x, y)) return false;
+  return !legacyFishContact(scene, fish, x, y, padding);
+}
+
+function legacyDensityNear(scene: DeepdiveScene, x: number, y: number) {
+  const sx = Math.floor((x / TILE) * TERRAIN_MASK_RES);
+  const sy = Math.floor((y / TILE) * TERRAIN_MASK_RES);
+  return terrainMaskDensityAt(scene, sx, sy);
+}
+
+function rotateUnit(x: number, y: number, angle: number) {
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  return { x: x * c - y * s, y: x * s + y * c };
+}
 
 export function updateFish(this: DeepdiveScene, delta: number) {
     for (const fish of this.fish) {
@@ -244,10 +300,30 @@ export function steerFish(this: DeepdiveScene, fish: Fish, delta: number) {
       targetY = fish.y - toPlayerY * 1.4;
     }
 
-    const dx = targetX - fish.x;
-    const dy = targetY - fish.y;
-    const len = Math.max(1, Math.hypot(dx, dy));
+    updateLegacyNavTimers(fish, delta);
+    const sampledTargetX = targetX;
+    const sampledTargetY = targetY;
+    if ((fish.navWaypointTimer ?? 0) > 0 && fish.navTargetX !== undefined && fish.navTargetY !== undefined) {
+      targetX = fish.navTargetX;
+      targetY = fish.navTargetY;
+      if (Phaser.Math.Distance.Between(fish.x, fish.y, targetX, targetY) < Math.max(18, fish.radius * 1.6)) {
+        fish.navWaypointTimer = 0;
+        fish.navTargetX = undefined;
+        fish.navTargetY = undefined;
+        targetX = sampledTargetX;
+        targetY = sampledTargetY;
+      }
+    }
+
+    let dx = targetX - fish.x;
+    let dy = targetY - fish.y;
+    let len = Math.max(1, Math.hypot(dx, dy));
     const pursuit = fish.aggro > 0 && fish.hostile;
+    const adjusted = legacyFishSteeringDirection(this, fish, dx / len, dy / len, pursuit);
+    dx = adjusted.x;
+    dy = adjusted.y;
+    len = Math.max(1, Math.hypot(dx, dy));
+    updateLegacyStuckState(this, fish, sampledTargetX, sampledTargetY, dx / len, dy / len, delta);
     const desiredSpeed = fish.speed * (pursuit ? (fish.pattern === 'circle' ? 1.42 : 1.58) : 1);
     const steering = pursuit ? 4.4 : 2.6;
     fish.vx += (dx / len) * desiredSpeed * delta * steering;
@@ -260,16 +336,164 @@ export function steerFish(this: DeepdiveScene, fish: Fish, delta: number) {
     }
   }
 
+function updateLegacyNavTimers(fish: Fish, delta: number) {
+    fish.navWaypointTimer = Math.max(0, (fish.navWaypointTimer ?? 0) - delta);
+    fish.navReseedCooldown = Math.max(0, (fish.navReseedCooldown ?? 0) - delta);
+    fish.navTerrainBounceWindow = Math.max(0, (fish.navTerrainBounceWindow ?? 0) - delta);
+    if ((fish.navTerrainBounceWindow ?? 0) <= 0) fish.navRecentTerrainBounces = 0;
+    fish.navHeadingFlipCount = Math.max(0, (fish.navHeadingFlipCount ?? 0) - delta * 1.4);
+    if ((fish.navWaypointTimer ?? 0) <= 0) {
+      fish.navTargetX = undefined;
+      fish.navTargetY = undefined;
+    }
+  }
+
+function legacyFishSteeringDirection(scene: DeepdiveScene, fish: Fish, desiredX: number, desiredY: number, pursuit: boolean) {
+    const envelope = LEGACY_NAV_ENVELOPES[fish.pattern];
+    const speed = Math.hypot(fish.vx, fish.vy);
+    const horizon = Math.max(fish.radius * 2.4, fish.radius + speed * 0.34 + fish.speed * envelope.horizon * (pursuit ? 0.85 : 1));
+    let avoidX = 0;
+    let avoidY = 0;
+    let blocked = 0;
+    let leftPenalty = 0;
+    let rightPenalty = 0;
+    for (const angle of envelope.feelerAngles) {
+      const dir = rotateUnit(desiredX, desiredY, angle);
+      const distance = horizon * (angle === 0 ? 1 : Math.abs(angle) > 0.8 ? 0.82 : 0.92);
+      const sampleX = fish.x + dir.x * distance;
+      const sampleY = fish.y + dir.y * distance;
+      const contact = legacyFishContact(scene, fish, sampleX, sampleY, Math.max(2, fish.radius * 0.35));
+      const density = legacyDensityNear(scene, sampleX, sampleY);
+      const penalty = contact ? 1 + contact.count / Math.max(1, contact.samples) : density >= 72 ? 0.35 : 0;
+      if (angle < 0) leftPenalty += penalty;
+      else if (angle > 0) rightPenalty += penalty;
+      else {
+        leftPenalty += penalty * 0.5;
+        rightPenalty += penalty * 0.5;
+      }
+      if (!contact) continue;
+      blocked += 1;
+      const weight = (angle === 0 ? 1.3 : 0.82) * envelope.avoidance;
+      avoidX += contact.nx * weight;
+      avoidY += contact.ny * weight;
+    }
+    fish.navLastBlockedFeelers = blocked;
+    fish.navBlockedFeelers = (fish.navBlockedFeelers ?? 0) + blocked;
+    if (blocked <= 0) return { x: desiredX, y: desiredY };
+    const sideSign: 1 | -1 = leftPenalty < rightPenalty ? -1 : rightPenalty < leftPenalty ? 1 : fish.navAvoidSign ?? (fish.phase % (Math.PI * 2) > Math.PI ? -1 : 1);
+    fish.navAvoidSign = sideSign;
+    avoidX += -desiredY * sideSign * envelope.sideBias * Math.min(2, blocked);
+    avoidY += desiredX * sideSign * envelope.sideBias * Math.min(2, blocked);
+    const blend = Phaser.Math.Clamp(0.28 + blocked * 0.16, 0.3, pursuit ? 0.68 : 0.78);
+    const outX = desiredX * (1 - blend) + avoidX * blend;
+    const outY = desiredY * (1 - blend) + avoidY * blend;
+    const len = Math.max(1, Math.hypot(outX, outY));
+    return { x: outX / len, y: outY / len };
+  }
+
+function updateLegacyStuckState(
+  scene: DeepdiveScene,
+  fish: Fish,
+  targetX: number,
+  targetY: number,
+  headingX: number,
+  headingY: number,
+  delta: number,
+) {
+    const distance = Phaser.Math.Distance.Between(fish.x, fish.y, targetX, targetY);
+    const lastDistance = fish.navLastDistance ?? distance;
+    const displacement = fish.navLastX === undefined || fish.navLastY === undefined
+      ? fish.speed * delta
+      : Phaser.Math.Distance.Between(fish.x, fish.y, fish.navLastX, fish.navLastY);
+    const progress = lastDistance - distance;
+    const blocked = (fish.navLastBlockedFeelers ?? 0) > 0;
+    const poorProgress = progress < Math.max(0.35, fish.radius * 0.018) && displacement < Math.max(0.8, fish.speed * delta * 0.38);
+    fish.navStuckTimer = poorProgress || blocked || (fish.navRecentTerrainBounces ?? 0) > 0
+      ? (fish.navStuckTimer ?? 0) + delta
+      : Math.max(0, (fish.navStuckTimer ?? 0) - delta * 1.8);
+    if (fish.navLastHeadingX !== undefined && fish.navLastHeadingY !== undefined) {
+      const dot = fish.navLastHeadingX * headingX + fish.navLastHeadingY * headingY;
+      if (dot < -0.22 && displacement < Math.max(6, fish.radius * 0.7)) {
+        fish.navHeadingFlipCount = (fish.navHeadingFlipCount ?? 0) + 1;
+      }
+    }
+    fish.navLastDistance = distance;
+    fish.navLastX = fish.x;
+    fish.navLastY = fish.y;
+    fish.navLastHeadingX = headingX;
+    fish.navLastHeadingY = headingY;
+    const repeatedBounce = (fish.navRecentTerrainBounces ?? 0) >= 2;
+    const repeatedBlocked = (fish.navLastBlockedFeelers ?? 0) >= 3 && (fish.navStuckTimer ?? 0) > 0.45;
+    const flipStuck = (fish.navHeadingFlipCount ?? 0) >= 3 && (fish.navStuckTimer ?? 0) > 0.65;
+    if ((fish.navReseedCooldown ?? 0) > 0 || (!repeatedBounce && !repeatedBlocked && !flipStuck)) return;
+    const waypoint = sampleLegacyFishWaypoint(scene, fish, targetX, targetY, headingX, headingY);
+    const envelope = LEGACY_NAV_ENVELOPES[fish.pattern];
+    fish.navReseedCooldown = envelope.reseedCooldown;
+    fish.navStuckTimer = 0;
+    fish.navHeadingFlipCount = 0;
+    fish.navRecentTerrainBounces = 0;
+    if (!waypoint) return;
+    fish.navTargetX = waypoint.x;
+    fish.navTargetY = waypoint.y;
+    fish.navWaypointTimer = 1.7 + Math.min(0.9, waypoint.distance / Math.max(90, fish.speed));
+    fish.navReseedCount = (fish.navReseedCount ?? 0) + 1;
+    if (!fish.hostile || fish.aggro <= 0) {
+      fish.homeX = Phaser.Math.Linear(fish.homeX, waypoint.x, 0.18);
+      fish.homeY = Phaser.Math.Linear(fish.homeY, waypoint.y, 0.18);
+    }
+  }
+
+function sampleLegacyFishWaypoint(scene: DeepdiveScene, fish: Fish, targetX: number, targetY: number, headingX: number, headingY: number) {
+    const envelope = LEGACY_NAV_ENVELOPES[fish.pattern];
+    const signs: Array<1 | -1> = fish.navAvoidSign === -1 ? [-1, 1] : [1, -1];
+    let best: { x: number; y: number; score: number; distance: number } | null = null;
+    for (const radius of [envelope.waypointRadius * 0.72, envelope.waypointRadius, envelope.waypointRadius * 1.28]) {
+      for (const sign of signs) {
+        for (const angle of [0.58, 0.92, 1.28, 1.72]) {
+          const dir = rotateUnit(headingX, headingY, angle * sign);
+          const x = fish.x + dir.x * radius;
+          const y = fish.y + dir.y * radius;
+          if (!legacyFishClearAt(scene, fish, x, y, 5)) continue;
+          const probeX = fish.x + dir.x * Math.min(radius, fish.radius * 3.2);
+          const probeY = fish.y + dir.y * Math.min(radius, fish.radius * 3.2);
+          if (!legacyFishClearAt(scene, fish, probeX, probeY, 2)) continue;
+          const targetDistance = Phaser.Math.Distance.Between(x, y, targetX, targetY);
+          const currentDistance = Phaser.Math.Distance.Between(fish.x, fish.y, targetX, targetY);
+          const clearAhead = legacyFishClearAt(scene, fish, x + dir.x * fish.radius * 2.2, y + dir.y * fish.radius * 2.2, 3);
+          const lateral = Math.abs(dir.x * -headingY + dir.y * headingX);
+          const score = (currentDistance - targetDistance) * 0.25 + lateral * 35 + (clearAhead ? 18 : 0) - radius * 0.04;
+          if (!best || score > best.score) best = { x, y, score, distance: radius };
+        }
+      }
+    }
+    return best;
+  }
+
 export function keepFishInWater(this: DeepdiveScene, fish: Fish) {
-    const tx = Math.floor(fish.x / TILE);
-    const ty = Math.floor(fish.y / TILE);
-    if (this.getTile(tx, ty) === 'water') return;
-    fish.x -= fish.vx * 0.09;
-    fish.y -= fish.vy * 0.09;
-    fish.vx *= -0.65;
-    fish.vy *= -0.65;
-    fish.homeX = Phaser.Math.Linear(fish.homeX, fish.x, 0.15);
-    fish.homeY = Phaser.Math.Linear(fish.homeY, fish.y, 0.15);
+    const contact = legacyFishContact(this, fish);
+    if (!contact) return;
+    const push = Math.max(2.2, fish.radius * 0.16) * Math.min(2.5, 1 + contact.count / Math.max(1, contact.samples));
+    fish.x += contact.nx * push;
+    fish.y += contact.ny * push;
+    const secondContact = legacyFishContact(this, fish, fish.x, fish.y, 0.75);
+    if (secondContact) {
+      fish.x += secondContact.nx * Math.max(1.4, fish.radius * 0.1);
+      fish.y += secondContact.ny * Math.max(1.4, fish.radius * 0.1);
+    }
+    const into = fish.vx * contact.nx + fish.vy * contact.ny;
+    if (into < 0) {
+      fish.vx -= contact.nx * into * 1.12;
+      fish.vy -= contact.ny * into * 1.12;
+    }
+    fish.vx *= 0.82;
+    fish.vy *= 0.82;
+    fish.navTerrainBounces = (fish.navTerrainBounces ?? 0) + 1;
+    fish.navRecentTerrainBounces = (fish.navRecentTerrainBounces ?? 0) + 1;
+    fish.navTerrainBounceWindow = Math.max(fish.navTerrainBounceWindow ?? 0, 1.25);
+    if ((fish.navWaypointTimer ?? 0) <= 0 && (fish.navReseedCooldown ?? 0) <= 0) {
+      fish.homeX = Phaser.Math.Linear(fish.homeX, fish.x + contact.nx * fish.radius * 1.8, 0.035);
+      fish.homeY = Phaser.Math.Linear(fish.homeY, fish.y + contact.ny * fish.radius * 1.8, 0.035);
+    }
   }
 
 export function bumpFish(this: DeepdiveScene, fish: Fish, distance: number) {
