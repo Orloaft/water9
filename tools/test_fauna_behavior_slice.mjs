@@ -113,25 +113,31 @@ async function command(name, value) {
   return result;
 }
 
-async function waitReady() {
+async function waitReady(expectedBiome = null) {
   await page.waitForFunction(() => {
     const snap = window.__AQUA_PLAYTEST__?.snapshot?.();
     return Boolean(snap?.world && snap.world.ready !== false && snap.fish?.length);
-  }, null, { timeout: 12000 });
+  }, null, { timeout: 30000 });
+  if (expectedBiome !== null) {
+    await page.waitForFunction((biome) => {
+      const snap = window.__AQUA_PLAYTEST__?.snapshot?.();
+      return snap?.state?.biome === biome && snap?.world?.ready !== false && Boolean(snap?.fish?.length);
+    }, expectedBiome, { timeout: 30000 });
+  }
 }
 
 try {
   await page.goto(baseUrl, { waitUntil: 'networkidle', timeout: 20000 });
   await page.waitForFunction(() => Boolean(window.__AQUA_PLAYTEST__), null, { timeout: 10000 });
   await command('start');
-  await waitReady();
+  await waitReady(1);
 
   let currentBiome = 1;
   for (const target of targets) {
     if (target.biome !== currentBiome) {
       await command('setBiome', target.biome);
       currentBiome = target.biome;
-      await waitReady();
+      await waitReady(target.biome);
     }
     await command('clearProofOverlays');
     const teleport = await command('teleportToFauna', { species: target.species, distance: target.proximity ? 42 : 58 });

@@ -31,6 +31,8 @@ Implementation/proof notes will be filled in after verification.
 - `node tools/test_aggro_cue_regression.mjs` - passed.
 - `node tools/test_fauna_behavior_slice.mjs` - passed.
 
+Manager verification reran the focused fauna proof after extending its scene-restart readiness wait to cover slower biome generation. The refreshed proof passed and the screenshots were visually inspected.
+
 ## Proof Artifacts
 
 - `fauna-behavior-slice-metrics.json`
