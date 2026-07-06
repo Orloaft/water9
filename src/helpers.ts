@@ -310,7 +310,7 @@ export interface SpriteManifest {
 // Populated at load time from Asset Forge `*.frames.json` manifests.
 export const spriteManifests: Record<string, SpriteManifest> = {};
 
-const SPRITESHEET_BASES = [
+const FALLBACK_SPRITESHEET_BASES = [
   // Generic depth-band fish
   'fish-shallow-neutral',
   'fish-shallow-predator',
@@ -357,6 +357,15 @@ const SPRITESHEET_BASES = [
   'fauna-abyss-anglerfish',
   'fauna-abyss-snipe-eel',
   'fauna-abyss-medusa',
+];
+
+const CONTENT_SPRITESHEET_BASES = Array.from(new Set(Object.values(biomeFish).flatMap((speciesList) =>
+  speciesList.flatMap((species) => species.assetKey ? [species.assetKey] : []),
+)));
+
+const SPRITESHEET_BASES = [
+  ...FALLBACK_SPRITESHEET_BASES,
+  ...CONTENT_SPRITESHEET_BASES.filter((assetKey) => !FALLBACK_SPRITESHEET_BASES.includes(assetKey)),
 ];
 
 export function loadGeneratedAssets(scene: Phaser.Scene) {

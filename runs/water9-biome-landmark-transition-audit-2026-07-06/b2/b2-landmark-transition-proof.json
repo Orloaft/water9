@@ -1,0 +1,2768 @@
+{
+  "schema": "water9/b2-landmark-transition-audit@1",
+  "generatedAt": "2026-07-06T12:28:55.592Z",
+  "repoRoot": "/mnt/nxt-dev/water9",
+  "head": "2c4ff8d",
+  "selectedPort": 5180,
+  "baseUrl": "http://127.0.0.1:5180/",
+  "outputs": [
+    {
+      "key": "b1-lower-before-b2-depth1260",
+      "biome": 1,
+      "depth": 1260,
+      "note": "B1 late-run lower/transition-deep baseline before travel to B2",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=1&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; teleportToReachableDepth; centerCameraOnPlayer; no backgroundReview staging before screenshot; direct #game canvas toDataURL.",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 1260,
+        "depthMeters": 606,
+        "tileX": 5,
+        "tileY": 105,
+        "localWaterRatio": 0.223
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b1-lower-before-b2-depth1260-normal-gameplay-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b1-lower-before-b2-depth1260-normal-gameplay-canvas-grayscale.png",
+      "colorBytes": 178148,
+      "grayscaleBytes": 119889,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.072,
+        "lumaMax": 213.14,
+        "lumaRange": 213.068,
+        "lumaMean": 8.946,
+        "lumaStdDev": 9.636
+      },
+      "environment": {
+        "stateBiome": 1,
+        "stateDepth": 606,
+        "profile": {
+          "id": "environment-shallows-column-mid",
+          "biome": 1,
+          "depthBand": "mid",
+          "activeBand": "mid",
+          "activeBandBlend": {
+            "from": "upper",
+            "to": "mid",
+            "progress": 1
+          },
+          "cameraClearColor": "#092430"
+        },
+        "activeBand": {
+          "id": "mid",
+          "topColor": "#0a465f",
+          "bottomColor": "#092f4b",
+          "hazeColor": "#83cfd2",
+          "hazeAlpha": 0.07,
+          "sedimentAlpha": 0.045,
+          "causticAlpha": 0.038,
+          "silhouetteAlpha": 0.075,
+          "anchorDensity": 0.68
+        },
+        "activeBandBlend": {
+          "from": "upper",
+          "to": "mid",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-shallows-organic-reef-shelf",
+          "drowned-mine-structure"
+        ],
+        "anchorCount": 2,
+        "anchors": [
+          {
+            "id": "mid-0",
+            "assetId": "biome-shallows-organic-reef-shelf",
+            "alpha": 0.262,
+            "x": 83.101,
+            "y": 471.35,
+            "width": 206.459,
+            "height": 139.5,
+            "parallaxFactor": 0.087
+          },
+          {
+            "id": "mid-2",
+            "assetId": "biome-shallows-organic-reef-shelf",
+            "alpha": 0.317,
+            "x": 226.63,
+            "y": 465.18,
+            "width": 191.755,
+            "height": 129.564,
+            "parallaxFactor": 0.087
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.014,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-biome1-organic-shallow-reef-band",
+            "painterlyAssetId": "biome1-organic-upper-reef-band",
+            "alpha": 0.035,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-biome1-organic-shallow-reef-band",
+            "painterlyAssetId": "biome1-organic-mid-reef-band",
+            "alpha": 0.128,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-biome1-organic-shallow-reef-band",
+            "painterlyAssetId": "biome1-organic-lower-reef-band",
+            "alpha": 0.021,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-biome1-organic-shallow-reef-band",
+            "painterlyAssetId": "biome1-organic-transitionDeep-reef-band",
+            "alpha": 0.007,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.395,
+          "ambientOpacity": 0.156,
+          "maskOpacity": 0.324
+        },
+        "waterColumnLayers": [
+          {
+            "id": "mid-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.02,
+            "depthGate": 1,
+            "bandScale": 0.42
+          },
+          {
+            "id": "mid-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.019,
+            "depthGate": 1,
+            "bandScale": 0.62
+          },
+          {
+            "id": "mid-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.01,
+            "depthGate": 1,
+            "bandScale": 0.34
+          },
+          {
+            "id": "mid-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0,
+            "bandScale": 0.08
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#83cfd2",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 0,
+          "y": 2424,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "b2-entry-surface-depth90",
+      "biome": 2,
+      "depth": 90,
+      "note": "B2 first-water/surface entry immediately after biome switch",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; teleportToReachableDepth; centerCameraOnPlayer; no backgroundReview staging before screenshot; direct #game canvas toDataURL.",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 90,
+        "depthMeters": 90,
+        "tileX": 54,
+        "tileY": 19,
+        "localWaterRatio": 1
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-entry-surface-depth90-normal-gameplay-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-entry-surface-depth90-normal-gameplay-canvas-grayscale.png",
+      "colorBytes": 48048,
+      "grayscaleBytes": 44265,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0,
+        "lumaMax": 251.346,
+        "lumaRange": 251.346,
+        "lumaMean": 44.903,
+        "lumaStdDev": 6.549
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 90,
+        "profile": {
+          "id": "environment-shallows-column-surface",
+          "biome": 2,
+          "depthBand": "surface",
+          "activeBand": "surface",
+          "activeBandBlend": {
+            "from": "surface",
+            "to": "surface",
+            "progress": 1
+          },
+          "cameraClearColor": "#18313a"
+        },
+        "activeBand": {
+          "id": "surface",
+          "topColor": "#2f93a4",
+          "bottomColor": "#0d6071",
+          "hazeColor": "#bffbf0",
+          "hazeAlpha": 0.045,
+          "sedimentAlpha": 0.018,
+          "causticAlpha": 0.115,
+          "silhouetteAlpha": 0.035,
+          "anchorDensity": 0.35
+        },
+        "activeBandBlend": {
+          "from": "surface",
+          "to": "surface",
+          "progress": 1
+        },
+        "anchorAssetPool": [],
+        "anchorCount": 0,
+        "anchors": [],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.21,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.037,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.008,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.007,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.004,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0,
+          "ambientOpacity": 0.045,
+          "maskOpacity": 0
+        },
+        "waterColumnLayers": [
+          {
+            "id": "surface-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.016,
+            "depthGate": 1,
+            "bandScale": 0.56
+          },
+          {
+            "id": "surface-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.005,
+            "depthGate": 1,
+            "bandScale": 0.45
+          },
+          {
+            "id": "surface-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.007,
+            "depthGate": 1,
+            "bandScale": 0.68
+          },
+          {
+            "id": "surface-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0.012,
+            "depthGate": 0.855,
+            "bandScale": 0.42
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#bffbf0",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1135,
+          "y": 360,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "b2-upper-first-landmark-depth180",
+      "biome": 2,
+      "depth": 180,
+      "note": "B2 upper band, first normal-play brine shelf eligibility",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; teleportToReachableDepth; centerCameraOnPlayer; no backgroundReview staging before screenshot; direct #game canvas toDataURL.",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 180,
+        "depthMeters": 180,
+        "tileX": 52,
+        "tileY": 34,
+        "localWaterRatio": 1
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-upper-first-landmark-depth180-normal-gameplay-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-upper-first-landmark-depth180-normal-gameplay-canvas-grayscale.png",
+      "colorBytes": 459738,
+      "grayscaleBytes": 264774,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0,
+        "lumaMax": 235.643,
+        "lumaRange": 235.643,
+        "lumaMean": 56.908,
+        "lumaStdDev": 8.559
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 180,
+        "profile": {
+          "id": "environment-shallows-column-upper",
+          "biome": 2,
+          "depthBand": "upper",
+          "activeBand": "upper",
+          "activeBandBlend": {
+            "from": "surface",
+            "to": "upper",
+            "progress": 1
+          },
+          "cameraClearColor": "#18313a"
+        },
+        "activeBand": {
+          "id": "upper",
+          "topColor": "#0c7180",
+          "bottomColor": "#0b4b62",
+          "hazeColor": "#9deee4",
+          "hazeAlpha": 0.055,
+          "sedimentAlpha": 0.03,
+          "causticAlpha": 0.075,
+          "silhouetteAlpha": 0.06,
+          "anchorDensity": 0.56
+        },
+        "activeBandBlend": {
+          "from": "surface",
+          "to": "upper",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-brine-vent-sulfide-shelf",
+          "kelp-curtain-cluster",
+          "reef-arch-distance",
+          "cable-buoy-chain"
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "upper-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.347,
+            "x": 272.84,
+            "y": 259.172,
+            "width": 769.105,
+            "height": 199.768,
+            "parallaxFactor": 0.107
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.085,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.213,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.033,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.01,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.005,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.094,
+          "ambientOpacity": 0.071,
+          "maskOpacity": 0.077
+        },
+        "waterColumnLayers": [
+          {
+            "id": "upper-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.021,
+            "depthGate": 1,
+            "bandScale": 0.62
+          },
+          {
+            "id": "upper-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.014,
+            "depthGate": 1,
+            "bandScale": 0.72
+          },
+          {
+            "id": "upper-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.01,
+            "depthGate": 1,
+            "bandScale": 0.55
+          },
+          {
+            "id": "upper-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0.004,
+            "depthGate": 0.72,
+            "bandScale": 0.24
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#9deee4",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1087,
+          "y": 720,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "b2-mid-brine-shelf-depth760",
+      "biome": 2,
+      "depth": 760,
+      "note": "B2 mid-band brine shelf normal gameplay",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; teleportToReachableDepth; centerCameraOnPlayer; no backgroundReview staging before screenshot; direct #game canvas toDataURL.",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 760,
+        "depthMeters": 618,
+        "tileX": 40,
+        "tileY": 107,
+        "localWaterRatio": 0.288
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-mid-brine-shelf-depth760-normal-gameplay-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-mid-brine-shelf-depth760-normal-gameplay-canvas-grayscale.png",
+      "colorBytes": 284203,
+      "grayscaleBytes": 174426,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.072,
+        "lumaMax": 202.072,
+        "lumaRange": 202,
+        "lumaMean": 10.441,
+        "lumaStdDev": 11.949
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 618,
+        "profile": {
+          "id": "environment-shallows-column-mid",
+          "biome": 2,
+          "depthBand": "mid",
+          "activeBand": "mid",
+          "activeBandBlend": {
+            "from": "upper",
+            "to": "mid",
+            "progress": 1
+          },
+          "cameraClearColor": "#171f2b"
+        },
+        "activeBand": {
+          "id": "mid",
+          "topColor": "#0a465f",
+          "bottomColor": "#092f4b",
+          "hazeColor": "#83cfd2",
+          "hazeAlpha": 0.07,
+          "sedimentAlpha": 0.045,
+          "causticAlpha": 0.038,
+          "silhouetteAlpha": 0.075,
+          "anchorDensity": 0.68
+        },
+        "activeBandBlend": {
+          "from": "upper",
+          "to": "mid",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-brine-vent-sulfide-shelf",
+          "drowned-mine-structure"
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "mid-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.362,
+            "x": 258.14,
+            "y": 586.381,
+            "width": 873.762,
+            "height": 226.951,
+            "parallaxFactor": 0.107
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.012,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.028,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.111,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.02,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.004,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.581,
+          "ambientOpacity": 0.208,
+          "maskOpacity": 0.477
+        },
+        "waterColumnLayers": [
+          {
+            "id": "mid-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.18
+          },
+          {
+            "id": "mid-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.16
+          },
+          {
+            "id": "mid-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.003,
+            "depthGate": 1,
+            "bandScale": 0.28
+          },
+          {
+            "id": "mid-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0,
+            "bandScale": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [
+            "horizontal-brine-ribbons",
+            "suspended-sediment-flecks"
+          ],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#86bca9",
+          "blendMode": "normal",
+          "driftX": -7.4,
+          "driftY": 0.22,
+          "guardRadius": 176,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 799,
+          "y": 2472,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "b2-lower-before-exit-depth1260",
+      "biome": 2,
+      "depth": 1260,
+      "note": "B2 lower band before transitionDeep/deep exit",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; teleportToReachableDepth; centerCameraOnPlayer; no backgroundReview staging before screenshot; direct #game canvas toDataURL.",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 1260,
+        "depthMeters": 576,
+        "tileX": 94,
+        "tileY": 100,
+        "localWaterRatio": 0.425
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-lower-before-exit-depth1260-normal-gameplay-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-lower-before-exit-depth1260-normal-gameplay-canvas-grayscale.png",
+      "colorBytes": 316190,
+      "grayscaleBytes": 199904,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.072,
+        "lumaMax": 205.072,
+        "lumaRange": 205,
+        "lumaMean": 11.012,
+        "lumaStdDev": 12.501
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 576,
+        "profile": {
+          "id": "environment-shallows-column-mid",
+          "biome": 2,
+          "depthBand": "mid",
+          "activeBand": "mid",
+          "activeBandBlend": {
+            "from": "upper",
+            "to": "mid",
+            "progress": 1
+          },
+          "cameraClearColor": "#171f2b"
+        },
+        "activeBand": {
+          "id": "mid",
+          "topColor": "#0a465f",
+          "bottomColor": "#092f4b",
+          "hazeColor": "#83cfd2",
+          "hazeAlpha": 0.07,
+          "sedimentAlpha": 0.045,
+          "causticAlpha": 0.038,
+          "silhouetteAlpha": 0.075,
+          "anchorDensity": 0.68
+        },
+        "activeBandBlend": {
+          "from": "upper",
+          "to": "mid",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-brine-vent-sulfide-shelf",
+          "drowned-mine-structure"
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "mid-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.489,
+            "x": 376.292,
+            "y": 535.681,
+            "width": 859.276,
+            "height": 223.189,
+            "parallaxFactor": 0.107
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.012,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.029,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.112,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.02,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.004,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.534,
+          "ambientOpacity": 0.195,
+          "maskOpacity": 0.438
+        },
+        "waterColumnLayers": [
+          {
+            "id": "mid-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.18
+          },
+          {
+            "id": "mid-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.16
+          },
+          {
+            "id": "mid-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.003,
+            "depthGate": 1,
+            "bandScale": 0.28
+          },
+          {
+            "id": "mid-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0,
+            "bandScale": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [
+            "horizontal-brine-ribbons",
+            "suspended-sediment-flecks"
+          ],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#86bca9",
+          "blendMode": "normal",
+          "driftX": -7.4,
+          "driftY": 0.22,
+          "guardRadius": 176,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 2095,
+          "y": 2304,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "b2-transitiondeep-exit-depth1500",
+      "biome": 2,
+      "depth": 1500,
+      "note": "B2 transitionDeep just before travel to B3",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; teleportToReachableDepth; centerCameraOnPlayer; no backgroundReview staging before screenshot; direct #game canvas toDataURL.",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 1500,
+        "depthMeters": 690,
+        "tileX": 76,
+        "tileY": 119,
+        "localWaterRatio": 0.261
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-transitiondeep-exit-depth1500-normal-gameplay-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b2-transitiondeep-exit-depth1500-normal-gameplay-canvas-grayscale.png",
+      "colorBytes": 163394,
+      "grayscaleBytes": 112891,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.144,
+        "lumaMax": 192.946,
+        "lumaRange": 192.802,
+        "lumaMean": 6.241,
+        "lumaStdDev": 9.084
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 696,
+        "profile": {
+          "id": "environment-shallows-column-mid",
+          "biome": 2,
+          "depthBand": "mid",
+          "activeBand": "mid",
+          "activeBandBlend": {
+            "from": "upper",
+            "to": "mid",
+            "progress": 1
+          },
+          "cameraClearColor": "#171f2b"
+        },
+        "activeBand": {
+          "id": "mid",
+          "topColor": "#0a465f",
+          "bottomColor": "#092f4b",
+          "hazeColor": "#83cfd2",
+          "hazeAlpha": 0.07,
+          "sedimentAlpha": 0.045,
+          "causticAlpha": 0.038,
+          "silhouetteAlpha": 0.075,
+          "anchorDensity": 0.68
+        },
+        "activeBandBlend": {
+          "from": "upper",
+          "to": "mid",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-brine-vent-sulfide-shelf",
+          "drowned-mine-structure"
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "mid-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.388,
+            "x": 341.752,
+            "y": 625.792,
+            "width": 569.819,
+            "height": 148.005,
+            "parallaxFactor": 0.107
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.012,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.028,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.11,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.02,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.004,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.668,
+          "ambientOpacity": 0.232,
+          "maskOpacity": 0.548
+        },
+        "waterColumnLayers": [
+          {
+            "id": "mid-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.18
+          },
+          {
+            "id": "mid-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.16
+          },
+          {
+            "id": "mid-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.003,
+            "depthGate": 1,
+            "bandScale": 0.28
+          },
+          {
+            "id": "mid-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0,
+            "bandScale": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [
+            "horizontal-brine-ribbons",
+            "suspended-sediment-flecks"
+          ],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#86bca9",
+          "blendMode": "normal",
+          "driftX": -7.4,
+          "driftY": 0.22,
+          "guardRadius": 176,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1672,
+          "y": 2782,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "b3-entry-surface-depth90",
+      "biome": 3,
+      "depth": 90,
+      "note": "B3 first-water/surface entry after leaving B2",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=3&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; teleportToReachableDepth; centerCameraOnPlayer; no backgroundReview staging before screenshot; direct #game canvas toDataURL.",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 90,
+        "depthMeters": 90,
+        "tileX": 52,
+        "tileY": 19,
+        "localWaterRatio": 1
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b3-entry-surface-depth90-normal-gameplay-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/b3-entry-surface-depth90-normal-gameplay-canvas-grayscale.png",
+      "colorBytes": 56425,
+      "grayscaleBytes": 49889,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 1.57,
+        "lumaMax": 237.499,
+        "lumaRange": 235.929,
+        "lumaMean": 25.418,
+        "lumaStdDev": 6.589
+      },
+      "environment": {
+        "stateBiome": 3,
+        "stateDepth": 90,
+        "profile": {
+          "id": "environment-shallows-column-surface",
+          "biome": 3,
+          "depthBand": "surface",
+          "activeBand": "surface",
+          "activeBandBlend": {
+            "from": "surface",
+            "to": "surface",
+            "progress": 1
+          },
+          "cameraClearColor": "#161d32"
+        },
+        "activeBand": {
+          "id": "surface",
+          "topColor": "#2f93a4",
+          "bottomColor": "#0d6071",
+          "hazeColor": "#bffbf0",
+          "hazeAlpha": 0.045,
+          "sedimentAlpha": 0.018,
+          "causticAlpha": 0.115,
+          "silhouetteAlpha": 0.035,
+          "anchorDensity": 0.35
+        },
+        "activeBandBlend": {
+          "from": "surface",
+          "to": "surface",
+          "progress": 1
+        },
+        "anchorAssetPool": [],
+        "anchorCount": 0,
+        "anchors": [],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.232,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.038,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.008,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.008,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.008,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.066,
+          "ambientOpacity": 0.064,
+          "maskOpacity": 0.054
+        },
+        "waterColumnLayers": [
+          {
+            "id": "surface-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.007,
+            "depthGate": 1,
+            "bandScale": 0.42
+          },
+          {
+            "id": "surface-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.002,
+            "depthGate": 1,
+            "bandScale": 0.3
+          },
+          {
+            "id": "surface-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.003,
+            "depthGate": 1,
+            "bandScale": 0.4
+          },
+          {
+            "id": "surface-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0.005,
+            "depthGate": 0.855,
+            "bandScale": 0.28
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#bffbf0",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1087,
+          "y": 360,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    }
+  ],
+  "exactOutputs": [
+    {
+      "key": "exact-b1-lower-before-b2-depth1260",
+      "biome": 1,
+      "depth": 1260,
+      "reviewX": 3600,
+      "note": "Exact-depth B1 late-run baseline; backgroundReview metadata/canvas, no water-window clearing",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=1&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; ?playtest biome route; backgroundReview exact-depth positioning with clearWaterWindow:false; no gameplay code changes; direct #game canvas toDataURL. B2 review mode intentionally suppresses the lamp beam.",
+      "backgroundReviewDepthParam": 840,
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b1-lower-before-b2-depth1260-review-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b1-lower-before-b2-depth1260-review-canvas-grayscale.png",
+      "colorBytes": 76404,
+      "grayscaleBytes": 58102,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.787,
+        "lumaMax": 177.787,
+        "lumaRange": 177,
+        "lumaMean": 4.657,
+        "lumaStdDev": 5.835
+      },
+      "environment": {
+        "stateBiome": 1,
+        "stateDepth": 1260,
+        "profile": {
+          "id": "environment-shallows-column-lower",
+          "biome": 1,
+          "depthBand": "lower",
+          "activeBand": "lower",
+          "activeBandBlend": {
+            "from": "mid",
+            "to": "lower",
+            "progress": 1
+          },
+          "cameraClearColor": "#06111d"
+        },
+        "activeBand": {
+          "id": "lower",
+          "topColor": "#082d49",
+          "bottomColor": "#061d36",
+          "hazeColor": "#668ea8",
+          "hazeAlpha": 0.085,
+          "sedimentAlpha": 0.055,
+          "causticAlpha": 0.015,
+          "silhouetteAlpha": 0.078,
+          "anchorDensity": 0.76
+        },
+        "activeBandBlend": {
+          "from": "mid",
+          "to": "lower",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-shallows-organic-reef-shelf",
+          "phase5-lower-drowned-gantry-wide",
+          "phase5-lower-cable-reef-span",
+          "drowned-mine-structure",
+          "cable-buoy-chain",
+          "vent-brine-curtain"
+        ],
+        "anchorCount": 2,
+        "anchors": [
+          {
+            "id": "lower-0",
+            "assetId": "biome-shallows-organic-reef-shelf",
+            "alpha": 0.199,
+            "x": 318.17,
+            "y": 946.819,
+            "width": 231.259,
+            "height": 156.256,
+            "parallaxFactor": 0.087
+          },
+          {
+            "id": "lower-2",
+            "assetId": "biome-shallows-organic-reef-shelf",
+            "alpha": 0.262,
+            "x": 337.828,
+            "y": 937.941,
+            "width": 205.577,
+            "height": 138.903,
+            "parallaxFactor": 0.087
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.01,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-biome1-organic-shallow-reef-band",
+            "painterlyAssetId": "biome1-organic-upper-reef-band",
+            "alpha": 0.009,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-biome1-organic-shallow-reef-band",
+            "painterlyAssetId": "biome1-organic-mid-reef-band",
+            "alpha": 0.022,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-biome1-organic-shallow-reef-band",
+            "painterlyAssetId": "biome1-organic-lower-reef-band",
+            "alpha": 0.1,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-biome1-organic-shallow-reef-band",
+            "painterlyAssetId": "biome1-organic-transitionDeep-reef-band",
+            "alpha": 0.013,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.9,
+          "ambientOpacity": 0.297,
+          "maskOpacity": 0.738
+        },
+        "waterColumnLayers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.019,
+            "depthGate": 1,
+            "bandScale": 0.32
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.019,
+            "depthGate": 1,
+            "bandScale": 0.48
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.006,
+            "depthGate": 0.72,
+            "bandScale": 0.24
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0,
+            "bandScale": 0.02
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#668ea8",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1563,
+          "y": 5028,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "exact-b2-entry-surface-depth90",
+      "biome": 2,
+      "depth": 90,
+      "reviewX": 4200,
+      "note": "Exact-depth B2 surface entry; backgroundReview metadata/canvas, no water-window clearing",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; ?playtest biome route; backgroundReview exact-depth positioning with clearWaterWindow:false; no gameplay code changes; direct #game canvas toDataURL. B2 review mode intentionally suppresses the lamp beam.",
+      "backgroundReviewDepthParam": 60,
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-entry-surface-depth90-review-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-entry-surface-depth90-review-canvas-grayscale.png",
+      "colorBytes": 40935,
+      "grayscaleBytes": 38524,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 2.57,
+        "lumaMax": 253.499,
+        "lumaRange": 250.929,
+        "lumaMean": 44.605,
+        "lumaStdDev": 6.279
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 90,
+        "profile": {
+          "id": "environment-shallows-column-surface",
+          "biome": 2,
+          "depthBand": "surface",
+          "activeBand": "surface",
+          "activeBandBlend": {
+            "from": "surface",
+            "to": "surface",
+            "progress": 1
+          },
+          "cameraClearColor": "#18313a"
+        },
+        "activeBand": {
+          "id": "surface",
+          "topColor": "#2f93a4",
+          "bottomColor": "#0d6071",
+          "hazeColor": "#bffbf0",
+          "hazeAlpha": 0.045,
+          "sedimentAlpha": 0.018,
+          "causticAlpha": 0.115,
+          "silhouetteAlpha": 0.035,
+          "anchorDensity": 0.35
+        },
+        "activeBandBlend": {
+          "from": "surface",
+          "to": "surface",
+          "progress": 1
+        },
+        "anchorAssetPool": [],
+        "anchorCount": 0,
+        "anchors": [],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.21,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.037,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.008,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.007,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.004,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0,
+          "ambientOpacity": 0.045,
+          "maskOpacity": 0
+        },
+        "waterColumnLayers": [
+          {
+            "id": "surface-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.016,
+            "depthGate": 1,
+            "bandScale": 0.56
+          },
+          {
+            "id": "surface-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.005,
+            "depthGate": 1,
+            "bandScale": 0.45
+          },
+          {
+            "id": "surface-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.007,
+            "depthGate": 1,
+            "bandScale": 0.68
+          },
+          {
+            "id": "surface-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0.012,
+            "depthGate": 0.855,
+            "bandScale": 0.42
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#bffbf0",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1563,
+          "y": 348,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "exact-b2-upper-first-landmark-depth180",
+      "biome": 2,
+      "depth": 180,
+      "reviewX": 4200,
+      "note": "Exact-depth B2 upper brine shelf; backgroundReview metadata/canvas, no water-window clearing",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; ?playtest biome route; backgroundReview exact-depth positioning with clearWaterWindow:false; no gameplay code changes; direct #game canvas toDataURL. B2 review mode intentionally suppresses the lamp beam.",
+      "backgroundReviewDepthParam": 120,
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-upper-first-landmark-depth180-review-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-upper-first-landmark-depth180-review-canvas-grayscale.png",
+      "colorBytes": 497616,
+      "grayscaleBytes": 276145,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0,
+        "lumaMax": 235.917,
+        "lumaRange": 235.917,
+        "lumaMean": 52.395,
+        "lumaStdDev": 15.523
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 180,
+        "profile": {
+          "id": "environment-shallows-column-upper",
+          "biome": 2,
+          "depthBand": "upper",
+          "activeBand": "upper",
+          "activeBandBlend": {
+            "from": "surface",
+            "to": "upper",
+            "progress": 1
+          },
+          "cameraClearColor": "#18313a"
+        },
+        "activeBand": {
+          "id": "upper",
+          "topColor": "#0c7180",
+          "bottomColor": "#0b4b62",
+          "hazeColor": "#9deee4",
+          "hazeAlpha": 0.055,
+          "sedimentAlpha": 0.03,
+          "causticAlpha": 0.075,
+          "silhouetteAlpha": 0.06,
+          "anchorDensity": 0.56
+        },
+        "activeBandBlend": {
+          "from": "surface",
+          "to": "upper",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-brine-vent-sulfide-shelf",
+          "kelp-curtain-cluster",
+          "reef-arch-distance",
+          "cable-buoy-chain"
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "upper-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.349,
+            "x": 333.322,
+            "y": 259.873,
+            "width": 462.711,
+            "height": 120.185,
+            "parallaxFactor": 0.107
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.085,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.213,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.033,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.01,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.005,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.094,
+          "ambientOpacity": 0.071,
+          "maskOpacity": 0.077
+        },
+        "waterColumnLayers": [
+          {
+            "id": "upper-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.021,
+            "depthGate": 1,
+            "bandScale": 0.62
+          },
+          {
+            "id": "upper-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.014,
+            "depthGate": 1,
+            "bandScale": 0.72
+          },
+          {
+            "id": "upper-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.01,
+            "depthGate": 1,
+            "bandScale": 0.55
+          },
+          {
+            "id": "upper-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0.004,
+            "depthGate": 0.72,
+            "bandScale": 0.24
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#9deee4",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1563,
+          "y": 708,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "exact-b2-mid-brine-shelf-depth760",
+      "biome": 2,
+      "depth": 760,
+      "reviewX": 4700,
+      "note": "Exact-depth B2 mid brine shelf; backgroundReview metadata/canvas, no water-window clearing",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; ?playtest biome route; backgroundReview exact-depth positioning with clearWaterWindow:false; no gameplay code changes; direct #game canvas toDataURL. B2 review mode intentionally suppresses the lamp beam.",
+      "backgroundReviewDepthParam": 506.6666666666667,
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-mid-brine-shelf-depth760-review-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-mid-brine-shelf-depth760-review-canvas-grayscale.png",
+      "colorBytes": 356096,
+      "grayscaleBytes": 216782,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.144,
+        "lumaMax": 189.138,
+        "lumaRange": 188.993,
+        "lumaMean": 11.403,
+        "lumaStdDev": 11.31
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 756,
+        "profile": {
+          "id": "environment-shallows-column-mid",
+          "biome": 2,
+          "depthBand": "mid",
+          "activeBand": "mid",
+          "activeBandBlend": {
+            "from": "upper",
+            "to": "mid",
+            "progress": 1
+          },
+          "cameraClearColor": "#171f2b"
+        },
+        "activeBand": {
+          "id": "mid",
+          "topColor": "#0a465f",
+          "bottomColor": "#092f4b",
+          "hazeColor": "#83cfd2",
+          "hazeAlpha": 0.07,
+          "sedimentAlpha": 0.045,
+          "causticAlpha": 0.038,
+          "silhouetteAlpha": 0.075,
+          "anchorDensity": 0.68
+        },
+        "activeBandBlend": {
+          "from": "upper",
+          "to": "mid",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-brine-vent-sulfide-shelf",
+          "drowned-mine-structure"
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "mid-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.462,
+            "x": 340.209,
+            "y": 686.672,
+            "width": 758.515,
+            "height": 197.017,
+            "parallaxFactor": 0.107
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.012,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.028,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.109,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.019,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.004,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.734,
+          "ambientOpacity": 0.251,
+          "maskOpacity": 0.602
+        },
+        "waterColumnLayers": [
+          {
+            "id": "mid-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.18
+          },
+          {
+            "id": "mid-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.16
+          },
+          {
+            "id": "mid-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.003,
+            "depthGate": 1,
+            "bandScale": 0.28
+          },
+          {
+            "id": "mid-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0,
+            "bandScale": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [
+            "horizontal-brine-ribbons",
+            "suspended-sediment-flecks"
+          ],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#86bca9",
+          "blendMode": "normal",
+          "driftX": -7.4,
+          "driftY": 0.22,
+          "guardRadius": 176,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1563,
+          "y": 3028,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "exact-b2-lower-before-exit-depth1260",
+      "biome": 2,
+      "depth": 1260,
+      "reviewX": 5200,
+      "note": "Exact-depth B2 lower band before exit; backgroundReview metadata/canvas, no water-window clearing",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; ?playtest biome route; backgroundReview exact-depth positioning with clearWaterWindow:false; no gameplay code changes; direct #game canvas toDataURL. B2 review mode intentionally suppresses the lamp beam.",
+      "backgroundReviewDepthParam": 840,
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-lower-before-exit-depth1260-review-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-lower-before-exit-depth1260-review-canvas-grayscale.png",
+      "colorBytes": 203737,
+      "grayscaleBytes": 119322,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.86,
+        "lumaMax": 173.065,
+        "lumaRange": 172.206,
+        "lumaMean": 4.242,
+        "lumaStdDev": 6.476
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 1260,
+        "profile": {
+          "id": "environment-shallows-column-lower",
+          "biome": 2,
+          "depthBand": "lower",
+          "activeBand": "lower",
+          "activeBandBlend": {
+            "from": "mid",
+            "to": "lower",
+            "progress": 1
+          },
+          "cameraClearColor": "#110f18"
+        },
+        "activeBand": {
+          "id": "lower",
+          "topColor": "#082d49",
+          "bottomColor": "#061d36",
+          "hazeColor": "#668ea8",
+          "hazeAlpha": 0.085,
+          "sedimentAlpha": 0.055,
+          "causticAlpha": 0.015,
+          "silhouetteAlpha": 0.078,
+          "anchorDensity": 0.76
+        },
+        "activeBandBlend": {
+          "from": "mid",
+          "to": "lower",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "biome-brine-vent-sulfide-shelf",
+          "phase5-lower-drowned-gantry-wide",
+          "phase5-lower-cable-reef-span",
+          "drowned-mine-structure",
+          "cable-buoy-chain",
+          "vent-brine-curtain"
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "lower-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.36,
+            "x": 352.686,
+            "y": 1056.833,
+            "width": 556.898,
+            "height": 144.649,
+            "parallaxFactor": 0.107
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.01,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.009,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.023,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.114,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.01,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 1,
+          "ambientOpacity": 0.32,
+          "maskOpacity": 0.82
+        },
+        "waterColumnLayers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.002,
+            "depthGate": 1,
+            "bandScale": 0.22
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.001,
+            "depthGate": 1,
+            "bandScale": 0.24
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.001,
+            "depthGate": 0.72,
+            "bandScale": 0.12
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0,
+            "bandScale": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#668ea8",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1563,
+          "y": 5028,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "exact-b2-transitiondeep-exit-depth1500",
+      "biome": 2,
+      "depth": 1500,
+      "reviewX": 5600,
+      "note": "Exact-depth B2 transitionDeep exit; backgroundReview metadata/canvas, no water-window clearing",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; ?playtest biome route; backgroundReview exact-depth positioning with clearWaterWindow:false; no gameplay code changes; direct #game canvas toDataURL. B2 review mode intentionally suppresses the lamp beam.",
+      "backgroundReviewDepthParam": 1000,
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-transitiondeep-exit-depth1500-review-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b2-transitiondeep-exit-depth1500-review-canvas-grayscale.png",
+      "colorBytes": 693395,
+      "grayscaleBytes": 425186,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 2.144,
+        "lumaMax": 172.43,
+        "lumaRange": 170.286,
+        "lumaMean": 14.873,
+        "lumaStdDev": 14.544
+      },
+      "environment": {
+        "stateBiome": 2,
+        "stateDepth": 1500,
+        "profile": {
+          "id": "environment-shallows-column-transitionDeep",
+          "biome": 2,
+          "depthBand": "transitionDeep",
+          "activeBand": "transitionDeep",
+          "activeBandBlend": {
+            "from": "lower",
+            "to": "transitionDeep",
+            "progress": 1
+          },
+          "cameraClearColor": "#110f18"
+        },
+        "activeBand": {
+          "id": "transitionDeep",
+          "topColor": "#1e5272",
+          "bottomColor": "#13314e",
+          "hazeColor": "#a8cfe2",
+          "hazeAlpha": 0.026,
+          "sedimentAlpha": 0.012,
+          "causticAlpha": 0.006,
+          "silhouetteAlpha": 0.165,
+          "anchorDensity": 0.88
+        },
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 1
+        },
+        "anchorAssetPool": [
+          "phase11-transition-near-pipe-cable-cathedral",
+          "phase11-transition-mid-collapsed-gantry-brine-reef",
+          "phase8-transition-brine-curtain-ruin",
+          "phase9-transition-organic-vent-garden",
+          "vent-brine-curtain",
+          "phase5-transition-pressure-ribs-wide",
+          "phase5-transition-brine-curtain-ruin",
+          "phase7-transition-far-void-haze",
+          "phase7-transition-mid-occluding-silhouettes",
+          "phase7-transition-near-suspended-matter",
+          "phase8-transition-drowned-mining-gantry",
+          "phase8-transition-reef-arch-remnant",
+          "phase8-transition-cable-buoy-chain",
+          "phase8-transition-trench-vent-lattice",
+          "phase8-transition-collapsed-sub-elevator",
+          "phase8-transition-rib-field",
+          "phase8-transition-pipe-cathedral",
+          "phase9-transition-organic-drowned-gantry",
+          "phase9-transition-organic-reef-arch",
+          "phase9-transition-organic-cable-kelp-chain",
+          "phase9-transition-organic-brine-curtain",
+          "phase9-transition-organic-collapsed-elevator",
+          "phase9-transition-organic-rib-reef",
+          "phase9-transition-organic-pipe-reef",
+          "phase10-transition-drowned-signal-station",
+          "phase11-transition-far-drowned-signal-station",
+          "drowned-mine-structure"
+        ],
+        "anchorCount": 5,
+        "anchors": [
+          {
+            "id": "transitionDeep-1",
+            "assetId": "phase8-transition-brine-curtain-ruin",
+            "alpha": 0.446,
+            "x": 1011.921,
+            "y": 9139.464,
+            "width": 982.219,
+            "height": 330.568,
+            "parallaxFactor": 0.122
+          },
+          {
+            "id": "transitionDeep-2",
+            "assetId": "phase11-transition-mid-collapsed-gantry-brine-reef",
+            "alpha": 0.973,
+            "x": 309.463,
+            "y": 1211.999,
+            "width": 1585.61,
+            "height": 475.608,
+            "parallaxFactor": 0.104
+          },
+          {
+            "id": "transitionDeep-3",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 1.017,
+            "x": 503.861,
+            "y": 1708.458,
+            "width": 2129.386,
+            "height": 707.99,
+            "parallaxFactor": 0.176
+          },
+          {
+            "id": "transitionDeep-4",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 1.324,
+            "x": 425.131,
+            "y": 1683.503,
+            "width": 1732.505,
+            "height": 659.8,
+            "parallaxFactor": 0.176
+          },
+          {
+            "id": "transitionDeep-5",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 1.199,
+            "x": 443.286,
+            "y": 1718.207,
+            "width": 865.124,
+            "height": 310.478,
+            "parallaxFactor": 0.176
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.033,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.029,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.025,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.088,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.248,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 1,
+          "ambientOpacity": 0.064,
+          "maskOpacity": 0.197
+        },
+        "waterColumnLayers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.002,
+            "depthGate": 0.62,
+            "bandScale": 0.22
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.001,
+            "depthGate": 0.62,
+            "bandScale": 0.28
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.001,
+            "depthGate": 0.72,
+            "bandScale": 0.12
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0,
+            "bandScale": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#a8cfe2",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 0.48,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 0.24,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 0.48,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1563,
+          "y": 5988,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    },
+    {
+      "key": "exact-b3-entry-surface-depth90",
+      "biome": 3,
+      "depth": 90,
+      "reviewX": 4200,
+      "note": "Exact-depth B3 surface entry; backgroundReview metadata/canvas, no water-window clearing",
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=3&renderer=canvas",
+      "selectedPort": 5180,
+      "sourceSelector": "#game canvas",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "captureMethod": "Playwright Chromium; ?playtest biome route; backgroundReview exact-depth positioning with clearWaterWindow:false; no gameplay code changes; direct #game canvas toDataURL. B2 review mode intentionally suppresses the lamp beam.",
+      "backgroundReviewDepthParam": 60,
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b3-entry-surface-depth90-review-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b2/exact-b3-entry-surface-depth90-review-canvas-grayscale.png",
+      "colorBytes": 59971,
+      "grayscaleBytes": 51409,
+      "canvasStats": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0,
+        "lumaMax": 237.917,
+        "lumaRange": 237.917,
+        "lumaMean": 25.491,
+        "lumaStdDev": 7.172
+      },
+      "environment": {
+        "stateBiome": 3,
+        "stateDepth": 90,
+        "profile": {
+          "id": "environment-shallows-column-surface",
+          "biome": 3,
+          "depthBand": "surface",
+          "activeBand": "surface",
+          "activeBandBlend": {
+            "from": "surface",
+            "to": "surface",
+            "progress": 1
+          },
+          "cameraClearColor": "#161d32"
+        },
+        "activeBand": {
+          "id": "surface",
+          "topColor": "#2f93a4",
+          "bottomColor": "#0d6071",
+          "hazeColor": "#bffbf0",
+          "hazeAlpha": 0.045,
+          "sedimentAlpha": 0.018,
+          "causticAlpha": 0.115,
+          "silhouetteAlpha": 0.035,
+          "anchorDensity": 0.35
+        },
+        "activeBandBlend": {
+          "from": "surface",
+          "to": "surface",
+          "progress": 1
+        },
+        "anchorAssetPool": [],
+        "anchorCount": 0,
+        "anchors": [],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.232,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.038,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.008,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.008,
+            "activeRepeatMode": "bandClampY"
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "",
+            "painterlyAssetId": null,
+            "alpha": 0.008,
+            "activeRepeatMode": "bandClampY"
+          }
+        ],
+        "darkness": {
+          "value": 0.066,
+          "ambientOpacity": 0.064,
+          "maskOpacity": 0.054
+        },
+        "waterColumnLayers": [
+          {
+            "id": "surface-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.007,
+            "depthGate": 1,
+            "bandScale": 0.42
+          },
+          {
+            "id": "surface-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.002,
+            "depthGate": 1,
+            "bandScale": 0.3
+          },
+          {
+            "id": "surface-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.003,
+            "depthGate": 1,
+            "bandScale": 0.4
+          },
+          {
+            "id": "surface-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0.005,
+            "depthGate": 0.855,
+            "bandScale": 0.28
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#bffbf0",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        },
+        "foregroundLayers": {
+          "terrainAlpha": 1,
+          "terrainDepth": 0,
+          "terrainEdgesAlpha": 1,
+          "terrainEdgesDepth": 0.82,
+          "oreOverburdenAlpha": 1,
+          "oreOverburdenDepth": 0.84
+        },
+        "camera": {
+          "x": 1563,
+          "y": 348,
+          "width": 346,
+          "height": 216,
+          "zoom": 3.7
+        }
+      },
+      "errors": []
+    }
+  ],
+  "serverLogTail": "\n> aqua@1.0.0 dev\n> vite --host 0.0.0.0 --port 5180 --strictPort\n\n\n  VITE v8.0.12  ready in 140 ms\n\n  ➜  Local:   http://localhost:5180/\n  ➜  Network: http://192.168.50.42:5180/\n"
+}

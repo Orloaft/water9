@@ -1,5 +1,7 @@
 # Water9 Fauna Animation Upgrade - 2026-07-05
 
+Status: DONE
+
 ## Goal
 
 Bring the 100 newly added `fauna-exp-*` runtime fauna up to the established neutral-fauna animation bar set by Nautilus, cuttlefish, and squid: no more static-painting/tail-twitch reads, and proof that the improved frames load through normal gameplay.
@@ -17,7 +19,7 @@ Bring the 100 newly added `fauna-exp-*` runtime fauna up to the established neut
 - [x] Read-only triage and imagegen plan - session key `water9-fauna-upgrade-triage`, agent `Hume` / `019f341a-4695-75f0-8130-35c9c2b4acb8` - expected artifacts: `runs/water9-fauna-animation-upgrade-2026-07-05/triage-imagegen-plan.md`, `runs/water9-fauna-animation-upgrade-2026-07-05/triage-queue.json` - verified artifacts on disk; REPORTED 2026-07-05
 - [x] Commit-capable implementation owner - session key `water9-fauna-upgrade-implementation`, agent `Gauss` / `019f341a-d0b2-78a3-939d-a4c6f2937f6c` - expected artifacts: upgraded `public/assets/generated/fauna-exp-*` runtime sheets/manifests, `runs/water9-fauna-animation-upgrade-2026-07-05/implementation-report.md`, static proof sheets, grayscale proof, live normal-play `#game canvas` captures - verified artifacts on disk; REPORTED 2026-07-05
 - [x] Manager visual inspection - expected artifacts: inspected static and live proof, explicit accept/reject notes in this ledger - ACCEPTED 2026-07-05
-- [ ] Follow-up iteration if rejected - session key TBD - expected artifacts: rejection-specific fix and proof
+- [x] Follow-up iteration if rejected - not needed; manager visual inspection accepted the implementation on 2026-07-05.
 
 ## Acceptance Rule
 

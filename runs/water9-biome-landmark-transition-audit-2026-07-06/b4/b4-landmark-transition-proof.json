@@ -1,0 +1,1594 @@
+{
+  "schema": "water9/b4-landmark-transition-audit@1",
+  "generatedAt": "2026-07-06T12:18:31.646Z",
+  "repoRoot": "/mnt/nxt-dev/water9",
+  "head": "2c4ff8d",
+  "baseUrl": "http://127.0.0.1:5181/",
+  "outputs": [
+    {
+      "key": "b3-before-b4-lower",
+      "biome": 3,
+      "depth": 1260,
+      "note": "B3 lower-band baseline before travel to B4",
+      "url": "http://127.0.0.1:5181/?playtest=1&biome=3",
+      "sourceSelector": "#game canvas",
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; playtest-only teleportToReachableDepth/backgroundReview for repeatable normal-world positioning; direct #game canvas toDataURL",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 1260,
+        "depthMeters": 390,
+        "tileX": 57,
+        "tileY": 69,
+        "localWaterRatio": 0.333
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b4/b3-before-b4-lower-game-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b4/b3-before-b4-lower-game-canvas-grayscale.png",
+      "colorBytes": 874861,
+      "grayscaleBytes": 484232,
+      "canvas": {
+        "color": {
+          "width": 1280,
+          "height": 800,
+          "mode": "color",
+          "selector": "#game canvas"
+        },
+        "grayscale": {
+          "width": 1280,
+          "height": 800,
+          "mode": "grayscale",
+          "selector": "#game canvas"
+        },
+        "stats": {
+          "exists": true,
+          "width": 1280,
+          "height": 800,
+          "lumaMin": 3,
+          "lumaMax": 171,
+          "lumaAverage": 19.41
+        }
+      },
+      "background": {
+        "activeBand": {
+          "id": "environment-shallows-column-lower",
+          "biome": 3,
+          "depthBand": "lower",
+          "activeBand": "lower",
+          "activeBandBlend": {
+            "from": "mid",
+            "to": "lower",
+            "progress": 1
+          },
+          "cameraClearColor": "#090913"
+        },
+        "anchorAssets": [
+          {
+            "id": "biome-midnight-black-coral-ribs",
+            "label": "Biome 3 black coral ribs distant gantry cutout",
+            "role": "landmark",
+            "band": "lower",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.28,
+            "scaleRange": [
+              1.12,
+              1.86
+            ],
+            "parallaxRange": [
+              0.038,
+              0.09
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-biome-landmark-midnight-black-coral-ribs.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-biome-landmark-midnight-black-coral-ribs.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase5-lower-drowned-gantry-wide",
+            "label": "Phase 5 lower drowned gantry and reef ribs",
+            "role": "landmark",
+            "band": "lower",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.24,
+            "scaleRange": [
+              1.15,
+              1.85
+            ],
+            "parallaxRange": [
+              0.025,
+              0.075
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase5-lower-drowned-gantry-wide.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase5-lower-drowned-gantry-wide.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase5-lower-cable-reef-span",
+            "label": "Phase 5 lower cable span over reef debris",
+            "role": "landmark",
+            "band": "lower",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.22,
+            "scaleRange": [
+              1.05,
+              1.7
+            ],
+            "parallaxRange": [
+              0.03,
+              0.085
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase5-lower-cable-reef-span.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase5-lower-cable-reef-span.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "drowned-mine-structure",
+            "label": "drowned-mine-structure",
+            "role": "landmark",
+            "band": "mid",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.12,
+            "scaleRange": [
+              0.85,
+              1.6
+            ],
+            "parallaxRange": [
+              0.05,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase3-landmark-drowned-mine-structure.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase3-landmark-drowned-mine-structure.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "cable-buoy-chain",
+            "label": "cable-buoy-chain",
+            "role": "landmark",
+            "band": "upper",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.1,
+            "scaleRange": [
+              0.85,
+              1.6
+            ],
+            "parallaxRange": [
+              0.05,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase3-landmark-cable-buoy-chain.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase3-landmark-cable-buoy-chain.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "vent-brine-curtain",
+            "label": "vent-brine-curtain",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.11,
+            "scaleRange": [
+              0.85,
+              1.6
+            ],
+            "parallaxRange": [
+              0.05,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase3-landmark-vent-brine-curtain.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase3-landmark-vent-brine-curtain.png",
+            "sourceStatus": "ready"
+          }
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "lower-0",
+            "kind": "wreck-rib",
+            "depthBand": "lower",
+            "x": 961.092,
+            "y": 1178.306,
+            "width": 474.014,
+            "height": 320.279,
+            "alpha": 0.34,
+            "color": "#4c95a2",
+            "parallaxFactor": 0.067,
+            "assetId": "biome-midnight-black-coral-ribs",
+            "assetStatus": "available",
+            "textureKey": "water9-biome-landmark-midnight-black-coral-ribs"
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.01
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.009
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.023
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.114
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.01
+          }
+        ],
+        "waterColumnLayers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.024,
+            "depthGate": 1
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.018,
+            "depthGate": 1
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.005,
+            "depthGate": 0.72
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": true,
+          "layers": [
+            "midnight-cold-water-haze",
+            "sparse-marine-snow"
+          ],
+          "alpha": 0.052,
+          "particleAlpha": 0.014,
+          "color": "#6f8dbb",
+          "blendMode": "normal",
+          "driftX": -2.1,
+          "driftY": 0.1,
+          "guardRadius": 118,
+          "bandCount": 10,
+          "particleCount": 60
+        }
+      }
+    },
+    {
+      "key": "b4-entry-surface",
+      "biome": 4,
+      "depth": 119,
+      "note": "B4 first-water/surface-band entry after biome switch",
+      "url": "http://127.0.0.1:5181/?playtest=1&biome=4",
+      "sourceSelector": "#game canvas",
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; playtest-only teleportToReachableDepth/backgroundReview for repeatable normal-world positioning; direct #game canvas toDataURL",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 119,
+        "depthMeters": 120,
+        "tileX": 52,
+        "tileY": 24,
+        "localWaterRatio": 1
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b4/b4-entry-surface-game-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b4/b4-entry-surface-game-canvas-grayscale.png",
+      "colorBytes": 231449,
+      "grayscaleBytes": 132950,
+      "canvas": {
+        "color": {
+          "width": 1280,
+          "height": 800,
+          "mode": "color",
+          "selector": "#game canvas"
+        },
+        "grayscale": {
+          "width": 1280,
+          "height": 800,
+          "mode": "grayscale",
+          "selector": "#game canvas"
+        },
+        "stats": {
+          "exists": true,
+          "width": 1280,
+          "height": 800,
+          "lumaMin": 0,
+          "lumaMax": 219,
+          "lumaAverage": 37.35
+        }
+      },
+      "background": {
+        "activeBand": {
+          "id": "environment-shallows-column-surface",
+          "biome": 4,
+          "depthBand": "surface",
+          "activeBand": "surface",
+          "activeBandBlend": {
+            "from": "surface",
+            "to": "surface",
+            "progress": 1
+          },
+          "cameraClearColor": "#12242b"
+        },
+        "anchorAssets": [
+          {
+            "id": "biome-ruins-vault-causeway-lattice",
+            "label": "Biome 4 vault causeway distant station cutout",
+            "role": "landmark",
+            "band": "lower",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.3,
+            "scaleRange": [
+              1.1,
+              1.82
+            ],
+            "parallaxRange": [
+              0.035,
+              0.085
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-biome-landmark-ruins-vault-causeway-lattice.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-biome-landmark-ruins-vault-causeway-lattice.png",
+            "sourceStatus": "ready"
+          }
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "surface-biome-4-immediate",
+            "kind": "reef",
+            "depthBand": "surface",
+            "x": 678.304,
+            "y": 490.63,
+            "width": 3175.04,
+            "height": 1312,
+            "alpha": 1,
+            "color": "#79aab8",
+            "parallaxFactor": 0.063,
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "assetStatus": "available",
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice"
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.209
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.037
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.008
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.007
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.004
+          }
+        ],
+        "waterColumnLayers": [
+          {
+            "id": "surface-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.009,
+            "depthGate": 1
+          },
+          {
+            "id": "surface-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.002,
+            "depthGate": 1
+          },
+          {
+            "id": "surface-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.003,
+            "depthGate": 1
+          },
+          {
+            "id": "surface-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0.004,
+            "depthGate": 0.808
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#bffbf0",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    },
+    {
+      "key": "b4-deeper-lower",
+      "biome": 4,
+      "depth": 1260,
+      "note": "B4 lower band in normal play",
+      "url": "http://127.0.0.1:5181/?playtest=1&biome=4",
+      "sourceSelector": "#game canvas",
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; playtest-only teleportToReachableDepth/backgroundReview for repeatable normal-world positioning; direct #game canvas toDataURL",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 1260,
+        "depthMeters": 534,
+        "tileX": 17,
+        "tileY": 93,
+        "localWaterRatio": 0.268
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b4/b4-deeper-lower-game-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b4/b4-deeper-lower-game-canvas-grayscale.png",
+      "colorBytes": 449306,
+      "grayscaleBytes": 251377,
+      "canvas": {
+        "color": {
+          "width": 1280,
+          "height": 800,
+          "mode": "color",
+          "selector": "#game canvas"
+        },
+        "grayscale": {
+          "width": 1280,
+          "height": 800,
+          "mode": "grayscale",
+          "selector": "#game canvas"
+        },
+        "stats": {
+          "exists": true,
+          "width": 1280,
+          "height": 800,
+          "lumaMin": 1,
+          "lumaMax": 171,
+          "lumaAverage": 13.21
+        }
+      },
+      "background": {
+        "activeBand": {
+          "id": "environment-shallows-column-lower",
+          "biome": 4,
+          "depthBand": "lower",
+          "activeBand": "lower",
+          "activeBandBlend": {
+            "from": "mid",
+            "to": "lower",
+            "progress": 1
+          },
+          "cameraClearColor": "#06070d"
+        },
+        "anchorAssets": [
+          {
+            "id": "biome-ruins-vault-causeway-lattice",
+            "label": "Biome 4 vault causeway distant station cutout",
+            "role": "landmark",
+            "band": "lower",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.3,
+            "scaleRange": [
+              1.1,
+              1.82
+            ],
+            "parallaxRange": [
+              0.035,
+              0.085
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-biome-landmark-ruins-vault-causeway-lattice.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-biome-landmark-ruins-vault-causeway-lattice.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase5-lower-drowned-gantry-wide",
+            "label": "Phase 5 lower drowned gantry and reef ribs",
+            "role": "landmark",
+            "band": "lower",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.24,
+            "scaleRange": [
+              1.15,
+              1.85
+            ],
+            "parallaxRange": [
+              0.025,
+              0.075
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase5-lower-drowned-gantry-wide.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase5-lower-drowned-gantry-wide.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase5-lower-cable-reef-span",
+            "label": "Phase 5 lower cable span over reef debris",
+            "role": "landmark",
+            "band": "lower",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.22,
+            "scaleRange": [
+              1.05,
+              1.7
+            ],
+            "parallaxRange": [
+              0.03,
+              0.085
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase5-lower-cable-reef-span.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase5-lower-cable-reef-span.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "drowned-mine-structure",
+            "label": "drowned-mine-structure",
+            "role": "landmark",
+            "band": "mid",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.12,
+            "scaleRange": [
+              0.85,
+              1.6
+            ],
+            "parallaxRange": [
+              0.05,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase3-landmark-drowned-mine-structure.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase3-landmark-drowned-mine-structure.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "cable-buoy-chain",
+            "label": "cable-buoy-chain",
+            "role": "landmark",
+            "band": "upper",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.1,
+            "scaleRange": [
+              0.85,
+              1.6
+            ],
+            "parallaxRange": [
+              0.05,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase3-landmark-cable-buoy-chain.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase3-landmark-cable-buoy-chain.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "vent-brine-curtain",
+            "label": "vent-brine-curtain",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.11,
+            "scaleRange": [
+              0.85,
+              1.6
+            ],
+            "parallaxRange": [
+              0.05,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase3-landmark-vent-brine-curtain.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase3-landmark-vent-brine-curtain.png",
+            "sourceStatus": "ready"
+          }
+        ],
+        "anchorCount": 1,
+        "anchors": [
+          {
+            "id": "lower-0",
+            "kind": "wreck-rib",
+            "depthBand": "lower",
+            "x": 487.069,
+            "y": 1367.114,
+            "width": 676.114,
+            "height": 329.812,
+            "alpha": 0.096,
+            "color": "#79aab8",
+            "parallaxFactor": 0.063,
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "assetStatus": "available",
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice"
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.005
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.005
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.012
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.059
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.005
+          }
+        ],
+        "waterColumnLayers": [
+          {
+            "id": "lower-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.028,
+            "depthGate": 1
+          },
+          {
+            "id": "lower-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.019,
+            "depthGate": 1
+          },
+          {
+            "id": "lower-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.009,
+            "depthGate": 0.72
+          },
+          {
+            "id": "lower-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": true,
+          "layers": [
+            "cold-ruin-veil",
+            "fine-abyssal-particulate"
+          ],
+          "alpha": 0.066,
+          "particleAlpha": 0.02,
+          "color": "#a4bfd0",
+          "blendMode": "normal",
+          "driftX": -2.6,
+          "driftY": 0.12,
+          "guardRadius": 130,
+          "bandCount": 17,
+          "particleCount": 108
+        }
+      }
+    },
+    {
+      "key": "b4-transition-deep",
+      "biome": 4,
+      "depth": 1580,
+      "note": "B4 transitionDeep/deeper swim-by band",
+      "url": "http://127.0.0.1:5181/?playtest=1&biome=4",
+      "sourceSelector": "#game canvas",
+      "captureMethod": "Playwright Chromium; normal ?playtest biome route; start+dive; playtest-only teleportToReachableDepth/backgroundReview for repeatable normal-world positioning; direct #game canvas toDataURL",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 1580,
+        "depthMeters": 660,
+        "tileX": 3,
+        "tileY": 114,
+        "localWaterRatio": 0.28
+      },
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b4/b4-transition-deep-game-canvas.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-biome-landmark-transition-audit-2026-07-06/b4/b4-transition-deep-game-canvas-grayscale.png",
+      "colorBytes": 481255,
+      "grayscaleBytes": 280875,
+      "canvas": {
+        "color": {
+          "width": 1280,
+          "height": 800,
+          "mode": "color",
+          "selector": "#game canvas"
+        },
+        "grayscale": {
+          "width": 1280,
+          "height": 800,
+          "mode": "grayscale",
+          "selector": "#game canvas"
+        },
+        "stats": {
+          "exists": true,
+          "width": 1280,
+          "height": 800,
+          "lumaMin": 1,
+          "lumaMax": 172,
+          "lumaAverage": 11.35
+        }
+      },
+      "background": {
+        "activeBand": {
+          "id": "environment-shallows-column-transitionDeep",
+          "biome": 4,
+          "depthBand": "transitionDeep",
+          "activeBand": "transitionDeep",
+          "activeBandBlend": {
+            "from": "lower",
+            "to": "transitionDeep",
+            "progress": 1
+          },
+          "cameraClearColor": "#06070d"
+        },
+        "anchorAssets": [
+          {
+            "id": "biome-ruins-vault-causeway-lattice",
+            "label": "Biome 4 vault causeway distant station cutout",
+            "role": "landmark",
+            "band": "lower",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.3,
+            "scaleRange": [
+              1.1,
+              1.82
+            ],
+            "parallaxRange": [
+              0.035,
+              0.085
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-biome-landmark-ruins-vault-causeway-lattice.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-biome-landmark-ruins-vault-causeway-lattice.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase10-transition-drowned-signal-station",
+            "label": "Phase 10 transition-deep drowned signal station",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.56,
+            "scaleRange": [
+              1.52,
+              2.18
+            ],
+            "parallaxRange": [
+              0.048,
+              0.082
+            ],
+            "readabilityRisk": "low",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase10-transition-drowned-signal-station.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase10-transition-drowned-signal-station.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase8-transition-collapsed-sub-elevator",
+            "label": "Phase 8 transition-deep collapsed sub elevator",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.3,
+            "scaleRange": [
+              1.2,
+              1.9
+            ],
+            "parallaxRange": [
+              0.075,
+              0.15
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase8-transition-collapsed-sub-elevator.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase8-transition-collapsed-sub-elevator.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "vent-brine-curtain",
+            "label": "vent-brine-curtain",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.11,
+            "scaleRange": [
+              0.85,
+              1.6
+            ],
+            "parallaxRange": [
+              0.05,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase3-landmark-vent-brine-curtain.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase3-landmark-vent-brine-curtain.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase5-transition-pressure-ribs-wide",
+            "label": "Phase 5 transition-deep pressure ribs",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.26,
+            "scaleRange": [
+              1.2,
+              1.95
+            ],
+            "parallaxRange": [
+              0.018,
+              0.06
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase5-transition-pressure-ribs-wide.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase5-transition-pressure-ribs-wide.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase5-transition-brine-curtain-ruin",
+            "label": "Phase 5 transition-deep brine curtain ruin",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.23,
+            "scaleRange": [
+              1.1,
+              1.8
+            ],
+            "parallaxRange": [
+              0.02,
+              0.065
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase5-transition-brine-curtain-ruin.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase5-transition-brine-curtain-ruin.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase7-transition-far-void-haze",
+            "label": "Phase 7 transition-deep far void and pressure haze",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.13,
+            "scaleRange": [
+              1.18,
+              1.55
+            ],
+            "parallaxRange": [
+              0.006,
+              0.018
+            ],
+            "readabilityRisk": "low",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase7-transition-far-void-haze.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase7-transition-far-void-haze.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase7-transition-mid-occluding-silhouettes",
+            "label": "Phase 7 transition-deep mid occluding silhouettes",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.24,
+            "scaleRange": [
+              1.04,
+              1.36
+            ],
+            "parallaxRange": [
+              0.034,
+              0.075
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase7-transition-mid-occluding-silhouettes.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase7-transition-mid-occluding-silhouettes.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase7-transition-near-suspended-matter",
+            "label": "Phase 7 transition-deep near suspended debris and matter",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.2,
+            "scaleRange": [
+              0.86,
+              1.18
+            ],
+            "parallaxRange": [
+              0.075,
+              0.145
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase7-transition-near-suspended-matter.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase7-transition-near-suspended-matter.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase8-transition-drowned-mining-gantry",
+            "label": "Phase 8 transition-deep drowned mining gantry",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.3,
+            "scaleRange": [
+              1.28,
+              2
+            ],
+            "parallaxRange": [
+              0.085,
+              0.16
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase8-transition-drowned-mining-gantry.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase8-transition-drowned-mining-gantry.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase8-transition-reef-arch-remnant",
+            "label": "Phase 8 transition-deep reef arch remnant",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.27,
+            "scaleRange": [
+              1.18,
+              1.85
+            ],
+            "parallaxRange": [
+              0.045,
+              0.09
+            ],
+            "readabilityRisk": "low",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase8-transition-reef-arch-remnant.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase8-transition-reef-arch-remnant.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase8-transition-cable-buoy-chain",
+            "label": "Phase 8 transition-deep cable buoy chain",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.31,
+            "scaleRange": [
+              1.12,
+              1.72
+            ],
+            "parallaxRange": [
+              0.13,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase8-transition-cable-buoy-chain.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase8-transition-cable-buoy-chain.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase8-transition-brine-curtain-ruin",
+            "label": "Phase 8 transition-deep brine curtain ruin",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.29,
+            "scaleRange": [
+              1.16,
+              1.8
+            ],
+            "parallaxRange": [
+              0.08,
+              0.155
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase8-transition-brine-curtain-ruin.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase8-transition-brine-curtain-ruin.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase8-transition-trench-vent-lattice",
+            "label": "Phase 8 transition-deep trench vent lattice",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.28,
+            "scaleRange": [
+              1.1,
+              1.68
+            ],
+            "parallaxRange": [
+              0.09,
+              0.17
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase8-transition-trench-vent-lattice.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase8-transition-trench-vent-lattice.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase8-transition-rib-field",
+            "label": "Phase 8 transition-deep whale-bone industrial rib field",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.26,
+            "scaleRange": [
+              1.22,
+              1.96
+            ],
+            "parallaxRange": [
+              0.04,
+              0.085
+            ],
+            "readabilityRisk": "low",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase8-transition-rib-field.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase8-transition-rib-field.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase8-transition-pipe-cathedral",
+            "label": "Phase 8 transition-deep broken pipe cathedral",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.32,
+            "scaleRange": [
+              1.18,
+              1.86
+            ],
+            "parallaxRange": [
+              0.12,
+              0.21
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase8-transition-pipe-cathedral.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase8-transition-pipe-cathedral.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase9-transition-organic-drowned-gantry",
+            "label": "Phase 9 organic-softened drowned gantry reef",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.31,
+            "scaleRange": [
+              1.3,
+              2.04
+            ],
+            "parallaxRange": [
+              0.085,
+              0.16
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase9-transition-organic-drowned-gantry.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase9-transition-organic-drowned-gantry.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase9-transition-organic-reef-arch",
+            "label": "Phase 9 organic-softened reef arch grotto",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.28,
+            "scaleRange": [
+              1.2,
+              1.9
+            ],
+            "parallaxRange": [
+              0.045,
+              0.09
+            ],
+            "readabilityRisk": "low",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase9-transition-organic-reef-arch.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase9-transition-organic-reef-arch.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase9-transition-organic-cable-kelp-chain",
+            "label": "Phase 9 organic-softened cable kelp chain",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.32,
+            "scaleRange": [
+              1.14,
+              1.76
+            ],
+            "parallaxRange": [
+              0.13,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase9-transition-organic-cable-kelp-chain.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase9-transition-organic-cable-kelp-chain.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase9-transition-organic-brine-curtain",
+            "label": "Phase 9 organic-softened brine curtain reef",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.3,
+            "scaleRange": [
+              1.18,
+              1.86
+            ],
+            "parallaxRange": [
+              0.08,
+              0.155
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase9-transition-organic-brine-curtain.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase9-transition-organic-brine-curtain.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase9-transition-organic-vent-garden",
+            "label": "Phase 9 organic-softened trench vent garden",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.29,
+            "scaleRange": [
+              1.12,
+              1.74
+            ],
+            "parallaxRange": [
+              0.09,
+              0.17
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase9-transition-organic-vent-garden.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase9-transition-organic-vent-garden.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase9-transition-organic-collapsed-elevator",
+            "label": "Phase 9 organic-softened collapsed elevator reef",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.31,
+            "scaleRange": [
+              1.22,
+              1.94
+            ],
+            "parallaxRange": [
+              0.075,
+              0.15
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase9-transition-organic-collapsed-elevator.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase9-transition-organic-collapsed-elevator.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase9-transition-organic-rib-reef",
+            "label": "Phase 9 organic-softened rib reef field",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.27,
+            "scaleRange": [
+              1.24,
+              2
+            ],
+            "parallaxRange": [
+              0.04,
+              0.085
+            ],
+            "readabilityRisk": "low",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase9-transition-organic-rib-reef.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase9-transition-organic-rib-reef.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase9-transition-organic-pipe-reef",
+            "label": "Phase 9 organic-softened pipe reef cathedral",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.33,
+            "scaleRange": [
+              1.2,
+              1.9
+            ],
+            "parallaxRange": [
+              0.12,
+              0.21
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase9-transition-organic-pipe-reef.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase9-transition-organic-pipe-reef.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase11-transition-far-drowned-signal-station",
+            "label": "Phase 11 GPT far drowned signal station",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.42,
+            "scaleRange": [
+              1.35,
+              2.05
+            ],
+            "parallaxRange": [
+              0.035,
+              0.07
+            ],
+            "readabilityRisk": "low",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase11-transition-far-drowned-signal-station-gpt.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase11-transition-far-drowned-signal-station-gpt.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase11-transition-mid-collapsed-gantry-brine-reef",
+            "label": "Phase 11 GPT mid collapsed gantry brine reef",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.38,
+            "scaleRange": [
+              1.18,
+              1.85
+            ],
+            "parallaxRange": [
+              0.07,
+              0.13
+            ],
+            "readabilityRisk": "low",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "phase11-transition-near-pipe-cable-cathedral",
+            "label": "Phase 11 GPT near pipe cable cathedral",
+            "role": "landmark",
+            "band": "transitionDeep",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.32,
+            "scaleRange": [
+              1,
+              1.55
+            ],
+            "parallaxRange": [
+              0.12,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase11-transition-near-pipe-cable-cathedral-gpt.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase11-transition-near-pipe-cable-cathedral-gpt.png",
+            "sourceStatus": "ready"
+          },
+          {
+            "id": "drowned-mine-structure",
+            "label": "drowned-mine-structure",
+            "role": "landmark",
+            "band": "mid",
+            "repeatMode": "anchor",
+            "safeOpacity": 0.12,
+            "scaleRange": [
+              0.85,
+              1.6
+            ],
+            "parallaxRange": [
+              0.05,
+              0.22
+            ],
+            "readabilityRisk": "medium",
+            "availableInRuntime": true,
+            "path": "/assets/generated/background-phase3/water9-phase3-landmark-drowned-mine-structure.png",
+            "sourcePath": "public/assets/generated/background-phase3/water9-phase3-landmark-drowned-mine-structure.png",
+            "sourceStatus": "ready"
+          }
+        ],
+        "anchorCount": 7,
+        "anchors": [
+          {
+            "id": "transitionDeep--1",
+            "kind": "wreck-rib",
+            "depthBand": "transitionDeep",
+            "x": 455.401,
+            "y": 1575.677,
+            "width": 2548.282,
+            "height": 630.092,
+            "alpha": 1.253,
+            "color": "#e0f4ee",
+            "parallaxFactor": 0.055,
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "assetStatus": "available",
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt"
+          },
+          {
+            "id": "transitionDeep-0",
+            "kind": "cable-chain",
+            "depthBand": "transitionDeep",
+            "x": 223.651,
+            "y": 10406.699,
+            "width": 492.316,
+            "height": 241.167,
+            "alpha": 0.271,
+            "color": "#28597a",
+            "parallaxFactor": 0.117,
+            "assetId": "phase8-transition-collapsed-sub-elevator",
+            "assetStatus": "available",
+            "textureKey": "water9-phase8-transition-collapsed-sub-elevator"
+          },
+          {
+            "id": "transitionDeep-1",
+            "kind": "cable-chain",
+            "depthBand": "transitionDeep",
+            "x": 616.224,
+            "y": 1599.974,
+            "width": 1700.134,
+            "height": 391.011,
+            "alpha": 1.673,
+            "color": "#b8d7d2",
+            "parallaxFactor": 0.067,
+            "assetId": "phase10-transition-drowned-signal-station",
+            "assetStatus": "available",
+            "textureKey": "water9-phase10-transition-drowned-signal-station"
+          },
+          {
+            "id": "transitionDeep-2",
+            "kind": "kelp",
+            "depthBand": "transitionDeep",
+            "x": 785.44,
+            "y": 2252.466,
+            "width": 910.656,
+            "height": 315.149,
+            "alpha": 0.733,
+            "color": "#e0f4ee",
+            "parallaxFactor": 0.104,
+            "assetId": "phase11-transition-mid-collapsed-gantry-brine-reef",
+            "assetStatus": "available",
+            "textureKey": "water9-phase11-transition-mid-collapsed-gantry-brine-reef-gpt"
+          },
+          {
+            "id": "transitionDeep-3",
+            "kind": "wreck-rib",
+            "depthBand": "transitionDeep",
+            "x": 584.471,
+            "y": 1534.232,
+            "width": 2284.132,
+            "height": 516.147,
+            "alpha": 1.451,
+            "color": "#b8d7d2",
+            "parallaxFactor": 0.067,
+            "assetId": "phase10-transition-drowned-signal-station",
+            "assetStatus": "available",
+            "textureKey": "water9-phase10-transition-drowned-signal-station"
+          },
+          {
+            "id": "transitionDeep-4",
+            "kind": "wreck-rib",
+            "depthBand": "transitionDeep",
+            "x": 244.222,
+            "y": 1468.91,
+            "width": 1540.144,
+            "height": 415.592,
+            "alpha": 1.391,
+            "color": "#e0f4ee",
+            "parallaxFactor": 0.055,
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "assetStatus": "available",
+            "textureKey": "water9-phase11-transition-far-drowned-signal-station-gpt"
+          },
+          {
+            "id": "transitionDeep-5",
+            "kind": "cable-chain",
+            "depthBand": "transitionDeep",
+            "x": 733.572,
+            "y": 1607.98,
+            "width": 653.629,
+            "height": 318.843,
+            "alpha": 0.224,
+            "color": "#79aab8",
+            "parallaxFactor": 0.063,
+            "assetId": "biome-ruins-vault-causeway-lattice",
+            "assetStatus": "available",
+            "textureKey": "water9-biome-landmark-ruins-vault-causeway-lattice"
+          }
+        ],
+        "layers": [
+          {
+            "index": 0,
+            "band": "surface",
+            "textureKey": "",
+            "painterlyAssetId": "surface",
+            "alpha": 0.033
+          },
+          {
+            "index": 1,
+            "band": "upper",
+            "textureKey": "water9-phase3-band-upper",
+            "painterlyAssetId": "upper",
+            "alpha": 0.029
+          },
+          {
+            "index": 2,
+            "band": "mid",
+            "textureKey": "water9-phase3-band-mid",
+            "painterlyAssetId": "mid",
+            "alpha": 0.025
+          },
+          {
+            "index": 3,
+            "band": "lower",
+            "textureKey": "water9-phase3-band-lower",
+            "painterlyAssetId": "lower",
+            "alpha": 0.089
+          },
+          {
+            "index": 4,
+            "band": "transitionDeep",
+            "textureKey": "water9-phase11-band-transition-deep-gpt",
+            "painterlyAssetId": "phase11-transition-deep-gpt-band",
+            "alpha": 0.251
+          }
+        ],
+        "waterColumnLayers": [
+          {
+            "id": "transitionDeep-broad-fog-mottle",
+            "kind": "haze",
+            "assetId": "broad-fog-mottle",
+            "alpha": 0.006,
+            "depthGate": 0.62
+          },
+          {
+            "id": "transitionDeep-sediment-flecks",
+            "kind": "sediment",
+            "assetId": "sediment-flecks",
+            "alpha": 0.003,
+            "depthGate": 0.62
+          },
+          {
+            "id": "transitionDeep-plankton-speckle",
+            "kind": "plankton",
+            "assetId": "plankton-speckle",
+            "alpha": 0.001,
+            "depthGate": 0.72
+          },
+          {
+            "id": "transitionDeep-soft-caustic-ribbons",
+            "kind": "caustic",
+            "assetId": "soft-caustic-ribbons",
+            "alpha": 0,
+            "depthGate": 0
+          }
+        ],
+        "postDarknessVeil": {
+          "enabled": false,
+          "layers": [],
+          "alpha": 0,
+          "particleAlpha": 0,
+          "color": "#a8cfe2",
+          "blendMode": "normal",
+          "driftX": 0,
+          "driftY": 0,
+          "guardRadius": 0,
+          "bandCount": 0,
+          "particleCount": 0
+        }
+      }
+    }
+  ]
+}

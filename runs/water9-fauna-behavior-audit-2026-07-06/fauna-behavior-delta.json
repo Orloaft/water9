@@ -1,0 +1,2654 @@
+{
+  "schema": "water9/fauna-behavior-delta@1",
+  "generatedOn": "2026-07-06",
+  "preflightHead": "539c6b8",
+  "source": "src/content.ts biomeFish in current working tree",
+  "july5Classification": "runs/water9-fauna-behavior-classes-2026-07-05/fauna-behavior-classification.json",
+  "currentEntryCount": 138,
+  "july5EntryCount": 138,
+  "entryCountDeltaFromJuly5": 0,
+  "countsByRecommendedBehaviorClass": {
+    "openWaterSchoolingFish": 18,
+    "cruiserSoloSwimmer": 38,
+    "hoverDrifter": 9,
+    "cephalopodHover": 12,
+    "verticalAnchored": 6,
+    "benthicWalker": 10,
+    "sessileAttached": 3,
+    "bottomRestingGlider": 15,
+    "predatorPursuerAmbusher": 27
+  },
+  "countsByMismatchSeverity": {
+    "none": 75,
+    "low": 9,
+    "medium": 30,
+    "high": 23,
+    "critical": 1
+  },
+  "speciesMissingFromPriorClassification": [],
+  "priorClassificationSpeciesNotFoundToday": [],
+  "entries": [
+    {
+      "biome": 1,
+      "species": "Lantern Fry",
+      "assetKey": "fauna-shallow-lantern-fry",
+      "count": 22,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        58
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 1,
+      "species": "Snapping Shrimp",
+      "assetKey": "fauna-shallow-snap-shrimp",
+      "count": 18,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 7,
+      "speed": [
+        30,
+        54
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current school steering treats it as a swimmer."
+    },
+    {
+      "biome": 1,
+      "species": "Glass Ray",
+      "assetKey": "fauna-shallow-glass-ray",
+      "count": 10,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 15,
+      "speed": [
+        18,
+        32
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 1,
+      "species": "Comb Jelly",
+      "assetKey": "fauna-shallow-comb-jelly",
+      "count": 12,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        14,
+        26
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current sway still routes through fish steering."
+    },
+    {
+      "biome": 1,
+      "species": "Reef Squid",
+      "assetKey": "fauna-shallow-squid",
+      "count": 11,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        26,
+        44
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current glide behavior uses generic fish steering."
+    },
+    {
+      "biome": 1,
+      "species": "Nautilus",
+      "assetKey": "fauna-shallow-nautilus",
+      "count": 7,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 15,
+      "speed": [
+        12,
+        24
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current circle behavior uses generic fish steering."
+    },
+    {
+      "biome": 1,
+      "species": "Moon Jelly",
+      "assetKey": "fauna-shallow-jellyfish",
+      "count": 9,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 13,
+      "speed": [
+        10,
+        20
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current sway still routes through fish steering."
+    },
+    {
+      "biome": 1,
+      "species": "Mantis Shrimp",
+      "assetKey": "fauna-shallow-mantis-shrimp",
+      "count": 7,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        34,
+        62
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current stalk steering treats it as a swimmer."
+    },
+    {
+      "biome": 1,
+      "species": "Blue-ring Octopus",
+      "assetKey": "fauna-shallow-blue-ring-octopus",
+      "count": 5,
+      "currentPattern": "circle",
+      "hostile": true,
+      "radius": 14,
+      "speed": [
+        18,
+        34
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current circle behavior uses generic fish steering and hostile pursuit."
+    },
+    {
+      "biome": 1,
+      "species": "Tidepool Octopus",
+      "assetKey": "fauna-shallow-octopus",
+      "count": 6,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 17,
+      "speed": [
+        14,
+        28
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current sway behavior uses generic fish steering."
+    },
+    {
+      "biome": 1,
+      "species": "Opal Fan Shrimp",
+      "assetKey": "fauna-exp-opal-fan-shrimp",
+      "count": 4,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current glide steering treats it as a swimmer."
+    },
+    {
+      "biome": 1,
+      "species": "Ember Needle Pipefish",
+      "assetKey": "fauna-exp-ember-needle-pipefish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "verticalAnchored",
+      "recommendedBehaviorClass": "verticalAnchored",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should stay rooted or near-rooted and mostly upright; current glide movement lets it roam the water column."
+    },
+    {
+      "biome": 1,
+      "species": "Prism Bell Jelly",
+      "assetKey": "fauna-exp-prism-bell-jelly",
+      "count": 4,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        12,
+        24
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current sway still routes through fish steering."
+    },
+    {
+      "biome": 1,
+      "species": "Cobalt Sawtail Minnow",
+      "assetKey": "fauna-exp-cobalt-sawtail-minnow",
+      "count": 6,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 1,
+      "species": "Ivory Spined Cardinal",
+      "assetKey": "fauna-exp-ivory-spined-cardinal",
+      "count": 6,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 1,
+      "species": "Amber Comb Blenny",
+      "assetKey": "fauna-exp-amber-comb-blenny",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 1,
+      "species": "Blue Lantern Goby",
+      "assetKey": "fauna-exp-blue-lantern-goby",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 1,
+      "species": "Obsidian Reef Wrasse",
+      "assetKey": "fauna-exp-obsidian-reef-wrasse",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Silver Hinge Crab",
+      "assetKey": "fauna-exp-silver-hinge-crab",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current glide steering treats it as a swimmer."
+    },
+    {
+      "biome": 1,
+      "species": "Kelp Arrow Squid",
+      "assetKey": "fauna-exp-kelp-arrow-squid",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current circle behavior uses generic fish steering."
+    },
+    {
+      "biome": 1,
+      "species": "Basalt Lantern Seahorse",
+      "assetKey": "fauna-exp-basalt-lantern-seahorse",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "verticalAnchored",
+      "recommendedBehaviorClass": "verticalAnchored",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should stay rooted or near-rooted and mostly upright; current circle movement lets it roam the water column."
+    },
+    {
+      "biome": 1,
+      "species": "Nacre Thorn Clam",
+      "assetKey": "fauna-exp-nacre-thorn-clam",
+      "count": 3,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        12,
+        24
+      ],
+      "previousProposedBehaviorClass": "sessileAttached",
+      "recommendedBehaviorClass": "sessileAttached",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should be attached to terrain with defensive/contact behavior; current sway steering in open water detaches the body plan from its surface."
+    },
+    {
+      "biome": 1,
+      "species": "Aurora Fin Damselfish",
+      "assetKey": "fauna-exp-aurora-fin-damselfish",
+      "count": 6,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 1,
+      "species": "Ribbonjaw Cleaner Wrasse",
+      "assetKey": "fauna-exp-ribbonjaw-cleaner-wrasse",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Mottle Reef Cowfish",
+      "assetKey": "fauna-exp-mottle-reef-cowfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Glimmer Spine Urchin",
+      "assetKey": "fauna-exp-glimmer-spine-urchin",
+      "count": 2,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 14,
+      "speed": [
+        34,
+        64
+      ],
+      "previousProposedBehaviorClass": "sessileAttached",
+      "recommendedBehaviorClass": "sessileAttached",
+      "terrainAffinity": "surfaceAttached",
+      "mismatchSeverity": "critical",
+      "confidence": "high",
+      "notes": "Biome 1 urchin likely matching Alex's example: hostile stalk with speed [34, 64] and radius 14 enters pursuit, so a sessile contact hazard reads as rapidly swimming at the player."
+    },
+    {
+      "biome": 1,
+      "species": "Reef Needle Snipefish",
+      "assetKey": "fauna-exp-reef-needle-snipefish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Copperglass Cardinal",
+      "assetKey": "fauna-exp-copperglass-cardinal",
+      "count": 6,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 1,
+      "species": "Pearl Eye Flounder",
+      "assetKey": "fauna-exp-pearl-eye-flounder",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 1,
+      "species": "Teal Mask Filefish",
+      "assetKey": "fauna-exp-teal-mask-filefish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Goldbar Squirrelfish",
+      "assetKey": "fauna-exp-goldbar-squirrelfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Night Reef Boxfish",
+      "assetKey": "fauna-exp-night-reef-boxfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Copper Banded Seahorse",
+      "assetKey": "fauna-exp-copper-banded-seahorse",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "verticalAnchored",
+      "recommendedBehaviorClass": "verticalAnchored",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should stay rooted or near-rooted and mostly upright; current circle movement lets it roam the water column."
+    },
+    {
+      "biome": 1,
+      "species": "Midnight Hogfish",
+      "assetKey": "fauna-exp-midnight-hogfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Opalstripe Tilefish",
+      "assetKey": "fauna-exp-opalstripe-tilefish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 1,
+      "species": "Shellback Garden Eel",
+      "assetKey": "fauna-exp-shellback-garden-eel",
+      "count": 3,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        12,
+        24
+      ],
+      "previousProposedBehaviorClass": "verticalAnchored",
+      "recommendedBehaviorClass": "verticalAnchored",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should stay rooted or near-rooted and mostly upright; current sway movement lets it roam the water column."
+    },
+    {
+      "biome": 1,
+      "species": "Brightscale Halfbeak",
+      "assetKey": "fauna-exp-brightscale-halfbeak",
+      "count": 3,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 1,
+      "species": "Lumeneye Squirrelfish",
+      "assetKey": "fauna-exp-lumeneye-squirrelfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 1,
+      "species": "Opal Eye Mudskipper",
+      "assetKey": "fauna-exp-opal-eye-mudskipper",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 1,
+      "species": "Tideglass Cardinal",
+      "assetKey": "fauna-exp-tideglass-cardinal",
+      "count": 6,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 1,
+      "species": "Amber Snout Boxfish",
+      "assetKey": "fauna-exp-amber-snout-boxfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Ash Minnow",
+      "assetKey": "fauna-deep-ash-minnow",
+      "count": 20,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        36,
+        62
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 2,
+      "species": "Deep Sea Shrimp",
+      "assetKey": "fauna-deep-deep-shrimp",
+      "count": 18,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        32,
+        56
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current school steering treats it as a swimmer."
+    },
+    {
+      "biome": 2,
+      "species": "Hatchetfish",
+      "assetKey": "fauna-deep-hatchetfish",
+      "count": 16,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        58
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 2,
+      "species": "Barreleye",
+      "assetKey": "fauna-deep-barreleye",
+      "count": 10,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        18,
+        32
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser is mostly compatible; current circle pattern may need minor tuning rather than a new body-plan behavior."
+    },
+    {
+      "biome": 2,
+      "species": "Glass Squid",
+      "assetKey": "fauna-deep-glass-squid",
+      "count": 9,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 13,
+      "speed": [
+        28,
+        46
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current glide behavior uses generic fish steering."
+    },
+    {
+      "biome": 2,
+      "species": "Vampire Squid",
+      "assetKey": "fauna-deep-vampire-squid",
+      "count": 8,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 14,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current stalk behavior uses generic fish steering and hostile pursuit."
+    },
+    {
+      "biome": 2,
+      "species": "Lanternfish",
+      "assetKey": "fauna-deep-lanternfish",
+      "count": 13,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        30,
+        52
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Gulper Eel",
+      "assetKey": "fauna-deep-gulper-eel",
+      "count": 6,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 20,
+      "speed": [
+        38,
+        68
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 2,
+      "species": "Tripodfish",
+      "assetKey": "fauna-deep-tripodfish",
+      "count": 5,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 18,
+      "speed": [
+        10,
+        22
+      ],
+      "previousProposedBehaviorClass": "verticalAnchored",
+      "recommendedBehaviorClass": "verticalAnchored",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should stay rooted or near-rooted and mostly upright; current sway movement lets it roam the water column."
+    },
+    {
+      "biome": 2,
+      "species": "Sea Spider",
+      "assetKey": "fauna-deep-sea-spider",
+      "count": 6,
+      "currentPattern": "circle",
+      "hostile": true,
+      "radius": 15,
+      "speed": [
+        18,
+        34
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current circle steering treats it as a swimmer."
+    },
+    {
+      "biome": 2,
+      "species": "Velvet Glass Cuttle",
+      "assetKey": "fauna-exp-velvet-glass-cuttle",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current circle behavior uses generic fish steering."
+    },
+    {
+      "biome": 2,
+      "species": "Copper Ribbon Eel",
+      "assetKey": "fauna-exp-copper-ribbon-eel",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser is mostly compatible; current circle pattern may need minor tuning rather than a new body-plan behavior."
+    },
+    {
+      "biome": 2,
+      "species": "Glass Helm Nautilus",
+      "assetKey": "fauna-exp-glass-helm-nautilus",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current glide behavior uses generic fish steering."
+    },
+    {
+      "biome": 2,
+      "species": "Vent Pearl Copepod",
+      "assetKey": "fauna-exp-vent-pearl-copepod",
+      "count": 4,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 6,
+      "speed": [
+        12,
+        24
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current sway still routes through fish steering."
+    },
+    {
+      "biome": 2,
+      "species": "Moonmask Lionfish",
+      "assetKey": "fauna-exp-moonmask-lionfish",
+      "count": 2,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 13,
+      "speed": [
+        34,
+        64
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 2,
+      "species": "Chimney Ghost Shrimp",
+      "assetKey": "fauna-exp-chimney-ghost-shrimp",
+      "count": 4,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current glide steering treats it as a swimmer."
+    },
+    {
+      "biome": 2,
+      "species": "Brass Knuckle Prawn",
+      "assetKey": "fauna-exp-brass-knuckle-prawn",
+      "count": 2,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 14,
+      "speed": [
+        34,
+        64
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current stalk steering treats it as a swimmer."
+    },
+    {
+      "biome": 2,
+      "species": "Saffron Paddle Cuttle",
+      "assetKey": "fauna-exp-saffron-paddle-cuttle",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current circle behavior uses generic fish steering."
+    },
+    {
+      "biome": 2,
+      "species": "Cinder Vent Clingfish",
+      "assetKey": "fauna-exp-cinder-vent-clingfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "sessileAttached",
+      "recommendedBehaviorClass": "sessileAttached",
+      "terrainAffinity": "wall",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should be attached to terrain with defensive/contact behavior; current glide steering in open water detaches the body plan from its surface."
+    },
+    {
+      "biome": 2,
+      "species": "Rustscale Hatchetfish",
+      "assetKey": "fauna-exp-rustscale-hatchetfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Lumen Brow Barreleye",
+      "assetKey": "fauna-exp-lumen-brow-barreleye",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Ivory Sail Chimaera",
+      "assetKey": "fauna-exp-ivory-sail-chimaera",
+      "count": 2,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser is mostly compatible; current circle pattern may need minor tuning rather than a new body-plan behavior."
+    },
+    {
+      "biome": 2,
+      "species": "Ashveil Butterflyfish",
+      "assetKey": "fauna-exp-ashveil-butterflyfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Goldcap Tripodfish",
+      "assetKey": "fauna-exp-goldcap-tripodfish",
+      "count": 3,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        12,
+        24
+      ],
+      "previousProposedBehaviorClass": "verticalAnchored",
+      "recommendedBehaviorClass": "verticalAnchored",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should stay rooted or near-rooted and mostly upright; current sway movement lets it roam the water column."
+    },
+    {
+      "biome": 2,
+      "species": "Verdigris Parrotfish",
+      "assetKey": "fauna-exp-verdigris-parrotfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Cyan Pulse Lanternfish",
+      "assetKey": "fauna-exp-cyan-pulse-lanternfish",
+      "count": 6,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 2,
+      "species": "Scarletline Hawkfish",
+      "assetKey": "fauna-exp-scarletline-hawkfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Vent Jade Eelpout",
+      "assetKey": "fauna-exp-vent-jade-eelpout",
+      "count": 2,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        34,
+        64
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 2,
+      "species": "Blueglass Anthias",
+      "assetKey": "fauna-exp-blueglass-anthias",
+      "count": 6,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        34,
+        60
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 2,
+      "species": "Tin Plate Searobin",
+      "assetKey": "fauna-exp-tin-plate-searobin",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current glide steering treats it as a swimmer."
+    },
+    {
+      "biome": 2,
+      "species": "Reef Amber Snapper",
+      "assetKey": "fauna-exp-reef-amber-snapper",
+      "count": 2,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Blackwater Hatchet",
+      "assetKey": "fauna-exp-blackwater-hatchet",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Bluefire Dragonet",
+      "assetKey": "fauna-exp-bluefire-dragonet",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 2,
+      "species": "Lumen Kite Ray",
+      "assetKey": "fauna-exp-lumen-kite-ray",
+      "count": 2,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should skim, rest, or move just above terrain; current circle behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 2,
+      "species": "Ventstripe Moray",
+      "assetKey": "fauna-exp-ventstripe-moray",
+      "count": 2,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        34,
+        64
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Prior row classed this as bottomRestingGlider with ray-style notes; a moray reads better as a near-terrain ambush predator, not a full-column swimmer."
+    },
+    {
+      "biome": 2,
+      "species": "Silvercap Grenadier",
+      "assetKey": "fauna-exp-silvercap-grenadier",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Ghostfin Croaker",
+      "assetKey": "fauna-exp-ghostfin-croaker",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        26,
+        48
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 2,
+      "species": "Ghostplate Sea Moth",
+      "assetKey": "fauna-exp-ghostplate-sea-moth",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        18,
+        36
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser is mostly compatible; current circle pattern may need minor tuning rather than a new body-plan behavior."
+    },
+    {
+      "biome": 3,
+      "species": "Mirror Fry",
+      "assetKey": "fauna-abyss-mirror-fry",
+      "count": 18,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        42,
+        72
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 3,
+      "species": "Hadopelagic Shrimp",
+      "assetKey": "fauna-abyss-hadal-shrimp",
+      "count": 15,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        40,
+        70
+      ],
+      "previousProposedBehaviorClass": "benthicWalker",
+      "recommendedBehaviorClass": "benthicWalker",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should use floor/near-terrain skitters, pauses, and short hops/lunges; current school steering treats it as a swimmer."
+    },
+    {
+      "biome": 3,
+      "species": "Abyssal Jelly",
+      "assetKey": "fauna-abyss-abyss-jelly",
+      "count": 12,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        12,
+        24
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current sway still routes through fish steering."
+    },
+    {
+      "biome": 3,
+      "species": "Bigfin Squid",
+      "assetKey": "fauna-abyss-bigfin-squid",
+      "count": 8,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 18,
+      "speed": [
+        20,
+        36
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current glide behavior uses generic fish steering."
+    },
+    {
+      "biome": 3,
+      "species": "Abyssal Viperfish",
+      "assetKey": "fauna-abyss-viperfish",
+      "count": 10,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 14,
+      "speed": [
+        48,
+        82
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Lantern Swarm",
+      "assetKey": "fauna-abyss-lantern-swarm",
+      "count": 6,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 22,
+      "speed": [
+        10,
+        22
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current sway still routes through fish steering."
+    },
+    {
+      "biome": 3,
+      "species": "Goblin Shark",
+      "assetKey": "fauna-abyss-goblin-shark",
+      "count": 5,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 23,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Frilled Shark",
+      "assetKey": "fauna-abyss-frilled-shark",
+      "count": 5,
+      "currentPattern": "glide",
+      "hostile": true,
+      "radius": 24,
+      "speed": [
+        34,
+        62
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Black Swallower",
+      "assetKey": "fauna-abyss-black-swallower",
+      "count": 4,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 27,
+      "speed": [
+        34,
+        66
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Glassjaw Viperfish",
+      "assetKey": "fauna-exp-glassjaw-viperfish",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 18,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Abyssal Thread Eel",
+      "assetKey": "fauna-exp-abyssal-thread-eel",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        18,
+        34
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser is mostly compatible; current circle pattern may need minor tuning rather than a new body-plan behavior."
+    },
+    {
+      "biome": 3,
+      "species": "Twilight Surgeonfish",
+      "assetKey": "fauna-exp-twilight-surgeonfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 3,
+      "species": "Obsidian Swallowtail",
+      "assetKey": "fauna-exp-obsidian-swallowtail",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 3,
+      "species": "Cobalt Triggerfish",
+      "assetKey": "fauna-exp-cobalt-triggerfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 3,
+      "species": "Snowcap Snailfish",
+      "assetKey": "fauna-exp-snowcap-snailfish",
+      "count": 3,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        10,
+        22
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current sway behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 3,
+      "species": "Ironmask Ratfish",
+      "assetKey": "fauna-exp-ironmask-ratfish",
+      "count": 2,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        18,
+        34
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser is mostly compatible; current circle pattern may need minor tuning rather than a new body-plan behavior."
+    },
+    {
+      "biome": 3,
+      "species": "Pearlside Grunt",
+      "assetKey": "fauna-exp-pearlside-grunt",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 3,
+      "species": "Saberfin Smelt",
+      "assetKey": "fauna-exp-saberfin-smelt",
+      "count": 3,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        38,
+        68
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 3,
+      "species": "Brassstripe Fusilier",
+      "assetKey": "fauna-exp-brassstripe-fusilier",
+      "count": 5,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        38,
+        68
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 3,
+      "species": "Starless Lantern Eel",
+      "assetKey": "fauna-exp-starless-lantern-eel",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Moonspot Drumfish",
+      "assetKey": "fauna-exp-moonspot-drumfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 3,
+      "species": "Hollow Eye Cusk",
+      "assetKey": "fauna-exp-hollow-eye-cusk",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Knifecrest Snipe Eel",
+      "assetKey": "fauna-exp-knifecrest-snipe-eel",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Rustjaw Blenny",
+      "assetKey": "fauna-exp-rustjaw-blenny",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 3,
+      "species": "Onyx Frillshark Fry",
+      "assetKey": "fauna-exp-onyx-frillshark-fry",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 10,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Black Velvet Cusk",
+      "assetKey": "fauna-exp-black-velvet-cusk",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 3,
+      "species": "Sulfur Eye Hagfish",
+      "assetKey": "fauna-exp-sulfur-eye-hagfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "nearTerrain",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 3,
+      "species": "Halo Dot Lanternfish",
+      "assetKey": "fauna-exp-halo-dot-lanternfish",
+      "count": 5,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        38,
+        68
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 3,
+      "species": "Ivory Ridge Rattail",
+      "assetKey": "fauna-exp-ivory-ridge-rattail",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 3,
+      "species": "Neonbar Dartfish",
+      "assetKey": "fauna-exp-neonbar-dartfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 3,
+      "species": "Bonefin Lantern Shark",
+      "assetKey": "fauna-exp-bonefin-lantern-shark",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 18,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 3,
+      "species": "Emberjaw Bristlefish",
+      "assetKey": "fauna-exp-emberjaw-bristlefish",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 13,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Static Fry",
+      "assetKey": "fauna-abyss-static-fry",
+      "count": 20,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        44,
+        76
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 4,
+      "species": "Abyssal Hatchet School",
+      "assetKey": "fauna-abyss-hatchet-school",
+      "count": 18,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 18,
+      "speed": [
+        10,
+        18
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current sway still routes through fish steering."
+    },
+    {
+      "biome": 4,
+      "species": "Abyss Vampire Squid",
+      "assetKey": "fauna-abyss-vampire-squid",
+      "count": 10,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        24,
+        42
+      ],
+      "previousProposedBehaviorClass": "cephalopodHover",
+      "recommendedBehaviorClass": "cephalopodHover",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "medium",
+      "confidence": "high",
+      "notes": "Should hover with pulse-jet bursts and slower orientation; current glide behavior uses generic fish steering."
+    },
+    {
+      "biome": 4,
+      "species": "Hadopelagic Microfish",
+      "assetKey": "fauna-abyss-microfish",
+      "count": 8,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 24,
+      "speed": [
+        10,
+        20
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current sway still routes through fish steering."
+    },
+    {
+      "biome": 4,
+      "species": "Anglerfish",
+      "assetKey": "fauna-abyss-anglerfish",
+      "count": 12,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 16,
+      "speed": [
+        42,
+        74
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Snipe Eel",
+      "assetKey": "fauna-abyss-snipe-eel",
+      "count": 10,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 15,
+      "speed": [
+        52,
+        88
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Goblin Shark",
+      "assetKey": "fauna-abyss-goblin-shark",
+      "count": 6,
+      "currentPattern": "glide",
+      "hostile": true,
+      "radius": 24,
+      "speed": [
+        44,
+        78
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Black Swallower",
+      "assetKey": "fauna-abyss-black-swallower",
+      "count": 5,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 30,
+      "speed": [
+        38,
+        70
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Abyssal Medusa",
+      "assetKey": "fauna-abyss-medusa",
+      "count": 8,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 16,
+      "speed": [
+        10,
+        22
+      ],
+      "previousProposedBehaviorClass": "hoverDrifter",
+      "recommendedBehaviorClass": "hoverDrifter",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "high",
+      "confidence": "high",
+      "notes": "Should drift/bob with weak steering and mostly upright orientation; current circle still routes through fish steering."
+    },
+    {
+      "biome": 4,
+      "species": "Sable Razorfish",
+      "assetKey": "fauna-exp-sable-razorfish",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Ancient Mask Angler",
+      "assetKey": "fauna-exp-ancient-mask-angler",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 18,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Mirrorbone Hatchetfish",
+      "assetKey": "fauna-exp-mirrorbone-hatchetfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 4,
+      "species": "Anchorfin Eel",
+      "assetKey": "fauna-exp-anchorfin-eel",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Glassfin Fangtooth",
+      "assetKey": "fauna-exp-glassfin-fangtooth",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 18,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Cobalt Gulper Fry",
+      "assetKey": "fauna-exp-cobalt-gulper-fry",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 10,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Bonewhisker Brotula",
+      "assetKey": "fauna-exp-bonewhisker-brotula",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 4,
+      "species": "Cinderstripe Cardinal",
+      "assetKey": "fauna-exp-cinderstripe-cardinal",
+      "count": 5,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        38,
+        68
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 4,
+      "species": "Kelpglass Rockfish",
+      "assetKey": "fauna-exp-kelpglass-rockfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 4,
+      "species": "Ivorymask Goatfish",
+      "assetKey": "fauna-exp-ivorymask-goatfish",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current glide behavior has no bottom clearance or settle state."
+    },
+    {
+      "biome": 4,
+      "species": "Hadal Needlefish",
+      "assetKey": "fauna-exp-hadal-needlefish",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Blueflame Grouperlet",
+      "assetKey": "fauna-exp-blueflame-grouperlet",
+      "count": 2,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 14,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 4,
+      "species": "Silverthread Needlefish",
+      "assetKey": "fauna-exp-silverthread-needlefish",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 12,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Cinder Maw Dragonfish",
+      "assetKey": "fauna-exp-cinder-maw-dragonfish",
+      "count": 3,
+      "currentPattern": "stalk",
+      "hostile": true,
+      "radius": 18,
+      "speed": [
+        42,
+        76
+      ],
+      "previousProposedBehaviorClass": "predatorPursuerAmbusher",
+      "recommendedBehaviorClass": "predatorPursuerAmbusher",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Fish-like hostile predator can mostly keep pursuit steering; later tuning should move combat out of legacy pattern checks."
+    },
+    {
+      "biome": 4,
+      "species": "Copperbelly Damselfish",
+      "assetKey": "fauna-exp-copperbelly-damselfish",
+      "count": 5,
+      "currentPattern": "school",
+      "hostile": false,
+      "radius": 8,
+      "speed": [
+        38,
+        68
+      ],
+      "previousProposedBehaviorClass": "openWaterSchoolingFish",
+      "recommendedBehaviorClass": "openWaterSchoolingFish",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "high",
+      "notes": "Small open-water schooling fish matches the current school pattern and only needs class/schema migration."
+    },
+    {
+      "biome": 4,
+      "species": "Cathedral Fin Ribbonfish",
+      "assetKey": "fauna-exp-cathedral-fin-ribbonfish",
+      "count": 3,
+      "currentPattern": "circle",
+      "hostile": false,
+      "radius": 10,
+      "speed": [
+        18,
+        34
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "low",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser is mostly compatible; current circle pattern may need minor tuning rather than a new body-plan behavior."
+    },
+    {
+      "biome": 4,
+      "species": "Lattice Eye Barreleye",
+      "assetKey": "fauna-exp-lattice-eye-barreleye",
+      "count": 3,
+      "currentPattern": "glide",
+      "hostile": false,
+      "radius": 11,
+      "speed": [
+        28,
+        50
+      ],
+      "previousProposedBehaviorClass": "cruiserSoloSwimmer",
+      "recommendedBehaviorClass": "cruiserSoloSwimmer",
+      "terrainAffinity": "openWater",
+      "mismatchSeverity": "none",
+      "confidence": "medium",
+      "notes": "Fish-like solo cruiser matches current glide movement closely enough for first migration."
+    },
+    {
+      "biome": 4,
+      "species": "Brineglass Snailfish",
+      "assetKey": "fauna-exp-brineglass-snailfish",
+      "count": 3,
+      "currentPattern": "sway",
+      "hostile": false,
+      "radius": 12,
+      "speed": [
+        10,
+        22
+      ],
+      "previousProposedBehaviorClass": "bottomRestingGlider",
+      "recommendedBehaviorClass": "bottomRestingGlider",
+      "terrainAffinity": "bottom",
+      "mismatchSeverity": "medium",
+      "confidence": "medium",
+      "notes": "Should skim, rest, or move just above terrain; current sway behavior has no bottom clearance or settle state."
+    }
+  ]
+}
