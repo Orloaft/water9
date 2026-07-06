@@ -600,7 +600,8 @@ const phase4SharedLandmarkBands: Partial<Record<EnvironmentDepthBand, string[]>>
 };
 
 const normalBiome1OrganicBands: EnvironmentDepthBand[] = ['upper', 'mid', 'lower', 'transitionDeep'];
-const normalBiome1OrganicLandmarkId = 'biome-shallows-organic-reef-shelf';
+const normalBiome1SignatureLandmarkId = 'biome-shallows-living-coral-terrace';
+const normalBiome1OrganicLandmarkId = normalBiome1SignatureLandmarkId;
 const normalBiome1OrganicBandPlateId = 'biome1-organic-shallow-reef-band';
 
 const biomeLandmarkPools: Record<Biome, Partial<Record<EnvironmentDepthBand, string[]>>> = {
@@ -791,7 +792,7 @@ function normalBiome1OrganicBandPlateFor(biome: Biome, band: EnvironmentDepthBan
 }
 
 function authoredBiomeLandmarkAlpha(biome: Biome, band: EnvironmentDepthBand) {
-  if (band === 'surface') return biome === 1 ? 0.26 : biome === 3 ? 0.98 : 1;
+  if (band === 'surface') return biome === 1 ? 0.34 : biome === 3 ? 0.98 : 1;
   if (biome === 2) return 0.74;
   if (biome === 3) return 0.34;
   if (biome === 4) return 0.74;
@@ -800,14 +801,14 @@ function authoredBiomeLandmarkAlpha(biome: Biome, band: EnvironmentDepthBand) {
 
 function authoredBiomeLandmarkHeightMultiplier(biome: Biome, band: EnvironmentDepthBand) {
   if (band === 'surface') {
-    return biome === 1 ? 0.36 : biome === 2 ? 1.62 : biome === 3 ? 1.58 : biome === 4 ? 1.64 : 1.48;
+    return biome === 1 ? 0.44 : biome === 2 ? 1.62 : biome === 3 ? 1.58 : biome === 4 ? 1.64 : 1.48;
   }
   return biome === 1 ? 0.92 : biome === 2 ? 1 : biome === 3 ? 1.24 : biome === 4 ? 1.14 : 1.2;
 }
 
 function authoredBiomeLandmarkWidthMultiplier(biome: Biome, band: EnvironmentDepthBand) {
   if (band === 'surface') {
-    return biome === 1 ? 2.7 : biome === 2 ? 1.98 : biome === 3 ? 1.86 : biome === 4 ? 2.42 : 2.4;
+    return biome === 1 ? 2.95 : biome === 2 ? 1.98 : biome === 3 ? 1.86 : biome === 4 ? 2.42 : 2.4;
   }
   return biome === 1 ? 1.48 : biome === 2 ? 3.85 : biome === 3 ? 1.48 : biome === 4 ? 2.05 : 2.05;
 }
@@ -1419,7 +1420,7 @@ export function environmentAnchorSilhouettesFor(
     const height = viewHeight * authoredBiomeLandmarkHeightMultiplier(biome, band.id);
     const widthScale = authoredBiomeLandmarkWidthMultiplier(biome, band.id);
     const localX = viewWidth * 0.5;
-    const localY = viewHeight * (biome === 1 ? 0.14 : biome === 2 ? 0.52 : biome === 3 ? 0.54 : biome === 4 ? 0.54 : 0.53);
+    const localY = viewHeight * (biome === 1 ? 0.42 : biome === 2 ? 0.52 : biome === 3 ? 0.54 : biome === 4 ? 0.54 : 0.53);
     anchors.push({
       id: `${band.id}-biome-${biome}-immediate`,
       kind: 'reef',
