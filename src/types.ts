@@ -19,6 +19,8 @@ export type Tile =
   | 'bedrock';
 export type UpgradeId = 'oxygen' | 'cargo' | 'laser' | 'lamp' | 'scanner' | 'suit' | 'speed' | 'thermal';
 export type FishPattern = 'school' | 'sway' | 'glide' | 'stalk' | 'circle';
+export type FishBehaviorClass = 'legacySwimmer' | 'sessileAttached' | 'verticalAnchored' | 'benthicWalker';
+export type TerrainAffinity = 'openWater' | 'nearTerrain' | 'bottom' | 'wall' | 'surfaceAttached';
 export type Biome = 1 | 2 | 3 | 4;
 export type EnvironmentDepthBand = 'surface' | 'upper' | 'mid' | 'lower' | 'transitionDeep';
 export type EnvironmentBackgroundRepeatMode = 'repeatXY' | 'repeatXClampY' | 'bandClampY' | 'worldSpaceNoise' | 'anchor';
@@ -57,6 +59,8 @@ export type PlaytestCommand =
   | 'centerCameraOnPlayer'
   | 'clearProofOverlays'
   | 'teleportToFlora'
+  | 'teleportToFauna'
+  | 'faunaBehaviorReview'
   | 'terrainReview'
   | 'terrainLookReview'
   | 'terrainMiningReview'
@@ -195,6 +199,25 @@ export interface Fish {
   visualFacingSign?: 1 | -1;
   visualTurnIntentSign?: 1 | -1;
   visualTurnIntentTime?: number;
+  behaviorClass?: FishBehaviorClass;
+  terrainAffinity?: TerrainAffinity;
+  surface?: TerrainSurfaceAnchor;
+  anchor?: TerrainSurfaceAnchor['anchor'];
+  anchorOffsetX?: number;
+  anchorOffsetY?: number;
+  anchorRefreshTimer?: number;
+  rootX?: number;
+  rootY?: number;
+  rootOffsetX?: number;
+  rootOffsetY?: number;
+  retract?: number;
+  tetherRadius?: number;
+  walkDir?: 1 | -1;
+  walkPause?: number;
+  lungeTimer?: number;
+  recoverTimer?: number;
+  grounded?: boolean;
+  fallbackNoAnchor?: boolean;
   sprite?: Phaser.GameObjects.Image;
 }
 
@@ -596,6 +619,8 @@ export interface FishSpecies {
   radius: number;
   speed: [number, number];
   assetKey?: string;
+  behaviorClass?: FishBehaviorClass;
+  terrainAffinity?: TerrainAffinity;
 }
 
 export interface FloraSpecies {

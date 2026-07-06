@@ -1854,14 +1854,44 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         species: fish.species,
         x: roundMetric(fish.x),
         y: roundMetric(fish.y),
+        ...screenFor(fish.x, fish.y),
         hostile: fish.hostile,
         pattern: fish.pattern,
+        behaviorClass: fish.behaviorClass ?? 'legacySwimmer',
+        terrainAffinity: fish.terrainAffinity ?? 'openWater',
         radius: roundMetric(fish.radius),
+        velocityMagnitude: roundMetric(Math.hypot(fish.vx, fish.vy)),
+        aggro: roundMetric(fish.aggro),
+        aggroCue: roundMetric(fish.aggroCue),
         hp: Math.round(fish.hp),
         maxHp: Math.round(fish.maxHp),
         assetKey: fish.assetKey,
         scanned: fish.scanned,
         dead: fish.dead,
+        hasSurface: Boolean(fish.surface),
+        supported: fish.surface ? validateTerrainSurfaceAnchor(this, fish.surface).valid : false,
+        fallbackNoAnchor: Boolean(fish.fallbackNoAnchor),
+        anchor: fish.anchor ?? fish.surface?.anchor ?? 'none',
+        surface: fish.surface ? {
+          rootX: roundMetric(fish.surface.rootX),
+          rootY: roundMetric(fish.surface.rootY),
+          normalX: roundMetric(fish.surface.normalX),
+          normalY: roundMetric(fish.surface.normalY),
+          tangentX: roundMetric(fish.surface.tangentX),
+          tangentY: roundMetric(fish.surface.tangentY),
+          support: roundMetric(fish.surface.support),
+          clearance: roundMetric(fish.surface.clearance),
+        } : null,
+        distanceFromSurface: fish.surface
+          ? roundMetric(Math.abs((fish.x - fish.surface.rootX) * fish.surface.normalX + (fish.y - fish.surface.rootY) * fish.surface.normalY))
+          : null,
+        distanceFromRoot: fish.surface ? roundMetric(Phaser.Math.Distance.Between(fish.x, fish.y, fish.surface.rootX, fish.surface.rootY)) : null,
+        rootDisplacement: fish.surface ? roundMetric(Phaser.Math.Distance.Between(fish.homeX, fish.homeY, fish.surface.rootX, fish.surface.rootY)) : null,
+        walkDir: fish.walkDir ?? null,
+        lungeTimer: roundMetric(fish.lungeTimer ?? 0),
+        recoverTimer: roundMetric(fish.recoverTimer ?? 0),
+        retract: roundMetric(fish.retract ?? 0),
+        screenVisible: fish.x >= camera.worldView.x && fish.x <= camera.worldView.right && fish.y >= camera.worldView.y && fish.y <= camera.worldView.bottom,
       })),
       hazards: this.hazards.map((hazard) => {
         const validation = hazard.surface ? validateTerrainSurfaceAnchor(this, hazard.surface) : { valid: false, anchor: null };
@@ -2413,6 +2443,92 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
           state.carrierSub.vy = 0;
         }
       }
+    } else if (command === 'teleportToFauna') {
+      const payload = typeof value === 'object' && value !== null
+        ? value as { index?: number; species?: string; assetKey?: string; behaviorClass?: string; distance?: number }
+        : {};
+      const candidates = this.fish.filter((fish) => {
+        if (fish.dead) return false;
+        if (payload.species && fish.species !== payload.species) return false;
+        if (payload.assetKey && fish.assetKey !== payload.assetKey) return false;
+        if (payload.behaviorClass && (fish.behaviorClass ?? 'legacySwimmer') !== payload.behaviorClass) return false;
+        return true;
+      });
+      const fish = candidates[Phaser.Math.Clamp(Math.floor(Number(payload.index) || 0), 0, Math.max(0, candidates.length - 1))];
+      if (!fish) return { ok: false, reason: 'no-fauna-target' };
+      const distance = Number.isFinite(payload.distance) ? Number(payload.distance) : 54;
+      const normalX = fish.surface?.normalX ?? (this.player.x < fish.x ? -1 : 1);
+      const normalY = fish.surface?.normalY ?? 0;
+      this.player.x = Phaser.Math.Clamp(fish.x + normalX * distance, 20, WORLD_W * TILE - 20);
+      this.player.y = Phaser.Math.Clamp(fish.y + normalY * distance, 20, WORLD_H * TILE - 20);
+      this.player.vx = 0;
+      this.player.vy = 0;
+      this.player.facing.set(-normalX, -normalY);
+      this.player.facingSign = this.player.facing.x < 0 ? -1 : 1;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.radioOpen = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+      if (state.activeSub && state.pilotingSub) {
+        state.activeSub.x = this.player.x;
+        state.activeSub.y = this.player.y;
+        state.activeSub.vx = 0;
+        state.activeSub.vy = 0;
+      }
+      if (state.carrierSub) {
+        state.carrierSub.x = this.player.x;
+        state.carrierSub.y = this.player.y;
+        state.carrierSub.vx = 0;
+        state.carrierSub.vy = 0;
+      }
+      this.cameras.main.centerOn(fish.x, fish.y);
+      refreshPlaytestCamera(this);
+      return { ok: true, species: fish.species, behaviorClass: fish.behaviorClass ?? 'legacySwimmer', x: roundMetric(fish.x), y: roundMetric(fish.y) };
+    } else if (command === 'faunaBehaviorReview') {
+      const payload = typeof value === 'object' && value !== null
+        ? value as { species?: string; assetKey?: string; behaviorClass?: string }
+        : {};
+      const camera = this.cameras.main;
+      const targets = this.fish.filter((fish) => {
+        if (fish.dead) return false;
+        if (payload.species && fish.species !== payload.species) return false;
+        if (payload.assetKey && fish.assetKey !== payload.assetKey) return false;
+        if (payload.behaviorClass && (fish.behaviorClass ?? 'legacySwimmer') !== payload.behaviorClass) return false;
+        return true;
+      }).map((fish) => {
+        const validation = fish.surface ? validateTerrainSurfaceAnchor(this, fish.surface) : { valid: false };
+        const tangentSpeed = fish.surface ? Math.abs(fish.vx * fish.surface.tangentX + fish.vy * fish.surface.tangentY) : 0;
+        const normalSpeed = fish.surface ? Math.abs(fish.vx * fish.surface.normalX + fish.vy * fish.surface.normalY) : 0;
+        return {
+          species: fish.species,
+          assetKey: fish.assetKey,
+          behaviorClass: fish.behaviorClass ?? 'legacySwimmer',
+          terrainAffinity: fish.terrainAffinity ?? 'openWater',
+          x: roundMetric(fish.x),
+          y: roundMetric(fish.y),
+          hasSurface: Boolean(fish.surface),
+          supported: validation.valid,
+          fallbackNoAnchor: Boolean(fish.fallbackNoAnchor),
+          anchor: fish.anchor ?? fish.surface?.anchor ?? 'none',
+          rootX: roundMetric(fish.surface?.rootX ?? fish.homeX),
+          rootY: roundMetric(fish.surface?.rootY ?? fish.homeY),
+          distanceFromSurface: fish.surface ? roundMetric(Math.abs((fish.x - fish.surface.rootX) * fish.surface.normalX + (fish.y - fish.surface.rootY) * fish.surface.normalY)) : null,
+          distanceFromRoot: fish.surface ? roundMetric(Phaser.Math.Distance.Between(fish.x, fish.y, fish.surface.rootX, fish.surface.rootY)) : null,
+          velocityMagnitude: roundMetric(Math.hypot(fish.vx, fish.vy)),
+          tangentSpeed: roundMetric(tangentSpeed),
+          normalSpeed: roundMetric(normalSpeed),
+          aggro: roundMetric(fish.aggro),
+          aggroCue: roundMetric(fish.aggroCue),
+          lungeTimer: roundMetric(fish.lungeTimer ?? 0),
+          recoverTimer: roundMetric(fish.recoverTimer ?? 0),
+          retract: roundMetric(fish.retract ?? 0),
+          screenVisible: fish.x >= camera.worldView.x && fish.x <= camera.worldView.right && fish.y >= camera.worldView.y && fish.y <= camera.worldView.bottom,
+        };
+      });
+      return { ok: true, count: targets.length, targets };
 	    } else if (command === 'terrainLookReview') {
       refreshPlaytestCamera(this);
       this.draw();

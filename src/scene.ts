@@ -1230,6 +1230,7 @@ export interface DeepdiveScene {
   refreshEnvironmentPropsAround: OmitThisParameter<typeof worldgenNs.refreshEnvironmentPropsAround>;
   processEnvironmentPropRefreshQueue: OmitThisParameter<typeof worldgenNs.processEnvironmentPropRefreshQueue>;
   refreshFloraAnchorsAround: OmitThisParameter<typeof worldgenNs.refreshFloraAnchorsAround>;
+  refreshFaunaAnchorsAround: OmitThisParameter<typeof worldgenNs.refreshFaunaAnchorsAround>;
   makeVentFields: OmitThisParameter<typeof worldgenNs.makeVentFields>;
   injectSpecialRooms: OmitThisParameter<typeof worldgenNs.injectSpecialRooms>;
   pickBiolumeCavernCenter: OmitThisParameter<typeof worldgenNs.pickBiolumeCavernCenter>;
@@ -1261,6 +1262,7 @@ export interface DeepdiveScene {
   findRoomFloraAnchor: OmitThisParameter<typeof worldgenNs.findRoomFloraAnchor>;
   findRoomFloorAnchor: OmitThisParameter<typeof worldgenNs.findRoomFloorAnchor>;
   findFloraAnchorInBand: OmitThisParameter<typeof worldgenNs.findFloraAnchorInBand>;
+  findFaunaAnchorInBand: OmitThisParameter<typeof worldgenNs.findFaunaAnchorInBand>;
   findVentAnchorInBand: OmitThisParameter<typeof worldgenNs.findVentAnchorInBand>;
   findRockTopAnchorInBand: OmitThisParameter<typeof worldgenNs.findRockTopAnchorInBand>;
   findOpenWaterInBand: OmitThisParameter<typeof worldgenNs.findOpenWaterInBand>;
@@ -1380,6 +1382,10 @@ Object.assign(DeepdiveScene.prototype, entitiesNs);
 export interface DeepdiveScene {
   updateFish: OmitThisParameter<typeof entitiesNs.updateFish>;
   updateFlora: OmitThisParameter<typeof entitiesNs.updateFlora>;
+  updateAnchoredFish: OmitThisParameter<typeof entitiesNs.updateAnchoredFish>;
+  updateSessileFish: OmitThisParameter<typeof entitiesNs.updateSessileFish>;
+  updateVerticalAnchoredFish: OmitThisParameter<typeof entitiesNs.updateVerticalAnchoredFish>;
+  updateBenthicWalkerFish: OmitThisParameter<typeof entitiesNs.updateBenthicWalkerFish>;
   steerFish: OmitThisParameter<typeof entitiesNs.steerFish>;
   keepFishInWater: OmitThisParameter<typeof entitiesNs.keepFishInWater>;
   bumpFish: OmitThisParameter<typeof entitiesNs.bumpFish>;

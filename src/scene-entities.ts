@@ -6,6 +6,7 @@ import { state,ui } from './state';
 import { bargeSolidAtWorld,cargoCapacity,currentApexSpecies,oxygenMax,pointInRoom,predatorBiteCooldown,rarityColor,rarityLabel,resetOxygenWarnings,scaledEntity,scannableRarity,scanReward,subDef,updateFacingFromVelocity,updateFishVisualFacing,venomousFish } from './helpers';
 import { biomeName,renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
+import { findNearbyTerrainSurfaceAnchor,validateTerrainSurfaceAnchor } from './terrain-mask';
 
 export function updateFish(this: DeepdiveScene, delta: number) {
     for (const fish of this.fish) {
@@ -27,20 +28,148 @@ export function updateFish(this: DeepdiveScene, delta: number) {
         fish.aggro = 0;
         fish.vx *= Math.exp(-4.6 * delta);
         fish.vy *= Math.exp(-4.6 * delta);
+        if (fish.behaviorClass && fish.behaviorClass !== 'legacySwimmer') this.updateAnchoredFish(fish, delta);
       } else {
-        this.steerFish(fish, delta);
+        if (fish.behaviorClass === 'sessileAttached') this.updateSessileFish(fish, delta);
+        else if (fish.behaviorClass === 'verticalAnchored') this.updateVerticalAnchoredFish(fish, delta);
+        else if (fish.behaviorClass === 'benthicWalker') this.updateBenthicWalkerFish(fish, delta);
+        else this.steerFish(fish, delta);
       }
-      fish.x += fish.vx * delta;
-      fish.y += fish.vy * delta;
-      this.keepFishInWater(fish);
-      updateFacingFromVelocity(fish);
-      updateFishVisualFacing(fish, delta);
+      if (!fish.behaviorClass || fish.behaviorClass === 'legacySwimmer') {
+        fish.x += fish.vx * delta;
+        fish.y += fish.vy * delta;
+        this.keepFishInWater(fish);
+        updateFacingFromVelocity(fish);
+        updateFishVisualFacing(fish, delta);
+      } else {
+        this.updateAnchoredFish(fish, delta);
+      }
       if (fish.stunned > 0) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance < fish.radius + PLAYER_CONTACT_RADIUS && fish.bumpCooldown <= 0 && !this.isAtBoat()) {
         this.bumpFish(fish, distance);
       }
     }
+  }
+
+export function updateAnchoredFish(this: DeepdiveScene, fish: Fish, delta: number) {
+    fish.anchorRefreshTimer = Math.max(0, (fish.anchorRefreshTimer ?? 0) - delta);
+    if (fish.surface && fish.anchorRefreshTimer <= 0) {
+      fish.anchorRefreshTimer = Phaser.Math.FloatBetween(2.5, 5.5);
+      const validation = validateTerrainSurfaceAnchor(this, fish.surface);
+      const next = validation.valid ? validation.anchor : findNearbyTerrainSurfaceAnchor(this, fish.surface, 8);
+      if (next) {
+        fish.surface = next;
+        fish.anchor = next.anchor;
+        fish.rootX = next.rootX;
+        fish.rootY = next.rootY;
+        fish.homeX = next.rootX;
+        fish.homeY = next.rootY;
+        fish.fallbackNoAnchor = false;
+      } else {
+        fish.dead = true;
+        fish.sprite?.setVisible(false);
+      }
+    }
+    if (fish.behaviorClass === 'sessileAttached') {
+      fish.vx = 0;
+      fish.vy = 0;
+    }
+  }
+
+export function updateSessileFish(this: DeepdiveScene, fish: Fish, _delta: number) {
+    if (fish.hostile && !this.isAtBoat()) {
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
+      if (distance < fish.radius + PLAYER_CONTACT_RADIUS + 20) fish.aggroCue = Math.max(fish.aggroCue, 0.55);
+    }
+    fish.aggro = 0;
+    fish.vx = 0;
+    fish.vy = 0;
+    if (!fish.surface) return;
+    fish.rootX = fish.surface.rootX;
+    fish.rootY = fish.surface.rootY;
+    fish.homeX = fish.surface.rootX;
+    fish.homeY = fish.surface.rootY;
+    fish.x = fish.surface.rootX + (fish.anchorOffsetX ?? 0);
+    fish.y = fish.surface.rootY + (fish.anchorOffsetY ?? 0);
+  }
+
+export function updateVerticalAnchoredFish(this: DeepdiveScene, fish: Fish, delta: number) {
+    const oldX = fish.x;
+    const oldY = fish.y;
+    const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, oldX, oldY);
+    const targetRetract = !this.isAtBoat() && distance < 92 + fish.radius ? 1 : 0;
+    fish.retract = Phaser.Math.Linear(fish.retract ?? 0, targetRetract, 1 - Math.exp(-3.2 * delta));
+    fish.aggro = 0;
+    if (!fish.surface) {
+      fish.vx *= Math.exp(-3 * delta);
+      fish.vy *= Math.exp(-3 * delta);
+      return;
+    }
+    const sway = Math.sin(fish.phase * 2.1) * Math.min(scaledEntity(5), fish.tetherRadius ?? scaledEntity(8));
+    const retract = (fish.retract ?? 0) * fish.radius * 0.48;
+    const baseX = fish.surface.rootX + (fish.anchorOffsetX ?? fish.surface.normalX * fish.radius);
+    const baseY = fish.surface.rootY + (fish.anchorOffsetY ?? fish.surface.normalY * fish.radius);
+    fish.x = baseX + fish.surface.tangentX * sway - fish.surface.normalX * retract;
+    fish.y = baseY + fish.surface.tangentY * sway - fish.surface.normalY * retract;
+    fish.vx = (fish.x - oldX) / Math.max(0.001, delta);
+    fish.vy = (fish.y - oldY) / Math.max(0.001, delta);
+    fish.facingSign = fish.surface.tangentX < 0 ? -1 : 1;
+    fish.visualFacingSign = fish.facingSign;
+    fish.visualAngle = Math.atan2(fish.surface.normalY, fish.surface.normalX);
+  }
+
+export function updateBenthicWalkerFish(this: DeepdiveScene, fish: Fish, delta: number) {
+    const oldX = fish.x;
+    const oldY = fish.y;
+    fish.recoverTimer = Math.max(0, (fish.recoverTimer ?? 0) - delta);
+    fish.lungeTimer = Math.max(0, (fish.lungeTimer ?? 0) - delta);
+    fish.walkPause = Math.max(0, (fish.walkPause ?? 0) - delta);
+    if (!fish.surface) {
+      fish.vx *= Math.exp(-2.5 * delta);
+      fish.vy *= Math.exp(-2.5 * delta);
+      return;
+    }
+    const playerDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
+    if (fish.hostile && !this.isAtBoat() && playerDistance < 95 + fish.radius && (fish.recoverTimer ?? 0) <= 0 && (fish.lungeTimer ?? 0) <= 0) {
+      fish.lungeTimer = 0.28;
+      fish.recoverTimer = 1.15;
+      fish.aggroCue = Math.max(fish.aggroCue, 0.9);
+    }
+    const tangent = fish.surface.tangentX * (this.player.x - fish.x) + fish.surface.tangentY * (this.player.y - fish.y);
+    if ((fish.lungeTimer ?? 0) > 0) {
+      fish.walkDir = tangent < 0 ? -1 : 1;
+      fish.rootOffsetX = (fish.rootOffsetX ?? 0) + (fish.walkDir ?? 1) * fish.speed * 1.05 * delta;
+      fish.aggro = Math.max(fish.aggro, 0.35);
+    } else {
+      fish.aggro = Math.max(0, fish.aggro - delta * 1.8);
+      if ((fish.walkPause ?? 0) <= 0) {
+        fish.rootOffsetX = (fish.rootOffsetX ?? 0) + (fish.walkDir ?? 1) * fish.speed * 0.34 * delta;
+        if (Math.random() < delta * 0.55) fish.walkPause = Phaser.Math.FloatBetween(0.25, 1.1);
+      }
+      if (Math.random() < delta * 0.12) fish.walkDir = fish.walkDir === 1 ? -1 : 1;
+    }
+    const tether = Math.max(scaledEntity(10), fish.tetherRadius ?? scaledEntity(20));
+    fish.rootOffsetX = Phaser.Math.Clamp(fish.rootOffsetX ?? 0, -tether, tether);
+    if (Math.abs(fish.rootOffsetX) >= tether - 0.5) fish.walkDir = fish.rootOffsetX > 0 ? -1 : 1;
+    const bob = Math.sin(fish.phase * 7.4) * (fish.lungeTimer && fish.lungeTimer > 0 ? scaledEntity(3) : scaledEntity(1.2));
+    const outward = Math.max(
+      fish.radius * 0.58,
+      Math.abs(fish.surface.normalX * (fish.anchorOffsetX ?? 0) + fish.surface.normalY * (fish.anchorOffsetY ?? 0)),
+    );
+    fish.x = fish.surface.rootX + fish.surface.normalX * outward
+      + fish.surface.tangentX * (fish.rootOffsetX ?? 0)
+      + fish.surface.normalX * bob;
+    fish.y = fish.surface.rootY + fish.surface.normalY * outward
+      + fish.surface.tangentY * (fish.rootOffsetX ?? 0)
+      + fish.surface.normalY * bob;
+    fish.vx = (fish.x - oldX) / Math.max(0.001, delta);
+    fish.vy = (fish.y - oldY) / Math.max(0.001, delta);
+    const tangentMotion = fish.surface.tangentX * fish.vx + fish.surface.tangentY * fish.vy;
+    fish.facingSign = tangentMotion < -1 ? -1 : tangentMotion > 1 ? 1 : fish.facingSign;
+    fish.visualFacingSign = fish.facingSign;
+    fish.visualAngle = Math.atan2(fish.surface.tangentY * fish.facingSign, fish.surface.tangentX * fish.facingSign);
+    fish.grounded = true;
   }
 
 export function updateFlora(this: DeepdiveScene, delta: number) {
@@ -147,6 +276,24 @@ export function bumpFish(this: DeepdiveScene, fish: Fish, distance: number) {
     const nx = distance > 0 ? (this.player.x - fish.x) / distance : 1;
     const ny = distance > 0 ? (this.player.y - fish.y) / distance : 0;
     const impact = Math.hypot(this.player.vx, this.player.vy);
+    if (fish.behaviorClass && fish.behaviorClass !== 'legacySwimmer') {
+      this.player.vx += nx * (fish.hostile ? 95 : 42);
+      this.player.vy += ny * (fish.hostile ? 95 : 42);
+      fish.bumpCooldown = fish.hostile ? predatorBiteCooldown(fish) : 0.42;
+      fish.scan = Math.max(0, fish.scan - 0.18);
+      if (fish.hostile) {
+        const damage = Math.round(3 + fish.radius * 0.3 + state.biome * 1.2 + (fish.behaviorClass === 'benthicWalker' && fish.lungeTimer && fish.lungeTimer > 0 ? 3 : 0));
+        const verb = fish.behaviorClass === 'sessileAttached' ? 'spines punctured the suit' : 'struck from the terrain';
+        this.applyHullDamage(Math.max(2, damage + impact * 0.012 - state.upgrades.suit), `${fish.species} ${verb}.`);
+        fish.aggroCue = Math.max(fish.aggroCue, 1);
+        this.registerPredatorBite(fish);
+        this.playFishBite(damage);
+      } else {
+        state.status = `${fish.species} held its terrain position.`;
+      }
+      renderHud();
+      return;
+    }
     this.player.vx += nx * (fish.hostile ? 120 : 70);
     this.player.vy += ny * (fish.hostile ? 120 : 70);
     fish.vx -= nx * 140;

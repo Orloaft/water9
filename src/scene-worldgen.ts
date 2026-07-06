@@ -5,6 +5,7 @@ import { biomeFish,biomeFlora,tiles } from './content';
 import { state } from './state';
 import { rng } from './rng';
 import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,isOreTile,oreEnvironmentAssetKey,scaledDepthPx,scaledEntity,terrainLookForBiome,veinRuleAt,veinRulesForBiome } from './helpers';
+import { fishBehaviorProfile,type FaunaBehaviorProfile } from './fauna-behavior';
 import type { DeepdiveScene } from './scene';
 import { ensureTerrainMask,findNearbyTerrainSurfaceAnchor,findTerrainSurfaceAnchorInBand,rebuildTerrainMask,sampleTerrainSurfaceAnchors,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
 import { markTerrainDirty,measurePerf } from './perf';
@@ -761,6 +762,27 @@ export function refreshFloraAnchorsAround(this: DeepdiveScene, cx: number, cy: n
     }
   }
 
+export function refreshFaunaAnchorsAround(this: DeepdiveScene, cx: number, cy: number, radiusTiles = 5) {
+    const worldX = cx * TILE + TILE * 0.5;
+    const worldY = cy * TILE + TILE * 0.5;
+    const radius = radiusTiles * TILE;
+    for (const fish of this.fish) {
+      if (fish.dead || fish.behaviorClass === 'legacySwimmer' || !fish.surface) continue;
+      if (Phaser.Math.Distance.Between(worldX, worldY, fish.surface.rootX, fish.surface.rootY) > radius + fish.radius) continue;
+      const validation = validateTerrainSurfaceAnchor(this, fish.surface);
+      const next = validation.valid ? validation.anchor : findNearbyTerrainSurfaceAnchor(this, fish.surface, 8);
+      if (!next) {
+        fish.dead = true;
+        fish.sprite?.setVisible(false);
+        continue;
+      }
+      fish.surface = next;
+      fish.anchor = next.anchor;
+      fish.fallbackNoAnchor = false;
+      positionFaunaOnSurface(fish, next);
+    }
+  }
+
 type EdgeAnchor = {
   kind: 'floor' | 'ceiling' | 'leftWall' | 'rightWall';
   x: number;
@@ -876,20 +898,28 @@ export function makeBobbits(this: DeepdiveScene, ): Bobbit[] {
 
 export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
     const school: Fish[] = [];
+    const profile = fishBehaviorProfile(species);
     for (let i = 0; i < species.count; i += 1) {
-      const point = this.findOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY));
+      const point = profile.behaviorClass === 'legacySwimmer'
+        ? this.findOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY))
+        : this.findFaunaAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), i, species);
+      const faunaPoint = point as { x: number; y: number; surface?: TerrainSurfaceAnchor; rootOffsetX?: number; rootOffsetY?: number };
       const angle = Math.random() * Math.PI * 2;
       const assetKey = fishAssetKey(species);
       const facingSign = Math.cos(angle) < 0 ? -1 : 1;
+      const radius = scaledEntity(species.radius);
+      const surface = faunaPoint.surface;
+      const x = faunaPoint.x;
+      const y = faunaPoint.y;
       school.push({
         kind: 'fish',
         species: species.species,
-        x: point.x,
-        y: point.y,
-        vx: Math.cos(angle) * species.speed[0],
-        vy: Math.sin(angle) * species.speed[0],
-        homeX: point.x,
-        homeY: point.y,
+        x,
+        y,
+        vx: profile.behaviorClass === 'legacySwimmer' ? Math.cos(angle) * species.speed[0] : 0,
+        vy: profile.behaviorClass === 'legacySwimmer' ? Math.sin(angle) * species.speed[0] : 0,
+        homeX: surface ? surface.rootX : point.x,
+        homeY: surface ? surface.rootY : point.y,
         speed: Phaser.Math.FloatBetween(species.speed[0], species.speed[1]),
         phase: Math.random() * Math.PI * 2,
         color: species.color,
@@ -898,7 +928,7 @@ export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
         scan: 0,
         scanning: false,
         scanPulse: 0,
-        radius: scaledEntity(species.radius),
+        radius,
         pattern: species.pattern,
         bumpCooldown: 0,
         aggro: 0,
@@ -912,10 +942,43 @@ export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
         facingSign,
         visualAngle: angle,
         visualFacingSign: facingSign,
-        sprite: this.createEntitySprite(point.x, point.y, assetKey),
+        behaviorClass: profile.behaviorClass,
+        terrainAffinity: profile.terrainAffinity,
+        surface,
+        anchor: surface?.anchor,
+        anchorOffsetX: surface ? x - surface.rootX : 0,
+        anchorOffsetY: surface ? y - surface.rootY : 0,
+        anchorRefreshTimer: Phaser.Math.FloatBetween(2, 5),
+        rootX: surface?.rootX ?? x,
+        rootY: surface?.rootY ?? y,
+        rootOffsetX: surface ? faunaPoint.rootOffsetX ?? 0 : 0,
+        rootOffsetY: surface ? faunaPoint.rootOffsetY ?? 0 : 0,
+        retract: 0,
+        tetherRadius: scaledEntity(profile.tetherRadius),
+        walkDir: hash(i * 37, species.species.length * 53, rng.seed + 8501) > 0.5 ? 1 : -1,
+        walkPause: profile.behaviorClass === 'benthicWalker' ? Phaser.Math.FloatBetween(0.2, 1.6) : 0,
+        lungeTimer: 0,
+        recoverTimer: 0,
+        grounded: Boolean(surface),
+        fallbackNoAnchor: !surface && profile.behaviorClass !== 'legacySwimmer',
+        sprite: this.createEntitySprite(x, y, assetKey),
       });
     }
     return school;
+  }
+
+function positionFaunaOnSurface(fish: Fish, anchor: TerrainSurfaceAnchor) {
+    const offsetX = fish.anchorOffsetX ?? anchor.normalX * (fish.radius * 0.55);
+    const offsetY = fish.anchorOffsetY ?? anchor.normalY * (fish.radius * 0.55);
+    fish.rootX = anchor.rootX;
+    fish.rootY = anchor.rootY;
+    fish.homeX = anchor.rootX;
+    fish.homeY = anchor.rootY;
+    fish.x = anchor.rootX + offsetX;
+    fish.y = anchor.rootY + offsetY;
+    fish.vx = 0;
+    fish.vy = 0;
+    fish.sprite?.setPosition(fish.x, fish.y);
   }
 
 export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flora[] {
@@ -1227,6 +1290,42 @@ export function findRoomFloorAnchor(this: DeepdiveScene, room: SpecialRoom, salt
 export function findFloraAnchorInBand(this: DeepdiveScene, minY: number, maxY: number, salt = 0, species?: FloraSpecies) {
     const prefer = floraSurfacePreferences(species);
     return findTerrainSurfaceAnchorInBand(this, minY, maxY, salt, prefer);
+  }
+
+export function findFaunaAnchorInBand(this: DeepdiveScene, minY: number, maxY: number, salt = 0, species: FishSpecies): { x: number; y: number; surface?: TerrainSurfaceAnchor; rootOffsetX: number; rootOffsetY: number } {
+    const profile = fishBehaviorProfile(species);
+    const strictCandidates = sampleTerrainSurfaceAnchors(this, {
+      minY,
+      maxY,
+      salt: salt + 7301,
+      prefer: profile.preferredAnchors,
+      limit: 120,
+    }).filter((anchor) => profile.preferredAnchors.includes(anchor.anchor));
+    const surface = strictCandidates.length
+      ? strictCandidates[salt % strictCandidates.length]
+      : findTerrainSurfaceAnchorInBand(this, minY, maxY, salt + 7301, profile.preferredAnchors);
+    if (!surface) {
+      const fallback = this.findOpenWaterInBand(minY, maxY);
+      return { x: fallback.x, y: fallback.y, rootOffsetX: 0, rootOffsetY: 0 };
+    }
+    const offset = faunaSurfaceOffset(surface, profile, salt, species.radius);
+    return {
+      x: surface.rootX + offset.x,
+      y: surface.rootY + offset.y,
+      surface,
+      rootOffsetX: offset.rootOffset,
+      rootOffsetY: 0,
+    };
+  }
+
+function faunaSurfaceOffset(anchor: TerrainSurfaceAnchor, profile: FaunaBehaviorProfile, salt: number, speciesRadius: number) {
+    const tangentJitter = (hash(anchor.maskSx * 19 + salt * 11, anchor.maskSy * 23, rng.seed + 9211) - 0.5) * scaledEntity(profile.tetherRadius * 0.75);
+    const outward = scaledEntity(profile.clearance + speciesRadius * (profile.behaviorClass === 'verticalAnchored' ? 0.95 : 0.58));
+    return {
+      x: anchor.normalX * outward + anchor.tangentX * tangentJitter,
+      y: anchor.normalY * outward + anchor.tangentY * tangentJitter,
+      rootOffset: tangentJitter,
+    };
   }
 
 export function findVentAnchorInBand(this: DeepdiveScene, minY: number, maxY: number, salt = 0) {

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { BargeTab,Biome,CargoItem,FishSpecies,Flora,FloraSpecies,Quest,RadioMessage,ScanRarity,ShopItem,SubDef,SubTier,SubVehicle,TitlePanel,Upgrade,UpgradeId } from './types';
 import { FUEL_REFILL_AMOUNT,MARLIN_VOUCHER_DISCOUNT,SONAR_FUEL_COST,SUB_FUEL_COST,SUB_OXYGEN_COST } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,upgrades } from './content';
+import { behaviorLogbookMotion,fishBehaviorProfile } from './fauna-behavior';
 import { state,ui } from './state';
 import { articulatedCreatureDefs } from './articulated';
 import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clampSelectedCargoIndex,fishAssetKey,fishRarity,floraAssetKey,floraRarity,fuelMax,fuelRefillCost,hullMax,lifeCatalogTotal,oxygenMax,rarityLabel,restart,subDef,subEffectiveCost,subRepairCost,upgradeCost,upgradeMax } from './helpers';
@@ -1276,11 +1277,15 @@ export function rarityRank(rarity: ScanRarity) {
 }
 
 export function fishLogbookInfo(species: FishSpecies) {
+  const profile = fishBehaviorProfile(species);
   const temperament = species.hostile
-    ? 'Will pursue diver noise, light, and close movement even after cataloging.'
+    ? profile.behaviorClass === 'sessileAttached'
+      ? 'Defensive contact hazard; it signals and stings at close range but does not pursue.'
+      : 'Will pursue diver noise, light, and close movement even after cataloging.'
     : 'Generally non-aggressive unless startled by close contact.';
   const depth = `${species.minY}-${species.maxY} m survey band`;
-  const motion = species.pattern === 'school'
+  const behaviorMotion = behaviorLogbookMotion(profile);
+  const motion = behaviorMotion || (species.pattern === 'school'
     ? 'travels in loose schools'
     : species.pattern === 'stalk'
       ? 'uses short pursuit bursts'
@@ -1288,7 +1293,7 @@ export function fishLogbookInfo(species: FishSpecies) {
         ? 'patrols in looping territory'
         : species.pattern === 'glide'
           ? 'glides through open water'
-          : 'drifts with slow current changes';
+          : 'drifts with slow current changes');
   return `${depth}. ${temperament} It ${motion}. ${lifeformQuote(species.species, species.hostile ? 'predator' : 'fauna')}`;
 }
 

@@ -92,6 +92,7 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     else state.fuel = Math.max(0, state.fuel - fuelCost);
     carveMiningTunnel(this, impact);
     this.refreshFloraAnchorsAround(impact.tx, impact.ty, 7);
+    this.refreshFaunaAnchorsAround(impact.tx, impact.ty, 7);
     for (const target of targets) {
       const tile = this.getTile(target.x, target.y);
       const def = tiles[tile];
@@ -311,10 +312,16 @@ export function damageLifeTarget(this: DeepdiveScene, target: ScanTarget, amount
     target.hurtFlash = 1;
     if (target.kind === 'fish') {
       const wasAggroed = target.aggro > 0;
-      target.aggro = target.hostile ? Math.max(target.aggro, 3.2) : target.aggro;
+      if (target.behaviorClass === 'sessileAttached') {
+        target.aggroCue = target.hostile ? Math.max(target.aggroCue, 0.9) : target.aggroCue;
+      } else {
+        target.aggro = target.hostile ? Math.max(target.aggro, 3.2) : target.aggro;
+      }
       if (target.hostile && !wasAggroed) target.aggroCue = Math.max(target.aggroCue, 0.9);
-      target.vx += Phaser.Math.FloatBetween(-18, 18);
-      target.vy += Phaser.Math.FloatBetween(-18, 18);
+      if (target.behaviorClass === 'legacySwimmer' || !target.behaviorClass) {
+        target.vx += Phaser.Math.FloatBetween(-18, 18);
+        target.vy += Phaser.Math.FloatBetween(-18, 18);
+      }
     }
     if (target.hp > 0) {
       state.status = `${source} hit ${target.species}.`;
@@ -449,6 +456,7 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       this.terrainBoundsKey = '';
       this.markTerrainVisualDirty(tx, ty);
       this.refreshFloraAnchorsAround(tx, ty, 5);
+      this.refreshFaunaAnchorsAround(tx, ty, 5);
       this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.42, color: def.color, seed: hash(tx, ty, rng.seed), kind: 'break' });
       trimTerrainBreakEffects(this);
       state.status = `Chipped ${def.name}.`;
@@ -464,6 +472,7 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
     this.markTerrainVisualDirty(tx, ty);
     this.refreshEnvironmentPropsAround(tx, ty);
     this.refreshFloraAnchorsAround(tx, ty, 6);
+    this.refreshFaunaAnchorsAround(tx, ty, 6);
     this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.5, color: def.color, seed: hash(tx, ty, rng.seed), kind: def.value > 0 ? 'oreGlint' : 'break' });
     trimTerrainBreakEffects(this);
     this.spawnLoose(tile, def, x, y, tx, ty);
@@ -702,10 +711,12 @@ export function useInjectorKnife(this: DeepdiveScene, ) {
       }
     }
     target.stunned = Math.max(target.stunned, 0.45);
-    target.aggro = Math.max(target.aggro, 2.4);
+    if (target.kind !== 'fish' || target.behaviorClass !== 'sessileAttached') target.aggro = Math.max(target.aggro, 2.4);
     const distance = Math.max(1, Phaser.Math.Distance.Between(this.player.x, this.player.y, target.x, target.y));
-    target.vx += ((target.x - this.player.x) / distance) * 84;
-    target.vy += ((target.y - this.player.y) / distance) * 84;
+    if (target.kind !== 'fish' || target.behaviorClass === 'legacySwimmer' || !target.behaviorClass) {
+      target.vx += ((target.x - this.player.x) / distance) * 84;
+      target.vy += ((target.y - this.player.y) / distance) * 84;
+    }
     this.spawnFloatingText('Stab', 0xd06bff);
     renderHud();
     return true;
@@ -917,8 +928,10 @@ export function fireSubWeapon(this: DeepdiveScene, ) {
       hits += 1;
       fish.stunned = Math.max(fish.stunned, 4.2);
       fish.aggro = 0;
-      fish.vx += facing * scaledEntity(180);
-      fish.vy += Phaser.Math.FloatBetween(-80, 80);
+      if (fish.behaviorClass === 'legacySwimmer' || !fish.behaviorClass) {
+        fish.vx += facing * scaledEntity(180);
+        fish.vy += Phaser.Math.FloatBetween(-80, 80);
+      }
     }
     for (const creature of this.articulatedCreatures) {
       if (creature.dead) continue;

@@ -3339,14 +3339,23 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         fish.sprite?.setVisible(false);
         continue;
       }
-      const angle = fish.visualAngle ?? Math.atan2(fish.vy, fish.vx);
+      const anchored = Boolean(fish.behaviorClass && fish.behaviorClass !== 'legacySwimmer');
+      const angle = anchored && fish.surface
+        ? fish.behaviorClass === 'benthicWalker'
+          ? Math.atan2(fish.surface.tangentY * (fish.facingSign ?? 1), fish.surface.tangentX * (fish.facingSign ?? 1))
+          : Math.atan2(fish.surface.normalY, fish.surface.normalX)
+        : fish.visualAngle ?? Math.atan2(fish.vy, fish.vx);
       const bodyAlpha = fish.scanned ? Math.max(alpha, 0.9) : alpha;
       const threatDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       const cue = Phaser.Math.Clamp(fish.aggroCue, 0, 1);
       const threat = cue * (1 - Phaser.Math.Clamp((threatDistance - 52) / 168, 0, 0.45));
-      const desiredWidth = fish.radius * (fish.hostile ? 3.8 : fish.pattern === 'circle' || fish.pattern === 'glide' ? 3.4 : 3);
-      const pose = swimPose(angle, fish.visualFacingSign ?? fish.facingSign);
-      const frameSpeed = fish.stunned > 0 ? 8 : Math.hypot(fish.vx, fish.vy);
+      const desiredWidth = anchored
+        ? fish.radius * (fish.behaviorClass === 'verticalAnchored' ? 2.8 : fish.behaviorClass === 'sessileAttached' ? 2.55 : 3.15)
+        : fish.radius * (fish.hostile ? 3.8 : fish.pattern === 'circle' || fish.pattern === 'glide' ? 3.4 : 3);
+      const pose = anchored
+        ? surfaceFishPose(fish)
+        : { ...swimPose(angle, fish.visualFacingSign ?? fish.facingSign), originX: 0.5, originY: 0.5 };
+      const frameSpeed = anchored ? (fish.stunned > 0 ? 5 : 24 + Math.abs(Math.sin(fish.phase)) * 12) : fish.stunned > 0 ? 8 : Math.hypot(fish.vx, fish.vy);
       const frame = animatedFrame(fish.phase, frameSpeed, fishFrameCount(fish.assetKey), fish.hostile ? 3.3 : 4.2);
       if (fish.sprite) {
         if (spriteManifests[fish.assetKey]) fish.sprite.setTexture(fish.assetKey).setFrame(frame);
@@ -3357,7 +3366,8 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         .setAlpha(fish.stunned > 0 ? bodyAlpha * 0.72 : bodyAlpha)
         .setPosition(fish.x, fish.y)
         .setFlipX(pose.flipX)
-        .setRotation(pose.rotation);
+        .setRotation(pose.rotation)
+        .setOrigin(pose.originX, pose.originY);
       fitImageWidth(fish.sprite, desiredWidth);
       if (fish.hurtFlash > 0) {
         this.actors.lineStyle(2, 0xfff7df, fish.hurtFlash * bodyAlpha);
@@ -3393,6 +3403,29 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(7 + (1 - fish.scanPulse) * 14));
       }
     }
+  }
+
+function surfaceFishPose(fish: Fish) {
+    const anchor = fish.anchor ?? fish.surface?.anchor ?? 'floor';
+    if (fish.behaviorClass === 'benthicWalker') {
+      const facing = fish.facingSign ?? 1;
+      const tangentAngle = fish.surface ? Math.atan2(fish.surface.tangentY * facing, fish.surface.tangentX * facing) : 0;
+      return {
+        flipX: false,
+        rotation: tangentAngle + Math.sin(fish.phase * 5.3) * 0.035,
+        originX: 0.5,
+        originY: 0.58,
+      };
+    }
+    const normalRotation = fish.surface ? Math.atan2(fish.surface.normalY, fish.surface.normalX) + Math.PI / 2 : floraAnchorRotation(anchor);
+    const origin = floraSpriteOrigin(anchor);
+    const wobble = fish.behaviorClass === 'verticalAnchored' ? Math.sin(fish.phase * 1.8) * 0.055 : Math.sin(fish.phase * 2.4) * 0.018;
+    return {
+      flipX: false,
+      rotation: normalRotation + wobble,
+      originX: origin.x,
+      originY: origin.y,
+    };
   }
 
 export function drawFlora(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {

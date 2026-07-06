@@ -27,9 +27,16 @@ export function sonarPing(this: DeepdiveScene, ) {
       if (!fish.hostile) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);
       if (distance > SONAR_ATTRACT_RADIUS) continue;
+      if (fish.behaviorClass === 'sessileAttached') {
+        fish.aggroCue = Math.max(fish.aggroCue, 0.9);
+        attracted += 1;
+        continue;
+      }
       fish.aggro = Math.max(fish.aggro, 4.4);
-      fish.homeX = Phaser.Math.Linear(fish.homeX, this.player.x, 0.12);
-      fish.homeY = Phaser.Math.Linear(fish.homeY, this.player.y, 0.12);
+      if (fish.behaviorClass === 'legacySwimmer' || !fish.behaviorClass) {
+        fish.homeX = Phaser.Math.Linear(fish.homeX, this.player.x, 0.12);
+        fish.homeY = Phaser.Math.Linear(fish.homeY, this.player.y, 0.12);
+      }
       attracted += 1;
     }
     for (const creature of this.articulatedCreatures) {
