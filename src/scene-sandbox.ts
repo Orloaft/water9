@@ -17,7 +17,7 @@ import {
   ensureArticulatedTextures,
   partManifest,
 } from './articulated';
-import { animatedFrame, cargoIconForTile, diverFrame, fishAssetKey, fishFrameCount, loadGeneratedAssets, rarityColor } from './helpers';
+import { animatedFrame, cargoIconForTile, diverFrame, fishAssetKey, fishFrameCount, fishRarity as runtimeFishRarity, loadGeneratedAssets, rarityColor } from './helpers';
 import { updateArticulatedParts } from './scene-articulated';
 
 const PART_WORLD_SCALE = ENTITY_SCALE;
@@ -114,13 +114,6 @@ function floraRarity(species: FloraSpecies): ScanRarity {
   if (species.rare && species.hazardous) return 'epic';
   if (species.rare) return 'rare';
   if (species.hazardous) return 'uncommon';
-  return 'common';
-}
-
-function fishRarity(species: FishSpecies): ScanRarity {
-  if (species.hostile && species.radius >= 24) return 'epic';
-  if (species.hostile) return 'rare';
-  if (species.radius >= 18) return 'uncommon';
   return 'common';
 }
 
@@ -280,7 +273,7 @@ export class EntitySandboxScene extends Phaser.Scene {
           textureKey,
           frameCount: fishFrameCount(textureKey),
           biome,
-          rarity: fishRarity(species),
+          rarity: runtimeFishRarity(species),
           radius: species.radius,
           hostile: species.hostile,
           notes: `${species.pattern}${species.hostile ? ', hostile' : ', neutral'}`,

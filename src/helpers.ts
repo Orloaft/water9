@@ -844,7 +844,7 @@ function lowerToTransitionDeepBlendProgress(depth: number) {
   return smoothstep((depth - LOWER_TO_TRANSITION_DEEP_BLEND_START) / (LOWER_TO_TRANSITION_DEEP_BLEND_END - LOWER_TO_TRANSITION_DEEP_BLEND_START));
 }
 
-function bandLayerVisibility(activeBand: EnvironmentDepthBand, layerBand: EnvironmentDepthBand, lowerToTransitionProgress?: number) {
+function bandLayerVisibility(activeBand: EnvironmentDepthBand, layerBand: EnvironmentDepthBand, lowerToTransitionProgress?: number): number {
   if (lowerToTransitionProgress !== undefined && lowerToTransitionProgress > 0 && lowerToTransitionProgress < 1) {
     return Phaser.Math.Linear(
       bandLayerVisibility('lower', layerBand),
@@ -2586,13 +2586,62 @@ export function scannableRarity(target: ScanTarget) {
     : floraRarity(floraSpeciesByName(target.species));
 }
 
+const scanRarityRanks: ScanRarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+
+function scanRarityRank(rarity: ScanRarity) {
+  return scanRarityRanks.indexOf(rarity);
+}
+
+function promoteScanRarity(rarity: ScanRarity) {
+  return scanRarityRanks[Math.min(scanRarityRanks.length - 1, scanRarityRank(rarity) + 1)];
+}
+
+function capScanRarity(rarity: ScanRarity, cap: ScanRarity) {
+  return scanRarityRanks[Math.min(scanRarityRank(rarity), scanRarityRank(cap))];
+}
+
+function fishBiomeForSpecies(species: FishSpecies) {
+  for (const [biomeKey, entries] of Object.entries(biomeFish) as Array<[`${Biome}`, FishSpecies[]]>) {
+    if (entries.includes(species)) return Number(biomeKey) as Biome;
+  }
+  for (const [biomeKey, entries] of Object.entries(biomeFish) as Array<[`${Biome}`, FishSpecies[]]>) {
+    if (entries.some((entry) => entry.species === species.species)) return Number(biomeKey) as Biome;
+  }
+  return state.biome;
+}
+
+function fishEncounterScore(species: FishSpecies, speciesList: FishSpecies[]) {
+  const maxCount = Math.max(...speciesList.map((entry) => entry.count));
+  const biomeTop = Math.min(...speciesList.map((entry) => entry.minY));
+  const biomeBottom = Math.max(...speciesList.map((entry) => entry.maxY));
+  const biomeRange = Math.max(1, biomeBottom - biomeTop);
+  const depthShare = Math.max(0.12, Math.min(1, (species.maxY - species.minY) / biomeRange));
+  return (species.count / maxCount) * (0.7 + depthShare * 0.3);
+}
+
 export function fishRarity(species?: FishSpecies): ScanRarity {
   if (!species) return 'common';
-  if (species.count <= 4 || species.radius >= 29) return 'legendary';
-  if (species.count <= 5 || species.radius >= 24 || species.minY >= 1500) return 'epic';
-  if (species.count <= 7 || species.hostile || species.minY >= 980) return 'rare';
-  if (species.count <= 10 || species.minY >= 520) return 'uncommon';
-  return 'common';
+  const speciesList = biomeFish[fishBiomeForSpecies(species)];
+  const score = fishEncounterScore(species, speciesList);
+  const biomeTop = Math.min(...speciesList.map((entry) => entry.minY));
+  const biomeBottom = Math.max(...speciesList.map((entry) => entry.maxY));
+  const deepStart = (species.minY - biomeTop) / Math.max(1, biomeBottom - biomeTop);
+
+  if (species.radius >= 29 || (species.hostile && species.radius >= 27 && species.count <= 5)) return 'legendary';
+
+  let rarity: ScanRarity = score >= 0.46
+    ? 'common'
+    : score >= 0.24
+      ? 'uncommon'
+      : 'rare';
+
+  const largeSpecialist = species.radius >= 22 || (species.hostile && species.radius >= 18);
+  const deepSpecialist = deepStart >= 0.62 && score < 0.2;
+  const scarceThreat = species.hostile && species.count <= 3 && species.radius >= 12;
+  if (largeSpecialist || deepSpecialist || scarceThreat) rarity = promoteScanRarity(rarity);
+  if (species.pattern === 'school' && species.count >= 5) rarity = capScanRarity(rarity, 'uncommon');
+  if (!species.hostile && species.radius < 18 && species.count >= 3) rarity = capScanRarity(rarity, 'rare');
+  return capScanRarity(rarity, 'epic');
 }
 
 export function floraRarity(species?: FloraSpecies): ScanRarity {
