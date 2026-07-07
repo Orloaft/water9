@@ -185,6 +185,7 @@ const [
   terrainSourceAssets,
   envSourceAssets,
   sourceArtSlice1Assets,
+  sourceArtSlice2Assets,
   explorationManifest,
   previousProof,
 ] = await Promise.all([
@@ -193,6 +194,7 @@ const [
   sourceManifestNames('public/assets/source/terrain-edge-accent-source-manifest.json'),
   sourceManifestNames('public/assets/source/environment-cave-wall-source-manifest.json'),
   sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-1-manifest.json'),
+  sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-2-manifest.json'),
   readJson(resolve(root, 'public/assets/generated/exploration-life-2026-07-04/manifest.json'), { entries: [] }),
   readJson(previousProofPath, { captures: [] }),
 ]);
@@ -289,6 +291,12 @@ for (const [assetKey, usages] of [...usageByKey.entries()].sort((a, b) => a[0].l
   } else if (frameManifest?.source?.kind?.startsWith('derived-from-existing')) {
     provenanceClass = 'derived_from_existing_bitmap';
     evidence.push(`frames manifest source: ${JSON.stringify(frameManifest.source)}`);
+    if (sourceArtSlice2Assets.has(assetKey)) {
+      const source = sourceArtSlice2Assets.get(assetKey);
+      evidence.push(source.manifest);
+      evidence.push(`slice-2 source: ${source.asset.file}`);
+      evidence.push(`slice-2 sourceFrom: ${source.asset.sourceFrom}`);
+    }
   } else if (explorationByKey.has(assetKey)) {
     provenanceClass = 'derived_from_existing_bitmap';
     const source = explorationByKey.get(assetKey);
@@ -406,6 +414,7 @@ const inventory = {
     'public/assets/source/terrain-edge-accent-source-manifest.json',
     'public/assets/source/environment-cave-wall-source-manifest.json',
     'public/assets/source/fauna-flora-source-art-slice-1-manifest.json',
+    'public/assets/source/fauna-flora-source-art-slice-2-manifest.json',
     'public/assets/generated/exploration-life-2026-07-04/manifest.json',
   ],
   counts,
@@ -422,9 +431,11 @@ const inventory = {
     'terrain-edge-flora-sting-anemone',
     'terrain-edge-flora-vent-coral',
     'terrain-edge-flora-ember-bloom',
+    ...sourceArtSlice2Assets.keys(),
   ].map((assetKey) => ({
     assetKey,
-    replacementSource: `${envReplacementByTerrainEdge.get(assetKey)}.png`,
+    replacementSource: sourceArtSlice2Assets.get(assetKey)?.asset?.file
+      ?? `${envReplacementByTerrainEdge.get(assetKey)}.png`,
     classAfterRepair: rows.find((row) => row.assetKey === assetKey)?.provenanceClass ?? null,
   })),
   topOffenders: offenders.slice(0, 30).map((row) => ({

@@ -1,6 +1,6 @@
 {
   "schema": "water9/fauna-flora-procedural-quality-inventory@1",
-  "generatedAt": "2026-07-07T13:10:19.045Z",
+  "generatedAt": "2026-07-07T13:24:27.358Z",
   "runDir": "runs/water9-fauna-flora-procedural-quality-cleanup-2026-07-07",
   "sourceInputs": [
     "src/content.ts",
@@ -11,19 +11,20 @@
     "public/assets/source/terrain-edge-accent-source-manifest.json",
     "public/assets/source/environment-cave-wall-source-manifest.json",
     "public/assets/source/fauna-flora-source-art-slice-1-manifest.json",
+    "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
     "public/assets/generated/exploration-life-2026-07-04/manifest.json"
   ],
   "counts": {
     "source_sheet_slice": 25,
-    "unknown_provenance": 29,
-    "derived_from_existing_bitmap": 113
+    "unknown_provenance": 17,
+    "derived_from_existing_bitmap": 125
   },
   "totals": {
     "assets": 167,
     "fauna": 137,
     "flora": 30,
-    "offenders": 37,
-    "blocked": 29
+    "offenders": 27,
+    "blocked": 17
   },
   "requiredByPreviousProof": [
     "fauna-abyss-goblin-shark",
@@ -55,51 +56,69 @@
       "assetKey": "terrain-edge-flora-ember-bloom",
       "replacementSource": "env-flora-ember-bloom.png",
       "classAfterRepair": "derived_from_existing_bitmap"
-    }
-  ],
-  "topOffenders": [
+    },
     {
       "assetKey": "fauna-deep-gulper-eel",
-      "kind": "fauna",
-      "severity": 75,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance",
-        "required_by_last_proof_pass"
-      ],
-      "runtimePath": "public/assets/generated/fauna-deep-gulper-eel.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Gulper Eel",
-          "role": "small-fauna"
-        }
-      ]
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-gulper-eel-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
     },
     {
       "assetKey": "fauna-shallow-lantern-fry",
-      "kind": "fauna",
-      "severity": 75,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance",
-        "required_by_last_proof_pass"
-      ],
-      "runtimePath": "public/assets/generated/fauna-shallow-lantern-fry.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 1,
-          "species": "Lantern Fry",
-          "role": "small-fauna"
-        }
-      ]
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-lantern-fry-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
     },
+    {
+      "assetKey": "fauna-shallow-squid",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-squid-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-shallow-nautilus",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-nautilus-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-shallow-jellyfish",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-jellyfish-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-deep-hatchetfish",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-hatchetfish-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-deep-barreleye",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-barreleye-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-deep-glass-squid",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-glass-squid-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-deep-lanternfish",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-lanternfish-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-deep-vampire-squid",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-vampire-squid-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-anglerfish",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-abyss-anglerfish-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-vampire-squid",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-2/fauna-abyss-vampire-squid-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    }
+  ],
+  "topOffenders": [
     {
       "assetKey": "terrain-edge-flora-sting-anemone",
       "kind": "flora",
@@ -166,26 +185,6 @@
           "source": "src/content.ts:biomeFish",
           "biome": 3,
           "species": "Abyssal Jelly",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-anglerfish",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-anglerfish.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 4,
-          "species": "Anglerfish",
           "role": "small-fauna"
         }
       ]
@@ -318,26 +317,6 @@
       ]
     },
     {
-      "assetKey": "fauna-abyss-vampire-squid",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-vampire-squid.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 4,
-          "species": "Abyss Vampire Squid",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
       "assetKey": "fauna-deep-ash-minnow",
       "kind": "fauna",
       "severity": 55,
@@ -358,26 +337,6 @@
       ]
     },
     {
-      "assetKey": "fauna-deep-barreleye",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-deep-barreleye.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Barreleye",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
       "assetKey": "fauna-deep-deep-shrimp",
       "kind": "fauna",
       "severity": 55,
@@ -393,66 +352,6 @@
           "source": "src/content.ts:biomeFish",
           "biome": 2,
           "species": "Deep Sea Shrimp",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-deep-glass-squid",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-deep-glass-squid.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Glass Squid",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-deep-hatchetfish",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-deep-hatchetfish.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Hatchetfish",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-deep-lanternfish",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-deep-lanternfish.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Lanternfish",
           "role": "small-fauna"
         }
       ]
@@ -493,26 +392,6 @@
           "source": "src/content.ts:biomeFish",
           "biome": 2,
           "species": "Tripodfish",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-deep-vampire-squid",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-deep-vampire-squid.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Vampire Squid",
           "role": "small-fauna"
         }
       ]
@@ -578,26 +457,6 @@
       ]
     },
     {
-      "assetKey": "fauna-shallow-jellyfish",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-shallow-jellyfish.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 1,
-          "species": "Moon Jelly",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
       "assetKey": "fauna-shallow-mantis-shrimp",
       "kind": "fauna",
       "severity": 55,
@@ -613,26 +472,6 @@
           "source": "src/content.ts:biomeFish",
           "biome": 1,
           "species": "Mantis Shrimp",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-shallow-nautilus",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-shallow-nautilus.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 1,
-          "species": "Nautilus",
           "role": "small-fauna"
         }
       ]
@@ -676,16 +515,123 @@
           "role": "small-fauna"
         }
       ]
-    }
-  ],
-  "blockedAssetQueue": [
+    },
+    {
+      "assetKey": "fauna-abyss-mantle-crawler",
+      "kind": "fauna",
+      "severity": 45,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "runtime_untracked",
+        "required_by_last_proof_pass"
+      ],
+      "runtimePath": "public/assets/generated/fauna-abyss-mantle-crawler.png",
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-curated-bitmap-alpha\",\"runSource\":\"public/assets/generated/fauna-velvet-lantern-cuttle-whole-painted.png\",\"buildTool\":\"tools/build_curated_fauna_pass_assets.py\",\"notes\":\"Species-specific runtime sheet replacing special-room fish-abyss-predator fallback.\"}"
+      ],
+      "usages": [
+        {
+          "kind": "fauna",
+          "source": "src/scene-worldgen.ts:populateNestRoom",
+          "biome": "special-room",
+          "species": "Mantle Crawler",
+          "role": "special-room-fauna"
+        }
+      ]
+    },
+    {
+      "assetKey": "terrain-edge-flora-ember-bloom",
+      "kind": "flora",
+      "severity": 40,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "runtime_untracked",
+        "tools_build_flora_slice_assets_output"
+      ],
+      "runtimePath": "public/assets/generated/terrain-edge-flora-ember-bloom.png",
+      "sourceEvidence": [
+        "byte-identical replacement from public/assets/generated/env-flora-ember-bloom.png",
+        "public/assets/source/environment-cave-wall-source-manifest.json"
+      ],
+      "usages": [
+        {
+          "kind": "flora",
+          "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
+          "biome": 2,
+          "species": "Ember Bloom",
+          "role": "scannable-terrain-edge-flora"
+        }
+      ]
+    },
+    {
+      "assetKey": "terrain-edge-flora-moon-sponge",
+      "kind": "flora",
+      "severity": 40,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "runtime_untracked",
+        "tools_build_flora_slice_assets_output"
+      ],
+      "runtimePath": "public/assets/generated/terrain-edge-flora-moon-sponge.png",
+      "sourceEvidence": [
+        "byte-identical replacement from public/assets/generated/env-flora-moon-sponge.png",
+        "public/assets/source/environment-cave-wall-source-manifest.json"
+      ],
+      "usages": [
+        {
+          "kind": "flora",
+          "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
+          "biome": 1,
+          "species": "Moon Sponge",
+          "role": "scannable-terrain-edge-flora"
+        }
+      ]
+    },
+    {
+      "assetKey": "fauna-abyss-goblin-shark",
+      "kind": "fauna",
+      "severity": 20,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "required_by_last_proof_pass"
+      ],
+      "runtimePath": "public/assets/generated/fauna-abyss-goblin-shark.png",
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-generated-bitmap-alpha\",\"runSource\":\"runs/water9-asset-behavior-recovery-2026-07-06/generated-source/fauna-abyss-goblin-shark-source-alpha.png\",\"buildTool\":\"tools/build_curated_fauna_pass_assets.py\",\"notes\":\"Rebuilt at higher runtime source fidelity from the accepted painted goblin shark cutout.\"}"
+      ],
+      "usages": [
+        {
+          "kind": "fauna",
+          "source": "src/content.ts:biomeFish",
+          "biome": 3,
+          "species": "Goblin Shark",
+          "role": "small-fauna"
+        },
+        {
+          "kind": "fauna",
+          "source": "src/content.ts:biomeFish",
+          "biome": 4,
+          "species": "Goblin Shark",
+          "role": "small-fauna"
+        }
+      ]
+    },
     {
       "assetKey": "fauna-deep-gulper-eel",
       "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-deep-gulper-eel.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
+      "severity": 20,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "required_by_last_proof_pass"
+      ],
+      "runtimePath": "public/assets/generated/fauna-deep-gulper-eel.png",
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-gulper-eel-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-gulper-eel-source.png",
+        "slice-2 sourceFrom: public/assets/generated/fauna-abyssal-gulper-v2-chroma.png"
+      ],
+      "usages": [
         {
           "kind": "fauna",
           "source": "src/content.ts:biomeFish",
@@ -693,17 +639,24 @@
           "species": "Gulper Eel",
           "role": "small-fauna"
         }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Gulper Eel; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
+      ]
     },
     {
       "assetKey": "fauna-shallow-lantern-fry",
       "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-shallow-lantern-fry.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
+      "severity": 20,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "required_by_last_proof_pass"
+      ],
+      "runtimePath": "public/assets/generated/fauna-shallow-lantern-fry.png",
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-lantern-fry-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-lantern-fry-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-halo-dot-lanternfish.png"
+      ],
+      "usages": [
         {
           "kind": "fauna",
           "source": "src/content.ts:biomeFish",
@@ -711,10 +664,54 @@
           "species": "Lantern Fry",
           "role": "small-fauna"
         }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Lantern Fry; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
+      ]
     },
+    {
+      "assetKey": "terrain-edge-flora-crown-polyps",
+      "kind": "flora",
+      "severity": 20,
+      "provenanceClass": "source_sheet_slice",
+      "riskFlags": [
+        "required_by_last_proof_pass"
+      ],
+      "runtimePath": "public/assets/generated/terrain-edge-flora-crown-polyps.png",
+      "sourceEvidence": [
+        "public/assets/source/terrain-edge-accent-source-manifest.json"
+      ],
+      "usages": [
+        {
+          "kind": "flora",
+          "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
+          "biome": 3,
+          "species": "Crown Polyp",
+          "role": "scannable-terrain-edge-flora"
+        }
+      ]
+    },
+    {
+      "assetKey": "terrain-edge-flora-oracle-tendrils",
+      "kind": "flora",
+      "severity": 20,
+      "provenanceClass": "source_sheet_slice",
+      "riskFlags": [
+        "required_by_last_proof_pass"
+      ],
+      "runtimePath": "public/assets/generated/terrain-edge-flora-oracle-tendrils.png",
+      "sourceEvidence": [
+        "public/assets/source/terrain-edge-accent-source-manifest.json"
+      ],
+      "usages": [
+        {
+          "kind": "flora",
+          "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
+          "biome": 4,
+          "species": "Oracle Polyp",
+          "role": "scannable-terrain-edge-flora"
+        }
+      ]
+    }
+  ],
+  "blockedAssetQueue": [
     {
       "assetKey": "fauna-abyss-abyss-jelly",
       "kind": "fauna",
@@ -731,24 +728,6 @@
         }
       ],
       "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Abyssal Jelly; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-abyss-anglerfish",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-anglerfish.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 4,
-          "species": "Anglerfish",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Anglerfish; ingest source, then derive runtime animation frames from that bitmap.",
       "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
     },
     {
@@ -867,24 +846,6 @@
       "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
     },
     {
-      "assetKey": "fauna-abyss-vampire-squid",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-vampire-squid.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 4,
-          "species": "Abyss Vampire Squid",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Abyss Vampire Squid; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
       "assetKey": "fauna-deep-ash-minnow",
       "kind": "fauna",
       "currentPath": "public/assets/generated/fauna-deep-ash-minnow.png",
@@ -903,24 +864,6 @@
       "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
     },
     {
-      "assetKey": "fauna-deep-barreleye",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-deep-barreleye.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Barreleye",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Barreleye; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
       "assetKey": "fauna-deep-deep-shrimp",
       "kind": "fauna",
       "currentPath": "public/assets/generated/fauna-deep-deep-shrimp.png",
@@ -936,60 +879,6 @@
         }
       ],
       "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Deep Sea Shrimp; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-deep-glass-squid",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-deep-glass-squid.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Glass Squid",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Glass Squid; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-deep-hatchetfish",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-deep-hatchetfish.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Hatchetfish",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Hatchetfish; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-deep-lanternfish",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-deep-lanternfish.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Lanternfish",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Lanternfish; ingest source, then derive runtime animation frames from that bitmap.",
       "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
     },
     {
@@ -1026,24 +915,6 @@
         }
       ],
       "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Tripodfish; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-deep-vampire-squid",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-deep-vampire-squid.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Vampire Squid",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Vampire Squid; ingest source, then derive runtime animation frames from that bitmap.",
       "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
     },
     {
@@ -1101,24 +972,6 @@
       "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
     },
     {
-      "assetKey": "fauna-shallow-jellyfish",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-shallow-jellyfish.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 1,
-          "species": "Moon Jelly",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Moon Jelly; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
       "assetKey": "fauna-shallow-mantis-shrimp",
       "kind": "fauna",
       "currentPath": "public/assets/generated/fauna-shallow-mantis-shrimp.png",
@@ -1134,24 +987,6 @@
         }
       ],
       "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Mantis Shrimp; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-shallow-nautilus",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-shallow-nautilus.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 1,
-          "species": "Nautilus",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Nautilus; ingest source, then derive runtime animation frames from that bitmap.",
       "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
     },
     {
@@ -1189,24 +1024,6 @@
       ],
       "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Snapping Shrimp; ingest source, then derive runtime animation frames from that bitmap.",
       "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-shallow-squid",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-shallow-squid.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 1,
-          "species": "Reef Squid",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Reef Squid; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
     }
   ],
   "rows": [
@@ -1225,8 +1042,8 @@
       "sha256": "7872eebffee4607428c7ac9afcdca695eaf880b73c45b8122b1e51f7a6baea2a",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/biolume-crystal.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": null,
       "frameCount": 1,
@@ -1260,8 +1077,8 @@
       "sha256": "a108640dd1ce0c03060d39b54dd80fee615187f0aa1d4849ad6346d6af3590e8",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/biolume-rock-0.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": null,
       "frameCount": 1,
@@ -1295,8 +1112,8 @@
       "sha256": "688871979dca4fa169b71d3f360d7b4f671f363bb108271f4f96c86cfe6366ce",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/biolume-rock-1.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": null,
       "frameCount": 1,
@@ -1867,26 +1684,29 @@
     {
       "assetKey": "fauna-abyss-anglerfish",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-anglerfish.png",
       "exists": true,
-      "bytes": 8551,
+      "bytes": 12056,
       "dimensions": {
         "width": 186,
         "height": 48
       },
-      "sha256": "0fba57b3ccfe4754f14b73ea2a14819fa3364bfe06a4aa94a21b31bcbc394082",
+      "sha256": "e3e1f4c0f5e098a8173865c098f60bf967451651054d615d2660ec9029409409",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-abyss-anglerfish.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-anglerfish.frames.json",
       "frameCount": 3,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-abyss-anglerfish-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-abyss-anglerfish-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-ancient-mask-angler.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2093,8 +1913,8 @@
       "sha256": "01b2c99f4362d53b89883304bdeeb64faf4fab34b6ef3d763d355b51f9e0ac6b",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-abyss-hatchet-school.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-hatchet-school.frames.json",
       "frameCount": 2,
@@ -2126,8 +1946,8 @@
       "sha256": "9bf9da65a9d138020e6a30e7f0372a96b558a336a9f339526ebcaf89017a435a",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-abyss-lantern-swarm.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-lantern-swarm.frames.json",
       "frameCount": 2,
@@ -2228,8 +2048,8 @@
       "sha256": "7f55ebd672d61f5b47f795835ecfdc952f1f528d32b18e7aae7ebbe5056d4682",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-abyss-microfish.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-microfish.frames.json",
       "frameCount": 3,
@@ -2294,8 +2114,8 @@
       "sha256": "a07b69a0035a5882a1b564657652fb80474481a70cfaeb6b56665465545a127e",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-abyss-snipe-eel.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-snipe-eel.frames.json",
       "frameCount": 3,
@@ -2327,8 +2147,8 @@
       "sha256": "814a893cdcfda009dd15445286b41ba9d5b87ee73f461a41f6b49be894512616",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-abyss-static-fry.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-static-fry.frames.json",
       "frameCount": 4,
@@ -2348,26 +2168,29 @@
     {
       "assetKey": "fauna-abyss-vampire-squid",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-vampire-squid.png",
       "exists": true,
-      "bytes": 9367,
+      "bytes": 10497,
       "dimensions": {
         "width": 200,
         "height": 52
       },
-      "sha256": "31c9240c49b5ce78568024d4389ba77b981aa1a97d1896bcd573afd1f6fd6d6c",
+      "sha256": "d66fb6e7729fdadea3bd1888e13ed6838e370de19fbca54bc8ab18a0672ff7de",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-abyss-vampire-squid.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-vampire-squid.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-abyss-vampire-squid-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-abyss-vampire-squid-source.png",
+        "slice-2 sourceFrom: public/assets/generated/fauna-vampire-cloak-squid-whole-source.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2393,8 +2216,8 @@
       "sha256": "6050042de705609273f56eead1fefd4f1436c26193efb88ac0f433b6703af0f6",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-abyss-viperfish.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-viperfish.frames.json",
       "frameCount": 3,
@@ -2454,26 +2277,29 @@
     {
       "assetKey": "fauna-deep-barreleye",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-deep-barreleye.png",
       "exists": true,
-      "bytes": 7027,
+      "bytes": 6107,
       "dimensions": {
         "width": 150,
         "height": 40
       },
-      "sha256": "72bfec0c34d9de7a44aeef9b23533819d45a3ff6995346e71859c58382ff4099",
+      "sha256": "3ae86e57308dedde53d184450b6b668a94adfb626b65964e9ea80989e640109d",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-deep-barreleye.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-barreleye.frames.json",
       "frameCount": 3,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-barreleye-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-barreleye-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-lumen-brow-barreleye.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2520,26 +2346,29 @@
     {
       "assetKey": "fauna-deep-glass-squid",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-deep-glass-squid.png",
       "exists": true,
-      "bytes": 5330,
+      "bytes": 14552,
       "dimensions": {
         "width": 244,
         "height": 44
       },
-      "sha256": "1adf835f2991149246f2fe4a8eef51c8d2b29f36ce7d3ef2f85ff28f69ff2a8b",
+      "sha256": "890f66afcc32a0c3437ec0bd0c446f8736475a2a88fe0a5404a9fd73d8510601",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-deep-glass-squid.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-glass-squid.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-glass-squid-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-glass-squid-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-velvet-glass-cuttle.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2553,27 +2382,31 @@
     {
       "assetKey": "fauna-deep-gulper-eel",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
+      "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "unknown_provenance",
         "required_by_last_proof_pass"
       ],
       "runtimePath": "public/assets/generated/fauna-deep-gulper-eel.png",
       "exists": true,
-      "bytes": 13956,
+      "bytes": 12536,
       "dimensions": {
         "width": 258,
         "height": 50
       },
-      "sha256": "63464d3854cd4443ed15f31679c273fd868269396d52fbfe7003464480ad3b5d",
+      "sha256": "a6a0f2eec36964f4d0d00ca062b6f6bf7bed2f255c644ec79434ddc90469633a",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-deep-gulper-eel.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-gulper-eel.frames.json",
       "frameCount": 3,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-gulper-eel-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-gulper-eel-source.png",
+        "slice-2 sourceFrom: public/assets/generated/fauna-abyssal-gulper-v2-chroma.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2587,26 +2420,29 @@
     {
       "assetKey": "fauna-deep-hatchetfish",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-deep-hatchetfish.png",
       "exists": true,
-      "bytes": 5851,
+      "bytes": 12327,
       "dimensions": {
         "width": 208,
         "height": 37
       },
-      "sha256": "74321e41f6a9a8d66a1a11c23972f0c77fd01af9c782d09d9321e69d37d29bac",
+      "sha256": "052ddec47bf11474b8aa755873bdca0e0e30c265f3da1a3c86e65e05c3ea06e1",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-deep-hatchetfish.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-hatchetfish.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-hatchetfish-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-hatchetfish-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-rustscale-hatchetfish.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2620,26 +2456,29 @@
     {
       "assetKey": "fauna-deep-lanternfish",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-deep-lanternfish.png",
       "exists": true,
-      "bytes": 6791,
+      "bytes": 7821,
       "dimensions": {
         "width": 224,
         "height": 43
       },
-      "sha256": "0f30259cc84b89549c7b794d63433d1bf80a32b068314cda016e1b5f98711850",
+      "sha256": "3578cef45aadb56cea73a07a9a5a1ed349cb48be8145a7180e6f33a5174fa0cc",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-deep-lanternfish.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-lanternfish.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-lanternfish-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-lanternfish-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-cyan-pulse-lanternfish.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2719,26 +2558,29 @@
     {
       "assetKey": "fauna-deep-vampire-squid",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-deep-vampire-squid.png",
       "exists": true,
-      "bytes": 9129,
+      "bytes": 12041,
       "dimensions": {
         "width": 216,
         "height": 47
       },
-      "sha256": "aff48e95f1abe51e9dc96b6fd12247428dd775a75f035cf6cf7a970637d35dd0",
+      "sha256": "5107aa220a1652c3c0f9010c6296cb8e0ab870ba309c15d4a3ff419beda5b077",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-deep-vampire-squid.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-vampire-squid.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-vampire-squid-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-deep-vampire-squid-source.png",
+        "slice-2 sourceFrom: public/assets/generated/fauna-vampire-cloak-squid-whole-source.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -6251,26 +6093,29 @@
     {
       "assetKey": "fauna-shallow-jellyfish",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-shallow-jellyfish.png",
       "exists": true,
-      "bytes": 11344,
+      "bytes": 13453,
       "dimensions": {
         "width": 312,
         "height": 50
       },
-      "sha256": "f88f18c65e048b61edb17ba34fc31930e34d8d5561a9683323cc5c73430064fe",
+      "sha256": "8c7157b89c681abb78a4ef622d37e25c50c1542d2691095c4b083004f0d025af",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-shallow-jellyfish.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-jellyfish.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-jellyfish-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-jellyfish-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-prism-bell-jelly.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -6284,27 +6129,31 @@
     {
       "assetKey": "fauna-shallow-lantern-fry",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
+      "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "unknown_provenance",
         "required_by_last_proof_pass"
       ],
       "runtimePath": "public/assets/generated/fauna-shallow-lantern-fry.png",
       "exists": true,
-      "bytes": 4565,
+      "bytes": 4698,
       "dimensions": {
         "width": 168,
         "height": 33
       },
-      "sha256": "1acc30843b553501ba3506d2bb96fbb5e7336cb51b40bbf2ef5ca9e2bb24868e",
+      "sha256": "ff51ffbd58c7460053700d1de69489cf810414f29daa5512c8491f4c50177481",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-shallow-lantern-fry.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-lantern-fry.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-lantern-fry-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-lantern-fry-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-halo-dot-lanternfish.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -6351,26 +6200,29 @@
     {
       "assetKey": "fauna-shallow-nautilus",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-shallow-nautilus.png",
       "exists": true,
-      "bytes": 17533,
+      "bytes": 23058,
       "dimensions": {
         "width": 252,
         "height": 53
       },
-      "sha256": "ad274cfee7709be5b5979dedc90a82bf149a407d28d599e1322927b69b3abd51",
+      "sha256": "4350349ba1623c747b39e6133c94ab85e9d4fddf5c9d26b6c887cc2ddaa1c72c",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-shallow-nautilus.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-nautilus.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-nautilus-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-nautilus-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-glass-helm-nautilus.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -6450,26 +6302,29 @@
     {
       "assetKey": "fauna-shallow-squid",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-shallow-squid.png",
       "exists": true,
-      "bytes": 10730,
+      "bytes": 14098,
       "dimensions": {
         "width": 288,
         "height": 38
       },
-      "sha256": "a850637ff9f7de510e15c84a86a3f1109adb7ab36666ff6ede21ca31b054fd04",
+      "sha256": "d413c1e948fa349ff35f8a2972c5875a75648259140667eadb5975dd83bb0ff3",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M public/assets/generated/fauna-shallow-squid.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-squid.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-2\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-squid-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
+        "slice-2 source: public/assets/source/fauna-flora-source-art-slice-2/fauna-shallow-squid-source.png",
+        "slice-2 sourceFrom: public/assets/generated/exploration-life-2026-07-04/alpha/fauna-exp-kelp-arrow-squid.png"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -6495,8 +6350,8 @@
       "sha256": "d60e9acd28e4d50be55d5f83aabb0bfc7783aa941c0cdee56a8f25506f5178fd",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/flora-oxygen-bulb.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": null,
       "frameCount": 1,
@@ -6530,8 +6385,8 @@
       "sha256": "fd97fb8a3557e383b9c6662593918b85dfdf4c86a41cc53ffcc8a536f47ca979",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/flora-oxygen-kelp.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": null,
       "frameCount": 1,
