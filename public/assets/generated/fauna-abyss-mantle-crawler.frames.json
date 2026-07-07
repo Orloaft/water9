@@ -1,0 +1,33 @@
+{
+  "schema": "asset-forge/sprite-frames@1",
+  "name": "fauna-abyss-mantle-crawler",
+  "image": "fauna-abyss-mantle-crawler.png",
+  "frameWidth": 112,
+  "frameHeight": 76,
+  "columns": 4,
+  "rows": 1,
+  "frameCount": 4,
+  "anchor": {
+    "x": 0.5,
+    "y": 0.5
+  },
+  "directions": [],
+  "animations": {
+    "swim": {
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frameRate": 7,
+      "loop": true
+    }
+  },
+  "source": {
+    "kind": "derived-from-existing-curated-bitmap-alpha",
+    "runSource": "public/assets/generated/fauna-velvet-lantern-cuttle-whole-painted.png",
+    "buildTool": "tools/build_curated_fauna_pass_assets.py",
+    "notes": "Species-specific runtime sheet replacing special-room fish-abyss-predator fallback."
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema": "water9/fauna-flora-procedural-quality-inventory@1",
-  "generatedAt": "2026-07-07T13:57:40.998Z",
+  "generatedAt": "2026-07-07T14:19:11.734Z",
   "runDir": "runs/water9-fauna-flora-procedural-quality-cleanup-2026-07-07",
   "sourceInputs": [
     "src/content.ts",
@@ -13,19 +13,19 @@
     "public/assets/source/fauna-flora-source-art-slice-1-manifest.json",
     "public/assets/source/fauna-flora-source-art-slice-2-manifest.json",
     "public/assets/source/fauna-flora-source-art-slice-3-manifest.json",
+    "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
     "public/assets/generated/exploration-life-2026-07-04/manifest.json"
   ],
   "counts": {
     "source_sheet_slice": 25,
-    "unknown_provenance": 9,
-    "derived_from_existing_bitmap": 133
+    "derived_from_existing_bitmap": 142
   },
   "totals": {
     "assets": 167,
     "fauna": 137,
     "flora": 30,
-    "offenders": 19,
-    "blocked": 9
+    "offenders": 10,
+    "blocked": 0
   },
   "requiredByPreviousProof": [
     "fauna-abyss-goblin-shark",
@@ -157,16 +157,60 @@
       "assetKey": "fauna-deep-tripodfish",
       "replacementSource": "public/assets/source/fauna-flora-source-art-slice-3/fauna-deep-tripodfish-source.png",
       "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-abyss-jelly",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-abyss-jelly-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-bigfin-squid",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-bigfin-squid-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-black-swallower",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-black-swallower-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-frilled-shark",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-frilled-shark-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-hadal-shrimp",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-hadal-shrimp-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-medusa",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-medusa-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-abyss-mirror-fry",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-mirror-fry-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-deep-ash-minnow",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-deep-ash-minnow-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
+    },
+    {
+      "assetKey": "fauna-deep-deep-shrimp",
+      "replacementSource": "public/assets/source/fauna-flora-source-art-slice-4/fauna-deep-deep-shrimp-source.png",
+      "classAfterRepair": "derived_from_existing_bitmap"
     }
   ],
   "topOffenders": [
     {
       "assetKey": "terrain-edge-flora-sting-anemone",
       "kind": "flora",
-      "severity": 60,
+      "severity": 35,
       "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "runtime_untracked",
         "tools_build_flora_slice_assets_output",
         "required_by_last_proof_pass"
       ],
@@ -188,10 +232,9 @@
     {
       "assetKey": "terrain-edge-flora-vent-coral",
       "kind": "flora",
-      "severity": 60,
+      "severity": 35,
       "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "runtime_untracked",
         "tools_build_flora_slice_assets_output",
         "required_by_last_proof_pass"
       ],
@@ -206,264 +249,6 @@
           "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
           "biome": 2,
           "species": "Vent Coral",
-          "role": "scannable-terrain-edge-flora"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-abyss-jelly",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-abyss-jelly.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Abyssal Jelly",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-bigfin-squid",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-bigfin-squid.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Bigfin Squid",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-black-swallower",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-black-swallower.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Black Swallower",
-          "role": "small-fauna"
-        },
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 4,
-          "species": "Black Swallower",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-frilled-shark",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-frilled-shark.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Frilled Shark",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-hadal-shrimp",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-hadal-shrimp.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Hadopelagic Shrimp",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-medusa",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-medusa.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 4,
-          "species": "Abyssal Medusa",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-mirror-fry",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-mirror-fry.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Mirror Fry",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-deep-ash-minnow",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-deep-ash-minnow.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Ash Minnow",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-deep-deep-shrimp",
-      "kind": "fauna",
-      "severity": 55,
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
-      "runtimePath": "public/assets/generated/fauna-deep-deep-shrimp.png",
-      "sourceEvidence": [],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Deep Sea Shrimp",
-          "role": "small-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "fauna-abyss-mantle-crawler",
-      "kind": "fauna",
-      "severity": 45,
-      "provenanceClass": "derived_from_existing_bitmap",
-      "riskFlags": [
-        "runtime_untracked",
-        "required_by_last_proof_pass"
-      ],
-      "runtimePath": "public/assets/generated/fauna-abyss-mantle-crawler.png",
-      "sourceEvidence": [
-        "frames manifest source: {\"kind\":\"derived-from-existing-curated-bitmap-alpha\",\"runSource\":\"public/assets/generated/fauna-velvet-lantern-cuttle-whole-painted.png\",\"buildTool\":\"tools/build_curated_fauna_pass_assets.py\",\"notes\":\"Species-specific runtime sheet replacing special-room fish-abyss-predator fallback.\"}"
-      ],
-      "usages": [
-        {
-          "kind": "fauna",
-          "source": "src/scene-worldgen.ts:populateNestRoom",
-          "biome": "special-room",
-          "species": "Mantle Crawler",
-          "role": "special-room-fauna"
-        }
-      ]
-    },
-    {
-      "assetKey": "terrain-edge-flora-ember-bloom",
-      "kind": "flora",
-      "severity": 40,
-      "provenanceClass": "derived_from_existing_bitmap",
-      "riskFlags": [
-        "runtime_untracked",
-        "tools_build_flora_slice_assets_output"
-      ],
-      "runtimePath": "public/assets/generated/terrain-edge-flora-ember-bloom.png",
-      "sourceEvidence": [
-        "byte-identical replacement from public/assets/generated/env-flora-ember-bloom.png",
-        "public/assets/source/environment-cave-wall-source-manifest.json"
-      ],
-      "usages": [
-        {
-          "kind": "flora",
-          "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
-          "biome": 2,
-          "species": "Ember Bloom",
-          "role": "scannable-terrain-edge-flora"
-        }
-      ]
-    },
-    {
-      "assetKey": "terrain-edge-flora-moon-sponge",
-      "kind": "flora",
-      "severity": 40,
-      "provenanceClass": "derived_from_existing_bitmap",
-      "riskFlags": [
-        "runtime_untracked",
-        "tools_build_flora_slice_assets_output"
-      ],
-      "runtimePath": "public/assets/generated/terrain-edge-flora-moon-sponge.png",
-      "sourceEvidence": [
-        "byte-identical replacement from public/assets/generated/env-flora-moon-sponge.png",
-        "public/assets/source/environment-cave-wall-source-manifest.json"
-      ],
-      "usages": [
-        {
-          "kind": "flora",
-          "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
-          "biome": 1,
-          "species": "Moon Sponge",
           "role": "scannable-terrain-edge-flora"
         }
       ]
@@ -494,6 +279,28 @@
           "biome": 4,
           "species": "Goblin Shark",
           "role": "small-fauna"
+        }
+      ]
+    },
+    {
+      "assetKey": "fauna-abyss-mantle-crawler",
+      "kind": "fauna",
+      "severity": 20,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "required_by_last_proof_pass"
+      ],
+      "runtimePath": "public/assets/generated/fauna-abyss-mantle-crawler.png",
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-curated-bitmap-alpha\",\"runSource\":\"public/assets/generated/fauna-velvet-lantern-cuttle-whole-painted.png\",\"buildTool\":\"tools/build_curated_fauna_pass_assets.py\",\"notes\":\"Species-specific runtime sheet replacing special-room fish-abyss-predator fallback.\"}"
+      ],
+      "usages": [
+        {
+          "kind": "fauna",
+          "source": "src/scene-worldgen.ts:populateNestRoom",
+          "biome": "special-room",
+          "species": "Mantle Crawler",
+          "role": "special-room-fauna"
         }
       ]
     },
@@ -590,179 +397,55 @@
           "role": "scannable-terrain-edge-flora"
         }
       ]
+    },
+    {
+      "assetKey": "terrain-edge-flora-ember-bloom",
+      "kind": "flora",
+      "severity": 15,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "tools_build_flora_slice_assets_output"
+      ],
+      "runtimePath": "public/assets/generated/terrain-edge-flora-ember-bloom.png",
+      "sourceEvidence": [
+        "byte-identical replacement from public/assets/generated/env-flora-ember-bloom.png",
+        "public/assets/source/environment-cave-wall-source-manifest.json"
+      ],
+      "usages": [
+        {
+          "kind": "flora",
+          "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
+          "biome": 2,
+          "species": "Ember Bloom",
+          "role": "scannable-terrain-edge-flora"
+        }
+      ]
+    },
+    {
+      "assetKey": "terrain-edge-flora-moon-sponge",
+      "kind": "flora",
+      "severity": 15,
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [
+        "tools_build_flora_slice_assets_output"
+      ],
+      "runtimePath": "public/assets/generated/terrain-edge-flora-moon-sponge.png",
+      "sourceEvidence": [
+        "byte-identical replacement from public/assets/generated/env-flora-moon-sponge.png",
+        "public/assets/source/environment-cave-wall-source-manifest.json"
+      ],
+      "usages": [
+        {
+          "kind": "flora",
+          "source": "src/content.ts:biomeFlora + src/scene-worldgen.ts:floraGameplayAssetKey",
+          "biome": 1,
+          "species": "Moon Sponge",
+          "role": "scannable-terrain-edge-flora"
+        }
+      ]
     }
   ],
-  "blockedAssetQueue": [
-    {
-      "assetKey": "fauna-abyss-abyss-jelly",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-abyss-jelly.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Abyssal Jelly",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Abyssal Jelly; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-abyss-bigfin-squid",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-bigfin-squid.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Bigfin Squid",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Bigfin Squid; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-abyss-black-swallower",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-black-swallower.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Black Swallower",
-          "role": "small-fauna"
-        },
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 4,
-          "species": "Black Swallower",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Black Swallower / Black Swallower; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-abyss-frilled-shark",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-frilled-shark.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Frilled Shark",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Frilled Shark; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-abyss-hadal-shrimp",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-hadal-shrimp.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Hadopelagic Shrimp",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Hadopelagic Shrimp; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-abyss-medusa",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-medusa.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 4,
-          "species": "Abyssal Medusa",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Abyssal Medusa; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-abyss-mirror-fry",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-abyss-mirror-fry.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 3,
-          "species": "Mirror Fry",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Mirror Fry; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-deep-ash-minnow",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-deep-ash-minnow.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Ash Minnow",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Ash Minnow; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    },
-    {
-      "assetKey": "fauna-deep-deep-shrimp",
-      "kind": "fauna",
-      "currentPath": "public/assets/generated/fauna-deep-deep-shrimp.png",
-      "currentClass": "unknown_provenance",
-      "currentBadEvidence": [],
-      "representativeUsages": [
-        {
-          "kind": "fauna",
-          "source": "src/content.ts:biomeFish",
-          "biome": 2,
-          "species": "Deep Sea Shrimp",
-          "role": "small-fauna"
-        }
-      ],
-      "desiredSourceContract": "Species-specific painted/generated bitmap source on flat #ff00ff or transparent background for Deep Sea Shrimp; ingest source, then derive runtime animation frames from that bitmap.",
-      "blockedReason": "No approved source-derived replacement was found in this cleanup pass; replacing it honestly requires image generation, a source-sheet slice, or human-provided art."
-    }
-  ],
+  "blockedAssetQueue": [],
   "rows": [
     {
       "assetKey": "biolume-crystal",
@@ -1388,26 +1071,30 @@
     {
       "assetKey": "fauna-abyss-abyss-jelly",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-abyss-jelly.png",
       "exists": true,
-      "bytes": 10358,
+      "bytes": 4119,
       "dimensions": {
         "width": 192,
         "height": 52
       },
-      "sha256": "330710486f25c09b767889a1ab95c764bddc56e50164c2dabddb418a6bf7f0af",
+      "sha256": "b3aef134606984695d97a8153591c83ac21c4edeed0d2eb6574402235e0564b1",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-abyss-abyss-jelly.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-abyss-jelly.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-abyss-jelly-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-abyss-jelly-source.png",
+        "slice-4 sourceFrom: public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-prism-bell-jelly-source-chroma.png",
+        "slice-4 lineage: tracked Prism Bell Jelly exploration source art; jelly bell and tentacle silhouette fits Abyssal Jelly"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -1457,26 +1144,30 @@
     {
       "assetKey": "fauna-abyss-bigfin-squid",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-bigfin-squid.png",
       "exists": true,
-      "bytes": 6584,
+      "bytes": 4459,
       "dimensions": {
         "width": 210,
         "height": 38
       },
-      "sha256": "6f553b52728c2dabaad571d55c77cc3adbd7af2719d21bd450c1c8fcbe3180bb",
+      "sha256": "09a4f843c405f27c82501c3c7350c188630edba53126b802063209a8a3f93887",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-abyss-bigfin-squid.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-bigfin-squid.frames.json",
       "frameCount": 3,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-bigfin-squid-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-bigfin-squid-source.png",
+        "slice-4 sourceFrom: public/assets/generated/fauna-velvet-lantern-cuttle-whole-painted.png",
+        "slice-4 lineage: tracked Velvet Lantern Cuttle whole-source art; cephalopod mantle and trailing arms provide a defensible bigfin squid runtime silhouette"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -1490,26 +1181,30 @@
     {
       "assetKey": "fauna-abyss-black-swallower",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-black-swallower.png",
       "exists": true,
-      "bytes": 21833,
+      "bytes": 9316,
       "dimensions": {
         "width": 390,
         "height": 54
       },
-      "sha256": "5d5d04175fdd58968dd8ee79d96b77418fe8e87d3d712bc441278822a4ca35f1",
+      "sha256": "eda6df9b351259498d8d5dc2422005020cc569c381251dc1a75a6a58df161070",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-abyss-black-swallower.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-black-swallower.frames.json",
       "frameCount": 3,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-black-swallower-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-black-swallower-source.png",
+        "slice-4 sourceFrom: public/assets/generated/fauna-abyssal-gulper-v2-whole-painted.png",
+        "slice-4 lineage: tracked Abyssal Gulper v2 whole-source art; large dark expandable-maw predator family for Black Swallower"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -1530,26 +1225,30 @@
     {
       "assetKey": "fauna-abyss-frilled-shark",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-frilled-shark.png",
       "exists": true,
-      "bytes": 4691,
+      "bytes": 1681,
       "dimensions": {
         "width": 186,
         "height": 32
       },
-      "sha256": "aeed3d3b4304fb1fdc0b0edfa557bd7e3e1790931689068a78454f1f287f7019",
+      "sha256": "59b0f55b7d54790a6c8cdfd9ecbd84b82b1e9acc02b520d33b727506820dae2e",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-abyss-frilled-shark.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-frilled-shark.frames.json",
       "frameCount": 3,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-frilled-shark-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-frilled-shark-source.png",
+        "slice-4 sourceFrom: public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-onyx-frillshark-fry-source-chroma.png",
+        "slice-4 lineage: tracked Onyx Frillshark Fry exploration source art; direct frilled shark source-family match"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -1605,26 +1304,30 @@
     {
       "assetKey": "fauna-abyss-hadal-shrimp",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-hadal-shrimp.png",
       "exists": true,
-      "bytes": 15013,
+      "bytes": 5560,
       "dimensions": {
         "width": 296,
         "height": 44
       },
-      "sha256": "39a3ae0295b3deca743c36b9462e9213c6d8a480c9dcdb1b33f7ec6860676793",
+      "sha256": "d021d324fb196f1b627e6a9892d201a4380e3a69d06264bf80a2426c22db1b49",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-abyss-hadal-shrimp.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-hadal-shrimp.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-hadal-shrimp-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-hadal-shrimp-source.png",
+        "slice-4 sourceFrom: public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-chimney-ghost-shrimp-source-chroma.png",
+        "slice-4 lineage: tracked Chimney Ghost Shrimp exploration source art; deep-water shrimp silhouette"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -1706,7 +1409,6 @@
       "kind": "fauna",
       "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "runtime_untracked",
         "required_by_last_proof_pass"
       ],
       "runtimePath": "public/assets/generated/fauna-abyss-mantle-crawler.png",
@@ -1718,9 +1420,9 @@
       },
       "sha256": "4b74fe6d8406967e0ef68faba7fbd55034ccd1f24ee5776d73560680f1503012",
       "sourceControl": {
-        "tracked": false,
-        "short": "?? public/assets/generated/fauna-abyss-mantle-crawler.png",
-        "state": "untracked"
+        "tracked": true,
+        "short": "A  public/assets/generated/fauna-abyss-mantle-crawler.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-mantle-crawler.frames.json",
       "frameCount": 4,
@@ -1740,26 +1442,30 @@
     {
       "assetKey": "fauna-abyss-medusa",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-medusa.png",
       "exists": true,
-      "bytes": 6681,
+      "bytes": 4064,
       "dimensions": {
         "width": 132,
         "height": 46
       },
-      "sha256": "e426829594e9e68b895f7e98e7740a09bf042423c11350bfc596306343487402",
+      "sha256": "788cd0455ea6c4a87bde7422c6d4e1f7408fc91c02eca547223121e875383d85",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-abyss-medusa.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-medusa.frames.json",
       "frameCount": 3,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-medusa-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-medusa-source.png",
+        "slice-4 sourceFrom: public/assets/generated/fauna-chain-vein-siphonophore-whole-source.png",
+        "slice-4 lineage: tracked Chain Vein Siphonophore whole-source art; colonial gelatinous cnidarian silhouette for abyssal medusa"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -1806,26 +1512,30 @@
     {
       "assetKey": "fauna-abyss-mirror-fry",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-abyss-mirror-fry.png",
       "exists": true,
-      "bytes": 4650,
+      "bytes": 3615,
       "dimensions": {
         "width": 156,
         "height": 36
       },
-      "sha256": "f836af3ed51912929717991b867aa8ce8ac46f59f4168afe974780a06b804267",
+      "sha256": "932155ed929130d4ee29520acd633dcf59cc2123bba4dafc6c4dc0851e02832d",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-abyss-mirror-fry.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-abyss-mirror-fry.frames.json",
       "frameCount": 3,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-mirror-fry-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-abyss-mirror-fry-source.png",
+        "slice-4 sourceFrom: public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-mirrorbone-hatchetfish-source-chroma.png",
+        "slice-4 lineage: tracked Mirrorbone Hatchetfish exploration source art; reflective small-fish source family for Mirror Fry"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -1981,26 +1691,30 @@
     {
       "assetKey": "fauna-deep-ash-minnow",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-deep-ash-minnow.png",
       "exists": true,
-      "bytes": 8167,
+      "bytes": 3939,
       "dimensions": {
         "width": 336,
         "height": 36
       },
-      "sha256": "66a3e30d9f8f3cdc2e418dd307b2287c5112a163795ad86aa9f28e0cd98865c4",
+      "sha256": "67a7f8aeea78cec089b31a8fe1e3f71b6251de90758ef2385a52989fa321d8b4",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-deep-ash-minnow.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-ash-minnow.frames.json",
       "frameCount": 4,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-deep-ash-minnow-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-deep-ash-minnow-source.png",
+        "slice-4 sourceFrom: public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-saberfin-smelt-source-chroma.png",
+        "slice-4 lineage: tracked Saberfin Smelt exploration source art; small silvery schooling fish silhouette for Ash Minnow"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2050,26 +1764,30 @@
     {
       "assetKey": "fauna-deep-deep-shrimp",
       "kind": "fauna",
-      "provenanceClass": "unknown_provenance",
-      "riskFlags": [
-        "unknown_provenance"
-      ],
+      "provenanceClass": "derived_from_existing_bitmap",
+      "riskFlags": [],
       "runtimePath": "public/assets/generated/fauna-deep-deep-shrimp.png",
       "exists": true,
-      "bytes": 6108,
+      "bytes": 2206,
       "dimensions": {
         "width": 245,
         "height": 33
       },
-      "sha256": "06c49fedac9e57c5d11e1be7479d26ef02492f4604fa00a9ff43c6e910606c9f",
+      "sha256": "b043d17809e5d83fe9de4fa1a2d5b038616bb1f92fe65430d6b309d5b8fd8724",
       "sourceControl": {
         "tracked": true,
-        "short": "",
-        "state": "clean"
+        "short": "M  public/assets/generated/fauna-deep-deep-shrimp.png",
+        "state": "modified"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-deep-shrimp.frames.json",
       "frameCount": 5,
-      "sourceEvidence": [],
+      "sourceEvidence": [
+        "frames manifest source: {\"kind\":\"derived-from-existing-bitmap-slice-4\",\"path\":\"public/assets/source/fauna-flora-source-art-slice-4/fauna-deep-deep-shrimp-source.png\"}",
+        "public/assets/source/fauna-flora-source-art-slice-4-manifest.json",
+        "slice-4 source: public/assets/source/fauna-flora-source-art-slice-4/fauna-deep-deep-shrimp-source.png",
+        "slice-4 sourceFrom: public/assets/generated/exploration-life-2026-07-04/source/fauna-exp-opal-fan-shrimp-source-chroma.png",
+        "slice-4 lineage: tracked Opal Fan Shrimp exploration source art; small shrimp silhouette for Deep Sea Shrimp"
+      ],
       "usages": [
         {
           "kind": "fauna",
@@ -2241,8 +1959,8 @@
       "sha256": "f01ce62d83b943bb668ee6027448381ba631abf1267b005478714536a086b6c1",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-deep-sea-spider.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-sea-spider.frames.json",
       "frameCount": 4,
@@ -2277,8 +1995,8 @@
       "sha256": "61c963dac59dcbb3236cdec7b4a880dc8e54086373ec8565c3d1c37c5c8256c5",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-deep-tripodfish.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-deep-tripodfish.frames.json",
       "frameCount": 3,
@@ -5749,8 +5467,8 @@
       "sha256": "f7aa81d1b6dab54c045daff4dced3cfe73eb2ab139565cab11405ab9a1c4d830",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-shallow-blue-ring-octopus.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-blue-ring-octopus.frames.json",
       "frameCount": 4,
@@ -5785,8 +5503,8 @@
       "sha256": "df89f770363efebec9526654c6133d70d3c3a54dcf4474631626e9fa4934ab5b",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-shallow-comb-jelly.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-comb-jelly.frames.json",
       "frameCount": 4,
@@ -5821,8 +5539,8 @@
       "sha256": "3d8ba03beb1cc76a2740e8ac57dbe6f071d0f8b9f2ac4d79e6da0e7bc01bc103",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-shallow-glass-ray.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-glass-ray.frames.json",
       "frameCount": 4,
@@ -5931,8 +5649,8 @@
       "sha256": "167ca302864c431f5d4d43414e8498901ae04a919eb3f702bb3bf04a778a0040",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-shallow-mantis-shrimp.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-mantis-shrimp.frames.json",
       "frameCount": 5,
@@ -6003,8 +5721,8 @@
       "sha256": "b61bb38e2609827842fac4c6b1e80a0325c77e616bd8aedae66a6209dd183fd8",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-shallow-octopus.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-octopus.frames.json",
       "frameCount": 4,
@@ -6039,8 +5757,8 @@
       "sha256": "b50dd629a49a92fee7b27bb36229807e1c51e6d1513d0036b1f65e0338653ee6",
       "sourceControl": {
         "tracked": true,
-        "short": "M public/assets/generated/fauna-shallow-snap-shrimp.png",
-        "state": "modified"
+        "short": "",
+        "state": "clean"
       },
       "frameManifestPath": "public/assets/generated/fauna-shallow-snap-shrimp.frames.json",
       "frameCount": 4,
@@ -6272,7 +5990,6 @@
       "kind": "flora",
       "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "runtime_untracked",
         "tools_build_flora_slice_assets_output"
       ],
       "runtimePath": "public/assets/generated/terrain-edge-flora-ember-bloom.png",
@@ -6284,9 +6001,9 @@
       },
       "sha256": "c9277c04acf1acc1eac381ef1bac9e0ca1ae1b5d966cfa412be418b1cdd29105",
       "sourceControl": {
-        "tracked": false,
-        "short": "?? public/assets/generated/terrain-edge-flora-ember-bloom.png",
-        "state": "untracked"
+        "tracked": true,
+        "short": "A  public/assets/generated/terrain-edge-flora-ember-bloom.png",
+        "state": "modified"
       },
       "frameManifestPath": null,
       "frameCount": 1,
@@ -6375,7 +6092,6 @@
       "kind": "flora",
       "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "runtime_untracked",
         "tools_build_flora_slice_assets_output"
       ],
       "runtimePath": "public/assets/generated/terrain-edge-flora-moon-sponge.png",
@@ -6387,9 +6103,9 @@
       },
       "sha256": "6a9bed9e70e902ce5abf7077c48be1101e2361274509e86bdf9cd7f601d68c56",
       "sourceControl": {
-        "tracked": false,
-        "short": "?? public/assets/generated/terrain-edge-flora-moon-sponge.png",
-        "state": "untracked"
+        "tracked": true,
+        "short": "A  public/assets/generated/terrain-edge-flora-moon-sponge.png",
+        "state": "modified"
       },
       "frameManifestPath": null,
       "frameCount": 1,
@@ -6447,7 +6163,6 @@
       "kind": "flora",
       "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "runtime_untracked",
         "tools_build_flora_slice_assets_output",
         "required_by_last_proof_pass"
       ],
@@ -6460,9 +6175,9 @@
       },
       "sha256": "a9e8d0418b60242b24167790f224be19e017ee6836ae4db37485e4bc28e5c40c",
       "sourceControl": {
-        "tracked": false,
-        "short": "?? public/assets/generated/terrain-edge-flora-sting-anemone.png",
-        "state": "untracked"
+        "tracked": true,
+        "short": "A  public/assets/generated/terrain-edge-flora-sting-anemone.png",
+        "state": "modified"
       },
       "frameManifestPath": null,
       "frameCount": 1,
@@ -6485,7 +6200,6 @@
       "kind": "flora",
       "provenanceClass": "derived_from_existing_bitmap",
       "riskFlags": [
-        "runtime_untracked",
         "tools_build_flora_slice_assets_output",
         "required_by_last_proof_pass"
       ],
@@ -6498,9 +6212,9 @@
       },
       "sha256": "ad22af673ec6ee6f10708831f53053c98d8816e512cf63f4c9776329126699fa",
       "sourceControl": {
-        "tracked": false,
-        "short": "?? public/assets/generated/terrain-edge-flora-vent-coral.png",
-        "state": "untracked"
+        "tracked": true,
+        "short": "A  public/assets/generated/terrain-edge-flora-vent-coral.png",
+        "state": "modified"
       },
       "frameManifestPath": null,
       "frameCount": 1,

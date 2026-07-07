@@ -187,6 +187,7 @@ const [
   sourceArtSlice1Assets,
   sourceArtSlice2Assets,
   sourceArtSlice3Assets,
+  sourceArtSlice4Assets,
   explorationManifest,
   previousProof,
 ] = await Promise.all([
@@ -197,6 +198,7 @@ const [
   sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-1-manifest.json'),
   sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-2-manifest.json'),
   sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-3-manifest.json'),
+  sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-4-manifest.json'),
   readJson(resolve(root, 'public/assets/generated/exploration-life-2026-07-04/manifest.json'), { entries: [] }),
   readJson(previousProofPath, { captures: [] }),
 ]);
@@ -304,6 +306,13 @@ for (const [assetKey, usages] of [...usageByKey.entries()].sort((a, b) => a[0].l
       evidence.push(source.manifest);
       evidence.push(`slice-3 source: ${source.asset.sourceFile}`);
       evidence.push(`slice-3 sourceFrom: ${source.asset.sourceFrom ?? source.asset.chromaSourceFile}`);
+    }
+    if (sourceArtSlice4Assets.has(assetKey)) {
+      const source = sourceArtSlice4Assets.get(assetKey);
+      evidence.push(source.manifest);
+      evidence.push(`slice-4 source: ${source.asset.sourceFile}`);
+      evidence.push(`slice-4 sourceFrom: ${source.asset.sourceFrom}`);
+      evidence.push(`slice-4 lineage: ${source.asset.trackedSourceLineage}`);
     }
   } else if (sourceArtSlice3Assets.has(assetKey) && frameManifest?.source?.kind === 'generated-bitmap-slice-3') {
     const source = sourceArtSlice3Assets.get(assetKey);
@@ -431,6 +440,7 @@ const inventory = {
     'public/assets/source/fauna-flora-source-art-slice-1-manifest.json',
     'public/assets/source/fauna-flora-source-art-slice-2-manifest.json',
     'public/assets/source/fauna-flora-source-art-slice-3-manifest.json',
+    'public/assets/source/fauna-flora-source-art-slice-4-manifest.json',
     'public/assets/generated/exploration-life-2026-07-04/manifest.json',
   ],
   counts,
@@ -449,9 +459,11 @@ const inventory = {
     'terrain-edge-flora-ember-bloom',
     ...sourceArtSlice2Assets.keys(),
     ...sourceArtSlice3Assets.keys(),
+    ...sourceArtSlice4Assets.keys(),
   ].map((assetKey) => ({
     assetKey,
     replacementSource: sourceArtSlice3Assets.get(assetKey)?.asset?.sourceFile
+      ?? sourceArtSlice4Assets.get(assetKey)?.asset?.sourceFile
       ?? sourceArtSlice2Assets.get(assetKey)?.asset?.file
       ?? `${envReplacementByTerrainEdge.get(assetKey)}.png`,
     classAfterRepair: rows.find((row) => row.assetKey === assetKey)?.provenanceClass ?? null,
