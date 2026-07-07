@@ -186,6 +186,7 @@ const [
   envSourceAssets,
   sourceArtSlice1Assets,
   sourceArtSlice2Assets,
+  sourceArtSlice3Assets,
   explorationManifest,
   previousProof,
 ] = await Promise.all([
@@ -195,6 +196,7 @@ const [
   sourceManifestNames('public/assets/source/environment-cave-wall-source-manifest.json'),
   sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-1-manifest.json'),
   sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-2-manifest.json'),
+  sourceManifestNames('public/assets/source/fauna-flora-source-art-slice-3-manifest.json'),
   readJson(resolve(root, 'public/assets/generated/exploration-life-2026-07-04/manifest.json'), { entries: [] }),
   readJson(previousProofPath, { captures: [] }),
 ]);
@@ -297,6 +299,19 @@ for (const [assetKey, usages] of [...usageByKey.entries()].sort((a, b) => a[0].l
       evidence.push(`slice-2 source: ${source.asset.file}`);
       evidence.push(`slice-2 sourceFrom: ${source.asset.sourceFrom}`);
     }
+    if (sourceArtSlice3Assets.has(assetKey)) {
+      const source = sourceArtSlice3Assets.get(assetKey);
+      evidence.push(source.manifest);
+      evidence.push(`slice-3 source: ${source.asset.sourceFile}`);
+      evidence.push(`slice-3 sourceFrom: ${source.asset.sourceFrom ?? source.asset.chromaSourceFile}`);
+    }
+  } else if (sourceArtSlice3Assets.has(assetKey) && frameManifest?.source?.kind === 'generated-bitmap-slice-3') {
+    const source = sourceArtSlice3Assets.get(assetKey);
+    provenanceClass = 'derived_from_existing_bitmap';
+    evidence.push(`frames manifest source: ${JSON.stringify(frameManifest.source)}`);
+    evidence.push(source.manifest);
+    evidence.push(`slice-3 generated source: ${source.asset.sourceFile}`);
+    evidence.push(`slice-3 chroma source: ${source.asset.chromaSourceFile}`);
   } else if (explorationByKey.has(assetKey)) {
     provenanceClass = 'derived_from_existing_bitmap';
     const source = explorationByKey.get(assetKey);
@@ -415,6 +430,7 @@ const inventory = {
     'public/assets/source/environment-cave-wall-source-manifest.json',
     'public/assets/source/fauna-flora-source-art-slice-1-manifest.json',
     'public/assets/source/fauna-flora-source-art-slice-2-manifest.json',
+    'public/assets/source/fauna-flora-source-art-slice-3-manifest.json',
     'public/assets/generated/exploration-life-2026-07-04/manifest.json',
   ],
   counts,
@@ -432,9 +448,11 @@ const inventory = {
     'terrain-edge-flora-vent-coral',
     'terrain-edge-flora-ember-bloom',
     ...sourceArtSlice2Assets.keys(),
+    ...sourceArtSlice3Assets.keys(),
   ].map((assetKey) => ({
     assetKey,
-    replacementSource: sourceArtSlice2Assets.get(assetKey)?.asset?.file
+    replacementSource: sourceArtSlice3Assets.get(assetKey)?.asset?.sourceFile
+      ?? sourceArtSlice2Assets.get(assetKey)?.asset?.file
       ?? `${envReplacementByTerrainEdge.get(assetKey)}.png`,
     classAfterRepair: rows.find((row) => row.assetKey === assetKey)?.provenanceClass ?? null,
   })),
