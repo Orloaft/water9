@@ -1,0 +1,74 @@
+{
+  "status": "complete",
+  "sessionKey": "small-gulper-readability-facing-fix",
+  "repo": "/mnt/nxt-dev/water9",
+  "initialHead": "971e654",
+  "identifiedCreature": {
+    "species": "Cobalt Gulper Fry",
+    "assetKey": "fauna-exp-cobalt-gulper-fry",
+    "content": {
+      "hostile": true,
+      "pattern": "stalk",
+      "radius": 10
+    },
+    "runtimeEvidence": [
+      "runs/water9-small-gulper-readability-facing-fix-2026-07-07/before-cobalt-gulper-runtime.json",
+      "runs/water9-small-gulper-readability-facing-fix-2026-07-07/after-cobalt-gulper-runtime.json"
+    ]
+  },
+  "rootCause": "The source was canonically right-facing and runtime flip logic was correct, but the head/mouth was too dark at runtime scale while the tail/back highlight stayed brighter, producing a backward-facing read during chase.",
+  "fix": {
+    "method": "local pixel repair from existing sprite pixels; no imagegen",
+    "changedAssets": [
+      "public/assets/generated/fauna-exp-cobalt-gulper-fry.png",
+      "public/assets/generated/fauna-exp-cobalt-gulper-fry-0.png",
+      "public/assets/generated/fauna-exp-cobalt-gulper-fry-1.png",
+      "public/assets/generated/fauna-exp-cobalt-gulper-fry-2.png",
+      "public/assets/generated/fauna-exp-cobalt-gulper-fry-3.png"
+    ],
+    "changes": [
+      "boosted cobalt body contrast",
+      "added bright eye/front cue",
+      "added ivory jaw arc at the right-facing source front",
+      "added restrained cool head/body rim",
+      "dimmed the far tail so it no longer reads as the leading end"
+    ]
+  },
+  "proofArtifacts": {
+    "beforeCanvas": "runs/water9-small-gulper-readability-facing-fix-2026-07-07/before-cobalt-gulper-game-canvas.png",
+    "beforeGrayscale": "runs/water9-small-gulper-readability-facing-fix-2026-07-07/before-cobalt-gulper-game-canvas-grayscale.png",
+    "afterCanvas": "runs/water9-small-gulper-readability-facing-fix-2026-07-07/after-cobalt-gulper-game-canvas.png",
+    "afterGrayscale": "runs/water9-small-gulper-readability-facing-fix-2026-07-07/after-cobalt-gulper-game-canvas-grayscale.png",
+    "beforeRuntime": "runs/water9-small-gulper-readability-facing-fix-2026-07-07/before-cobalt-gulper-runtime.json",
+    "afterRuntime": "runs/water9-small-gulper-readability-facing-fix-2026-07-07/after-cobalt-gulper-runtime.json",
+    "spriteContactSheet": "runs/water9-small-gulper-readability-facing-fix-2026-07-07/cobalt-gulper-before-after-contact.png",
+    "runtimeCropContact": "runs/water9-small-gulper-readability-facing-fix-2026-07-07/runtime-before-after-crop-contact.png"
+  },
+  "verification": [
+    {
+      "command": "node runs/water9-small-gulper-readability-facing-fix-2026-07-07/capture-small-gulper-proof.mjs --before --index=1 --distance=112 --settle-ms=120 --polls=2",
+      "result": "passed"
+    },
+    {
+      "command": "node runs/water9-small-gulper-readability-facing-fix-2026-07-07/capture-small-gulper-proof.mjs --after --index=1 --distance=112 --settle-ms=120 --polls=2",
+      "result": "passed"
+    },
+    {
+      "command": "npm run small-enemy:motion-smoke",
+      "result": "passed"
+    },
+    {
+      "command": "npm run build",
+      "result": "passed with existing Vite public asset URL/chunk timing warnings"
+    }
+  ],
+  "dirtyWorktreeSafety": {
+    "srcContentTsPreexistingDirty": false,
+    "targetAssetFilesPreexistingDirty": false,
+    "unrelatedPreexistingDirtPreserved": true,
+    "commit": {
+      "attempted": true,
+      "hash": "reported-in-return-block"
+    }
+  }
+}
