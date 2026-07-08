@@ -8,6 +8,7 @@ tracked/generated bitmap cutouts into runtime sprite sheets.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 from PIL import Image, ImageOps
@@ -88,14 +89,127 @@ def save_source(asset_key: str, image: Image.Image) -> Path:
     return path
 
 
-def make_frames(source: Image.Image, size: tuple[int, int], count: int) -> list[Image.Image]:
+def sample_bilinear(source: Image.Image, sx: float, sy: float) -> tuple[int, int, int, int]:
+    if sx < 0 or sy < 0 or sx >= source.width - 1 or sy >= source.height - 1:
+        return (0, 0, 0, 0)
+    x0 = int(sx)
+    y0 = int(sy)
+    tx = sx - x0
+    ty = sy - y0
+    pixels = source.load()
+    samples = [
+        (pixels[x0, y0], (1 - tx) * (1 - ty)),
+        (pixels[x0 + 1, y0], tx * (1 - ty)),
+        (pixels[x0, y0 + 1], (1 - tx) * ty),
+        (pixels[x0 + 1, y0 + 1], tx * ty),
+    ]
+    alpha = sum(px[3] * weight for px, weight in samples)
+    if alpha <= 0:
+        return (0, 0, 0, 0)
+    rgb = [
+        round(sum(px[channel] * px[3] * weight for px, weight in samples) / alpha)
+        for channel in range(3)
+    ]
+    return (rgb[0], rgb[1], rgb[2], round(alpha))
+
+
+def smoothstep(edge0: float, edge1: float, value: float) -> float:
+    if edge0 == edge1:
+        return 1.0 if value >= edge1 else 0.0
+    t = max(0.0, min(1.0, (value - edge0) / (edge1 - edge0)))
+    return t * t * (3 - 2 * t)
+
+
+def center_alpha_like(image: Image.Image, reference: Image.Image) -> Image.Image:
+    ref_box = alpha_bbox(reference, 0)
+    box = alpha_bbox(image, 0)
+    ref_cx = (ref_box[0] + ref_box[2]) / 2
+    ref_cy = (ref_box[1] + ref_box[3]) / 2
+    cx = (box[0] + box[2]) / 2
+    cy = (box[1] + box[3]) / 2
+    dx = round(ref_cx - cx)
+    dy = round(ref_cy - cy)
+    if dx == 0 and dy == 0:
+        return image
+    out = Image.new("RGBA", image.size, (0, 0, 0, 0))
+    out.alpha_composite(image, (dx, dy))
+    return out
+
+
+def shimmer_blue_rings(frame: Image.Image, phase: float) -> Image.Image:
+    out = frame.copy()
+    pixels = out.load()
+    for y in range(out.height):
+        for x in range(out.width):
+            r, g, b, a = pixels[x, y]
+            if a <= 8:
+                continue
+            blue_ring = b > 120 and b > r * 1.12 and b > g * 1.06
+            if not blue_ring:
+                continue
+            wave = 0.5 + 0.5 * math.sin((x * 0.44) + (y * 0.31) + phase)
+            factor = 1.08 + 0.22 * wave
+            pixels[x, y] = (
+                min(255, round(r * 0.92)),
+                min(255, round(g * (1.02 + 0.08 * wave))),
+                min(255, round(b * factor)),
+                a,
+            )
+    return out
+
+
+def blue_ring_octopus_frames(source: Image.Image, size: tuple[int, int], count: int) -> list[Image.Image]:
+    """Derive a readable swim/crawl cycle without changing the source identity."""
+    internal_scale = 3
+    internal_size = (size[0] * internal_scale, size[1] * internal_scale)
+    base = fit_to_canvas(source, size, pad=3)
+    base_internal = fit_to_canvas(source, internal_size, pad=3 * internal_scale)
+    phases = [0.0, math.pi / 2, math.pi, math.pi * 3 / 2]
+    cx = (internal_size[0] - 1) / 2
+    cy = (internal_size[1] - 1) / 2
+    max_radius = math.hypot(cx, cy)
+    frames: list[Image.Image] = []
+    for index, phase in enumerate(phases[:count]):
+        breath = math.sin(phase)
+        # Mantle breathing is deliberately modest; the tentacle wave does the
+        # visible motion so the anchor stays steady in normal gameplay.
+        scale_x = 1.0 + 0.020 * breath
+        scale_y = 1.0 - 0.030 * breath
+        frame = Image.new("RGBA", internal_size, (0, 0, 0, 0))
+        pixels = frame.load()
+        for y in range(internal_size[1]):
+            for x in range(internal_size[0]):
+                dx = x - cx
+                dy = y - cy
+                radius = math.hypot(dx, dy) / max_radius
+                theta = math.atan2(dy, dx)
+                lower_bias = smoothstep(cy - 8 * internal_scale, cy + 18 * internal_scale, y)
+                outer_bias = smoothstep(0.22, 0.82, radius)
+                limb = max(0.0, min(1.0, lower_bias * outer_bias))
+                side = -1.0 if x < cx else 1.0
+                sweep = math.sin(phase + side * 0.85 + (y / internal_scale) * 0.18)
+                curl = math.sin(phase + theta * 3.0)
+                sx = cx + (dx / scale_x) - (8.1 * limb * sweep) - (3.0 * limb * curl * side)
+                sy = cy + (dy / scale_y) - (5.7 * limb * math.cos(phase + (x / internal_scale) * 0.20))
+                pixels[x, y] = sample_bilinear(base_internal, sx, sy)
+        frame = frame.resize(size, Image.Resampling.LANCZOS)
+        frame = shimmer_blue_rings(center_alpha_like(frame, base), phase + index * 0.7)
+        frames.append(frame)
+    while len(frames) < count:
+        frames.append(frames[-1].copy())
+    return frames
+
+
+def make_frames(asset_key: str, source: Image.Image, size: tuple[int, int], count: int) -> list[Image.Image]:
+    if asset_key == "fauna-shallow-blue-ring-octopus":
+        return blue_ring_octopus_frames(source, size, count)
     frame = fit_to_canvas(source, size, pad=3)
     return [frame.copy() for _ in range(count)]
 
 
 def pack_frames(asset_key: str, source_path: Path, frame_size: tuple[int, int], count: int, fps: int, source_kind: str) -> list[str]:
     source = Image.open(source_path).convert("RGBA")
-    frames = make_frames(source, frame_size, count)
+    frames = make_frames(asset_key, source, frame_size, count)
     sheet = Image.new("RGBA", (frame_size[0] * count, frame_size[1]), (0, 0, 0, 0))
     runtime_outputs: list[str] = []
     for index, frame in enumerate(frames):

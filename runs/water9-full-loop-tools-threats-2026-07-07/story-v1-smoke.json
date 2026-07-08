@@ -1,0 +1,116 @@
+{
+  "ok": true,
+  "oldDefault": {
+    "activeId": "b1-first-signal",
+    "completed": [],
+    "flags": {},
+    "heardRadio": []
+  },
+  "b1": {
+    "objectiveText": "EXPEDITION MILESTONE\nB1 Expedition: First Signal\n\nReturn to the barge with scan, sample, sonar, and depth proof for the B2 route.",
+    "ready": {
+      "activeId": "b1-first-signal",
+      "completed": [],
+      "flags": {},
+      "heardRadio": []
+    },
+    "complete": {
+      "activeId": "",
+      "completed": [
+        "b1-first-signal"
+      ],
+      "flags": {
+        "b1-first-signal:completed": true
+      },
+      "heardRadio": [
+        "story-b1-first-signal-complete"
+      ]
+    }
+  },
+  "saveLoad": {
+    "activeId": "",
+    "completed": [
+      "b1-first-signal"
+    ],
+    "flags": {
+      "b1-first-signal:completed": true
+    },
+    "heardRadio": [
+      "story-b1-first-signal-complete"
+    ]
+  },
+  "b2Selected": {
+    "story": {
+      "activeId": "b2-vent-proof",
+      "completed": [
+        "b1-first-signal"
+      ],
+      "flags": {
+        "b1-first-signal:completed": true
+      },
+      "heardRadio": [
+        "story-b1-first-signal-complete"
+      ]
+    },
+    "objective": {
+      "id": "b2-vent-proof",
+      "title": "B2 Expedition: Vent Proof",
+      "detail": "Scan and sample Brine Grass for the safe vent chemistry baseline.",
+      "complete": false,
+      "progress": 0
+    }
+  },
+  "b4": {
+    "proof": {
+      "finalProofRecovered": true,
+      "story": {
+        "activeId": "b4-reliquary-proof",
+        "completed": [
+          "b1-first-signal",
+          "b2-vent-proof",
+          "b3-forward-pocket"
+        ],
+        "flags": {
+          "b1-first-signal:completed": true,
+          "b2-vent-proof:completed": true,
+          "b3-forward-pocket:completed": true
+        },
+        "heardRadio": [
+          "story-b1-first-signal-complete",
+          "story-b2-vent-proof-complete",
+          "story-b3-forward-pocket-complete"
+        ]
+      }
+    },
+    "victory": {
+      "won": true,
+      "story": {
+        "activeId": "",
+        "completed": [
+          "b1-first-signal",
+          "b2-vent-proof",
+          "b3-forward-pocket",
+          "b4-reliquary-proof"
+        ],
+        "flags": {
+          "b1-first-signal:completed": true,
+          "b2-vent-proof:completed": true,
+          "b3-forward-pocket:completed": true,
+          "b4-reliquary-proof:completed": true
+        },
+        "heardRadio": [
+          "story-b1-first-signal-complete",
+          "story-b2-vent-proof-complete",
+          "story-b3-forward-pocket-complete",
+          "story-b4-reliquary-proof-complete"
+        ]
+      }
+    }
+  },
+  "screenshotPath": "runs/water9-full-loop-tools-threats-2026-07-07/story-v1-pinned-objective.png",
+  "errors": [],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 137 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5189/\n"
+  ]
+}

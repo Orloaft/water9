@@ -82,10 +82,10 @@ const FIRST_SLICE_PROFILES: Record<string, FaunaBehaviorProfile> = {
   },
   'Mantis Shrimp': {
     behaviorClass: 'benthicWalker',
-    terrainAffinity: 'bottom',
-    preferredAnchors: ['floor'],
+    terrainAffinity: 'surfaceAttached',
+    preferredAnchors: ['floor', 'leftWall', 'rightWall'],
     clearance: 8,
-    tetherRadius: 22,
+    tetherRadius: 34,
     lungeRange: 86,
   },
   'Opal Fan Shrimp': {

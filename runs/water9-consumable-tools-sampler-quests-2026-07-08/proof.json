@@ -1,0 +1,28 @@
+{
+  "method": "Playwright normal play captures from #game canvas plus viewport capture for quest board; grayscale companions use CSS grayscale filter before screenshot.",
+  "baseUrl": "http://127.0.0.1:5188/?playtest=1&biome=1",
+  "port": 5188,
+  "commands": [
+    "npm run build",
+    "node tools/test_consumable_tools_sampler_quests_smoke.mjs"
+  ],
+  "artifacts": {
+    "stun-tool-selected-used": {
+      "color": "runs/water9-consumable-tools-sampler-quests-2026-07-08/stun-tool-selected-used.png",
+      "grayscale": "runs/water9-consumable-tools-sampler-quests-2026-07-08/stun-tool-selected-used-grayscale.png",
+      "selector": "#game canvas"
+    },
+    "sampler-harvest-sample-cargo": {
+      "color": "runs/water9-consumable-tools-sampler-quests-2026-07-08/sampler-harvest-sample-cargo.png",
+      "grayscale": "runs/water9-consumable-tools-sampler-quests-2026-07-08/sampler-harvest-sample-cargo-grayscale.png",
+      "selector": "#game canvas"
+    },
+    "barge-sample-contract-claim": {
+      "color": "runs/water9-consumable-tools-sampler-quests-2026-07-08/barge-sample-contract-claim.png",
+      "grayscale": "runs/water9-consumable-tools-sampler-quests-2026-07-08/barge-sample-contract-claim-grayscale.png",
+      "selector": "page"
+    }
+  },
+  "reportPath": "runs/water9-consumable-tools-sampler-quests-2026-07-08/consumable-tools-sampler-quests-smoke.json",
+  "errors": []
+}

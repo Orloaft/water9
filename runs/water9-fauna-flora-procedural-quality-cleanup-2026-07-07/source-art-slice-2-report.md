@@ -128,5 +128,6 @@ Visual inspection notes: the repaired assets render as bitmap-derived silhouette
 
 ## Commit
 
-Commit: pending before final commit.
+Commit: `040c18b` (`Replace unknown fauna source art slice 2`).
 
+Note: this hash line was written to the on-disk report after the commit, because a commit cannot contain its own final hash. The committed report has the same contents except this post-commit hash note.

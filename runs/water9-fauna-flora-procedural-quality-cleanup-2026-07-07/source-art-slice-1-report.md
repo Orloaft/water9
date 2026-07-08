@@ -138,4 +138,6 @@ Visual inspection notes: special-room flora read as anchored painted/cutout asse
 
 ## Commit
 
-Commit: pending at report-write time. Scoped explicit-path staging only; no unrelated dirty files are intended for staging.
+Commit: `bae84d7` (`Replace procedural fauna flora source art slice 1`).
+
+Note: this hash line was written to the on-disk report after the commit, because a commit cannot contain its own final hash. The committed report has the same contents except this post-commit hash note.

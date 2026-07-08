@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { ControlState,SubTier,SubVehicle } from './types';
 import { BARGE_DOCK_Y,SUB_BOARD_SECONDS,SUB_FUEL_CELL,SUB_FUEL_COST,SUB_OXYGEN_CELL,SUB_OXYGEN_COST,TILE,WORLD_W } from './constants';
 import { state } from './state';
-import { createSubVehicle,mineCooldown,scaledEntity,scanReward,subDef,subEffectiveCost,subRepairCost } from './helpers';
+import { createSubVehicle,finaleLocksSurvey,mineCooldown,scaledEntity,scanReward,subDef,subEffectiveCost,subRepairCost } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 
@@ -67,7 +67,7 @@ export function repairSubHull(this: DeepdiveScene, ) {
 
 export function canUseSubHatch(this: DeepdiveScene, ) {
     const sub = state.activeSub;
-    if (!sub || state.docked || state.lost || state.won) return false;
+    if (!sub || state.docked || state.lost || finaleLocksSurvey()) return false;
     if (state.carrierSub && state.pilotingSub && sub.tier === 1) return this.canReturnScoutToCarrier(sub);
     if (state.pilotingSub) return true;
     return Phaser.Math.Distance.Between(this.player.x, this.player.y, sub.x, sub.y) < scaledEntity(70);
@@ -276,8 +276,10 @@ export function updateAuxSub(this: DeepdiveScene, delta: number) {
       if (target.scan >= 1 && !target.scanned) {
         target.scanned = true;
         target.scanPulse = 1;
-        state.scannedSpecies.add(target.species);
-        state.credits += Math.round(scanReward(target) * 0.45);
+        if (!state.scannedSpecies.has(target.species)) {
+          state.scannedSpecies.add(target.species);
+          state.credits += Math.round(scanReward(target) * 0.45);
+        }
         this.spawnFloatingText(`Aux scanned ${target.species}`, 0x73fbd3);
       }
     }

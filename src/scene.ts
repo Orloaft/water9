@@ -4,7 +4,7 @@ import { audioKeys,audioVolumes,BARGE_DOCKING_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BA
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { activeQuest,ambientDarknessOpacity,animatedFrame,axis,bargeSolidAtWorld,bargeUpgradeCost,cargoCapacity,cargoIconForTile,cargoKindForTile,cargoSaleValue,checkOxygenWarnings,clampSelectedCargoIndex,clearBleed,clearVenom,createConsumableItem,createSubVehicle,currentApexSpecies,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,fishAssetKey,fishFrameCount,fishMaxHp,fitImageHeight,fitImageWidth,floraAssetKey,floraMaxHp,fuelMax,fuelRefillCost,generateQuestBoard,generateTile,hash,hullMax,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,loadGeneratedAssets,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenDrain,oxygenMax,parallaxAlphas,parallaxPrefix,parallaxSpeeds,pointInRoom,predatorBiteCooldown,questProgressSource,rarityColor,rarityLabel,refillAtBoat,resetOxygenWarnings,restart,scaledDepthPx,scaledEntity,scannableRarity,scanReward,shopItem,sonarKey,sonarTileColor,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange,subRepairCost,swimPose,swimTopSpeed,swimUpgradeBonus,tileTextureKey,updateFacingFromVelocity,upgradeCost,upgradeMax,veinRuleAt,veinRulesForBiome,venomousFish } from './helpers';
+import { activeQuest,ambientDarknessOpacity,animatedFrame,axis,bargeSolidAtWorld,bargeUpgradeCost,cargoCapacity,cargoIconForTile,cargoKindForTile,cargoSaleBreakdown,checkOxygenWarnings,clampSelectedCargoIndex,clearBleed,clearVenom,completeFinaleAtBarge,createConsumableItem,createSubVehicle,currentApexSpecies,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,finaleLocksSurvey,fishAssetKey,fishFrameCount,fishMaxHp,fitImageHeight,fitImageWidth,floraAssetKey,floraMaxHp,fuelMax,fuelRefillCost,generateQuestBoard,generateTile,hash,hullMax,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,loadGeneratedAssets,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenDrain,oxygenMax,parallaxAlphas,parallaxPrefix,parallaxSpeeds,pointInRoom,predatorBiteCooldown,questProgressSource,rarityColor,rarityLabel,refillAtBoat,resetOxygenWarnings,restart,scaledDepthPx,scaledEntity,scannableRarity,scanReward,shopItem,sonarKey,sonarTileColor,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange,subRepairCost,swimPose,swimTopSpeed,swimUpgradeBonus,tileTextureKey,updateFacingFromVelocity,upgradeCost,upgradeMax,veinRuleAt,veinRulesForBiome,venomousFish } from './helpers';
 import { activateMenuButton,activeMenuButtons,advanceRadioDialogue,availableUpgrades,biomeName,canDiveFromBargeShortcut,clearControllerFocus,focusMenuButton,focusUiButton,menuButtonKey,nextMenuButton,openingRadioMessages,renderHud,roundMetric,toggleLogbook,unlockAchievement,updateFpsTracker } from './hud';
 import * as sonarNs from './scene-sonar';
 import * as economyNs from './scene-economy';
@@ -130,7 +130,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.resetPlayerStart();
     this.updateCameraZoom();
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,H,M,Q,L,P,ESC,SPACE,R,ENTER') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,E,F,G,H,M,Q,L,P,ESC,SPACE,R,ENTER,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN') as Record<string, Phaser.Input.Keyboard.Key>;
     this.installGamepadEvents();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.shutdown());
     this.parallaxLayers = [0, 1, 2, 3, 4].map((index) => this.add
@@ -257,7 +257,7 @@ export class DeepdiveScene extends Phaser.Scene {
     }
     if (this.updateSonarMapNavigation(delta, controls)) return;
     if (this.updateMenuNavigation(delta, controls)) return;
-    if (state.radioOpen && state.started && !state.lost && !state.won) {
+    if (state.radioOpen && state.started && !state.lost && !finaleLocksSurvey()) {
       this.draw();
       this.updateAudio(delta);
       updatePerfHud(this);
@@ -269,10 +269,6 @@ export class DeepdiveScene extends Phaser.Scene {
         return;
       }
       this.updateAudio(delta);
-      return;
-    }
-    if (Phaser.Input.Keyboard.JustDown(this.keys.R)) {
-      restart(this);
       return;
     }
     if (controls.logbookPressed) {
@@ -288,7 +284,7 @@ export class DeepdiveScene extends Phaser.Scene {
       }
       renderHud();
     }
-    if (state.lost || state.won) {
+    if (state.lost || finaleLocksSurvey()) {
       if (controls.confirmPressed) restart(this);
       this.draw();
       this.updateAudio(delta);
@@ -721,7 +717,7 @@ export class DeepdiveScene extends Phaser.Scene {
   }
 
   handleGlobalControllerActions(controls: ControlState) {
-    if (!state.started || state.lost || state.won || state.radioOpen) return false;
+    if (!state.started || state.lost || finaleLocksSurvey() || state.radioOpen) return false;
     if (state.sonarMapOpen && (controls.cancelPressed || controls.sonarMapPressed || controls.pausePressed)) {
       state.sonarMapOpen = false;
       state.paused = true;
@@ -784,7 +780,7 @@ export class DeepdiveScene extends Phaser.Scene {
   }
 
   updatePassiveSonarReveal(delta: number) {
-    if (!state.started || state.atBoat || state.docked || state.lost || state.won || state.paused) return;
+    if (!state.started || state.atBoat || state.docked || state.lost || finaleLocksSurvey() || state.paused) return;
     this.passiveSonarRevealTimer = Math.max(0, this.passiveSonarRevealTimer - delta);
     if (this.passiveSonarRevealTimer > 0) return;
     this.passiveSonarRevealTimer = 0.18;
@@ -818,7 +814,7 @@ export class DeepdiveScene extends Phaser.Scene {
     }
 
     if (controls.confirmPressed) {
-      if (state.radioOpen && state.started && !state.lost && !state.won) {
+      if (state.radioOpen && state.started && !state.lost && !finaleLocksSurvey()) {
         advanceRadioDialogue();
         renderHud();
         return true;
@@ -936,10 +932,10 @@ export class DeepdiveScene extends Phaser.Scene {
     }
     const pointer = this.input.activePointer;
     if (pointer.isDown) this.mineAt(pointer.worldX, pointer.worldY);
-    if (controls.mineHeld) {
-      this.mineAt(this.player.x + this.player.facing.x * PLAYER_FORWARD_REACH, this.player.y + this.player.facing.y * PLAYER_FORWARD_REACH);
-    }
-    this.scanNearbyLife(delta, controls.scanHeld);
+    const primaryX = this.player.x + this.player.facing.x * PLAYER_FORWARD_REACH;
+    const primaryY = this.player.y + this.player.facing.y * PLAYER_FORWARD_REACH;
+    const selectedToolScanHeld = controls.mineHeld && this.useSelectedToolPrimary(delta, primaryX, primaryY);
+    this.scanNearbyLife(delta, controls.scanHeld || selectedToolScanHeld);
   }
 
   updatePlayerFacing(horizontalIntent: number) {
@@ -1049,14 +1045,19 @@ export class DeepdiveScene extends Phaser.Scene {
           state.activeSub.vx = 0;
           state.activeSub.vy = 0;
         }
-        state.status = 'Docked at the barge. Refit, review the logbook, then press Dive.';
+        if (completeFinaleAtBarge()) {
+          unlockAchievement('The Drowned Architects', 'Return to the barge with Crownmaw proof from Ancient Ruins.');
+        } else {
+          state.status = 'Docked at the barge. Refit, review the logbook, then press Dive.';
+        }
       }
-      const sale = cargoSaleValue();
+      const saleBreakdown = cargoSaleBreakdown();
+      const sale = saleBreakdown.total;
       if (sale > 0) {
         state.credits += sale;
-        state.oreSoldCredits += sale;
+        state.oreSoldCredits += saleBreakdown.oreCredits;
         state.status = `Sold cargo for ${sale} credits.`;
-        state.cargo = state.cargo.filter((item) => item.value <= 0);
+        state.cargo = state.cargo.filter((item) => item.kind !== 'ore' && item.kind !== 'artifact' && item.kind !== 'sample');
         clampSelectedCargoIndex();
       }
       refillAtBoat(delta);
@@ -1114,7 +1115,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.terrainBreakEffects.length = liveBreakEffectCount;
 
     const apexSpecies = currentApexSpecies();
-    if (state.depth > 1520 && !state.scannedSpecies.has(apexSpecies)) {
+    if (state.depth > 1520 && !state.scannedSpecies.has(apexSpecies) && !state.finale.finalProofRecovered) {
       state.status = state.biome === 1
         ? 'Something huge is moving below. Scan it before your suit gives out.'
         : state.biome === 2
@@ -1138,17 +1139,18 @@ export class DeepdiveScene extends Phaser.Scene {
       state.logbookOpen = false;
       state.cargoOpen = false;
       state.radioOpen = false;
-      state.status = `Helmet breached at ${state.maxDepth} m. Press R to restart.`;
+      state.status = `Helmet breached at ${state.maxDepth} m. Press Enter to restart.`;
       renderHud();
     }
   }
 
   respawnAtBarge() {
-    const sale = cargoSaleValue();
+    const saleBreakdown = cargoSaleBreakdown();
+    const sale = saleBreakdown.total;
     if (sale > 0) {
       state.credits += sale;
-      state.oreSoldCredits += sale;
-      state.cargo = state.cargo.filter((item) => item.value <= 0);
+      state.oreSoldCredits += saleBreakdown.oreCredits;
+      state.cargo = state.cargo.filter((item) => item.kind !== 'ore' && item.kind !== 'artifact' && item.kind !== 'sample');
       clampSelectedCargoIndex();
     }
     state.hull = hullMax();
@@ -1259,6 +1261,8 @@ export interface DeepdiveScene {
   makeBobbits: OmitThisParameter<typeof worldgenNs.makeBobbits>;
   makeSchool: OmitThisParameter<typeof worldgenNs.makeSchool>;
   makeFloraPatch: OmitThisParameter<typeof worldgenNs.makeFloraPatch>;
+  makeStampFloraTargets: OmitThisParameter<typeof worldgenNs.makeStampFloraTargets>;
+  makeBrushFloraTargets: OmitThisParameter<typeof worldgenNs.makeBrushFloraTargets>;
   populateSpecialRooms: OmitThisParameter<typeof worldgenNs.populateSpecialRooms>;
   populateBiolumeRoom: OmitThisParameter<typeof worldgenNs.populateBiolumeRoom>;
   populateNestRoom: OmitThisParameter<typeof worldgenNs.populateNestRoom>;
@@ -1295,6 +1299,7 @@ export interface DeepdiveScene {
   drawTerrainBreakEffects: OmitThisParameter<typeof renderingNs.drawTerrainBreakEffects>;
   drawEnvironmentProps: OmitThisParameter<typeof renderingNs.drawEnvironmentProps>;
   drawBoat: OmitThisParameter<typeof renderingNs.drawBoat>;
+  drawBargeDockingIndicator: OmitThisParameter<typeof renderingNs.drawBargeDockingIndicator>;
   drawSpecialRooms: OmitThisParameter<typeof renderingNs.drawSpecialRooms>;
   drawHazards: OmitThisParameter<typeof renderingNs.drawHazards>;
   drawNestEggs: OmitThisParameter<typeof renderingNs.drawNestEggs>;
@@ -1355,6 +1360,9 @@ export interface DeepdiveScene {
   mineFromSub: OmitThisParameter<typeof combatNs.mineFromSub>;
   findSubMiningTarget: OmitThisParameter<typeof combatNs.findSubMiningTarget>;
   mineAt: OmitThisParameter<typeof combatNs.mineAt>;
+  useSelectedToolPrimary: OmitThisParameter<typeof combatNs.useSelectedToolPrimary>;
+  sampleNearbyFlora: OmitThisParameter<typeof combatNs.sampleNearbyFlora>;
+  nearestSampleFlora: OmitThisParameter<typeof combatNs.nearestSampleFlora>;
   cutNestTarget: OmitThisParameter<typeof combatNs.cutNestTarget>;
   cutLifeTarget: OmitThisParameter<typeof combatNs.cutLifeTarget>;
   nearestLifeDamageTarget: OmitThisParameter<typeof combatNs.nearestLifeDamageTarget>;

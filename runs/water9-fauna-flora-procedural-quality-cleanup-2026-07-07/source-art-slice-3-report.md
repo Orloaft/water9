@@ -110,4 +110,6 @@ Visual inspection notes: the repaired assets render as bitmap-derived organisms 
 
 ## Commit
 
-Commit: pending.
+Commit: `0f5ea96` (`Replace unknown fauna source art slice 3`).
+
+Note: this hash line was written to the on-disk report after the commit, because a commit cannot contain its own final hash. The committed report has the same contents except this post-commit hash note.

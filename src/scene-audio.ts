@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { audioKeys,audioVolumes } from './constants';
 import { state } from './state';
-import { oxygenMax } from './helpers';
+import { finaleLocksSurvey,oxygenMax } from './helpers';
 import type { DeepdiveScene } from './scene';
 
 export function updateAudio(this: DeepdiveScene, delta: number) {
@@ -19,7 +19,7 @@ export function updateAudio(this: DeepdiveScene, delta: number) {
     if (state.musicEnabled && state.musicVolume > 0) this.ensureLoop('ambient');
     else this.stopLoop('ambient');
 
-    if (state.lost || state.won || state.paused) {
+    if (state.lost || finaleLocksSurvey() || state.paused) {
       this.stopLoop('mining');
       this.stopLoop('oxygen');
       return;
@@ -78,7 +78,7 @@ export function stopLoop(this: DeepdiveScene, kind: 'menu' | 'ambient' | 'mining
   }
 
 export function playDepthCall(this: DeepdiveScene, ) {
-    if (state.atBoat || state.lost || state.won || state.paused) return;
+    if (state.atBoat || state.lost || finaleLocksSurvey() || state.paused) return;
     let key = 'audio-whale';
     if (state.biome >= 4 || state.depth >= 1450) key = 'audio-alien-growl';
     else if (state.biome >= 2 || state.depth >= 650) key = 'audio-crab-growl';
@@ -95,4 +95,3 @@ export function playSfx(this: DeepdiveScene, key: string, volume: number, config
       volume: volume * state.sfxVolume,
     });
   }
-

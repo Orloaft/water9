@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
 import type { SonarContact } from './types';
-import { audioKeys,audioVolumes,BARGE_DOCK_Y,SONAR_ATTRACT_RADIUS,SONAR_COOLDOWN,SONAR_FUEL_COST,SONAR_REVEAL_RADIUS_TILES,TILE,WORLD_H,WORLD_W } from './constants';
+import { audioKeys,audioVolumes,SONAR_ATTRACT_RADIUS,SONAR_COOLDOWN,SONAR_FUEL_COST,SONAR_REVEAL_RADIUS_TILES,TILE,WORLD_H,WORLD_W } from './constants';
 import { state } from './state';
-import { sonarKey } from './helpers';
+import { finaleLocksSurvey,sonarKey } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 
 export function sonarPing(this: DeepdiveScene, ) {
-    if (this.player.sonarCooldown > 0 || state.lost || state.won || !state.started) return;
+    if (this.player.sonarCooldown > 0 || state.lost || finaleLocksSurvey() || !state.started) return;
     const sub = state.pilotingSub ? state.activeSub : null;
     const fuelReserve = sub ? sub.fuel : state.fuel;
     if (fuelReserve < SONAR_FUEL_COST) {
@@ -59,11 +59,6 @@ export function sonarPing(this: DeepdiveScene, ) {
 
 export function captureSonarContacts(this: DeepdiveScene, ) {
     const contacts: SonarContact[] = [];
-    const bargeX = WORLD_W * TILE * 0.5;
-    const bargeY = BARGE_DOCK_Y;
-    if (Phaser.Math.Distance.Between(this.player.x, this.player.y, bargeX, bargeY) <= SONAR_REVEAL_RADIUS_TILES * TILE) {
-      contacts.push({ x: bargeX, y: bargeY, kind: 'barge', hostile: false, age: 0 });
-    }
     for (const fish of this.fish) {
       if (fish.dead) continue;
       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y);

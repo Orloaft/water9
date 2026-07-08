@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
-import type { BargeTab,Biome,CargoItem,FishSpecies,Flora,FloraSpecies,Quest,RadioMessage,ScanRarity,ShopItem,SubDef,SubTier,SubVehicle,TitlePanel,Upgrade,UpgradeId } from './types';
+import type { BargeTab,Biome,CargoItem,FishSpecies,Flora,FloraSpecies,Quest,RadioMessage,ScanRarity,ShopItem,SubDef,SubTier,SubVehicle,TitlePanel,ToolId,Upgrade,UpgradeId } from './types';
 import { FUEL_REFILL_AMOUNT,MARLIN_VOUCHER_DISCOUNT,SONAR_FUEL_COST,SUB_FUEL_COST,SUB_OXYGEN_COST } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,upgrades } from './content';
 import { behaviorLogbookMotion,fishBehaviorProfile } from './fauna-behavior';
 import { state,ui } from './state';
 import { articulatedCreatureDefs } from './articulated';
-import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clampSelectedCargoIndex,fishAssetKey,fishRarity,floraAssetKey,floraRarity,fuelMax,fuelRefillCost,hullMax,lifeCatalogTotal,oxygenMax,rarityLabel,restart,subDef,subEffectiveCost,subRepairCost,upgradeCost,upgradeMax } from './helpers';
+import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clampSelectedCargoIndex,continueSurveyAfterEnding,currentPinnedStoryObjective,finaleLocksSurvey,fishAssetKey,fishRarity,floraAssetKey,floraRarity,fuelMax,fuelRefillCost,hullMax,lifeCatalogTotal,oxygenMax,rarityLabel,restart,selectTool,subDef,subEffectiveCost,subRepairCost,upgradeCost,upgradeMax } from './helpers';
 import { gameScene } from './game-ref';
 import { hasSavedGame } from './save-load';
+import { isToolId, TOOL_IDS, TOOL_KEY_HINTS, TOOL_LABELS } from './tools';
 
 export function renderHud() {
   const app = document.querySelector<HTMLDivElement>('#app');
@@ -44,7 +45,8 @@ export function renderHud() {
   const controllerStatus = document.querySelector<HTMLElement>('#controller-status');
   if (!gauges || !bargeMenu || !logbook || !pauseMenu || !sonarMapOverlay || !radioDialogue || !biomeLoading || !shell || !titleScreen || !controllerStatus) return;
   const logbookScrollTop = logbook.querySelector<HTMLDivElement>('.logbook__list')?.scrollTop ?? 0;
-  const radioActive = state.radioOpen && state.started && !state.lost && !state.won;
+  const victoryActive = finaleLocksSurvey();
+  const radioActive = state.radioOpen && state.started && !state.lost && !victoryActive;
   const debugUi = debugPresentationEnabled();
   if (!canOpenCargoOverlay()) state.cargoOpen = false;
   const cargoActive = state.cargoOpen && canOpenCargoOverlay();
@@ -61,7 +63,7 @@ export function renderHud() {
   titleScreen.classList.toggle('is-options', state.titlePanel === 'options');
   titleScreen.classList.toggle('is-controls', state.titlePanel === 'controls');
   setStableHtml(titleScreen, state.started ? '' : titlePanel());
-  const showControllerStatus = false;
+  const showControllerStatus = state.controller.connected && !state.started;
   controllerStatus.classList.toggle('is-open', showControllerStatus);
   setStableHtml(controllerStatus, showControllerStatus ? controllerPanel() : '');
   const cargoValue = state.cargo.reduce((sum, item) => sum + item.value, 0);
@@ -83,6 +85,7 @@ export function renderHud() {
     ${sub ? meter('Sub O2', sub.oxygen, subDef(sub.tier).oxygen, '#8ee7f4') : meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
     ${sub ? meter('Sub hull', sub.hull, subDef(sub.tier).hull, '#ff8a6b') : meter('Hull', state.hull, hullMax(), '#ff8a6b')}
     ${sub ? meter('Sub fuel', sub.fuel, subDef(sub.tier).fuel, '#ffd166') : meter('Fuel', state.fuel, fuelMax(), '#ffd166')}
+    ${toolStrip()}
     ${selectedItemChip()}
     ${subHatchControl()}
     ${meter('Cargo', state.cargo.length, cargoCapacity(), '#ffd166', `${state.cargo.length}/${cargoCapacity()} slots, ${cargoValue}c`)}
@@ -90,17 +93,18 @@ export function renderHud() {
     <p class="status ${state.saveLoad.phase === 'error' ? 'is-error' : ''} ${state.venom.active || state.bleed.active ? 'is-venomed' : ''}">${statusText}</p>
   `;
   renderGameOver(app);
-  const bargeOpen = state.started && state.atBoat && !radioActive && !state.lost && !state.won;
+  renderVictoryPanel(app);
+  const bargeOpen = state.started && state.atBoat && !radioActive && !state.lost && !victoryActive;
   bargeMenu.classList.toggle('is-open', bargeOpen);
   setStableHtml(bargeMenu, bargeOpen ? bargeMenuPanel() : '');
   logbook.classList.toggle('is-open', state.logbookOpen && state.started && !radioActive);
   setStableHtml(logbook, state.logbookOpen && state.started && !radioActive ? logbookPanel() : '');
   const logbookList = logbook.querySelector<HTMLDivElement>('.logbook__list');
   if (logbookList) logbookList.scrollTop = logbookScrollTop;
-  pauseMenu.classList.toggle('is-open', state.paused && state.started && !radioActive && !state.lost && !state.won);
-  setStableHtml(pauseMenu, state.paused && state.started && !radioActive && !state.lost && !state.won ? pauseMenuPanel() : '');
-  sonarMapOverlay.classList.toggle('is-open', state.sonarMapOpen && state.started && !radioActive && !state.lost && !state.won);
-  setStableHtml(sonarMapOverlay, state.sonarMapOpen && state.started && !radioActive && !state.lost && !state.won ? sonarMapPanel() : '');
+  pauseMenu.classList.toggle('is-open', state.paused && state.started && !radioActive && !state.lost && !victoryActive);
+  setStableHtml(pauseMenu, state.paused && state.started && !radioActive && !state.lost && !victoryActive ? pauseMenuPanel() : '');
+  sonarMapOverlay.classList.toggle('is-open', state.sonarMapOpen && state.started && !radioActive && !state.lost && !victoryActive);
+  setStableHtml(sonarMapOverlay, state.sonarMapOpen && state.started && !radioActive && !state.lost && !victoryActive ? sonarMapPanel() : '');
   radioDialogue.classList.toggle('is-open', radioActive);
   setStableHtml(radioDialogue, radioActive ? radioDialoguePanel() : '');
   biomeLoading.classList.toggle('is-open', state.biomeLoading.active);
@@ -113,10 +117,22 @@ export function renderHud() {
 }
 
 export function objectivePanel() {
-  if (!state.started || state.atBoat || state.docked || state.lost || state.won) return '';
+  if (!state.started || state.atBoat || state.docked || state.lost || finaleLocksSurvey()) return '';
   const quest = activeQuest() ?? undefined;
+  const story = currentPinnedStoryObjective();
   const objective = currentDiveObjective(quest);
+  const storyPanel = story
+    ? `
+    <section class="objective-panel objective-panel--story">
+      <span>Expedition milestone</span>
+      <strong>${story.title}</strong>
+      <p>${story.detail}</p>
+    </section>
+  `
+    : '';
+  if (story && !quest) return storyPanel;
   return `
+    ${storyPanel}
     <section class="objective-panel">
       <span>${quest ? 'Active contract' : 'Current goal'}</span>
       <strong>${objective.title}</strong>
@@ -179,15 +195,27 @@ export function escapeHtml(value: string) {
 export function currentDiveObjective(quest: Quest | undefined) {
   if (quest) {
     const remaining = Math.max(0, quest.target - quest.progress);
+    const remainingUnit = quest.kind === 'ore'
+      ? 'more cargo'
+      : quest.kind === 'sample'
+        ? 'more flora sample'
+        : quest.kind === 'scan'
+          ? 'more scan'
+          : quest.kind === 'depth' || quest.kind === 'gulperSurvey'
+            ? 'meters of depth'
+            : 'more objective step';
     return {
       title: quest.title,
       detail: quest.kind === 'forwardOutpost' && remaining > 0
         ? 'Press F below 900 m in Biome 3, beside solid terrain and non-hazardous oxygen flora.'
-        : remaining > 0 ? `${remaining} ${quest.kind === 'ore' ? 'more cargo' : quest.kind === 'scan' ? 'more scan' : quest.kind === 'depth' || quest.kind === 'gulperSurvey' ? 'meters of depth' : 'more objective step'} needed, then return to the barge.` : 'Return to the barge to claim payment.',
+        : remaining > 0 ? `${remaining} ${remainingUnit}${remaining === 1 || remainingUnit.endsWith('s') ? '' : 's'} needed, then return to the barge.` : 'Return to the barge to claim payment.',
     };
   }
-  if (state.cargo.length <= 0 && state.scannedSpecies.size <= 0) {
-    return { title: 'Cut one ore or scan one lifeform', detail: 'Space cuts rock ahead. Hold E scans wildlife. Return when cargo or catalog has proof.' };
+  if (state.biome === 4 && state.finale.finalProofRecovered && !state.won) {
+    return { title: 'Return to the barge with proof', detail: 'The Crownmaw scan is sealed in the suit uplink. Surface and dock before the ruin signal collapses.' };
+  }
+  if (state.cargo.length <= 0 && state.scannedSpecies.size <= 0 && state.sampledSpecies.size <= 0) {
+    return { title: 'Cut ore, scan life, or sample flora', detail: 'Select drill, scanner, or sampler from the tool strip. Sampler works only on close gameplay flora.' };
   }
   if (state.cargo.length > 0) return { title: 'Return cargo to the barge', detail: 'Surface to sell this load, then buy the first upgrade you can afford.' };
   const charting = biomeChartingProgress();
@@ -267,6 +295,39 @@ export function renderGameOver(app: HTMLDivElement) {
   gameScene()?.drawSonarMap();
 }
 
+export function renderVictoryPanel(app: HTMLDivElement) {
+  let modal = app.querySelector<HTMLElement>('#victory-panel');
+  if (!finaleLocksSurvey()) {
+    modal?.remove();
+    return;
+  }
+  if (!modal) {
+    modal = document.createElement('aside');
+    modal.id = 'victory-panel';
+    modal.className = 'game-over victory-panel';
+    const shell = app.querySelector('.shell');
+    if (!shell) return;
+    shell.appendChild(modal);
+  }
+  const proofDepth = Math.max(state.finale.finalProofDepth, state.maxDepth);
+  modal.innerHTML = `
+    <span>Proof recovered</span>
+    <h2>The Drowned Architects</h2>
+    <p>Crownmaw proof reached the barge. The ruin signal, the vault geometry, and the living sentinel are archived.</p>
+    <div class="game-over__stats">
+      <strong>${state.maxDepth.toLocaleString()} m</strong><small>max depth</small>
+      <strong>${state.scannedSpecies.size}/${lifeCatalogTotal()}</strong><small>lifeforms scanned</small>
+      <strong>${state.credits.toLocaleString()}c</strong><small>credits banked</small>
+      <strong>${proofDepth.toLocaleString()} m</strong><small>proof depth</small>
+    </div>
+    <div class="victory-panel__actions">
+      <button data-continue-survey data-focus-key="continue-survey">Continue Survey</button>
+      <button data-restart data-focus-key="new-expedition">New Expedition</button>
+    </div>
+  `;
+  gameScene()?.drawSonarMap();
+}
+
 export function setStableHtml(element: HTMLElement, html: string) {
   if (element.innerHTML !== html) element.innerHTML = html;
 }
@@ -302,7 +363,8 @@ export function titlePanel() {
       ${logo}
       <div class="title-subpanel title-controls">
         <div><strong>Move</strong><span>WASD / arrows / left stick</span></div>
-        <div><strong>Dive / mine</strong><span>Space / A / right trigger</span></div>
+        <div><strong>Dive / primary</strong><span>Space / A / right trigger</span></div>
+        <div><strong>Tools</strong><span>1 drill, 2 scanner, 3 sonar</span></div>
         <div><strong>Scan</strong><span>Hold E / X</span></div>
         <div><strong>Sonar</strong><span>Q / left bumper</span></div>
         <div><strong>Sonar map</strong><span>M / View</span></div>
@@ -448,11 +510,11 @@ export function clearFullscreenWarning() {
 }
 
 export function canDiveFromBargeShortcut() {
-  return state.started && state.docked && state.atBoat && !state.radioOpen && !state.logbookOpen && !state.paused && !state.lost && !state.won;
+  return state.started && state.docked && state.atBoat && !state.radioOpen && !state.logbookOpen && !state.paused && !state.lost && !finaleLocksSurvey();
 }
 
 export function canOpenCargoOverlay() {
-  return state.started && !state.atBoat && !state.docked && !state.radioOpen && !state.logbookOpen && !state.paused && !state.lost && !state.won;
+  return state.started && !state.atBoat && !state.docked && !state.radioOpen && !state.logbookOpen && !state.paused && !state.lost && !finaleLocksSurvey();
 }
 
 export function setCargoOverlay(open: boolean) {
@@ -548,7 +610,7 @@ export function bindUiEvents(app: HTMLDivElement) {
     if (!active) return;
     event.preventDefault();
     event.stopPropagation();
-    if (state.radioOpen && state.started && !state.lost && !state.won) {
+    if (state.radioOpen && state.started && !state.lost && !finaleLocksSurvey()) {
       advanceRadioDialogue();
       renderHud();
       return;
@@ -562,7 +624,7 @@ export function bindUiEvents(app: HTMLDivElement) {
     gameScene()?.diveFromBarge();
   }, true);
   window.addEventListener('keydown', (event) => {
-    if (event.repeat || !state.started || state.lost || state.won || state.radioOpen) return;
+    if (event.repeat || !state.started || state.lost || finaleLocksSurvey() || state.radioOpen) return;
     if (event.code === 'KeyM') {
       event.preventDefault();
       event.stopPropagation();
@@ -584,18 +646,42 @@ export function bindUiEvents(app: HTMLDivElement) {
     }
   }, true);
   window.addEventListener('keydown', (event) => {
-    if (event.code !== 'KeyG' || event.repeat || state.docked || state.paused || state.logbookOpen || state.radioOpen || !state.started || state.lost || state.won) return;
+    if (event.code !== 'KeyG' || event.repeat || state.docked || state.paused || state.logbookOpen || state.radioOpen || !state.started || state.lost || finaleLocksSurvey()) return;
     event.preventDefault();
     event.stopPropagation();
     gameScene()?.useSelectedItem();
   }, true);
+  window.addEventListener('keydown', (event) => {
+    if (event.repeat || state.docked || state.paused || state.logbookOpen || state.radioOpen || state.cargoOpen || !state.started || state.lost || finaleLocksSurvey()) return;
+    const toolByCode: Partial<Record<string, ToolId>> = {
+      Digit1: 'drill',
+      Numpad1: 'drill',
+      Digit2: 'scanner',
+      Numpad2: 'scanner',
+      Digit3: 'sonar',
+      Numpad3: 'sonar',
+      Digit4: 'sampler',
+      Numpad4: 'sampler',
+      Digit5: 'flare',
+      Numpad5: 'flare',
+      Digit6: 'stun',
+      Numpad6: 'stun',
+      Digit7: 'charge',
+      Numpad7: 'charge',
+    };
+    const toolId = toolByCode[event.code];
+    if (!toolId) return;
+    event.preventDefault();
+    event.stopPropagation();
+    selectTool(toolId);
+  }, true);
   app.addEventListener('pointerdown', (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
-    if (target.closest('.hud, .barge-menu, .logbook, .pause-menu, .sonar-map-overlay, .radio-dialogue, .title-screen, .game-over')) {
+    if (target.closest('.hud, .barge-menu, .logbook, .pause-menu, .sonar-map-overlay, .radio-dialogue, .title-screen, .game-over, .victory-panel')) {
       event.stopPropagation();
     }
-    if (state.radioOpen && state.started && !state.lost && !state.won) {
+    if (state.radioOpen && state.started && !state.lost && !finaleLocksSurvey()) {
       const radioHit = target.closest<HTMLElement>('#radio-dialogue.is-open');
       if (radioHit) {
         event.preventDefault();
@@ -657,6 +743,13 @@ export function bindUiEvents(app: HTMLDivElement) {
       event.preventDefault();
       const scene = gameScene();
       if (scene) restart(scene);
+      return;
+    }
+    const continueSurveyButton = target.closest<HTMLButtonElement>('button[data-continue-survey]');
+    if (continueSurveyButton && !continueSurveyButton.disabled) {
+      event.preventDefault();
+      continueSurveyAfterEnding();
+      renderHud();
       return;
     }
     const saveButton = target.closest<HTMLButtonElement>('button[data-save-game]');
@@ -783,6 +876,13 @@ export function bindUiEvents(app: HTMLDivElement) {
       gameScene()?.sonarPing();
       return;
     }
+    const selectToolButton = target.closest<HTMLButtonElement>('button[data-select-tool]');
+    if (selectToolButton) {
+      event.preventDefault();
+      const toolId = selectToolButton.dataset.selectTool;
+      if (isToolId(toolId)) selectTool(toolId);
+      return;
+    }
     const stunButton = target.closest<HTMLButtonElement>('button[data-stun]');
     if (stunButton && !stunButton.disabled) {
       event.preventDefault();
@@ -860,6 +960,7 @@ export function activeMenuButtons() {
     '.logbook.is-open',
     '.barge-menu.is-open',
     '.game-over',
+    '.victory-panel',
   ];
   for (const scope of scopes) {
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(`${scope} button:not(:disabled)`))
@@ -974,6 +1075,7 @@ export function menuButtonKey(button: HTMLButtonElement) {
     (button.dataset.deployScout !== undefined ? 'deploy-scout' : undefined) ??
     (button.dataset.useSelectedItem !== undefined ? 'use-selected-item' : undefined) ??
     (button.dataset.radioNext !== undefined ? 'radio-next' : undefined) ??
+    (button.dataset.continueSurvey !== undefined ? 'continue-survey' : undefined) ??
     button.dataset.discardCargo ??
     button.textContent?.trim() ??
     '';
@@ -1122,7 +1224,7 @@ export function sonarPanel() {
 }
 
 export function subHatchControl() {
-  if (!state.activeSub || state.docked || state.lost || state.won) return '';
+  if (!state.activeSub || state.docked || state.lost || finaleLocksSurvey()) return '';
   const scene = gameScene();
   const disabled = scene?.canUseSubHatch() ? '' : 'disabled';
   const label = state.carrierSub ? 'Return scout' : state.pilotingSub ? 'Exit sub' : 'Enter sub';
@@ -1144,6 +1246,7 @@ export function logbookPanel() {
       kind: species.hostile ? 'Predatory fauna' : 'Neutral fauna',
       rarity: fishRarity(species),
       scanned: state.scannedSpecies.has(species.species),
+      sampled: false,
       imageSrc: `/assets/generated/${fishAssetKey(species)}-0.png`,
       info: fishLogbookInfo(species),
     })),
@@ -1152,6 +1255,7 @@ export function logbookPanel() {
       kind: species.hazardous ? 'Hazardous flora' : 'Flora',
       rarity: floraRarity(species),
       scanned: state.scannedSpecies.has(species.species),
+      sampled: state.sampledSpecies.has(species.species),
       imageSrc: `/assets/generated/${floraAssetKey(species)}.png`,
       info: floraLogbookInfo(species),
     })),
@@ -1160,6 +1264,7 @@ export function logbookPanel() {
       kind: 'Articulated apex fauna',
       rarity: manifest.rarity,
       scanned: state.scannedSpecies.has(manifest.species),
+      sampled: false,
       imageSrc: `/assets/generated/${manifest.parts.find((part) => part.id === 'head')?.texture ?? manifest.parts[0]?.texture ?? ''}`,
       info: 'Jointed abyssal hunter with separate head, jaws, body plates, fins, and tail. Field crews report the tail weakens first under sustained cutter work.',
     })),
@@ -1179,13 +1284,13 @@ export function logbookPanel() {
     </div>
     <div class="logbook__list">
       ${entries.map((entry) => `
-        <article class="logbook-entry ${entry.scanned ? 'is-scanned' : ''}">
+        <article class="logbook-entry ${entry.scanned ? 'is-scanned' : ''} ${entry.sampled ? 'is-sampled' : ''}">
           <div class="logbook-entry__portrait">
             ${entry.scanned ? `<img src="${entry.imageSrc}" alt="">` : '<span>?</span>'}
           </div>
           <div>
             <strong>${entry.scanned ? entry.species : 'Unknown lifeform'}</strong>
-            <span>${entry.kind}</span>
+            <span>${entry.kind}${entry.sampled ? ' / sample banked' : ''}</span>
           </div>
           <i class="rarity rarity-${entry.rarity}">${rarityLabel(entry.rarity)}</i>
           <p>${entry.scanned ? entry.info : 'Scan this signal to reveal field notes and habits.'}</p>
@@ -1572,6 +1677,33 @@ export function selectedItemChip() {
   `;
 }
 
+export function toolStrip() {
+  if (!state.started || state.docked || state.atBoat || state.lost || finaleLocksSurvey()) return '';
+  const stunCount = state.cargo.filter((item) => item.id === 'stun-grenade').length;
+  const buttons = TOOL_IDS.map((id) => {
+    const selected = id === state.selectedTool;
+    const unlocked = Boolean(state.unlockedTools[id]);
+    const status = id === 'stun' && unlocked
+      ? `${stunCount} loaded`
+      : unlocked
+        ? (selected ? 'Active' : 'Ready')
+        : 'Locked';
+    return `
+      <button class="tool-strip__slot ${selected ? 'is-selected' : ''} ${unlocked ? '' : 'is-locked'}" data-select-tool="${id}" data-focus-key="tool-${id}" aria-pressed="${selected ? 'true' : 'false'}" title="${TOOL_LABELS[id]}${id === 'stun' && unlocked ? `, ${stunCount} grenade${stunCount === 1 ? '' : 's'} loaded` : unlocked ? '' : ' locked'}">
+        <b>${TOOL_KEY_HINTS[id]}</b>
+        <strong>${TOOL_LABELS[id]}</strong>
+        <span>${status}</span>
+      </button>
+    `;
+  }).join('');
+  return `
+    <section class="tool-strip" aria-label="Selected tool quickbar">
+      <div class="tool-strip__header"><span>Tool</span><strong>${TOOL_LABELS[state.selectedTool]}</strong></div>
+      <div class="tool-strip__slots">${buttons}</div>
+    </section>
+  `;
+}
+
 export function selectedItemActionLabel(item: CargoItem) {
   if (item.kind === 'consumable') return 'Use';
   return 'Drop';
@@ -1611,7 +1743,17 @@ export function inventorySlot(index: number) {
 export function cargoDetail() {
   const item = state.cargo[state.selectedCargoIndex];
   if (!item) return '<strong>Empty slot</strong>';
-  const kind = item.kind === 'consumable' ? 'Consumable' : item.kind === 'artifact' ? 'Artifact' : item.kind === 'ore' ? 'Ore' : 'Rubble';
+  const kind = item.kind === 'consumable'
+    ? 'Consumable'
+    : item.kind === 'artifact'
+      ? 'Artifact'
+      : item.kind === 'sample'
+        ? 'Flora sample'
+        : item.kind === 'ore'
+          ? 'Ore'
+          : item.kind === 'tool'
+            ? 'Tool'
+            : 'Rubble';
   return `
     <strong>${item.name}</strong>
     <em>${kind}${item.value > 0 ? ` / ${item.value.toLocaleString()}c` : ''}</em>

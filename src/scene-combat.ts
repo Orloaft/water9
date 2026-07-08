@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature,CargoItem,Fish,Flare,Larva,NestEgg,ScanTarget,SubVehicle,ThrownUtility,Tile,TileDef } from './types';
+import type { ArticulatedCreature,CargoItem,Fish,Flare,Flora,Larva,NestEgg,ScanTarget,SubVehicle,ThrownUtility,Tile,TileDef } from './types';
 import { DYNAMITE_LAND_FUSE,DYNAMITE_LIFE_DAMAGE,DYNAMITE_RADIUS_TILES,EGG_CUTTER_FUEL_COST,EGG_HATCH_SECONDS,FIRST_AID_REPAIR,FLARE_DURATION,FUEL_TANK_REFILL,INJECTOR_KNIFE_DAMAGE,INJECTOR_KNIFE_RANGE,LIFE_CUTTER_DAMAGE,LIFE_CUTTER_FUEL_COST,OXYGEN_TANK_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_FORWARD_REACH,STUN_GRENADE_DURATION,STUN_GRENADE_RADIUS,THROWN_ITEM_SPEED,TILE } from './constants';
 import { tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { cargoCapacity,cargoIconForTile,cargoKindForTile,clampSelectedCargoIndex,clearBleed,clearVenom,fuelMax,hash,hullMax,isOreTile,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenMax,resetOxygenWarnings,scaledEntity,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange } from './helpers';
+import { cargoCapacity,cargoIconForTile,cargoKindForTile,clampSelectedCargoIndex,clearBleed,clearVenom,createFloraSampleItem,finaleLocksSurvey,fuelMax,hash,hullMax,isLargeArticulatedThreat,isOreTile,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenMax,rarityColor,scaledEntity,scannableRarity,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange } from './helpers';
 import { renderHud } from './hud';
+import { TOOL_LABELS } from './tools';
 import type { DeepdiveScene } from './scene';
 import { subtractTerrainMaskBrush,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainMaskDensityAt } from './terrain-mask';
 
@@ -71,7 +72,8 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     const impact = miningTunnelTarget(this, angle, range);
     if (!impact) return;
     const aimedTile = this.getTile(Math.floor(worldX / TILE), Math.floor(worldY / TILE));
-    const targets = this.mineTargets(impact.tx, impact.ty, impact.x, impact.y, !tiles[aimedTile].solid || isOreTile(aimedTile));
+    const aimedSolidRock = tiles[aimedTile].solid && !isOreTile(aimedTile);
+    const targets = this.mineTargets(impact.tx, impact.ty, impact.x, impact.y, !aimedSolidRock, aimedSolidRock, worldX, worldY);
     if (!targets.length) return;
     const fuelReserve = sub ? sub.fuel : state.fuel;
     if (fuelReserve > 0) {
@@ -108,6 +110,101 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     if (sub) sub.oxygen = Math.max(0, sub.oxygen - (0.08 + targets.length * 0.02));
     else state.oxygen -= 0.11 + targets.length * 0.035;
     renderHud();
+  }
+
+export function useSelectedToolPrimary(this: DeepdiveScene, delta: number, worldX: number, worldY: number) {
+    void delta;
+    const tool = state.selectedTool;
+    if (!state.unlockedTools[tool]) {
+      state.status = `${TOOL_LABELS[tool]} is not fitted yet. Select drill, scanner, or sonar.`;
+      renderHud();
+      return false;
+    }
+    if (tool === 'drill') {
+      this.mineAt(worldX, worldY);
+      return false;
+    }
+    if (tool === 'scanner') {
+      return true;
+    }
+    if (tool === 'sampler') {
+      this.sampleNearbyFlora(delta);
+      return false;
+    }
+    if (tool === 'sonar') {
+      this.sonarPing();
+      return false;
+    }
+    if (tool === 'stun') {
+      const grenadeIndex = state.cargo.findIndex((item) => item.id === 'stun-grenade' && item.kind === 'consumable');
+      if (grenadeIndex < 0) {
+        state.status = 'No stun grenade loaded. Buy or recover one before firing the stun tool.';
+        renderHud();
+        return false;
+      }
+      state.cargo.splice(grenadeIndex, 1);
+      state.selectedCargoIndex = Math.min(state.selectedCargoIndex, Math.max(0, state.cargo.length - 1));
+      clampSelectedCargoIndex();
+      this.triggerStunPulse();
+      renderHud();
+      return false;
+    }
+    state.status = `${TOOL_LABELS[tool]} is coming in a later tool slice. No cargo was consumed.`;
+    renderHud();
+    return false;
+  }
+
+export function sampleNearbyFlora(this: DeepdiveScene, delta: number) {
+    const target = this.nearestSampleFlora(scaledEntity(42));
+    if (!target) {
+      state.status = 'Sampler needs close, anchored gameplay flora. Decorative growth, fauna, ore, and terrain cannot be sampled.';
+      renderHud();
+      return;
+    }
+    if (state.cargo.length >= cargoCapacity()) {
+      state.status = `Cargo grid is full. Return to the barge or drop cargo before harvesting ${target.species}.`;
+      renderHud();
+      return;
+    }
+    target.sampling = true;
+    target.sample += delta * (0.72 + Math.min(state.upgrades.scanner, 4) * 0.08);
+    if (target.hazardous && !target.scanned) target.aggroCue = Math.max(target.aggroCue, 0.35);
+    if (target.sample < 1) return;
+
+    target.sample = 0;
+    target.samplePulse = 1;
+    target.sampleCooldown = 0;
+    target.dead = true;
+    target.sprite?.setVisible(false);
+    const sampleItem = createFloraSampleItem(target);
+    state.cargo.push(sampleItem);
+    state.selectedCargoIndex = state.cargo.length - 1;
+    const firstSpeciesSample = !state.sampledSpecies.has(target.species);
+    if (firstSpeciesSample) state.sampledSpecies.add(target.species);
+    const rarity = scannableRarity(target);
+    const scanHint = target.scanned
+      ? 'scanner ID confirmed clean chemistry'
+      : 'unscanned tissue logged at reduced confidence';
+    this.spawnFloatingText(`${target.species} sample`, rarityColor(rarity));
+    state.status = firstSpeciesSample
+      ? `Flora sample harvested: ${target.species}. ${scanHint}; cargo vial worth ${sampleItem.value} credits.`
+      : `Duplicate ${target.species} sample harvested for sale. Species research was already logged.`;
+    this.updateQuestProgress();
+    renderHud();
+  }
+
+export function nearestSampleFlora(this: DeepdiveScene, range: number): Flora | null {
+    let nearest: Flora | null = null;
+    let nearestDistance = range;
+    for (const flora of this.flora) {
+      if (flora.dead) continue;
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y);
+      if (distance < nearestDistance) {
+        nearest = flora;
+        nearestDistance = distance;
+      }
+    }
+    return nearest;
   }
 
 type MiningTunnelTarget = {
@@ -256,6 +353,19 @@ export function cutLifeTarget(this: DeepdiveScene, worldX: number, worldY: numbe
       if (sub) sub.fuel = Math.max(0, sub.fuel - LIFE_CUTTER_FUEL_COST);
       else state.fuel = Math.max(0, state.fuel - LIFE_CUTTER_FUEL_COST);
       this.player.mineCooldown = mineCooldown() * 0.58;
+      if (isLargeArticulatedThreat(articulatedTarget.creature)) {
+        const dx = articulatedTarget.part.x - this.player.x;
+        const dy = articulatedTarget.part.y - this.player.y;
+        const distance = Math.max(1, Math.hypot(dx, dy));
+        articulatedTarget.creature.vx += (dx / distance) * 18;
+        articulatedTarget.creature.vy += (dy / distance) * 12;
+        articulatedTarget.creature.aggro = Math.max(articulatedTarget.creature.aggro, 2.2);
+        articulatedTarget.creature.aggroCue = Math.max(articulatedTarget.creature.aggroCue, 0.75);
+        state.status = `The cutter skates off ${articulatedTarget.creature.species}'s armored hide. Stun it and run the route.`;
+        this.spawnFloatingText('Armored hide', 0x8ee7f4);
+        renderHud();
+        return true;
+      }
       this.damageArticulatedPart(
         articulatedTarget.creature,
         articulatedTarget.part,
@@ -366,10 +476,14 @@ export function nearestNestCutTarget(this: DeepdiveScene, worldX: number, worldY
     return nearest?.target ?? null;
   }
 
-export function mineTargets(this: DeepdiveScene, tx: number, ty: number, impactX = tx * TILE + TILE * 0.5, impactY = ty * TILE + TILE * 0.5, allowVisibleOreTarget = true) {
+export function mineTargets(this: DeepdiveScene, tx: number, ty: number, impactX = tx * TILE + TILE * 0.5, impactY = ty * TILE + TILE * 0.5, allowVisibleOreTarget = true, allowOreFaceAssist = false, aimX = impactX, aimY = impactY) {
     const maxBlocks = 1;
     const radius = maxBlocks > 1 ? 1 : 0;
-    const oreTarget = allowVisibleOreTarget ? visibleOreTargetNear(this, tx, ty, impactX, impactY) : null;
+    const oreTarget = allowVisibleOreTarget
+      ? visibleOreTargetNear(this, tx, ty, impactX, impactY, false)
+      : allowOreFaceAssist
+        ? visibleOreTargetNear(this, Math.floor(aimX / TILE), Math.floor(aimY / TILE), aimX, aimY, true)
+        : null;
     if (oreTarget) return [oreTarget];
     const targets: Array<{ x: number; y: number; distance: number }> = [];
     for (let y = ty - radius; y <= ty + radius; y += 1) {
@@ -388,10 +502,11 @@ export function mineTargets(this: DeepdiveScene, tx: number, ty: number, impactX
       .slice(0, maxBlocks);
   }
 
-function visibleOreTargetNear(scene: DeepdiveScene, tx: number, ty: number, impactX: number, impactY: number) {
+function visibleOreTargetNear(scene: DeepdiveScene, tx: number, ty: number, impactX: number, impactY: number, faceAssistOnly: boolean) {
     let best: { x: number; y: number; distance: number; impactDistance: number } | null = null;
-    for (let y = ty - 1; y <= ty + 1; y += 1) {
-      for (let x = tx - 1; x <= tx + 1; x += 1) {
+    const searchRadius = faceAssistOnly ? 2 : 1;
+    for (let y = ty - searchRadius; y <= ty + searchRadius; y += 1) {
+      for (let x = tx - searchRadius; x <= tx + searchRadius; x += 1) {
         const tile = scene.getTile(x, y);
         if (!isOreTile(tile) || !tiles[tile].solid) continue;
         const component = stableOreTargetComponent(scene, x, y, tile);
@@ -399,7 +514,9 @@ function visibleOreTargetNear(scene: DeepdiveScene, tx: number, ty: number, impa
         const centerY = (component.minY + component.maxY + 1) * TILE * 0.5 + (hash(component.rootY, component.rootX, rng.seed + 73) - 0.5) * TILE * 0.28;
         const impactDistance = Phaser.Math.Distance.Between(impactX, impactY, centerX, centerY);
         const hitRadius = TILE * (component.cells.length > 1 ? 0.78 : 0.62);
-        if (impactDistance > hitRadius) continue;
+        if (faceAssistOnly) {
+          if (!impactTouchesOreFace(component, impactX, impactY)) continue;
+        } else if (impactDistance > hitRadius) continue;
         const distance = Phaser.Math.Distance.Between(scene.player.x, scene.player.y, x * TILE + TILE * 0.5, y * TILE + TILE * 0.5);
         if (!best || impactDistance < best.impactDistance || (impactDistance === best.impactDistance && distance < best.distance)) {
           best = { x, y, distance, impactDistance };
@@ -407,6 +524,21 @@ function visibleOreTargetNear(scene: DeepdiveScene, tx: number, ty: number, impa
       }
     }
     return best ? { x: best.x, y: best.y, distance: best.distance } : null;
+  }
+
+function impactTouchesOreFace(component: ReturnType<typeof stableOreTargetComponent>, impactX: number, impactY: number) {
+    const minX = component.minX * TILE;
+    const maxX = (component.maxX + 1) * TILE;
+    const minY = component.minY * TILE;
+    const maxY = (component.maxY + 1) * TILE;
+    const insideX = impactX >= minX && impactX <= maxX;
+    const insideY = impactY >= minY && impactY <= maxY;
+    if (insideX && insideY) return true;
+    const dx = impactX < minX ? minX - impactX : impactX > maxX ? impactX - maxX : 0;
+    const dy = impactY < minY ? minY - impactY : impactY > maxY ? impactY - maxY : 0;
+    const faceMargin = TILE * (component.cells.length > 1 ? 0.48 : 0.36);
+    if (dx > faceMargin || dy > faceMargin) return false;
+    return Math.hypot(dx, dy) <= faceMargin;
   }
 
 function stableOreTargetComponent(scene: DeepdiveScene, startX: number, startY: number, tile: Tile) {
@@ -448,8 +580,13 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
     const chipX = Number.isFinite(impactX) ? impactX as number : x;
     const chipY = Number.isFinite(impactY) ? impactY as number : y;
     subtractTerrainMaskBrush(this, chipX, chipY, TILE * 0.34, 0.78);
-    const solidRatio = tileMaskSolidRatio(this, tx, ty);
+    const forcedOreRelease = def.value > 0 && Number.isFinite(def.hp) && def.hp > 0 && (this.damage[ty]?.[tx] ?? 0) >= def.hp;
+    let solidRatio = tileMaskSolidRatio(this, tx, ty);
     const releasedFromOpenOreCore = def.value > 0 && tileMaskOpenCoreRatio(this, tx, ty) >= OPENED_ORE_CORE_RELEASE_RATIO;
+    if (forcedOreRelease && solidRatio > OPENED_ORE_SOLID_RELEASE_RATIO) {
+      clearTerrainMaskTile(this, tx, ty);
+      solidRatio = 0;
+    }
     if (solidRatio > OPENED_ORE_SOLID_RELEASE_RATIO && !releasedFromOpenOreCore) {
       this.damage[ty][tx] = def.hp * 0.28;
       this.terrainDirty = true;
@@ -820,7 +957,7 @@ export function consumeAntivenom(this: DeepdiveScene, ) {
   }
 
 export function useSelectedItem(this: DeepdiveScene, ) {
-    if (state.lost || state.won || !state.started || state.paused || state.docked) return false;
+    if (state.lost || finaleLocksSurvey() || !state.started || state.paused || state.docked) return false;
     clampSelectedCargoIndex();
     const item = state.cargo[state.selectedCargoIndex];
     if (!item) {

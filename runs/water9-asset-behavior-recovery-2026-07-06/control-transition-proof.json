@@ -1,0 +1,369 @@
+{
+  "ok": true,
+  "generatedAt": "2026-07-07T03:01:27.273Z",
+  "port": 5180,
+  "rKey": {
+    "ok": true,
+    "staged": {
+      "activeProfile": {
+        "id": "environment-shallows-column-mid",
+        "biome": 2,
+        "depthBand": "mid",
+        "activeBand": "mid",
+        "activeBandBlend": {
+          "from": "upper",
+          "to": "mid",
+          "progress": 1,
+          "lowerToTransitionDeep": false
+        },
+        "cameraClearColor": "#171f2b"
+      },
+      "activeBand": "mid"
+    },
+    "before": {
+      "biome": 2,
+      "credits": 321,
+      "started": true,
+      "radioOpen": false,
+      "status": "Barge lights are green. Choose Dive when you are ready to leave the deck."
+    },
+    "after": {
+      "biome": 2,
+      "credits": 321,
+      "started": true,
+      "radioOpen": false,
+      "status": "Barge lights are green. Choose Dive when you are ready to leave the deck."
+    }
+  },
+  "b2Transition": [
+    {
+      "depth": 1320,
+      "activeBand": "lower",
+      "blend": {
+        "from": "mid",
+        "to": "lower",
+        "progress": 1,
+        "lowerToTransitionDeep": false
+      },
+      "anchors": {
+        "transitionBlendCounts": {
+          "outgoingLower": 0,
+          "incomingTransition": 0
+        },
+        "sample": [
+          {
+            "id": "lower-0",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.452,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "band": "surface",
+          "alpha": 0.01,
+          "painterlyAssetId": "surface"
+        },
+        {
+          "index": 1,
+          "band": "upper",
+          "alpha": 0.009,
+          "painterlyAssetId": "upper"
+        },
+        {
+          "index": 2,
+          "band": "mid",
+          "alpha": 0.023,
+          "painterlyAssetId": "mid"
+        },
+        {
+          "index": 3,
+          "band": "lower",
+          "alpha": 0.113,
+          "painterlyAssetId": "lower"
+        },
+        {
+          "index": 4,
+          "band": "transitionDeep",
+          "alpha": 0.01,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band"
+        }
+      ],
+      "worldSpaceNoiseVisibleCount": null
+    },
+    {
+      "depth": 1380,
+      "activeBand": "lower",
+      "blend": {
+        "from": "lower",
+        "to": "transitionDeep",
+        "progress": 0.043,
+        "lowerToTransitionDeep": true
+      },
+      "anchors": {
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 1
+        },
+        "sample": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.433,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.957
+          },
+          {
+            "id": "transitionDeep-2-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.031,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.043
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "band": "surface",
+          "alpha": 0.011,
+          "painterlyAssetId": "surface"
+        },
+        {
+          "index": 1,
+          "band": "upper",
+          "alpha": 0.009,
+          "painterlyAssetId": "upper"
+        },
+        {
+          "index": 2,
+          "band": "mid",
+          "alpha": 0.024,
+          "painterlyAssetId": "mid"
+        },
+        {
+          "index": 3,
+          "band": "lower",
+          "alpha": 0.116,
+          "painterlyAssetId": "lower"
+        },
+        {
+          "index": 4,
+          "band": "transitionDeep",
+          "alpha": 0.013,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band"
+        }
+      ],
+      "worldSpaceNoiseVisibleCount": null
+    },
+    {
+      "depth": 1440,
+      "activeBand": "transitionDeep",
+      "blend": {
+        "from": "lower",
+        "to": "transitionDeep",
+        "progress": 0.5,
+        "lowerToTransitionDeep": true
+      },
+      "anchors": {
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 1
+        },
+        "sample": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.226,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.5
+          },
+          {
+            "id": "transitionDeep-2-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.361,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.5
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "band": "surface",
+          "alpha": 0.025,
+          "painterlyAssetId": "surface"
+        },
+        {
+          "index": 1,
+          "band": "upper",
+          "alpha": 0.022,
+          "painterlyAssetId": "upper"
+        },
+        {
+          "index": 2,
+          "band": "mid",
+          "alpha": 0.039,
+          "painterlyAssetId": "mid"
+        },
+        {
+          "index": 3,
+          "band": "lower",
+          "alpha": 0.179,
+          "painterlyAssetId": "lower"
+        },
+        {
+          "index": 4,
+          "band": "transitionDeep",
+          "alpha": 0.098,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band"
+        }
+      ],
+      "worldSpaceNoiseVisibleCount": null
+    },
+    {
+      "depth": 1500,
+      "activeBand": "transitionDeep",
+      "blend": {
+        "from": "lower",
+        "to": "transitionDeep",
+        "progress": 0.957,
+        "lowerToTransitionDeep": true
+      },
+      "anchors": {
+        "transitionBlendCounts": {
+          "outgoingLower": 1,
+          "incomingTransition": 1
+        },
+        "sample": [
+          {
+            "id": "lower-0-outgoingLower",
+            "assetId": "biome-brine-vent-sulfide-shelf",
+            "alpha": 0.019,
+            "transitionBlendRole": "outgoingLower",
+            "transitionBlendAlpha": 0.043
+          },
+          {
+            "id": "transitionDeep-2-incomingTransition",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.691,
+            "transitionBlendRole": "incomingTransition",
+            "transitionBlendAlpha": 0.957
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "band": "surface",
+          "alpha": 0.032,
+          "painterlyAssetId": "surface"
+        },
+        {
+          "index": 1,
+          "band": "upper",
+          "alpha": 0.028,
+          "painterlyAssetId": "upper"
+        },
+        {
+          "index": 2,
+          "band": "mid",
+          "alpha": 0.027,
+          "painterlyAssetId": "mid"
+        },
+        {
+          "index": 3,
+          "band": "lower",
+          "alpha": 0.101,
+          "painterlyAssetId": "lower"
+        },
+        {
+          "index": 4,
+          "band": "transitionDeep",
+          "alpha": 0.233,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band"
+        }
+      ],
+      "worldSpaceNoiseVisibleCount": null
+    },
+    {
+      "depth": 1560,
+      "activeBand": "transitionDeep",
+      "blend": {
+        "from": "lower",
+        "to": "transitionDeep",
+        "progress": 1,
+        "lowerToTransitionDeep": true
+      },
+      "anchors": {
+        "transitionBlendCounts": {
+          "outgoingLower": 0,
+          "incomingTransition": 0
+        },
+        "sample": [
+          {
+            "id": "transitionDeep-1",
+            "assetId": "phase11-transition-far-drowned-signal-station",
+            "alpha": 0.896,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null
+          },
+          {
+            "id": "transitionDeep-2",
+            "assetId": "phase11-transition-near-pipe-cable-cathedral",
+            "alpha": 0.722,
+            "transitionBlendRole": null,
+            "transitionBlendAlpha": null
+          }
+        ]
+      },
+      "layers": [
+        {
+          "index": 0,
+          "band": "surface",
+          "alpha": 0.033,
+          "painterlyAssetId": "surface"
+        },
+        {
+          "index": 1,
+          "band": "upper",
+          "alpha": 0.029,
+          "painterlyAssetId": "upper"
+        },
+        {
+          "index": 2,
+          "band": "mid",
+          "alpha": 0.025,
+          "painterlyAssetId": "mid"
+        },
+        {
+          "index": 3,
+          "band": "lower",
+          "alpha": 0.089,
+          "painterlyAssetId": "lower"
+        },
+        {
+          "index": 4,
+          "band": "transitionDeep",
+          "alpha": 0.25,
+          "painterlyAssetId": "phase11-transition-deep-gpt-band"
+        }
+      ],
+      "worldSpaceNoiseVisibleCount": null
+    }
+  ],
+  "b2CaptureFiles": [
+    "b2-lower-transition-1320.png",
+    "b2-lower-transition-1320-grayscale.png",
+    "b2-lower-transition-1380.png",
+    "b2-lower-transition-1380-grayscale.png",
+    "b2-lower-transition-1440.png",
+    "b2-lower-transition-1440-grayscale.png",
+    "b2-lower-transition-1500.png"
+  ],
+  "errors": [],
+  "serverLogs": "\n  VITE v8.0.12  ready in 185 ms\n\n  ➜  Local:   http://127.0.0.1:5180/\n"
+}

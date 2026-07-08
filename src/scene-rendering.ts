@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Fish,Flora,TerrainBrushPlacement,TerrainVisualChunk,Tile } from './types';
-import { BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FLARE_LIGHT_RADIUS,PLAYER_DRAW_SCALE,SONAR_ATTRACT_RADIUS,SONAR_REVEAL_RADIUS_TILES,SUB_BOARD_SECONDS,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { BARGE_DOCKING_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_SCALE,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FLARE_LIGHT_RADIUS,PLAYER_DRAW_SCALE,SONAR_ATTRACT_RADIUS,SONAR_REVEAL_RADIUS_TILES,SUB_BOARD_SECONDS,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
@@ -37,6 +37,7 @@ export function draw(this: DeepdiveScene, ) {
 	    measurePerf(this, 'draw.terrainBreakEffects', () => this.drawTerrainBreakEffects(camera), { count: this.terrainBreakEffects.length });
 	    measurePerf(this, 'draw.specialRooms', () => this.drawSpecialRooms(camera), { count: this.specialRooms.length });
     this.drawBoat();
+    this.drawBargeDockingIndicator();
     measurePerf(this, 'draw.looseItems', () => this.drawLooseItems(camera), { count: this.looseItems.length });
     this.drawHazards();
     this.drawNestEggs(camera);
@@ -1274,11 +1275,18 @@ function appendFloraPlacements(scene: DeepdiveScene, placements: TerrainBrushPla
     if (x < 1 || y < 8 || x >= WORLD_W - 1 || y >= WORLD_H - 2 || scene.getTile(x, y) === 'water') return;
     const seed = hash(x * 97, y * 101, rng.seed + 1201);
     if (scene.getTile(x, y - 1) === 'water' && topLedgeFloraClearance(scene, x, y) && seed > 0.9) {
-      placements.push(floraPlacement(x, y, 'top'));
+      const placement = floraPlacement(x, y, 'top');
+      if (!brushFloraPlacementCoveredByGameplayFlora(scene, placement)) placements.push(placement);
       return;
     }
-    if (seed > 0.975 && sideWallFloraClearance(scene, x, y, true)) placements.push(floraPlacement(x, y, 'west'));
-    if (seed < 0.025 && sideWallFloraClearance(scene, x, y, false)) placements.push(floraPlacement(x, y, 'east'));
+    if (seed > 0.975 && sideWallFloraClearance(scene, x, y, true)) {
+      const placement = floraPlacement(x, y, 'west');
+      if (!brushFloraPlacementCoveredByGameplayFlora(scene, placement)) placements.push(placement);
+    }
+    if (seed < 0.025 && sideWallFloraClearance(scene, x, y, false)) {
+      const placement = floraPlacement(x, y, 'east');
+      if (!brushFloraPlacementCoveredByGameplayFlora(scene, placement)) placements.push(placement);
+    }
   }
 
 function topLedgeFloraClearance(scene: DeepdiveScene, x: number, y: number) {
@@ -1309,7 +1317,7 @@ function sideWallFloraClearance(scene: DeepdiveScene, x: number, y: number, west
 
 function floraPlacement(x: number, y: number, anchor: 'top' | 'west' | 'east'): TerrainBrushPlacement {
     const seed = hash(x * 109, y * 113 + anchor.length, rng.seed + 1217);
-    const variants = anchor === 'top' ? [1, 4, 6, 7] : [1, 6, 7];
+    const variants = anchor === 'top' ? [0, 1, 4, 6, 7] : [2, 3, 5, 6, 7];
     const variant = variants[Math.floor(seed * variants.length) % variants.length];
     const size = anchor === 'top'
       ? 14 + hash(x, y, rng.seed + 1219) * 12
@@ -1336,6 +1344,10 @@ function floraPlacement(x: number, y: number, anchor: 'top' | 'west' | 'east'): 
         ? (hash(x, y, rng.seed + 1241) - 0.5) * 0.18
         : sideSign * (0.28 + hash(x, y, rng.seed + 1243) * 0.18),
     };
+  }
+
+function brushFloraPlacementCoveredByGameplayFlora(scene: DeepdiveScene, placement: TerrainBrushPlacement) {
+    return scene.flora.some((flora) => flora.source === 'brush' && flora.propId === placement.key);
   }
 
 function cornerPlacement(x: number, y: number, corner: 'nw' | 'ne' | 'sw' | 'se'): TerrainBrushPlacement {
@@ -3131,6 +3143,41 @@ export function drawBoat(this: DeepdiveScene, ) {
     this.actors.lineBetween(x, BARGE_DOCK_Y, x, BARGE_DOCKING_ZONE_Y);
   }
 
+export function drawBargeDockingIndicator(this: DeepdiveScene, ) {
+    if (!state.started || state.docked || state.lost) return;
+    const x = WORLD_W * TILE * 0.5;
+    const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, x, BARGE_DOCK_Y);
+    const revealDistance = 250;
+    if (distance > revealDistance) return;
+
+    const fade = Phaser.Math.Clamp((revealDistance - distance) / 100, 0.22, 1);
+    const pulse = 0.5 + Math.sin(performance.now() * 0.007) * 0.5;
+    const alpha = fade * (0.68 + pulse * 0.24);
+    const halfGap = BARGE_DOCKING_HALF_WIDTH - 5;
+    const throatY = BARGE_DOCK_Y + 3;
+    const markerY = BARGE_DOCKING_ZONE_Y + 23 + pulse * 2;
+
+    this.actors.lineStyle(5, 0x001820, alpha * 0.42);
+    this.actors.lineBetween(x - halfGap - 14, throatY - 13, x - halfGap - 14, throatY + 21);
+    this.actors.lineBetween(x + halfGap + 14, throatY - 13, x + halfGap + 14, throatY + 21);
+    this.actors.lineBetween(x - 35, markerY + 13, x - 9, markerY - 5);
+    this.actors.lineBetween(x + 35, markerY + 13, x + 9, markerY - 5);
+    this.actors.lineBetween(x, markerY + 13, x, throatY + 12);
+
+    this.actors.lineStyle(3, 0xe9ffff, alpha);
+    this.actors.lineBetween(x - halfGap - 14, throatY - 13, x - halfGap - 14, throatY + 21);
+    this.actors.lineBetween(x + halfGap + 14, throatY - 13, x + halfGap + 14, throatY + 21);
+    this.actors.lineStyle(3, 0x6df4ff, alpha);
+    this.actors.lineBetween(x - 35, markerY + 13, x - 9, markerY - 5);
+    this.actors.lineBetween(x + 35, markerY + 13, x + 9, markerY - 5);
+    this.actors.lineStyle(2, 0xe9ffff, alpha * 0.9);
+    this.actors.lineBetween(x, markerY + 13, x, throatY + 12);
+    this.actors.fillStyle(0xe9ffff, alpha * 0.95);
+    this.actors.fillTriangle(x, throatY + 5, x - 6, throatY + 16, x + 6, throatY + 16);
+    this.actors.fillStyle(0x6df4ff, alpha * 0.14);
+    this.actors.fillEllipse(x, BARGE_DOCKING_ZONE_Y + 14, 82, 18);
+  }
+
 export function drawSpecialRooms(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
     const view = camera.worldView;
     for (const room of this.specialRooms) {
@@ -3409,9 +3456,17 @@ function surfaceFishPose(fish: Fish) {
     const anchor = fish.anchor ?? fish.surface?.anchor ?? 'floor';
     if (fish.behaviorClass === 'benthicWalker') {
       const facing = fish.facingSign ?? 1;
-      const tangentAngle = fish.surface ? Math.atan2(fish.surface.tangentY * facing, fish.surface.tangentX * facing) : 0;
+      let tangentX = fish.surface?.tangentX ?? 1;
+      let tangentY = fish.surface?.tangentY ?? 0;
+      let flipX = facing < 0;
+      if (tangentX < -0.01 || (Math.abs(tangentX) <= 0.01 && tangentY < 0)) {
+        tangentX *= -1;
+        tangentY *= -1;
+        flipX = !flipX;
+      }
+      const tangentAngle = Math.atan2(tangentY, tangentX);
       return {
-        flipX: false,
+        flipX,
         rotation: tangentAngle + Math.sin(fish.phase * 5.3) * 0.035,
         originX: 0.5,
         originY: 0.58,
@@ -3475,6 +3530,16 @@ export function drawFlora(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
       if (flora.scanPulse > 0) {
         this.actors.lineStyle(2, 0xb9f27c, flora.scanPulse * 0.75);
         this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(7 + (1 - flora.scanPulse) * 14));
+      }
+      if (flora.sample > 0) {
+        this.actors.lineStyle(3, 0x8ee7f4, 0.34 + flora.sample * 0.52);
+        this.actors.beginPath();
+        this.actors.arc(flora.x, flora.y, flora.radius + scaledEntity(14), Math.PI / 2, Math.PI / 2 + Math.PI * 2 * flora.sample);
+        this.actors.strokePath();
+      }
+      if (flora.samplePulse > 0) {
+        this.actors.lineStyle(2, 0x8ee7f4, flora.samplePulse * 0.8);
+        this.actors.strokeCircle(flora.x, flora.y, flora.radius + scaledEntity(12 + (1 - flora.samplePulse) * 18));
       }
     }
   }
@@ -3964,6 +4029,21 @@ export function drawFlares(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.C
     }
   }
 
+function drawSonarBargeLandmark(ctx: CanvasRenderingContext2D, px: number, py: number, cell: number, mode: 'hud' | 'big') {
+    const width = mode === 'hud' ? Math.max(22, cell * 10) : Math.max(32, cell * 14);
+    const height = mode === 'hud' ? Math.max(5, cell * 2.2) : Math.max(7, cell * 2.6);
+    ctx.fillStyle = 'rgba(242, 211, 155, 0.9)';
+    ctx.fillRect(px - width * 0.5, py - height * 0.5, width, height);
+    ctx.strokeStyle = 'rgba(142, 231, 244, 0.78)';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(px - width * 0.5, py - height * 0.5, width, height);
+    ctx.beginPath();
+    ctx.moveTo(px - width * 0.18, py - height * 0.5);
+    ctx.lineTo(px, py - height * 1.9);
+    ctx.lineTo(px + width * 0.18, py - height * 0.5);
+    ctx.stroke();
+  }
+
 export function drawSonarMap(this: DeepdiveScene, ) {
     const canvas = document.querySelector<HTMLCanvasElement>('#sonar-map');
     if (!this.world.length) return;
@@ -4033,28 +4113,23 @@ export function drawSonarMap(this: DeepdiveScene, ) {
       ctx.arc(size / 2, size / 2, radius, 0, Math.PI * 2);
       ctx.stroke();
     }
+    const bargeX = WORLD_W * TILE * 0.5;
+    const bargeY = BARGE_DOCK_Y;
+    const bargeTileX = bargeX / TILE;
+    const bargeTileY = bargeY / TILE;
+    if (bargeTileX >= centerX - viewRadius && bargeTileX <= centerX + viewRadius && bargeTileY >= centerY - viewRadius && bargeTileY <= centerY + viewRadius) {
+      const px = (bargeTileX - centerX + viewRadius) * cell;
+      const py = (bargeTileY - centerY + viewRadius) * cell;
+      drawSonarBargeLandmark(ctx, px, py, cell, 'hud');
+    }
     for (const contact of state.sonarContacts) {
+      if (contact.kind === 'barge') continue;
       const tx = Math.floor(contact.x / TILE);
       const ty = Math.floor(contact.y / TILE);
       if (tx < centerX - viewRadius || tx > centerX + viewRadius || ty < centerY - viewRadius || ty > centerY + viewRadius) continue;
       const px = (tx - centerX + viewRadius + 0.5) * cell;
       const py = (ty - centerY + viewRadius + 0.5) * cell;
       const alpha = Phaser.Math.Clamp(1 - contact.age / 14, 0.22, 1);
-      if (contact.kind === 'barge') {
-        const width = Math.max(22, cell * 10);
-        const height = Math.max(5, cell * 2.2);
-        ctx.fillStyle = `rgba(242, 211, 155, ${alpha * 0.9})`;
-        ctx.fillRect(px - width * 0.5, py - height * 0.5, width, height);
-        ctx.strokeStyle = `rgba(142, 231, 244, ${alpha * 0.72})`;
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(px - width * 0.5, py - height * 0.5, width, height);
-        ctx.beginPath();
-        ctx.moveTo(px - width * 0.18, py - height * 0.5);
-        ctx.lineTo(px, py - height * 1.9);
-        ctx.lineTo(px + width * 0.18, py - height * 0.5);
-        ctx.stroke();
-        continue;
-      }
       ctx.fillStyle = contact.hostile
         ? `rgba(255, 79, 100, ${alpha})`
         : contact.kind === 'flora'
@@ -4229,19 +4304,10 @@ function drawBigSonarMap(this: DeepdiveScene) {
 
     const bargeX = WORLD_W * TILE * 0.5;
     const bargeY = BARGE_DOCK_Y;
-    if (state.sonarRevealed.has(sonarKey(Math.floor(bargeX / TILE), Math.floor(bargeY / TILE)))) {
-      const px = originX + (bargeX / TILE) * cell;
-      const py = originY + (bargeY / TILE) * cell;
-      const bw = Math.max(32, cell * 14);
-      const bh = Math.max(7, cell * 2.6);
-      ctx.fillStyle = 'rgba(242, 211, 155, 0.9)';
-      ctx.fillRect(px - bw * 0.5, py - bh * 0.5, bw, bh);
-      ctx.strokeStyle = 'rgba(142, 231, 244, 0.78)';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(px - bw * 0.5, py - bh * 0.5, bw, bh);
-    }
+    drawSonarBargeLandmark(ctx, originX + (bargeX / TILE) * cell, originY + (bargeY / TILE) * cell, cell, 'big');
 
     for (const contact of state.sonarContacts) {
+      if (contact.kind === 'barge') continue;
       const tx = Math.floor(contact.x / TILE);
       const ty = Math.floor(contact.y / TILE);
       if (!state.sonarRevealed.has(sonarKey(tx, ty))) continue;

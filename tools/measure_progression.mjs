@@ -319,11 +319,11 @@ function costToBiomeGate(biome) {
 }
 
 function scanRarityCredits(rarity) {
-  if (rarity === 'legendary') return 3600;
-  if (rarity === 'epic') return 2100;
-  if (rarity === 'rare') return 1150;
-  if (rarity === 'uncommon') return 620;
-  return 320;
+  if (rarity === 'legendary') return 4200;
+  if (rarity === 'epic') return 1800;
+  if (rarity === 'rare') return 360;
+  if (rarity === 'uncommon') return 140;
+  return 60;
 }
 
 const scanRarityRanks = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
@@ -377,11 +377,15 @@ function scanRewardFor(target, scannerLevel = 0) {
   const rarity = target.rarity;
   const base = scanRarityCredits(rarity);
   const dangerBonus = target.kind === 'articulated'
-    ? 720
+    ? rarity === 'legendary'
+      ? 900
+      : rarity === 'epic'
+        ? 500
+        : 160
     : target.kind === 'fish'
-      ? target.hostile ? 180 : 0
-      : target.hazardous ? 220 : 0;
-  return Math.round((base + dangerBonus) * (1 + scannerLevel * 0.16));
+      ? target.hostile ? scanRarityRank(rarity) >= scanRarityRank('epic') ? 240 : 60 : 0
+      : target.hazardous ? scanRarityRank(rarity) >= scanRarityRank('epic') ? 240 : 60 : 0;
+  return Math.round((base + dangerBonus) * (1 + Math.min(scannerLevel, 4) * 0.08));
 }
 
 function scanSurvey(biome) {

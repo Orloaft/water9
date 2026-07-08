@@ -1,0 +1,597 @@
+{
+  "schema": "water9/top10-weak-sprite-fix-proposals@1",
+  "sessionKey": "top10-weak-sprite-fix-proposals",
+  "headObservedPreflight": "971e654",
+  "sourceAuditReport": "runs/water9-weak-fauna-flora-visual-audit-2026-07-07/weak-sprite-review.md",
+  "sourceAuditJson": "runs/water9-weak-fauna-flora-visual-audit-2026-07-07/weak-sprite-review.json",
+  "imagegen": {
+    "skillRead": "/home/orlovboros/.openclaw/agents/mgr-water9/agent/codex-home/skills/.system/imagegen/SKILL.md",
+    "used": false,
+    "reason": "All ten candidates were repairable from existing runtime/source pixels; no new generated bitmap was needed."
+  },
+  "proposals": {
+    "biolume-rock-0": {
+      "fixType": "crop repair",
+      "source": "public/assets/generated/biolume-rock-0.png; checked source slice public/assets/source/fauna-flora-source-art-slice-1/biolume-rock-0-source.png",
+      "currentFailure": "Broken sheet remnant/wrong crop: top strip and extra sibling pixels read as source-sheet debris.",
+      "expectedBenefit": "Leaves one clean luminous nodule silhouette with the sheet strip removed.",
+      "risk": "The repaired crop keeps only the strongest local nodule; Alex should confirm whether the discarded sibling fragment was intentional.",
+      "recommendation": "needs Alex art review",
+      "assetKey": "biolume-rock-0",
+      "kind": "flora",
+      "species": [
+        "Lumen Nodule"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/biolume-rock-0/biolume-rock-0-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 76,
+        "height": 56,
+        "visiblePixels": 544,
+        "strongAlphaPixels": 453,
+        "alphaCoverage": 0.12782,
+        "bbox": {
+          "left": 3,
+          "top": 6,
+          "right": 74,
+          "bottom": 49
+        },
+        "whiteMatteRatio": 0.10198,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 249.13,
+        "medianLuma": 55.63
+      },
+      "candidateMetrics": {
+        "width": 76,
+        "height": 56,
+        "visiblePixels": 1110,
+        "strongAlphaPixels": 829,
+        "alphaCoverage": 0.26081,
+        "bbox": {
+          "left": 14,
+          "top": 7,
+          "right": 62,
+          "bottom": 47
+        },
+        "whiteMatteRatio": 0.04498,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 255.0,
+        "medianLuma": 58.83
+      },
+      "auditFailureTags": [
+        "sheet-remnant",
+        "wrong-crop",
+        "dirty-transparent-rgb",
+        "legacy-sheet-slice"
+      ]
+    },
+    "biolume-rock-1": {
+      "fixType": "crop repair",
+      "source": "public/assets/generated/biolume-rock-1.png; checked source slice public/assets/source/fauna-flora-source-art-slice-1/biolume-rock-1-source.png",
+      "currentFailure": "Broken sibling crop: the right edge includes a clipped second nodule from the sheet.",
+      "expectedBenefit": "Centers the complete left nodule and removes the clipped sibling, so it no longer reads like a sheet fragment.",
+      "risk": "Composition changes from a clustered rock to a single nodule; should be approved by art direction before runtime swap.",
+      "recommendation": "needs Alex art review",
+      "assetKey": "biolume-rock-1",
+      "kind": "flora",
+      "species": [
+        "Lumen Nodule"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/biolume-rock-1/biolume-rock-1-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 118,
+        "height": 78,
+        "visiblePixels": 3601,
+        "strongAlphaPixels": 3359,
+        "alphaCoverage": 0.39124,
+        "bbox": {
+          "left": 3,
+          "top": 6,
+          "right": 116,
+          "bottom": 72
+        },
+        "whiteMatteRatio": 0.01332,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 255.0,
+        "medianLuma": 40.26
+      },
+      "candidateMetrics": {
+        "width": 118,
+        "height": 78,
+        "visiblePixels": 2669,
+        "strongAlphaPixels": 2434,
+        "alphaCoverage": 0.28998,
+        "bbox": {
+          "left": 23,
+          "top": 11,
+          "right": 94,
+          "bottom": 66
+        },
+        "whiteMatteRatio": 0.00485,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 255.0,
+        "medianLuma": 40.89
+      },
+      "auditFailureTags": [
+        "sheet-remnant",
+        "wrong-crop",
+        "cropped-sibling-sprite",
+        "legacy-sheet-slice"
+      ]
+    },
+    "fauna-abyss-goblin-shark": {
+      "fixType": "rematte",
+      "source": "public/assets/generated/fauna-abyss-goblin-shark.png",
+      "currentFailure": "White fringe/pale magenta matte halo and flat pink body pop against abyss water.",
+      "expectedBenefit": "Darkens semitransparent edge pixels, removes pale matte RGB, and adds an abyss-violet body read without changing frame geometry.",
+      "risk": "Local rematte preserves anatomy but may still feel too stylized compared with newer painted fauna.",
+      "recommendation": "approve for integration",
+      "assetKey": "fauna-abyss-goblin-shark",
+      "kind": "fauna",
+      "species": [
+        "Goblin Shark"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/fauna-abyss-goblin-shark/fauna-abyss-goblin-shark-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 360,
+        "height": 64,
+        "visiblePixels": 4137,
+        "strongAlphaPixels": 3637,
+        "alphaCoverage": 0.17956,
+        "bbox": {
+          "left": 3,
+          "top": 18,
+          "right": 357,
+          "bottom": 47
+        },
+        "whiteMatteRatio": 0.17133,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 255.0,
+        "medianLuma": 136.34
+      },
+      "candidateMetrics": {
+        "width": 360,
+        "height": 64,
+        "visiblePixels": 5005,
+        "strongAlphaPixels": 3703,
+        "alphaCoverage": 0.21723,
+        "bbox": {
+          "left": 2,
+          "top": 17,
+          "right": 358,
+          "bottom": 48
+        },
+        "whiteMatteRatio": 0.0,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 118.02,
+        "medianLuma": 91.82
+      },
+      "auditFailureTags": [
+        "white-fringe",
+        "pale-matte-halo",
+        "style-mismatch",
+        "prior-cleanup-watch"
+      ]
+    },
+    "fauna-deep-barreleye": {
+      "fixType": "hybrid rescale/crop + recolor/contrast",
+      "source": "public/assets/generated/fauna-deep-barreleye.png",
+      "currentFailure": "Soft upscale/muddy grayscale: face and body smear together at 34 px gameplay width.",
+      "expectedBenefit": "Increases in-frame body coverage, sharpens edges, and lifts the dome/eye contrast for a clearer species read.",
+      "risk": "Small-frame local repair cannot add true new anatomy; final art pass could still outperform it.",
+      "recommendation": "approve for integration",
+      "assetKey": "fauna-deep-barreleye",
+      "kind": "fauna",
+      "species": [
+        "Barreleye"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/fauna-deep-barreleye/fauna-deep-barreleye-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 150,
+        "height": 40,
+        "visiblePixels": 1453,
+        "strongAlphaPixels": 1262,
+        "alphaCoverage": 0.24217,
+        "bbox": {
+          "left": 3,
+          "top": 11,
+          "right": 147,
+          "bottom": 28
+        },
+        "whiteMatteRatio": 0.04974,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 255.0,
+        "medianLuma": 54.23
+      },
+      "candidateMetrics": {
+        "width": 150,
+        "height": 40,
+        "visiblePixels": 1810,
+        "strongAlphaPixels": 1277,
+        "alphaCoverage": 0.30167,
+        "bbox": {
+          "left": 2,
+          "top": 10,
+          "right": 148,
+          "bottom": 29
+        },
+        "whiteMatteRatio": 0.09903,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 255.0,
+        "medianLuma": 68.05
+      },
+      "auditFailureTags": [
+        "soft-upscaled-read",
+        "muddy-grayscale"
+      ]
+    },
+    "fauna-deep-gulper-eel": {
+      "fixType": "recolor/contrast",
+      "source": "public/assets/generated/fauna-deep-gulper-eel.png",
+      "currentFailure": "Dark-on-dark/muddy grayscale: body collapses into deep water outside the mouth.",
+      "expectedBenefit": "Keeps the strong mouth silhouette while lifting dorsal planes and rim contrast.",
+      "risk": "More visible highlights make the eel less cryptic; tune lower if it distracts in motion.",
+      "recommendation": "approve for integration",
+      "assetKey": "fauna-deep-gulper-eel",
+      "kind": "fauna",
+      "species": [
+        "Gulper Eel"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/fauna-deep-gulper-eel/fauna-deep-gulper-eel-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 258,
+        "height": 50,
+        "visiblePixels": 3087,
+        "strongAlphaPixels": 2648,
+        "alphaCoverage": 0.2393,
+        "bbox": {
+          "left": 3,
+          "top": 12,
+          "right": 255,
+          "bottom": 38
+        },
+        "whiteMatteRatio": 0.00931,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 217.0,
+        "medianLuma": 47.52
+      },
+      "candidateMetrics": {
+        "width": 258,
+        "height": 50,
+        "visiblePixels": 3773,
+        "strongAlphaPixels": 2691,
+        "alphaCoverage": 0.29248,
+        "bbox": {
+          "left": 2,
+          "top": 11,
+          "right": 256,
+          "bottom": 38
+        },
+        "whiteMatteRatio": 0.01301,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 199.66,
+        "medianLuma": 66.92
+      },
+      "auditFailureTags": [
+        "muddy-grayscale",
+        "dark-on-dark",
+        "prior-cleanup-watch"
+      ]
+    },
+    "fauna-abyss-black-swallower": {
+      "fixType": "recolor/contrast",
+      "source": "public/assets/generated/fauna-abyss-black-swallower.png",
+      "currentFailure": "Dark-on-dark/muddy grayscale: bulky body reads as one low-contrast lump.",
+      "expectedBenefit": "Adds cold rim light and midtone body separation while keeping the black-swallower identity.",
+      "risk": "Could become too similar to the gulper eel if both are integrated without side-by-side tuning.",
+      "recommendation": "needs Alex art review",
+      "assetKey": "fauna-abyss-black-swallower",
+      "kind": "fauna",
+      "species": [
+        "Black Swallower"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/fauna-abyss-black-swallower/fauna-abyss-black-swallower-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 390,
+        "height": 54,
+        "visiblePixels": 7047,
+        "strongAlphaPixels": 6231,
+        "alphaCoverage": 0.33462,
+        "bbox": {
+          "left": 3,
+          "top": 8,
+          "right": 387,
+          "bottom": 44
+        },
+        "whiteMatteRatio": 0.00664,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 242.14,
+        "medianLuma": 44.46
+      },
+      "candidateMetrics": {
+        "width": 390,
+        "height": 54,
+        "visiblePixels": 8178,
+        "strongAlphaPixels": 6306,
+        "alphaCoverage": 0.38832,
+        "bbox": {
+          "left": 2,
+          "top": 7,
+          "right": 388,
+          "bottom": 45
+        },
+        "whiteMatteRatio": 0.01143,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 250.22,
+        "medianLuma": 65.24
+      },
+      "auditFailureTags": [
+        "muddy-grayscale",
+        "dark-on-dark"
+      ]
+    },
+    "fauna-abyss-frilled-shark": {
+      "fixType": "hybrid rescale/crop + recolor/contrast",
+      "source": "public/assets/generated/fauna-abyss-frilled-shark.png",
+      "currentFailure": "Thin low-contrast silhouette becomes a narrow dark slash in abyss captures.",
+      "expectedBenefit": "Slightly thickens the alpha mass and adds dorsal highlights so the long shark reads in color and grayscale.",
+      "risk": "The species is naturally slender; over-thickening may weaken the frilled-shark character.",
+      "recommendation": "needs Alex art review",
+      "assetKey": "fauna-abyss-frilled-shark",
+      "kind": "fauna",
+      "species": [
+        "Frilled Shark"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/fauna-abyss-frilled-shark/fauna-abyss-frilled-shark-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 186,
+        "height": 32,
+        "visiblePixels": 1002,
+        "strongAlphaPixels": 786,
+        "alphaCoverage": 0.16835,
+        "bbox": {
+          "left": 3,
+          "top": 10,
+          "right": 183,
+          "bottom": 21
+        },
+        "whiteMatteRatio": 0.02315,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 205.57,
+        "medianLuma": 56.29
+      },
+      "candidateMetrics": {
+        "width": 186,
+        "height": 32,
+        "visiblePixels": 1311,
+        "strongAlphaPixels": 756,
+        "alphaCoverage": 0.22026,
+        "bbox": {
+          "left": 2,
+          "top": 10,
+          "right": 183,
+          "bottom": 22
+        },
+        "whiteMatteRatio": 0.02878,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 233.73,
+        "medianLuma": 78.19
+      },
+      "auditFailureTags": [
+        "thin-silhouette",
+        "dark-on-dark"
+      ]
+    },
+    "fauna-abyss-snipe-eel": {
+      "fixType": "rescale/crop",
+      "source": "public/assets/generated/fauna-abyss-snipe-eel.png",
+      "currentFailure": "Too thin/tiny at gameplay scale; the needle body is almost a line.",
+      "expectedBenefit": "Raises coverage inside the same frame and adds a subtle cool silhouette underlay for gameplay readability.",
+      "risk": "A readability repair trades away some needle-thin accuracy; use only if gameplay clarity wins.",
+      "recommendation": "needs Alex art review",
+      "assetKey": "fauna-abyss-snipe-eel",
+      "kind": "fauna",
+      "species": [
+        "Snipe Eel"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/fauna-abyss-snipe-eel/fauna-abyss-snipe-eel-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 264,
+        "height": 52,
+        "visiblePixels": 1016,
+        "strongAlphaPixels": 743,
+        "alphaCoverage": 0.07401,
+        "bbox": {
+          "left": 4,
+          "top": 21,
+          "right": 260,
+          "bottom": 31
+        },
+        "whiteMatteRatio": 0.0255,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 248.5,
+        "medianLuma": 56.28
+      },
+      "candidateMetrics": {
+        "width": 264,
+        "height": 52,
+        "visiblePixels": 2055,
+        "strongAlphaPixels": 694,
+        "alphaCoverage": 0.14969,
+        "bbox": {
+          "left": 3,
+          "top": 19,
+          "right": 261,
+          "bottom": 32
+        },
+        "whiteMatteRatio": 0.00737,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 239.49,
+        "medianLuma": 75.85
+      },
+      "auditFailureTags": [
+        "thin-silhouette",
+        "tiny-at-game-scale"
+      ]
+    },
+    "fauna-deep-sea-spider": {
+      "fixType": "rescale/crop",
+      "source": "public/assets/generated/fauna-deep-sea-spider.png",
+      "currentFailure": "Thin limbs/low readability: legs turn into pale strokes against busy terrain.",
+      "expectedBenefit": "Thickens limb alpha, raises central body contrast, and keeps the pose centered at gameplay scale.",
+      "risk": "Leg thickening can make the spider less delicate; review against terrain before integration.",
+      "recommendation": "needs Alex art review",
+      "assetKey": "fauna-deep-sea-spider",
+      "kind": "fauna",
+      "species": [
+        "Sea Spider"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/fauna-deep-sea-spider/fauna-deep-sea-spider-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 272,
+        "height": 48,
+        "visiblePixels": 2452,
+        "strongAlphaPixels": 1516,
+        "alphaCoverage": 0.18781,
+        "bbox": {
+          "left": 3,
+          "top": 4,
+          "right": 269,
+          "bottom": 43
+        },
+        "whiteMatteRatio": 0.07911,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 200.6,
+        "medianLuma": 150.67
+      },
+      "candidateMetrics": {
+        "width": 272,
+        "height": 48,
+        "visiblePixels": 6628,
+        "strongAlphaPixels": 1616,
+        "alphaCoverage": 0.50766,
+        "bbox": {
+          "left": 2,
+          "top": 3,
+          "right": 270,
+          "bottom": 45
+        },
+        "whiteMatteRatio": 0.07085,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 228.69,
+        "medianLuma": 67.58
+      },
+      "auditFailureTags": [
+        "thin-silhouette",
+        "low-readability"
+      ]
+    },
+    "fauna-shallow-lantern-fry": {
+      "fixType": "rescale/crop",
+      "source": "public/assets/generated/fauna-shallow-lantern-fry.png",
+      "currentFailure": "Tiny/soft at gameplay scale; eye survives but body detail blurs away.",
+      "expectedBenefit": "Enlarges the fish within the frame, sharpens the eye/body edge, and keeps a shallow-water blue read.",
+      "risk": "Runtime size tuning may be a better final lever than asset pixels alone.",
+      "recommendation": "approve for integration",
+      "assetKey": "fauna-shallow-lantern-fry",
+      "kind": "fauna",
+      "species": [
+        "Lantern Fry"
+      ],
+      "candidatePaths": [
+        "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/candidates/fauna-shallow-lantern-fry/fauna-shallow-lantern-fry-candidate.png"
+      ],
+      "promptUsed": null,
+      "generationMode": "local source-pixel repair; imagegen skill read, no generated bitmap needed",
+      "postProcessingCommand": "python3 runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/make_top10_fix_proposals.py",
+      "oldMetrics": {
+        "width": 168,
+        "height": 33,
+        "visiblePixels": 1047,
+        "strongAlphaPixels": 837,
+        "alphaCoverage": 0.18885,
+        "bbox": {
+          "left": 3,
+          "top": 11,
+          "right": 165,
+          "bottom": 22
+        },
+        "whiteMatteRatio": 0.00912,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 209.33,
+        "medianLuma": 74.9
+      },
+      "candidateMetrics": {
+        "width": 168,
+        "height": 33,
+        "visiblePixels": 1442,
+        "strongAlphaPixels": 859,
+        "alphaCoverage": 0.2601,
+        "bbox": {
+          "left": 2,
+          "top": 10,
+          "right": 166,
+          "bottom": 23
+        },
+        "whiteMatteRatio": 0.02328,
+        "transparentDirtyRgbPixels": 0,
+        "grayContrast": 227.73,
+        "medianLuma": 88.01
+      },
+      "auditFailureTags": [
+        "tiny-at-game-scale",
+        "soft-upscaled-read",
+        "prior-cleanup-watch"
+      ]
+    }
+  },
+  "contactSheets": {
+    "color": "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/top10-fix-candidates-contact.png",
+    "gray": "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/top10-fix-candidates-contact-gray.png"
+  },
+  "runtimePreview": "runs/water9-top10-weak-sprite-fix-proposals-2026-07-07/runtime-preview/top10-depth-band-preview.png"
+}

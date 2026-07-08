@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature,Bobbit,ControlState,Fish,FishPattern,Larva,LooseItem,NestEgg,ScanTarget } from './types';
+import type { ArticulatedCreature,Bobbit,ControlState,Fish,FishPattern,Larva,LooseItem,NestEgg,ScanTarget,TerrainSurfaceAnchor } from './types';
 import { BLEED_DURATION,BLEED_RECENT_WINDOW,BLEED_TRIGGER_BITES,BOBBIT_DETECT_RADIUS,BOBBIT_ESCAPE_SECONDS,BOBBIT_LATCH_RADIUS,DYNAMITE_LAND_FUSE,EGG_DETECTION_RADIUS,EGG_HATCH_SECONDS,FISH_BITE_SFX_GAP_MS,NEST_CLEAR_REWARD,OASIS_OXYGEN_REFILL,PLAYER_COLLISION_RADIUS,PLAYER_CONTACT_RADIUS,PLAYER_PICKUP_RADIUS,TARGET_DEPTH,THROWN_ITEM_GRAVITY,THROWN_ITEM_MAX_FALL_SPEED,TILE,WORLD_H } from './constants';
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
-import { bargeSolidAtWorld,cargoCapacity,currentApexSpecies,oxygenMax,pointInRoom,predatorBiteCooldown,rarityColor,rarityLabel,resetOxygenWarnings,scaledEntity,scannableRarity,scanReward,subDef,updateFacingFromVelocity,updateFishVisualFacing,venomousFish } from './helpers';
+import { bargeSolidAtWorld,cargoCapacity,currentApexSpecies,oxygenMax,pointInRoom,predatorBiteCooldown,rarityColor,rarityLabel,recoverFinalProof,resetOxygenWarnings,scaledEntity,scannableRarity,scanReward,subDef,updateFacingFromVelocity,updateFishVisualFacing,venomousFish } from './helpers';
 import { biomeName,renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
-import { TERRAIN_MASK_RES,terrainMaskContactForAabb,terrainMaskDensityAt,validateTerrainSurfaceAnchor,findNearbyTerrainSurfaceAnchor } from './terrain-mask';
+import { TERRAIN_MASK_RES,sampleTerrainSurfaceAnchors,terrainMaskContactForAabb,terrainMaskDensityAt,validateTerrainSurfaceAnchor,findNearbyTerrainSurfaceAnchor } from './terrain-mask';
 
 type LegacyNavEnvelope = {
   feelerAngles: number[];
@@ -113,7 +113,7 @@ export function updateAnchoredFish(this: DeepdiveScene, fish: Fish, delta: numbe
     if (fish.surface && fish.anchorRefreshTimer <= 0) {
       fish.anchorRefreshTimer = Phaser.Math.FloatBetween(2.5, 5.5);
       const validation = validateTerrainSurfaceAnchor(this, fish.surface);
-      const next = validation.valid ? validation.anchor : findNearbyTerrainSurfaceAnchor(this, fish.surface, 8);
+      const next = validation.valid ? validation.anchor : findNearbyTerrainSurfaceAnchor(this, fish.surface, 8, anchoredFishPreferredAnchors(fish));
       if (next) {
         fish.surface = next;
         fish.anchor = next.anchor;
@@ -181,6 +181,7 @@ export function updateBenthicWalkerFish(this: DeepdiveScene, fish: Fish, delta: 
     fish.recoverTimer = Math.max(0, (fish.recoverTimer ?? 0) - delta);
     fish.lungeTimer = Math.max(0, (fish.lungeTimer ?? 0) - delta);
     fish.walkPause = Math.max(0, (fish.walkPause ?? 0) - delta);
+    fish.navReseedCooldown = Math.max(0, (fish.navReseedCooldown ?? 0) - delta);
     if (!fish.surface) {
       fish.vx *= Math.exp(-2.5 * delta);
       fish.vy *= Math.exp(-2.5 * delta);
@@ -207,18 +208,39 @@ export function updateBenthicWalkerFish(this: DeepdiveScene, fish: Fish, delta: 
     }
     const tether = Math.max(scaledEntity(10), fish.tetherRadius ?? scaledEntity(20));
     fish.rootOffsetX = Phaser.Math.Clamp(fish.rootOffsetX ?? 0, -tether, tether);
-    if (Math.abs(fish.rootOffsetX) >= tether - 0.5) fish.walkDir = fish.rootOffsetX > 0 ? -1 : 1;
-    const bob = Math.sin(fish.phase * 7.4) * (fish.lungeTimer && fish.lungeTimer > 0 ? scaledEntity(3) : scaledEntity(1.2));
+    if (Math.abs(fish.rootOffsetX) >= tether - 0.5 && !advanceBenthicWalkerSurface(this, fish, tether)) {
+      fish.walkDir = fish.rootOffsetX > 0 ? -1 : 1;
+    }
+    const bob = Math.sin(fish.phase * 7.4) * (fish.lungeTimer && fish.lungeTimer > 0 ? scaledEntity(3) : scaledEntity(0.55));
     const outward = Math.max(
       fish.radius * 0.58,
       Math.abs(fish.surface.normalX * (fish.anchorOffsetX ?? 0) + fish.surface.normalY * (fish.anchorOffsetY ?? 0)),
     );
-    fish.x = fish.surface.rootX + fish.surface.normalX * outward
+    const targetX = fish.surface.rootX + fish.surface.normalX * outward
       + fish.surface.tangentX * (fish.rootOffsetX ?? 0)
       + fish.surface.normalX * bob;
-    fish.y = fish.surface.rootY + fish.surface.normalY * outward
+    const targetY = fish.surface.rootY + fish.surface.normalY * outward
       + fish.surface.tangentY * (fish.rootOffsetX ?? 0)
       + fish.surface.normalY * bob;
+    if ((fish.surfaceHopDuration ?? 0) > 0 && fish.surfaceHopStartX !== undefined && fish.surfaceHopStartY !== undefined) {
+      fish.surfaceHopElapsed = Math.min(fish.surfaceHopDuration ?? 0, (fish.surfaceHopElapsed ?? 0) + delta);
+      const hopProgress = Phaser.Math.Clamp((fish.surfaceHopElapsed ?? 0) / Math.max(0.001, fish.surfaceHopDuration ?? 0), 0, 1);
+      const hopEase = hopProgress * hopProgress * (3 - 2 * hopProgress);
+      const hopArc = Math.sin(hopProgress * Math.PI) * Math.min(fish.radius * 0.45, scaledEntity(10));
+      const normalX = fish.surface.normalX;
+      const normalY = fish.surface.normalY;
+      fish.x = Phaser.Math.Linear(fish.surfaceHopStartX, targetX, hopEase) + normalX * hopArc;
+      fish.y = Phaser.Math.Linear(fish.surfaceHopStartY, targetY, hopEase) + normalY * hopArc;
+      if (hopProgress >= 1) {
+        fish.surfaceHopDuration = 0;
+        fish.surfaceHopElapsed = 0;
+        fish.surfaceHopStartX = undefined;
+        fish.surfaceHopStartY = undefined;
+      }
+    } else {
+      fish.x = targetX;
+      fish.y = targetY;
+    }
     fish.vx = (fish.x - oldX) / Math.max(0.001, delta);
     fish.vy = (fish.y - oldY) / Math.max(0.001, delta);
     const tangentMotion = fish.surface.tangentX * fish.vx + fish.surface.tangentY * fish.vy;
@@ -228,10 +250,87 @@ export function updateBenthicWalkerFish(this: DeepdiveScene, fish: Fish, delta: 
     fish.grounded = true;
   }
 
+function anchoredFishPreferredAnchors(fish: Fish): TerrainSurfaceAnchor['anchor'][] | undefined {
+  if (fish.species === 'Silver Hinge Crab') return ['floor'];
+  if (fish.species === 'Mantis Shrimp') return ['floor', 'leftWall', 'rightWall'];
+  return undefined;
+}
+
+function advanceBenthicWalkerSurface(scene: DeepdiveScene, fish: Fish, tether: number) {
+  if (!fish.surface || (fish.navReseedCooldown ?? 0) > 0) return false;
+  const allowed = anchoredFishPreferredAnchors(fish);
+  if (allowed && !allowed.includes(fish.surface.anchor)) {
+    const corrected = findNearbyTerrainSurfaceAnchor(scene, fish.surface, 12, allowed);
+    if (corrected) return moveBenthicWalkerToSurface(fish, corrected, tether, fish.walkDir ?? 1);
+  }
+  const dir = (fish.rootOffsetX ?? 0) >= 0 ? 1 : -1;
+  if (fish.species !== 'Mantis Shrimp') return false;
+  const current = fish.surface;
+  const candidates = sampleTerrainSurfaceAnchors(scene, {
+    minY: Math.max(TILE * 2, current.rootY - TILE * 3.2),
+    maxY: Math.min(WORLD_H * TILE - TILE * 2, current.rootY + TILE * 3.2),
+    salt: Math.floor(fish.phase * 60) + current.maskSx,
+    prefer: allowed,
+    minSupport: 8,
+    minClearance: 2,
+    limit: 140,
+  }).filter((candidate) => {
+    if (allowed && !allowed.includes(candidate.anchor)) return false;
+    if (candidate.id === current.id) return false;
+    const dx = candidate.rootX - current.rootX;
+    const dy = candidate.rootY - current.rootY;
+    const distance = Math.hypot(dx, dy);
+    if (distance < fish.radius * 0.45 || distance > TILE * 3.15) return false;
+    const forward = dx * current.tangentX * dir + dy * current.tangentY * dir;
+    return forward > fish.radius * 0.35;
+  });
+  let best: { anchor: TerrainSurfaceAnchor; score: number } | null = null;
+  for (const candidate of candidates) {
+    const dx = candidate.rootX - current.rootX;
+    const dy = candidate.rootY - current.rootY;
+    const forward = dx * current.tangentX * dir + dy * current.tangentY * dir;
+    const lateral = Math.abs(dx * current.normalX + dy * current.normalY);
+    const normalShift = Math.abs(candidate.normalX - current.normalX) + Math.abs(candidate.normalY - current.normalY);
+    const score = forward * 1.6 - lateral * 0.55 - normalShift * 5 + candidate.clearance * 0.2;
+    if (!best || score > best.score) best = { anchor: candidate, score };
+  }
+  if (!best) return false;
+  return moveBenthicWalkerToSurface(fish, best.anchor, tether, dir);
+}
+
+function moveBenthicWalkerToSurface(fish: Fish, surface: TerrainSurfaceAnchor, tether: number, dir: 1 | -1) {
+  const hopStartX = fish.x;
+  const hopStartY = fish.y;
+  const fromSurface = fish.surface;
+  fish.surface = surface;
+  fish.anchor = surface.anchor;
+  fish.rootX = surface.rootX;
+  fish.rootY = surface.rootY;
+  fish.homeX = surface.rootX;
+  fish.homeY = surface.rootY;
+  fish.rootOffsetX = -dir * Math.min(tether * 0.58, Math.max(fish.radius * 0.45, tether - fish.radius));
+  fish.anchorOffsetX = surface.normalX * Math.max(fish.radius * 0.58, 6);
+  fish.anchorOffsetY = surface.normalY * Math.max(fish.radius * 0.58, 6);
+  fish.walkDir = dir;
+  fish.walkPause = 0;
+  fish.navReseedCooldown = 0.34;
+  fish.lungeTimer = Math.max(fish.lungeTimer ?? 0, fish.species === 'Mantis Shrimp' ? 0.16 : 0);
+  if (fish.species === 'Mantis Shrimp' && (!fromSurface || fromSurface.id !== surface.id)) {
+    fish.surfaceHopStartX = hopStartX;
+    fish.surfaceHopStartY = hopStartY;
+    fish.surfaceHopElapsed = 0;
+    fish.surfaceHopDuration = 0.22;
+  }
+  fish.fallbackNoAnchor = false;
+  return true;
+}
+
 export function updateFlora(this: DeepdiveScene, delta: number) {
     for (const flora of this.flora) {
       flora.phase += delta;
       flora.scanPulse = Math.max(0, flora.scanPulse - delta * 1.35);
+      flora.samplePulse = Math.max(0, flora.samplePulse - delta * 1.7);
+      flora.sampleCooldown = Math.max(0, flora.sampleCooldown - delta);
       flora.hurtFlash = Math.max(0, flora.hurtFlash - delta * 4.2);
       flora.aggroCue = Math.max(0, flora.aggroCue - delta * 1.6);
       if (flora.dead) {
@@ -241,7 +340,9 @@ export function updateFlora(this: DeepdiveScene, delta: number) {
       if (!flora.scanned && !flora.scanning) {
         flora.scan = Math.max(0, flora.scan - delta * 0.9);
       }
+      if (!flora.sampling) flora.sample = Math.max(0, flora.sample - delta * 0.65);
       flora.scanning = false;
+      flora.sampling = false;
       if (flora.hazardous && !this.isAtBoat()) {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, flora.x, flora.y);
         if (distance < flora.radius + PLAYER_CONTACT_RADIUS + 4) {
@@ -710,7 +811,7 @@ export function updateHazards(this: DeepdiveScene, delta: number) {
 
 export function updateSpecialRooms(this: DeepdiveScene, delta: number) {
     const oasis = this.specialRooms.find((room) => room.kind === 'biolume' && pointInRoom(this.player.x, this.player.y, room, 0.92));
-    if (!oasis || state.atBoat || state.lost || state.won) return;
+    if (!oasis || state.atBoat || state.lost || (state.won && !state.finale.endingSeen)) return;
     const sub = state.pilotingSub ? state.activeSub : null;
     if (sub) {
       const max = subDef(sub.tier).oxygen;
@@ -883,6 +984,7 @@ export function updateLooseItems(this: DeepdiveScene, delta: number) {
             color: item.color,
             kind: item.kind,
             icon: item.icon,
+            sampleSpecies: item.sampleSpecies,
           });
           state.selectedCargoIndex = state.cargo.length - 1;
           state.status = miningSubVacuum
@@ -1075,8 +1177,8 @@ export function scanNearbyLife(this: DeepdiveScene, delta: number, scanningHeld:
       const apexSpecies = currentApexSpecies();
       if (target.species === apexSpecies && state.depth >= TARGET_DEPTH) {
         if (state.biome === 4) {
-          state.won = true;
-          state.status = 'The ruin sentinel is cataloged. Humanity finally has proof of the drowned architects.';
+          recoverFinalProof(target.species, state.depth);
+          this.spawnFloatingText('Final proof recovered', 0xffd166);
         } else {
           state.status = `${biomeName()} is charted. The barge has a route deeper still.`;
         }

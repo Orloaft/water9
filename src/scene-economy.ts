@@ -4,7 +4,7 @@ import { FORWARD_OUTPOST_FLORA_RADIUS,FORWARD_OUTPOST_MAX_CHARGE,FORWARD_OUTPOST
 import { upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,createConsumableItem,fuelMax,fuelRefillCost,questProgressSource,refillAtBoat,resetOxygenWarnings,restart,shopItem,subDef,upgradeCost,upgradeMax } from './helpers';
+import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,createConsumableItem,finaleLocksSurvey,fuelMax,fuelRefillCost,questProgressSource,refillAtBoat,resetOxygenWarnings,restart,shopItem,subDef,syncStoryProgress,upgradeCost,upgradeMax } from './helpers';
 import { biomeName,openingRadioMessages,renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 
@@ -38,7 +38,7 @@ export function startRun(this: DeepdiveScene, ) {
   }
 
 export function diveFromBarge(this: DeepdiveScene, ) {
-    if (!state.started || !state.atBoat || state.lost || state.won) return;
+    if (!state.started || !state.atBoat || state.lost || finaleLocksSurvey()) return;
     state.docked = false;
     state.atBoat = false;
     state.paused = false;
@@ -85,7 +85,10 @@ export function buyShopItem(this: DeepdiveScene, id: ShopItem['id']) {
     state.credits -= item.cost;
     state.cargo.push(createConsumableItem(item));
     state.selectedCargoIndex = state.cargo.length - 1;
-    state.status = `${item.name} loaded into cargo slot ${state.selectedCargoIndex + 1}.`;
+    if (id === 'stun-grenade') state.unlockedTools.stun = true;
+    state.status = id === 'stun-grenade'
+      ? `${item.name} loaded into cargo slot ${state.selectedCargoIndex + 1}. Stun tool fitted on key 6.`
+      : `${item.name} loaded into cargo slot ${state.selectedCargoIndex + 1}.`;
     renderHud();
   }
 
@@ -142,6 +145,7 @@ export function travelToNextBiome(this: DeepdiveScene, ) {
       renderHud();
       return;
     }
+    syncStoryProgress(false);
     state.credits -= cost;
     state.depth = 0;
     state.maxDepth = 0;
@@ -154,6 +158,7 @@ export function travelToNextBiome(this: DeepdiveScene, ) {
     clearVenom();
     clearBleed();
     state.scannedSpecies.clear();
+    state.sampledSpecies.clear();
     state.atBoat = true;
     state.docked = true;
     state.paused = false;
@@ -170,6 +175,7 @@ export function travelToNextBiome(this: DeepdiveScene, ) {
     state.carrierSub = null;
     const nextBiome = (state.biome + 1) as Biome;
     state.biome = nextBiome;
+    syncStoryProgress();
     state.status = `Barge retrofitted. Welcome to ${biomeName()}.`;
     rng.seed = Math.floor(Math.random() * 1_000_000);
     refillAtBoat();

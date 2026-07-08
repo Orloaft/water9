@@ -722,6 +722,102 @@ button.is-controller-focus {
   overflow-wrap: anywhere;
 }
 
+.tool-strip {
+  position: fixed;
+  left: 14px;
+  bottom: 104px;
+  z-index: 3;
+  display: grid;
+  gap: 6px;
+  width: min(440px, calc(100vw - 28px));
+  border: 1px solid rgba(142, 231, 244, 0.18);
+  border-radius: 4px;
+  padding: 7px;
+  background:
+    linear-gradient(180deg, rgba(3, 20, 31, 0.68), rgba(1, 7, 12, 0.88)),
+    url("/assets/generated/ui-panel-wide.png");
+  background-size: 100% 100%;
+  pointer-events: auto;
+}
+
+.tool-strip__header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-strip__header span,
+.tool-strip__slot span {
+  color: rgba(236, 251, 255, 0.62);
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.tool-strip__header strong {
+  color: #fff7df;
+  font-size: 0.78rem;
+}
+
+.tool-strip__slots {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.tool-strip__slot {
+  display: grid;
+  grid-template-rows: 16px 16px 14px;
+  place-items: center;
+  min-width: 0;
+  min-height: 50px;
+  border: 1px solid rgba(236, 251, 255, 0.12);
+  border-radius: 4px;
+  padding: 3px 2px;
+  background:
+    linear-gradient(180deg, rgba(1, 8, 13, 0.28), rgba(0, 0, 0, 0.62)),
+    url("/assets/generated/cargo-slot.png") center / 100% 100% no-repeat;
+}
+
+.tool-strip__slot b {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: rgba(1, 7, 12, 0.84);
+  color: #ffd166;
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
+.tool-strip__slot strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: #fff7df;
+  font-size: 0.63rem;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tool-strip__slot.is-selected {
+  border-color: rgba(60, 245, 255, 0.88);
+  background:
+    linear-gradient(180deg, rgba(7, 55, 64, 0.3), rgba(0, 0, 0, 0.55)),
+    url("/assets/generated/cargo-slot-selected.png") center / 100% 100% no-repeat;
+  box-shadow: 0 0 12px rgba(60, 245, 255, 0.22);
+}
+
+.tool-strip__slot.is-locked {
+  opacity: 0.56;
+}
+
+.logbook-entry.is-sampled {
+  border-color: rgba(142, 231, 244, 0.34);
+}
+
 .status.is-venomed {
   border-color: rgba(185, 242, 124, 0.34);
   background: rgba(12, 27, 16, 0.68);
@@ -2112,6 +2208,16 @@ button.is-controller-focus {
   text-transform: uppercase;
 }
 
+.victory-panel span {
+  color: #8ee7f4;
+}
+
+.victory-panel__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
 .achievement-toast {
   position: fixed;
   left: 50%;
@@ -2304,6 +2410,11 @@ button.is-controller-focus {
     width: min(320px, calc(100vw - 28px));
   }
 
+  .tool-strip {
+    bottom: 122px;
+    width: min(410px, calc(100vw - 20px));
+  }
+
   .cargo-manifest.is-open {
     display: grid;
   }
@@ -2428,6 +2539,16 @@ button.is-controller-focus {
   .sonar-panel {
     width: 158px;
     padding: 8px;
+  }
+
+  .tool-strip {
+    left: 10px;
+    bottom: 154px;
+    width: min(300px, calc(100vw - 20px));
+  }
+
+  .tool-strip__slots {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   #sonar-map {

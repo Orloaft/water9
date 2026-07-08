@@ -1,5 +1,6 @@
-import type { BargeTab, Biome, CargoItem, Quest, RadioMessage, SonarContact, SubTier, SubVehicle, TitlePanel, UpgradeId } from './types';
+import type { BargeTab, Biome, CargoItem, FinaleProgress, Quest, RadioMessage, SonarContact, StoryProgress, SubTier, SubVehicle, TitlePanel, ToolId, UpgradeId } from './types';
 import { BASE_OXYGEN,FORWARD_OUTPOST_MAX_CHARGE,FORWARD_OUTPOST_OXYGEN_RADIUS,FORWARD_OUTPOST_OXYGEN_REFILL } from './constants';
+import { createDefaultUnlockedTools } from './tools';
 
 export const state = {
   biome: 1 as Biome,
@@ -12,9 +13,12 @@ export const state = {
   oreSoldCredits: 0,
   cargo: [] as CargoItem[],
   selectedCargoIndex: 0,
+  selectedTool: 'drill' as ToolId,
+  unlockedTools: createDefaultUnlockedTools(),
   sonarRevealed: new Set<string>(),
   sonarContacts: [] as SonarContact[],
   scannedSpecies: new Set<string>(),
+  sampledSpecies: new Set<string>(),
   upgrades: {
     oxygen: 0,
     cargo: 0,
@@ -70,6 +74,19 @@ export const state = {
   pilotingSub: false,
   auxSubActive: false,
   marlinVoucherAvailable: false,
+  story: {
+    activeId: 'b1-first-signal',
+    completed: [],
+    flags: {},
+    heardRadio: [],
+  } satisfies StoryProgress,
+  finale: {
+    finalProofRecovered: false,
+    endingSeen: false,
+    heardRadio: [] as string[],
+    finalProofSpecies: '',
+    finalProofDepth: 0,
+  } satisfies FinaleProgress,
   won: false,
   lost: false,
   started: false,

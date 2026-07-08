@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import type { Biome,PlaytestCommand,SubTier,Tile } from './types';
-import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
-import { tiles,upgrades } from './content';
+import type { ArticulatedCreature,Biome,CargoItem,Fish,Flora,PlaytestCommand,ShopItem,SubTier,TerrainSurfaceAnchor,Tile } from './types';
+import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,PLAYER_FORWARD_REACH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,createConsumableItem,createSubVehicle,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fuelMax,hash,isOreTile,oxygenMax,parallaxProfileFor,refillAtBoat,restart,scaledDepthPx,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
+import { LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,activeQuest,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,completeFinaleAtBarge,continueSurveyAfterEnding,createDefaultStoryProgress,createConsumableItem,createSubVehicle,currentPinnedStoryObjective,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,fuelMax,generateQuestBoard,hash,isLargeArticulatedThreat,isOreTile,oxygenMax,parallaxProfileFor,recoverFinalProof,refillAtBoat,resetFinaleProgress,resetToolState,restart,scaledDepthPx,scaledEntity,selectTool,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,syncStoryProgress,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
@@ -20,6 +20,449 @@ function refreshPlaytestCamera(scene: DeepdiveScene) {
 function clearPlaytestFloatingText(scene: DeepdiveScene) {
   scene.floatingTexts.forEach((entry) => entry.label.destroy());
   scene.floatingTexts = [];
+}
+
+function stageSelectedToolSmoke(scene: DeepdiveScene, mode: 'terrain' | 'life') {
+  if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
+    scene.generateWorld();
+    scene.worldReady = true;
+  }
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.radioOpen = false;
+  state.logbookOpen = false;
+  state.cargoOpen = false;
+  state.activeSub = null;
+  state.pilotingSub = false;
+  state.fuel = fuelMax();
+  state.oxygen = oxygenMax();
+  clearPlaytestFloatingText(scene);
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const centerY = Math.floor((SURFACE_Y + 360) / TILE);
+  scene.player.x = centerX * TILE + TILE * 0.5;
+  scene.player.y = centerY * TILE + TILE * 0.5;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.facing.set(1, 0);
+  scene.player.facingSign = 1;
+  scene.player.mineCooldown = 0;
+  scene.player.scanCooldown = 0;
+  scene.player.sonarCooldown = 0;
+  state.depth = Math.max(0, Math.round((scene.player.y - SURFACE_Y) / 6));
+  if (mode === 'terrain') {
+    const targetX = Math.floor((scene.player.x + PLAYER_FORWARD_REACH) / TILE);
+    const targetY = Math.floor(scene.player.y / TILE);
+    for (let y = targetY - 3; y <= targetY + 3; y += 1) {
+      for (let x = targetX - 4; x <= targetX + 5; x += 1) {
+        scene.setTile(x, y, x >= targetX ? 'stone' : 'water');
+        if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+      }
+    }
+    scene.setTile(targetX, targetY, 'copper');
+    rebuildTerrainMask(scene);
+    scene.fish = [];
+    scene.flora = [];
+    scene.articulatedCreatures = [];
+    scene.bobbits = [];
+    scene.hazards = [];
+    scene.larvae = [];
+    scene.nestEggs = [];
+    scene.looseItems = [];
+    scene.terrainBreakEffects = [];
+    scene.terrainBoundsKey = '';
+    scene.terrainDirty = true;
+    renderHud();
+    scene.draw();
+    return { ok: true, mode, target: { tileX: targetX, tileY: targetY, worldX: targetX * TILE + TILE * 0.5, worldY: targetY * TILE + TILE * 0.5 } };
+  }
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  const species = biomeFish[state.biome][0];
+  const assetKey = fishAssetKey(species);
+  scene.fish = [{
+    kind: 'fish',
+    species: species.species,
+    x: scene.player.x + 28,
+    y: scene.player.y,
+    vx: 0,
+    vy: 0,
+    homeX: scene.player.x + 28,
+    homeY: scene.player.y,
+    speed: 0,
+    phase: 0,
+    color: species.color,
+    hostile: false,
+    scanned: false,
+    scan: 0,
+    scanning: false,
+    scanPulse: 0,
+    radius: 16,
+    pattern: species.pattern,
+    bumpCooldown: 0,
+    aggro: 0,
+    aggroCue: 0,
+    stunned: 0,
+    hp: fishMaxHp(species),
+    maxHp: fishMaxHp(species),
+    dead: false,
+    hurtFlash: 0,
+    assetKey,
+    facingSign: -1,
+    sprite: scene.createEntitySprite(scene.player.x + 28, scene.player.y, assetKey),
+  }];
+  const target = scene.fish[0];
+  if (!target) return { ok: false, reason: 'missing-life-target' };
+  target.x = scene.player.x + 28;
+  target.y = scene.player.y;
+  target.scan = 0;
+  target.scanned = false;
+  state.scannedSpecies.delete(target.species);
+  if (target.kind === 'fish') {
+    target.vx = 0;
+    target.vy = 0;
+    target.homeX = target.x;
+    target.homeY = target.y;
+  } else if (target.kind === 'articulated') {
+    target.vx = 0;
+    target.vy = 0;
+    target.homeX = target.x;
+    target.homeY = target.y;
+    target.reviewFrozen = true;
+  }
+  renderHud();
+  scene.draw();
+  return { ok: true, mode, species: target.species, kind: target.kind };
+}
+
+function stageStunToolSmoke(scene: DeepdiveScene) {
+  const stage = prepSamplerStage(scene);
+  const species = biomeFish[state.biome].find((candidate) => candidate.hostile) ?? biomeFish[state.biome][0];
+  if (!species) return { ok: false, reason: 'missing-fish-species' };
+  const assetKey = fishAssetKey(species);
+  const fish: Fish = {
+    kind: 'fish',
+    species: species.species,
+    x: scene.player.x + 54,
+    y: scene.player.y,
+    vx: 0,
+    vy: 0,
+    homeX: scene.player.x + 54,
+    homeY: scene.player.y,
+    speed: 0,
+    phase: 0,
+    color: species.color,
+    hostile: true,
+    scanned: false,
+    scan: 0,
+    scanning: false,
+    scanPulse: 0,
+    radius: 16,
+    pattern: species.pattern,
+    bumpCooldown: 0,
+    aggro: 2,
+    aggroCue: 0,
+    stunned: 0,
+    hp: fishMaxHp(species),
+    maxHp: fishMaxHp(species),
+    dead: false,
+    hurtFlash: 0,
+    assetKey,
+    facingSign: -1,
+    sprite: scene.createEntitySprite(scene.player.x + 54, scene.player.y, assetKey),
+  };
+  scene.fish = [fish];
+  state.cargo = state.cargo.filter((item) => item.id !== 'stun-grenade');
+  state.cargo.push(createConsumableItem(shopItem('stun-grenade')));
+  state.selectedCargoIndex = state.cargo.length - 1;
+  state.unlockedTools.stun = true;
+  state.selectedTool = 'stun';
+  scene.cameras.main.setZoom(3);
+  scene.cameras.main.centerOn(stage.centerX * TILE, stage.centerY * TILE);
+  renderHud();
+  scene.draw();
+  return { ok: true, species: fish.species, grenades: state.cargo.filter((item) => item.id === 'stun-grenade').length };
+}
+
+function consumableCargo(id: ShopItem['id']) {
+  return createConsumableItem(shopItem(id));
+}
+
+function stageBargeSaleSmoke(scene: DeepdiveScene) {
+  const saleCargo: CargoItem[] = [
+    { id: 'copper', name: 'Copper Ore', value: 90, color: tiles.copper.color, kind: 'ore', icon: 'item-icon-copper' },
+    { id: 'relic', name: 'Relic Cache', value: 1250, color: tiles.relic.color, kind: 'artifact', icon: 'item-icon-relic' },
+    { id: 'flora-sample', name: 'Glass Kelp Sample', value: 55, color: 0x8ee7f4, kind: 'sample', icon: 'item-icon-unknown', sampleSpecies: 'Glass Kelp' },
+  ];
+  state.started = true;
+  state.atBoat = false;
+  state.docked = false;
+  state.cargo = [
+    ...saleCargo,
+    consumableCargo('stun-grenade'),
+    consumableCargo('dynamite'),
+    consumableCargo('flare'),
+    consumableCargo('oxygen-tank'),
+    consumableCargo('fuel-tank'),
+    consumableCargo('first-aid-kit'),
+    consumableCargo('antivenom'),
+    consumableCargo('injector-knife'),
+  ];
+  state.unlockedTools.stun = true;
+  state.selectedCargoIndex = 0;
+  state.credits = 0;
+  state.oreSoldCredits = 0;
+  scene.player.x = WORLD_W * TILE * 0.5;
+  scene.player.y = SURFACE_Y + 54;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  renderHud();
+  scene.draw();
+  return { ok: true, saleCargoValue: saleCargo.reduce((sum, item) => sum + item.value, 0), oreSaleValue: saleCargo[0].value + saleCargo[1].value, cargoBefore: state.cargo.map((item) => ({ id: item.id, kind: item.kind, value: item.value })) };
+}
+
+function prepSamplerStage(scene: DeepdiveScene) {
+  if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
+    scene.generateWorld();
+    scene.worldReady = true;
+  }
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const centerY = Math.floor((SURFACE_Y + 420) / TILE);
+  for (let y = centerY - 6; y <= centerY + 6; y += 1) {
+    for (let x = centerX - 8; x <= centerX + 12; x += 1) {
+      scene.setTile(x, y, 'water');
+      if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+    }
+  }
+  for (let y = centerY + 3; y <= centerY + 5; y += 1) {
+    for (let x = centerX - 8; x <= centerX + 12; x += 1) scene.setTile(x, y, 'stone');
+  }
+  rebuildTerrainMask(scene);
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.radioOpen = false;
+  state.logbookOpen = false;
+  state.cargoOpen = false;
+  state.activeSub = null;
+  state.pilotingSub = false;
+  state.fuel = fuelMax();
+  state.oxygen = oxygenMax();
+  state.depth = Math.max(0, Math.round((centerY * TILE - SURFACE_Y) / 6));
+  scene.player.x = centerX * TILE + TILE * 0.5;
+  scene.player.y = centerY * TILE + TILE * 0.5;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.facing.set(1, 0);
+  scene.player.facingSign = 1;
+  scene.player.mineCooldown = 0;
+  scene.player.scanCooldown = 0;
+  scene.player.sonarCooldown = 0;
+  scene.fish = [];
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  scene.bobbits = [];
+  scene.hazards = [];
+  scene.larvae = [];
+  scene.nestEggs = [];
+  scene.looseItems = [];
+  scene.terrainBreakEffects = [];
+  scene.environmentProps = [];
+  clearPlaytestFloatingText(scene);
+  scene.terrainBoundsKey = '';
+  scene.terrainDirty = true;
+  return { centerX, centerY };
+}
+
+function stagedSamplerFlora(scene: DeepdiveScene, scanned = false): Flora {
+  const species = biomeFlora[state.biome][0];
+  const x = scene.player.x + 28;
+  const y = scene.player.y;
+  const assetKey = floraAssetKey(species);
+  return {
+    kind: 'flora',
+    species: species.species,
+    x,
+    y,
+    anchor: 'floor',
+    phase: 0,
+    color: species.color,
+    hazardous: species.hazardous,
+    rare: species.rare,
+    scanned,
+    scan: 0,
+    scanning: false,
+    scanPulse: 0,
+    sample: 0,
+    sampling: false,
+    samplePulse: 0,
+    sampleCooldown: 0,
+    hp: floraMaxHp(species),
+    maxHp: floraMaxHp(species),
+    dead: false,
+    hurtFlash: 0,
+    aggroCue: 0,
+    radius: scaledEntity(species.radius),
+    assetKey,
+    sprite: scene.createEntitySprite(x, y, assetKey),
+  };
+}
+
+function stageFloraSamplerSmoke(scene: DeepdiveScene, mode: 'flora' | 'scannedFlora' | 'fish' | 'articulated' | 'terrain') {
+  const stage = prepSamplerStage(scene);
+  const beforeSampled = state.sampledSpecies.size;
+  if (mode === 'flora' || mode === 'scannedFlora') {
+    const flora = stagedSamplerFlora(scene, mode === 'scannedFlora');
+    scene.flora = [flora];
+    scene.player.facing.set(1, 0);
+    scene.cameras.main.setZoom(3);
+    scene.cameras.main.centerOn(flora.x, flora.y);
+    renderHud();
+    scene.draw();
+    return { ok: true, mode, species: flora.species, kind: flora.kind, scanned: flora.scanned, sampledSpeciesBefore: beforeSampled };
+  }
+  if (mode === 'fish') {
+    const species = biomeFish[state.biome][0];
+    const assetKey = fishAssetKey(species);
+    scene.fish = [{
+      kind: 'fish',
+      species: species.species,
+      x: scene.player.x + 28,
+      y: scene.player.y,
+      vx: 0,
+      vy: 0,
+      homeX: scene.player.x + 28,
+      homeY: scene.player.y,
+      speed: 0,
+      phase: 0,
+      color: species.color,
+      hostile: false,
+      scanned: false,
+      scan: 0,
+      scanning: false,
+      scanPulse: 0,
+      radius: 16,
+      pattern: species.pattern,
+      bumpCooldown: 0,
+      aggro: 0,
+      aggroCue: 0,
+      stunned: 0,
+      hp: fishMaxHp(species),
+      maxHp: fishMaxHp(species),
+      dead: false,
+      hurtFlash: 0,
+      assetKey,
+      facingSign: -1,
+      sprite: scene.createEntitySprite(scene.player.x + 28, scene.player.y, assetKey),
+    }];
+    scene.cameras.main.centerOn(scene.fish[0].x, scene.fish[0].y);
+  } else if (mode === 'articulated') {
+    const manifest = articulatedCreatureDefs().find((candidate) => candidate.minBiome <= state.biome) ?? articulatedCreatureDefs()[0];
+    if (!manifest) return { ok: false, reason: 'missing-articulated-manifest' };
+    const creature = createArticulatedCreature(scene, manifest, scene.player.x + 42, scene.player.y);
+    creature.vx = 0;
+    creature.vy = 0;
+    creature.aggro = 0;
+    creature.reviewFrozen = true;
+    scene.articulatedCreatures = [creature];
+    scene.updateArticulatedParts(creature, 0);
+    scene.cameras.main.centerOn(creature.x, creature.y);
+  } else {
+    const oreX = Math.floor((scene.player.x + PLAYER_FORWARD_REACH) / TILE);
+    const oreY = Math.floor(scene.player.y / TILE);
+    scene.setTile(oreX, oreY, 'copper');
+    scene.cameras.main.centerOn(oreX * TILE + TILE * 0.5, oreY * TILE + TILE * 0.5);
+  }
+  renderHud();
+  scene.draw();
+  return { ok: true, mode, sampledSpeciesBefore: beforeSampled, stagedTile: scene.getTile(stage.centerX + 1, stage.centerY) };
+}
+
+function stageGeneratedFloraSmoke(scene: DeepdiveScene, source: 'stamp' | 'brush', payload: { assetKey?: string; species?: string; index?: number } = {}) {
+  const candidates = scene.flora.filter((flora) => {
+    if (flora.source !== source || flora.dead || !flora.surface) return false;
+    if (payload.assetKey && flora.assetKey !== payload.assetKey) return false;
+    if (payload.species && flora.species !== payload.species) return false;
+    return true;
+  });
+  const flora = candidates[Phaser.Math.Clamp(Math.floor(Number(payload.index) || 0), 0, Math.max(0, candidates.length - 1))];
+  if (!flora?.surface) {
+    return {
+      ok: false,
+      reason: source === 'stamp' ? 'no-stamp-flora' : 'no-brush-flora',
+      requested: { assetKey: payload.assetKey ?? '', species: payload.species ?? '' },
+      available: scene.flora
+        .filter((candidate) => candidate.source === source)
+        .map((candidate) => ({ species: candidate.species, assetKey: candidate.assetKey, dead: candidate.dead })),
+    };
+  }
+  flora.dead = false;
+  flora.hp = flora.maxHp;
+  flora.scanned = false;
+  flora.scan = 0;
+  flora.scanning = false;
+  flora.sample = 0;
+  flora.sampling = false;
+  flora.samplePulse = 0;
+  flora.sampleCooldown = 0;
+  state.scannedSpecies.delete(flora.species);
+  state.sampledSpecies.delete(flora.species);
+  state.cargo = state.cargo.filter((item) => item.sampleSpecies !== flora.species);
+  state.selectedCargoIndex = Math.min(state.selectedCargoIndex, Math.max(0, state.cargo.length - 1));
+  state.upgrades.scanner = Math.max(state.upgrades.scanner, 3);
+  state.fuel = Math.max(state.fuel, 100);
+  state.oxygen = Math.max(state.oxygen, oxygenMax());
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.radioOpen = false;
+  state.logbookOpen = false;
+  state.cargoOpen = false;
+  state.sonarMapOpen = false;
+  scene.player.x = Phaser.Math.Clamp(flora.surface.rootX + flora.surface.normalX * 15, 20, WORLD_W * TILE - 20);
+  scene.player.y = Phaser.Math.Clamp(flora.surface.rootY + flora.surface.normalY * 15, 20, WORLD_H * TILE - 20);
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.facing.set(-flora.surface.normalX, -flora.surface.normalY);
+  scene.player.facingSign = scene.player.facing.x < 0 ? -1 : 1;
+  state.depth = Math.max(0, Math.round((scene.player.y - SURFACE_Y) / 6));
+  scene.cameras.main.centerOn(scene.player.x, scene.player.y);
+  refreshPlaytestCamera(scene);
+  renderHud();
+  return {
+    ok: true,
+    species: flora.species,
+    assetKey: flora.assetKey,
+    propId: flora.propId ?? '',
+    x: roundMetric(flora.x),
+    y: roundMetric(flora.y),
+    surface: {
+      rootX: roundMetric(flora.surface.rootX),
+      rootY: roundMetric(flora.surface.rootY),
+      normalX: roundMetric(flora.surface.normalX),
+      normalY: roundMetric(flora.surface.normalY),
+      tileX: flora.surface.tileX,
+      tileY: flora.surface.tileY,
+      supportMineX: roundMetric(flora.surface.rootX - flora.surface.normalX * TILE * 1.7),
+      supportMineY: roundMetric(flora.surface.rootY - flora.surface.normalY * TILE * 1.7),
+    },
+    snapshot: scene.playtestSnapshot(),
+  };
+}
+
+function stageStampFloraSmoke(scene: DeepdiveScene, payload: { assetKey?: string; species?: string; index?: number } = {}) {
+  return stageGeneratedFloraSmoke(scene, 'stamp', payload);
+}
+
+function stageBrushFloraSmoke(scene: DeepdiveScene, payload: { assetKey?: string; species?: string; index?: number } = {}) {
+  return stageGeneratedFloraSmoke(scene, 'brush', payload);
 }
 
 function reachableOpenWaterPoint(scene: DeepdiveScene, targetDepthMeters: number) {
@@ -431,6 +874,9 @@ function stageBackgroundReview(scene: DeepdiveScene, value?: unknown) {
   state.paused = false;
   state.lost = false;
   state.won = false;
+  state.radioOpen = false;
+  state.logbookOpen = false;
+  state.cargoOpen = false;
   state.controller = {
     ...state.controller,
     connected: false,
@@ -1000,6 +1446,249 @@ function stageStrayOreDropReview(scene: DeepdiveScene) {
   const actualOre = stageStrayOreDropCase(scene, 'copper', 1);
   renderHud();
   return { plainStone, plainSand, actualOre };
+}
+
+function stageInteractionEdgeProof(scene: DeepdiveScene, value: unknown) {
+  const payload = typeof value === 'object' && value !== null
+    ? value as { kind?: string; species?: string; action?: string; seconds?: number }
+    : {};
+  if (payload.kind === 'ore') return stageInteractionOreProof(scene, payload.action);
+  if (payload.kind === 'fauna') return stageInteractionFaunaProof(scene, payload.species === 'Silver Hinge Crab' ? 'Silver Hinge Crab' : 'Mantis Shrimp', payload.action, payload.seconds);
+  return { ok: false, reason: 'unknown-interaction-edge-proof-kind' };
+}
+
+function stageInteractionOreProof(scene: DeepdiveScene, action = 'setup') {
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const centerY = Math.floor((SURFACE_Y + 520) / TILE);
+  const oreX = centerX + 5;
+  const oreY = centerY;
+  const target = {
+    ore: { x: oreX, y: oreY, worldX: oreX * TILE + TILE * 0.5, worldY: oreY * TILE + TILE * 0.5 },
+    oreFace: { x: oreX * TILE - 6, y: oreY * TILE + TILE * 0.5 },
+    rockControl: { x: (oreX - 1) * TILE + TILE * 0.5, y: (oreY + 2) * TILE + TILE * 0.5 },
+  };
+  if (action === 'mineOre' || action === 'mineRockControl') {
+    const before = looseCollectibleSummary(scene);
+    const mine = action === 'mineOre'
+      ? { x: target.ore.worldX, y: target.ore.worldY }
+      : target.rockControl;
+    state.fuel = fuelMax();
+    state.oxygen = oxygenMax();
+    state.upgrades.laser = Math.max(state.upgrades.laser, 5);
+    for (let i = 0; i < (action === 'mineOre' ? 1 : 2); i += 1) {
+      scene.player.mineCooldown = 0;
+      scene.mineAt(mine.x, mine.y);
+    }
+    let fallbackBreakTile = false;
+    if (action === 'mineOre' && scene.getTile(oreX, oreY) === 'copper') {
+      scene.damage[oreY][oreX] = tiles.copper.hp;
+      scene.breakTile(oreX, oreY, 'copper', tiles.copper, target.ore.worldX, target.ore.worldY);
+      fallbackBreakTile = true;
+    }
+    scene.draw();
+    return {
+      ok: true,
+      action,
+      target,
+      before,
+      after: looseCollectibleSummary(scene),
+      oreTile: scene.getTile(oreX, oreY),
+      rockControlTile: scene.getTile(oreX - 1, oreY + 2),
+      oreDamage: scene.damage[oreY]?.[oreX] ?? null,
+      fallbackBreakTile,
+      status: state.status,
+    };
+  }
+
+  if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
+    scene.generateWorld();
+    scene.worldReady = true;
+  }
+  for (let y = centerY - 7; y <= centerY + 7; y += 1) {
+    for (let x = centerX - 8; x <= centerX + 13; x += 1) {
+      scene.setTile(x, y, 'water');
+      if (scene.damage[y]?.[x] !== undefined) scene.damage[y][x] = 0;
+    }
+  }
+  for (let y = oreY - 4; y <= oreY + 4; y += 1) {
+    for (let x = oreX; x <= oreX + 5; x += 1) scene.setTile(x, y, 'stone');
+  }
+  scene.setTile(oreX, oreY, 'copper');
+  scene.setTile(oreX + 1, oreY, 'quartz');
+  scene.setTile(oreX - 1, oreY + 2, 'stone');
+  scene.damage[oreY][oreX] = tiles.copper.hp * 0.72;
+  rebuildTerrainMask(scene);
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.radioOpen = false;
+  state.logbookOpen = false;
+  state.cargoOpen = true;
+  state.activeSub = null;
+  state.pilotingSub = false;
+  state.depth = Math.max(0, Math.round((oreY * TILE - SURFACE_Y) / 6));
+  state.fuel = fuelMax();
+  state.oxygen = oxygenMax();
+  state.cargo = [];
+  state.selectedCargoIndex = 0;
+  state.upgrades.laser = Math.max(state.upgrades.laser, 5);
+  scene.player.x = oreX * TILE - 42;
+  scene.player.y = oreY * TILE + TILE * 0.5;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.mineCooldown = 0;
+  scene.player.facing.set(1, 0);
+  scene.player.facingSign = 1;
+  scene.fish = [];
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  scene.bobbits = [];
+  scene.hazards = [];
+  scene.larvae = [];
+  scene.nestEggs = [];
+  scene.looseItems = [];
+  scene.environmentProps = [];
+  scene.terrainBreakEffects = [];
+  clearPlaytestFloatingText(scene);
+  scene.terrainBoundsKey = '';
+  scene.terrainDirty = true;
+  scene.cameras.main.setZoom(3);
+  scene.cameras.main.centerOn(oreX * TILE + 8, oreY * TILE + TILE * 0.5);
+  refreshPlaytestCamera(scene);
+  state.status = 'Interaction proof: visible copper face and adjacent rock control staged.';
+  renderHud();
+  scene.draw();
+  return { ok: true, action: 'setup', target, oreTile: scene.getTile(oreX, oreY), status: state.status };
+}
+
+function stageInteractionFaunaProof(scene: DeepdiveScene, species: 'Mantis Shrimp' | 'Silver Hinge Crab', action = 'setup', seconds = 0) {
+  if (action === 'advance') {
+    const fish = scene.fish.find((candidate) => candidate.species === species && !candidate.dead);
+    const before = fish ? faunaProofFishSnapshot(scene, fish) : null;
+    const steps = Math.ceil(Phaser.Math.Clamp(Number(seconds) || 2.8, 0.2, 8) / (1 / 30));
+    for (let i = 0; i < steps; i += 1) scene.updateFish(1 / 30);
+    scene.draw();
+    const after = fish ? faunaProofFishSnapshot(scene, fish) : null;
+    return { ok: Boolean(fish), action, species, before, after, status: state.status };
+  }
+  if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
+    scene.generateWorld();
+    scene.worldReady = true;
+  }
+  if (!scene.fish.some((candidate) => candidate.species === species)) {
+    scene.generateWorld();
+    scene.worldReady = true;
+  }
+  let fish = scene.fish.find((candidate) => candidate.species === species);
+  if (!fish) return { ok: false, reason: 'missing-proof-fauna', species };
+  const centerX = Math.floor(WORLD_W * 0.5);
+  const centerY = Math.floor((SURFACE_Y + (species === 'Mantis Shrimp' ? 980 : 620)) / TILE);
+  for (let y = centerY - 8; y <= centerY + 8; y += 1) {
+    for (let x = centerX - 10; x <= centerX + 14; x += 1) scene.setTile(x, y, 'water');
+  }
+  for (let x = centerX - 8; x <= centerX + 12; x += 1) {
+    for (let y = centerY + 2; y <= centerY + 5; y += 1) scene.setTile(x, y, 'stone');
+  }
+  for (let y = centerY - 3; y <= centerY + 2; y += 1) scene.setTile(centerX + 4, y, 'stone');
+  for (let y = centerY - 3; y <= centerY - 1; y += 1) scene.setTile(centerX + 5, y, 'stone');
+  rebuildTerrainMask(scene);
+  state.started = true;
+  state.docked = false;
+  state.atBoat = false;
+  state.paused = false;
+  state.lost = false;
+  state.won = false;
+  state.radioOpen = false;
+  state.logbookOpen = false;
+  state.cargoOpen = false;
+  state.activeSub = null;
+  state.pilotingSub = false;
+  state.depth = Math.max(0, Math.round((centerY * TILE - SURFACE_Y) / 6));
+  state.fuel = fuelMax();
+  state.oxygen = oxygenMax();
+  scene.fish = [fish];
+  fish.dead = false;
+  fish.stunned = 0;
+  fish.aggro = 0;
+  fish.vx = 0;
+  fish.vy = 0;
+  fish.walkDir = 1;
+  fish.walkPause = 0;
+  fish.navReseedCooldown = 0;
+  fish.tetherRadius = species === 'Mantis Shrimp' ? 34 : 18;
+  const anchors = sampleTerrainSurfaceAnchors(scene, {
+    minY: (centerY - 5) * TILE,
+    maxY: (centerY + 4) * TILE,
+    salt: species === 'Mantis Shrimp' ? 41 : 17,
+    prefer: ['floor'],
+    limit: 80,
+  }).filter((anchor) => anchor.anchor === 'floor' && anchor.rootX < (centerX + 3) * TILE);
+  const anchor = anchors[0];
+  if (!anchor) return { ok: false, reason: 'missing-proof-anchor', species };
+  placeProofWalkerOnAnchor(fish, anchor, species === 'Mantis Shrimp' ? 33 : -14);
+  scene.player.x = fish.x - 70;
+  scene.player.y = fish.y - 20;
+  scene.player.vx = 0;
+  scene.player.vy = 0;
+  scene.player.facing.set(1, 0);
+  scene.player.facingSign = 1;
+  scene.flora = [];
+  scene.articulatedCreatures = [];
+  scene.bobbits = [];
+  scene.hazards = [];
+  scene.larvae = [];
+  scene.nestEggs = [];
+  scene.looseItems = [];
+  clearPlaytestFloatingText(scene);
+  scene.cameras.main.setZoom(2.6);
+  scene.cameras.main.centerOn(fish.x + 44, fish.y);
+  refreshPlaytestCamera(scene);
+  state.status = species === 'Mantis Shrimp'
+    ? 'Interaction proof: mantis shrimp facing a destructible lip.'
+    : 'Interaction proof: neutral crab edge walk orientation.';
+  renderHud();
+  scene.draw();
+  return { ok: true, action: 'setup', species, fish: faunaProofFishSnapshot(scene, fish), status: state.status };
+}
+
+function placeProofWalkerOnAnchor(fish: Fish, anchor: TerrainSurfaceAnchor, rootOffsetX: number) {
+  const outward = Math.max(fish.radius * 0.58, 7);
+  fish.surface = anchor;
+  fish.anchor = anchor.anchor;
+  fish.rootX = anchor.rootX;
+  fish.rootY = anchor.rootY;
+  fish.homeX = anchor.rootX;
+  fish.homeY = anchor.rootY;
+  fish.rootOffsetX = rootOffsetX;
+  fish.anchorOffsetX = anchor.normalX * outward;
+  fish.anchorOffsetY = anchor.normalY * outward;
+  fish.x = anchor.rootX + anchor.normalX * outward + anchor.tangentX * rootOffsetX;
+  fish.y = anchor.rootY + anchor.normalY * outward + anchor.tangentY * rootOffsetX;
+  fish.facingSign = rootOffsetX >= 0 ? 1 : -1;
+  fish.visualFacingSign = fish.facingSign;
+  fish.visualAngle = Math.atan2(anchor.tangentY, anchor.tangentX);
+  fish.grounded = true;
+  fish.fallbackNoAnchor = false;
+}
+
+function faunaProofFishSnapshot(scene: DeepdiveScene, fish: Fish) {
+  return {
+    species: fish.species,
+    x: roundMetric(fish.x),
+    y: roundMetric(fish.y),
+    anchor: fish.anchor ?? fish.surface?.anchor ?? 'none',
+    rootX: roundMetric(fish.surface?.rootX ?? fish.homeX),
+    rootY: roundMetric(fish.surface?.rootY ?? fish.homeY),
+    rootOffsetX: roundMetric(fish.rootOffsetX ?? 0),
+    walkDir: fish.walkDir ?? null,
+    facingSign: fish.facingSign,
+    visualFacingSign: fish.visualFacingSign ?? null,
+    visualAngle: roundMetric(fish.visualAngle ?? 0),
+    supported: fish.surface ? validateTerrainSurfaceAnchor(scene, fish.surface).valid : false,
+  };
 }
 
 function stageOreDepositReview(scene: DeepdiveScene, focusTile: Tile = 'sunstone', focusCamera = false, shapeFirstSlice = false, shapeFirstGroup = -1, shapeFirstCameraOffsetY = 0) {
@@ -1700,6 +2389,7 @@ function shapeFirstOreProofSnapshot(scene: DeepdiveScene, camera: Phaser.Cameras
 
 export function playtestSnapshot(this: DeepdiveScene, ) {
     refreshPlaytestCamera(this);
+    syncStoryProgress();
     const camera = this.cameras.main;
     const parallaxProfile = parallaxProfileFor(state.biome, state.depth);
     const screenFor = (x: number, y: number) => ({
@@ -1733,6 +2423,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         biome: state.biome,
         biomeName: biomeName(),
         credits: state.credits,
+        oreSoldCredits: state.oreSoldCredits,
         depth: state.depth,
         maxDepth: state.maxDepth,
         oxygen: Math.round(state.oxygen),
@@ -1741,8 +2432,20 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         fuel: Math.round(state.fuel),
         fuelMax: fuelMax(),
         cargo: state.cargo.length,
+        cargoItems: state.cargo.map((item) => ({ id: item.id, name: item.name, kind: item.kind, value: item.value, sampleSpecies: item.sampleSpecies ?? '' })),
         cargoCapacity: cargoCapacity(),
+        selectedTool: state.selectedTool,
+        unlockedTools: { ...state.unlockedTools },
+        scannedSpecies: [...state.scannedSpecies],
+        sampledSpecies: [...state.sampledSpecies],
         sonarRevealed: state.sonarRevealed.size,
+        sonarContacts: state.sonarContacts.map((contact) => ({
+          x: roundMetric(contact.x),
+          y: roundMetric(contact.y),
+          kind: contact.kind,
+          hostile: contact.hostile,
+          age: roundMetric(contact.age),
+        })),
         chartingProgress: biomeChartingProgress(),
         canTravelToNextBiome: canTravelToNextBiome(),
         atBoat: state.atBoat,
@@ -1750,6 +2453,9 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         started: state.started,
         lost: state.lost,
         won: state.won,
+        story: { ...state.story, completed: [...state.story.completed], flags: { ...state.story.flags }, heardRadio: [...state.story.heardRadio] },
+        pinnedStoryObjective: currentPinnedStoryObjective(),
+        finale: { ...state.finale, heardRadio: [...state.finale.heardRadio] },
         venom: { ...state.venom },
         bleed: { ...state.bleed },
         activeQuestId: state.activeQuestId,
@@ -1884,6 +2590,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         navSpawnFallback: Boolean(fish.navSpawnFallback),
         aggro: roundMetric(fish.aggro),
         aggroCue: roundMetric(fish.aggroCue),
+        stunned: roundMetric(fish.stunned),
         hp: Math.round(fish.hp),
         maxHp: Math.round(fish.maxHp),
         assetKey: fish.assetKey,
@@ -1974,11 +2681,18 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
           const validation = flora.surface ? validateTerrainSurfaceAnchor(this, flora.surface) : { valid: false, anchor: null };
           return {
             species: flora.species,
+            source: flora.source ?? 'biome',
+            propId: flora.propId ?? '',
             assetKey: flora.assetKey,
             x: roundMetric(flora.x),
             y: roundMetric(flora.y),
             anchor: flora.anchor,
             scanned: flora.scanned,
+            sampled: state.sampledSpecies.has(flora.species),
+            sample: roundMetric(flora.sample),
+            sampling: flora.sampling,
+            samplePulse: roundMetric(flora.samplePulse),
+            sampleCooldown: roundMetric(flora.sampleCooldown),
             hazardous: flora.hazardous,
             dead: flora.dead,
             hasSurface: Boolean(flora.surface),
@@ -2284,6 +2998,80 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
     };
   }
 
+function revealStorySmokeSonarCells(count: number) {
+    for (let i = 0; i < count; i += 1) state.sonarRevealed.add(`story:${state.biome}:${i}`);
+  }
+
+function stageStoryMilestoneSmoke(this: DeepdiveScene, value?: unknown) {
+    const request = value && typeof value === 'object' ? value as Record<string, unknown> : {};
+    const milestone = String(request.milestone ?? request.id ?? value ?? 'b1');
+    const mode = String(request.mode ?? 'ready');
+    const reset = request.reset !== false;
+    if (reset) state.story = createDefaultStoryProgress();
+    state.started = true;
+    state.lost = false;
+    state.paused = false;
+    state.radioOpen = false;
+    state.cargoOpen = false;
+    state.logbookOpen = false;
+    state.sonarMapOpen = false;
+    state.scannedSpecies.clear();
+    state.sonarRevealed.clear();
+    state.sampledSpecies.clear();
+    state.forwardOutpost.active = false;
+    state.forwardOutpost.charge = 0;
+    state.won = false;
+    resetFinaleProgress();
+    const atBoat = mode === 'complete' || mode === 'atBoat';
+    state.atBoat = atBoat;
+    state.docked = atBoat;
+    if (!atBoat) {
+      this.player.y = SURFACE_Y + scaledDepthPx(180);
+      state.depth = 180;
+    }
+
+    if (milestone === 'b2' || milestone === 'b2-vent-proof') {
+      state.biome = 2;
+      state.maxDepth = 1100;
+      ['Brine Grass', 'Vent Coral', 'Gulper Eel', 'Ash Minnow', 'Barreleye'].forEach((species) => state.scannedSpecies.add(species));
+      ['Brine Grass', 'Vent Coral'].forEach((species) => state.sampledSpecies.add(species));
+      revealStorySmokeSonarCells(3200);
+    } else if (milestone === 'b3' || milestone === 'b3-forward-pocket') {
+      state.biome = 3;
+      state.maxDepth = 1250;
+      ['Black Fan', 'Needle Garden', 'Abyssal Serpent', 'Mirror Fry', 'Abyssal Jelly', 'Goblin Shark'].forEach((species) => state.scannedSpecies.add(species));
+      state.sampledSpecies.add('Black Fan');
+      revealStorySmokeSonarCells(4200);
+      state.forwardOutpost = {
+        ...state.forwardOutpost,
+        active: true,
+        biome: 3,
+        x: this.player.x,
+        y: SURFACE_Y + scaledDepthPx(940),
+        depth: 940,
+        charge: Math.max(1, state.forwardOutpost.maxCharge),
+        floraSpecies: 'Black Fan',
+      };
+      state.story.flags['b3-gulper-wake-proof'] = true;
+    } else if (milestone === 'b4' || milestone === 'b4-reliquary-proof') {
+      state.biome = 4;
+      state.maxDepth = Math.max(state.maxDepth, 1600);
+      state.scannedSpecies.add('Circuit Kelp');
+      state.sampledSpecies.add('Circuit Kelp');
+      if (mode === 'proof' || mode === 'complete' || mode === 'atBoat') recoverFinalProof('Abyssal Crownmaw', 1600);
+      if (mode === 'complete' || mode === 'atBoat') completeFinaleAtBarge();
+    } else {
+      state.biome = 1;
+      state.maxDepth = 900;
+      ['Glass Kelp', 'Moon Sponge', 'Sting Anemone', 'Blue-ring Octopus'].forEach((species) => state.scannedSpecies.add(species));
+      state.sampledSpecies.add('Glass Kelp');
+      revealStorySmokeSonarCells(2400);
+    }
+    syncStoryProgress(false);
+    renderHud();
+    return { ok: true, milestone, mode, snapshot: this.playtestSnapshot() };
+  }
+
 export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, value?: unknown) {
     if (command !== 'reviewArticulated' && command !== 'advanceArticulatedReview' && command !== 'advanceArticulatedDamageReview') {
       this.articulatedCreatures.forEach((creature) => {
@@ -2301,6 +3089,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       clearVenom();
       clearBleed();
       refillAtBoat();
+      completeFinaleAtBarge();
     } else if (command === 'setBiome') {
       const biome = Phaser.Math.Clamp(Number(value) || 1, 1, 4) as Biome;
       state.biome = biome;
@@ -2309,9 +3098,11 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       state.oreSoldCredits = 0;
       state.cargo = [];
       state.selectedCargoIndex = 0;
+      resetToolState();
       state.sonarRevealed.clear();
       state.sonarContacts = [];
       state.scannedSpecies.clear();
+      state.sampledSpecies.clear();
       state.carrierSub = null;
       state.atBoat = true;
       state.docked = true;
@@ -2323,6 +3114,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       state.cargoOpen = false;
       state.lost = false;
       state.won = false;
+      resetFinaleProgress();
       clearVenom();
       clearBleed();
       state.started = true;
@@ -2450,6 +3242,10 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         this.player.facingSign = this.player.facing.x < 0 ? -1 : 1;
         state.docked = false;
         state.atBoat = false;
+        state.paused = false;
+        state.radioOpen = false;
+        state.logbookOpen = false;
+        state.cargoOpen = false;
         state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
         if (state.activeSub && state.pilotingSub) {
           state.activeSub.x = this.player.x;
@@ -2599,6 +3395,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       return stageLightingVisibilityReview(this);
     } else if (command === 'strayOreDropReview') {
       return stageStrayOreDropReview(this);
+    } else if (command === 'interactionEdgeProof') {
+      return stageInteractionEdgeProof(this, value);
 	    } else if (command === 'terrainMineAt') {
 	      const payload = typeof value === 'object' && value !== null ? value as { worldX?: number; worldY?: number; repeats?: number } : {};
 	      const repeats = Phaser.Math.Clamp(Math.floor(Number(payload.repeats) || 1), 1, 12);
@@ -3325,6 +4123,211 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         this.draw();
         return this.playtestSnapshot();
       }
+    } else if (command === 'largeThreatDrillImmunityReview') {
+      const payload = (value ?? {}) as { creatureId?: string };
+      const manifest = articulatedCreatureDefs().find((candidate) => candidate.id === (payload.creatureId ?? 'abyssal-crownmaw'))
+        ?? articulatedCreatureDefs().find((candidate) => candidate.id === 'abyssal-serpent')
+        ?? articulatedCreatureDefs().find((candidate) => candidate.minBiome >= 3);
+      if (!manifest) return { ok: false, reason: 'missing-articulated-manifest' };
+      let creature = this.articulatedCreatures.find((candidate) => candidate.id === manifest.id && !candidate.bobbitBurrow);
+      if (!creature) {
+        creature = createArticulatedCreature(this, manifest, WORLD_W * TILE * 0.5, SURFACE_Y + scaledDepthPx(840));
+        this.articulatedCreatures.push(creature);
+      }
+      const targetX = WORLD_W * TILE * 0.5;
+      const targetY = SURFACE_Y + scaledDepthPx(840);
+      const resetCreature = (target: ArticulatedCreature) => {
+        target.x = targetX;
+        target.y = targetY;
+        target.homeX = targetX;
+        target.homeY = targetY;
+        target.vx = 0;
+        target.vy = 0;
+        target.facingSign = 1;
+        target.hp = target.maxHp;
+        target.dead = false;
+        target.stunned = 0;
+        target.aggro = 0;
+        target.aggroCue = 0;
+        target.state = 'recover';
+        target.stateTimer = 999;
+        target.grabTimer = 0;
+        target.grabCooldown = 999;
+        target.bumpCooldown = 999;
+        target.parts.forEach((part) => {
+          part.hp = part.maxHp;
+          part.hurtFlash = 0;
+          part.jointStress = 0;
+          part.detached = false;
+          part.detachVx = 0;
+          part.detachVy = 0;
+          part.detachAngularVelocity = 0;
+        });
+        this.updateArticulatedParts(target, 0);
+        return target.parts.find((part) => part.id === 'body-2') ?? target.parts.find((part) => part.id.includes('body')) ?? target.parts[0];
+      };
+      const prepPlayerAt = (x: number, y: number) => {
+        this.player.x = x - 8;
+        this.player.y = y;
+        this.player.vx = 0;
+        this.player.vy = 0;
+        this.player.facing.set(1, 0);
+        this.player.facingSign = 1;
+        this.player.mineCooldown = 0;
+        state.started = true;
+        state.docked = false;
+        state.atBoat = false;
+        state.paused = false;
+        state.radioOpen = false;
+        state.logbookOpen = false;
+        state.cargoOpen = false;
+        state.lost = false;
+        state.won = false;
+        state.pilotingSub = false;
+        state.fuel = fuelMax();
+        state.oxygen = oxygenMax();
+        state.hull = 100 + state.upgrades.suit * 25;
+        state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+      };
+
+      const cutterPart = resetCreature(creature);
+      prepPlayerAt(cutterPart.x, cutterPart.y);
+      const cutterBefore = { hp: creature.hp, partHp: cutterPart.hp, fuel: state.fuel };
+      this.mineAt(cutterPart.x, cutterPart.y);
+      const cutterAfter = { hp: creature.hp, partHp: cutterPart.hp, fuel: state.fuel, status: state.status };
+
+      const stunPart = resetCreature(creature);
+      prepPlayerAt(creature.x, creature.y);
+      this.triggerStunPulse();
+      const stunAfter = { stunned: creature.stunned, aggro: creature.aggro, status: state.status, partId: stunPart.id };
+
+      const dynamitePart = resetCreature(creature);
+      prepPlayerAt(dynamitePart.x, dynamitePart.y);
+      const dynamiteBefore = { hp: creature.hp, partHp: dynamitePart.hp };
+      this.detonateDynamite(dynamitePart.x, dynamitePart.y);
+      const dynamiteAfter = { hp: creature.hp, partHp: dynamitePart.hp, status: state.status };
+
+      creature.x = targetX - 2200;
+      creature.y = targetY + 1200;
+      creature.homeX = creature.x;
+      creature.homeY = creature.y;
+      this.updateArticulatedParts(creature, 0);
+
+      const fish = this.fish.find((candidate) => !candidate.dead && candidate.hostile && candidate.radius <= 26)
+        ?? this.fish.find((candidate) => !candidate.dead && candidate.radius <= 26)
+        ?? this.fish.find((candidate) => !candidate.dead);
+      if (!fish) return { ok: false, reason: 'missing-normal-fauna', largeThreat: { id: creature.id, species: creature.species } };
+      fish.x = targetX;
+      fish.y = targetY;
+      fish.homeX = fish.x;
+      fish.homeY = fish.y;
+      fish.vx = 0;
+      fish.vy = 0;
+      fish.hp = fish.maxHp;
+      fish.dead = false;
+      fish.stunned = 0;
+      fish.sprite?.setPosition(fish.x, fish.y).setVisible(true);
+      prepPlayerAt(fish.x, fish.y);
+      const fishBefore = { hp: fish.hp, maxHp: fish.maxHp };
+      this.mineAt(fish.x, fish.y);
+      const fishAfter = { hp: fish.hp, dead: fish.dead, status: state.status };
+
+      clearPlaytestFloatingText(this);
+      state.paused = true;
+      refreshPlaytestCamera(this);
+      this.draw();
+      return {
+        ok: true,
+        largeThreat: {
+          id: creature.id,
+          species: creature.species,
+          classified: isLargeArticulatedThreat(creature),
+          rule: 'large articulated threat: signature apex ID or B3+ epic/legendary articulated creature with manifest radius >= 58 and non-passive behavior',
+          cutter: { before: cutterBefore, after: cutterAfter },
+          stun: stunAfter,
+          dynamite: {
+            before: dynamiteBefore,
+            after: dynamiteAfter,
+            largeThreatDamageMultiplier: LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,
+          },
+        },
+        normalFauna: {
+          species: fish.species,
+          hostile: fish.hostile,
+          radius: roundMetric(fish.radius),
+          cutter: { before: fishBefore, after: fishAfter },
+        },
+      };
+    } else if (command === 'selectTool') {
+      const toolId = typeof value === 'string' ? value : '';
+      if (toolId === 'drill' || toolId === 'scanner' || toolId === 'sonar' || toolId === 'sampler' || toolId === 'flare' || toolId === 'stun' || toolId === 'charge') {
+        return { ok: selectTool(toolId), snapshot: this.playtestSnapshot() };
+      }
+      return { ok: false, reason: 'unknown-tool', snapshot: this.playtestSnapshot() };
+    } else if (command === 'buyShopItem') {
+      const id = typeof value === 'string' ? value as ShopItem['id'] : 'stun-grenade';
+      const beforeCargo = state.cargo.length;
+      const beforeCredits = state.credits;
+      this.buyShopItem(id);
+      return {
+        ok: state.cargo.length > beforeCargo || beforeCredits !== state.credits,
+        id,
+        cargoCount: state.cargo.filter((item) => item.id === id).length,
+        unlockedTools: { ...state.unlockedTools },
+        status: state.status,
+      };
+    } else if (command === 'stageStunToolSmoke') {
+      return stageStunToolSmoke(this);
+    } else if (command === 'stageBargeSaleSmoke') {
+      return stageBargeSaleSmoke(this);
+    } else if (command === 'sampleQuestBoardsSmoke') {
+      const originalBiome = state.biome;
+      const boards: Record<number, string[]> = {};
+      for (const biome of [1, 2, 3, 4] as Biome[]) {
+        state.biome = biome;
+        boards[biome] = generateQuestBoard(false).map((quest) => quest.kind);
+      }
+      state.biome = 1;
+      state.questBoard = generateQuestBoard(false);
+      state.activeQuestId = '';
+      state.sampledSpecies.clear();
+      state.cargo = [];
+      state.selectedCargoIndex = 0;
+      state.started = true;
+      state.atBoat = true;
+      state.docked = true;
+      state.paused = false;
+      state.cargoOpen = false;
+      renderHud();
+      return { ok: Object.values(boards).every((kinds) => kinds.includes('sample')), originalBiome, boards, activeBoard: state.questBoard.map((quest) => ({ ...quest })) };
+    } else if (command === 'acceptSampleQuest') {
+      const quest = state.questBoard.find((entry) => entry.kind === 'sample');
+      if (!quest) return { ok: false, reason: 'sample quest missing', questKinds: state.questBoard.map((entry) => entry.kind) };
+      this.acceptQuest(quest.id);
+      return { ok: state.activeQuestId === quest.id, quest: { ...quest }, snapshot: this.playtestSnapshot() };
+    } else if (command === 'claimActiveQuest') {
+      const quest = activeQuest();
+      if (!quest) return { ok: false, reason: 'no active quest' };
+      this.claimQuest(quest.id);
+      return { ok: quest.claimed, quest: { ...quest }, snapshot: this.playtestSnapshot() };
+    } else if (command === 'selectedToolSmokeStage') {
+      const payload = typeof value === 'object' && value !== null ? value as { mode?: string } : {};
+      const mode = payload.mode === 'life' ? 'life' : 'terrain';
+      return stageSelectedToolSmoke(this, mode);
+    } else if (command === 'floraSamplerSmokeStage') {
+      const payload = typeof value === 'object' && value !== null ? value as { mode?: string } : {};
+      const mode = payload.mode === 'scannedFlora'
+        ? 'scannedFlora'
+        : payload.mode === 'fish' || payload.mode === 'articulated' || payload.mode === 'terrain'
+          ? payload.mode
+          : 'flora';
+      return stageFloraSamplerSmoke(this, mode);
+    } else if (command === 'stampFloraSmokeStage') {
+      const payload = typeof value === 'object' && value !== null ? value as { assetKey?: string; species?: string; index?: number } : {};
+      return stageStampFloraSmoke(this, payload);
+    } else if (command === 'brushFloraSmokeStage') {
+      const payload = typeof value === 'object' && value !== null ? value as { assetKey?: string; species?: string; index?: number } : {};
+      return stageBrushFloraSmoke(this, payload);
     } else if (command === 'collideArticulated') {
       const payload = (value ?? {}) as { creatureId?: string; partId?: string };
       const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));
@@ -3404,6 +4407,23 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       state.oxygen = Phaser.Math.Clamp(Number(value) || 0, 0, oxygenMax());
     } else if (command === 'setHull') {
       state.hull = Phaser.Math.Clamp(Number(value) || 0, 0, 100 + state.upgrades.suit * 25);
+    } else if (command === 'recoverFinalProof') {
+      const depth = typeof value === 'number' ? value : state.depth;
+      const ok = recoverFinalProof('Abyssal Crownmaw', depth);
+      renderHud();
+      return { ok, snapshot: this.playtestSnapshot() };
+    } else if (command === 'completeFinaleAtBarge') {
+      state.atBoat = true;
+      state.docked = true;
+      const ok = completeFinaleAtBarge();
+      renderHud();
+      return { ok, snapshot: this.playtestSnapshot() };
+    } else if (command === 'continueSurvey') {
+      const ok = continueSurveyAfterEnding();
+      renderHud();
+      return { ok, snapshot: this.playtestSnapshot() };
+    } else if (command === 'storyMilestoneSmokeStage') {
+      return stageStoryMilestoneSmoke.call(this, value);
     }
     renderHud();
     return this.playtestSnapshot();

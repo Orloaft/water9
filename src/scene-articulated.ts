@@ -3,7 +3,7 @@ import type { ArticulatedCreature, ArticulatedCreatureManifest, ArticulatedPartM
 import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,PLAYER_CONTACT_RADIUS,TILE,WORLD_H,WORLD_W } from './constants';
 import { state } from './state';
 import { articulatedBehaviorFor,articulatedCreatureDef,articulatedCreatureDefs,articulatedPrototypeRuntimeEnabled,articulatedSpawnBudgetForBiome,articulatedSpawnPriority,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
-import { darknessAtDepth, lightRadius, rarityColor, scaledDepthPx } from './helpers';
+import { darknessAtDepth, largeThreatDynamiteDamageMultiplier, lightRadius, rarityColor, scaledDepthPx } from './helpers';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 import { terrainMaskContactForCapsule } from './terrain-mask';
@@ -510,6 +510,10 @@ const signatureEncounterCreatureIds = new Set([
   'abyssal-glasshook-skulk',
 ]);
 
+function isBiomeOneGlasshookSkulk(manifest: ArticulatedCreatureManifest) {
+  return state.biome === 1 && manifest.id === 'abyssal-glasshook-skulk';
+}
+
 function spawnArticulatedAt(scene: DeepdiveScene, manifest: ArticulatedCreatureManifest, point: { x: number; y: number }, phaseOffset = 0) {
   const clamped = clampArticulatedSpawnPoint(manifest, point);
   const creature = createArticulatedCreature(scene, manifest, clamped.x, clamped.y);
@@ -714,13 +718,13 @@ export function populateArticulatedCreatures(this: DeepdiveScene) {
   const spawnBudget = articulatedSpawnBudgetForBiome(state.biome, articulatedPrototypeRuntimeEnabled());
   let remainingBudget = Math.max(0, spawnBudget - reservedBobbitSpawnCount(this));
   const manifests = articulatedCreatureDefs()
-    .filter((manifest) => state.biome >= manifest.minBiome)
+    .filter((manifest) => state.biome >= manifest.minBiome || isBiomeOneGlasshookSkulk(manifest))
     .filter((manifest) => shouldSpawnArticulatedCreature(manifest))
     .filter((manifest) => manifest.id !== 'abyssal-mandible-bobbit')
     .sort((a, b) => articulatedSpawnPriority(b) - articulatedSpawnPriority(a) || a.id.localeCompare(b.id));
   for (const manifest of manifests) {
     if (remainingBudget <= 0) break;
-    const spawnCount = Math.min(manifest.spawn.count, remainingBudget);
+    const spawnCount = Math.min(isBiomeOneGlasshookSkulk(manifest) ? 1 : manifest.spawn.count, remainingBudget);
     for (let i = 0; i < spawnCount; i += 1) {
       const reservedCreature = signatureEncounterCreatureIds.has(manifest.id)
         ? spawnReservedArticulated(this, manifest, i)
@@ -1869,7 +1873,8 @@ export function damageArticulatedInRadius(this: DeepdiveScene, centerX: number, 
     if (!hit) continue;
     if (hit.distance > radius) continue;
     const falloff = Phaser.Math.Clamp(1 - hit.distance / Math.max(1, radius), 0.3, 1);
-    this.damageArticulatedPart(creature, hit.part, amount * falloff, source);
+    const largeThreatBlastMultiplier = source === 'Dynamite' ? largeThreatDynamiteDamageMultiplier(creature) : 1;
+    this.damageArticulatedPart(creature, hit.part, amount * falloff * largeThreatBlastMultiplier, source);
     hits += 1;
   }
   return hits;

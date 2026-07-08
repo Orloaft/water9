@@ -1,9 +1,10 @@
 import Phaser from 'phaser';
-import type { Biome,CargoItem,ForwardOutpost,Quest,SubTier,SubVehicle,Tile,UpgradeId } from './types';
+import type { Biome,CargoItem,FinaleProgress,ForwardOutpost,Quest,StoryProgress,SubTier,SubVehicle,Tile,ToolId,UpgradeId } from './types';
 import { BASE_OXYGEN,FORWARD_OUTPOST_MAX_CHARGE,FORWARD_OUTPOST_OXYGEN_RADIUS,FORWARD_OUTPOST_OXYGEN_REFILL,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { state } from './state';
 import { rng } from './rng';
-import { clampSelectedCargoIndex,clearBleed,clearVenom,createSubVehicle,fuelMax,hullMax,oxygenMax,resetOxygenWarnings } from './helpers';
+import { clampSelectedCargoIndex,clearBleed,clearVenom,createDefaultStoryProgress,createSubVehicle,fuelMax,hullMax,normalizeStoryProgress,oxygenMax,resetOxygenWarnings,syncStoryProgress } from './helpers';
+import { normalizeSelectedTool, normalizeUnlockedTools } from './tools';
 import type { DeepdiveScene } from './scene';
 import { rebuildTerrainMask } from './terrain-mask';
 
@@ -62,8 +63,11 @@ interface SavedGame {
     oreSoldCredits: number;
     cargo: CargoItem[];
     selectedCargoIndex: number;
+    selectedTool?: ToolId;
+    unlockedTools?: Partial<Record<ToolId, boolean>>;
     sonarRevealed: string[];
     scannedSpecies: string[];
+    sampledSpecies?: string[];
     upgrades: Record<UpgradeId, number>;
     achievements: string[];
     questBoard: Quest[];
@@ -76,6 +80,8 @@ interface SavedGame {
     pilotingSub: boolean;
     auxSubActive: boolean;
     marlinVoucherAvailable?: boolean;
+    story?: StoryProgress;
+    finale?: FinaleProgress;
     won: boolean;
     lost: boolean;
     started: boolean;
@@ -215,8 +221,11 @@ function buildSave(scene: DeepdiveScene): SavedGame {
       oreSoldCredits: finiteInt(state.oreSoldCredits, 0),
       cargo: state.cargo.map((item) => ({ ...item })),
       selectedCargoIndex: finiteInt(state.selectedCargoIndex, 0),
+      selectedTool: state.selectedTool,
+      unlockedTools: { ...state.unlockedTools },
       sonarRevealed: [...state.sonarRevealed],
       scannedSpecies: [...state.scannedSpecies],
+      sampledSpecies: [...state.sampledSpecies],
       upgrades: { ...state.upgrades },
       achievements: [...state.achievements],
       questBoard: state.questBoard.map((quest) => ({ ...quest })),
@@ -229,6 +238,19 @@ function buildSave(scene: DeepdiveScene): SavedGame {
       pilotingSub: state.pilotingSub,
       auxSubActive: state.auxSubActive,
       marlinVoucherAvailable: state.marlinVoucherAvailable,
+      story: {
+        activeId: state.story.activeId,
+        completed: [...state.story.completed],
+        flags: { ...state.story.flags },
+        heardRadio: [...state.story.heardRadio],
+      },
+      finale: {
+        finalProofRecovered: state.finale.finalProofRecovered,
+        endingSeen: state.finale.endingSeen,
+        heardRadio: [...state.finale.heardRadio],
+        finalProofSpecies: state.finale.finalProofSpecies,
+        finalProofDepth: state.finale.finalProofDepth,
+      },
       won: state.won,
       lost: state.lost,
       started: state.started,
@@ -291,9 +313,12 @@ function applySavedState(save: SavedGame) {
   state.cargo = Array.isArray(save.state.cargo) ? save.state.cargo.map((item) => ({ ...item })) : [];
   state.selectedCargoIndex = finiteInt(save.state.selectedCargoIndex, 0);
   clampSelectedCargoIndex();
+  state.unlockedTools = normalizeUnlockedTools(save.state.unlockedTools);
+  state.selectedTool = normalizeSelectedTool(save.state.selectedTool, state.unlockedTools);
   state.sonarRevealed = new Set(save.state.sonarRevealed.filter((entry) => typeof entry === 'string'));
   state.sonarContacts = [];
   state.scannedSpecies = new Set(save.state.scannedSpecies.filter((entry) => typeof entry === 'string'));
+  state.sampledSpecies = new Set((save.state.sampledSpecies ?? []).filter((entry) => typeof entry === 'string'));
   for (const id of upgradeIds) state.upgrades[id] = Math.max(0, finiteInt(save.state.upgrades[id], 0));
   state.achievements = new Set(save.state.achievements.filter((entry) => typeof entry === 'string'));
   state.questBoard = Array.isArray(save.state.questBoard) ? save.state.questBoard.map((quest) => ({ ...quest })) : [];
@@ -306,11 +331,14 @@ function applySavedState(save: SavedGame) {
   state.pilotingSub = Boolean(save.state.pilotingSub && state.activeSub);
   state.auxSubActive = Boolean(save.state.auxSubActive);
   state.marlinVoucherAvailable = Boolean(save.state.marlinVoucherAvailable && !state.subOwned[2]);
+  state.story = normalizeStoryProgress(save.state.story ?? createDefaultStoryProgress());
+  state.finale = restoreFinaleProgress(save.state.finale, Boolean(save.state.won));
   state.won = Boolean(save.state.won);
   state.lost = Boolean(save.state.lost);
   state.started = Boolean(save.state.started);
   state.atBoat = Boolean(save.state.atBoat);
   state.docked = Boolean(save.state.docked || state.atBoat);
+  syncStoryProgress();
   state.paused = false;
   state.sonarMapOpen = false;
   state.sonarMapPanX = 0;
@@ -327,6 +355,19 @@ function applySavedState(save: SavedGame) {
   resetOxygenWarnings();
   clearVenom();
   clearBleed();
+}
+
+function restoreFinaleProgress(saved: FinaleProgress | undefined, won: boolean): FinaleProgress {
+  const heardRadio = Array.isArray(saved?.heardRadio)
+    ? saved.heardRadio.filter((entry) => typeof entry === 'string')
+    : [];
+  return {
+    finalProofRecovered: Boolean(saved?.finalProofRecovered || won),
+    endingSeen: Boolean(saved?.endingSeen),
+    heardRadio,
+    finalProofSpecies: typeof saved?.finalProofSpecies === 'string' ? saved.finalProofSpecies : '',
+    finalProofDepth: Math.max(0, finiteInt(saved?.finalProofDepth, 0)),
+  };
 }
 
 function restoreForwardOutpost(saved: ForwardOutpost | undefined): ForwardOutpost {

@@ -368,13 +368,20 @@ export function validateTerrainSurfaceAnchor(scene: DeepdiveScene, anchor: Terra
   return { valid: true, anchor: current };
 }
 
-export function findNearbyTerrainSurfaceAnchor(scene: DeepdiveScene, anchor: TerrainSurfaceAnchor, radiusCells = 8) {
+export function findNearbyTerrainSurfaceAnchor(
+  scene: DeepdiveScene,
+  anchor: TerrainSurfaceAnchor,
+  radiusCells = 8,
+  prefer?: TerrainSurfaceAnchor['anchor'][],
+) {
+  const preferred = prefer?.length ? new Set(prefer) : null;
   let best: TerrainSurfaceAnchor | null = null;
   let bestScore = Number.POSITIVE_INFINITY;
   for (let sy = Math.max(1, anchor.maskSy - radiusCells); sy <= Math.min(TERRAIN_MASK_HEIGHT - 2, anchor.maskSy + radiusCells); sy += 1) {
     for (let sx = Math.max(1, anchor.maskSx - radiusCells); sx <= Math.min(TERRAIN_MASK_WIDTH - 2, anchor.maskSx + radiusCells); sx += 1) {
       const candidate = terrainSurfaceAnchorAt(scene, sx, sy);
       if (!candidate || candidate.support < 9 || candidate.clearance < 2) continue;
+      if (preferred && !preferred.has(candidate.anchor)) continue;
       const dx = candidate.rootX - anchor.rootX;
       const dy = candidate.rootY - anchor.rootY;
       const normalPenalty = Math.abs(candidate.normalX - anchor.normalX) + Math.abs(candidate.normalY - anchor.normalY);

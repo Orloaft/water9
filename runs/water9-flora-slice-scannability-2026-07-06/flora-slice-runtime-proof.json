@@ -1,0 +1,1670 @@
+{
+  "schema": "water9/flora-slice-runtime-proof@1",
+  "generatedAt": "2026-07-06T22:54:13.026Z",
+  "repoRoot": "/mnt/nxt-dev/water9",
+  "gitHead": "03b2dad",
+  "gitStatus": "M package.json\n M public/review/water9-progression-measurement.json\n M runs/water9-fauna-rarity-balance-2026-07-06/fauna-rarity-audit.json\n M src/helpers.ts\n M src/scene-sub.ts\n M src/scene-worldgen.ts\n M src/types.ts\n M tools/check_fauna_rarity_balance.mjs\n M tools/measure_progression.mjs\n M tools/test_progression_tuning_smoke.mjs\n?? public/assets/generated/terrain-edge-flora-ember-bloom.png\n?? public/assets/generated/terrain-edge-flora-moon-sponge.png\n?? public/assets/generated/terrain-edge-flora-sting-anemone.png\n?? public/assets/generated/terrain-edge-flora-vent-coral.png\n?? runs/water9-flora-slice-scannability-2026-07-06.md\n?? runs/water9-flora-slice-scannability-2026-07-06.prompt.md\n?? runs/water9-flora-slice-scannability-2026-07-06/\n?? runs/water9-flora-style-guide-audit-2026-07-06.flora-inventory.prompt.md\n?? runs/water9-flora-style-guide-audit-2026-07-06.flora-runtime-proof.prompt.md\n?? runs/water9-flora-style-guide-audit-2026-07-06.flora-style-appraisal.prompt.md\n?? runs/water9-flora-style-guide-audit-2026-07-06.md\n?? runs/water9-flora-style-guide-audit-2026-07-06/\n?? runs/water9-scan-reward-balance-audit-2026-07-06.formula-code-audit.prompt.md\n?? runs/water9-scan-reward-balance-audit-2026-07-06.md\n?? runs/water9-scan-reward-balance-audit-2026-07-06.progression-proposal.prompt.md\n?? runs/water9-scan-reward-balance-audit-2026-07-06.roster-payout-audit.prompt.md\n?? runs/water9-scan-reward-balance-audit-2026-07-06/\n?? runs/water9-scan-reward-rebalance-2026-07-06.md\n?? runs/water9-scan-reward-rebalance-2026-07-06.prompt.md\n?? tools/build_flora_slice_assets.py\n?? tools/test_flora_scannability_audit.mjs",
+  "baseUrl": "http://127.0.0.1:5180/",
+  "port": 5180,
+  "selector": "#game canvas",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "captures": [
+    {
+      "key": "b1-moon-sponge",
+      "biome": 1,
+      "species": "Moon Sponge",
+      "assetKey": "terrain-edge-flora-moon-sponge",
+      "label": "B1 Moon Sponge replacement",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b1-moon-sponge.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b1-moon-sponge-grayscale.png",
+      "viewportPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/viewport-b1-moon-sponge.png",
+      "colorBytes": 461840,
+      "grayscaleBytes": 280815,
+      "viewportBytes": 425032,
+      "metrics": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.07,
+        "lumaMax": 203.52,
+        "lumaRange": 203.44,
+        "lumaMean": 17.99,
+        "lumaStdDev": 15.43
+      },
+      "state": {
+        "biome": 1,
+        "biomeName": "The Shallows",
+        "credits": 140,
+        "depth": 582,
+        "maxDepth": 582,
+        "oxygen": 143,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 100,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 254,
+        "chartingProgress": {
+          "scanned": 1,
+          "requiredScans": 4,
+          "depth": 582,
+          "requiredDepth": 900,
+          "sonarCells": 254,
+          "requiredSonarCells": 2400,
+          "apex": "Blue-ring Octopus",
+          "apexScanned": false,
+          "hostileScanned": false,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "depth-71874-1",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 636 m and transmit a pressure profile from this trench.",
+            "reward": 940,
+            "target": 636,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "scan-71874-1",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 5 new lifeforms before leaving the claim.",
+            "reward": 1100,
+            "target": 5,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "nest-71874-1",
+            "kind": "nest",
+            "title": "Rare: Nest Extermination",
+            "client": "Corporate Hazard Office",
+            "text": "Accept a nest locator, find the nearest predator nest on sonar, and destroy or burn out every egg and larva.",
+            "reward": 3750,
+            "target": 1,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false,
+            "rare": true
+          },
+          {
+            "id": "ore-71874-1",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,200 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1300,
+            "target": 1200,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 0,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "camera": {
+        "x": 0,
+        "y": 2322,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 45,
+        "y": 2430,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": "Moon Sponge"
+      },
+      "terrainLookReview": {
+        "biome": 1,
+        "depthBand": "upper",
+        "depthMeters": 388,
+        "lookId": "reef-shelf",
+        "palette": {
+          "rim": 3891045,
+          "sandRim": 2702138,
+          "growth": 2392175,
+          "glow": 7525852,
+          "moss": 1852994,
+          "shadow": 66310
+        },
+        "stampPools": {
+          "fringe": [
+            "terrain-stamp-fringe-teal",
+            "terrain-stamp-fringe-teal",
+            "terrain-stamp-fringe-brine"
+          ],
+          "flora": [
+            "terrain-stamp-plant-glass",
+            "terrain-stamp-plant-brine"
+          ],
+          "materialAccent": [
+            "terrain-stamp-fossil-shell",
+            "terrain-stamp-seam-green",
+            "terrain-stamp-nodule-blue"
+          ],
+          "activeEnvironment": [
+            "terrain-stamp-fringe-teal"
+          ]
+        },
+        "density": {
+          "edgeStamp": 1,
+          "proceduralFringeAlpha": 1
+        },
+        "cameraSlice": {
+          "tileBounds": {
+            "startX": 0,
+            "endX": 15,
+            "startY": 96,
+            "endY": 106
+          },
+          "visibleOreCount": 27,
+          "anchorstoneCount": 22,
+          "destructibleCount": 96,
+          "bobbitBurrowCount": 0,
+          "encounterReservationCount": 0
+        }
+      },
+      "decorativeStampEvidence": [
+        "terrain-stamp-fringe-teal"
+      ],
+      "visibleScannableFlora": [
+        {
+          "species": "Moon Sponge",
+          "assetKey": "terrain-edge-flora-moon-sponge",
+          "depthMeters": 392,
+          "scanned": true,
+          "hazardous": false,
+          "anchor": "floor",
+          "supported": true
+        }
+      ],
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=1&renderer=canvas",
+      "selectedFlora": {
+        "species": "Moon Sponge",
+        "assetKey": "terrain-edge-flora-moon-sponge",
+        "x": 24.82,
+        "y": 2446.882,
+        "anchor": "floor",
+        "scanned": false,
+        "hazardous": false,
+        "dead": false,
+        "hasSurface": true,
+        "anchorSource": "terrain-mask",
+        "supported": true,
+        "support": 25,
+        "clearance": 7,
+        "tileX": 0,
+        "tileY": 102,
+        "maskSx": 6,
+        "maskSy": 818,
+        "normalX": 0.707,
+        "normalY": -0.707,
+        "fakeOpenWaterAnchor": false,
+        "candidateIndex": 23,
+        "depthMeters": 392,
+        "nearestOtherDistance": 489.6213333301564
+      },
+      "selectedFloraAfterHold": {
+        "species": "Moon Sponge",
+        "assetKey": "terrain-edge-flora-moon-sponge",
+        "x": 24.82,
+        "y": 2446.882,
+        "anchor": "floor",
+        "scanned": true,
+        "hazardous": false,
+        "dead": false,
+        "hasSurface": true,
+        "anchorSource": "terrain-mask",
+        "supported": true,
+        "support": 25,
+        "clearance": 7,
+        "tileX": 0,
+        "tileY": 102,
+        "maskSx": 6,
+        "maskSy": 818,
+        "normalX": 0.707,
+        "normalY": -0.707,
+        "fakeOpenWaterAnchor": false,
+        "selectedDistance": 0
+      },
+      "selectionCounts": {
+        "candidates": 10
+      },
+      "scanEvidence": {
+        "requestedScanHoldMs": 1660,
+        "scanTargetDuringHold": "Moon Sponge",
+        "scanTargetAfterHold": "Moon Sponge",
+        "selectedScannedAfterHold": true
+      }
+    },
+    {
+      "key": "b1-sting-anemone",
+      "biome": 1,
+      "species": "Sting Anemone",
+      "assetKey": "terrain-edge-flora-sting-anemone",
+      "label": "B1 Sting Anemone replacement",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b1-sting-anemone.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b1-sting-anemone-grayscale.png",
+      "viewportPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/viewport-b1-sting-anemone.png",
+      "colorBytes": 367039,
+      "grayscaleBytes": 218043,
+      "viewportBytes": 362865,
+      "metrics": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.07,
+        "lumaMax": 197.84,
+        "lumaRange": 197.77,
+        "lumaMean": 12.78,
+        "lumaStdDev": 13.57
+      },
+      "state": {
+        "biome": 1,
+        "biomeName": "The Shallows",
+        "credits": 2040,
+        "depth": 846,
+        "maxDepth": 846,
+        "oxygen": 142,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 100,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 280,
+        "chartingProgress": {
+          "scanned": 1,
+          "requiredScans": 4,
+          "depth": 846,
+          "requiredDepth": 900,
+          "sonarCells": 280,
+          "requiredSonarCells": 2400,
+          "apex": "Blue-ring Octopus",
+          "apexScanned": false,
+          "hostileScanned": true,
+          "threatOk": true,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "scan-476327-1",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 3 new lifeforms before leaving the claim.",
+            "reward": 1100,
+            "target": 3,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "depth-476327-1",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 631 m and transmit a pressure profile from this trench.",
+            "reward": 940,
+            "target": 631,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "ore-476327-1",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,200 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1300,
+            "target": 1200,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 0,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "camera": {
+        "x": 1621,
+        "y": 3395,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1794,
+        "y": 3504,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": "Sting Anemone"
+      },
+      "terrainLookReview": {
+        "biome": 1,
+        "depthBand": "upper",
+        "depthMeters": 564,
+        "lookId": "reef-shelf",
+        "palette": {
+          "rim": 3891045,
+          "sandRim": 2702138,
+          "growth": 2392175,
+          "glow": 7525852,
+          "moss": 1852994,
+          "shadow": 66310
+        },
+        "stampPools": {
+          "fringe": [
+            "terrain-stamp-fringe-teal",
+            "terrain-stamp-fringe-teal",
+            "terrain-stamp-fringe-brine"
+          ],
+          "flora": [
+            "terrain-stamp-plant-glass",
+            "terrain-stamp-plant-brine"
+          ],
+          "materialAccent": [
+            "terrain-stamp-fossil-shell",
+            "terrain-stamp-seam-green",
+            "terrain-stamp-nodule-blue"
+          ],
+          "activeEnvironment": []
+        },
+        "density": {
+          "edgeStamp": 1,
+          "proceduralFringeAlpha": 1
+        },
+        "cameraSlice": {
+          "tileBounds": {
+            "startX": 67,
+            "endX": 82,
+            "startY": 141,
+            "endY": 151
+          },
+          "visibleOreCount": 22,
+          "anchorstoneCount": 0,
+          "destructibleCount": 97,
+          "bobbitBurrowCount": 0,
+          "encounterReservationCount": 0
+        }
+      },
+      "decorativeStampEvidence": [],
+      "visibleScannableFlora": [
+        {
+          "species": "Sting Anemone",
+          "assetKey": "terrain-edge-flora-sting-anemone",
+          "depthMeters": 565,
+          "scanned": true,
+          "hazardous": true,
+          "anchor": "ceiling",
+          "supported": true
+        }
+      ],
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=1&renderer=canvas",
+      "selectedFlora": {
+        "species": "Sting Anemone",
+        "assetKey": "terrain-edge-flora-sting-anemone",
+        "x": 1816.202,
+        "y": 3487.196,
+        "anchor": "ceiling",
+        "scanned": false,
+        "hazardous": true,
+        "dead": false,
+        "hasSurface": true,
+        "anchorSource": "terrain-mask",
+        "supported": true,
+        "support": 27,
+        "clearance": 7,
+        "tileX": 75,
+        "tileY": 144,
+        "maskSx": 606,
+        "maskSy": 1159,
+        "normalX": -0.707,
+        "normalY": 0.707,
+        "fakeOpenWaterAnchor": false,
+        "candidateIndex": 31,
+        "depthMeters": 565,
+        "nearestOtherDistance": 1015.141095221743
+      },
+      "selectedFloraAfterHold": {
+        "species": "Sting Anemone",
+        "assetKey": "terrain-edge-flora-sting-anemone",
+        "x": 1816.202,
+        "y": 3487.196,
+        "anchor": "ceiling",
+        "scanned": true,
+        "hazardous": true,
+        "dead": false,
+        "hasSurface": true,
+        "anchorSource": "terrain-mask",
+        "supported": true,
+        "support": 27,
+        "clearance": 7,
+        "tileX": 75,
+        "tileY": 144,
+        "maskSx": 606,
+        "maskSy": 1159,
+        "normalX": -0.707,
+        "normalY": 0.707,
+        "fakeOpenWaterAnchor": false,
+        "selectedDistance": 0
+      },
+      "selectionCounts": {
+        "candidates": 4
+      },
+      "scanEvidence": {
+        "requestedScanHoldMs": 1660,
+        "scanTargetDuringHold": "Sting Anemone",
+        "scanTargetAfterHold": "Sting Anemone",
+        "selectedScannedAfterHold": true
+      }
+    },
+    {
+      "key": "b2-vent-coral",
+      "biome": 2,
+      "species": "Vent Coral",
+      "assetKey": "terrain-edge-flora-vent-coral",
+      "label": "B2 Vent Coral replacement",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b2-vent-coral.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b2-vent-coral-grayscale.png",
+      "viewportPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/viewport-b2-vent-coral.png",
+      "colorBytes": 292402,
+      "grayscaleBytes": 183262,
+      "viewportBytes": 299538,
+      "metrics": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.07,
+        "lumaMax": 191.43,
+        "lumaRange": 191.36,
+        "lumaMean": 10.86,
+        "lumaStdDev": 11.19
+      },
+      "state": {
+        "biome": 2,
+        "biomeName": "Brine Vent Shelf",
+        "credits": 200,
+        "depth": 750,
+        "maxDepth": 750,
+        "oxygen": 142,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 100,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 280,
+        "chartingProgress": {
+          "scanned": 1,
+          "requiredScans": 5,
+          "depth": 750,
+          "requiredDepth": 1100,
+          "sonarCells": 280,
+          "requiredSonarCells": 3200,
+          "apex": "Gulper Eel",
+          "apexScanned": false,
+          "hostileScanned": true,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "depth-64682-2",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 977 m and transmit a pressure profile from this trench.",
+            "reward": 1360,
+            "target": 977,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "scan-64682-2",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 5 new lifeforms before leaving the claim.",
+            "reward": 1560,
+            "target": 5,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "ore-64682-2",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,800 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1820,
+            "target": 1800,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 0,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "camera": {
+        "x": 1304,
+        "y": 3001,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1478,
+        "y": 3110,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": "Vent Coral"
+      },
+      "terrainLookReview": {
+        "biome": 2,
+        "depthBand": "upper",
+        "depthMeters": 500,
+        "lookId": "brine-vents",
+        "palette": {
+          "rim": 7823954,
+          "sandRim": 4931382,
+          "growth": 15107151,
+          "glow": 16752466,
+          "moss": 3425592,
+          "shadow": 131843
+        },
+        "stampPools": {
+          "fringe": [
+            "terrain-stamp-fringe-brine",
+            "terrain-stamp-fringe-brine",
+            "terrain-stamp-fringe-teal"
+          ],
+          "flora": [
+            "terrain-stamp-plant-brine"
+          ],
+          "materialAccent": [
+            "terrain-stamp-seam-gold",
+            "terrain-stamp-fossil-shell",
+            "terrain-stamp-nodule-blue"
+          ],
+          "activeEnvironment": []
+        },
+        "density": {
+          "edgeStamp": 0.9,
+          "proceduralFringeAlpha": 1.05
+        },
+        "cameraSlice": {
+          "tileBounds": {
+            "startX": 54,
+            "endX": 69,
+            "startY": 125,
+            "endY": 135
+          },
+          "visibleOreCount": 31,
+          "anchorstoneCount": 0,
+          "destructibleCount": 111,
+          "bobbitBurrowCount": 0,
+          "encounterReservationCount": 0
+        }
+      },
+      "decorativeStampEvidence": [],
+      "visibleScannableFlora": [
+        {
+          "species": "Vent Coral",
+          "assetKey": "terrain-edge-flora-vent-coral",
+          "depthMeters": 507,
+          "scanned": true,
+          "hazardous": true,
+          "anchor": "floor",
+          "supported": true
+        }
+      ],
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedFlora": {
+        "species": "Vent Coral",
+        "assetKey": "terrain-edge-flora-vent-coral",
+        "x": 1473.975,
+        "y": 3136.822,
+        "anchor": "floor",
+        "scanned": false,
+        "hazardous": true,
+        "dead": false,
+        "hasSurface": true,
+        "anchorSource": "terrain-mask",
+        "supported": true,
+        "support": 29,
+        "clearance": 7,
+        "tileX": 61,
+        "tileY": 131,
+        "maskSx": 492,
+        "maskSy": 1048,
+        "normalX": 0,
+        "normalY": -1,
+        "fakeOpenWaterAnchor": false,
+        "candidateIndex": 29,
+        "depthMeters": 507,
+        "nearestOtherDistance": 471.6606366075082
+      },
+      "selectedFloraAfterHold": {
+        "species": "Vent Coral",
+        "assetKey": "terrain-edge-flora-vent-coral",
+        "x": 1473.975,
+        "y": 3136.822,
+        "anchor": "floor",
+        "scanned": true,
+        "hazardous": true,
+        "dead": false,
+        "hasSurface": true,
+        "anchorSource": "terrain-mask",
+        "supported": true,
+        "support": 29,
+        "clearance": 7,
+        "tileX": 61,
+        "tileY": 131,
+        "maskSx": 492,
+        "maskSy": 1048,
+        "normalX": 0,
+        "normalY": -1,
+        "fakeOpenWaterAnchor": false,
+        "selectedDistance": 0
+      },
+      "selectionCounts": {
+        "candidates": 10
+      },
+      "scanEvidence": {
+        "requestedScanHoldMs": 1660,
+        "scanTargetDuringHold": "Vent Coral",
+        "scanTargetAfterHold": "Vent Coral",
+        "selectedScannedAfterHold": true
+      }
+    },
+    {
+      "key": "b2-ember-bloom",
+      "biome": 2,
+      "species": "Ember Bloom",
+      "assetKey": "terrain-edge-flora-ember-bloom",
+      "label": "B2 Ember Bloom replacement",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b2-ember-bloom.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b2-ember-bloom-grayscale.png",
+      "viewportPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/viewport-b2-ember-bloom.png",
+      "colorBytes": 322423,
+      "grayscaleBytes": 192772,
+      "viewportBytes": 325712,
+      "metrics": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.86,
+        "lumaMax": 173.86,
+        "lumaRange": 173,
+        "lumaMean": 6.89,
+        "lumaStdDev": 8.01
+      },
+      "state": {
+        "biome": 2,
+        "biomeName": "Brine Vent Shelf",
+        "credits": 2040,
+        "depth": 1062,
+        "maxDepth": 1062,
+        "oxygen": 141,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 100,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 280,
+        "chartingProgress": {
+          "scanned": 1,
+          "requiredScans": 5,
+          "depth": 1062,
+          "requiredDepth": 1100,
+          "sonarCells": 280,
+          "requiredSonarCells": 3200,
+          "apex": "Gulper Eel",
+          "apexScanned": false,
+          "hostileScanned": true,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "ore-378922-2",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,750 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1820,
+            "target": 1750,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "depth-378922-2",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 1083 m and transmit a pressure profile from this trench.",
+            "reward": 1360,
+            "target": 1083,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "scan-378922-2",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 6 new lifeforms before leaving the claim.",
+            "reward": 1560,
+            "target": 6,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 0,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "camera": {
+        "x": 2075,
+        "y": 4243,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 2248,
+        "y": 4352,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": "Ember Bloom"
+      },
+      "terrainLookReview": {
+        "biome": 2,
+        "depthBand": "mid",
+        "depthMeters": 708,
+        "lookId": "brine-vents",
+        "palette": {
+          "rim": 7823954,
+          "sandRim": 4931382,
+          "growth": 15107151,
+          "glow": 16752466,
+          "moss": 3425592,
+          "shadow": 131843
+        },
+        "stampPools": {
+          "fringe": [
+            "terrain-stamp-fringe-brine",
+            "terrain-stamp-fringe-brine",
+            "terrain-stamp-fringe-teal"
+          ],
+          "flora": [
+            "terrain-stamp-plant-brine"
+          ],
+          "materialAccent": [
+            "terrain-stamp-seam-gold",
+            "terrain-stamp-fossil-shell",
+            "terrain-stamp-nodule-blue"
+          ],
+          "activeEnvironment": []
+        },
+        "density": {
+          "edgeStamp": 0.9,
+          "proceduralFringeAlpha": 1.05
+        },
+        "cameraSlice": {
+          "tileBounds": {
+            "startX": 86,
+            "endX": 101,
+            "startY": 176,
+            "endY": 186
+          },
+          "visibleOreCount": 11,
+          "anchorstoneCount": 0,
+          "destructibleCount": 57,
+          "bobbitBurrowCount": 0,
+          "encounterReservationCount": 0
+        }
+      },
+      "decorativeStampEvidence": [],
+      "visibleScannableFlora": [
+        {
+          "species": "Ember Bloom",
+          "assetKey": "terrain-edge-flora-ember-bloom",
+          "depthMeters": 714,
+          "scanned": true,
+          "hazardous": true,
+          "anchor": "floor",
+          "supported": true
+        }
+      ],
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "selectedFlora": {
+        "species": "Ember Bloom",
+        "assetKey": "terrain-edge-flora-ember-bloom",
+        "x": 2245.241,
+        "y": 4380.203,
+        "anchor": "floor",
+        "scanned": false,
+        "hazardous": true,
+        "dead": false,
+        "hasSurface": true,
+        "anchorSource": "terrain-mask",
+        "supported": true,
+        "support": 33,
+        "clearance": 7,
+        "tileX": 93,
+        "tileY": 182,
+        "maskSx": 748,
+        "maskSy": 1462,
+        "normalX": 0,
+        "normalY": -1,
+        "fakeOpenWaterAnchor": false,
+        "candidateIndex": 31,
+        "depthMeters": 714,
+        "nearestOtherDistance": 836.0473850506326
+      },
+      "selectedFloraAfterHold": {
+        "species": "Ember Bloom",
+        "assetKey": "terrain-edge-flora-ember-bloom",
+        "x": 2245.241,
+        "y": 4380.203,
+        "anchor": "floor",
+        "scanned": true,
+        "hazardous": true,
+        "dead": false,
+        "hasSurface": true,
+        "anchorSource": "terrain-mask",
+        "supported": true,
+        "support": 33,
+        "clearance": 7,
+        "tileX": 93,
+        "tileY": 182,
+        "maskSx": 748,
+        "maskSy": 1462,
+        "normalX": 0,
+        "normalY": -1,
+        "fakeOpenWaterAnchor": false,
+        "selectedDistance": 0
+      },
+      "selectionCounts": {
+        "candidates": 5
+      },
+      "scanEvidence": {
+        "requestedScanHoldMs": 1660,
+        "scanTargetDuringHold": "Ember Bloom",
+        "scanTargetAfterHold": "Ember Bloom",
+        "selectedScannedAfterHold": true
+      }
+    },
+    {
+      "key": "b1-decorative-terrain-flora-comparison",
+      "biome": 1,
+      "species": "",
+      "assetKey": "",
+      "label": "B1 decorative terrain-flora comparison",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b1-decorative-terrain-flora-comparison.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b1-decorative-terrain-flora-comparison-grayscale.png",
+      "viewportPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/viewport-b1-decorative-terrain-flora-comparison.png",
+      "colorBytes": 427902,
+      "grayscaleBytes": 255626,
+      "viewportBytes": 404566,
+      "metrics": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.07,
+        "lumaMax": 223.06,
+        "lumaRange": 222.99,
+        "lumaMean": 16.18,
+        "lumaStdDev": 16.17
+      },
+      "state": {
+        "biome": 1,
+        "biomeName": "The Shallows",
+        "credits": 0,
+        "depth": 462,
+        "maxDepth": 462,
+        "oxygen": 147,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 100,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 280,
+        "chartingProgress": {
+          "scanned": 0,
+          "requiredScans": 4,
+          "depth": 462,
+          "requiredDepth": 900,
+          "sonarCells": 280,
+          "requiredSonarCells": 2400,
+          "apex": "Blue-ring Octopus",
+          "apexScanned": false,
+          "hostileScanned": false,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "depth-80760-1",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 637 m and transmit a pressure profile from this trench.",
+            "reward": 940,
+            "target": 637,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "scan-80760-1",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 5 new lifeforms before leaving the claim.",
+            "reward": 1100,
+            "target": 5,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "ore-80760-1",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,350 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1300,
+            "target": 1350,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 0,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "camera": {
+        "x": 1375,
+        "y": 1848,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1548,
+        "y": 1956,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "terrainLookReview": {
+        "biome": 1,
+        "depthBand": "upper",
+        "depthMeters": 308,
+        "lookId": "reef-shelf",
+        "palette": {
+          "rim": 3891045,
+          "sandRim": 2702138,
+          "growth": 2392175,
+          "glow": 7525852,
+          "moss": 1852994,
+          "shadow": 66310
+        },
+        "stampPools": {
+          "fringe": [
+            "terrain-stamp-fringe-teal",
+            "terrain-stamp-fringe-teal",
+            "terrain-stamp-fringe-brine"
+          ],
+          "flora": [
+            "terrain-stamp-plant-glass",
+            "terrain-stamp-plant-brine"
+          ],
+          "materialAccent": [
+            "terrain-stamp-fossil-shell",
+            "terrain-stamp-seam-green",
+            "terrain-stamp-nodule-blue"
+          ],
+          "activeEnvironment": [
+            "terrain-stamp-fringe-teal"
+          ]
+        },
+        "density": {
+          "edgeStamp": 1,
+          "proceduralFringeAlpha": 1
+        },
+        "cameraSlice": {
+          "tileBounds": {
+            "startX": 57,
+            "endX": 72,
+            "startY": 77,
+            "endY": 86
+          },
+          "visibleOreCount": 7,
+          "anchorstoneCount": 0,
+          "destructibleCount": 108,
+          "bobbitBurrowCount": 0,
+          "encounterReservationCount": 0
+        }
+      },
+      "decorativeStampEvidence": [
+        "terrain-stamp-fringe-teal"
+      ],
+      "visibleScannableFlora": [
+        {
+          "species": "Moon Sponge",
+          "assetKey": "terrain-edge-flora-moon-sponge",
+          "depthMeters": 303,
+          "scanned": false,
+          "hazardous": false,
+          "anchor": "ceiling",
+          "supported": true
+        }
+      ],
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=1&renderer=canvas",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 460,
+        "depthMeters": 462,
+        "tileX": 64,
+        "tileY": 81,
+        "localWaterRatio": 0.41
+      },
+      "purpose": "decorative-comparison"
+    },
+    {
+      "key": "b2-decorative-terrain-flora-comparison",
+      "biome": 2,
+      "species": "",
+      "assetKey": "",
+      "label": "B2 decorative terrain-flora comparison",
+      "colorPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b2-decorative-terrain-flora-comparison.png",
+      "grayscalePath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/canvas-b2-decorative-terrain-flora-comparison-grayscale.png",
+      "viewportPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/viewport-b2-decorative-terrain-flora-comparison.png",
+      "colorBytes": 212795,
+      "grayscaleBytes": 137464,
+      "viewportBytes": 262194,
+      "metrics": {
+        "exists": true,
+        "width": 1280,
+        "height": 800,
+        "samples": 16000,
+        "lumaMin": 0.07,
+        "lumaMax": 200.13,
+        "lumaRange": 200.06,
+        "lumaMean": 7.24,
+        "lumaStdDev": 11.6
+      },
+      "state": {
+        "biome": 2,
+        "biomeName": "Brine Vent Shelf",
+        "credits": 0,
+        "depth": 636,
+        "maxDepth": 636,
+        "oxygen": 147,
+        "oxygenMax": 150,
+        "hull": 100,
+        "fuel": 100,
+        "fuelMax": 100,
+        "cargo": 0,
+        "cargoCapacity": 6,
+        "sonarRevealed": 280,
+        "chartingProgress": {
+          "scanned": 0,
+          "requiredScans": 5,
+          "depth": 636,
+          "requiredDepth": 1100,
+          "sonarCells": 280,
+          "requiredSonarCells": 3200,
+          "apex": "Gulper Eel",
+          "apexScanned": false,
+          "hostileScanned": false,
+          "threatOk": false,
+          "complete": false,
+          "missing": "survey scans"
+        },
+        "canTravelToNextBiome": false,
+        "atBoat": false,
+        "docked": false,
+        "started": true,
+        "lost": false,
+        "won": false,
+        "venom": {
+          "active": false,
+          "source": "",
+          "tick": 0
+        },
+        "bleed": {
+          "active": false,
+          "source": "",
+          "duration": 0,
+          "stacks": 0,
+          "recentBites": 0,
+          "recentTimer": 0
+        },
+        "activeQuestId": "",
+        "questBoard": [
+          {
+            "id": "depth-251091-2",
+            "kind": "depth",
+            "title": "Pressure Line Survey",
+            "client": "Barge Cartography",
+            "text": "Reach 1084 m and transmit a pressure profile from this trench.",
+            "reward": 1360,
+            "target": 1084,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "scan-251091-2",
+            "kind": "scan",
+            "title": "Live Catalog Sweep",
+            "client": "Marine Biology Desk",
+            "text": "Scan 5 new lifeforms before leaving the claim.",
+            "reward": 1560,
+            "target": 5,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          },
+          {
+            "id": "ore-251091-2",
+            "kind": "ore",
+            "title": "Ore Purchase Order",
+            "client": "Geology Buyer",
+            "text": "Sell 1,800 credits of recovered ore to satisfy an urgent assay order.",
+            "reward": 1820,
+            "target": 1800,
+            "progress": 0,
+            "startValue": 0,
+            "accepted": false,
+            "completed": false,
+            "claimed": false
+          }
+        ],
+        "forwardOutpost": {
+          "active": false,
+          "x": 0,
+          "y": 0,
+          "biome": 3,
+          "depth": 0,
+          "oxygenRadius": 118,
+          "oxygenRate": 18,
+          "charge": 0,
+          "maxCharge": 160,
+          "floraSpecies": ""
+        },
+        "upgrades": {
+          "oxygen": 0,
+          "cargo": 0,
+          "laser": 0,
+          "lamp": 0,
+          "scanner": 0,
+          "suit": 0,
+          "speed": 0,
+          "thermal": 0
+        },
+        "subOwned": {
+          "1": false,
+          "2": false,
+          "3": false
+        },
+        "selectedSubTier": null,
+        "marlinVoucherAvailable": false,
+        "marlinEffectiveCost": 62000,
+        "activeSub": null,
+        "carrierSub": null,
+        "hasSavedGame": false,
+        "saveLoad": {
+          "phase": "idle",
+          "requestId": 0,
+          "completedId": 0,
+          "message": ""
+        }
+      },
+      "camera": {
+        "x": 1207,
+        "y": 2544,
+        "width": 346,
+        "height": 216,
+        "zoom": 3.7
+      },
+      "player": {
+        "x": 1380,
+        "y": 2652,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "terrainLookReview": {
+        "biome": 2,
+        "depthBand": "upper",
+        "depthMeters": 424,
+        "lookId": "brine-vents",
+        "palette": {
+          "rim": 7823954,
+          "sandRim": 4931382,
+          "growth": 15107151,
+          "glow": 16752466,
+          "moss": 3425592,
+          "shadow": 131843
+        },
+        "stampPools": {
+          "fringe": [
+            "terrain-stamp-fringe-brine",
+            "terrain-stamp-fringe-brine",
+            "terrain-stamp-fringe-teal"
+          ],
+          "flora": [
+            "terrain-stamp-plant-brine"
+          ],
+          "materialAccent": [
+            "terrain-stamp-seam-gold",
+            "terrain-stamp-fossil-shell",
+            "terrain-stamp-nodule-blue"
+          ],
+          "activeEnvironment": []
+        },
+        "density": {
+          "edgeStamp": 0.9,
+          "proceduralFringeAlpha": 1.05
+        },
+        "cameraSlice": {
+          "tileBounds": {
+            "startX": 50,
+            "endX": 65,
+            "startY": 106,
+            "endY": 115
+          },
+          "visibleOreCount": 34,
+          "anchorstoneCount": 0,
+          "destructibleCount": 143,
+          "bobbitBurrowCount": 0,
+          "encounterReservationCount": 0
+        }
+      },
+      "decorativeStampEvidence": [],
+      "visibleScannableFlora": [],
+      "url": "http://127.0.0.1:5180/?playtest=1&biome=2&renderer=canvas",
+      "move": {
+        "ok": true,
+        "targetDepthMeters": 760,
+        "depthMeters": 636,
+        "tileX": 57,
+        "tileY": 110,
+        "localWaterRatio": 0.144
+      },
+      "purpose": "decorative-comparison"
+    }
+  ],
+  "contactSheet": {
+    "htmlPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/flora-slice-runtime-contact-sheet.html",
+    "pngPath": "/mnt/nxt-dev/water9/runs/water9-flora-slice-scannability-2026-07-06/flora-slice-runtime-contact-sheet.png"
+  },
+  "errors": [],
+  "serverLogs": "\n  VITE v8.0.12  ready in 135 ms\n\n  ➜  Local:   http://127.0.0.1:5180/\n6:54:12 PM [vite] (client) page reload runs/water9-flora-slice-scannability-2026-07-06/flora-slice-runtime-contact-sheet.html\n"
+}

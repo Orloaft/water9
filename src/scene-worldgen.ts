@@ -65,6 +65,8 @@ export function generateWorld(this: DeepdiveScene, ) {
 
 	    this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
 	    this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
+      this.flora.push(...this.makeStampFloraTargets());
+      this.flora.push(...this.makeBrushFloraTargets());
 	    this.populateSpecialRooms();
 	    this.populateArticulatedCreatures();
 	    this.populateBobbitArticulatedThreats();
@@ -482,7 +484,9 @@ export function reserveSignatureEncounters(this: DeepdiveScene) {
       const wyrm = reserveReliquaryRoute(this);
       if (wyrm) this.encounterReservations.push(wyrm);
     }
-    if (state.biome >= 3) {
+    if (state.biome === 1) {
+      this.encounterReservations.push(reserveBiomeOneSkulkAmbush(this));
+    } else if (state.biome >= 3) {
       this.encounterReservations.push(...reserveSkulkSideTunnels(this));
     }
   }
@@ -571,6 +575,45 @@ function reserveSkulkSideTunnels(scene: DeepdiveScene): EncounterReservation[] {
       ));
     }
     return reservations;
+  }
+
+function reserveBiomeOneSkulkAmbush(scene: DeepdiveScene): EncounterReservation {
+    const center = Math.floor(WORLD_W / 2);
+    const minTileY = Math.floor(scaledDepthPx(1220) / TILE);
+    const maxTileY = Math.min(WORLD_H - 18, Math.floor(scaledDepthPx(1520) / TILE));
+    const candidates: Array<{ x: number; y: number; score: number; source: string }> = [];
+    for (let y = minTileY; y <= maxTileY; y += 1) {
+      for (let x = 7; x < WORLD_W - 7; x += 1) {
+        if (scene.getTile(x, y) !== 'water') continue;
+        if (scene.pointNearBobbitSpecialRoom(x, y, 8)) continue;
+        const pocketSolid = scene.denseSolidRatio(x, y, 8, 6);
+        const sideBias = Math.abs(x - center) / Math.max(1, WORLD_W * 0.5);
+        const score = y * 0.22 + pocketSolid * 18 + sideBias * 5 + hash(x * 241, y * 251, rng.seed + 19411) * 8;
+        candidates.push({ x, y, score, source: 'biome1_lower_water_pocket' });
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    const fallback = {
+      x: Phaser.Math.Clamp(center + Math.floor((hash(109, state.biome, rng.seed) - 0.5) * 42), 12, WORLD_W - 13),
+      y: Phaser.Math.Clamp(Math.floor(scaledDepthPx(1360) / TILE), minTileY, maxTileY),
+      score: 0,
+      source: 'biome1_lower_open_water_fallback',
+    };
+    const site = candidates[0] ?? fallback;
+    scene.carveDisc(site.x, site.y, 5);
+    return encounterReservationFromTiles(
+      'encounter-b1-glasshook-skulk-0',
+      'side_tunnel_ambush',
+      'abyssal-glasshook-skulk',
+      site.x,
+      site.y,
+      9,
+      7,
+      TILE * 5.5,
+      TILE * 14,
+      site.source,
+      site.score,
+    );
   }
 
 function carveEncounterEllipse(scene: DeepdiveScene, cx: number, cy: number, rx: number, ry: number) {
@@ -703,6 +746,7 @@ export function processEnvironmentPropRefreshQueue(this: DeepdiveScene) {
       for (const prop of retained) byId.set(prop.id, prop);
       for (const prop of rebuilt) byId.set(prop.id, prop);
       this.environmentProps = [...byId.values()]
+        .filter((prop) => !environmentPropCoveredByStampFlora(this, prop))
         .sort((a, b) => a.tileY - b.tileY || a.tileX - b.tileX || a.id.localeCompare(b.id))
         .slice(0, 420);
       if (this.perfTelemetry?.enabled) {
@@ -763,6 +807,7 @@ export function refreshFloraAnchorsAround(this: DeepdiveScene, cx: number, cy: n
       flora.y = next.rootY + offset.y;
       flora.sprite?.setPosition(flora.x, flora.y);
     }
+    this.environmentProps = this.environmentProps.filter((prop) => !environmentPropCoveredByStampFlora(this, prop));
   }
 
 export function refreshFaunaAnchorsAround(this: DeepdiveScene, cx: number, cy: number, radiusTiles = 5) {
@@ -772,8 +817,15 @@ export function refreshFaunaAnchorsAround(this: DeepdiveScene, cx: number, cy: n
     for (const fish of this.fish) {
       if (fish.dead || fish.behaviorClass === 'legacySwimmer' || !fish.surface) continue;
       if (Phaser.Math.Distance.Between(worldX, worldY, fish.surface.rootX, fish.surface.rootY) > radius + fish.radius) continue;
+      const preferredAnchors = fish.species === 'Silver Hinge Crab'
+        ? ['floor'] as TerrainSurfaceAnchor['anchor'][]
+        : fish.species === 'Mantis Shrimp'
+          ? ['floor', 'leftWall', 'rightWall'] as TerrainSurfaceAnchor['anchor'][]
+          : undefined;
       const validation = validateTerrainSurfaceAnchor(this, fish.surface);
-      const next = validation.valid ? validation.anchor : findNearbyTerrainSurfaceAnchor(this, fish.surface, 8);
+      const next = validation.valid && validation.anchor && (!preferredAnchors || preferredAnchors.includes(validation.anchor.anchor))
+        ? validation.anchor
+        : findNearbyTerrainSurfaceAnchor(this, fish.surface, 8, preferredAnchors);
       if (!next) {
         fish.dead = true;
         fish.sprite?.setVisible(false);
@@ -830,7 +882,7 @@ function edgeFloraProp(scene: DeepdiveScene, x: number, y: number, anchor: EdgeA
     const floorScale = anchor.kind === 'floor' || anchor.kind === 'ceiling' ? 1 : 0.78;
     return {
       id: `edge-flora:${x}:${y}:${variant}`,
-      kind: 'flora',
+      kind: 'terrainFlora',
       assetKey: keys[variant],
       x: anchor.x + insetX,
       y: anchor.y + insetY,
@@ -995,10 +1047,11 @@ export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flor
       const x = point.rootX + offset.x;
       const y = point.rootY + offset.y;
       const assetKey = floraGameplayAssetKey(species);
-      this.environmentProps = this.environmentProps.filter((prop) => prop.kind !== 'flora' || prop.tileX !== point.tileX || prop.tileY !== point.tileY);
+      this.environmentProps = this.environmentProps.filter((prop) => prop.kind !== 'terrainFlora' || prop.tileX !== point.tileX || prop.tileY !== point.tileY);
       patch.push({
         kind: 'flora',
         species: species.species,
+        source: 'biome',
         x,
         y,
         anchor: point.anchor,
@@ -1010,6 +1063,10 @@ export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flor
         scan: 0,
         scanning: false,
         scanPulse: 0,
+        sample: 0,
+        sampling: false,
+        samplePulse: 0,
+        sampleCooldown: 0,
         hp: floraMaxHp(species),
         maxHp: floraMaxHp(species),
         dead: false,
@@ -1024,6 +1081,343 @@ export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flor
     return patch;
   }
 
+type StampFloraSpec = Pick<FloraSpecies, 'species' | 'color' | 'hazardous' | 'rare' | 'radius'> & {
+  assetKey: string;
+};
+
+const stampFloraSpecs: Record<string, StampFloraSpec> = {
+  'terrain-stamp-plant-glass': {
+    species: 'Glass Mat Sprout',
+    color: 0x7bd88f,
+    hazardous: false,
+    rare: false,
+    radius: 8,
+    assetKey: 'terrain-stamp-plant-glass',
+  },
+  'terrain-stamp-plant-brine': {
+    species: 'Brine Mat Sprout',
+    color: 0xb9f27c,
+    hazardous: false,
+    rare: false,
+    radius: 8,
+    assetKey: 'terrain-stamp-plant-brine',
+  },
+  'terrain-stamp-plant-lumen': {
+    species: 'Lumen Mat Stalk',
+    color: 0x73fbd3,
+    hazardous: false,
+    rare: true,
+    radius: 9,
+    assetKey: 'terrain-stamp-plant-lumen',
+  },
+  'terrain-stamp-plant-purple': {
+    species: 'Purple Mat Tendril',
+    color: 0xd06bff,
+    hazardous: true,
+    rare: true,
+    radius: 10,
+    assetKey: 'terrain-stamp-plant-purple',
+  },
+};
+
+const MAX_STAMP_FLORA_TARGETS = 36;
+const STAMP_FLORA_MIN_SPACING = TILE * 3.2;
+
+export function makeStampFloraTargets(this: DeepdiveScene): Flora[] {
+    const stampProps = this.environmentProps
+      .filter((prop) => prop.kind === 'terrainFlora' && Boolean(stampFloraSpecs[prop.assetKey]))
+      .sort((a, b) => a.tileY - b.tileY || a.tileX - b.tileX || a.id.localeCompare(b.id));
+    if (!stampProps.length) return [];
+
+    const minY = Math.max(SURFACE_Y, Math.min(...stampProps.map((prop) => prop.y)) - TILE * 3);
+    const maxY = Math.min(WORLD_H * TILE - TILE, Math.max(...stampProps.map((prop) => prop.y)) + TILE * 3);
+    const anchors = sampleTerrainSurfaceAnchors(this, {
+      minY,
+      maxY,
+      salt: 12017 + state.biome * 97,
+      minSupport: 9,
+      minClearance: 2,
+      limit: 2200,
+    });
+    if (!anchors.length) return [];
+
+    const targets: Flora[] = [];
+    const convertedPropIds = new Set<string>();
+    for (const prop of stampProps) {
+      if (targets.length >= MAX_STAMP_FLORA_TARGETS) break;
+      const spec = stampFloraSpecs[prop.assetKey];
+      if (!spec) continue;
+      if (targets.some((flora) => Phaser.Math.Distance.Between(flora.x, flora.y, prop.x, prop.y) < STAMP_FLORA_MIN_SPACING)) continue;
+      if (this.flora.some((flora) => !flora.dead && Phaser.Math.Distance.Between(flora.x, flora.y, prop.x, prop.y) < STAMP_FLORA_MIN_SPACING * 0.72)) continue;
+      const anchor = nearestStampSurfaceAnchor(prop, anchors);
+      if (!anchor) continue;
+      const x = anchor.rootX + anchor.normalX * 4 + anchor.tangentX * Phaser.Math.Clamp(prop.x - anchor.rootX, -7, 7);
+      const y = anchor.rootY + anchor.normalY * 4 + anchor.tangentY * Phaser.Math.Clamp(prop.y - anchor.rootY, -7, 7);
+      const radius = scaledEntity(spec.radius);
+      targets.push({
+        kind: 'flora',
+        species: spec.species,
+        source: 'stamp',
+        propId: prop.id,
+        x,
+        y,
+        anchor: anchor.anchor,
+        phase: hash(prop.tileX * 271, prop.tileY * 277, rng.seed + 12029) * Math.PI * 2,
+        color: spec.color,
+        hazardous: spec.hazardous,
+        rare: spec.rare,
+        scanned: false,
+        scan: 0,
+        scanning: false,
+        scanPulse: 0,
+        sample: 0,
+        sampling: false,
+        samplePulse: 0,
+        sampleCooldown: 0,
+        hp: floraMaxHp({ ...spec, count: MAX_STAMP_FLORA_TARGETS, minY: 0, maxY: 0 }),
+        maxHp: floraMaxHp({ ...spec, count: MAX_STAMP_FLORA_TARGETS, minY: 0, maxY: 0 }),
+        dead: false,
+        hurtFlash: 0,
+        aggroCue: 0,
+        radius,
+        assetKey: spec.assetKey,
+        surface: anchor,
+        sprite: this.createEntitySprite(x, y, spec.assetKey),
+      });
+      convertedPropIds.add(prop.id);
+    }
+
+    if (convertedPropIds.size) {
+      this.environmentProps = this.environmentProps.filter((prop) => !convertedPropIds.has(prop.id));
+    }
+    return targets;
+  }
+
+function nearestStampSurfaceAnchor(prop: EnvironmentProp, anchors: TerrainSurfaceAnchor[]) {
+    const preferred = stampPropPreferredAnchor(prop);
+    let best: TerrainSurfaceAnchor | null = null;
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (const anchor of anchors) {
+      const dx = anchor.rootX - prop.x;
+      const dy = anchor.rootY - prop.y;
+      if (Math.abs(dx) > TILE * 2.4 || Math.abs(dy) > TILE * 2.4) continue;
+      const tilePenalty = (Math.abs(anchor.tileX - prop.tileX) + Math.abs(anchor.tileY - prop.tileY)) * TILE * TILE * 0.8;
+      const anchorPenalty = anchor.anchor === preferred ? 0 : TILE * TILE * 1.2;
+      const score = dx * dx + dy * dy + tilePenalty + anchorPenalty;
+      if (score < bestScore) {
+        best = anchor;
+        bestScore = score;
+      }
+    }
+    return best;
+  }
+
+function stampPropPreferredAnchor(prop: EnvironmentProp): TerrainSurfaceAnchor['anchor'] {
+    if ((prop.originY ?? 0.5) < 0.32) return 'ceiling';
+    if ((prop.originX ?? 0.5) > 0.66) return 'leftWall';
+    if ((prop.originX ?? 0.5) < 0.34) return 'rightWall';
+    return 'floor';
+  }
+
+function environmentPropCoveredByStampFlora(scene: DeepdiveScene, prop: EnvironmentProp) {
+    if (!stampFloraSpecs[prop.assetKey]) return false;
+    return scene.flora.some((flora) => (
+      flora.source === 'stamp'
+      && flora.assetKey === prop.assetKey
+      && flora.surface
+      && Math.abs(flora.surface.tileX - prop.tileX) <= 1
+      && Math.abs(flora.surface.tileY - prop.tileY) <= 1
+      && Phaser.Math.Distance.Between(flora.x, flora.y, prop.x, prop.y) < TILE * 2.5
+    ));
+  }
+
+type BrushFloraAnchor = 'top' | 'west' | 'east';
+
+type BrushFloraPlacement = {
+  key: string;
+  assetKey: string;
+  x: number;
+  y: number;
+  tileX: number;
+  tileY: number;
+  anchor: BrushFloraAnchor;
+  variant: number;
+};
+
+type BrushFloraSpec = Pick<FloraSpecies, 'species' | 'color' | 'hazardous' | 'rare' | 'radius'> & {
+  assetKey: string;
+};
+
+const brushFloraSpecs: Record<string, BrushFloraSpec> = {
+  'terrain-brush-flora-0': { species: 'Glass Thread Fern', color: 0x7bd88f, hazardous: false, rare: false, radius: 7, assetKey: 'terrain-brush-flora-0' },
+  'terrain-brush-flora-1': { species: 'Ribbon Mat Frond', color: 0x8ee7f4, hazardous: false, rare: false, radius: 8, assetKey: 'terrain-brush-flora-1' },
+  'terrain-brush-flora-2': { species: 'Wall Lace Anemone', color: 0xb9f27c, hazardous: false, rare: false, radius: 8, assetKey: 'terrain-brush-flora-2' },
+  'terrain-brush-flora-3': { species: 'Brine Feather Fan', color: 0xffa657, hazardous: false, rare: false, radius: 8, assetKey: 'terrain-brush-flora-3' },
+  'terrain-brush-flora-4': { species: 'Lumen Cup Moss', color: 0x73fbd3, hazardous: false, rare: true, radius: 9, assetKey: 'terrain-brush-flora-4' },
+  'terrain-brush-flora-5': { species: 'Copper Vein Lichen', color: 0xd6f4a3, hazardous: false, rare: false, radius: 8, assetKey: 'terrain-brush-flora-5' },
+  'terrain-brush-flora-6': { species: 'Needle Mat Fan', color: 0x74d2ff, hazardous: true, rare: true, radius: 9, assetKey: 'terrain-brush-flora-6' },
+  'terrain-brush-flora-7': { species: 'Abyss Thread Fan', color: 0xf08dff, hazardous: true, rare: true, radius: 10, assetKey: 'terrain-brush-flora-7' },
+};
+
+const MAX_BRUSH_FLORA_TARGETS = 72;
+const BRUSH_FLORA_MIN_SPACING = TILE * 4.1;
+
+export function makeBrushFloraTargets(this: DeepdiveScene): Flora[] {
+    const placements = brushFloraPlacementsInWorld(this)
+      .sort((a, b) => brushFloraCandidateScore(b) - brushFloraCandidateScore(a) || a.key.localeCompare(b.key));
+    if (!placements.length) return [];
+
+    const anchors = sampleTerrainSurfaceAnchors(this, {
+      minY: SURFACE_Y,
+      maxY: WORLD_H * TILE - TILE,
+      salt: 13017 + state.biome * 131,
+      minSupport: 9,
+      minClearance: 2,
+      limit: 6400,
+    });
+    if (!anchors.length) return [];
+
+    const targets: Flora[] = [];
+    for (const placement of placements) {
+      if (targets.length >= MAX_BRUSH_FLORA_TARGETS) break;
+      const spec = brushFloraSpecs[placement.assetKey];
+      if (!spec) continue;
+      if (targets.some((flora) => Phaser.Math.Distance.Between(flora.x, flora.y, placement.x, placement.y) < BRUSH_FLORA_MIN_SPACING)) continue;
+      if (this.flora.some((flora) => !flora.dead && Phaser.Math.Distance.Between(flora.x, flora.y, placement.x, placement.y) < BRUSH_FLORA_MIN_SPACING * 0.72)) continue;
+      const anchor = nearestBrushSurfaceAnchor(placement, anchors);
+      if (!anchor) continue;
+      const lateral = Phaser.Math.Clamp((placement.x - anchor.rootX) * anchor.tangentX + (placement.y - anchor.rootY) * anchor.tangentY, -8, 8);
+      const x = anchor.rootX + anchor.normalX * 4 + anchor.tangentX * lateral;
+      const y = anchor.rootY + anchor.normalY * 4 + anchor.tangentY * lateral;
+      targets.push({
+        kind: 'flora',
+        species: spec.species,
+        source: 'brush',
+        propId: placement.key,
+        x,
+        y,
+        anchor: anchor.anchor,
+        phase: hash(placement.tileX * 293, placement.tileY * 307 + placement.anchor.length, rng.seed + 13029) * Math.PI * 2,
+        color: spec.color,
+        hazardous: spec.hazardous,
+        rare: spec.rare,
+        scanned: false,
+        scan: 0,
+        scanning: false,
+        scanPulse: 0,
+        sample: 0,
+        sampling: false,
+        samplePulse: 0,
+        sampleCooldown: 0,
+        hp: floraMaxHp({ ...spec, count: MAX_BRUSH_FLORA_TARGETS, minY: 0, maxY: 0 }),
+        maxHp: floraMaxHp({ ...spec, count: MAX_BRUSH_FLORA_TARGETS, minY: 0, maxY: 0 }),
+        dead: false,
+        hurtFlash: 0,
+        aggroCue: 0,
+        radius: scaledEntity(spec.radius),
+        assetKey: spec.assetKey,
+        surface: anchor,
+        sprite: this.createEntitySprite(x, y, spec.assetKey),
+      });
+    }
+    return targets;
+  }
+
+function brushFloraPlacementsInWorld(scene: DeepdiveScene) {
+    const placements: BrushFloraPlacement[] = [];
+    for (let y = 8; y < WORLD_H - 2; y += 1) {
+      for (let x = 1; x < WORLD_W - 1; x += 1) {
+        const placement = brushFloraPlacementAt(scene, x, y);
+        if (placement) placements.push(placement);
+      }
+    }
+    return placements;
+  }
+
+function brushFloraPlacementAt(scene: DeepdiveScene, x: number, y: number): BrushFloraPlacement | null {
+    if (scene.getTile(x, y) === 'water') return null;
+    const seed = hash(x * 97, y * 101, rng.seed + 1201);
+    if (scene.getTile(x, y - 1) === 'water' && brushTopLedgeFloraClearance(scene, x, y) && seed > 0.9) {
+      return makeBrushFloraPlacement(x, y, 'top');
+    }
+    if (seed > 0.975 && brushSideWallFloraClearance(scene, x, y, true)) return makeBrushFloraPlacement(x, y, 'west');
+    if (seed < 0.025 && brushSideWallFloraClearance(scene, x, y, false)) return makeBrushFloraPlacement(x, y, 'east');
+    return null;
+  }
+
+function brushTopLedgeFloraClearance(scene: DeepdiveScene, x: number, y: number) {
+    let open = 0;
+    let support = 0;
+    for (let dx = -3; dx <= 3; dx += 1) {
+      if (scene.getTile(x + dx, y) !== 'water') support += 1;
+      for (let oy = 1; oy <= 6; oy += 1) {
+        if (scene.getTile(x + dx, y - oy) === 'water') open += 1;
+      }
+    }
+    return support >= 5 && open >= 38;
+  }
+
+function brushSideWallFloraClearance(scene: DeepdiveScene, x: number, y: number, west: boolean) {
+    if ((west ? scene.getTile(x - 1, y) : scene.getTile(x + 1, y)) !== 'water') return false;
+    const dx = west ? -1 : 1;
+    let open = 0;
+    let verticalRock = 0;
+    for (let oy = -2; oy <= 2; oy += 1) {
+      if (scene.getTile(x, y + oy) !== 'water') verticalRock += 1;
+      for (let ox = 1; ox <= 4; ox += 1) {
+        if (scene.getTile(x + dx * ox, y + oy) === 'water') open += 1;
+      }
+    }
+    return verticalRock >= 4 && open >= 18;
+  }
+
+function makeBrushFloraPlacement(x: number, y: number, anchor: BrushFloraAnchor): BrushFloraPlacement {
+    const seed = hash(x * 109, y * 113 + anchor.length, rng.seed + 1217);
+    const variants = anchor === 'top' ? [0, 1, 4, 6, 7] : [2, 3, 5, 6, 7];
+    const variant = variants[Math.floor(seed * variants.length) % variants.length];
+    const xJitter = (hash(x, y, rng.seed + 1229) - 0.5) * 10;
+    const yJitter = (hash(y, x, rng.seed + 1231) - 0.5) * 5;
+    const sideSign = anchor === 'west' ? -1 : 1;
+    return {
+      key: `terrain:flora:${x}:${y}:${anchor}`,
+      assetKey: `terrain-brush-flora-${variant}`,
+      x: anchor === 'top' ? x * TILE + TILE * 0.5 + xJitter : x * TILE + TILE * 0.5 + sideSign * 8,
+      y: anchor === 'top' ? y * TILE + 2 + yJitter : y * TILE + TILE * 0.54 + yJitter,
+      tileX: x,
+      tileY: y,
+      anchor,
+      variant,
+    };
+  }
+
+function brushFloraCandidateScore(placement: BrushFloraPlacement) {
+    return hash(placement.tileX * 313 + placement.variant * 17, placement.tileY * 317 + placement.anchor.length, rng.seed + 13041);
+  }
+
+function nearestBrushSurfaceAnchor(placement: BrushFloraPlacement, anchors: TerrainSurfaceAnchor[]) {
+    const preferred = brushPreferredSurfaceAnchor(placement.anchor);
+    let best: TerrainSurfaceAnchor | null = null;
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (const anchor of anchors) {
+      const dx = anchor.rootX - placement.x;
+      const dy = anchor.rootY - placement.y;
+      if (Math.abs(dx) > TILE * 2.35 || Math.abs(dy) > TILE * 2.35) continue;
+      const tilePenalty = (Math.abs(anchor.tileX - placement.tileX) + Math.abs(anchor.tileY - placement.tileY)) * TILE * TILE * 0.8;
+      const anchorPenalty = anchor.anchor === preferred ? 0 : TILE * TILE * 1.15;
+      const score = dx * dx + dy * dy + tilePenalty + anchorPenalty;
+      if (score < bestScore) {
+        best = anchor;
+        bestScore = score;
+      }
+    }
+    return best;
+  }
+
+function brushPreferredSurfaceAnchor(anchor: BrushFloraAnchor): TerrainSurfaceAnchor['anchor'] {
+    if (anchor === 'top') return 'floor';
+    return anchor === 'west' ? 'rightWall' : 'leftWall';
+  }
+
 function floraSurfaceOffset(anchor: TerrainSurfaceAnchor) {
     const tangentJitter = (hash(anchor.maskSx * 23, anchor.maskSy * 29, rng.seed + 9101) - 0.5) * 10;
     const outward = 5 + hash(anchor.maskSy, anchor.maskSx, rng.seed + 9103) * 4;
@@ -1035,7 +1429,11 @@ function floraSurfaceOffset(anchor: TerrainSurfaceAnchor) {
 
 function floraGameplayAssetKey(species: FloraSpecies) {
     if (species.species === 'Glass Kelp') return 'terrain-edge-flora-glass-kelp';
+    if (species.species === 'Moon Sponge') return 'terrain-edge-flora-moon-sponge';
+    if (species.species === 'Sting Anemone') return 'terrain-edge-flora-sting-anemone';
     if (species.species === 'Brine Grass') return 'terrain-edge-flora-brine-grass';
+    if (species.species === 'Vent Coral') return 'terrain-edge-flora-vent-coral';
+    if (species.species === 'Ember Bloom') return 'terrain-edge-flora-ember-bloom';
     if (species.species === 'Black Fan') return 'terrain-edge-flora-black-fan';
     if (species.species === 'Lumen Fern') return 'terrain-edge-flora-lumen-fern';
     if (species.species === 'Crown Polyp') return 'terrain-edge-flora-crown-polyps';
@@ -1078,6 +1476,10 @@ export function populateBiolumeRoom(this: DeepdiveScene, room: SpecialRoom) {
         scan: 0,
         scanning: false,
         scanPulse: 0,
+        sample: 0,
+        sampling: false,
+        samplePulse: 0,
+        sampleCooldown: 0,
         hp: floraMaxHp({ species: oxygen ? 'Oxygen Bloom' : 'Lumen Fern', count, minY: 0, maxY: 0, color: oxygen ? 0x8ee7f4 : 0xb9f27c, hazardous: false, rare: true, radius: oxygen ? 15 : 13 }),
         maxHp: floraMaxHp({ species: oxygen ? 'Oxygen Bloom' : 'Lumen Fern', count, minY: 0, maxY: 0, color: oxygen ? 0x8ee7f4 : 0xb9f27c, hazardous: false, rare: true, radius: oxygen ? 15 : 13 }),
         dead: false,
@@ -1112,6 +1514,10 @@ export function populateBiolumeRoom(this: DeepdiveScene, room: SpecialRoom) {
         scan: 0,
         scanning: false,
         scanPulse: 0,
+        sample: 0,
+        sampling: false,
+        samplePulse: 0,
+        sampleCooldown: 0,
         hp: floraMaxHp({ species: 'Lumen Nodule', count: 6, minY: 0, maxY: 0, color: 0x73fbd3, hazardous: false, rare: true, radius: 11 }),
         maxHp: floraMaxHp({ species: 'Lumen Nodule', count: 6, minY: 0, maxY: 0, color: 0x73fbd3, hazardous: false, rare: true, radius: 11 }),
         dead: false,
@@ -1195,7 +1601,7 @@ export function populateNestRoom(this: DeepdiveScene, room: SpecialRoom) {
         pattern: i === 0 ? 'stalk' : 'circle',
         radius: state.biome >= 3 ? 24 : 20,
         speed: state.biome >= 3 ? [44, 78] : [36, 66],
-        assetKey: i === 0 ? 'fauna-abyss-viperfish' : 'fish-abyss-predator',
+        assetKey: i === 0 ? 'fauna-abyss-viperfish' : 'fauna-abyss-mantle-crawler',
       };
       const assetKey = fishAssetKey(species);
       const x = room.x + Math.cos(angle) * room.rx * 0.42;

@@ -85,15 +85,15 @@ function rarityLabel(rarity) {
 }
 
 function scanRarityCredits(rarity) {
-  if (rarity === 'legendary') return 3600;
-  if (rarity === 'epic') return 2100;
-  if (rarity === 'rare') return 1150;
-  if (rarity === 'uncommon') return 620;
-  return 320;
+  if (rarity === 'legendary') return 4200;
+  if (rarity === 'epic') return 1800;
+  if (rarity === 'rare') return 360;
+  if (rarity === 'uncommon') return 140;
+  return 60;
 }
 
 function scanReward(species, rarity) {
-  return scanRarityCredits(rarity) + (species.hostile ? 180 : 0);
+  return scanRarityCredits(rarity) + (species.hostile ? rank(rarity) >= rank('epic') ? 240 : 60 : 0);
 }
 
 function findSpecies(biome, speciesName) {

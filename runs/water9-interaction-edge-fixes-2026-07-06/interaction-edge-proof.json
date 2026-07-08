@@ -1,0 +1,287 @@
+{
+  "ok": true,
+  "generatedAt": "2026-07-07T01:57:11.290Z",
+  "url": "http://127.0.0.1:5180/?playtest=1&renderer=canvas&biome=1",
+  "ore": {
+    "setup": {
+      "ok": true,
+      "action": "setup",
+      "target": {
+        "ore": {
+          "x": 57,
+          "y": 25,
+          "worldX": 1380,
+          "worldY": 612
+        },
+        "oreFace": {
+          "x": 1362,
+          "y": 612
+        },
+        "rockControl": {
+          "x": 1356,
+          "y": 660
+        }
+      },
+      "oreTile": "copper",
+      "status": "Interaction proof: visible copper face and adjacent rock control staged."
+    },
+    "mine": {
+      "ok": true,
+      "action": "mineOre",
+      "target": {
+        "ore": {
+          "x": 57,
+          "y": 25,
+          "worldX": 1380,
+          "worldY": 612
+        },
+        "oreFace": {
+          "x": 1362,
+          "y": 612
+        },
+        "rockControl": {
+          "x": 1356,
+          "y": 660
+        }
+      },
+      "before": {
+        "total": 0,
+        "byKind": {},
+        "byId": {},
+        "byValue": {},
+        "items": []
+      },
+      "after": {
+        "total": 1,
+        "byKind": {
+          "ore": 1
+        },
+        "byId": {
+          "copper": 1
+        },
+        "byValue": {
+          "14": 1
+        },
+        "items": [
+          {
+            "id": "copper",
+            "kind": "ore",
+            "value": 14,
+            "sourceTileX": 57,
+            "sourceTileY": 25
+          }
+        ]
+      },
+      "oreTile": "water",
+      "rockControlTile": "stone",
+      "oreDamage": 0,
+      "fallbackBreakTile": true,
+      "status": "Copper broke loose. Swim near it to collect."
+    },
+    "before": {
+      "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/ore-visible-face-before.png",
+      "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/ore-visible-face-before-grayscale.png"
+    },
+    "after": {
+      "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/ore-visible-face-after-direct-mine.png",
+      "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/ore-visible-face-after-direct-mine-grayscale.png"
+    },
+    "rockControl": {
+      "ok": true,
+      "action": "mineRockControl",
+      "target": {
+        "ore": {
+          "x": 57,
+          "y": 25,
+          "worldX": 1380,
+          "worldY": 612
+        },
+        "oreFace": {
+          "x": 1362,
+          "y": 612
+        },
+        "rockControl": {
+          "x": 1356,
+          "y": 660
+        }
+      },
+      "before": {
+        "total": 0,
+        "byKind": {},
+        "byId": {},
+        "byValue": {},
+        "items": []
+      },
+      "after": {
+        "total": 0,
+        "byKind": {},
+        "byId": {},
+        "byValue": {},
+        "items": []
+      },
+      "oreTile": "copper",
+      "rockControlTile": "stone",
+      "oreDamage": 24.48,
+      "fallbackBreakTile": false,
+      "status": "Interaction proof: visible copper face and adjacent rock control staged."
+    },
+    "rockControlImage": {
+      "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/ore-adjacent-rock-control-after.png",
+      "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/ore-adjacent-rock-control-after-grayscale.png"
+    }
+  },
+  "flora": {
+    "moonSponge": {
+      "species": "Moon Sponge",
+      "index": 18,
+      "duringScanTarget": null,
+      "scanned": true,
+      "images": {
+        "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/flora-moon-sponge-scan-runtime.png",
+        "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/flora-moon-sponge-scan-runtime-grayscale.png"
+      }
+    },
+    "ventCoral": {
+      "species": "Vent Coral",
+      "index": 20,
+      "duringScanTarget": null,
+      "scanned": true,
+      "images": {
+        "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/flora-vent-coral-scan-runtime.png",
+        "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/flora-vent-coral-scan-runtime-grayscale.png"
+      }
+    }
+  },
+  "fauna": {
+    "mantis": {
+      "setup": {
+        "ok": true,
+        "action": "setup",
+        "species": "Mantis Shrimp",
+        "fish": {
+          "species": "Mantis Shrimp",
+          "x": 517.5,
+          "y": 967.64,
+          "anchor": "floor",
+          "rootX": 484.5,
+          "rootY": 974.64,
+          "rootOffsetX": 33,
+          "walkDir": 1,
+          "facingSign": 1,
+          "visualFacingSign": 1,
+          "visualAngle": 0,
+          "supported": true
+        },
+        "status": "Interaction proof: mantis shrimp facing a destructible lip."
+      },
+      "before": {
+        "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/mantis-shrimp-edge-before.png",
+        "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/mantis-shrimp-edge-before-grayscale.png"
+      },
+      "advance": {
+        "ok": true,
+        "action": "advance",
+        "species": "Mantis Shrimp",
+        "before": {
+          "species": "Mantis Shrimp",
+          "x": 498.581,
+          "y": 967.274,
+          "anchor": "floor",
+          "rootX": 484.5,
+          "rootY": 974.64,
+          "rootOffsetX": 14.081,
+          "walkDir": -1,
+          "facingSign": -1,
+          "visualFacingSign": -1,
+          "visualAngle": -3.142,
+          "supported": true
+        },
+        "after": {
+          "species": "Mantis Shrimp",
+          "x": 447.108,
+          "y": 920.245,
+          "anchor": "floor",
+          "rootX": 430.5,
+          "rootY": 926.64,
+          "rootOffsetX": 16.608,
+          "walkDir": -1,
+          "facingSign": -1,
+          "visualFacingSign": -1,
+          "visualAngle": -3.142,
+          "supported": true
+        },
+        "status": "Interaction proof: mantis shrimp facing a destructible lip."
+      },
+      "after": {
+        "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/mantis-shrimp-edge-after-traverse.png",
+        "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/mantis-shrimp-edge-after-traverse-grayscale.png"
+      }
+    },
+    "crab": {
+      "setup": {
+        "ok": true,
+        "action": "setup",
+        "species": "Silver Hinge Crab",
+        "fish": {
+          "species": "Silver Hinge Crab",
+          "x": 1235.5,
+          "y": 757.64,
+          "anchor": "floor",
+          "rootX": 1249.5,
+          "rootY": 764.64,
+          "rootOffsetX": -14,
+          "walkDir": 1,
+          "facingSign": -1,
+          "visualFacingSign": -1,
+          "visualAngle": 0,
+          "supported": true
+        },
+        "status": "Interaction proof: neutral crab edge walk orientation."
+      },
+      "before": {
+        "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/silver-hinge-crab-edge-before.png",
+        "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/silver-hinge-crab-edge-before-grayscale.png"
+      },
+      "advance": {
+        "ok": true,
+        "action": "advance",
+        "species": "Silver Hinge Crab",
+        "before": {
+          "species": "Silver Hinge Crab",
+          "x": 1241.398,
+          "y": 758.002,
+          "anchor": "floor",
+          "rootX": 1249.5,
+          "rootY": 764.64,
+          "rootOffsetX": -8.102,
+          "walkDir": 1,
+          "facingSign": 1,
+          "visualFacingSign": 1,
+          "visualAngle": 0,
+          "supported": true
+        },
+        "after": {
+          "species": "Silver Hinge Crab",
+          "x": 1266.542,
+          "y": 757.423,
+          "anchor": "floor",
+          "rootX": 1249.5,
+          "rootY": 764.64,
+          "rootOffsetX": 17.042,
+          "walkDir": -1,
+          "facingSign": -1,
+          "visualFacingSign": -1,
+          "visualAngle": -3.142,
+          "supported": true
+        },
+        "status": "Interaction proof: neutral crab edge walk orientation."
+      },
+      "after": {
+        "colorPath": "runs/water9-interaction-edge-fixes-2026-07-06/silver-hinge-crab-edge-after-no-vertical-flip.png",
+        "grayPath": "runs/water9-interaction-edge-fixes-2026-07-06/silver-hinge-crab-edge-after-no-vertical-flip-grayscale.png"
+      }
+    }
+  },
+  "errors": [],
+  "serverLogs": "\n  VITE v8.0.12  ready in 152 ms\n\n  ➜  Local:   http://127.0.0.1:5180/\n"
+}

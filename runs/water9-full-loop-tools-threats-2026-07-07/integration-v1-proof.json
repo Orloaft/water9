@@ -1,0 +1,263 @@
+{
+  "ok": true,
+  "head": "8a04ef5",
+  "port": 5189,
+  "captures": [
+    {
+      "name": "integration-v1-surface-b1-quickbar",
+      "path": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-surface-b1-quickbar.png",
+      "grayscalePath": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-surface-b1-quickbar-grayscale.png",
+      "band": "surface/B1",
+      "intent": "B1 pinned story objective plus sampler selected in the quickbar during normal runtime.",
+      "state": {
+        "biome": 1,
+        "depth": 120,
+        "maxDepth": 900,
+        "selectedTool": "sampler",
+        "unlockedTools": {
+          "drill": true,
+          "scanner": true,
+          "sonar": true,
+          "sampler": true,
+          "flare": false,
+          "stun": false,
+          "charge": false
+        },
+        "scannedSpecies": [
+          "Glass Kelp",
+          "Moon Sponge",
+          "Sting Anemone",
+          "Blue-ring Octopus"
+        ],
+        "sampledSpecies": [
+          "Glass Kelp"
+        ],
+        "story": {
+          "activeId": "b1-first-signal",
+          "completed": [],
+          "flags": {},
+          "heardRadio": []
+        },
+        "finale": {
+          "finalProofRecovered": false,
+          "endingSeen": false,
+          "heardRadio": [],
+          "finalProofSpecies": "",
+          "finalProofDepth": 0
+        },
+        "won": false
+      },
+      "hud": {
+        "objectiveText": "EXPEDITION MILESTONE\nB1 Expedition: First Signal\n\nReturn to the barge with scan, sample, sonar, and depth proof for the B2 route.",
+        "storyText": "EXPEDITION MILESTONE\nB1 Expedition: First Signal\n\nReturn to the barge with scan, sample, sonar, and depth proof for the B2 route.",
+        "toolStripText": "TOOL\nSampler\n1\nDrill\nREADY\n2\nScanner\nREADY\n3\nSonar\nREADY\n4\nSampler\nACTIVE\n5\nFlare\nLOCKED\n6\nStun\nLOCKED\n7\nCharge\nLOCKED",
+        "victoryText": ""
+      },
+      "runtimeIdentity": {
+        "hasGameElement": 1,
+        "hasCanvas": 2,
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        }
+      }
+    },
+    {
+      "name": "integration-v1-mid-b2-sampler-story",
+      "path": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-mid-b2-sampler-story.png",
+      "grayscalePath": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-mid-b2-sampler-story-grayscale.png",
+      "band": "mid/B2",
+      "intent": "B2 vent-proof milestone with sample progress and sampler selected, independent of active contracts.",
+      "state": {
+        "biome": 2,
+        "depth": 642,
+        "maxDepth": 1100,
+        "selectedTool": "sampler",
+        "unlockedTools": {
+          "drill": true,
+          "scanner": true,
+          "sonar": true,
+          "sampler": true,
+          "flare": false,
+          "stun": false,
+          "charge": false
+        },
+        "scannedSpecies": [
+          "Brine Grass",
+          "Vent Coral",
+          "Gulper Eel",
+          "Ash Minnow",
+          "Barreleye"
+        ],
+        "sampledSpecies": [
+          "Brine Grass",
+          "Vent Coral"
+        ],
+        "story": {
+          "activeId": "b2-vent-proof",
+          "completed": [
+            "b1-first-signal"
+          ],
+          "flags": {
+            "b1-first-signal:completed": true
+          },
+          "heardRadio": [
+            "story-b1-first-signal-complete"
+          ]
+        },
+        "finale": {
+          "finalProofRecovered": false,
+          "endingSeen": false,
+          "heardRadio": [],
+          "finalProofSpecies": "",
+          "finalProofDepth": 0
+        },
+        "won": false
+      },
+      "hud": {
+        "objectiveText": "EXPEDITION MILESTONE\nB2 Expedition: Vent Proof\n\nChart vent lanes with sonar: 3,200 cells needed.",
+        "storyText": "EXPEDITION MILESTONE\nB2 Expedition: Vent Proof\n\nChart vent lanes with sonar: 3,200 cells needed.",
+        "toolStripText": "TOOL\nSampler\n1\nDrill\nREADY\n2\nScanner\nREADY\n3\nSonar\nREADY\n4\nSampler\nACTIVE\n5\nFlare\nLOCKED\n6\nStun\nLOCKED\n7\nCharge\nLOCKED",
+        "victoryText": ""
+      },
+      "runtimeIdentity": {
+        "hasGameElement": 1,
+        "hasCanvas": 2,
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        }
+      }
+    },
+    {
+      "name": "integration-v1-deep-b4-proof-return",
+      "path": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-deep-b4-proof-return.png",
+      "grayscalePath": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-deep-b4-proof-return-grayscale.png",
+      "band": "deep/B4",
+      "intent": "Final proof recovered at depth, with objective copy requiring return to barge before victory.",
+      "state": {
+        "biome": 4,
+        "depth": 546,
+        "maxDepth": 546,
+        "selectedTool": "sonar",
+        "unlockedTools": {
+          "drill": true,
+          "scanner": true,
+          "sonar": true,
+          "sampler": true,
+          "flare": false,
+          "stun": false,
+          "charge": false
+        },
+        "scannedSpecies": [],
+        "sampledSpecies": [
+          "Brine Grass",
+          "Vent Coral"
+        ],
+        "story": {
+          "activeId": "b4-reliquary-proof",
+          "completed": [
+            "b1-first-signal",
+            "b2-vent-proof",
+            "b3-forward-pocket"
+          ],
+          "flags": {
+            "b1-first-signal:completed": true,
+            "b2-vent-proof:completed": true,
+            "b3-forward-pocket:completed": true
+          },
+          "heardRadio": [
+            "story-b1-first-signal-complete",
+            "story-b2-vent-proof-complete",
+            "story-b3-forward-pocket-complete"
+          ]
+        },
+        "finale": {
+          "finalProofRecovered": true,
+          "endingSeen": false,
+          "heardRadio": [
+            "final-proof-recovered"
+          ],
+          "finalProofSpecies": "Abyssal Crownmaw",
+          "finalProofDepth": 1600
+        },
+        "won": false
+      },
+      "hud": {
+        "objectiveText": "EXPEDITION MILESTONE\nB4 Expedition: Reliquary Proof\n\nCrownmaw proof is sealed. Return to the barge with proof to finish the expedition.",
+        "storyText": "EXPEDITION MILESTONE\nB4 Expedition: Reliquary Proof\n\nCrownmaw proof is sealed. Return to the barge with proof to finish the expedition.",
+        "toolStripText": "TOOL\nSonar\n1\nDrill\nREADY\n2\nScanner\nREADY\n3\nSonar\nACTIVE\n4\nSampler\nREADY\n5\nFlare\nLOCKED\n6\nStun\nLOCKED\n7\nCharge\nLOCKED",
+        "victoryText": ""
+      },
+      "runtimeIdentity": {
+        "hasGameElement": 1,
+        "hasCanvas": 2,
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        }
+      }
+    }
+  ],
+  "grayscalePass": [
+    {
+      "source": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-surface-b1-quickbar.png",
+      "grayscale": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-surface-b1-quickbar-grayscale.png",
+      "readable": true,
+      "note": "Generated directly from the viewport capture with ffmpeg format=gray for manager visual inspection."
+    },
+    {
+      "source": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-mid-b2-sampler-story.png",
+      "grayscale": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-mid-b2-sampler-story-grayscale.png",
+      "readable": true,
+      "note": "Generated directly from the viewport capture with ffmpeg format=gray for manager visual inspection."
+    },
+    {
+      "source": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-deep-b4-proof-return.png",
+      "grayscale": "runs/water9-full-loop-tools-threats-2026-07-07/integration-v1-deep-b4-proof-return-grayscale.png",
+      "readable": true,
+      "note": "Generated directly from the viewport capture with ffmpeg format=gray for manager visual inspection."
+    }
+  ],
+  "finalChecks": {
+    "bargeReturnVictory": {
+      "won": true,
+      "story": {
+        "activeId": "",
+        "completed": [
+          "b1-first-signal",
+          "b2-vent-proof",
+          "b3-forward-pocket",
+          "b4-reliquary-proof"
+        ],
+        "flags": {
+          "b1-first-signal:completed": true,
+          "b2-vent-proof:completed": true,
+          "b3-forward-pocket:completed": true,
+          "b4-reliquary-proof:completed": true
+        },
+        "heardRadio": [
+          "story-b1-first-signal-complete",
+          "story-b2-vent-proof-complete",
+          "story-b3-forward-pocket-complete",
+          "story-b4-reliquary-proof-complete"
+        ]
+      },
+      "finale": {
+        "finalProofRecovered": true,
+        "endingSeen": false,
+        "heardRadio": [
+          "final-proof-recovered",
+          "drowned-architects-proof"
+        ],
+        "finalProofSpecies": "Abyssal Crownmaw",
+        "finalProofDepth": 1600
+      }
+    }
+  },
+  "errors": [],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 168 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5189/\n"
+  ]
+}

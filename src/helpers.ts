@@ -1,14 +1,16 @@
 import Phaser from 'phaser';
-import type { Biome,CargoItem,DiverAnimation,EnvironmentBackgroundRepeatMode,EnvironmentDepthBand,EnvironmentPainterlyBackgroundRole,EnvironmentReadabilityRisk,Fish,FishSpecies,FloraSpecies,Hazard,InventoryItemKind,Quest,ScanRarity,ScanTarget,ShopItem,SpecialRoom,SubTier,SubVehicle,Tile,Upgrade,UpgradeId,VeinRule } from './types';
-import { audioKeys,BARGE_DOCK_Y,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MARLIN_VOUCHER_DISCOUNT,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import type { ArticulatedCreature,ArticulatedCreatureManifest,Biome,CargoItem,DiverAnimation,EnvironmentBackgroundRepeatMode,EnvironmentDepthBand,EnvironmentPainterlyBackgroundRole,EnvironmentReadabilityRisk,Fish,FishSpecies,FloraSpecies,Hazard,InventoryItemKind,Quest,ScanRarity,ScanTarget,ShopItem,SpecialRoom,StoryMilestoneId,StoryProgress,SubTier,SubVehicle,Tile,ToolId,Upgrade,UpgradeId,VeinRule } from './types';
+import { audioKeys,BARGE_DOCK_Y,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MARLIN_VOUCHER_DISCOUNT,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,SURFACE_Y,TARGET_DEPTH,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { articulatedCreatureDefs, loadArticulatedAssets, shouldSpawnArticulatedCreature } from './articulated';
+import { createDefaultUnlockedTools, TOOL_LABELS } from './tools';
+import { articulatedBehaviorFor,articulatedCreatureDefs, loadArticulatedAssets, shouldSpawnArticulatedCreature } from './articulated';
 import { loadArticulatedDiverAssets } from './diver-articulated';
 import { clearFullscreenWarning,meter,renderHud,showFullscreenWarning } from './hud';
 import type { DeepdiveScene } from './scene';
 import phase3BackgroundManifestFile from '../public/assets/generated/background-phase3/background-phase3.manifest.json';
+import goblinSharkManifestFile from '../public/assets/generated/fauna-abyss-goblin-shark.frames.json';
 
 export function generateTile(x: number, y: number): Tile {
   if (y < 7) return 'water';
@@ -95,6 +97,34 @@ export function scaledEntity(value: number) {
   return value * ENTITY_SCALE;
 }
 
+const LARGE_THREAT_SIGNATURE_IDS = new Set([
+  'abyssal-serpent',
+  'abyssal-gulper',
+  'abyssal-crownmaw',
+  'abyssal-riftmaw',
+  'abyssal-reliquary-wyrm',
+]);
+
+const LARGE_THREAT_RARITIES = new Set<ScanRarity>(['epic', 'legendary']);
+const LARGE_THREAT_MIN_MANIFEST_RADIUS = 58;
+export const LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER = 1;
+
+export function isLargeArticulatedThreatManifest(manifest: ArticulatedCreatureManifest) {
+  if (LARGE_THREAT_SIGNATURE_IDS.has(manifest.id)) return true;
+  if (manifest.minBiome < 3) return false;
+  if (!LARGE_THREAT_RARITIES.has(manifest.rarity)) return false;
+  if (manifest.radius < LARGE_THREAT_MIN_MANIFEST_RADIUS) return false;
+  return articulatedBehaviorFor(manifest) !== 'passive';
+}
+
+export function isLargeArticulatedThreat(creature: ArticulatedCreature) {
+  return isLargeArticulatedThreatManifest(creature.manifest);
+}
+
+export function largeThreatDynamiteDamageMultiplier(creature: ArticulatedCreature) {
+  return isLargeArticulatedThreat(creature) ? LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER : 1;
+}
+
 export function pointInRoom(x: number, y: number, room: SpecialRoom, scale = 1) {
   const center = specialRoomEffectCenter(room);
   const nx = (x - center.x) / (room.rx * scale);
@@ -139,6 +169,7 @@ export function activeQuest() {
 export function questProgressSource(quest: Quest) {
   if (quest.kind === 'depth' || quest.kind === 'gulperSurvey') return state.maxDepth;
   if (quest.kind === 'scan') return state.scannedSpecies.size;
+  if (quest.kind === 'sample') return state.sampledSpecies.size;
   if (quest.kind === 'ore') return state.oreSoldCredits;
   if (quest.kind === 'nest') return quest.progress;
   if (quest.kind === 'forwardOutpost') return state.forwardOutpost.active && state.forwardOutpost.biome === 3 ? 1 : 0;
@@ -149,6 +180,7 @@ export function generateQuestBoard(hasNest: boolean): Quest[] {
   const biome = state.biome;
   const depthTarget = Math.round(Phaser.Math.Linear(360, 1380, biome / 4) + hash(3, biome, rng.seed) * 220);
   const scanTarget = 2 + biome + Math.floor(hash(5, biome, rng.seed) * 3);
+  const sampleTarget = 1;
   const oreTarget = Math.round((620 + biome * 520 + hash(7, biome, rng.seed) * 380) / 50) * 50;
   const quests: Quest[] = [
     {
@@ -173,6 +205,20 @@ export function generateQuestBoard(hasNest: boolean): Quest[] {
       text: `Scan ${scanTarget} new lifeform${scanTarget === 1 ? '' : 's'} before leaving the claim.`,
       reward: 640 + biome * 460,
       target: scanTarget,
+      progress: 0,
+      startValue: 0,
+      accepted: false,
+      completed: false,
+      claimed: false,
+    },
+    {
+      id: `sample-${rng.seed}-${biome}`,
+      kind: 'sample',
+      title: 'Flora Sample Contract',
+      client: 'Wet Lab Procurement',
+      text: `Harvest ${sampleTarget} distinct gameplay flora sample${sampleTarget === 1 ? '' : 's'} with the sampler. Sell the physical vials later for cargo credits.`,
+      reward: 720 + biome * 480,
+      target: sampleTarget,
       progress: 0,
       startValue: 0,
       accepted: false,
@@ -267,6 +313,20 @@ export function cargoKindForTile(tile: Tile): InventoryItemKind {
   return 'ore';
 }
 
+export function createFloraSampleItem(target: ScanTarget): CargoItem {
+  const value = floraSampleReward(target, target.kind === 'flora' ? target.scanned : false);
+  const rarity = scannableRarity(target);
+  return {
+    id: 'flora-sample',
+    name: `${target.species} Sample`,
+    value,
+    color: rarityColor(rarity),
+    kind: 'sample',
+    icon: 'item-icon-unknown',
+    sampleSpecies: target.species,
+  };
+}
+
 export function cargoIconForTile(tile: Tile) {
   if (tile === 'copper' || tile === 'sunstone') return 'item-icon-copper';
   if (tile === 'quartz') return 'item-icon-quartz';
@@ -279,8 +339,23 @@ export function cargoIconForTile(tile: Tile) {
   return 'item-icon-stone';
 }
 
+export function isRecoveredSaleCargo(item: CargoItem) {
+  return (item.kind === 'ore' || item.kind === 'artifact' || item.kind === 'sample') && item.value > 0;
+}
+
 export function cargoSaleValue() {
-  return state.cargo.reduce((sum, item) => sum + Math.max(0, item.value), 0);
+  return state.cargo.reduce((sum, item) => sum + (isRecoveredSaleCargo(item) ? Math.max(0, item.value) : 0), 0);
+}
+
+export function cargoSaleBreakdown() {
+  return state.cargo.reduce((totals, item) => {
+    if (!isRecoveredSaleCargo(item)) return totals;
+    const value = Math.max(0, item.value);
+    totals.total += value;
+    if (item.kind === 'ore' || item.kind === 'artifact') totals.oreCredits += value;
+    if (item.kind === 'sample') totals.sampleCredits += value;
+    return totals;
+  }, { total: 0, oreCredits: 0, sampleCredits: 0 });
 }
 
 export function clampSelectedCargoIndex() {
@@ -290,6 +365,40 @@ export function clampSelectedCargoIndex() {
     return;
   }
   state.selectedCargoIndex = Phaser.Math.Clamp(Math.floor(state.selectedCargoIndex) || 0, 0, capacity - 1);
+}
+
+export function resetToolState() {
+  state.selectedTool = 'drill';
+  state.unlockedTools = createDefaultUnlockedTools();
+}
+
+export function isToolUnlocked(toolId: ToolId) {
+  return Boolean(state.unlockedTools[toolId]);
+}
+
+export function selectTool(toolId: ToolId) {
+  if (!isToolUnlocked(toolId)) {
+    state.status = `${TOOL_LABELS[toolId]} is not fitted yet. Keep using drill, scanner, and sonar for this dive.`;
+    renderHud();
+    return false;
+  }
+  state.selectedTool = toolId;
+  const action = toolId === 'drill'
+    ? 'Primary action cuts rock and ore.'
+    : toolId === 'scanner'
+      ? 'Primary action scans nearby life.'
+      : toolId === 'sampler'
+        ? 'Primary action samples close gameplay flora.'
+        : toolId === 'sonar'
+          ? 'Primary action fires a sonar ping.'
+          : toolId === 'stun'
+            ? state.cargo.some((item) => item.id === 'stun-grenade')
+              ? 'Primary action fires one carried stun grenade.'
+              : 'No stun grenade is loaded; primary action will not fire.'
+            : `${TOOL_LABELS[toolId]} is not ready in this slice.`;
+  state.status = `${TOOL_LABELS[toolId]} selected. ${action}`;
+  renderHud();
+  return true;
 }
 
 // Fauna that still ship as loose per-frame PNGs. All current fauna have been
@@ -309,6 +418,10 @@ export interface SpriteManifest {
 
 // Populated at load time from Asset Forge `*.frames.json` manifests.
 export const spriteManifests: Record<string, SpriteManifest> = {};
+
+const PRELOADED_SPRITESHEET_MANIFESTS: Record<string, SpriteManifest> = {
+  'fauna-abyss-goblin-shark': goblinSharkManifestFile as SpriteManifest,
+};
 
 const FALLBACK_SPRITESHEET_BASES = [
   // Generic depth-band fish
@@ -359,12 +472,17 @@ const FALLBACK_SPRITESHEET_BASES = [
   'fauna-abyss-medusa',
 ];
 
+const SPECIAL_RUNTIME_SPRITESHEET_BASES = [
+  'fauna-abyss-mantle-crawler',
+];
+
 const CONTENT_SPRITESHEET_BASES = Array.from(new Set(Object.values(biomeFish).flatMap((speciesList) =>
   speciesList.flatMap((species) => species.assetKey ? [species.assetKey] : []),
 )));
 
 const SPRITESHEET_BASES = [
   ...FALLBACK_SPRITESHEET_BASES,
+  ...SPECIAL_RUNTIME_SPRITESHEET_BASES,
   ...CONTENT_SPRITESHEET_BASES.filter((assetKey) => !FALLBACK_SPRITESHEET_BASES.includes(assetKey)),
 ];
 
@@ -379,9 +497,17 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
     }
   }
   for (let i = 0; i < 4; i += 1) scene.load.image(`sub-cutter-beam-${i}`, assetPath(`sub-cutter-beam-${i}`));
+  for (const [base, manifest] of Object.entries(PRELOADED_SPRITESHEET_MANIFESTS)) {
+    spriteManifests[base] = manifest;
+    scene.load.spritesheet(base, assetPath(base), {
+      frameWidth: manifest.frameWidth,
+      frameHeight: manifest.frameHeight,
+    });
+  }
   // Asset Forge spritesheets: load the manifest, then the packed sheet using
   // the frame size it declares (Phaser processes the chained load in the same run).
   for (const base of SPRITESHEET_BASES) {
+    if (PRELOADED_SPRITESHEET_MANIFESTS[base]) continue;
     const manifestKey = `${base}__manifest`;
     scene.load.json(manifestKey, `/assets/generated/${base}.frames.json`);
     scene.load.once(`filecomplete-json-${manifestKey}`, () => {
@@ -2082,6 +2208,10 @@ export function environmentTextureKeys() {
     'env-flora-oxygen-bloom',
     'env-flora-lumen-fern',
     'env-flora-lumen-nodule',
+    'terrain-edge-flora-moon-sponge',
+    'terrain-edge-flora-sting-anemone',
+    'terrain-edge-flora-vent-coral',
+    'terrain-edge-flora-ember-bloom',
     'env-hazard-ice-spike',
   ];
 }
@@ -2560,20 +2690,45 @@ export function scanReward(target: ScanTarget) {
   const rarity = scannableRarity(target);
   const base = scanRarityCredits(rarity);
   const dangerBonus = target.kind === 'articulated'
-    ? 720
+    ? rarity === 'legendary'
+      ? 900
+      : rarity === 'epic'
+        ? 500
+        : 160
     : target.kind === 'fish'
-      ? target.hostile ? 180 : 0
-      : target.hazardous ? 220 : 0;
-  const scannerBonus = 1 + state.upgrades.scanner * 0.16;
+      ? target.hostile ? scanRarityRank(rarity) >= scanRarityRank('epic') ? 240 : 60 : 0
+      : target.hazardous ? scanRarityRank(rarity) >= scanRarityRank('epic') ? 240 : 60 : 0;
+  const scannerBonus = 1 + Math.min(state.upgrades.scanner, 4) * 0.08;
   return Math.round((base + dangerBonus) * scannerBonus);
 }
 
 export function scanRarityCredits(rarity: ScanRarity) {
-  if (rarity === 'legendary') return 3600;
-  if (rarity === 'epic') return 2100;
-  if (rarity === 'rare') return 1150;
-  if (rarity === 'uncommon') return 620;
-  return 320;
+  if (rarity === 'legendary') return 4200;
+  if (rarity === 'epic') return 1800;
+  if (rarity === 'rare') return 360;
+  if (rarity === 'uncommon') return 140;
+  return 60;
+}
+
+export function floraSampleReward(target: FloraSpecies | ScanTarget, scanned: boolean) {
+  const species = typeof (target as ScanTarget).kind === 'string' && (target as ScanTarget).kind === 'flora'
+    ? floraSpeciesByName((target as ScanTarget).species)
+    : target as FloraSpecies;
+  const rarity = floraRarity(species);
+  const base = rarity === 'epic'
+    ? 180
+    : rarity === 'rare'
+      ? 125
+      : rarity === 'uncommon'
+        ? 85
+        : 55;
+  const hazardBonus = species?.hazardous ? 35 : 0;
+  const unscannedPenalty = scanned ? 1 : 0.55;
+  return Math.round((base + hazardBonus) * unscannedPenalty);
+}
+
+export function sampledSpeciesCount() {
+  return state.sampledSpecies.size;
 }
 
 export function rarityLabel(rarity: ScanRarity) {
@@ -2694,6 +2849,221 @@ export function currentApexSpecies() {
   if (state.biome === 2) return 'Gulper Eel';
   if (state.biome === 4) return 'Abyssal Crownmaw';
   return 'Abyssal Serpent';
+}
+
+export const STORY_MILESTONE_IDS: StoryMilestoneId[] = ['b1-first-signal', 'b2-vent-proof', 'b3-forward-pocket', 'b4-reliquary-proof'];
+
+const STORY_MILESTONE_BIOMES: Record<StoryMilestoneId, Biome> = {
+  'b1-first-signal': 1,
+  'b2-vent-proof': 2,
+  'b3-forward-pocket': 3,
+  'b4-reliquary-proof': 4,
+};
+
+const STORY_MILESTONE_RADIO: Record<StoryMilestoneId, string> = {
+  'b1-first-signal': 'story-b1-first-signal-complete',
+  'b2-vent-proof': 'story-b2-vent-proof-complete',
+  'b3-forward-pocket': 'story-b3-forward-pocket-complete',
+  'b4-reliquary-proof': 'story-b4-reliquary-proof-complete',
+};
+
+export function createDefaultStoryProgress(activeId: StoryMilestoneId | '' = 'b1-first-signal'): StoryProgress {
+  return {
+    activeId,
+    completed: [],
+    flags: {},
+    heardRadio: [],
+  };
+}
+
+export function normalizeStoryProgress(saved?: Partial<StoryProgress>): StoryProgress {
+  const completed = Array.isArray(saved?.completed)
+    ? saved.completed.filter((id): id is StoryMilestoneId => isStoryMilestoneId(id))
+    : [];
+  const activeId = isStoryMilestoneId(saved?.activeId) ? saved.activeId : '';
+  const flags: Record<string, boolean> = {};
+  if (saved?.flags && typeof saved.flags === 'object') {
+    for (const [key, value] of Object.entries(saved.flags)) flags[key] = Boolean(value);
+  }
+  const heardRadio = Array.isArray(saved?.heardRadio)
+    ? saved.heardRadio.filter((id) => typeof id === 'string')
+    : [];
+  return {
+    activeId,
+    completed: [...new Set(completed)],
+    flags,
+    heardRadio,
+  };
+}
+
+function isStoryMilestoneId(value: unknown): value is StoryMilestoneId {
+  return typeof value === 'string' && (STORY_MILESTONE_IDS as string[]).includes(value);
+}
+
+export function markStoryRadioHeard(id: string) {
+  if (!state.story.heardRadio.includes(id)) state.story.heardRadio.push(id);
+}
+
+export function completeStoryMilestone(id: StoryMilestoneId, silent = false) {
+  if (!state.story.completed.includes(id)) {
+    state.story.completed.push(id);
+    state.story.flags[`${id}:completed`] = true;
+    markStoryRadioHeard(STORY_MILESTONE_RADIO[id]);
+    if (!silent) state.status = `${storyMilestoneTitle(id)} complete. Expedition route updated.`;
+  }
+  updateActiveStoryMilestone();
+  return true;
+}
+
+function updateActiveStoryMilestone() {
+  const current = STORY_MILESTONE_IDS.find((id) => STORY_MILESTONE_BIOMES[id] === state.biome && !state.story.completed.includes(id));
+  state.story.activeId = current ?? '';
+}
+
+export function syncStoryProgress(silent = true) {
+  state.story = normalizeStoryProgress(state.story);
+  for (const id of STORY_MILESTONE_IDS) {
+    if (STORY_MILESTONE_BIOMES[id] < state.biome) completeStoryMilestone(id, true);
+  }
+  const active = STORY_MILESTONE_IDS.find((id) => STORY_MILESTONE_BIOMES[id] === state.biome && !state.story.completed.includes(id));
+  if (active && storyMilestoneEvaluation(active).complete) completeStoryMilestone(active, silent);
+  updateActiveStoryMilestone();
+  return state.story;
+}
+
+export function currentPinnedStoryObjective() {
+  syncStoryProgress();
+  const id = state.story.activeId;
+  if (!id) return null;
+  const evaluation = storyMilestoneEvaluation(id);
+  return {
+    id,
+    title: storyMilestoneTitle(id),
+    detail: evaluation.detail,
+    complete: evaluation.complete,
+    progress: evaluation.progress,
+  };
+}
+
+export function storyMilestoneTitle(id: StoryMilestoneId) {
+  if (id === 'b1-first-signal') return 'B1 Expedition: First Signal';
+  if (id === 'b2-vent-proof') return 'B2 Expedition: Vent Proof';
+  if (id === 'b3-forward-pocket') return 'B3 Expedition: Forward Pocket';
+  return 'B4 Expedition: Reliquary Proof';
+}
+
+export function storyMilestoneEvaluation(id: StoryMilestoneId) {
+  if (id === 'b1-first-signal') return b1StoryEvaluation();
+  if (id === 'b2-vent-proof') return b2StoryEvaluation();
+  if (id === 'b3-forward-pocket') return b3StoryEvaluation();
+  return b4StoryEvaluation();
+}
+
+function b1StoryEvaluation() {
+  const charting = biomeChartingProgress();
+  const sampled = sampledSpeciesCount();
+  if (sampled < 1) return { complete: false, progress: sampled, detail: 'Cut a copper pocket, scan local life, then use the sampler on close Shallows flora.' };
+  if (charting.scanned < charting.requiredScans) return { complete: false, progress: charting.scanned, detail: `Scan ${charting.requiredScans - charting.scanned} more local signal${charting.requiredScans - charting.scanned === 1 ? '' : 's'} for the first survey license.` };
+  if (!charting.threatOk) return { complete: false, progress: charting.scanned, detail: 'Scan a hostile Shallows signal so the route is not a blind jump.' };
+  if (charting.depth < charting.requiredDepth) return { complete: false, progress: charting.depth, detail: `Reach ${charting.requiredDepth.toLocaleString()} m to prove the pressure line.` };
+  if (charting.sonarCells < charting.requiredSonarCells) return { complete: false, progress: charting.sonarCells, detail: `Pulse sonar until ${charting.requiredSonarCells.toLocaleString()} chart cells reveal the buried route geometry.` };
+  if (!state.atBoat && !state.docked) return { complete: false, progress: 1, detail: 'Return to the barge with scan, sample, sonar, and depth proof for the B2 route.' };
+  return { complete: true, progress: 1, detail: 'First survey license complete. The barge can trace the signal into Brine Vent Shelf.' };
+}
+
+function b2StoryEvaluation() {
+  const charting = biomeChartingProgress();
+  const safeFlora = ['Brine Grass'];
+  const hazardFlora = ['Vent Coral', 'Ember Bloom'];
+  const safeOk = hasScannedAndSampledAny(safeFlora);
+  const hazardOk = hasScannedAndSampledAny(hazardFlora);
+  const gulperOk = state.scannedSpecies.has('Gulper Eel') || charting.apexScanned;
+  if (!safeOk) return { complete: false, progress: 0, detail: 'Scan and sample Brine Grass for the safe vent chemistry baseline.' };
+  if (!hazardOk) return { complete: false, progress: 1, detail: 'Scan and sample hazardous vent flora without lingering in the burn lane.' };
+  if (!gulperOk) return { complete: false, progress: 2, detail: 'Scan the Gulper Eel route proof, then use stun gear only to escape.' };
+  if (charting.sonarCells < charting.requiredSonarCells) return { complete: false, progress: charting.sonarCells, detail: `Chart vent lanes with sonar: ${charting.requiredSonarCells.toLocaleString()} cells needed.` };
+  if (charting.depth < charting.requiredDepth || !charting.threatOk || charting.scanned < charting.requiredScans) return { complete: false, progress: 3, detail: 'Finish Brine Vent charting: scans, depth, and threat proof must agree.' };
+  if (!state.atBoat && !state.docked) return { complete: false, progress: 4, detail: 'Return to the barge with vent chemistry and Gulper route proof.' };
+  return { complete: true, progress: 5, detail: 'Vent chemistry matches the drowned-architect signal. Midnight Trench route is ready.' };
+}
+
+function b3StoryEvaluation() {
+  const charting = biomeChartingProgress();
+  const outpostOk = state.forwardOutpost.active && state.forwardOutpost.biome === 3;
+  const wakeOk = state.story.flags['b3-gulper-wake-proof'] || state.questBoard.some((quest) => quest.kind === 'gulperSurvey' && (quest.completed || quest.claimed));
+  const serpentOk = state.scannedSpecies.has('Abyssal Serpent') || charting.apexScanned;
+  if (!outpostOk) return { complete: false, progress: 0, detail: 'Establish the Forward Air Pocket below 900 m beside solid terrain and safe flora.' };
+  if (!wakeOk) return { complete: false, progress: 1, detail: 'Prove the Gulper Wake predator lane, then prepare Marlin-range supplies.' };
+  if (!serpentOk) return { complete: false, progress: 2, detail: 'Chart the Abyssal Serpent as route pressure, not a drill target.' };
+  if (!charting.complete) return { complete: false, progress: 3, detail: 'Finish Midnight Trench scans, sonar, and depth charting for the ruin jump.' };
+  if (!state.atBoat && !state.docked) return { complete: false, progress: 4, detail: 'Return to the barge to lock Marlin preparation copy and the Ancient Ruins route.' };
+  return { complete: true, progress: 5, detail: 'Forward pocket and predator proof complete. Ancient Ruins route is stable.' };
+}
+
+function b4StoryEvaluation() {
+  const ruinsFloraOk = hasScannedOrSampledAny(['Circuit Kelp', 'Glass Obelisk', 'Oracle Polyp']);
+  if (state.finale.finalProofRecovered && !state.won) return { complete: false, progress: 2, detail: 'Crownmaw proof is sealed. Return to the barge with proof to finish the expedition.' };
+  if (!ruinsFloraOk) return { complete: false, progress: 0, detail: 'Scan or sample a ruins flora clue before committing to the Reliquary Vault route.' };
+  if (!state.finale.finalProofRecovered) return { complete: false, progress: 1, detail: 'Use sonar through the vault route and scan Crownmaw at final depth for proof.' };
+  if (!state.won) return { complete: false, progress: 2, detail: 'Crownmaw proof is sealed. Return to the barge with proof to finish the expedition.' };
+  return { complete: true, progress: 3, detail: 'Reliquary proof reached the barge. The Drowned Architects are archived.' };
+}
+
+function hasScannedAndSampledAny(speciesNames: string[]) {
+  return speciesNames.some((species) => state.scannedSpecies.has(species) && state.sampledSpecies.has(species));
+}
+
+function hasScannedOrSampledAny(speciesNames: string[]) {
+  return speciesNames.some((species) => state.scannedSpecies.has(species) || state.sampledSpecies.has(species));
+}
+
+export const FINAL_PROOF_RADIO_ID = 'final-proof-recovered';
+export const FINAL_VICTORY_RADIO_ID = 'drowned-architects-proof';
+
+export function finaleLocksSurvey() {
+  return state.won && !state.finale.endingSeen;
+}
+
+export function resetFinaleProgress() {
+  state.finale.finalProofRecovered = false;
+  state.finale.endingSeen = false;
+  state.finale.heardRadio = [];
+  state.finale.finalProofSpecies = '';
+  state.finale.finalProofDepth = 0;
+}
+
+export function markRadioHeard(id: string) {
+  if (!state.finale.heardRadio.includes(id)) state.finale.heardRadio.push(id);
+}
+
+export function recoverFinalProof(species = currentApexSpecies(), depth = state.depth) {
+  if (state.biome !== 4 || species !== currentApexSpecies() || depth < TARGET_DEPTH) return false;
+  state.finale.finalProofRecovered = true;
+  state.finale.finalProofSpecies = species;
+  state.finale.finalProofDepth = Math.max(state.finale.finalProofDepth, depth);
+  state.finale.endingSeen = false;
+  markRadioHeard(FINAL_PROOF_RADIO_ID);
+  state.status = 'Final proof recovered. Return to the barge with the Crownmaw scan before the ruins go quiet.';
+  return true;
+}
+
+export function completeFinaleAtBarge() {
+  if (state.biome !== 4 || !state.finale.finalProofRecovered || state.won) return false;
+  state.won = true;
+  state.finale.endingSeen = false;
+  completeStoryMilestone('b4-reliquary-proof', true);
+  markRadioHeard(FINAL_VICTORY_RADIO_ID);
+  state.status = 'Proof recovered. The drowned architects are real, and the barge has the data to prove it.';
+  return true;
+}
+
+export function continueSurveyAfterEnding() {
+  if (!state.won) return false;
+  state.finale.endingSeen = true;
+  state.radioOpen = false;
+  state.radioIndex = 0;
+  state.status = 'Ending logged. Continue surveying Ancient Ruins, or start a new expedition from the victory panel later.';
+  return true;
 }
 
 export function lifeCatalogTotal() {
@@ -2909,7 +3279,7 @@ export function refillAtBoat(delta = 1) {
 }
 
 export function checkOxygenWarnings() {
-  if (!state.started || state.lost || state.won || state.atBoat) return;
+  if (!state.started || state.lost || finaleLocksSurvey() || state.atBoat) return;
   const pct = state.oxygen / oxygenMax();
   if (pct <= 0.25 && !state.oxygenWarnings.quarter) {
     state.oxygenWarnings.quarter = true;
@@ -2966,12 +3336,16 @@ export function restart(scene: DeepdiveScene) {
   state.oreSoldCredits = 0;
   state.cargo = [];
   state.selectedCargoIndex = 0;
+  resetToolState();
   state.sonarRevealed.clear();
   state.sonarContacts = [];
   resetOxygenWarnings();
   clearVenom();
   clearBleed();
   state.scannedSpecies.clear();
+  state.sampledSpecies.clear();
+  state.story = createDefaultStoryProgress();
+  resetFinaleProgress();
   state.won = false;
   state.lost = false;
   state.atBoat = true;

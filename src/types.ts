@@ -31,7 +31,22 @@ export type ScanRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 export type ArticulatedCreatureState = 'patrol' | 'stalk' | 'lunge' | 'grab' | 'recover';
 export type TitlePanel = 'main' | 'options' | 'controls';
 export type SubTier = 1 | 2 | 3;
-export type QuestKind = 'depth' | 'scan' | 'ore' | 'nest' | 'gulperSurvey' | 'forwardOutpost';
+export type QuestKind = 'depth' | 'scan' | 'sample' | 'ore' | 'nest' | 'gulperSurvey' | 'forwardOutpost';
+export type ToolId = 'drill' | 'scanner' | 'sonar' | 'sampler' | 'flare' | 'stun' | 'charge';
+export type StoryMilestoneId = 'b1-first-signal' | 'b2-vent-proof' | 'b3-forward-pocket' | 'b4-reliquary-proof';
+export interface StoryProgress {
+  activeId: StoryMilestoneId | '';
+  completed: StoryMilestoneId[];
+  flags: Record<string, boolean>;
+  heardRadio: string[];
+}
+export interface FinaleProgress {
+  finalProofRecovered: boolean;
+  endingSeen: boolean;
+  heardRadio: string[];
+  finalProofSpecies: string;
+  finalProofDepth: number;
+}
 export type InventoryItemId =
   | Tile
   | 'stun-grenade'
@@ -41,8 +56,9 @@ export type InventoryItemId =
   | 'fuel-tank'
   | 'first-aid-kit'
   | 'antivenom'
-  | 'injector-knife';
-export type InventoryItemKind = 'ore' | 'artifact' | 'consumable' | 'tool' | 'rubble';
+  | 'injector-knife'
+  | 'flora-sample';
+export type InventoryItemKind = 'ore' | 'artifact' | 'sample' | 'consumable' | 'tool' | 'rubble';
 export type ThrownUtility = 'dynamite' | 'flare';
 export type PlaytestCommand =
   | 'start'
@@ -69,6 +85,7 @@ export type PlaytestCommand =
   | 'backgroundReview'
   | 'lightingVisibilityReview'
   | 'strayOreDropReview'
+  | 'interactionEdgeProof'
   | 'terrainMineAt'
   | 'perfGuardrailReview'
   | 'biomeLoadingReview'
@@ -97,7 +114,23 @@ export type PlaytestCommand =
   | 'establishForwardOutpost'
   | 'tickSystems'
   | 'setOxygen'
-  | 'setHull';
+  | 'setHull'
+  | 'recoverFinalProof'
+  | 'completeFinaleAtBarge'
+  | 'continueSurvey'
+  | 'storyMilestoneSmokeStage'
+  | 'largeThreatDrillImmunityReview'
+  | 'selectTool'
+  | 'buyShopItem'
+  | 'stageStunToolSmoke'
+  | 'stageBargeSaleSmoke'
+  | 'sampleQuestBoardsSmoke'
+  | 'acceptSampleQuest'
+  | 'claimActiveQuest'
+  | 'selectedToolSmokeStage'
+  | 'floraSamplerSmokeStage'
+  | 'stampFloraSmokeStage'
+  | 'brushFloraSmokeStage';
 export type DiverAnimation =
   | 'idle'
   | 'walk'
@@ -234,6 +267,10 @@ export interface Fish {
   tetherRadius?: number;
   walkDir?: 1 | -1;
   walkPause?: number;
+  surfaceHopStartX?: number;
+  surfaceHopStartY?: number;
+  surfaceHopElapsed?: number;
+  surfaceHopDuration?: number;
   lungeTimer?: number;
   recoverTimer?: number;
   grounded?: boolean;
@@ -244,6 +281,8 @@ export interface Fish {
 export interface Flora {
   kind: 'flora';
   species: string;
+  source?: 'biome' | 'specialRoom' | 'stamp' | 'brush' | 'playtest';
+  propId?: string;
   x: number;
   y: number;
   anchor: 'floor' | 'ceiling' | 'leftWall' | 'rightWall';
@@ -255,6 +294,10 @@ export interface Flora {
   scan: number;
   scanning: boolean;
   scanPulse: number;
+  sample: number;
+  sampling: boolean;
+  samplePulse: number;
+  sampleCooldown: number;
   hp: number;
   maxHp: number;
   dead: boolean;
@@ -654,7 +697,7 @@ export interface FloraSpecies {
   radius: number;
 }
 
-export type EnvironmentPropKind = 'rock' | 'ore' | 'flora';
+export type EnvironmentPropKind = 'rock' | 'ore' | 'terrainFlora';
 
 export interface EnvironmentProp {
   id: string;
@@ -683,6 +726,7 @@ export interface CargoItem {
   color: number;
   kind: InventoryItemKind;
   icon: string;
+  sampleSpecies?: string;
 }
 
 export interface Hazard {
@@ -778,6 +822,7 @@ export interface LooseItem {
   phase?: number;
   sourceTileX?: number;
   sourceTileY?: number;
+  sampleSpecies?: string;
 }
 
 export interface FloatingText {

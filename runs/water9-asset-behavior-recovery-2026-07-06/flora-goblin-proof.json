@@ -1,0 +1,164 @@
+{
+  "ok": true,
+  "generatedAt": "2026-07-07T02:54:35.726Z",
+  "port": 5180,
+  "flora": {
+    "ok": true,
+    "species": "Moon Sponge",
+    "image": {
+      "colorPath": "runs/water9-asset-behavior-recovery-2026-07-06/flora-moon-sponge-scan-proof.png",
+      "grayPath": "runs/water9-asset-behavior-recovery-2026-07-06/flora-moon-sponge-scan-proof-grayscale.png"
+    },
+    "scanTargetDuringHold": "Moon Sponge",
+    "selectedAfterHold": {
+      "species": "Moon Sponge",
+      "assetKey": "terrain-edge-flora-moon-sponge",
+      "x": 2163.658,
+      "y": 2420.311,
+      "anchor": "ceiling",
+      "scanned": true,
+      "hazardous": false,
+      "dead": false,
+      "hasSurface": true,
+      "anchorSource": "terrain-mask",
+      "supported": true,
+      "support": 27,
+      "clearance": 7,
+      "tileX": 89,
+      "tileY": 100,
+      "maskSx": 718,
+      "maskSy": 804,
+      "normalX": 0.707,
+      "normalY": 0.707,
+      "fakeOpenWaterAnchor": false
+    }
+  },
+  "goblinShark": {
+    "ok": true,
+    "teleport": {
+      "ok": true,
+      "species": "Goblin Shark",
+      "behaviorClass": "legacySwimmer",
+      "x": 1072.037,
+      "y": 5294.291
+    },
+    "image": {
+      "colorPath": "runs/water9-asset-behavior-recovery-2026-07-06/goblin-shark-gameplay-proof.png",
+      "grayPath": "runs/water9-asset-behavior-recovery-2026-07-06/goblin-shark-gameplay-proof-grayscale.png"
+    },
+    "fish": {
+      "species": "Goblin Shark",
+      "x": 1168.324,
+      "y": 5257.885,
+      "screenX": 493.3,
+      "screenY": 110.575,
+      "hostile": true,
+      "pattern": "stalk",
+      "behaviorClass": "legacySwimmer",
+      "terrainAffinity": "openWater",
+      "radius": 16.56,
+      "velocityMagnitude": 90.96,
+      "vx": 89.556,
+      "vy": 15.919,
+      "centerTile": "water",
+      "navTargetX": null,
+      "navTargetY": null,
+      "navWaypointTimer": 0,
+      "navReseedCooldown": 0,
+      "navStuckTimer": 0,
+      "navTerrainBounces": 0,
+      "navRecentTerrainBounces": 0,
+      "navBlockedFeelers": 0,
+      "navLastBlockedFeelers": 0,
+      "navHeadingFlipCount": 0,
+      "navReseedCount": 0,
+      "navSpawnValidated": true,
+      "navSpawnFallback": false,
+      "aggro": 2,
+      "aggroCue": 0.595,
+      "hp": 92,
+      "maxHp": 92,
+      "assetKey": "fauna-abyss-goblin-shark",
+      "scanned": false,
+      "dead": false,
+      "hasSurface": false,
+      "supported": false,
+      "fallbackNoAnchor": false,
+      "anchor": "none",
+      "surface": null,
+      "distanceFromSurface": null,
+      "distanceFromRoot": null,
+      "rootDisplacement": null,
+      "walkDir": 1,
+      "lungeTimer": 0,
+      "recoverTimer": 0,
+      "retract": 0,
+      "screenVisible": true
+    },
+    "manifest": {
+      "schema": "asset-forge/sprite-frames@1",
+      "name": "fauna-abyss-goblin-shark",
+      "image": "fauna-abyss-goblin-shark.png",
+      "frameWidth": 60,
+      "frameHeight": 34,
+      "columns": 3,
+      "rows": 1,
+      "frameCount": 3,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "directions": [],
+      "animations": {
+        "swim": {
+          "frames": [
+            0,
+            1,
+            2
+          ],
+          "frameRate": 8,
+          "loop": true
+        }
+      },
+      "source": {
+        "kind": "generated-bitmap-chroma-key-cutout",
+        "runSource": "runs/water9-asset-behavior-recovery-2026-07-06/generated-source/fauna-abyss-goblin-shark-source-alpha.png",
+        "promptRecord": "runs/water9-asset-behavior-recovery-2026-07-06/generated-asset-provenance.json"
+      }
+    },
+    "fileStats": {
+      "fauna-abyss-goblin-shark.png": {
+        "path": "public/assets/generated/fauna-abyss-goblin-shark.png",
+        "bytes": 4928,
+        "httpStatus": 200,
+        "httpOk": true
+      },
+      "fauna-abyss-goblin-shark-0.png": {
+        "path": "public/assets/generated/fauna-abyss-goblin-shark-0.png",
+        "bytes": 1821,
+        "httpStatus": 200,
+        "httpOk": true
+      },
+      "fauna-abyss-goblin-shark-1.png": {
+        "path": "public/assets/generated/fauna-abyss-goblin-shark-1.png",
+        "bytes": 1978,
+        "httpStatus": 200,
+        "httpOk": true
+      },
+      "fauna-abyss-goblin-shark-2.png": {
+        "path": "public/assets/generated/fauna-abyss-goblin-shark-2.png",
+        "bytes": 1898,
+        "httpStatus": 200,
+        "httpOk": true
+      },
+      "fauna-abyss-goblin-shark.frames.json": {
+        "path": "public/assets/generated/fauna-abyss-goblin-shark.frames.json",
+        "bytes": 721,
+        "httpStatus": 200,
+        "httpOk": true
+      }
+    }
+  },
+  "errors": [],
+  "serverLogs": "n] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"3\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"1\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"1\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"1\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"1\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"1\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"1\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"1\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"2\"\n10:54:35 PM [vite] (client) [console.warn] Texture \"__MISSING\" has no frame \"1\"\n"
+}

@@ -106,8 +106,19 @@ function colorValue(value: number | undefined, fallback: number) {
 }
 
 function floraPreviewKey(biome: Biome, species: FloraSpecies) {
-  if (biome === 1) return species.hazardous ? 'flora-shallow-anemone' : 'flora-shallow-kelp';
-  return species.hazardous || species.rare ? 'flora-deep-coral' : 'flora-deep-tube';
+  if (species.species === 'Glass Kelp') return 'terrain-edge-flora-glass-kelp';
+  if (species.species === 'Moon Sponge') return 'terrain-edge-flora-moon-sponge';
+  if (species.species === 'Sting Anemone') return 'terrain-edge-flora-sting-anemone';
+  if (species.species === 'Brine Grass') return 'terrain-edge-flora-brine-grass';
+  if (species.species === 'Vent Coral') return 'terrain-edge-flora-vent-coral';
+  if (species.species === 'Ember Bloom') return 'terrain-edge-flora-ember-bloom';
+  if (species.species === 'Black Fan') return 'terrain-edge-flora-black-fan';
+  if (species.species === 'Lumen Fern') return 'terrain-edge-flora-lumen-fern';
+  if (species.species === 'Crown Polyp') return 'terrain-edge-flora-crown-polyps';
+  if (species.species === 'Oracle Polyp') return 'terrain-edge-flora-oracle-tendrils';
+  if (species.species === 'Oxygen Bloom') return 'env-flora-oxygen-bloom';
+  if (species.species === 'Lumen Nodule') return 'env-flora-lumen-nodule';
+  return biome === 1 ? 'terrain-edge-flora-glass-kelp' : 'terrain-edge-flora-moon-sponge';
 }
 
 function floraRarity(species: FloraSpecies): ScanRarity {

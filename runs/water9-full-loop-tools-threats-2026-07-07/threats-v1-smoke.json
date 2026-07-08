@@ -1,0 +1,70 @@
+{
+  "ok": true,
+  "result": {
+    "ok": true,
+    "largeThreat": {
+      "id": "abyssal-crownmaw",
+      "species": "Abyssal Crownmaw",
+      "classified": true,
+      "rule": "large articulated threat: signature apex ID or B3+ epic/legendary articulated creature with manifest radius >= 58 and non-passive behavior",
+      "cutter": {
+        "before": {
+          "hp": 490,
+          "partHp": 539,
+          "fuel": 100
+        },
+        "after": {
+          "hp": 490,
+          "partHp": 539,
+          "fuel": 98.85,
+          "status": "The cutter skates off Abyssal Crownmaw's armored hide. Stun it and run the route."
+        }
+      },
+      "stun": {
+        "stunned": 3.5999999999999996,
+        "aggro": 0,
+        "status": "Stun grenade fired. 1 predator stunned for 5 seconds.",
+        "partId": "body-2"
+      },
+      "dynamite": {
+        "before": {
+          "hp": 490,
+          "partHp": 539
+        },
+        "after": {
+          "hp": 436.246,
+          "partHp": 452.3,
+          "status": "Dynamite shockwave hit 1 lifeform."
+        },
+        "largeThreatDamageMultiplier": 1
+      }
+    },
+    "normalFauna": {
+      "species": "Anglerfish",
+      "hostile": true,
+      "radius": 11.52,
+      "cutter": {
+        "before": {
+          "hp": 81,
+          "maxHp": 81
+        },
+        "after": {
+          "hp": 63,
+          "dead": false,
+          "status": "Cutter hit Anglerfish."
+        }
+      }
+    }
+  },
+  "expected": {
+    "largeThreatCutter": "no HP or part HP loss, armored-hide feedback",
+    "normalFaunaCutter": "HP loss still occurs",
+    "largeThreatStun": "stunned timer becomes positive",
+    "largeThreatDynamite": "explicit blast rule remains damage multiplier 1 and deals HP damage"
+  },
+  "errors": [],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 151 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5189/\n"
+  ]
+}
