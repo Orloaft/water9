@@ -101,8 +101,9 @@ export function renderHud() {
   setStableHtml(logbook, state.logbookOpen && state.started && !radioActive ? logbookPanel() : '');
   const logbookList = logbook.querySelector<HTMLDivElement>('.logbook__list');
   if (logbookList) logbookList.scrollTop = logbookScrollTop;
-  pauseMenu.classList.toggle('is-open', state.paused && state.started && !radioActive && !state.lost && !victoryActive);
-  setStableHtml(pauseMenu, state.paused && state.started && !radioActive && !state.lost && !victoryActive ? pauseMenuPanel() : '');
+  const pauseOpen = state.paused && !state.sonarMapOpen && state.started && !radioActive && !state.lost && !victoryActive;
+  pauseMenu.classList.toggle('is-open', pauseOpen);
+  setStableHtml(pauseMenu, pauseOpen ? pauseMenuPanel() : '');
   sonarMapOverlay.classList.toggle('is-open', state.sonarMapOpen && state.started && !radioActive && !state.lost && !victoryActive);
   setStableHtml(sonarMapOverlay, state.sonarMapOpen && state.started && !radioActive && !state.lost && !victoryActive ? sonarMapPanel() : '');
   radioDialogue.classList.toggle('is-open', radioActive);

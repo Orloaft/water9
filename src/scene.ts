@@ -263,7 +263,11 @@ export class DeepdiveScene extends Phaser.Scene {
       this.diveFromBarge();
       return;
     }
-    if (this.updateSonarMapNavigation(delta, controls)) return;
+    if (this.updateSonarMapNavigation(delta, controls)) {
+      this.updateAudio(delta);
+      updatePerfHud(this, deltaMs);
+      return;
+    }
     if (this.updateMenuNavigation(delta, controls)) return;
     if (state.radioOpen && state.started && !state.lost && !finaleLocksSurvey()) {
       this.draw();
@@ -295,6 +299,11 @@ export class DeepdiveScene extends Phaser.Scene {
     if (state.lost || finaleLocksSurvey()) {
       if (controls.confirmPressed) restart(this);
       this.draw();
+      this.updateAudio(delta);
+      updatePerfHud(this, deltaMs);
+      return;
+    }
+    if (state.paused && state.sonarMapOpen) {
       this.updateAudio(delta);
       updatePerfHud(this, deltaMs);
       return;
