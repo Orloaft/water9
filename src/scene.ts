@@ -264,13 +264,14 @@ export class DeepdiveScene extends Phaser.Scene {
       return;
     }
     if (this.updateSonarMapNavigation(delta, controls)) {
+      measurePerf(this, 'draw.total', () => this.draw());
       this.updateAudio(delta);
       updatePerfHud(this, deltaMs);
       return;
     }
     if (this.updateMenuNavigation(delta, controls)) return;
     if (state.radioOpen && state.started && !state.lost && !finaleLocksSurvey()) {
-      this.draw();
+      measurePerf(this, 'draw.total', () => this.draw());
       this.updateAudio(delta);
       updatePerfHud(this, deltaMs);
       return;
@@ -298,7 +299,7 @@ export class DeepdiveScene extends Phaser.Scene {
     }
     if (state.lost || finaleLocksSurvey()) {
       if (controls.confirmPressed) restart(this);
-      this.draw();
+      measurePerf(this, 'draw.total', () => this.draw());
       this.updateAudio(delta);
       updatePerfHud(this, deltaMs);
       return;
@@ -309,7 +310,7 @@ export class DeepdiveScene extends Phaser.Scene {
       return;
     }
     if (state.paused) {
-      this.draw();
+      measurePerf(this, 'draw.total', () => this.draw());
       this.updateAudio(delta);
       updatePerfHud(this, deltaMs);
       return;
@@ -1419,7 +1420,9 @@ export interface DeepdiveScene {
   pointNearBobbitSpecialRoom: OmitThisParameter<typeof worldgenNs.pointNearBobbitSpecialRoom>;
   makeBobbits: OmitThisParameter<typeof worldgenNs.makeBobbits>;
   makeSchool: OmitThisParameter<typeof worldgenNs.makeSchool>;
+  makeSchoolSlice: OmitThisParameter<typeof worldgenNs.makeSchoolSlice>;
   makeFloraPatch: OmitThisParameter<typeof worldgenNs.makeFloraPatch>;
+  makeFloraPatchSlice: OmitThisParameter<typeof worldgenNs.makeFloraPatchSlice>;
   makeStampFloraTargets: OmitThisParameter<typeof worldgenNs.makeStampFloraTargets>;
   makeBrushFloraTargets: OmitThisParameter<typeof worldgenNs.makeBrushFloraTargets>;
   populateSpecialRooms: OmitThisParameter<typeof worldgenNs.populateSpecialRooms>;

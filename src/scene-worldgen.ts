@@ -990,9 +990,15 @@ export function makeBobbits(this: DeepdiveScene, ): Bobbit[] {
   }
 
 export function makeSchool(this: DeepdiveScene, species: FishSpecies): Fish[] {
+    return this.makeSchoolSlice(species, 0, species.count);
+  }
+
+export function makeSchoolSlice(this: DeepdiveScene, species: FishSpecies, startIndex: number, endIndex: number): Fish[] {
     const school: Fish[] = [];
     const profile = fishBehaviorProfile(species);
-    for (let i = 0; i < species.count; i += 1) {
+    const start = Math.max(0, Math.floor(startIndex));
+    const end = Math.min(species.count, Math.max(start, Math.floor(endIndex)));
+    for (let i = start; i < end; i += 1) {
       const point = profile.behaviorClass === 'legacySwimmer'
         ? this.findLegacySwimmerOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), species)
         : this.findFaunaAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), i, species);
@@ -1077,15 +1083,22 @@ function positionFaunaOnSurface(fish: Fish, anchor: TerrainSurfaceAnchor) {
   }
 
 export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flora[] {
+    return this.makeFloraPatchSlice(species, 0, species.count);
+  }
+
+export function makeFloraPatchSlice(this: DeepdiveScene, species: FloraSpecies, startIndex: number, endIndex: number): Flora[] {
     const patch: Flora[] = [];
-    for (let i = 0; i < species.count; i += 1) {
+    const coveredPropTiles = new Set<string>();
+    const start = Math.max(0, Math.floor(startIndex));
+    const end = Math.min(species.count, Math.max(start, Math.floor(endIndex)));
+    for (let i = start; i < end; i += 1) {
       const point = this.findFloraAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), i, species);
       if (!point) continue;
       const offset = floraSurfaceOffset(point);
       const x = point.rootX + offset.x;
       const y = point.rootY + offset.y;
       const assetKey = floraGameplayAssetKey(species);
-      this.environmentProps = this.environmentProps.filter((prop) => prop.kind !== 'terrainFlora' || prop.tileX !== point.tileX || prop.tileY !== point.tileY);
+      coveredPropTiles.add(`${point.tileX}:${point.tileY}`);
       patch.push({
         kind: 'flora',
         species: species.species,
@@ -1115,6 +1128,11 @@ export function makeFloraPatch(this: DeepdiveScene, species: FloraSpecies): Flor
         surface: point,
         sprite: this.createEntitySprite(x, y, assetKey),
       });
+    }
+    if (coveredPropTiles.size) {
+      this.environmentProps = this.environmentProps.filter((prop) => (
+        prop.kind !== 'terrainFlora' || !coveredPropTiles.has(`${prop.tileX}:${prop.tileY}`)
+      ));
     }
     return patch;
   }

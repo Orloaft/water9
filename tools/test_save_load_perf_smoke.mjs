@@ -82,6 +82,51 @@ async function waitForWorld(page, timeoutMs = 30000) {
   }, null, { timeout: timeoutMs });
 }
 
+function isGameplaySnapshot(snap) {
+  return Boolean(
+    snap?.world
+    && snap.world.ready !== false
+    && snap.state?.started
+    && !snap.state?.atBoat
+    && !snap.state?.docked
+    && !snap.ui?.biomeLoading?.active
+    && !snap.ui?.paused
+    && !snap.ui?.radioOpen
+    && !snap.state?.lost
+    && !snap.state?.won
+  );
+}
+
+async function clearRadio(page, attempts = 8) {
+  for (let index = 0; index < attempts; index += 1) {
+    const snap = await snapshot(page);
+    if (!snap?.ui?.radioOpen) return;
+    await page.keyboard.press('Enter');
+    await sleep(60);
+  }
+}
+
+async function waitForGameplay(page, label, timeoutMs = 10000) {
+  await page.waitForFunction((proofLabel) => {
+    const snap = window.__AQUA_PLAYTEST__?.snapshot?.();
+    const gameplay = Boolean(
+      snap?.world
+      && snap.world.ready !== false
+      && snap.state?.started
+      && !snap.state?.atBoat
+      && !snap.state?.docked
+      && !snap.ui?.biomeLoading?.active
+      && !snap.ui?.paused
+      && !snap.ui?.radioOpen
+      && !snap.state?.lost
+      && !snap.state?.won
+    );
+    if (!gameplay) window.__water9LastGameplayWaitLabel = proofLabel;
+    return gameplay;
+  }, label, { timeout: timeoutMs });
+  return snapshot(page);
+}
+
 async function waitForLoadComplete(page, loadId) {
   await page.waitForFunction((expectedLoadId) => {
     const snap = window.__AQUA_PLAYTEST__?.snapshot?.();
@@ -141,15 +186,21 @@ try {
   await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 25000 });
   await waitForWorld(page);
   await command(page, 'clearSave');
+  await command(page, 'start');
+  await page.waitForFunction(() => window.__AQUA_PLAYTEST__?.snapshot?.()?.state?.started === true, null, { timeout: 8000 });
+  await clearRadio(page);
   await command(page, 'setCredits', 4321);
   await command(page, 'maxUpgrades');
   await command(page, 'buySub', 2);
   await command(page, 'dive');
-  await command(page, 'teleportDepth', 720);
+  const setupTeleport = await command(page, 'teleportToReachableDepth', 720);
+  if (!setupTeleport?.ok) fail(`setup teleportToReachableDepth failed: ${setupTeleport?.reason ?? 'unknown'}`);
+  await waitForGameplay(page, 'before-save');
   await command(page, 'terrainMineAt', { repeats: 4 });
   await sleep(350);
 
   const beforeSave = await snapshot(page);
+  if (!isGameplaySnapshot(beforeSave)) fail('before-save state was not live gameplay');
   const beforePerf = (await command(page, 'exportPerfFrameBuffer'))?.perf ?? beforeSave?.perf ?? null;
   const beforeShot = await captureCanvasPair(page, 'save-load-before-save-canvas');
   const saveResult = await command(page, 'saveGame');
@@ -161,18 +212,15 @@ try {
   await startCadenceProbe(page, 'save-load-restore-transition');
   const loadResult = await command(page, 'loadGame');
   await waitForLoadComplete(page, loadResult?.loadId ?? 0);
+  await clearRadio(page);
+  await waitForGameplay(page, 'after-restore');
   const restoreCadenceProbe = await finishCadenceProbe(page);
   const afterLoad = await snapshot(page);
+  if (!isGameplaySnapshot(afterLoad)) fail('after-restore state was not live gameplay after load');
   const loadPerf = (await command(page, 'exportPerfFrameBuffer'))?.perf ?? afterLoad?.perf ?? null;
   const afterLoadShot = await captureCanvasPair(page, 'save-load-after-restore-canvas');
 
-  for (let index = 0; index < 8; index += 1) {
-    const snap = await snapshot(page);
-    if (!snap?.ui?.radioOpen) break;
-    await page.keyboard.press('Enter');
-    await sleep(60);
-  }
-  await command(page, 'teleportDepth', 720);
+  await waitForGameplay(page, 'after-restore-settled-setup');
   await sleep(500);
   await command(page, 'resetPerfFrameBuffer');
   await startCadenceProbe(page, 'save-load-after-restore-settled-swim');
@@ -184,6 +232,7 @@ try {
   await sleep(350);
   const settledCadenceProbe = await finishCadenceProbe(page);
   const afterSettled = await snapshot(page);
+  if (!isGameplaySnapshot(afterSettled)) fail('after-settled state was not live gameplay after load');
   const afterPerf = (await command(page, 'exportPerfFrameBuffer'))?.perf ?? afterSettled?.perf ?? null;
   const afterSettledShot = await captureCanvasPair(page, 'save-load-after-settled-swim-canvas');
 
@@ -232,12 +281,25 @@ try {
     afterLoad: {
       credits: afterLoad?.state?.credits,
       biome: afterLoad?.state?.biome,
+      started: afterLoad?.state?.started,
+      atBoat: afterLoad?.state?.atBoat,
+      docked: afterLoad?.state?.docked,
+      ui: afterLoad?.ui,
       player: afterLoad?.player,
+      gameplayProof: isGameplaySnapshot(afterLoad),
     },
     afterSettled: {
       cadenceProbe: settledCadenceProbe ? { label: settledCadenceProbe.label, durationMs: settledCadenceProbe.durationMs } : null,
       independentRaf: settledCadenceProbe?.independentRaf ?? null,
       perf: afterPerf,
+      state: {
+        started: afterSettled?.state?.started,
+        atBoat: afterSettled?.state?.atBoat,
+        docked: afterSettled?.state?.docked,
+      },
+      ui: afterSettled?.ui,
+      player: afterSettled?.player,
+      gameplayProof: isGameplaySnapshot(afterSettled),
     },
     artifacts: {
       beforeShot,
