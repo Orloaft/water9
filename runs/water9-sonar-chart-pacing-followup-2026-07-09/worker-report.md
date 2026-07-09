@@ -51,4 +51,4 @@
 
 ## Commit
 
-- Pending.
+- `ee9b95d` (`Fix sonar chart overlay frame pacing`)
