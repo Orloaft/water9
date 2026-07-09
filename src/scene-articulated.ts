@@ -21,7 +21,7 @@ const BOBBIT_BURROW_LATERAL_LIMIT = TILE * 1.2;
 const BOBBIT_BURROW_VERTICAL_LEAN_LIMIT = 0.14;
 const BOBBIT_MOUTH_LATCH_OFFSET_LIMIT = TILE * 1.6;
 const ARTICULATED_TERRAIN_CORRECTION_PASSES = 3;
-const ARTICULATED_FULL_SIM_RADIUS = 720;
+const ARTICULATED_FULL_SIM_RADIUS = 560;
 const ARTICULATED_NEAR_SIM_RADIUS = 1180;
 const ARTICULATED_OFFSCREEN_MARGIN = 220;
 const ARTICULATED_NEAR_STEP_SECONDS = 1 / 30;
@@ -37,6 +37,19 @@ const largeRippleTurnIds = new Set([
   'abyssal-glasshook-skulk',
   'abyssal-reliquary-wyrm',
 ]);
+
+type Vec2 = { x: number; y: number };
+
+type ArticulatedLookupCache = {
+  partById: Map<string, ArticulatedPartState>;
+  partCount: number;
+  manifestById: Map<string, ArticulatedPartManifest>;
+  manifestCount: number;
+  spineManifests: ArticulatedPartManifest[];
+  spineLagById: Map<string, number>;
+};
+
+const articulatedLookupCaches = new WeakMap<ArticulatedCreature, ArticulatedLookupCache>();
 
 function articulatedCombatFor(creature: ArticulatedCreature) {
   const behavior = articulatedBehaviorFor(creature.manifest);
@@ -253,7 +266,7 @@ function localVectorOffsetFor(facing: number, rotation: number, local: [number, 
   const localY = local[1] * PART_WORLD_SCALE;
   const cos = Math.cos(rotation);
   const sin = Math.sin(rotation);
-  return new Phaser.Math.Vector2(localX * cos - localY * sin, localX * sin + localY * cos);
+  return { x: localX * cos - localY * sin, y: localX * sin + localY * cos };
 }
 
 function anchoredOffsetFor(manifest: ArticulatedPartManifest, facing: number, rotation: number, local: [number, number]) {
@@ -264,7 +277,7 @@ function anchoredOffsetFor(manifest: ArticulatedPartManifest, facing: number, ro
 
 function anchorWorldFor(part: ArticulatedPartState, manifest: ArticulatedPartManifest, facing: number, local: [number, number]) {
   const offset = anchoredOffsetFor(manifest, facing, part.rotation, local);
-  return new Phaser.Math.Vector2(part.x + offset.x, part.y + offset.y);
+  return { x: part.x + offset.x, y: part.y + offset.y };
 }
 
 export function articulatedPartHitShape(creature: ArticulatedCreature, part: ArticulatedPartState) {
@@ -330,7 +343,7 @@ function spineNodeFor(creature: ArticulatedCreature, manifest: ArticulatedPartMa
 }
 
 function restOffsetFor(creature: ArticulatedCreature, manifest: ArticulatedPartManifest, facing: number, rotation: number) {
-  if (!manifest.restOffset) return new Phaser.Math.Vector2();
+  if (!manifest.restOffset) return { x: 0, y: 0 };
   const node = manifest.motion.kind === 'body' || manifest.motion.kind === 'tail'
     ? creature.spine.find((candidate) => candidate.partId === manifest.id)
     : undefined;
@@ -344,6 +357,28 @@ function restOffsetFor(creature: ArticulatedCreature, manifest: ArticulatedPartM
   const mandiblePinch = isMandible ? -jawSign * mandibleClose * 30 : 0;
   const restY = manifest.restOffset[1] + mandiblePinch + (node ? node.offset * 0.28 / PART_WORLD_SCALE : 0);
   return localVectorOffsetFor(facing, rotation, [manifest.restOffset[0], restY]);
+}
+
+function articulatedLookupCacheFor(creature: ArticulatedCreature) {
+  const cached = articulatedLookupCaches.get(creature);
+  if (cached && cached.partCount === creature.parts.length && cached.manifestCount === creature.manifest.parts.length) return cached;
+  const spineManifests = creature.manifest.parts
+    .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
+    .sort((a, b) => b.offset[0] - a.offset[0]);
+  const spineLagById = new Map<string, number>();
+  spineManifests.forEach((manifest, index) => {
+    spineLagById.set(manifest.id, spineManifests.length <= 1 ? 0 : (index / (spineManifests.length - 1)) * 3.2);
+  });
+  const next = {
+    partById: new Map(creature.parts.map((part) => [part.id, part])),
+    partCount: creature.parts.length,
+    manifestById: new Map(creature.manifest.parts.map((manifest) => [manifest.id, manifest])),
+    manifestCount: creature.manifest.parts.length,
+    spineManifests,
+    spineLagById,
+  };
+  articulatedLookupCaches.set(creature, next);
+  return next;
 }
 
 function defaultAnatomyFor(manifest: ArticulatedPartManifest) {
@@ -772,6 +807,7 @@ export function populateArticulatedCreatures(this: DeepdiveScene) {
 
 export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, controls?: ControlState) {
   const camera = this.cameras.main;
+  const tierStats = { full: 0, near: 0, far: 0, offscreen: 0, fullSteps: 0, skippedSteps: 0, terrainPasses: 0 };
   for (const creature of this.articulatedCreatures) {
     if (creature.dead) {
       creature.parts.forEach((part) => part.sprite?.setVisible(false));
@@ -819,6 +855,10 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
     }
 
     const budget = articulatedSimulationBudgetFor(this, creature, delta, camera);
+    tierStats[budget.tier] += 1;
+    if (budget.runFullStep) tierStats.fullSteps += 1;
+    else tierStats.skippedSteps += 1;
+    tierStats.terrainPasses += budget.terrainPasses;
     const simDelta = budget.runFullStep ? budget.delta : delta;
 
     if (creature.stunned > 0) {
@@ -863,6 +903,7 @@ export function updateArticulatedCreatures(this: DeepdiveScene, delta: number, c
       this.bumpArticulatedCreature(creature, hit.part, hit.distance);
     }
   }
+  if (this.perfTelemetry?.enabled) this.perfTelemetry.articulatedTiers = tierStats;
 }
 
 export function activeBobbitDrag(this: DeepdiveScene) {
@@ -919,19 +960,20 @@ function articulatedSimulationBudgetFor(
     runtime.accumulator = 0;
     runtime.skippedFrames = 0;
     runtime.fullSteps += 1;
-    return { runFullStep: true, delta, terrainPasses: ARTICULATED_TERRAIN_CORRECTION_PASSES };
+    return { tier, runFullStep: true, delta, terrainPasses: ARTICULATED_TERRAIN_CORRECTION_PASSES };
   }
   runtime.accumulator += delta;
   if (runtime.accumulator < interval) {
     runtime.skippedFrames += 1;
     runtime.skippedSteps += 1;
-    return { runFullStep: false, delta, terrainPasses: 0 };
+    return { tier, runFullStep: false, delta, terrainPasses: 0 };
   }
   const simDelta = Phaser.Math.Clamp(runtime.accumulator, delta, interval * 2.25);
   runtime.accumulator = 0;
   runtime.skippedFrames = 0;
   runtime.fullSteps += 1;
   return {
+    tier,
     runFullStep: true,
     delta: simDelta,
     terrainPasses: tier === 'near' ? 2 : 1,
@@ -1341,39 +1383,45 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
   }
   const swimPitch = creature.posePitch;
   const swimEffort = creature.swimEffort;
-  const forward = rippleTurning && !burrowPose && creature.turn
-    ? new Phaser.Math.Vector2(Math.cos(creature.turn.heading), Math.sin(creature.turn.heading))
+  const forward: Vec2 = rippleTurning && !burrowPose && creature.turn
+    ? { x: Math.cos(creature.turn.heading), y: Math.sin(creature.turn.heading) }
     : burrowPose
-    ? new Phaser.Math.Vector2(Math.sin(swimPitch), -Math.cos(swimPitch))
-    : new Phaser.Math.Vector2(facing * Math.cos(swimPitch), Math.sin(swimPitch));
-  const normal = rippleTurning && !burrowPose && creature.turn
-    ? new Phaser.Math.Vector2(-Math.sin(creature.turn.heading) * visualMirrorSide, Math.cos(creature.turn.heading) * visualMirrorSide)
+    ? { x: Math.sin(swimPitch), y: -Math.cos(swimPitch) }
+    : { x: facing * Math.cos(swimPitch), y: Math.sin(swimPitch) };
+  const normal: Vec2 = rippleTurning && !burrowPose && creature.turn
+    ? { x: -Math.sin(creature.turn.heading) * visualMirrorSide, y: Math.cos(creature.turn.heading) * visualMirrorSide }
     : burrowPose
-    ? new Phaser.Math.Vector2(facing * Math.cos(swimPitch), facing * Math.sin(swimPitch))
-    : new Phaser.Math.Vector2(-facing * Math.sin(swimPitch), Math.cos(swimPitch));
+    ? { x: facing * Math.cos(swimPitch), y: facing * Math.sin(swimPitch) }
+    : { x: -facing * Math.sin(swimPitch), y: Math.cos(swimPitch) };
   const rootRotation = rippleTurning && !burrowPose && creature.turn
     ? creature.turn.heading
     : burrowPose ? Math.atan2(forward.y, forward.x) : facing * swimPitch;
   const lungeOpen = creature.attackBlend;
-  const partById = new Map(creature.parts.map((part) => [part.id, part]));
+  const lookupCache = articulatedLookupCacheFor(creature);
+  const partById = lookupCache.partById;
   const placed = new Set<string>();
   const placing = new Set<string>();
   const spineMotionCache = new Map<string, { offset: number; bend: number }>();
   const dynamicSpine = delta > 0 && !creature.reviewFrozen && !options.preserveSmoothedPose;
-  const manifestById = new Map(creature.manifest.parts.map((manifest) => [manifest.id, manifest]));
-  const spineManifests = creature.manifest.parts
-    .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
-    .sort((a, b) => b.offset[0] - a.offset[0]);
+  const manifestById = lookupCache.manifestById;
+  const spineManifests = lookupCache.spineManifests;
+  const spineLagById = lookupCache.spineLagById;
+  const spineLagFor = (manifest: ArticulatedPartManifest) => spineLagById.get(manifest.id) ?? 0;
+  const historyDistanceFor = (manifest: ArticulatedPartManifest) => {
+    const index = spineManifests.indexOf(manifest);
+    if (index < 0) return 0;
+    return index * TURN_HISTORY_SAMPLE_SPACING + Math.max(0, -manifest.offset[0]) * PART_WORLD_SCALE * 0.36;
+  };
   const historyPoseFor = (manifest: ArticulatedPartManifest) => {
     if (!rippleTurning || manifest.motion.kind !== 'body' && manifest.motion.kind !== 'tail') return null;
-    return sampleLargeThreatTurnHistory(creature, historyDistanceForPart(creature, manifest, spineManifests));
+    return sampleLargeThreatTurnHistory(creature, historyDistanceFor(manifest));
   };
   const motionLagIndexFor = (manifest: ReturnType<typeof partManifest>) => {
-    const direct = spineLagIndexFor(spineManifests, manifest);
+    const direct = spineLagFor(manifest);
     if (direct > 0 || manifest.motion.kind === 'body' || manifest.motion.kind === 'tail') return direct;
     let parent = manifest.parentId ? manifestById.get(manifest.parentId) : undefined;
     while (parent) {
-      const parentLag = spineLagIndexFor(spineManifests, parent);
+      const parentLag = spineLagFor(parent);
       if (parentLag > 0 || parent.motion.kind === 'body' || parent.motion.kind === 'tail') {
         const attachmentLag = manifest.motion.kind === 'fin' ? 0.68 : manifest.motion.kind === 'jaw' ? 0.34 : 0.18;
         return Phaser.Math.Clamp(parentLag + attachmentLag, 0, 3.2);
@@ -1405,13 +1453,13 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const targets = spineManifests.map((manifest) => {
       const localX = manifest.offset[0] * PART_WORLD_SCALE;
       const localY = manifest.offset[1] * PART_WORLD_SCALE;
-      const lagIndex = spineLagIndexFor(spineManifests, manifest);
+      const lagIndex = spineLagFor(manifest);
       const historyPose = historyPoseFor(manifest);
-      const poseForward = historyPose
-        ? new Phaser.Math.Vector2(Math.cos(historyPose.rotation), Math.sin(historyPose.rotation))
+      const poseForward: Vec2 = historyPose
+        ? { x: Math.cos(historyPose.rotation), y: Math.sin(historyPose.rotation) }
         : forward;
-      const poseNormal = historyPose
-        ? new Phaser.Math.Vector2(-Math.sin(historyPose.rotation) * historyPose.mirrorSide, Math.cos(historyPose.rotation) * historyPose.mirrorSide)
+      const poseNormal: Vec2 = historyPose
+        ? { x: -Math.sin(historyPose.rotation) * historyPose.mirrorSide, y: Math.cos(historyPose.rotation) * historyPose.mirrorSide }
         : normal;
       const baseX = historyPose ? historyPose.x + poseNormal.x * localY : creature.x + poseForward.x * localX + poseNormal.x * localY;
       const baseY = historyPose ? historyPose.y + poseNormal.y * localY : creature.y + poseForward.y * localX + poseNormal.y * localY;
@@ -1568,11 +1616,11 @@ export function updateArticulatedParts(this: DeepdiveScene, creature: Articulate
     const localX = manifest.offset[0] * PART_WORLD_SCALE;
     const localY = manifest.offset[1] * PART_WORLD_SCALE;
     const historyPose = historyPoseFor(manifest);
-    const poseForward = historyPose
-      ? new Phaser.Math.Vector2(Math.cos(historyPose.rotation), Math.sin(historyPose.rotation))
+    const poseForward: Vec2 = historyPose
+      ? { x: Math.cos(historyPose.rotation), y: Math.sin(historyPose.rotation) }
       : forward;
-    const poseNormal = historyPose
-      ? new Phaser.Math.Vector2(-Math.sin(historyPose.rotation) * historyPose.mirrorSide, Math.cos(historyPose.rotation) * historyPose.mirrorSide)
+    const poseNormal: Vec2 = historyPose
+      ? { x: -Math.sin(historyPose.rotation) * historyPose.mirrorSide, y: Math.cos(historyPose.rotation) * historyPose.mirrorSide }
       : normal;
     const poseRotation = historyPose?.rotation ?? rootRotation;
     const poseMirrorSide = historyPose?.mirrorSide ?? visualMirrorSide;

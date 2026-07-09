@@ -132,6 +132,14 @@ export type TerrainMaskContact = {
   density: number;
 };
 
+type TerrainMaskContactAccumulator = {
+  count: number;
+  samples: number;
+  densitySum: number;
+  nx: number;
+  ny: number;
+};
+
 export function terrainMaskContactForAabb(
   scene: DeepdiveScene,
   centerX: number,
@@ -144,22 +152,27 @@ export function terrainMaskContactForAabb(
   const maxSamples = Math.max(8, options.maxSamples ?? 28);
   const perimeter = Math.max(1, (halfW + halfH) * 4);
   const step = Math.max(TERRAIN_MASK_CELL * 1.5, perimeter / maxSamples);
-  const points: Array<{ x: number; y: number; nx: number; ny: number }> = [
-    { x: centerX - halfW, y: centerY - halfH, nx: -0.7, ny: -0.7 },
-    { x: centerX + halfW, y: centerY - halfH, nx: 0.7, ny: -0.7 },
-    { x: centerX - halfW, y: centerY + halfH, nx: -0.7, ny: 0.7 },
-    { x: centerX + halfW, y: centerY + halfH, nx: 0.7, ny: 0.7 },
-    { x: centerX, y: centerY, nx: 0, ny: 0 },
-  ];
+  const acc = createContactAccumulator();
+  let remaining = maxSamples + 5;
+  const add = (x: number, y: number, nx: number, ny: number) => {
+    if (remaining <= 0) return;
+    remaining -= 1;
+    accumulateTerrainMaskContactSample(scene, acc, x, y, nx, ny, options.includeBounds ?? true);
+  };
+  add(centerX - halfW, centerY - halfH, -0.7, -0.7);
+  add(centerX + halfW, centerY - halfH, 0.7, -0.7);
+  add(centerX - halfW, centerY + halfH, -0.7, 0.7);
+  add(centerX + halfW, centerY + halfH, 0.7, 0.7);
+  add(centerX, centerY, 0, 0);
   for (let ox = -halfW; ox <= halfW + 0.01; ox += step) {
-    points.push({ x: centerX + ox, y: centerY - halfH, nx: 0, ny: -1 });
-    points.push({ x: centerX + ox, y: centerY + halfH, nx: 0, ny: 1 });
+    add(centerX + ox, centerY - halfH, 0, -1);
+    add(centerX + ox, centerY + halfH, 0, 1);
   }
   for (let oy = -halfH; oy <= halfH + 0.01; oy += step) {
-    points.push({ x: centerX - halfW, y: centerY + oy, nx: -1, ny: 0 });
-    points.push({ x: centerX + halfW, y: centerY + oy, nx: 1, ny: 0 });
+    add(centerX - halfW, centerY + oy, -1, 0);
+    add(centerX + halfW, centerY + oy, 1, 0);
   }
-  return terrainMaskContactForSamples(scene, points.slice(0, maxSamples + 5), options.includeBounds ?? true);
+  return finishTerrainMaskContact(scene, acc);
 }
 
 export function terrainMaskContactForCapsule(
@@ -179,17 +192,25 @@ export function terrainMaskContactForCapsule(
   const normalY = axisX;
   const sideSteps = Math.max(2, Math.ceil(Math.min(7, halfLength / Math.max(6, TERRAIN_MASK_CELL * 2))));
   const capSteps = Math.max(4, Math.ceil(Math.min(8, radius / Math.max(3, TERRAIN_MASK_CELL))));
-  const points: Array<{ x: number; y: number; nx: number; ny: number }> = [
-    { x: centerX, y: centerY, nx: 0, ny: 0 },
-  ];
+  const acc = createContactAccumulator();
+  const totalPoints = 1 + (sideSteps * 2 + 1) * 4 + 2 * (capSteps * 2 + 1) * 2 + (sideSteps * 2 + 1);
+  const stride = Math.max(1, Math.ceil(totalPoints / maxSamples));
+  let index = 0;
+  const add = (x: number, y: number, nx: number, ny: number) => {
+    const current = index;
+    index += 1;
+    if (current !== 0 && current % stride !== 0) return;
+    accumulateTerrainMaskContactSample(scene, acc, x, y, nx, ny, options.includeBounds ?? true);
+  };
+  add(centerX, centerY, 0, 0);
   for (let i = -sideSteps; i <= sideSteps; i += 1) {
     const t = i / sideSteps;
     const ax = centerX + axisX * halfLength * t;
     const ay = centerY + axisY * halfLength * t;
-    points.push({ x: ax + normalX * radius, y: ay + normalY * radius, nx: normalX, ny: normalY });
-    points.push({ x: ax - normalX * radius, y: ay - normalY * radius, nx: -normalX, ny: -normalY });
-    points.push({ x: ax + normalX * radius * 0.55, y: ay + normalY * radius * 0.55, nx: normalX, ny: normalY });
-    points.push({ x: ax - normalX * radius * 0.55, y: ay - normalY * radius * 0.55, nx: -normalX, ny: -normalY });
+    add(ax + normalX * radius, ay + normalY * radius, normalX, normalY);
+    add(ax - normalX * radius, ay - normalY * radius, -normalX, -normalY);
+    add(ax + normalX * radius * 0.55, ay + normalY * radius * 0.55, normalX, normalY);
+    add(ax - normalX * radius * 0.55, ay - normalY * radius * 0.55, -normalX, -normalY);
   }
   for (const end of [-1, 1]) {
     const capX = centerX + axisX * halfLength * end;
@@ -198,69 +219,73 @@ export function terrainMaskContactForCapsule(
       const theta = (i / capSteps) * Math.PI * 0.5;
       const outwardX = axisX * end * Math.cos(theta) + normalX * Math.sin(theta);
       const outwardY = axisY * end * Math.cos(theta) + normalY * Math.sin(theta);
-      points.push({ x: capX + outwardX * radius, y: capY + outwardY * radius, nx: outwardX, ny: outwardY });
-      points.push({ x: capX + outwardX * radius * 0.58, y: capY + outwardY * radius * 0.58, nx: outwardX, ny: outwardY });
+      add(capX + outwardX * radius, capY + outwardY * radius, outwardX, outwardY);
+      add(capX + outwardX * radius * 0.58, capY + outwardY * radius * 0.58, outwardX, outwardY);
     }
   }
   for (let i = -sideSteps; i <= sideSteps; i += 1) {
     const t = i / sideSteps;
-    points.push({
-      x: centerX + axisX * halfLength * t,
-      y: centerY + axisY * halfLength * t,
-      nx: 0,
-      ny: 0,
-    });
+    add(centerX + axisX * halfLength * t, centerY + axisY * halfLength * t, 0, 0);
   }
-  const stride = Math.max(1, Math.ceil(points.length / maxSamples));
-  return terrainMaskContactForSamples(scene, points.filter((_, index) => index === 0 || index % stride === 0), options.includeBounds ?? true);
+  return finishTerrainMaskContact(scene, acc);
 }
 
-function terrainMaskContactForSamples(
-  scene: DeepdiveScene,
-  points: Array<{ x: number; y: number; nx: number; ny: number }>,
-  includeBounds: boolean,
-): TerrainMaskContact | null {
-  let count = 0;
-  let samples = 0;
-  let densitySum = 0;
-  let nx = 0;
-  let ny = 0;
-  for (const point of points) {
-    samples += 1;
-    const tx = Math.floor(point.x / TILE);
-    const ty = Math.floor(point.y / TILE);
-    let solid = false;
-    let density = 0;
-    if (tx < 0 || tx >= WORLD_W || ty < 0 || ty >= WORLD_H) {
-      solid = includeBounds;
-      density = solid ? 255 : 0;
-    } else {
-      const sx = Math.floor(point.x / TERRAIN_MASK_CELL);
-      const sy = Math.floor(point.y / TERRAIN_MASK_CELL);
-      density = terrainMaskDensityAt(scene, sx, sy);
-      solid = density >= TERRAIN_MASK_SOLID_THRESHOLD;
-    }
-    if (!solid) continue;
-    count += 1;
-    densitySum += density;
-    if (point.nx || point.ny) {
-      const len = Math.max(1, Math.hypot(point.nx, point.ny));
-      nx += -point.nx / len;
-      ny += -point.ny / len;
-    } else {
-      nx += point.x < scene.player.x ? 1 : -1;
-      ny += point.y < scene.player.y ? 1 : -1;
-    }
-  }
-  if (scene.perfTelemetry?.enabled) scene.perfTelemetry.terrainContactSamples += samples;
-  const len = Math.hypot(nx, ny);
-  if (count <= 0 || len <= 0) return null;
+function createContactAccumulator(): TerrainMaskContactAccumulator {
   return {
-    count,
-    samples,
-    nx: nx / len,
-    ny: ny / len,
-    density: densitySum / count,
+    count: 0,
+    samples: 0,
+    densitySum: 0,
+    nx: 0,
+    ny: 0,
+  };
+}
+
+function accumulateTerrainMaskContactSample(
+  scene: DeepdiveScene,
+  acc: TerrainMaskContactAccumulator,
+  x: number,
+  y: number,
+  sampleNx: number,
+  sampleNy: number,
+  includeBounds: boolean,
+) {
+  acc.samples += 1;
+  const tx = Math.floor(x / TILE);
+  const ty = Math.floor(y / TILE);
+  let solid = false;
+  let density = 0;
+  if (tx < 0 || tx >= WORLD_W || ty < 0 || ty >= WORLD_H) {
+    solid = includeBounds;
+    density = solid ? 255 : 0;
+  } else {
+    const sx = Math.floor(x / TERRAIN_MASK_CELL);
+    const sy = Math.floor(y / TERRAIN_MASK_CELL);
+    density = terrainMaskDensityAt(scene, sx, sy);
+    solid = density >= TERRAIN_MASK_SOLID_THRESHOLD;
+  }
+  if (!solid) return;
+  acc.count += 1;
+  acc.densitySum += density;
+  if (sampleNx || sampleNy) {
+    const len = Math.max(1, Math.hypot(sampleNx, sampleNy));
+    acc.nx += -sampleNx / len;
+    acc.ny += -sampleNy / len;
+  } else {
+    acc.nx += x < scene.player.x ? 1 : -1;
+    acc.ny += y < scene.player.y ? 1 : -1;
+  }
+}
+
+function finishTerrainMaskContact(scene: DeepdiveScene, acc: TerrainMaskContactAccumulator): TerrainMaskContact | null {
+  if (scene.perfTelemetry?.enabled) scene.perfTelemetry.terrainContactSamples += acc.samples;
+  const len = Math.hypot(acc.nx, acc.ny);
+  if (acc.count <= 0 || len <= 0) return null;
+  return {
+    count: acc.count,
+    samples: acc.samples,
+    nx: acc.nx / len,
+    ny: acc.ny / len,
+    density: acc.densitySum / acc.count,
   };
 }
 

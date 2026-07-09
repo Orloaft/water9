@@ -251,6 +251,8 @@ export interface Fish {
   navLastBlockedFeelers?: number;
   navHeadingFlipCount?: number;
   navReseedCount?: number;
+  simAccumulator?: number;
+  simSkippedFrames?: number;
   navSpawnValidated?: boolean;
   navSpawnFallback?: boolean;
   terrainAffinity?: TerrainAffinity;

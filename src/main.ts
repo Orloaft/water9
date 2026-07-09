@@ -5,6 +5,7 @@ import { EntitySandboxScene } from './scene-sandbox';
 import { setGame, gameScene } from './game-ref';
 import { renderHud } from './hud';
 import { state } from './state';
+import { installOuterPerfTelemetry } from './perf';
 
 function installPlaytestApi() {
   const isDev = (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV;
@@ -50,4 +51,5 @@ const game = new Phaser.Game({
 });
 
 setGame(game);
+installOuterPerfTelemetry(game, gameScene);
 installPlaytestApi();

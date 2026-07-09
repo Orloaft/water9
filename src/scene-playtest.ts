@@ -4277,6 +4277,9 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         this.perfTelemetry.metrics = {};
         this.perfTelemetry.frames = [];
         this.perfTelemetry.longTasks = [];
+        this.perfTelemetry.lastLongTaskCursor = 0;
+        this.perfTelemetry.lastTerrainContactSamples = this.perfTelemetry.terrainContactSamples;
+        this.perfTelemetry.lastUsedJSHeapSize = 0;
       }
       this.terrainDirtyTiles.clear();
       this.terrainLastMutationStats = { reason: 'reset-perf', dirtyTiles: 0, dirtyChunks: 0 };

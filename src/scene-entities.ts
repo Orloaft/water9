@@ -25,6 +25,10 @@ const LEGACY_NAV_ENVELOPES: Record<FishPattern, LegacyNavEnvelope> = {
   sway: { feelerAngles: [0, -0.5, 0.5, -0.88, 0.88], horizon: 0.95, sideBias: 0.36, avoidance: 1.1, waypointRadius: 84, reseedCooldown: 2.5 },
 };
 
+const FISH_FULL_SIM_CAMERA_MARGIN = 180;
+const FISH_FULL_SIM_PLAYER_MARGIN = 280;
+const FISH_FAR_SIM_INTERVAL = 0.22;
+
 function legacyFishContact(scene: DeepdiveScene, fish: Fish, x = fish.x, y = fish.y, padding = 1.5) {
   const half = Math.max(6, fish.radius + padding);
   const contact = terrainMaskContactForAabb(scene, x, y, half, half, { maxSamples: 24, includeBounds: true });
@@ -65,6 +69,8 @@ function rotateUnit(x: number, y: number, angle: number) {
 }
 
 export function updateFish(this: DeepdiveScene, delta: number) {
+    const camera = this.cameras.main;
+    const tiers = { full: 0, throttled: 0, skipped: 0 };
     for (const fish of this.fish) {
       fish.phase += delta;
       fish.bumpCooldown = Math.max(0, fish.bumpCooldown - delta);
@@ -80,6 +86,24 @@ export function updateFish(this: DeepdiveScene, delta: number) {
         fish.scan = Math.max(0, fish.scan - delta * 0.9);
       }
       fish.scanning = false;
+      const simTier = fishSimulationTier(this, fish, camera);
+      if (simTier !== 'full') {
+        fish.simAccumulator = (fish.simAccumulator ?? 0) + delta;
+        if (fish.simAccumulator < FISH_FAR_SIM_INTERVAL) {
+          fish.simSkippedFrames = (fish.simSkippedFrames ?? 0) + 1;
+          tiers.skipped += 1;
+          continue;
+        }
+        const simDelta = Math.min(fish.simAccumulator, FISH_FAR_SIM_INTERVAL * 2.5);
+        fish.simAccumulator = 0;
+        fish.simSkippedFrames = 0;
+        tiers.throttled += 1;
+        updateDistantInactiveFish(this, fish, simDelta);
+        continue;
+      }
+      tiers.full += 1;
+      fish.simAccumulator = 0;
+      fish.simSkippedFrames = 0;
       if (fish.stunned > 0) {
         fish.aggro = 0;
         fish.vx *= Math.exp(-4.6 * delta);
@@ -106,6 +130,57 @@ export function updateFish(this: DeepdiveScene, delta: number) {
         this.bumpFish(fish, distance);
       }
     }
+    if (this.perfTelemetry?.enabled) this.perfTelemetry.fishTiers = tiers;
+  }
+
+function fishSimulationTier(scene: DeepdiveScene, fish: Fish, camera: Phaser.Cameras.Scene2D.Camera): 'full' | 'distant' {
+    if (fish.stunned > 0 || fish.hurtFlash > 0 || fish.scanning || fish.aggro > 0) return 'full';
+    const view = camera.worldView;
+    const margin = FISH_FULL_SIM_CAMERA_MARGIN + fish.radius;
+    const visible = fish.x >= view.x - margin
+      && fish.x <= view.right + margin
+      && fish.y >= view.y - margin
+      && fish.y <= view.bottom + margin;
+    if (visible) return 'full';
+    const dx = scene.player.x - fish.x;
+    const dy = scene.player.y - fish.y;
+    const playerRange = FISH_FULL_SIM_PLAYER_MARGIN + fish.radius + PLAYER_CONTACT_RADIUS;
+    if (dx * dx + dy * dy <= playerRange * playerRange) return 'full';
+    if (fish.hostile) {
+      const detectionRange = (fish.pattern === 'circle' ? 245 : 205) + fish.radius * 3 + state.biome * 8;
+      if (dx * dx + dy * dy <= detectionRange * detectionRange) return 'full';
+    }
+    return 'distant';
+  }
+
+function updateDistantInactiveFish(scene: DeepdiveScene, fish: Fish, delta: number) {
+    if (fish.stunned > 0) {
+      fish.vx *= Math.exp(-4.6 * delta);
+      fish.vy *= Math.exp(-4.6 * delta);
+      return;
+    }
+    if (fish.behaviorClass && fish.behaviorClass !== 'legacySwimmer') {
+      scene.updateAnchoredFish(fish, delta);
+      return;
+    }
+    const targetX = fish.homeX + Math.sin(fish.phase * 0.55 + fish.radius) * Math.min(80, fish.speed * 0.9);
+    const targetY = fish.homeY + Math.cos(fish.phase * 0.42 + fish.radius) * Math.min(42, fish.speed * 0.42);
+    const dx = targetX - fish.x;
+    const dy = targetY - fish.y;
+    const len = Math.max(1, Math.hypot(dx, dy));
+    const desiredSpeed = fish.speed * 0.42;
+    fish.vx += (dx / len) * desiredSpeed * delta * 1.6;
+    fish.vy += (dy / len) * desiredSpeed * delta * 1.6;
+    const speed = Math.hypot(fish.vx, fish.vy);
+    const maxSpeed = Math.max(10, fish.speed * 0.72);
+    if (speed > maxSpeed) {
+      fish.vx = (fish.vx / speed) * maxSpeed;
+      fish.vy = (fish.vy / speed) * maxSpeed;
+    }
+    fish.x += fish.vx * delta;
+    fish.y += fish.vy * delta;
+    updateFacingFromVelocity(fish);
+    updateFishVisualFacing(fish, delta);
   }
 
 export function updateAnchoredFish(this: DeepdiveScene, fish: Fish, delta: number) {
@@ -1146,9 +1221,13 @@ export function updateFlares(this: DeepdiveScene, delta: number) {
   }
 
 export function scanNearbyLife(this: DeepdiveScene, delta: number, scanningHeld: boolean) {
+    if (!scanningHeld) {
+      this.player.scanTarget = null;
+      return;
+    }
     const range = 64 + state.upgrades.scanner * 18;
     const target = this.nearestLife(range);
-    if (!scanningHeld || !target) {
+    if (!target) {
       this.player.scanTarget = null;
       return;
     }
