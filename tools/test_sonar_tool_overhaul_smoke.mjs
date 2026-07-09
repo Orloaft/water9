@@ -3,6 +3,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
+import {
+  assertSteadyGameplayCadence,
+  finishCadenceProbe,
+  installBrowserPerfObservers,
+  startCadenceProbe,
+} from './perf_assertions.mjs';
 
 const outDir = process.env.WATER9_SONAR_TOOL_OUT_DIR ?? 'runs/water9-sonar-tool-overhaul-perf-proposal-2026-07-09';
 const reportPath = process.env.WATER9_SONAR_TOOL_REPORT ?? `${outDir}/sonar-tool-overhaul-smoke.json`;
@@ -158,6 +164,7 @@ if (server) await waitForServer(baseUrl);
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+await installBrowserPerfObservers(page);
 
 page.on('pageerror', (error) => errors.push({ type: 'pageerror', text: error.message }));
 page.on('console', (message) => {
@@ -188,13 +195,16 @@ try {
   await sleep(300);
 
   const beforeNormal = await snapshot(page);
-  await startRafProbe(page, 4200);
+  await command(page, 'resetPerfFrameBuffer');
+  await startCadenceProbe(page, 'sonar-normal-swim');
   for (const [key, duration] of [['ArrowRight', 1000], ['ArrowDown', 1000], ['ArrowLeft', 1000], ['ArrowUp', 1000]]) {
     await page.keyboard.down(key);
     await sleep(duration);
     await page.keyboard.up(key);
   }
-  const normalRaf = await finishRafProbe(page);
+  await sleep(250);
+  const normalCadenceProbe = await finishCadenceProbe(page);
+  const normalRaf = normalCadenceProbe?.independentRaf ?? null;
   const afterNormal = await snapshot(page);
   const normalDom = await page.evaluate(() => ({
     bigMapPresent: Boolean(document.querySelector('#big-sonar-map')),
@@ -237,7 +247,8 @@ try {
   const sonarOpen = await snapshot(page);
   const sonarCanvas = await captureCanvasPair(page, 'sonar-tool-open-canvas');
   const sonarOverlayPath = await captureOverlay(page, 'sonar-tool-open-overlay');
-  await startRafProbe(page, 5200);
+  await command(page, 'resetPerfFrameBuffer');
+  await startCadenceProbe(page, 'sonar-tool-open-use');
   await page.keyboard.down('ArrowRight');
   await page.keyboard.down('ArrowDown');
   await sleep(2500);
@@ -247,7 +258,8 @@ try {
   await sleep(1200);
   await page.keyboard.up('KeyE');
   await sleep(900);
-  const sonarUseRaf = await finishRafProbe(page);
+  const sonarUseCadenceProbe = await finishCadenceProbe(page);
+  const sonarUseRaf = sonarUseCadenceProbe?.independentRaf ?? null;
   const afterSonarUse = await snapshot(page);
 
   await page.keyboard.press('Escape');
@@ -275,6 +287,20 @@ try {
   if (!sonarBigMetric?.samples) fail('sonar-use mode did not draw the big sonar map');
   if (afterDismiss?.ui?.sonarMapOpen || dismissedDom.overlayOpen || dismissedDom.bigMapPresent) fail('dismiss/unequip left the full sonar map visible');
   if (afterDismiss?.state?.selectedTool !== 'drill') fail('dismiss/unequip did not return to the drill tool');
+  assertSteadyGameplayCadence({
+    label: 'sonar normal swim',
+    independentRaf: normalRaf,
+    perf: afterNormal?.perf,
+    longTasks: normalCadenceProbe?.longTasks ?? [],
+    errors,
+  });
+  assertSteadyGameplayCadence({
+    label: 'sonar open use',
+    independentRaf: sonarUseRaf,
+    perf: afterSonarUse?.perf,
+    longTasks: sonarUseCadenceProbe?.longTasks ?? [],
+    errors,
+  });
 
   report = {
     ok: errors.length === 0,
@@ -284,6 +310,7 @@ try {
       before: { selectedTool: beforeNormal?.state?.selectedTool, sonarMapOpen: beforeNormal?.ui?.sonarMapOpen },
       after: { selectedTool: afterNormal?.state?.selectedTool, sonarMapOpen: afterNormal?.ui?.sonarMapOpen },
       dom: normalDom,
+      cadenceProbe: normalCadenceProbe ? { label: normalCadenceProbe.label, durationMs: normalCadenceProbe.durationMs } : null,
       raf: normalRaf,
       drawSonarMap: afterNormal?.perf?.metrics?.['draw.sonarMap'] ?? null,
       drawBigSonarMap: normalBigMetric,
@@ -293,6 +320,7 @@ try {
       selectSonar,
       open: { selectedTool: sonarOpen?.state?.selectedTool, sonarMapOpen: sonarOpen?.ui?.sonarMapOpen },
       after: { selectedTool: afterSonarUse?.state?.selectedTool, sonarMapOpen: afterSonarUse?.ui?.sonarMapOpen },
+      cadenceProbe: sonarUseCadenceProbe ? { label: sonarUseCadenceProbe.label, durationMs: sonarUseCadenceProbe.durationMs } : null,
       raf: sonarUseRaf,
       drawSonarMap: afterSonarUse?.perf?.metrics?.['draw.sonarMap'] ?? null,
       drawBigSonarMap: sonarBigMetric,

@@ -42,7 +42,7 @@ export function rebuildTerrainMask(scene: DeepdiveScene) {
     }
   }
   scene.terrainMask = mask;
-  normalizeTerrainMask(scene, 0, TERRAIN_MASK_WIDTH - 1, 0, TERRAIN_MASK_HEIGHT - 1, 5);
+  normalizeTerrainMask(scene, 0, TERRAIN_MASK_WIDTH - 1, 0, TERRAIN_MASK_HEIGHT - 1, 1);
   scene.terrainDirty = true;
   scene.terrainBoundsKey = '';
   scene.terrainRevision += 1;

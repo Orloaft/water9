@@ -3,6 +3,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
+import {
+  assertSteadyGameplayCadence,
+  finishCadenceProbe,
+  installBrowserPerfObservers,
+  startCadenceProbe,
+} from './perf_assertions.mjs';
 
 const outDir = process.env.WATER9_DEEP_SWIM_OUT_DIR ?? 'runs/water9-deeper-performance-implementation-2026-07-09';
 const reportPath = process.env.WATER9_DEEP_SWIM_REPORT ?? `${outDir}/deep-diagonal-swim-perf-smoke.json`;
@@ -129,6 +135,7 @@ if (server) await waitForServer(baseUrl);
 const errors = [];
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+await installBrowserPerfObservers(page);
 page.on('pageerror', (error) => errors.push({ type: 'pageerror', text: error.message }));
 page.on('console', (message) => {
   if (message.type() === 'error' && !message.text().startsWith('Texture key already in use:')) errors.push({ type: 'console', text: message.text() });
@@ -158,18 +165,29 @@ try {
     await command(page, 'resetPerfFrameBuffer');
     await sleep(180);
     await captureCanvasPair(page, `deep-diagonal-depth-${depth}-start-canvas`);
+    await startCadenceProbe(page, `deep-diagonal-${depth}m`);
     await page.keyboard.down('ArrowRight');
     await page.keyboard.down('ArrowDown');
-    await sleep(2600);
+    await sleep(3600);
     await page.keyboard.up('ArrowRight');
     await page.keyboard.up('ArrowDown');
     await sleep(300);
+    const cadenceProbe = await finishCadenceProbe(page);
     const perf = (await command(page, 'exportPerfFrameBuffer'))?.perf;
     const shot = await captureCanvasPair(page, `deep-diagonal-depth-${depth}-end-canvas`);
     const frames = perf?.frames ?? [];
+    assertSteadyGameplayCadence({
+      label: `deep diagonal ${depth}m`,
+      independentRaf: cadenceProbe?.independentRaf ?? null,
+      perf,
+      longTasks: cadenceProbe?.longTasks ?? [],
+      errors,
+    });
     bands.push({
       requestedDepth: depth,
       teleport,
+      cadenceProbe: cadenceProbe ? { label: cadenceProbe.label, durationMs: cadenceProbe.durationMs } : null,
+      independentRaf: cadenceProbe?.independentRaf ?? null,
       summary: summarizeFrames(frames),
       metrics: {
         frameTotal: perf?.metrics?.['frame.total'] ?? null,
@@ -177,6 +195,8 @@ try {
         drawTotal: perf?.metrics?.['draw.total'] ?? null,
         drawWorld: perf?.metrics?.['draw.world'] ?? null,
         drawBigSonarMap: perf?.metrics?.['draw.bigSonarMap'] ?? null,
+        outerRafDelta: perf?.metrics?.['outer.rafDelta'] ?? null,
+        outerFrameTotal: perf?.metrics?.['outer.frameTotal'] ?? null,
       },
       screenshot: shot,
     });
@@ -186,7 +206,7 @@ try {
     .sort((a, b) => b.rafDeltaMs - a.rafDeltaMs)
     .slice(0, 20);
   if (!bands.every((band) => band.teleport?.ok)) errors.push({ type: 'assertion', text: 'one or more depth teleports failed' });
-  if (!bands.some((band) => band.summary.samples > 30)) errors.push({ type: 'assertion', text: 'perf frame buffer did not collect frame samples' });
+  if (!bands.every((band) => band.summary.samples >= 180)) errors.push({ type: 'assertion', text: 'one or more depth bands did not collect at least 180 frame samples' });
   report = {
     ok: errors.length === 0,
     url: baseUrl,

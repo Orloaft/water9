@@ -3,6 +3,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
+import {
+  assertSteadyGameplayCadence,
+  finishCadenceProbe,
+  installBrowserPerfObservers,
+  startCadenceProbe,
+} from './perf_assertions.mjs';
 
 const outDir = process.env.WATER9_MINING_PERF_OUT_DIR ?? 'runs/water9-deeper-performance-implementation-2026-07-09';
 const reportPath = process.env.WATER9_MINING_PERF_REPORT ?? `${outDir}/mining-perf-smoke.json`;
@@ -103,6 +109,7 @@ if (server) await waitForServer(baseUrl);
 const errors = [];
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+await installBrowserPerfObservers(page);
 page.on('pageerror', (error) => errors.push({ type: 'pageerror', text: error.message }));
 page.on('console', (message) => {
   if (message.type() === 'error' && !message.text().startsWith('Texture key already in use:')) errors.push({ type: 'console', text: message.text() });
@@ -128,8 +135,10 @@ try {
   const beforeShot = await captureCanvasPair(page, 'mining-before-canvas');
   await command(page, 'resetPerfFrameBuffer');
   const target = stage?.target ?? { worldX: before?.player?.x + 40, worldY: before?.player?.y };
+  await startCadenceProbe(page, 'mining-terrain-invalidation');
   const mining = await command(page, 'terrainMineAt', { worldX: target.worldX, worldY: target.worldY, repeats: 8 });
-  await sleep(700);
+  await sleep(4200);
+  const cadenceProbe = await finishCadenceProbe(page);
   const after = await snapshot(page);
   const afterShot = await captureCanvasPair(page, 'mining-after-canvas');
   const perf = (await command(page, 'exportPerfFrameBuffer'))?.perf ?? after?.perf;
@@ -140,6 +149,13 @@ try {
   if (!drawWorld?.samples) errors.push({ type: 'assertion', text: 'draw.world did not record samples' });
   if ((drawWorld?.maxMs ?? 0) > 4) errors.push({ type: 'assertion', text: `draw.world maxMs too high: ${drawWorld?.maxMs}` });
   if (maxDirtyChunks > 12) errors.push({ type: 'assertion', text: `dirty chunk count too high: ${maxDirtyChunks}` });
+  assertSteadyGameplayCadence({
+    label: 'mining terrain invalidation',
+    independentRaf: cadenceProbe?.independentRaf ?? null,
+    perf,
+    longTasks: cadenceProbe?.longTasks ?? [],
+    errors,
+  });
   report = {
     ok: errors.length === 0,
     url: baseUrl,
@@ -147,6 +163,8 @@ try {
     before: { state: before?.state, perf: before?.perf },
     mining,
     after: { state: after?.state, perf },
+    cadenceProbe: cadenceProbe ? { label: cadenceProbe.label, durationMs: cadenceProbe.durationMs } : null,
+    independentRaf: cadenceProbe?.independentRaf ?? null,
     metrics: { drawWorld, maxDirtyChunks, maxDirtyTiles },
     artifacts: { beforeShot, afterShot },
     errors,

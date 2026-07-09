@@ -3,6 +3,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
+import {
+  assertSteadyGameplayCadence,
+  finishCadenceProbe,
+  installBrowserPerfObservers,
+  startCadenceProbe,
+} from './perf_assertions.mjs';
 
 const outDir = process.env.LOADING_SWIM_PERF_OUT_DIR ?? 'runs/water9-performance-loading-swim-fps-2026-07-09';
 const reportPath = process.env.LOADING_SWIM_PERF_REPORT ?? `${outDir}/loading-swim-perf-smoke.json`;
@@ -139,10 +145,38 @@ async function finishRafProbe(page) {
   });
 }
 
+async function captureCanvasPair(page, name) {
+  const pngPath = `${outDir}/${name}.png`;
+  const grayPath = `${outDir}/${name}-gray.png`;
+  await page.locator('#game canvas').screenshot({ path: pngPath });
+  const grayscaleDataUrl = await page.evaluate(() => {
+    const source = document.querySelector('#game canvas');
+    if (!source) return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = source.width;
+    canvas.height = source.height;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(source, 0, 0);
+    const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < image.data.length; i += 4) {
+      const gray = Math.round(image.data[i] * 0.2126 + image.data[i + 1] * 0.7152 + image.data[i + 2] * 0.0722);
+      image.data[i] = gray;
+      image.data[i + 1] = gray;
+      image.data[i + 2] = gray;
+    }
+    ctx.putImageData(image, 0, 0);
+    return canvas.toDataURL('image/png');
+  });
+  if (grayscaleDataUrl) await writeFile(grayPath, Buffer.from(grayscaleDataUrl.split(',')[1], 'base64'));
+  return { pngPath, grayPath: grayscaleDataUrl ? grayPath : null };
+}
+
 if (server) await waitForServer(baseUrl);
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+await installBrowserPerfObservers(page);
 
 page.on('pageerror', (error) => errors.push({ type: 'pageerror', text: error.message }));
 page.on('console', (message) => {
@@ -213,9 +247,12 @@ try {
   await command(page, 'dive');
   const teleport = await command(page, 'teleportToReachableDepth', 640);
   await command(page, 'refill');
+  await sleep(900);
 
   const beforeSwim = await snapshot(page);
-  await startRafProbe(page, 6500);
+  const firstSettledShot = await captureCanvasPair(page, 'loading-first-settled-gameplay-canvas');
+  await command(page, 'resetPerfFrameBuffer');
+  await startCadenceProbe(page, 'loading-first-settled-swim');
   const path = [
     ['ArrowDown', 1500],
     ['ArrowRight', 1500],
@@ -228,7 +265,8 @@ try {
     await page.keyboard.up(key);
   }
   await sleep(600);
-  const swimRaf = await finishRafProbe(page);
+  const swimCadenceProbe = await finishCadenceProbe(page);
+  const swimRaf = swimCadenceProbe?.independentRaf ?? null;
   const afterSwim = await snapshot(page);
 
   const metrics = afterSwim?.perf?.metrics ?? {};
@@ -243,9 +281,15 @@ try {
     if (!metric(key)?.samples) fail(`perf metric ${key} did not record samples`);
   }
   if (metric('draw.bigSonarMap')?.samples) fail('hidden big sonar map was redrawn during closed-map swimming');
-  if (swimRaf.longFrames > 4) fail(`swimming had ${swimRaf.longFrames} frames over 50ms`);
   if ((metric('frame.total')?.avgMs ?? 0) > 34) fail(`frame.total avg too high: ${metric('frame.total')?.avgMs}`);
   if ((metric('draw.total')?.avgMs ?? 0) > 26) fail(`draw.total avg too high: ${metric('draw.total')?.avgMs}`);
+  assertSteadyGameplayCadence({
+    label: 'loading first settled swim',
+    independentRaf: swimRaf,
+    perf: afterSwim?.perf,
+    longTasks: swimCadenceProbe?.longTasks ?? [],
+    errors,
+  });
 
   report = {
     ok: errors.length === 0,
@@ -256,12 +300,14 @@ try {
     readyAfterStart: readyAfterStart?.ui?.biomeLoading ?? null,
     teleport,
     swim: {
-      durationMs: swimRaf.durationMs,
+      durationMs: swimCadenceProbe?.durationMs ?? 0,
       movementPath: path.map(([key, duration]) => ({ key, durationMs: duration })),
+      cadenceProbe: swimCadenceProbe ? { label: swimCadenceProbe.label, durationMs: swimCadenceProbe.durationMs } : null,
       raf: swimRaf,
       before: {
         player: beforeSwim?.player ?? null,
         perf: beforeSwim?.perf ?? null,
+        artifacts: firstSettledShot,
       },
       after: {
         player: afterSwim?.player ?? null,

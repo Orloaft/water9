@@ -3,6 +3,13 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
+import {
+  assertSteadyGameplayCadence,
+  finishCadenceProbe,
+  installBrowserPerfObservers,
+  startCadenceProbe,
+  summarizeMetric as summarizePerfMetric,
+} from './perf_assertions.mjs';
 
 const outDir = process.env.WATER9_B4_PERF_OUT_DIR ?? 'runs/water9-b4-performance-implementation-2026-07-09';
 const renderer = process.env.WATER9_B4_RENDERER === 'webgl' ? 'webgl' : 'canvas';
@@ -127,20 +134,6 @@ function countOver(values, threshold) {
   return { count, pct: values.length ? round((count / values.length) * 100) : 0 };
 }
 
-function summarizeMetric(metric) {
-  if (!metric) return null;
-  return {
-    samples: metric.samples,
-    avgMs: metric.avgMs,
-    maxMs: metric.maxMs,
-    trueMaxMs: metric.trueMaxMs,
-    p95Ms: metric.p95Ms,
-    p99Ms: metric.p99Ms,
-    windowMaxMs: metric.windowMaxMs,
-    context: metric.context,
-  };
-}
-
 function summarizeFrames(frames) {
   const raf = summarize(frames.map((frame) => frame.rafDeltaMs));
   const contactDeltas = frames.map((frame) => frame.terrain?.contactSamplesDelta ?? 0);
@@ -171,12 +164,12 @@ function summarizeFrames(frames) {
 
 function classify(perf, independentRafSummary) {
   const metrics = perf?.metrics ?? {};
-  const rafP95 = independentRafSummary.p95;
+  const rafP95 = independentRafSummary?.p95 ?? Number.POSITIVE_INFINITY;
   const updateP95 = metrics['update.total']?.p95Ms ?? 0;
   const renderP95 = metrics['outer.render']?.p95Ms ?? 0;
   const gapP95 = metrics['outer.postStepToRender']?.p95Ms ?? 0;
   const longTasks = perf?.longTasks ?? [];
-  if (rafP95 <= 20 && independentRafSummary.over50.count === 0) return 'steady';
+  if (rafP95 <= 20 && (independentRafSummary?.over50?.count ?? Number.POSITIVE_INFINITY) === 0) return 'steady';
   if (updateP95 >= 10 || (metrics['update.fish']?.p95Ms ?? 0) >= 3 || (metrics['update.articulated']?.p95Ms ?? 0) >= 2) return 'update-bound-or-entity-bound';
   if (renderP95 >= 8 || gapP95 >= 8) return 'render-bound';
   if (longTasks.some((task) => task.duration >= 50)) return 'gc-browser-or-mixed';
@@ -192,6 +185,7 @@ if (server) await waitForServer(baseUrl);
 const errors = [];
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+await installBrowserPerfObservers(page);
 await page.addInitScript(() => {
   window.__water9RafDeltas = [];
   window.__water9RafLast = 0;
@@ -230,10 +224,7 @@ try {
   await sleep(650);
   const startShot = await captureCanvasPair(page, `b4-busy-deep-${renderer}-start-canvas`);
   await command(page, 'resetPerfFrameBuffer');
-  await page.evaluate(() => {
-    window.__water9RafDeltas = [];
-    window.__water9RafLast = 0;
-  });
+  await startCadenceProbe(page, `b4-busy-deep-${renderer}`);
   await sleep(80);
   await page.keyboard.down('ArrowRight');
   await page.keyboard.down('ArrowDown');
@@ -241,13 +232,21 @@ try {
   await page.keyboard.up('ArrowRight');
   await page.keyboard.up('ArrowDown');
   await sleep(360);
+  const cadenceProbe = await finishCadenceProbe(page);
   const perf = (await command(page, 'exportPerfFrameBuffer'))?.perf;
-  const rafDeltas = await page.evaluate(() => window.__water9RafDeltas ?? []);
   const endShot = await captureCanvasPair(page, `b4-busy-deep-${renderer}-end-canvas`);
   const frames = perf?.frames ?? [];
-  const independentRaf = summarize(rafDeltas);
+  const independentRaf = cadenceProbe?.independentRaf ?? null;
+  if (frames.length <= 30) errors.push({ type: 'assertion', text: 'perf frame buffer did not collect enough B4 frame samples' });
+  assertSteadyGameplayCadence({
+    label: `B4 ${renderer}`,
+    independentRaf,
+    perf,
+    longTasks: cadenceProbe?.longTasks ?? [],
+    errors,
+  });
   report = {
-    ok: errors.length === 0 && frames.length > 30,
+    ok: errors.length === 0,
     renderer,
     url: baseUrl,
     teleport,
@@ -261,20 +260,21 @@ try {
       sonarExpectedOpen: false,
     },
     classification: classify(perf, independentRaf),
+    cadenceProbe: cadenceProbe ? { label: cadenceProbe.label, durationMs: cadenceProbe.durationMs } : null,
     independentRaf,
     frameSummary: summarizeFrames(frames),
     metrics: {
-      frameTotal: summarizeMetric(perf?.metrics?.['frame.total']),
-      updateTotal: summarizeMetric(perf?.metrics?.['update.total']),
-      drawTotal: summarizeMetric(perf?.metrics?.['draw.total']),
-      drawWorld: summarizeMetric(perf?.metrics?.['draw.world']),
-      fish: summarizeMetric(perf?.metrics?.['update.fish']),
-      articulated: summarizeMetric(perf?.metrics?.['update.articulated']),
-      outerRafDelta: summarizeMetric(perf?.metrics?.['outer.rafDelta']),
-      outerStep: summarizeMetric(perf?.metrics?.['outer.step']),
-      outerRender: summarizeMetric(perf?.metrics?.['outer.render']),
-      outerPostStepToRender: summarizeMetric(perf?.metrics?.['outer.postStepToRender']),
-      outerFrameTotal: summarizeMetric(perf?.metrics?.['outer.frameTotal']),
+      frameTotal: summarizePerfMetric(perf?.metrics?.['frame.total']),
+      updateTotal: summarizePerfMetric(perf?.metrics?.['update.total']),
+      drawTotal: summarizePerfMetric(perf?.metrics?.['draw.total']),
+      drawWorld: summarizePerfMetric(perf?.metrics?.['draw.world']),
+      fish: summarizePerfMetric(perf?.metrics?.['update.fish']),
+      articulated: summarizePerfMetric(perf?.metrics?.['update.articulated']),
+      outerRafDelta: summarizePerfMetric(perf?.metrics?.['outer.rafDelta']),
+      outerStep: summarizePerfMetric(perf?.metrics?.['outer.step']),
+      outerRender: summarizePerfMetric(perf?.metrics?.['outer.render']),
+      outerPostStepToRender: summarizePerfMetric(perf?.metrics?.['outer.postStepToRender']),
+      outerFrameTotal: summarizePerfMetric(perf?.metrics?.['outer.frameTotal']),
     },
     longTasks: {
       count: perf?.longTasks?.length ?? 0,
@@ -286,7 +286,6 @@ try {
     errors,
     serverLogs: serverLogs.slice(-20),
   };
-  if (frames.length <= 30) errors.push({ type: 'assertion', text: 'perf frame buffer did not collect enough B4 frame samples' });
 } catch (error) {
   errors.push({ type: 'exception', text: error?.stack ?? String(error) });
   report = { ok: false, renderer, url: baseUrl, errors, serverLogs: serverLogs.slice(-40) };

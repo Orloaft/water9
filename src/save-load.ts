@@ -6,7 +6,7 @@ import { rng } from './rng';
 import { clampSelectedCargoIndex,clearBleed,clearVenom,createDefaultStoryProgress,createSubVehicle,fuelMax,hullMax,normalizeStoryProgress,oxygenMax,resetOxygenWarnings,syncStoryProgress } from './helpers';
 import { normalizeSelectedTool, normalizeUnlockedTools } from './tools';
 import type { DeepdiveScene } from './scene';
-import { rebuildTerrainMask } from './terrain-mask';
+import { rebuildTerrainMask,syncTerrainMaskTile,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_WIDTH } from './terrain-mask';
 
 export const SAVE_STORAGE_KEY = 'water9.save.v1';
 export const SAVE_VERSION = 1;
@@ -150,6 +150,7 @@ export function loadGame(this: DeepdiveScene) {
   }
   const requestId = state.saveLoad.requestId + 1;
   pendingLoad = parsed.save;
+  applySavedState(parsed.save);
   state.saveLoad = {
     phase: 'loading',
     requestId,
@@ -167,7 +168,6 @@ export function loadGame(this: DeepdiveScene) {
     startedAt: performance.now(),
     completedAt: 0,
   };
-  applySavedState(parsed.save);
   this.scene.restart();
   return { ok: true, version: parsed.save.version, savedAt: parsed.save.savedAt, loadId: requestId };
 }
@@ -180,12 +180,12 @@ export function writeCorruptSaveForSmoke() {
   storage()?.setItem(SAVE_STORAGE_KEY, '{"schema":"water9/save","version":1,"state":');
 }
 
-export function applyPendingLoad(this: DeepdiveScene) {
+export function applyPendingLoad(this: DeepdiveScene, options: { worldApplied?: boolean } = {}) {
   const save = pendingLoad;
   if (!save) return false;
   pendingLoad = null;
   applySavedState(save);
-  applySavedWorld(this, save);
+  if (!options.worldApplied) applySavedWorld(this, save);
   applySavedPlayer(this, save);
   this.terrainBoundsKey = '';
   this.terrainDirty = true;
@@ -201,6 +201,18 @@ export function applyPendingLoad(this: DeepdiveScene) {
     message,
   };
   state.status = message;
+  return true;
+}
+
+export function hasPendingLoadWorld() {
+  return Boolean(pendingLoad?.world && savedWorldMatchesRuntime(pendingLoad.world));
+}
+
+export function applyPendingLoadWorld(this: DeepdiveScene) {
+  const save = pendingLoad;
+  if (!save || !savedWorldMatchesRuntime(save.world)) return false;
+  applySavedState(save);
+  applySavedWorld(this, save);
   return true;
 }
 
@@ -404,18 +416,42 @@ function restoreForwardOutpost(saved: ForwardOutpost | undefined): ForwardOutpos
 
 function applySavedWorld(scene: DeepdiveScene, save: SavedGame) {
   const savedWorld = save.world;
-  if (!savedWorld || savedWorld.width !== WORLD_W || savedWorld.height !== WORLD_H || savedWorld.tiles.length !== WORLD_H) return;
+  if (!savedWorldMatchesRuntime(savedWorld)) return;
   const rows = savedWorld.tiles.map((row) => [...row].map((code) => codeToTile[code] ?? 'water'));
   if (rows.some((row) => row.length !== WORLD_W)) return;
+  const canPatchMask = scene.world.length === WORLD_H
+    && scene.terrainMask.length === TERRAIN_MASK_WIDTH * TERRAIN_MASK_HEIGHT;
+  const changedTiles: Array<[number, number]> = [];
+  if (canPatchMask) {
+    for (let y = 0; y < WORLD_H; y += 1) {
+      for (let x = 0; x < WORLD_W; x += 1) {
+        if (scene.world[y]?.[x] !== rows[y][x]) changedTiles.push([x, y]);
+      }
+    }
+  }
   scene.world = rows;
   scene.damage = Array.from({ length: WORLD_H }, () => Array.from({ length: WORLD_W }, () => 0));
   for (const [x, y, amount] of savedWorld.damage) {
     if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || x >= WORLD_W || y < 0 || y >= WORLD_H) continue;
     scene.damage[y][x] = Math.max(0, finiteNumber(amount, 0));
   }
-  rebuildTerrainMask(scene);
+  if (canPatchMask && changedTiles.length <= 640) {
+    for (const [x, y] of changedTiles) syncTerrainMaskTile(scene, x, y);
+  } else {
+    rebuildTerrainMask(scene);
+  }
   scene.environmentProps = [];
   scene.populateEnvironmentProps();
+}
+
+function savedWorldMatchesRuntime(savedWorld: SavedGame['world'] | undefined) {
+  return Boolean(
+    savedWorld
+    && savedWorld.width === WORLD_W
+    && savedWorld.height === WORLD_H
+    && savedWorld.tiles.length === WORLD_H
+    && savedWorld.tiles.every((row) => typeof row === 'string' && row.length === WORLD_W)
+  );
 }
 
 function applySavedPlayer(scene: DeepdiveScene, save: SavedGame) {

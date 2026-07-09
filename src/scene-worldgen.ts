@@ -7,81 +7,118 @@ import { rng } from './rng';
 import { fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,generateQuestBoard,generateTile,hash,isOreTile,oreEnvironmentAssetKey,scaledDepthPx,scaledEntity,terrainLookForBiome,veinRuleAt,veinRulesForBiome } from './helpers';
 import { fishBehaviorProfile,type FaunaBehaviorProfile } from './fauna-behavior';
 import type { DeepdiveScene } from './scene';
-import { ensureTerrainMask,findNearbyTerrainSurfaceAnchor,findTerrainSurfaceAnchorInBand,rebuildTerrainMask,sampleTerrainSurfaceAnchors,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskContactForAabb,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
+import { ensureTerrainMask,findNearbyTerrainSurfaceAnchor,findTerrainSurfaceAnchorInBand,rebuildTerrainMask,sampleTerrainSurfaceAnchors,syncTerrainMaskTile,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskContactForAabb,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
 import { markTerrainDirty,measurePerf } from './perf';
 
-export function generateWorld(this: DeepdiveScene, ) {
-	    this.world = [];
-	    this.damage = [];
-	    // Scene restarts reuse this instance; invalidate the previous biome's mask until the new world is fully carved.
-	    this.terrainMask = new Uint8Array();
-      this.legacySwimmerReachableWater = new Uint8Array();
-      this.legacySwimmerSpawnValidated = 0;
-      this.legacySwimmerSpawnFallbacks = 0;
-		    this.looseItems = [];
-	    this.environmentProps = [];
-	    this.articulatedCreatures = [];
-    this.bobbitBurrows = [];
-    this.encounterReservations = [];
-    this.sideTunnelPocketCandidates = [];
-    this.flora = [];
-    this.bobbits = [];
-    this.specialRooms = [];
-    this.nestEggs = [];
-    this.larvae = [];
-    state.sonarRevealed.clear();
-    state.sonarRevealRevision += 1;
-    state.sonarContacts = [];
-    state.sonarMapOpen = false;
-    state.sonarMapPanX = 0;
-    state.sonarMapPanY = 0;
-    state.sonarMapZoom = 1;
-    for (let y = 0; y < WORLD_H; y += 1) {
-      const row: Tile[] = [];
-      const damageRow: number[] = [];
-      for (let x = 0; x < WORLD_W; x += 1) {
-        row.push(generateTile(x, y));
-        damageRow.push(0);
-      }
-      this.world.push(row);
-      this.damage.push(damageRow);
-    }
+export function generateWorld(this: DeepdiveScene) {
+  this.generateWorldTerrain();
+  this.generateWorldTerrainMask();
+  this.generateWorldEnvironmentProps();
+  this.generateWorldFish();
+  this.generateWorldFlora();
+  this.generateWorldSpecialRooms();
+  this.generateWorldArticulated();
+  this.finishWorldGeneration();
+}
 
-    const center = Math.floor(WORLD_W / 2);
-    for (let y = 0; y < 12; y += 1) {
-      for (let x = center - 5; x <= center + 5; x += 1) {
-        this.setTile(x, y, 'water');
-      }
+export function generateWorldTerrain(this: DeepdiveScene) {
+  this.world = [];
+  this.damage = [];
+  // Scene restarts reuse this instance; invalidate the previous biome's mask until the new world is fully carved.
+  this.terrainMask = new Uint8Array();
+  this.legacySwimmerReachableWater = new Uint8Array();
+  this.legacySwimmerSpawnValidated = 0;
+  this.legacySwimmerSpawnFallbacks = 0;
+  this.looseItems = [];
+  this.environmentProps = [];
+  this.articulatedCreatures = [];
+  this.bobbitBurrows = [];
+  this.encounterReservations = [];
+  this.sideTunnelPocketCandidates = [];
+  this.flora = [];
+  this.bobbits = [];
+  this.specialRooms = [];
+  this.nestEggs = [];
+  this.larvae = [];
+  state.sonarRevealed.clear();
+  state.sonarRevealRevision += 1;
+  state.sonarContacts = [];
+  state.sonarMapOpen = false;
+  state.sonarMapPanX = 0;
+  state.sonarMapPanY = 0;
+  state.sonarMapZoom = 1;
+  for (let y = 0; y < WORLD_H; y += 1) {
+    const row: Tile[] = [];
+    const damageRow: number[] = [];
+    for (let x = 0; x < WORLD_W; x += 1) {
+      row.push(generateTile(x, y));
+      damageRow.push(0);
     }
-	    this.carveStarterCaverns(center);
-	    this.carveDeepTunnelNetwork(center);
-		    this.carveAnchorstoneStrata();
-		    this.injectSpecialRooms(center);
-	    this.smoothTerrainSilhouette();
-	    this.reserveBobbitBurrows();
-	    this.reserveSignatureEncounters();
-		    this.populateOreVeins();
-	    rebuildTerrainMask(this);
-		    this.populateEnvironmentProps();
+    this.world.push(row);
+    this.damage.push(damageRow);
+  }
 
-	    this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
-	    this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
-      this.flora.push(...this.makeStampFloraTargets());
-      this.flora.push(...this.makeBrushFloraTargets());
-	    this.populateSpecialRooms();
-	    this.populateArticulatedCreatures();
-	    this.populateBobbitArticulatedThreats();
-	    state.questBoard = generateQuestBoard(this.specialRooms.some((room) => room.kind === 'nest'));
-	      state.activeQuestId = '';
-	    state.forwardOutpost.active = false;
-	    state.forwardOutpost.x = 0;
-	    state.forwardOutpost.y = 0;
-	    state.forwardOutpost.depth = 0;
-	    state.forwardOutpost.charge = 0;
-	    state.forwardOutpost.floraSpecies = '';
-	    this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
-	    this.bobbits = [];
-	  }
+  const center = Math.floor(WORLD_W / 2);
+  for (let y = 0; y < 12; y += 1) {
+    for (let x = center - 5; x <= center + 5; x += 1) {
+      this.setTile(x, y, 'water');
+    }
+  }
+  this.carveStarterCaverns(center);
+  this.carveDeepTunnelNetwork(center);
+  this.carveAnchorstoneStrata();
+  this.injectSpecialRooms(center);
+  this.smoothTerrainSilhouette();
+  this.reserveBobbitBurrows();
+  this.reserveSignatureEncounters();
+  this.populateOreVeins();
+}
+
+export function generateWorldTerrainMask(this: DeepdiveScene) {
+  measurePerf(this, 'worldgen.terrainMask', () => rebuildTerrainMask(this), { biome: state.biome });
+}
+
+export function generateWorldEnvironmentProps(this: DeepdiveScene) {
+  measurePerf(this, 'worldgen.environmentProps', () => this.populateEnvironmentProps(), { biome: state.biome });
+}
+
+export function generateWorldFish(this: DeepdiveScene) {
+  measurePerf(this, 'worldgen.fish', () => {
+    this.fish = biomeFish[state.biome].flatMap((species) => this.makeSchool(species));
+  }, { biome: state.biome });
+}
+
+export function generateWorldFlora(this: DeepdiveScene) {
+  measurePerf(this, 'worldgen.flora', () => {
+    this.flora = biomeFlora[state.biome].flatMap((species) => this.makeFloraPatch(species));
+    this.flora.push(...this.makeStampFloraTargets());
+    this.flora.push(...this.makeBrushFloraTargets());
+  }, { biome: state.biome });
+}
+
+export function generateWorldSpecialRooms(this: DeepdiveScene) {
+  measurePerf(this, 'worldgen.specialRooms', () => this.populateSpecialRooms(), { biome: state.biome });
+}
+
+export function generateWorldArticulated(this: DeepdiveScene) {
+  measurePerf(this, 'worldgen.articulated', () => {
+    this.populateArticulatedCreatures();
+    this.populateBobbitArticulatedThreats();
+  }, { biome: state.biome });
+}
+
+export function finishWorldGeneration(this: DeepdiveScene) {
+  state.questBoard = generateQuestBoard(this.specialRooms.some((room) => room.kind === 'nest'));
+  state.activeQuestId = '';
+  state.forwardOutpost.active = false;
+  state.forwardOutpost.x = 0;
+  state.forwardOutpost.y = 0;
+  state.forwardOutpost.depth = 0;
+  state.forwardOutpost.charge = 0;
+  state.forwardOutpost.floraSpecies = '';
+  this.hazards = state.biome >= 2 ? this.makeVentFields() : [];
+  this.bobbits = [];
+}
 
 export function makeVentFields(this: DeepdiveScene, ): Hazard[] {
     const vents: Hazard[] = [];
@@ -1584,7 +1621,11 @@ function createRoomFloraSupport(scene: DeepdiveScene, room: SpecialRoom, salt: n
       scene.setTile(pick.x + ox, pick.y + 1, 'stone');
       scene.setTile(pick.x + ox, pick.y + 2, 'stone');
     }
-    rebuildTerrainMask(scene);
+    for (let oy = -1; oy <= 2; oy += 1) {
+      for (let ox = -1; ox <= 1; ox += 1) {
+        syncTerrainMaskTile(scene, pick.x + ox, pick.y + oy);
+      }
+    }
     return true;
   }
 

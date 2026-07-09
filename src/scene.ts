@@ -22,7 +22,7 @@ import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { createSubmarinePartSprites,ensureSubmarinePartTextures,setSubmarineDrillingFrameProvider } from './submarine-parts';
 import type { SubmarinePartSpriteMap } from './submarine-parts';
 import { ensureTerrainMask,syncTerrainMaskTile,terrainMaskContactForAabb,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
-import { createPerfTelemetry,markTerrainDirty,measurePerf,updatePerfHud } from './perf';
+import { createPerfTelemetry,markTerrainDirty,measurePerf,recordPerf,updatePerfHud } from './perf';
 import type { PerfTelemetry } from './perf';
 
 export class DeepdiveScene extends Phaser.Scene {
@@ -404,12 +404,105 @@ export class DeepdiveScene extends Phaser.Scene {
 
   finishBiomeGenerationTransition() {
     if (this.worldReady) return;
+    const startedAt = performance.now();
+    const restoreFromSavedWorld = saveLoadNs.hasPendingLoadWorld();
+    const steps = [
+      ...(restoreFromSavedWorld
+        ? [{
+          status: 'Restoring saved terrain...',
+          progress: 0.5,
+          run: () => measurePerf(this, 'saveLoad.restoreWorld', () => this.applyPendingLoadWorld(), { biome: state.biome }),
+        }]
+        : [
+          {
+            status: 'Carving routes and ore seams...',
+            progress: 0.42,
+            run: () => measurePerf(this, 'worldgen.terrainBase', () => this.generateWorldTerrain(), { biome: state.biome }),
+          },
+          {
+            status: 'Sculpting terrain collision...',
+            progress: 0.54,
+            run: () => this.generateWorldTerrainMask(),
+          },
+          {
+            status: 'Planting ledges and growth...',
+            progress: 0.62,
+            run: () => this.generateWorldEnvironmentProps(),
+          },
+        ]),
+      {
+        status: 'Placing fauna routes...',
+        progress: 0.72,
+        run: () => { this.fish = []; },
+      },
+      ...biomeFish[state.biome].map((species, speciesIndex, list) => ({
+        status: `Placing fauna routes ${speciesIndex + 1}/${list.length}...`,
+        progress: 0.72 + (speciesIndex / Math.max(1, list.length)) * 0.08,
+        run: () => measurePerf(this, 'worldgen.fishSpecies', () => {
+          this.fish.push(...this.makeSchool(species));
+        }, { biome: state.biome, species: species.species }),
+      })),
+      {
+        status: 'Anchoring flora fields...',
+        progress: 0.82,
+        run: () => { this.flora = []; },
+      },
+      ...biomeFlora[state.biome].map((species, speciesIndex, list) => ({
+        status: `Anchoring flora fields ${speciesIndex + 1}/${list.length}...`,
+        progress: 0.82 + (speciesIndex / Math.max(1, list.length)) * 0.05,
+        run: () => measurePerf(this, 'worldgen.floraSpecies', () => {
+          this.flora.push(...this.makeFloraPatch(species));
+        }, { biome: state.biome, species: species.species }),
+      })),
+      {
+        status: 'Anchoring authored flora...',
+        progress: 0.875,
+        run: () => measurePerf(this, 'worldgen.stampFlora', () => {
+          this.flora.push(...this.makeStampFloraTargets());
+        }, { biome: state.biome }),
+      },
+      {
+        status: 'Anchoring brush flora...',
+        progress: 0.895,
+        run: () => measurePerf(this, 'worldgen.brushFlora', () => {
+          this.flora.push(...this.makeBrushFloraTargets());
+        }, { biome: state.biome }),
+      },
+      {
+        status: 'Syncing landmarks and rooms...',
+        progress: 0.9,
+        run: () => this.generateWorldSpecialRooms(),
+      },
+      {
+        status: 'Waking articulated threats...',
+        progress: 0.96,
+        run: () => {
+          this.generateWorldArticulated();
+          this.finishWorldGeneration();
+          measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: restoreFromSavedWorld }), { biome: state.biome, worldApplied: restoreFromSavedWorld });
+        },
+      },
+    ];
+    this.runBiomeGenerationStep(steps, startedAt, 0);
+  }
+
+  runBiomeGenerationStep(
+    steps: Array<{ status: string; progress: number; run: () => void }>,
+    startedAt: number,
+    index: number,
+  ) {
+    if (this.worldReady) return;
+    const step = steps[index];
     state.biomeLoading.phase = 'generating';
-    state.biomeLoading.status = 'Carving routes and placing encounters...';
-    state.biomeLoading.progress = 0.42;
+    state.biomeLoading.status = step.status;
+    state.biomeLoading.progress = step.progress;
     renderHud();
-    measurePerf(this, 'worldgen.total', () => this.generateWorld(), { biome: state.biome });
-    this.applyPendingLoad();
+    step.run();
+    if (index < steps.length - 1) {
+      this.time.delayedCall(0, () => this.runBiomeGenerationStep(steps, startedAt, index + 1));
+      return;
+    }
+    recordPerf(this, 'worldgen.total', performance.now() - startedAt, { biome: state.biome, staged: true });
     this.worldReady = true;
     state.biomeLoading.phase = 'complete';
     state.biomeLoading.status = 'Barge systems synchronized.';
@@ -1289,6 +1382,14 @@ export interface DeepdiveScene {
 Object.assign(DeepdiveScene.prototype, worldgenNs);
 export interface DeepdiveScene {
   generateWorld: OmitThisParameter<typeof worldgenNs.generateWorld>;
+  generateWorldTerrain: OmitThisParameter<typeof worldgenNs.generateWorldTerrain>;
+  generateWorldTerrainMask: OmitThisParameter<typeof worldgenNs.generateWorldTerrainMask>;
+  generateWorldEnvironmentProps: OmitThisParameter<typeof worldgenNs.generateWorldEnvironmentProps>;
+  generateWorldFish: OmitThisParameter<typeof worldgenNs.generateWorldFish>;
+  generateWorldFlora: OmitThisParameter<typeof worldgenNs.generateWorldFlora>;
+  generateWorldSpecialRooms: OmitThisParameter<typeof worldgenNs.generateWorldSpecialRooms>;
+  generateWorldArticulated: OmitThisParameter<typeof worldgenNs.generateWorldArticulated>;
+  finishWorldGeneration: OmitThisParameter<typeof worldgenNs.finishWorldGeneration>;
   populateEnvironmentProps: OmitThisParameter<typeof worldgenNs.populateEnvironmentProps>;
   refreshEnvironmentPropsAround: OmitThisParameter<typeof worldgenNs.refreshEnvironmentPropsAround>;
   processEnvironmentPropRefreshQueue: OmitThisParameter<typeof worldgenNs.processEnvironmentPropRefreshQueue>;
@@ -1539,6 +1640,7 @@ export interface DeepdiveScene {
   clearSavedGame: OmitThisParameter<typeof saveLoadNs.clearSavedGame>;
   writeCorruptSaveForSmoke: OmitThisParameter<typeof saveLoadNs.writeCorruptSaveForSmoke>;
   applyPendingLoad: OmitThisParameter<typeof saveLoadNs.applyPendingLoad>;
+  applyPendingLoadWorld: OmitThisParameter<typeof saveLoadNs.applyPendingLoadWorld>;
 }
 
 Object.assign(DeepdiveScene.prototype, sonarNs);

@@ -2,6 +2,12 @@ import { spawn } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
+import {
+  assertSteadyGameplayCadence,
+  finishCadenceProbe,
+  installBrowserPerfObservers,
+  startCadenceProbe,
+} from './perf_assertions.mjs';
 
 const outDir = process.env.PERF_GUARDRAIL_OUT_DIR ?? '/home/orlovboros/projects/manager/runs';
 const reportPath = process.env.PERF_GUARDRAIL_REPORT ?? `${outDir}/water9-perf-guardrails-smoke-2026-06-28.json`;
@@ -66,6 +72,7 @@ if (server) await waitForServer(baseUrl);
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+await installBrowserPerfObservers(page);
 
 page.on('pageerror', (error) => errors.push({ type: 'pageerror', text: error.message }));
 page.on('console', (message) => {
@@ -86,8 +93,11 @@ try {
   const startRefresh = before?.perf?.propRefresh?.processed ?? 0;
   const startFullScans = before?.perf?.propRefresh?.fullScans ?? 0;
 
+  await command(page, 'resetPerfFrameBuffer');
+  await startCadenceProbe(page, 'perf-guardrails-mining');
   await command(page, 'terrainMineAt', { repeats: 10 });
-  for (let i = 0; i < 8; i += 1) await page.waitForTimeout(40);
+  await page.waitForTimeout(4200);
+  const cadenceProbe = await finishCadenceProbe(page);
   const mined = await snapshot(page);
   const guardrail = await command(page, 'perfGuardrailReview');
   const after = await snapshot(page);
@@ -108,12 +118,21 @@ try {
   if (!guardrail?.articulatedContact?.count) fail('articulated mask-aware terrain contact did not register');
   if (!guardrail?.subCollision) fail('submarine mask-aware terrain collision did not register');
   if ((guardrail?.perf?.terrainContactSamples ?? 0) <= 0) fail('shared terrain contact sample counter did not increase');
+  assertSteadyGameplayCadence({
+    label: 'perf guardrails mining',
+    independentRaf: cadenceProbe?.independentRaf ?? null,
+    perf: after?.perf,
+    longTasks: cadenceProbe?.longTasks ?? [],
+    errors,
+  });
 
   report = {
     ok: errors.length === 0,
     processedLocalRefreshes: processed,
     fullScansDuringRepeatedMining: fullScans,
     guardrail,
+    cadenceProbe: cadenceProbe ? { label: cadenceProbe.label, durationMs: cadenceProbe.durationMs } : null,
+    independentRaf: cadenceProbe?.independentRaf ?? null,
     minedPerf: mined?.perf ?? null,
     finalPerf: after?.perf ?? null,
   };
