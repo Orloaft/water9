@@ -21,7 +21,34 @@ export function generateWorld(this: DeepdiveScene) {
   this.finishWorldGeneration();
 }
 
+export function resetGeneratedWorldEntities(this: DeepdiveScene) {
+  this.fish.forEach((fish) => fish.sprite?.setVisible(false));
+  this.flora.forEach((flora) => flora.sprite?.setVisible(false));
+  this.hazards.forEach((hazard) => hazard.sprite?.setVisible(false));
+  this.bobbits.forEach((bobbit) => bobbit.sprite?.setVisible(false));
+  this.nestEggs.forEach((egg) => egg.sprite?.setVisible(false));
+  this.larvae.forEach((larva) => larva.sprite?.setVisible(false));
+  this.articulatedCreatures.forEach((creature) => {
+    creature.parts.forEach((part) => part.sprite?.setVisible(false));
+    creature.socketOverlays.forEach((overlay) => overlay.sprite?.setVisible(false));
+  });
+  this.floatingTexts.forEach((entry) => entry.label.destroy());
+  this.fish = [];
+  this.flora = [];
+  this.hazards = [];
+  this.bobbits = [];
+  this.nestEggs = [];
+  this.larvae = [];
+  this.articulatedCreatures = [];
+  this.looseItems = [];
+  this.floatingTexts = [];
+  this.flares = [];
+  this.sonarPings = [];
+  this.terrainBreakEffects = [];
+}
+
 export function generateWorldTerrain(this: DeepdiveScene) {
+  this.resetGeneratedWorldEntities();
   this.world = [];
   this.damage = [];
   // Scene restarts reuse this instance; invalidate the previous biome's mask until the new world is fully carved.
@@ -29,17 +56,11 @@ export function generateWorldTerrain(this: DeepdiveScene) {
   this.legacySwimmerReachableWater = new Uint8Array();
   this.legacySwimmerSpawnValidated = 0;
   this.legacySwimmerSpawnFallbacks = 0;
-  this.looseItems = [];
   this.environmentProps = [];
-  this.articulatedCreatures = [];
   this.bobbitBurrows = [];
   this.encounterReservations = [];
   this.sideTunnelPocketCandidates = [];
-  this.flora = [];
-  this.bobbits = [];
   this.specialRooms = [];
-  this.nestEggs = [];
-  this.larvae = [];
   state.sonarRevealed.clear();
   state.sonarRevealRevision += 1;
   state.sonarContacts = [];
@@ -998,10 +1019,15 @@ export function makeSchoolSlice(this: DeepdiveScene, species: FishSpecies, start
     const profile = fishBehaviorProfile(species);
     const start = Math.max(0, Math.floor(startIndex));
     const end = Math.min(species.count, Math.max(start, Math.floor(endIndex)));
+    const minY = scaledDepthPx(species.minY);
+    const maxY = scaledDepthPx(species.maxY);
+    const surfaceAnchors = profile.behaviorClass === 'legacySwimmer'
+      ? []
+      : faunaSurfaceAnchorsForSpecies(this, minY, maxY, species);
     for (let i = start; i < end; i += 1) {
       const point = profile.behaviorClass === 'legacySwimmer'
-        ? this.findLegacySwimmerOpenWaterInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), species)
-        : this.findFaunaAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), i, species);
+        ? this.findLegacySwimmerOpenWaterInBand(minY, maxY, species)
+        : findFaunaAnchorInBandFromAnchors(this, minY, maxY, i, species, surfaceAnchors);
       const faunaPoint = point as { x: number; y: number; surface?: TerrainSurfaceAnchor; rootOffsetX?: number; rootOffsetY?: number; navSpawnValidated?: boolean; navSpawnFallback?: boolean };
       const angle = Math.random() * Math.PI * 2;
       const assetKey = fishAssetKey(species);
@@ -1091,8 +1117,11 @@ export function makeFloraPatchSlice(this: DeepdiveScene, species: FloraSpecies, 
     const coveredPropTiles = new Set<string>();
     const start = Math.max(0, Math.floor(startIndex));
     const end = Math.min(species.count, Math.max(start, Math.floor(endIndex)));
+    const minY = scaledDepthPx(species.minY);
+    const maxY = scaledDepthPx(species.maxY);
+    const anchors = floraSurfaceAnchorsForSpecies(this, minY, maxY, species);
     for (let i = start; i < end; i += 1) {
-      const point = this.findFloraAnchorInBand(scaledDepthPx(species.minY), scaledDepthPx(species.maxY), i, species);
+      const point = pickSurfaceAnchor(anchors, i, 9109) ?? this.findFloraAnchorInBand(minY, maxY, i, species);
       if (!point) continue;
       const offset = floraSurfaceOffset(point);
       const x = point.rootX + offset.x;
@@ -1196,6 +1225,7 @@ export function makeStampFloraTargets(this: DeepdiveScene): Flora[] {
       limit: 2200,
     });
     if (!anchors.length) return [];
+    const anchorBuckets = bucketTerrainSurfaceAnchors(anchors);
 
     const targets: Flora[] = [];
     const convertedPropIds = new Set<string>();
@@ -1205,7 +1235,7 @@ export function makeStampFloraTargets(this: DeepdiveScene): Flora[] {
       if (!spec) continue;
       if (targets.some((flora) => Phaser.Math.Distance.Between(flora.x, flora.y, prop.x, prop.y) < STAMP_FLORA_MIN_SPACING)) continue;
       if (this.flora.some((flora) => !flora.dead && Phaser.Math.Distance.Between(flora.x, flora.y, prop.x, prop.y) < STAMP_FLORA_MIN_SPACING * 0.72)) continue;
-      const anchor = nearestStampSurfaceAnchor(prop, anchors);
+      const anchor = nearestStampSurfaceAnchor(prop, anchorBuckets);
       if (!anchor) continue;
       const x = anchor.rootX + anchor.normalX * 4 + anchor.tangentX * Phaser.Math.Clamp(prop.x - anchor.rootX, -7, 7);
       const y = anchor.rootY + anchor.normalY * 4 + anchor.tangentY * Phaser.Math.Clamp(prop.y - anchor.rootY, -7, 7);
@@ -1249,11 +1279,39 @@ export function makeStampFloraTargets(this: DeepdiveScene): Flora[] {
     return targets;
   }
 
-function nearestStampSurfaceAnchor(prop: EnvironmentProp, anchors: TerrainSurfaceAnchor[]) {
+type TerrainSurfaceAnchorBuckets = Map<string, TerrainSurfaceAnchor[]>;
+
+function bucketTerrainSurfaceAnchors(anchors: TerrainSurfaceAnchor[]) {
+    const buckets: TerrainSurfaceAnchorBuckets = new Map();
+    for (const anchor of anchors) {
+      const key = terrainAnchorBucketKey(anchor.tileX, anchor.tileY);
+      const bucket = buckets.get(key);
+      if (bucket) bucket.push(anchor);
+      else buckets.set(key, [anchor]);
+    }
+    return buckets;
+  }
+
+function nearbyTerrainSurfaceAnchors(buckets: TerrainSurfaceAnchorBuckets, tileX: number, tileY: number, radiusTiles = 3) {
+    const anchors: TerrainSurfaceAnchor[] = [];
+    for (let y = tileY - radiusTiles; y <= tileY + radiusTiles; y += 1) {
+      for (let x = tileX - radiusTiles; x <= tileX + radiusTiles; x += 1) {
+        const bucket = buckets.get(terrainAnchorBucketKey(x, y));
+        if (bucket) anchors.push(...bucket);
+      }
+    }
+    return anchors;
+  }
+
+function terrainAnchorBucketKey(tileX: number, tileY: number) {
+    return `${tileX}:${tileY}`;
+  }
+
+function nearestStampSurfaceAnchor(prop: EnvironmentProp, anchorBuckets: TerrainSurfaceAnchorBuckets) {
     const preferred = stampPropPreferredAnchor(prop);
     let best: TerrainSurfaceAnchor | null = null;
     let bestScore = Number.POSITIVE_INFINITY;
-    for (const anchor of anchors) {
+    for (const anchor of nearbyTerrainSurfaceAnchors(anchorBuckets, prop.tileX, prop.tileY, 3)) {
       const dx = anchor.rootX - prop.x;
       const dy = anchor.rootY - prop.y;
       if (Math.abs(dx) > TILE * 2.4 || Math.abs(dy) > TILE * 2.4) continue;
@@ -1332,6 +1390,7 @@ export function makeBrushFloraTargets(this: DeepdiveScene): Flora[] {
       limit: 6400,
     });
     if (!anchors.length) return [];
+    const anchorBuckets = bucketTerrainSurfaceAnchors(anchors);
 
     const targets: Flora[] = [];
     for (const placement of placements) {
@@ -1340,7 +1399,7 @@ export function makeBrushFloraTargets(this: DeepdiveScene): Flora[] {
       if (!spec) continue;
       if (targets.some((flora) => Phaser.Math.Distance.Between(flora.x, flora.y, placement.x, placement.y) < BRUSH_FLORA_MIN_SPACING)) continue;
       if (this.flora.some((flora) => !flora.dead && Phaser.Math.Distance.Between(flora.x, flora.y, placement.x, placement.y) < BRUSH_FLORA_MIN_SPACING * 0.72)) continue;
-      const anchor = nearestBrushSurfaceAnchor(placement, anchors);
+      const anchor = nearestBrushSurfaceAnchor(placement, anchorBuckets);
       if (!anchor) continue;
       const lateral = Phaser.Math.Clamp((placement.x - anchor.rootX) * anchor.tangentX + (placement.y - anchor.rootY) * anchor.tangentY, -8, 8);
       const x = anchor.rootX + anchor.normalX * 4 + anchor.tangentX * lateral;
@@ -1450,11 +1509,11 @@ function brushFloraCandidateScore(placement: BrushFloraPlacement) {
     return hash(placement.tileX * 313 + placement.variant * 17, placement.tileY * 317 + placement.anchor.length, rng.seed + 13041);
   }
 
-function nearestBrushSurfaceAnchor(placement: BrushFloraPlacement, anchors: TerrainSurfaceAnchor[]) {
+function nearestBrushSurfaceAnchor(placement: BrushFloraPlacement, anchorBuckets: TerrainSurfaceAnchorBuckets) {
     const preferred = brushPreferredSurfaceAnchor(placement.anchor);
     let best: TerrainSurfaceAnchor | null = null;
     let bestScore = Number.POSITIVE_INFINITY;
-    for (const anchor of anchors) {
+    for (const anchor of nearbyTerrainSurfaceAnchors(anchorBuckets, placement.tileX, placement.tileY, 3)) {
       const dx = anchor.rootX - placement.x;
       const dy = anchor.rootY - placement.y;
       if (Math.abs(dx) > TILE * 2.35 || Math.abs(dy) > TILE * 2.35) continue;
@@ -1763,6 +1822,27 @@ export function findFloraAnchorInBand(this: DeepdiveScene, minY: number, maxY: n
     return findTerrainSurfaceAnchorInBand(this, minY, maxY, salt, prefer);
   }
 
+function floraSurfaceAnchorsForSpecies(scene: DeepdiveScene, minY: number, maxY: number, species: FloraSpecies) {
+    const prefer = floraSurfacePreferences(species);
+    const primary = sampleTerrainSurfaceAnchors(scene, {
+      minY,
+      maxY,
+      salt: species.species.length * 97 + species.count,
+      prefer,
+      limit: Math.max(80, species.count * 18),
+    });
+    if (primary.length) return primary;
+    return sampleTerrainSurfaceAnchors(scene, {
+      minY: Math.max(TILE * 4, minY - TILE * 10),
+      maxY: Math.min(WORLD_H * TILE - TILE * 2, maxY + TILE * 10),
+      salt: species.species.length * 131 + species.count,
+      prefer,
+      minSupport: 9,
+      minClearance: 2,
+      limit: Math.max(80, species.count * 18),
+    });
+  }
+
 export function findFaunaAnchorInBand(this: DeepdiveScene, minY: number, maxY: number, salt = 0, species: FishSpecies): { x: number; y: number; surface?: TerrainSurfaceAnchor; rootOffsetX: number; rootOffsetY: number } {
     const profile = fishBehaviorProfile(species);
     const strictCandidates = sampleTerrainSurfaceAnchors(this, {
@@ -1787,6 +1867,59 @@ export function findFaunaAnchorInBand(this: DeepdiveScene, minY: number, maxY: n
       rootOffsetX: offset.rootOffset,
       rootOffsetY: 0,
     };
+  }
+
+function faunaSurfaceAnchorsForSpecies(scene: DeepdiveScene, minY: number, maxY: number, species: FishSpecies) {
+    const profile = fishBehaviorProfile(species);
+    const limit = Math.max(80, species.count * 18);
+    const primary = sampleTerrainSurfaceAnchors(scene, {
+      minY,
+      maxY,
+      salt: species.species.length * 109 + species.count,
+      prefer: profile.preferredAnchors,
+      limit,
+    }).filter((anchor) => profile.preferredAnchors.includes(anchor.anchor));
+    if (primary.length) return primary;
+    return sampleTerrainSurfaceAnchors(scene, {
+      minY: Math.max(TILE * 4, minY - TILE * 10),
+      maxY: Math.min(WORLD_H * TILE - TILE * 2, maxY + TILE * 10),
+      salt: species.species.length * 151 + species.count,
+      prefer: profile.preferredAnchors,
+      minSupport: 9,
+      minClearance: 2,
+      limit,
+    });
+  }
+
+function findFaunaAnchorInBandFromAnchors(
+    scene: DeepdiveScene,
+    minY: number,
+    maxY: number,
+    salt: number,
+    species: FishSpecies,
+    anchors: TerrainSurfaceAnchor[],
+  ): { x: number; y: number; surface?: TerrainSurfaceAnchor; rootOffsetX: number; rootOffsetY: number } {
+    const profile = fishBehaviorProfile(species);
+    const surface = pickSurfaceAnchor(anchors, salt, 9217)
+      ?? findTerrainSurfaceAnchorInBand(scene, minY, maxY, salt + 7301, profile.preferredAnchors);
+    if (!surface) {
+      const fallback = scene.findOpenWaterInBand(minY, maxY);
+      return { x: fallback.x, y: fallback.y, rootOffsetX: 0, rootOffsetY: 0 };
+    }
+    const offset = faunaSurfaceOffset(surface, profile, salt, species.radius);
+    return {
+      x: surface.rootX + offset.x,
+      y: surface.rootY + offset.y,
+      surface,
+      rootOffsetX: offset.rootOffset,
+      rootOffsetY: 0,
+    };
+  }
+
+function pickSurfaceAnchor(anchors: TerrainSurfaceAnchor[], salt: number, offset: number) {
+    if (!anchors.length) return null;
+    const index = Math.floor(hash(salt * 379 + offset, anchors.length * 383, rng.seed + offset) * anchors.length) % anchors.length;
+    return anchors[index] ?? null;
   }
 
 function faunaSurfaceOffset(anchor: TerrainSurfaceAnchor, profile: FaunaBehaviorProfile, salt: number, speciesRadius: number) {

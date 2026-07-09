@@ -359,6 +359,13 @@ export type TerrainSurfaceAnchorOptions = {
   limit?: number;
 };
 
+type SurfaceAnchorCache = {
+  revision: number;
+  candidates: Map<string, TerrainSurfaceAnchor[]>;
+};
+
+const surfaceAnchorCaches = new WeakMap<DeepdiveScene, SurfaceAnchorCache>();
+
 export function sampleTerrainSurfaceAnchors(scene: DeepdiveScene, options: TerrainSurfaceAnchorOptions) {
   if (!ensureTerrainMask(scene)) return [];
   const minSy = Math.max(1, Math.floor(options.minY / TERRAIN_MASK_CELL));
@@ -367,21 +374,43 @@ export function sampleTerrainSurfaceAnchors(scene: DeepdiveScene, options: Terra
   const minClearance = options.minClearance ?? 3;
   const preferred = new Set(options.prefer ?? []);
   const salt = options.salt ?? 0;
-  const anchors: Array<TerrainSurfaceAnchor & { score: number }> = [];
+  const candidates = cachedTerrainSurfaceAnchorCandidates(scene, minSy, maxSy, minSupport, minClearance);
+  const anchors = candidates.map((anchor) => {
+    const preference = preferred.size === 0 || preferred.has(anchor.anchor) ? 0.22 : 0;
+    const depthBias = 1 - Math.abs(((anchor.rootY - options.minY) / Math.max(1, options.maxY - options.minY)) - 0.5) * 0.12;
+    const score = hash(anchor.maskSx * 431 + salt * 17, anchor.maskSy * 439 - salt * 23, rng.seed + 9029) + preference + anchor.clearance * 0.012 + depthBias * 0.03;
+    return { anchor, score };
+  });
+  anchors.sort((a, b) => b.score - a.score);
+  return anchors.slice(0, options.limit ?? anchors.length).map((entry) => entry.anchor);
+}
+
+function cachedTerrainSurfaceAnchorCandidates(
+  scene: DeepdiveScene,
+  minSy: number,
+  maxSy: number,
+  minSupport: number,
+  minClearance: number,
+) {
+  let cache = surfaceAnchorCaches.get(scene);
+  if (!cache || cache.revision !== scene.terrainRevision) {
+    cache = { revision: scene.terrainRevision, candidates: new Map() };
+    surfaceAnchorCaches.set(scene, cache);
+  }
+  const key = `${minSy}:${maxSy}:${minSupport}:${minClearance}`;
+  const cached = cache.candidates.get(key);
+  if (cached) return cached;
+  const anchors: TerrainSurfaceAnchor[] = [];
   for (let sy = minSy; sy <= maxSy; sy += 1) {
     for (let sx = 2; sx < TERRAIN_MASK_WIDTH - 2; sx += 1) {
       const anchor = terrainSurfaceAnchorAt(scene, sx, sy);
       if (!anchor) continue;
       if (anchor.support < minSupport || anchor.clearance < minClearance) continue;
-      const preference = preferred.size === 0 || preferred.has(anchor.anchor) ? 0.22 : 0;
-      const depthBias = 1 - Math.abs(((anchor.rootY - options.minY) / Math.max(1, options.maxY - options.minY)) - 0.5) * 0.12;
-      const score = hash(sx * 431 + salt * 17, sy * 439 - salt * 23, rng.seed + 9029) + preference + anchor.clearance * 0.012 + depthBias * 0.03;
-      anchors.push({ ...anchor, score });
+      anchors.push(anchor);
     }
   }
-  anchors.sort((a, b) => b.score - a.score);
-  const limited = anchors.slice(0, options.limit ?? anchors.length);
-  return limited.map(({ score: _score, ...anchor }) => anchor);
+  cache.candidates.set(key, anchors);
+  return anchors;
 }
 
 export function findTerrainSurfaceAnchorInBand(scene: DeepdiveScene, minY: number, maxY: number, salt = 0, prefer?: TerrainSurfaceAnchor['anchor'][]) {

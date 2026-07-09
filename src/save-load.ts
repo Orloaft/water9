@@ -168,7 +168,11 @@ export function loadGame(this: DeepdiveScene) {
     startedAt: performance.now(),
     completedAt: 0,
   };
-  this.scene.restart();
+  if (this.worldReady && savedWorldMatchesRuntime(parsed.save.world)) {
+    this.beginBiomeGenerationTransition(0);
+  } else {
+    this.scene.restart();
+  }
   return { ok: true, version: parsed.save.version, savedAt: parsed.save.savedAt, loadId: requestId };
 }
 

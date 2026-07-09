@@ -376,7 +376,7 @@ export class DeepdiveScene extends Phaser.Scene {
     });
   }
 
-  beginBiomeGenerationTransition() {
+  beginBiomeGenerationTransition(delayMs = 90) {
     this.worldReady = false;
     state.biomeLoading = {
       active: true,
@@ -389,7 +389,7 @@ export class DeepdiveScene extends Phaser.Scene {
       completedAt: 0,
     };
     renderHud();
-    this.time.delayedCall(90, () => this.finishBiomeGenerationTransition());
+    this.time.delayedCall(delayMs, () => this.finishBiomeGenerationTransition());
   }
 
   updateBiomeGenerationLoading() {
@@ -407,14 +407,20 @@ export class DeepdiveScene extends Phaser.Scene {
     if (this.worldReady) return;
     const startedAt = performance.now();
     const restoreFromSavedWorld = saveLoadNs.hasPendingLoadWorld();
-    const steps = [
-      ...(restoreFromSavedWorld
-        ? [{
+    const steps = restoreFromSavedWorld
+      ? [
+        {
           status: 'Restoring saved terrain...',
           progress: 0.5,
           run: () => measurePerf(this, 'saveLoad.restoreWorld', () => this.applyPendingLoadWorld(), { biome: state.biome }),
-        }]
-        : [
+        },
+        {
+          status: 'Restoring diver position...',
+          progress: 0.96,
+          run: () => measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: true }), { biome: state.biome, worldApplied: true }),
+        },
+      ]
+      : [
           {
             status: 'Carving routes and ore seams...',
             progress: 0.42,
@@ -430,60 +436,59 @@ export class DeepdiveScene extends Phaser.Scene {
             progress: 0.62,
             run: () => this.generateWorldEnvironmentProps(),
           },
-        ]),
-      {
-        status: 'Placing fauna routes...',
-        progress: 0.72,
-        run: () => { this.fish = []; },
-      },
-      ...biomeFish[state.biome].map((species, speciesIndex, list) => ({
-        status: `Placing fauna routes ${speciesIndex + 1}/${list.length}...`,
-        progress: 0.72 + (speciesIndex / Math.max(1, list.length)) * 0.08,
-        run: () => measurePerf(this, 'worldgen.fishSpecies', () => {
-          this.fish.push(...this.makeSchool(species));
-        }, { biome: state.biome, species: species.species }),
-      })),
-      {
-        status: 'Anchoring flora fields...',
-        progress: 0.82,
-        run: () => { this.flora = []; },
-      },
-      ...biomeFlora[state.biome].map((species, speciesIndex, list) => ({
-        status: `Anchoring flora fields ${speciesIndex + 1}/${list.length}...`,
-        progress: 0.82 + (speciesIndex / Math.max(1, list.length)) * 0.05,
-        run: () => measurePerf(this, 'worldgen.floraSpecies', () => {
-          this.flora.push(...this.makeFloraPatch(species));
-        }, { biome: state.biome, species: species.species }),
-      })),
-      {
-        status: 'Anchoring authored flora...',
-        progress: 0.875,
-        run: () => measurePerf(this, 'worldgen.stampFlora', () => {
-          this.flora.push(...this.makeStampFloraTargets());
-        }, { biome: state.biome }),
-      },
-      {
-        status: 'Anchoring brush flora...',
-        progress: 0.895,
-        run: () => measurePerf(this, 'worldgen.brushFlora', () => {
-          this.flora.push(...this.makeBrushFloraTargets());
-        }, { biome: state.biome }),
-      },
-      {
-        status: 'Syncing landmarks and rooms...',
-        progress: 0.9,
-        run: () => this.generateWorldSpecialRooms(),
-      },
-      {
-        status: 'Waking articulated threats...',
-        progress: 0.96,
-        run: () => {
-          this.generateWorldArticulated();
-          this.finishWorldGeneration();
-          measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: restoreFromSavedWorld }), { biome: state.biome, worldApplied: restoreFromSavedWorld });
-        },
-      },
-    ];
+          {
+            status: 'Placing fauna routes...',
+            progress: 0.72,
+            run: () => { this.fish = []; },
+          },
+          ...biomeFish[state.biome].map((species, speciesIndex, list) => ({
+            status: `Placing fauna routes ${speciesIndex + 1}/${list.length}...`,
+            progress: 0.72 + (speciesIndex / Math.max(1, list.length)) * 0.08,
+            run: () => measurePerf(this, 'worldgen.fishSpecies', () => {
+              this.fish.push(...this.makeSchool(species));
+            }, { biome: state.biome, species: species.species }),
+          })),
+          {
+            status: 'Anchoring flora fields...',
+            progress: 0.82,
+            run: () => { this.flora = []; },
+          },
+          ...biomeFlora[state.biome].map((species, speciesIndex, list) => ({
+            status: `Anchoring flora fields ${speciesIndex + 1}/${list.length}...`,
+            progress: 0.82 + (speciesIndex / Math.max(1, list.length)) * 0.05,
+            run: () => measurePerf(this, 'worldgen.floraSpecies', () => {
+              this.flora.push(...this.makeFloraPatch(species));
+            }, { biome: state.biome, species: species.species }),
+          })),
+          {
+            status: 'Anchoring authored flora...',
+            progress: 0.875,
+            run: () => measurePerf(this, 'worldgen.stampFlora', () => {
+              this.flora.push(...this.makeStampFloraTargets());
+            }, { biome: state.biome }),
+          },
+          {
+            status: 'Anchoring brush flora...',
+            progress: 0.895,
+            run: () => measurePerf(this, 'worldgen.brushFlora', () => {
+              this.flora.push(...this.makeBrushFloraTargets());
+            }, { biome: state.biome }),
+          },
+          {
+            status: 'Syncing landmarks and rooms...',
+            progress: 0.9,
+            run: () => this.generateWorldSpecialRooms(),
+          },
+          {
+            status: 'Waking articulated threats...',
+            progress: 0.96,
+            run: () => {
+              this.generateWorldArticulated();
+              this.finishWorldGeneration();
+              measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: false }), { biome: state.biome, worldApplied: false });
+            },
+          },
+        ];
     this.runBiomeGenerationStep(steps, startedAt, 0);
   }
 
@@ -1383,6 +1388,7 @@ export interface DeepdiveScene {
 Object.assign(DeepdiveScene.prototype, worldgenNs);
 export interface DeepdiveScene {
   generateWorld: OmitThisParameter<typeof worldgenNs.generateWorld>;
+  resetGeneratedWorldEntities: OmitThisParameter<typeof worldgenNs.resetGeneratedWorldEntities>;
   generateWorldTerrain: OmitThisParameter<typeof worldgenNs.generateWorldTerrain>;
   generateWorldTerrainMask: OmitThisParameter<typeof worldgenNs.generateWorldTerrainMask>;
   generateWorldEnvironmentProps: OmitThisParameter<typeof worldgenNs.generateWorldEnvironmentProps>;
