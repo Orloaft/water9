@@ -1,0 +1,73 @@
+{
+  "oldGif": "/mnt/nxt-dev/water9/runs/water9-blue-ring-octopus-pingpong-preview-2026-07-09/blue-ring-octopus-pingpong-8fps.gif",
+  "sizeBytes": 127390,
+  "header": "GIF89a",
+  "logicalScreen": [
+    380,
+    240
+  ],
+  "globalColorTableBytes": 384,
+  "eventsUntilFailure": [
+    {
+      "type": "extension_ff",
+      "offset": 397,
+      "blockSizes": [
+        11,
+        3
+      ]
+    },
+    {
+      "type": "graphicControlExtension",
+      "offset": 416,
+      "delayCentiseconds": 12,
+      "packed": 8
+    },
+    {
+      "type": "image",
+      "frame": 0,
+      "offset": 424,
+      "xywh": [
+        0,
+        0,
+        380,
+        240
+      ],
+      "packed": 0,
+      "localColorTableBytes": 0,
+      "lzwMinimumCodeSize": 8,
+      "dataBlocks": 59,
+      "imageDataBytes": 14883,
+      "validLzwMinimumCodeSize": true
+    },
+    {
+      "type": "graphicControlExtension",
+      "offset": 15378,
+      "delayCentiseconds": 12,
+      "packed": 8
+    },
+    {
+      "type": "image",
+      "frame": 1,
+      "offset": 15386,
+      "xywh": [
+        0,
+        0,
+        380,
+        240
+      ],
+      "packed": 134,
+      "localColorTableBytes": 384,
+      "lzwMinimumCodeSize": 0,
+      "dataBlocks": 97,
+      "imageDataBytes": 13188,
+      "validLzwMinimumCodeSize": false
+    },
+    {
+      "type": "unknownByte",
+      "offset": 29067,
+      "byte": 0,
+      "framesSeen": 2
+    }
+  ],
+  "rootCause": "old GIF stream is structurally corrupt after the first image: the second image descriptor advertises a local color table, then the next byte is LZW minimum code size 0, which is invalid for GIF image data. ffmpeg therefore emits LZW init failed and decodes only the first frame."
+}

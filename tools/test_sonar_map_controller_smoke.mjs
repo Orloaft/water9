@@ -185,6 +185,12 @@ try {
   await setGamepad(page);
   await page.waitForTimeout(240);
   const afterSonar = await snapshot(page);
+  if (afterSonar?.ui?.sonarMapOpen) {
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(120);
+    await page.keyboard.press('KeyP');
+    await page.waitForTimeout(120);
+  }
 
   await command(page, 'teleportToFlora');
   await page.waitForTimeout(200);
@@ -192,12 +198,18 @@ try {
   await holdButton(page, 2, 1700);
   const afterScan = await snapshot(page);
 
+  await page.keyboard.press('Digit1');
+  await page.waitForTimeout(120);
   const beforeMine = await snapshot(page);
   await setGamepad(page, { buttons: [{ index: 7, value: 1, pressed: false }] });
   await page.waitForTimeout(520);
   await setGamepad(page);
   await page.waitForTimeout(180);
   const afterMine = await snapshot(page);
+
+  await page.keyboard.press('Digit3');
+  await page.waitForTimeout(120);
+  const sonarToolSelected = await snapshot(page);
 
   await tapButton(page, 9);
   await page.locator('.pause-menu.is-open').waitFor({ timeout: 5000 });
@@ -270,6 +282,7 @@ try {
   if (Math.abs((afterMove?.player?.x ?? 0) - (beforeMove?.player?.x ?? 0)) < 8) fail('left stick did not move the diver');
   if ((afterMove?.state?.sonarRevealed ?? 0) <= (beforeMove?.state?.sonarRevealed ?? 0)) fail('passive discovery did not reveal additional sonar cells');
   if ((afterSonar?.state?.sonarRevealed ?? 0) <= (beforeSonar?.state?.sonarRevealed ?? 0)) fail('left trigger analog value did not fire sonar');
+  if (!afterSonar?.ui?.sonarMapOpen || afterSonar?.state?.selectedTool !== 'sonar') fail('sonar use did not equip/open the sonar chart');
   if ((afterScan?.state?.credits ?? 0) <= (beforeScan?.state?.credits ?? 0) && !/Cataloged/.test(afterScan?.ui?.status ?? '')) fail('X button did not scan nearby life');
   if ((afterMine?.ui?.floatingTextCount ?? 0) <= (beforeMine?.ui?.floatingTextCount ?? 0) && afterMine?.ui?.status === beforeMine?.ui?.status) fail('right trigger analog value did not invoke mining');
   if (!subBeforeAction?.state?.activeSub?.piloting) fail('playtest sub setup did not start piloting a sub');
@@ -279,6 +292,7 @@ try {
     && (subAfterAction?.ui?.floatingTextCount ?? 0) <= (subBeforeAction?.ui?.floatingTextCount ?? 0)) fail('right bumper did not trigger item/sub action');
   if (subAfterBoard?.state?.activeSub?.piloting) fail('B button hold did not board/disembark from sub');
   if (!pauseHasMapButton) fail('pause menu did not expose a Sonar Map button');
+  if (sonarToolSelected?.state?.selectedTool !== 'sonar') fail('keyboard Digit3 did not equip sonar before chart smoke');
   if (!mapFromPause?.ui?.paused || !mapFromPause?.ui?.sonarMapOpen) fail('pause menu Sonar Map button did not open the paused map');
   if (Math.abs((mapAfterPan?.ui?.sonarMapPanX ?? 0) - (mapFromPause?.ui?.sonarMapPanX ?? 0)) < 1
     && Math.abs((mapAfterPan?.ui?.sonarMapPanY ?? 0) - (mapFromPause?.ui?.sonarMapPanY ?? 0)) < 1) fail('controller left stick did not pan the sonar map');
@@ -296,9 +310,10 @@ try {
     ok: errors.length === 0,
     beforeMove: { player: beforeMove?.player, sonarRevealed: beforeMove?.state?.sonarRevealed },
     afterMove: { player: afterMove?.player, sonarRevealed: afterMove?.state?.sonarRevealed },
-    afterSonar: { sonarRevealed: afterSonar?.state?.sonarRevealed },
+    afterSonar: { sonarRevealed: afterSonar?.state?.sonarRevealed, sonarMapOpen: afterSonar?.ui?.sonarMapOpen, selectedTool: afterSonar?.state?.selectedTool },
     afterScan: { credits: afterScan?.state?.credits, status: afterScan?.ui?.status },
     afterMine: { status: afterMine?.ui?.status, floatingTextCount: afterMine?.ui?.floatingTextCount },
+    sonarToolSelected: { selectedTool: sonarToolSelected?.state?.selectedTool, paused: sonarToolSelected?.ui?.paused },
     subAction: {
       before: { player: subBeforeAction?.player, activeSub: subBeforeAction?.state?.activeSub },
       afterMove: { player: subAfterMove?.player, activeSub: subAfterMove?.state?.activeSub },

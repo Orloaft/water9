@@ -176,7 +176,10 @@ export function updateSubPilot(this: DeepdiveScene, delta: number, controls: Con
     sub.fuel = Math.max(0, sub.fuel - (hasInput ? 0.16 : 0.035) * delta);
 
     if (controls.scoutPressed && sub.tier >= 3) this.deployScoutFromCarrier();
-    if (controls.sonarPressed) this.sonarPing();
+    if (controls.sonarPressed) {
+      state.selectedTool = 'sonar';
+      this.sonarPing();
+    }
     if (controls.useItemPressed) {
       if (!this.useSelectedItem() && sub.tier >= 3) this.fireSubWeapon();
     }

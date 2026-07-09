@@ -3403,7 +3403,10 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         ? surfaceFishPose(fish)
         : { ...swimPose(angle, fish.visualFacingSign ?? fish.facingSign), originX: 0.5, originY: 0.5 };
       const frameSpeed = anchored ? (fish.stunned > 0 ? 5 : 24 + Math.abs(Math.sin(fish.phase)) * 12) : fish.stunned > 0 ? 8 : Math.hypot(fish.vx, fish.vy);
-      const frame = animatedFrame(fish.phase, frameSpeed, fishFrameCount(fish.assetKey), fish.hostile ? 3.3 : 4.2);
+      const manifestAnimation = spriteManifests[fish.assetKey]?.animations?.swim;
+      const frame = fish.assetKey === 'fauna-shallow-blue-ring-octopus' && manifestAnimation?.frames.length
+        ? manifestAnimation.frames[Math.floor(fish.phase * manifestAnimation.frameRate) % manifestAnimation.frames.length] ?? 0
+        : animatedFrame(fish.phase, frameSpeed, fishFrameCount(fish.assetKey), fish.hostile ? 3.3 : 4.2);
       if (fish.sprite) {
         if (spriteManifests[fish.assetKey]) fish.sprite.setTexture(fish.assetKey).setFrame(frame);
         else fish.sprite.setTexture(`${fish.assetKey}-${frame}`);
@@ -4045,9 +4048,13 @@ function drawSonarBargeLandmark(ctx: CanvasRenderingContext2D, px: number, py: n
   }
 
 export function drawSonarMap(this: DeepdiveScene, ) {
+    measurePerf(this, 'draw.sonarMap', () => drawSonarMapBody.call(this));
+  }
+
+function drawSonarMapBody(this: DeepdiveScene) {
     const canvas = document.querySelector<HTMLCanvasElement>('#sonar-map');
     if (!this.world.length) return;
-    drawBigSonarMap.call(this);
+    if (state.sonarMapOpen) measurePerf(this, 'draw.bigSonarMap', () => drawBigSonarMap.call(this));
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;

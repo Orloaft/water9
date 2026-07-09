@@ -115,7 +115,7 @@ button.is-controller-focus {
 .biome-loading {
   position: absolute;
   inset: 0;
-  z-index: 12;
+  z-index: 32;
   display: none;
   place-items: center;
   padding: 24px;
@@ -574,7 +574,7 @@ button.is-controller-focus {
   text-transform: uppercase;
 }
 
-.sonar-panel {
+.navigation-panel {
   position: fixed;
   top: 14px;
   right: 14px;
@@ -595,7 +595,7 @@ button.is-controller-focus {
   pointer-events: auto;
 }
 
-.sonar-panel > div {
+.navigation-panel > div {
   display: grid;
   width: 100%;
   grid-template-columns: 1fr auto;
@@ -603,25 +603,53 @@ button.is-controller-focus {
   gap: 5px;
 }
 
-.sonar-panel span,
-.sonar-panel strong {
+.navigation-panel span,
+.navigation-panel strong {
   display: block;
 }
 
-.sonar-panel span {
+.navigation-panel span {
   color: rgba(236, 251, 255, 0.68);
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.sonar-panel strong {
+.navigation-panel strong {
   color: #73fbd3;
   font-size: 0.86rem;
 }
 
-.sonar-panel button {
+.navigation-panel dl {
+  display: grid;
+  gap: 7px;
   width: 100%;
+  margin: 0;
+}
+
+.navigation-panel dl div {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.navigation-panel dt,
+.navigation-panel dd {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.navigation-panel dt {
+  color: rgba(236, 251, 255, 0.54);
+  text-transform: uppercase;
+}
+
+.navigation-panel dd {
+  color: rgba(236, 251, 255, 0.82);
+  text-align: right;
 }
 
 #sonar-map {
@@ -2419,7 +2447,7 @@ button.is-controller-focus {
     display: grid;
   }
 
-  .sonar-panel {
+  .navigation-panel {
     top: 10px;
     right: 10px;
     width: 200px;
@@ -2536,9 +2564,18 @@ button.is-controller-focus {
     top: 170px;
   }
 
-  .sonar-panel {
+  .navigation-panel {
     width: 158px;
     padding: 8px;
+  }
+
+  .navigation-panel dl div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .navigation-panel dd {
+    text-align: left;
   }
 
   .tool-strip {

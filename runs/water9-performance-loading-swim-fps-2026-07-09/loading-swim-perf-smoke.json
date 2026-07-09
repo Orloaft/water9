@@ -1,0 +1,414 @@
+{
+  "ok": true,
+  "url": "http://127.0.0.1:5183/?perf=1&perfHud=0",
+  "loadingBeforeStart": {
+    "overlayOpen": true,
+    "overlayPhase": "staging",
+    "overlayProgress": 12,
+    "overlayZIndex": 32,
+    "radioOpen": false,
+    "radioZIndex": 24,
+    "topElementId": "biome-loading",
+    "text": "Depth transition The Shallows Calibrating pressure map... 12%"
+  },
+  "startTransitionSamples": [
+    {
+      "t": 10567,
+      "worldReady": false,
+      "started": true,
+      "loading": {
+        "active": true,
+        "biome": 1,
+        "title": "The Shallows",
+        "status": "Calibrating pressure map...",
+        "progress": 0.2232692308609302,
+        "phase": "staging",
+        "startedAt": 3140.099999964237,
+        "completedAt": 0
+      },
+      "dom": {
+        "overlayOpen": true,
+        "overlayPhase": "complete",
+        "overlayProgress": 100,
+        "overlayZIndex": 32,
+        "radioOpen": true,
+        "radioZIndex": 24,
+        "topElementId": "biome-loading",
+        "text": "Depth transition The Shallows Barge systems synchronized. 100%"
+      }
+    },
+    {
+      "t": 10816,
+      "worldReady": true,
+      "started": true,
+      "loading": {
+        "active": true,
+        "biome": 1,
+        "title": "The Shallows",
+        "status": "Barge systems synchronized.",
+        "progress": 1,
+        "phase": "complete",
+        "startedAt": 3140.099999964237,
+        "completedAt": 9543.599999964237
+      },
+      "dom": {
+        "overlayOpen": true,
+        "overlayPhase": "complete",
+        "overlayProgress": 100,
+        "overlayZIndex": 32,
+        "radioOpen": true,
+        "radioZIndex": 24,
+        "topElementId": "biome-loading",
+        "text": "Depth transition The Shallows Barge systems synchronized. 100%"
+      }
+    },
+    {
+      "t": 11008,
+      "worldReady": true,
+      "started": true,
+      "loading": {
+        "active": false,
+        "biome": 1,
+        "title": "The Shallows",
+        "status": "Barge systems synchronized.",
+        "progress": 1,
+        "phase": "idle",
+        "startedAt": 3140.099999964237,
+        "completedAt": 9543.599999964237
+      },
+      "dom": {
+        "overlayOpen": false,
+        "overlayPhase": "idle",
+        "overlayProgress": 100,
+        "overlayZIndex": 32,
+        "radioOpen": true,
+        "radioZIndex": 24,
+        "topElementId": "radio-dialogue",
+        "text": ""
+      }
+    }
+  ],
+  "startupRaf": {
+    "samples": 5,
+    "durationMs": 6846,
+    "avgFrameMs": 1279.02,
+    "p95FrameMs": 6316.4,
+    "maxFrameMs": 6316.4,
+    "longFrames": 1
+  },
+  "readyAfterStart": {
+    "active": false,
+    "biome": 1,
+    "title": "The Shallows",
+    "status": "Barge systems synchronized.",
+    "progress": 1,
+    "phase": "idle",
+    "startedAt": 3140.099999964237,
+    "completedAt": 9543.599999964237
+  },
+  "teleport": {
+    "ok": true,
+    "targetDepthMeters": 640,
+    "depthMeters": 582,
+    "tileX": 45,
+    "tileY": 101,
+    "localWaterRatio": 0.231
+  },
+  "swim": {
+    "durationMs": 6747,
+    "movementPath": [
+      {
+        "key": "ArrowDown",
+        "durationMs": 1500
+      },
+      {
+        "key": "ArrowRight",
+        "durationMs": 1500
+      },
+      {
+        "key": "ArrowUp",
+        "durationMs": 1500
+      },
+      {
+        "key": "ArrowLeft",
+        "durationMs": 1500
+      }
+    ],
+    "raf": {
+      "samples": 340,
+      "durationMs": 6747,
+      "avgFrameMs": 19.12,
+      "p95FrameMs": 33.4,
+      "maxFrameMs": 33.4,
+      "longFrames": 0
+    },
+    "before": {
+      "player": {
+        "x": 1092,
+        "y": 2436,
+        "vx": 0,
+        "vy": 0,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "perf": {
+        "enabled": true,
+        "frame": 37,
+        "terrainDirtyReason": "tile:17,409",
+        "terrainMaskMutations": 4,
+        "terrainContactSamples": 330390,
+        "propRefresh": {
+          "fullScans": 1,
+          "queued": 0,
+          "processed": 0,
+          "removed": 0,
+          "added": 0,
+          "lastReason": "full-populate"
+        },
+        "metrics": {
+          "draw.sonarMap": {
+            "samples": 26,
+            "avgMs": 0.71,
+            "maxMs": 1.29,
+            "lastMs": 1,
+            "context": {}
+          },
+          "frame.total": {
+            "samples": 37,
+            "avgMs": 4.88,
+            "maxMs": 25.41,
+            "lastMs": 5.8,
+            "context": {}
+          },
+          "worldgen.total": {
+            "samples": 1,
+            "avgMs": 6298.7,
+            "maxMs": 6298.7,
+            "lastMs": 6298.7,
+            "context": {
+              "biome": 1
+            }
+          },
+          "draw.backgroundAnchors": {
+            "samples": 32,
+            "avgMs": 0.05,
+            "maxMs": 0.26,
+            "lastMs": 0,
+            "context": {}
+          },
+          "draw.parallax": {
+            "samples": 32,
+            "avgMs": 0.09,
+            "maxMs": 0.43,
+            "lastMs": 0.2,
+            "context": {}
+          },
+          "draw.waterColumn": {
+            "samples": 32,
+            "avgMs": 0.06,
+            "maxMs": 0.34,
+            "lastMs": 0,
+            "context": {}
+          },
+          "draw.world": {
+            "samples": 32,
+            "avgMs": 1.2,
+            "maxMs": 19.41,
+            "lastMs": 0,
+            "context": {
+              "dirty": false,
+              "chunks": 334
+            }
+          },
+          "draw.props": {
+            "samples": 32,
+            "avgMs": 0.04,
+            "maxMs": 0.2,
+            "lastMs": 0.1,
+            "context": {
+              "count": 23
+            }
+          },
+          "draw.terrainBreakEffects": {
+            "samples": 32,
+            "avgMs": 0,
+            "maxMs": 0.09,
+            "lastMs": 0,
+            "context": {
+              "count": 0
+            }
+          },
+          "draw.specialRooms": {
+            "samples": 32,
+            "avgMs": 0,
+            "maxMs": 0.09,
+            "lastMs": 0,
+            "context": {
+              "count": 2
+            }
+          },
+          "draw.looseItems": {
+            "samples": 32,
+            "avgMs": 0,
+            "maxMs": 0.17,
+            "lastMs": 0,
+            "context": {
+              "count": 0
+            }
+          },
+          "draw.fish": {
+            "samples": 32,
+            "avgMs": 0.15,
+            "maxMs": 0.6,
+            "lastMs": 0.3,
+            "context": {
+              "count": 217
+            }
+          },
+          "draw.articulated": {
+            "samples": 32,
+            "avgMs": 0.01,
+            "maxMs": 0.26,
+            "lastMs": 0,
+            "context": {
+              "count": 1,
+              "parts": 11
+            }
+          },
+          "draw.sub": {
+            "samples": 32,
+            "avgMs": 0.03,
+            "maxMs": 0.17,
+            "lastMs": 0,
+            "context": {
+              "active": false,
+              "parts": 38
+            }
+          },
+          "draw.darkness": {
+            "samples": 32,
+            "avgMs": 0.08,
+            "maxMs": 0.69,
+            "lastMs": 0.2,
+            "context": {}
+          },
+          "update.fish": {
+            "samples": 10,
+            "avgMs": 3.68,
+            "maxMs": 6.6,
+            "lastMs": 3.4,
+            "context": {
+              "count": 217
+            }
+          },
+          "update.articulated": {
+            "samples": 10,
+            "avgMs": 0.52,
+            "maxMs": 1.46,
+            "lastMs": 0.8,
+            "context": {
+              "count": 1,
+              "parts": 11
+            }
+          },
+          "update.total": {
+            "samples": 10,
+            "avgMs": 4.82,
+            "maxMs": 7.14,
+            "lastMs": 4.4,
+            "context": {}
+          },
+          "draw.total": {
+            "samples": 10,
+            "avgMs": 3.7,
+            "maxMs": 21.08,
+            "lastMs": 1.2,
+            "context": {}
+          }
+        }
+      }
+    },
+    "after": {
+      "player": {
+        "x": 931,
+        "y": 2268,
+        "vx": 3,
+        "vy": -1,
+        "mineCooldown": 0,
+        "scanTarget": ""
+      },
+      "frameTotal": {
+        "samples": 394,
+        "avgMs": 5.23,
+        "maxMs": 14.85,
+        "lastMs": 3,
+        "context": {}
+      },
+      "updateTotal": {
+        "samples": 367,
+        "avgMs": 3.38,
+        "maxMs": 10.49,
+        "lastMs": 2.6,
+        "context": {}
+      },
+      "drawTotal": {
+        "samples": 367,
+        "avgMs": 1.41,
+        "maxMs": 8.9,
+        "lastMs": 0.3,
+        "context": {}
+      },
+      "drawSonarMap": {
+        "samples": 136,
+        "avgMs": 0.77,
+        "maxMs": 1.22,
+        "lastMs": 0.7,
+        "context": {}
+      },
+      "drawBigSonarMap": null,
+      "drawWorld": {
+        "samples": 389,
+        "avgMs": 0.99,
+        "maxMs": 8.34,
+        "lastMs": 0,
+        "context": {
+          "dirty": false,
+          "chunks": 331
+        }
+      },
+      "drawFish": {
+        "samples": 389,
+        "avgMs": 0.07,
+        "maxMs": 0.25,
+        "lastMs": 0.1,
+        "context": {
+          "count": 217
+        }
+      },
+      "updateFish": {
+        "samples": 367,
+        "avgMs": 3.01,
+        "maxMs": 9.9,
+        "lastMs": 2.4,
+        "context": {
+          "count": 217
+        }
+      },
+      "updateArticulated": {
+        "samples": 367,
+        "avgMs": 0.11,
+        "maxMs": 0.65,
+        "lastMs": 0,
+        "context": {
+          "count": 1,
+          "parts": 11
+        }
+      }
+    }
+  },
+  "errors": [],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 175 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5183/\n"
+  ]
+}

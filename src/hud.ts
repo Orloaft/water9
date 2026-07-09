@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { BargeTab,Biome,CargoItem,FishSpecies,Flora,FloraSpecies,Quest,RadioMessage,ScanRarity,ShopItem,SubDef,SubTier,SubVehicle,TitlePanel,ToolId,Upgrade,UpgradeId } from './types';
-import { FUEL_REFILL_AMOUNT,MARLIN_VOUCHER_DISCOUNT,SONAR_FUEL_COST,SUB_FUEL_COST,SUB_OXYGEN_COST } from './constants';
+import { BARGE_DOCK_Y,FUEL_REFILL_AMOUNT,MARLIN_VOUCHER_DISCOUNT,SUB_FUEL_COST,SUB_OXYGEN_COST,TILE,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,upgrades } from './content';
 import { behaviorLogbookMotion,fishBehaviorProfile } from './fauna-behavior';
 import { state,ui } from './state';
@@ -81,7 +81,7 @@ export function renderHud() {
       <div><strong>${state.maxDepth} m</strong><span>Record</span></div>
     </div>
     ${objectivePanel()}
-    ${sonarPanel()}
+    ${navigationPanel()}
     ${sub ? meter('Sub O2', sub.oxygen, subDef(sub.tier).oxygen, '#8ee7f4') : meter('Oxygen', state.oxygen, oxygenMax(), '#8ee7f4')}
     ${sub ? meter('Sub hull', sub.hull, subDef(sub.tier).hull, '#ff8a6b') : meter('Hull', state.hull, hullMax(), '#ff8a6b')}
     ${sub ? meter('Sub fuel', sub.fuel, subDef(sub.tier).fuel, '#ffd166') : meter('Fuel', state.fuel, fuelMax(), '#ffd166')}
@@ -366,8 +366,8 @@ export function titlePanel() {
         <div><strong>Dive / primary</strong><span>Space / A / right trigger</span></div>
         <div><strong>Tools</strong><span>1 drill, 2 scanner, 3 sonar</span></div>
         <div><strong>Scan</strong><span>Hold E / X</span></div>
-        <div><strong>Sonar</strong><span>Q / left bumper</span></div>
-        <div><strong>Sonar map</strong><span>M / View</span></div>
+        <div><strong>Sonar tool</strong><span>3 then Space / Q</span></div>
+        <div><strong>Sonar chart</strong><span>Sonar selected + M / View</span></div>
         <div><strong>Use item</strong><span>G / right bumper</span></div>
         <div><strong>Back / close</strong><span>B</span></div>
         <div><strong>Logbook</strong><span>L / Y</span></div>
@@ -628,21 +628,17 @@ export function bindUiEvents(app: HTMLDivElement) {
     if (event.code === 'KeyM') {
       event.preventDefault();
       event.stopPropagation();
-      state.paused = true;
-      state.logbookOpen = false;
-      state.cargoOpen = false;
-      state.sonarMapOpen = !state.sonarMapOpen;
-      if (state.sonarMapOpen) gameScene()?.captureSonarContacts();
-      renderHud();
-      requestAnimationFrame(() => gameScene()?.drawSonarMap());
+      if (state.sonarMapOpen) {
+        closeSonarMapToPause();
+        return;
+      }
+      openSonarMapFromTool();
       return;
     }
     if (event.code === 'Escape' && state.sonarMapOpen) {
       event.preventDefault();
       event.stopPropagation();
-      state.sonarMapOpen = false;
-      state.paused = true;
-      renderHud();
+      closeSonarMapToPause();
     }
   }, true);
   window.addEventListener('keydown', (event) => {
@@ -786,21 +782,13 @@ export function bindUiEvents(app: HTMLDivElement) {
     const sonarMapButton = target.closest<HTMLButtonElement>('button[data-sonar-map]');
     if (sonarMapButton) {
       event.preventDefault();
-      state.paused = true;
-      state.logbookOpen = false;
-      state.cargoOpen = false;
-      state.sonarMapOpen = true;
-      gameScene()?.captureSonarContacts();
-      renderHud();
-      requestAnimationFrame(() => gameScene()?.drawSonarMap());
+      openSonarMapFromTool();
       return;
     }
     const closeSonarMapButton = target.closest<HTMLButtonElement>('button[data-close-sonar-map]');
     if (closeSonarMapButton) {
       event.preventDefault();
-      state.sonarMapOpen = false;
-      state.paused = true;
-      renderHud();
+      closeSonarMapToPause();
       return;
     }
     const logbookButton = target.closest<HTMLButtonElement>('button[data-logbook]');
@@ -868,12 +856,6 @@ export function bindUiEvents(app: HTMLDivElement) {
     if (deployScoutButton && !deployScoutButton.disabled) {
       event.preventDefault();
       gameScene()?.deployScoutFromCarrier();
-      return;
-    }
-    const sonarButton = target.closest<HTMLButtonElement>('button[data-sonar]');
-    if (sonarButton && !sonarButton.disabled) {
-      event.preventDefault();
-      gameScene()?.sonarPing();
       return;
     }
     const selectToolButton = target.closest<HTMLButtonElement>('button[data-select-tool]');
@@ -1210,17 +1192,57 @@ export function questCard(quest: Quest, active: Quest | null) {
   `;
 }
 
-export function sonarPanel() {
+export function openSonarMapFromTool() {
+  if (!state.unlockedTools.sonar || state.selectedTool !== 'sonar') {
+    state.status = 'Equip the sonar tool to open the full chart.';
+    renderHud();
+    return false;
+  }
+  state.paused = true;
+  state.logbookOpen = false;
+  state.cargoOpen = false;
+  state.sonarMapOpen = true;
+  gameScene()?.captureSonarContacts();
+  renderHud();
+  requestAnimationFrame(() => gameScene()?.drawSonarMap());
+  return true;
+}
+
+export function closeSonarMapToPause() {
+  state.sonarMapOpen = false;
+  state.paused = true;
+  renderHud();
+}
+
+export function navigationPanel() {
+  const scene = gameScene();
+  const player = scene?.player;
+  const heading = player ? headingLabel(player.facing.x, player.facing.y) : 'N';
+  const dockDeltaTiles = player ? Math.round((BARGE_DOCK_Y - player.y) / TILE) : 0;
+  const dockSideTiles = player ? Math.round((WORLD_W * TILE * 0.5 - player.x) / TILE) : 0;
+  const dockVertical = dockDeltaTiles >= 0 ? 'up' : 'down';
+  const dockHorizontal = Math.abs(dockSideTiles) < 3 ? 'center' : dockSideTiles > 0 ? 'east' : 'west';
+  const sonarReady = state.unlockedTools.sonar && state.selectedTool === 'sonar';
   return `
-    <section class="sonar-panel">
+    <section class="navigation-panel">
       <div>
-        <span>Sonar map</span>
-        <strong>${state.sonarRevealed.size.toLocaleString()} cells</strong>
+        <span>Nav</span>
+        <strong>${heading}</strong>
       </div>
-      <canvas id="sonar-map" width="224" height="224" aria-label="Sonar minimap"></canvas>
-      <button data-sonar ${state.fuel < SONAR_FUEL_COST ? 'disabled' : ''}>Ping ${SONAR_FUEL_COST} fuel</button>
+      <dl>
+        <div><dt>Dock</dt><dd>${Math.abs(dockDeltaTiles).toLocaleString()} ${dockVertical} / ${dockHorizontal}</dd></div>
+        <div><dt>Chart</dt><dd>${state.sonarRevealed.size.toLocaleString()} cells</dd></div>
+        <div><dt>Sonar</dt><dd>${sonarReady ? `Space/Q ping, M chart` : '3 equips chart tool'}</dd></div>
+      </dl>
     </section>
   `;
+}
+
+export function headingLabel(x: number, y: number) {
+  const angle = Math.atan2(y, x);
+  const labels = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
+  const index = Math.round((((angle + Math.PI * 2) % (Math.PI * 2)) / (Math.PI * 2)) * labels.length) % labels.length;
+  return labels[index];
 }
 
 export function subHatchControl() {
@@ -1308,7 +1330,7 @@ export function pauseMenuPanel() {
     </div>
     <div class="pause-actions">
       <button data-pause>Resume</button>
-      <button data-sonar-map data-focus-key="pause-sonar-map">Sonar Map</button>
+      <button data-sonar-map data-focus-key="pause-sonar-map">${state.selectedTool === 'sonar' ? 'Sonar Chart' : 'Equip Sonar First'}</button>
       <button data-save-game data-focus-key="pause-save">Save game</button>
       <button data-load-game data-focus-key="pause-load" ${hasSavedGame() ? '' : 'disabled'}>Load game</button>
       <button data-logbook>${state.logbookOpen ? 'Close logbook' : 'Open logbook'}</button>
@@ -1323,8 +1345,8 @@ export function pauseMenuPanel() {
         <div><dt>Scan</dt><dd>Hold E</dd></div>
         <div><dt>Sub hatch / outpost</dt><dd>Hold or press F</dd></div>
         <div><dt>Deploy scout</dt><dd>H</dd></div>
-        <div><dt>Sonar</dt><dd>Q</dd></div>
-        <div><dt>Sonar map</dt><dd>M</dd></div>
+        <div><dt>Sonar tool</dt><dd>3 then Space / Q</dd></div>
+        <div><dt>Sonar chart</dt><dd>Sonar selected + M</dd></div>
         <div><dt>Use item / sub weapon</dt><dd>G</dd></div>
         <div><dt>Logbook</dt><dd>L</dd></div>
         <div><dt>Pause</dt><dd>Esc / P</dd></div>
@@ -1338,8 +1360,8 @@ export function pauseMenuPanel() {
         <div><dt>Scan</dt><dd>Hold X</dd></div>
         <div><dt>Sub hatch / outpost</dt><dd>Hold or press B</dd></div>
         <div><dt>Deploy scout</dt><dd>Left stick press</dd></div>
-        <div><dt>Sonar</dt><dd>Left bumper</dd></div>
-        <div><dt>Sonar map</dt><dd>View / Back</dd></div>
+        <div><dt>Sonar tool</dt><dd>Left bumper</dd></div>
+        <div><dt>Sonar chart</dt><dd>Sonar selected + View</dd></div>
         <div><dt>Use item / sub weapon</dt><dd>Right bumper</dd></div>
         <div><dt>Logbook</dt><dd>Y</dd></div>
         <div><dt>Pause</dt><dd>Start</dd></div>
@@ -1356,7 +1378,7 @@ export function sonarMapPanel() {
     <div class="sonar-map-overlay__panel">
       <header class="sonar-map-overlay__header">
         <div>
-          <span>Discovered biome sonar</span>
+        <span>Sonar tool chart</span>
           <strong>${biomeName()}</strong>
         </div>
         <button data-close-sonar-map data-focus-key="sonar-map-close">Back</button>

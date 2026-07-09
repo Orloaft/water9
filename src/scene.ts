@@ -5,7 +5,7 @@ import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
 import { activeQuest,ambientDarknessOpacity,animatedFrame,axis,bargeSolidAtWorld,bargeUpgradeCost,cargoCapacity,cargoIconForTile,cargoKindForTile,cargoSaleBreakdown,checkOxygenWarnings,clampSelectedCargoIndex,clearBleed,clearVenom,completeFinaleAtBarge,createConsumableItem,createSubVehicle,currentApexSpecies,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,finaleLocksSurvey,fishAssetKey,fishFrameCount,fishMaxHp,fitImageHeight,fitImageWidth,floraAssetKey,floraMaxHp,fuelMax,fuelRefillCost,generateQuestBoard,generateTile,hash,hullMax,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,loadGeneratedAssets,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenDrain,oxygenMax,parallaxAlphas,parallaxPrefix,parallaxSpeeds,pointInRoom,predatorBiteCooldown,questProgressSource,rarityColor,rarityLabel,refillAtBoat,resetOxygenWarnings,restart,scaledDepthPx,scaledEntity,scannableRarity,scanReward,shopItem,sonarKey,sonarTileColor,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange,subRepairCost,swimPose,swimTopSpeed,swimUpgradeBonus,tileTextureKey,updateFacingFromVelocity,upgradeCost,upgradeMax,veinRuleAt,veinRulesForBiome,venomousFish } from './helpers';
-import { activateMenuButton,activeMenuButtons,advanceRadioDialogue,availableUpgrades,biomeName,canDiveFromBargeShortcut,clearControllerFocus,focusMenuButton,focusUiButton,menuButtonKey,nextMenuButton,openingRadioMessages,renderHud,roundMetric,toggleLogbook,unlockAchievement,updateFpsTracker } from './hud';
+import { activateMenuButton,activeMenuButtons,advanceRadioDialogue,availableUpgrades,biomeName,canDiveFromBargeShortcut,clearControllerFocus,closeSonarMapToPause,focusMenuButton,focusUiButton,menuButtonKey,nextMenuButton,openingRadioMessages,openSonarMapFromTool,renderHud,roundMetric,toggleLogbook,unlockAchievement,updateFpsTracker } from './hud';
 import * as sonarNs from './scene-sonar';
 import * as economyNs from './scene-economy';
 import * as playtestNs from './scene-playtest';
@@ -719,19 +719,11 @@ export class DeepdiveScene extends Phaser.Scene {
   handleGlobalControllerActions(controls: ControlState) {
     if (!state.started || state.lost || finaleLocksSurvey() || state.radioOpen) return false;
     if (state.sonarMapOpen && (controls.cancelPressed || controls.sonarMapPressed || controls.pausePressed)) {
-      state.sonarMapOpen = false;
-      state.paused = true;
-      renderHud();
+      closeSonarMapToPause();
       return true;
     }
     if (controls.sonarMapPressed) {
-      state.paused = true;
-      state.logbookOpen = false;
-      state.cargoOpen = false;
-      state.sonarMapOpen = true;
-      this.captureSonarContacts();
-      renderHud();
-      requestAnimationFrame(() => this.drawSonarMap());
+      openSonarMapFromTool();
       return true;
     }
     if (controls.cancelPressed) {
@@ -865,7 +857,10 @@ export class DeepdiveScene extends Phaser.Scene {
       this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
       this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
       this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
-      if (controls.sonarPressed) this.sonarPing();
+      if (controls.sonarPressed) {
+        state.selectedTool = 'sonar';
+        this.sonarPing();
+      }
       if (controls.useItemPressed) this.useSelectedItem();
       this.scanNearbyLife(delta, controls.scanHeld);
       return;
@@ -922,6 +917,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
     this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
     if (controls.sonarPressed) {
+      state.selectedTool = 'sonar';
       this.sonarPing();
     }
     if (controls.useItemPressed) {

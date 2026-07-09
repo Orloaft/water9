@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import math
+import argparse
 from pathlib import Path
 
 from PIL import Image, ImageOps
@@ -21,7 +22,7 @@ MANIFEST_PATH = ROOT / "public/assets/source/fauna-flora-source-art-slice-3-mani
 
 
 GENERATED_PROMPTS = {
-    "fauna-shallow-blue-ring-octopus": "Create a painterly underwater game-art blue-ring octopus cutout on a flat solid #ff00ff chroma-key background. Compact rounded mantle, eight curling arms, vivid cobalt-blue rings across warm ochre skin, readable silhouette at small gameplay scale, single organism, no text, no shadow, no extra scene elements.",
+    "fauna-shallow-blue-ring-octopus": "Use case: stylized-concept\nAsset type: project-bound 2D game sprite animation source sheet for Water9 small fauna.\nPrimary request: Create a six-frame horizontal animation sprite sheet of a blue-ring octopus locomotion cycle, isolated on a perfectly flat solid #ff00ff chroma-key background for background removal.\nSubject: one compact blue-ring octopus, warm ochre/yellow body, vivid cobalt-blue rings, painterly browser-game sprite style, readable at small gameplay scale.\nComposition: six equal poses in a single horizontal row, generous padding around every pose, no dividers, no labels, no text, no shadows, no water, no bubbles, no scene elements. Keep the octopus centered within each frame with consistent scale and orientation, traveling/readable left-to-right in pose design but not jumping across the cell.\nAnimation poses from left to right: 1 compact ready pose with arms slightly spread and readable; 2 arms gathered under and behind body while mantle begins compressing; 3 mantle squeeze and elongation for a jet pulse with body stretched forward and arms trailing backward; 4 strongest travel pose with rear arms swept back in a clear trailing silhouette/wake shape; 5 recovery flare with arms opening outward and forward; 6 settle back toward compact ready pose.\nMotion requirements: strong silhouette change between frames, clearly real octopus locomotion rather than shimmer, enough visible arms to read as octopus, visible mantle compression/elongation and arm sweep.\nAvoid: squid or fish silhouette, symmetric starburst, cropped arms, large teleporting body jumps, muddy loss of blue rings, pure color shimmer, static mantle with only texture changes, background texture, gradients, shadows, watermark, or text.",
     "fauna-shallow-octopus": "Create a painterly underwater game-art tidepool octopus cutout on a flat solid #ff00ff chroma-key background. Russet umber mantle, expressive eye, eight arms in a readable crawling silhouette with curled tips and subtle suction cups, distinct from a blue-ring octopus, single organism, no text, no shadow, no extra scene elements.",
     "fauna-shallow-comb-jelly": "Create a painterly underwater game-art comb jelly cutout on a flat solid #ff00ff chroma-key background. Oval transparent-gel ctenophore body, subtle cyan and amber iridescent comb rows, two fine trailing tentacles, coherent organism silhouette, no text, no shadow, no extra scene elements.",
 }
@@ -53,7 +54,7 @@ def trim_alpha(image: Image.Image, pad: int = 6) -> Image.Image:
     return image.crop(alpha_bbox(image, pad))
 
 
-def remove_magenta_key(image: Image.Image) -> Image.Image:
+def remove_magenta_key(image: Image.Image, *, trim: bool = True) -> Image.Image:
     rgba = image.convert("RGBA")
     pixels = rgba.load()
     for y in range(rgba.height):
@@ -62,14 +63,14 @@ def remove_magenta_key(image: Image.Image) -> Image.Image:
             magenta_delta = abs(r - 255) + g + abs(b - 255)
             if (r > 170 and b > 150 and g < 105 and max(r, b) - g > 75) or magenta_delta < 80:
                 pixels[x, y] = (r, g, b, 0)
-    return trim_alpha(rgba, 8)
+    return trim_alpha(rgba, 8) if trim else rgba
 
 
-def source_cutout(path: str) -> Image.Image:
+def source_cutout(path: str, *, preserve_canvas: bool = False) -> Image.Image:
     image = open_rgba(path)
     if image.getchannel("A").getextrema()[0] < 255:
-        return trim_alpha(image, 8)
-    return remove_magenta_key(image)
+        return image if preserve_canvas else trim_alpha(image, 8)
+    return remove_magenta_key(image, trim=not preserve_canvas)
 
 
 def fit_to_canvas(image: Image.Image, size: tuple[int, int], *, pad: int = 3) -> Image.Image:
@@ -136,6 +137,64 @@ def center_alpha_like(image: Image.Image, reference: Image.Image) -> Image.Image
     return out
 
 
+def remove_edge_alpha_islands(image: Image.Image, *, edge_band: int = 24, max_area_ratio: float = 0.25) -> Image.Image:
+    alpha = image.getchannel("A")
+    pixels = alpha.load()
+    width, height = image.size
+    seen: set[tuple[int, int]] = set()
+    components: list[tuple[int, tuple[int, int, int, int], list[tuple[int, int]]]] = []
+    for y in range(height):
+        for x in range(width):
+            if (x, y) in seen or pixels[x, y] <= 0:
+                continue
+            stack = [(x, y)]
+            seen.add((x, y))
+            coords: list[tuple[int, int]] = []
+            min_x = max_x = x
+            min_y = max_y = y
+            while stack:
+                cx, cy = stack.pop()
+                coords.append((cx, cy))
+                min_x = min(min_x, cx)
+                max_x = max(max_x, cx)
+                min_y = min(min_y, cy)
+                max_y = max(max_y, cy)
+                for ny in range(cy - 1, cy + 2):
+                    for nx in range(cx - 1, cx + 2):
+                        if nx < 0 or ny < 0 or nx >= width or ny >= height or (nx, ny) in seen:
+                            continue
+                        if pixels[nx, ny] <= 0:
+                            continue
+                        seen.add((nx, ny))
+                        stack.append((nx, ny))
+            components.append((len(coords), (min_x, min_y, max_x + 1, max_y + 1), coords))
+    if len(components) <= 1:
+        return image
+    largest = max(area for area, _, _ in components)
+    cleaned = image.copy()
+    cleaned_pixels = cleaned.load()
+    for area, box, coords in components:
+        left, _, right, _ = box
+        touches_side_edge = left < edge_band or right > width - edge_band
+        if not touches_side_edge or area >= largest * max_area_ratio:
+            continue
+        for x, y in coords:
+            r, g, b, _ = cleaned_pixels[x, y]
+            cleaned_pixels[x, y] = (r, g, b, 0)
+    return cleaned
+
+
+def split_source_strip(source: Image.Image, size: tuple[int, int], count: int) -> list[Image.Image]:
+    frames: list[Image.Image] = []
+    for index in range(count):
+        left = round(index * source.width / count)
+        right = round((index + 1) * source.width / count)
+        cell = remove_edge_alpha_islands(source.crop((left, 0, right, source.height)))
+        pose = trim_alpha(cell, 8)
+        frames.append(fit_to_canvas(pose, size, pad=2))
+    return frames
+
+
 def shimmer_blue_rings(frame: Image.Image, phase: float) -> Image.Image:
     out = frame.copy()
     pixels = out.load()
@@ -160,6 +219,9 @@ def shimmer_blue_rings(frame: Image.Image, phase: float) -> Image.Image:
 
 def blue_ring_octopus_frames(source: Image.Image, size: tuple[int, int], count: int) -> list[Image.Image]:
     """Derive a readable swim/crawl cycle without changing the source identity."""
+    if source.width > source.height * 2.4:
+        return split_source_strip(source, size, count)
+
     internal_scale = 3
     internal_size = (size[0] * internal_scale, size[1] * internal_scale)
     base = fit_to_canvas(source, size, pad=3)
@@ -231,7 +293,13 @@ def pack_frames(asset_key: str, source_path: Path, frame_size: tuple[int, int], 
         "frameCount": count,
         "anchor": {"x": 0.5, "y": 0.5},
         "directions": [],
-        "animations": {"swim": {"frames": list(range(count)), "frameRate": fps, "loop": True}},
+        "animations": {
+            "swim": {
+                "frames": [0, 1, 2, 3, 4, 5, 4, 3, 2, 1] if asset_key == "fauna-shallow-blue-ring-octopus" and count == 6 else list(range(count)),
+                "frameRate": fps,
+                "loop": True,
+            }
+        },
         "source": {
             "kind": source_kind,
             "path": rel(source_path),
@@ -244,6 +312,11 @@ def pack_frames(asset_key: str, source_path: Path, frame_size: tuple[int, int], 
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--only", action="append", dest="only_assets", help="Regenerate only this asset key; may be passed more than once.")
+    args = parser.parse_args()
+    only_assets = set(args.only_assets or [])
+
     specs = [
         {
             "asset": "fauna-shallow-blue-ring-octopus",
@@ -251,8 +324,8 @@ def main() -> None:
             "sourceType": "generated_bitmap",
             "source": "public/assets/source/fauna-flora-source-art-slice-3/fauna-shallow-blue-ring-octopus-source-chroma.png",
             "sourceKind": "generated-bitmap-slice-3",
-            "frame": (58, 48),
-            "count": 4,
+            "frame": (76, 48),
+            "count": 6,
             "fps": 8,
         },
         {
@@ -337,9 +410,17 @@ def main() -> None:
         },
     ]
 
+    selected_specs = [spec for spec in specs if not only_assets or spec["asset"] in only_assets]
+    if only_assets and len(selected_specs) != len(only_assets):
+        known = ", ".join(spec["asset"] for spec in specs)
+        missing = ", ".join(sorted(only_assets - {spec["asset"] for spec in selected_specs}))
+        raise SystemExit(f"unknown --only asset(s): {missing}; known assets: {known}")
+
     manifest_entries: list[dict] = []
     for spec in specs:
-        source_image = source_cutout(spec["source"])
+        if spec not in selected_specs:
+            continue
+        source_image = source_cutout(spec["source"], preserve_canvas=spec["asset"] == "fauna-shallow-blue-ring-octopus")
         source_path = save_source(spec["asset"], source_image)
         runtime_outputs = pack_frames(spec["asset"], source_path, spec["frame"], spec["count"], spec["fps"], spec["sourceKind"])
         entry = {
@@ -363,6 +444,23 @@ def main() -> None:
             entry["trackedSourceLineage"] = spec["lineage"]
         manifest_entries.append(entry)
 
+    if only_assets and MANIFEST_PATH.exists():
+        existing = json.loads(MANIFEST_PATH.read_text())
+        replacements = {entry["assetKey"]: entry for entry in manifest_entries}
+        merged_entries: list[dict] = []
+        seen: set[str] = set()
+        for entry in existing.get("assets", []):
+            asset_key = entry.get("assetKey")
+            if asset_key in replacements:
+                merged_entries.append(replacements[asset_key])
+                seen.add(asset_key)
+            else:
+                merged_entries.append(entry)
+        for entry in manifest_entries:
+            if entry["assetKey"] not in seen:
+                merged_entries.append(entry)
+        manifest_entries = merged_entries
+
     MANIFEST_PATH.write_text(
         json.dumps(
             {
@@ -374,7 +472,10 @@ def main() -> None:
         )
         + "\n"
     )
-    print(f"Wrote {len(manifest_entries)} source-backed fauna replacements")
+    if only_assets:
+        print(f"Wrote {len(selected_specs)} selected source-backed fauna replacement(s)")
+    else:
+        print(f"Wrote {len(manifest_entries)} source-backed fauna replacements")
 
 
 if __name__ == "__main__":

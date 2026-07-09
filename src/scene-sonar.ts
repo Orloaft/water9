@@ -3,11 +3,14 @@ import type { SonarContact } from './types';
 import { audioKeys,audioVolumes,SONAR_ATTRACT_RADIUS,SONAR_COOLDOWN,SONAR_FUEL_COST,SONAR_REVEAL_RADIUS_TILES,TILE,WORLD_H,WORLD_W } from './constants';
 import { state } from './state';
 import { finaleLocksSurvey,sonarKey } from './helpers';
-import { renderHud } from './hud';
+import { openSonarMapFromTool,renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 
 export function sonarPing(this: DeepdiveScene, ) {
-    if (this.player.sonarCooldown > 0 || state.lost || finaleLocksSurvey() || !state.started) return;
+    if (state.lost || finaleLocksSurvey() || !state.started) return;
+    if (state.unlockedTools.sonar) state.selectedTool = 'sonar';
+    const openedChart = openSonarMapFromTool();
+    if (this.player.sonarCooldown > 0) return;
     const sub = state.pilotingSub ? state.activeSub : null;
     const fuelReserve = sub ? sub.fuel : state.fuel;
     if (fuelReserve < SONAR_FUEL_COST) {
@@ -53,6 +56,7 @@ export function sonarPing(this: DeepdiveScene, ) {
     state.status = attracted > 0
       ? `Sonar ping mapped nearby stone and drew ${attracted} hostile signal${attracted === 1 ? '' : 's'} closer.`
       : 'Sonar ping mapped nearby stone. No hostile signals answered.';
+    if (openedChart) state.sonarMapOpen = true;
     renderHud();
     this.drawSonarMap();
   }

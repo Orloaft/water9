@@ -390,7 +390,7 @@ export function selectTool(toolId: ToolId) {
       : toolId === 'sampler'
         ? 'Primary action samples close gameplay flora.'
         : toolId === 'sonar'
-          ? 'Primary action fires a sonar ping.'
+          ? 'Primary action fires a sonar ping and opens the chart.'
           : toolId === 'stun'
             ? state.cargo.some((item) => item.id === 'stun-grenade')
               ? 'Primary action fires one carried stun grenade.'
