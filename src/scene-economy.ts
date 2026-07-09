@@ -154,6 +154,7 @@ export function travelToNextBiome(this: DeepdiveScene, ) {
     state.selectedCargoIndex = 0;
     state.fuel = fuelMax();
     state.sonarRevealed.clear();
+    state.sonarRevealRevision += 1;
     resetOxygenWarnings();
     clearVenom();
     clearBleed();

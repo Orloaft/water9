@@ -90,6 +90,14 @@ export class DeepdiveScene extends Phaser.Scene {
   terrainDirty = true;
   terrainVisualChunks = new Map<string, TerrainVisualChunk>();
   terrainVisualDirtyChunks = new Set<string>();
+  terrainDirtyTiles = new Set<string>();
+  terrainMutationReason = 'boot';
+  terrainMutationBatchDepth = 0;
+  terrainMutationBatchReason = '';
+  pendingTerrainVisualDirtyTiles = new Set<string>();
+  terrainLastMutationStats = { reason: 'boot', dirtyTiles: 0, dirtyChunks: 0 };
+  terrainRevision = 0;
+  bigSonarMapCacheStats: Record<string, number | string | boolean | null> = {};
   environmentPropRefreshQueue: Array<{ minX: number; maxX: number; minY: number; maxY: number; reason: string }> = [];
   perfTelemetry: PerfTelemetry = createPerfTelemetry();
   worldReady = false;
@@ -245,7 +253,7 @@ export class DeepdiveScene extends Phaser.Scene {
       this.pollBrowserGamepads();
       this.updateBiomeGenerationLoading();
       this.updateAudio(0);
-      updatePerfHud(this);
+      updatePerfHud(this, deltaMs);
       return;
     }
     const delta = deltaMs / 1000;
@@ -260,7 +268,7 @@ export class DeepdiveScene extends Phaser.Scene {
     if (state.radioOpen && state.started && !state.lost && !finaleLocksSurvey()) {
       this.draw();
       this.updateAudio(delta);
-      updatePerfHud(this);
+      updatePerfHud(this, deltaMs);
       return;
     }
     if (!state.started) {
@@ -288,13 +296,13 @@ export class DeepdiveScene extends Phaser.Scene {
       if (controls.confirmPressed) restart(this);
       this.draw();
       this.updateAudio(delta);
-      updatePerfHud(this);
+      updatePerfHud(this, deltaMs);
       return;
     }
     if (state.paused) {
       this.draw();
       this.updateAudio(delta);
-      updatePerfHud(this);
+      updatePerfHud(this, deltaMs);
       return;
     }
     if (state.docked) {
@@ -320,7 +328,7 @@ export class DeepdiveScene extends Phaser.Scene {
         this.hudTimer = 0;
         renderHud();
       }
-      updatePerfHud(this);
+      updatePerfHud(this, deltaMs);
       return;
     }
 
@@ -354,7 +362,7 @@ export class DeepdiveScene extends Phaser.Scene {
       this.hudTimer = 0;
       renderHud();
     }
-    updatePerfHud(this);
+    updatePerfHud(this, deltaMs);
     });
   }
 
@@ -1192,13 +1200,24 @@ export class DeepdiveScene extends Phaser.Scene {
     if (x < 0 || x >= WORLD_W || y < 0 || y >= WORLD_H) return;
     if (!this.world[y]) return;
     this.world[y][x] = tile;
+    this.terrainRevision += 1;
     syncTerrainMaskTile(this, x, y);
-    this.markTerrainVisualDirty(x, y);
+    this.markTerrainVisualDirty(x, y, 'single-tile');
     this.terrainDirty = true;
     markTerrainDirty(this, `tile:${x},${y}`);
   }
 
-  markTerrainVisualDirty(x: number, y: number) {
+  markTerrainVisualDirty(x: number, y: number, reason = 'tile') {
+    this.terrainDirtyTiles.add(`${x}:${y}`);
+    this.terrainMutationReason = this.terrainMutationBatchReason || reason;
+    if (this.terrainMutationBatchDepth > 0) {
+      this.pendingTerrainVisualDirtyTiles.add(`${x}:${y}`);
+      return;
+    }
+    this.markTerrainVisualDirtyImmediate(x, y);
+  }
+
+  markTerrainVisualDirtyImmediate(x: number, y: number) {
     const chunkSize = 12;
     const minChunkX = Math.floor((x - 4) / chunkSize);
     const maxChunkX = Math.floor((x + 4) / chunkSize);
@@ -1209,6 +1228,40 @@ export class DeepdiveScene extends Phaser.Scene {
         this.terrainVisualDirtyChunks.add(`${cx}:${cy}`);
       }
     }
+  }
+
+  markTerrainRegionDirty(minX: number, maxX: number, minY: number, maxY: number, reason = 'region') {
+    this.terrainMutationReason = this.terrainMutationBatchReason || reason;
+    for (let y = minY; y <= maxY; y += 1) {
+      for (let x = minX; x <= maxX; x += 1) this.markTerrainVisualDirty(x, y, reason);
+    }
+  }
+
+  beginTerrainMutationBatch(reason: string) {
+    this.terrainMutationBatchDepth += 1;
+    if (this.terrainMutationBatchDepth === 1) {
+      this.terrainMutationBatchReason = reason;
+      this.pendingTerrainVisualDirtyTiles.clear();
+      this.terrainDirtyTiles.clear();
+      this.terrainMutationReason = reason;
+    }
+  }
+
+  endTerrainMutationBatch(reason = this.terrainMutationBatchReason || 'batch') {
+    this.terrainMutationBatchDepth = Math.max(0, this.terrainMutationBatchDepth - 1);
+    if (this.terrainMutationBatchDepth > 0) return;
+    for (const key of this.pendingTerrainVisualDirtyTiles) {
+      const [x, y] = key.split(':').map(Number);
+      if (Number.isFinite(x) && Number.isFinite(y)) this.markTerrainVisualDirtyImmediate(x, y);
+    }
+    this.pendingTerrainVisualDirtyTiles.clear();
+    this.terrainMutationReason = reason;
+    this.terrainLastMutationStats = {
+      reason,
+      dirtyTiles: this.terrainDirtyTiles.size,
+      dirtyChunks: this.terrainVisualDirtyChunks.size,
+    };
+    markTerrainDirty(this, `${reason}:tiles=${this.terrainDirtyTiles.size}:chunks=${this.terrainVisualDirtyChunks.size}`);
   }
 
 }

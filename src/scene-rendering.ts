@@ -31,7 +31,13 @@ export function draw(this: DeepdiveScene, ) {
 	    this.updateForegroundTerrainPresentation(environmentProfile);
 	    measurePerf(this, 'draw.parallax', () => this.drawParallax(camera, environmentProfile));
     measurePerf(this, 'draw.waterColumn', () => this.drawWaterColumn(camera, environmentProfile));
-	    measurePerf(this, 'draw.world', () => this.drawWorld(camera), { dirty: this.terrainDirty, chunks: this.terrainVisualDirtyChunks.size });
+	    measurePerf(this, 'draw.world', () => this.drawWorld(camera), {
+      dirty: this.terrainDirty,
+      chunks: this.terrainVisualDirtyChunks.size,
+      dirtyTiles: this.terrainDirtyTiles.size,
+      terrainRevision: this.terrainRevision,
+      reason: this.terrainMutationReason,
+    });
 	    measurePerf(this, 'draw.props', () => this.drawEnvironmentProps(camera), { count: this.environmentProps.length });
     this.drawBobbitBurrows(camera);
 	    measurePerf(this, 'draw.terrainBreakEffects', () => this.drawTerrainBreakEffects(camera), { count: this.terrainBreakEffects.length });
@@ -540,6 +546,7 @@ export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Ca
           this.actualGptOreMasksByKey.get(key)?.graphics.clear();
         }
       }
+      this.terrainDirtyTiles.clear();
 	  }
 
 export function drawTerrainBreakEffects(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
@@ -4217,6 +4224,16 @@ function drawSonarMapBody(this: DeepdiveScene) {
     ctx.fill();
   }
 
+type BigSonarStaticCache = {
+  key: string;
+  canvas: HTMLCanvasElement;
+  cell: number;
+  zoomBucket: number;
+  buildMs: number;
+};
+
+const bigSonarStaticCaches = new WeakMap<DeepdiveScene, BigSonarStaticCache>();
+
 function drawBigSonarMap(this: DeepdiveScene) {
     const canvas = document.querySelector<HTMLCanvasElement>('#big-sonar-map');
     if (!canvas || !this.world.length) return;
@@ -4240,59 +4257,22 @@ function drawBigSonarMap(this: DeepdiveScene) {
     ctx.fillRect(0, 0, width, height);
 
     const zoom = Phaser.Math.Clamp(state.sonarMapZoom || 1, 0.62, 2.6);
+    const zoomBucket = Math.round(zoom * 10) / 10;
     const worldAspect = WORLD_W / WORLD_H;
     const canvasAspect = width / height;
     const baseCell = canvasAspect > worldAspect ? height / WORLD_H : width / WORLD_W;
-    const cell = baseCell * zoom;
+    const cell = baseCell * zoomBucket;
     const centerTileX = Phaser.Math.Clamp(this.player.x / TILE + state.sonarMapPanX, 0, WORLD_W);
     const centerTileY = Phaser.Math.Clamp(this.player.y / TILE + state.sonarMapPanY, 0, WORLD_H);
     const originX = width * 0.5 - centerTileX * cell;
     const originY = height * 0.5 - centerTileY * cell;
-    const minX = Math.max(0, Math.floor(-originX / cell) - 2);
-    const maxX = Math.min(WORLD_W - 1, Math.ceil((width - originX) / cell) + 2);
-    const minY = Math.max(0, Math.floor(-originY / cell) - 2);
-    const maxY = Math.min(WORLD_H - 1, Math.ceil((height - originY) / cell) + 2);
-    const drawSize = Math.max(1, Math.ceil(cell) + 1);
+    const staticCache = ensureBigSonarStaticCache(this, width, height, baseCell, zoomBucket);
 
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, 0, width, height);
     ctx.clip();
-    ctx.fillStyle = 'rgba(115, 251, 211, 0.06)';
-    for (let x = 0; x <= WORLD_W; x += 20) {
-      const px = originX + x * cell;
-      if (px < -1 || px > width + 1) continue;
-      ctx.fillRect(px, 0, 1, height);
-    }
-    for (let y = 0; y <= WORLD_H; y += 20) {
-      const py = originY + y * cell;
-      if (py < -1 || py > height + 1) continue;
-      ctx.fillRect(0, py, width, 1);
-    }
-
-    for (let y = minY; y <= maxY; y += 1) {
-      for (let x = minX; x <= maxX; x += 1) {
-        if (!state.sonarRevealed.has(sonarKey(x, y))) continue;
-        const tile = this.getTile(x, y);
-        const px = Math.floor(originX + x * cell);
-        const py = Math.floor(originY + y * cell);
-        const solid = tiles[tile].solid;
-        if (!solid) {
-          ctx.fillStyle = 'rgba(12, 88, 111, 0.46)';
-          ctx.fillRect(px, py, drawSize, drawSize);
-          continue;
-        }
-        const north = y <= 0 || !tiles[this.getTile(x, y - 1)].solid;
-        const south = y >= WORLD_H - 1 || !tiles[this.getTile(x, y + 1)].solid;
-        const west = x <= 0 || !tiles[this.getTile(x - 1, y)].solid;
-        const east = x >= WORLD_W - 1 || !tiles[this.getTile(x + 1, y)].solid;
-        const edge = north || south || west || east;
-        if (edge || tile === 'stone' || tile === 'sand' || tile === 'bedrock' || tile === 'anchorstone' || tiles[tile].value > 0 || isArtifactTile(tile)) {
-          ctx.fillStyle = sonarTileColor(tile, edge);
-          ctx.fillRect(px, py, drawSize, drawSize);
-        }
-      }
-    }
+    ctx.drawImage(staticCache.canvas, Math.floor(originX), Math.floor(originY));
 
     const drawContact = (x: number, y: number, color: string, radius: number, stroke = '') => {
       const px = originX + (x / TILE) * cell;
@@ -4349,6 +4329,89 @@ function drawBigSonarMap(this: DeepdiveScene) {
     ctx.lineWidth = 1;
     ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
     ctx.restore();
+  }
+
+function ensureBigSonarStaticCache(scene: DeepdiveScene, width: number, height: number, baseCell: number, zoomBucket: number) {
+    const cell = baseCell * zoomBucket;
+    const rasterWidth = Math.max(1, Math.ceil(WORLD_W * cell) + 2);
+    const rasterHeight = Math.max(1, Math.ceil(WORLD_H * cell) + 2);
+    const key = [
+      state.biome,
+      rng.seed,
+      state.sonarRevealRevision,
+      scene.terrainRevision,
+      Math.round(width),
+      Math.round(height),
+      zoomBucket,
+      rasterWidth,
+      rasterHeight,
+    ].join(':');
+    const cached = bigSonarStaticCaches.get(scene);
+    if (cached?.key === key) {
+      scene.bigSonarMapCacheStats = {
+        hit: true,
+        buildMs: cached.buildMs,
+        zoomBucket,
+        revealedRevision: state.sonarRevealRevision,
+        terrainRevision: scene.terrainRevision,
+      };
+      return cached;
+    }
+    const startedAt = performance.now();
+    const raster = cached?.canvas ?? document.createElement('canvas');
+    raster.width = rasterWidth;
+    raster.height = rasterHeight;
+    const ctx = raster.getContext('2d');
+    if (!ctx) {
+      const fallback = { key, canvas: raster, cell, zoomBucket, buildMs: 0 };
+      bigSonarStaticCaches.set(scene, fallback);
+      return fallback;
+    }
+    ctx.clearRect(0, 0, rasterWidth, rasterHeight);
+    ctx.fillStyle = 'rgba(115, 251, 211, 0.06)';
+    for (let x = 0; x <= WORLD_W; x += 20) {
+      const px = Math.floor(x * cell);
+      ctx.fillRect(px, 0, 1, rasterHeight);
+    }
+    for (let y = 0; y <= WORLD_H; y += 20) {
+      const py = Math.floor(y * cell);
+      ctx.fillRect(0, py, rasterWidth, 1);
+    }
+    const drawSize = Math.max(1, Math.ceil(cell) + 1);
+    for (const revealedKey of state.sonarRevealed) {
+        const [rawX, rawY] = revealedKey.split(':');
+        const x = Number(rawX);
+        const y = Number(rawY);
+        if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
+        const tile = scene.getTile(x, y);
+        const px = Math.floor(x * cell);
+        const py = Math.floor(y * cell);
+        const solid = tiles[tile].solid;
+        if (!solid) {
+          ctx.fillStyle = 'rgba(12, 88, 111, 0.46)';
+          ctx.fillRect(px, py, drawSize, drawSize);
+          continue;
+        }
+        const north = y <= 0 || !tiles[scene.getTile(x, y - 1)].solid;
+        const south = y >= WORLD_H - 1 || !tiles[scene.getTile(x, y + 1)].solid;
+        const west = x <= 0 || !tiles[scene.getTile(x - 1, y)].solid;
+        const east = x >= WORLD_W - 1 || !tiles[scene.getTile(x + 1, y)].solid;
+        const edge = north || south || west || east;
+        if (edge || tile === 'stone' || tile === 'sand' || tile === 'bedrock' || tile === 'anchorstone' || tiles[tile].value > 0 || isArtifactTile(tile)) {
+          ctx.fillStyle = sonarTileColor(tile, edge);
+          ctx.fillRect(px, py, drawSize, drawSize);
+        }
+    }
+    const cache = { key, canvas: raster, cell, zoomBucket, buildMs: Math.round((performance.now() - startedAt) * 100) / 100 };
+    bigSonarStaticCaches.set(scene, cache);
+    scene.bigSonarMapCacheStats = {
+      hit: false,
+      buildMs: cache.buildMs,
+      zoomBucket,
+      revealedRevision: state.sonarRevealRevision,
+      terrainRevision: scene.terrainRevision,
+    };
+    return cache;
   }
 
 export function drawLooseItems(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {

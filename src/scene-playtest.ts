@@ -3004,6 +3004,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
 
 function revealStorySmokeSonarCells(count: number) {
     for (let i = 0; i < count; i += 1) state.sonarRevealed.add(`story:${state.biome}:${i}`);
+    state.sonarRevealRevision += 1;
   }
 
 function stageStoryMilestoneSmoke(this: DeepdiveScene, value?: unknown) {
@@ -3021,6 +3022,7 @@ function stageStoryMilestoneSmoke(this: DeepdiveScene, value?: unknown) {
     state.sonarMapOpen = false;
     state.scannedSpecies.clear();
     state.sonarRevealed.clear();
+    state.sonarRevealRevision += 1;
     state.sampledSpecies.clear();
     state.forwardOutpost.active = false;
     state.forwardOutpost.charge = 0;
@@ -3104,6 +3106,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       state.selectedCargoIndex = 0;
       resetToolState();
       state.sonarRevealed.clear();
+      state.sonarRevealRevision += 1;
       state.sonarContacts = [];
       state.scannedSpecies.clear();
       state.sampledSpecies.clear();
@@ -3411,6 +3414,7 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
 	        this.player.mineCooldown = 0;
 	        this.mineAt(Number(payload.worldX) || this.player.x, Number(payload.worldY) || this.player.y + 36);
 	      }
+      return { ok: true, repeats, snapshot: this.playtestSnapshot() };
     } else if (command === 'acceptForwardOutpostQuest') {
       const quest = state.questBoard.find((entry) => entry.kind === 'forwardOutpost');
       if (!quest) return { ok: false, reason: 'forward outpost quest missing' };
@@ -4268,6 +4272,17 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         return { ok: selectTool(toolId), snapshot: this.playtestSnapshot() };
       }
       return { ok: false, reason: 'unknown-tool', snapshot: this.playtestSnapshot() };
+    } else if (command === 'resetPerfFrameBuffer') {
+      if (this.perfTelemetry?.enabled) {
+        this.perfTelemetry.metrics = {};
+        this.perfTelemetry.frames = [];
+        this.perfTelemetry.longTasks = [];
+      }
+      this.terrainDirtyTiles.clear();
+      this.terrainLastMutationStats = { reason: 'reset-perf', dirtyTiles: 0, dirtyChunks: 0 };
+      return { ok: true, perf: perfSnapshot(this) };
+    } else if (command === 'exportPerfFrameBuffer') {
+      return { ok: true, perf: perfSnapshot(this) };
     } else if (command === 'buyShopItem') {
       const id = typeof value === 'string' ? value as ShopItem['id'] : 'stun-grenade';
       const beforeCargo = state.cargo.length;

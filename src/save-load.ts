@@ -316,6 +316,7 @@ function applySavedState(save: SavedGame) {
   state.unlockedTools = normalizeUnlockedTools(save.state.unlockedTools);
   state.selectedTool = normalizeSelectedTool(save.state.selectedTool, state.unlockedTools);
   state.sonarRevealed = new Set(save.state.sonarRevealed.filter((entry) => typeof entry === 'string'));
+  state.sonarRevealRevision += 1;
   state.sonarContacts = [];
   state.scannedSpecies = new Set(save.state.scannedSpecies.filter((entry) => typeof entry === 'string'));
   state.sampledSpecies = new Set((save.state.sampledSpecies ?? []).filter((entry) => typeof entry === 'string'));

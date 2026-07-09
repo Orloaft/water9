@@ -30,6 +30,7 @@ export function generateWorld(this: DeepdiveScene, ) {
     this.nestEggs = [];
     this.larvae = [];
     state.sonarRevealed.clear();
+    state.sonarRevealRevision += 1;
     state.sonarContacts = [];
     state.sonarMapOpen = false;
     state.sonarMapPanX = 0;

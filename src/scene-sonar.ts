@@ -91,12 +91,17 @@ export function revealSonarAtPlayer(this: DeepdiveScene, radiusTiles: number) {
 export function revealSonarAtWorld(this: DeepdiveScene, worldX: number, worldY: number, radiusTiles: number) {
     const cx = Math.floor(worldX / TILE);
     const cy = Math.floor(worldY / TILE);
+    let changed = false;
     for (let y = cy - radiusTiles; y <= cy + radiusTiles; y += 1) {
       for (let x = cx - radiusTiles; x <= cx + radiusTiles; x += 1) {
         if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
         if ((x - cx) ** 2 + (y - cy) ** 2 > radiusTiles ** 2) continue;
-        state.sonarRevealed.add(sonarKey(x, y));
+        const key = sonarKey(x, y);
+        if (state.sonarRevealed.has(key)) continue;
+        state.sonarRevealed.add(key);
+        changed = true;
       }
     }
+    if (changed) state.sonarRevealRevision += 1;
     this.drawSonarMap();
   }

@@ -1,0 +1,5110 @@
+{
+  "ok": true,
+  "url": "http://127.0.0.1:5187/?playtest=1&biome=3&perf=1&perfHud=0",
+  "bands": [
+    {
+      "requestedDepth": 360,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 360,
+        "depthMeters": 360,
+        "tileX": 64,
+        "tileY": 64,
+        "localWaterRatio": 0.887
+      },
+      "summary": {
+        "samples": 180,
+        "avgFrameMs": 16.67,
+        "p95FrameMs": 16.67,
+        "maxFrameMs": 16.68,
+        "framesOver50": 0,
+        "dominant": "worldViewChange",
+        "causeScores": {
+          "worldViewChange": 3,
+          "terrainDirtyRedraw": 0,
+          "entityVolume": 0,
+          "chartOverlay": 0,
+          "longTask": 0
+        },
+        "worst": [
+          {
+            "frame": 151,
+            "at": 21748.3,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.5,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1463,
+              "y": 1487,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1638.4,
+              "y": 1597.62,
+              "vx": 126.48,
+              "vy": 117.06
+            },
+            "worldView": {
+              "startX": 59,
+              "endX": 77,
+              "startY": 60,
+              "endY": 72
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 324,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 169,
+            "at": 22049.1,
+            "rafDeltaMs": 16.68,
+            "updateMs": 3.2,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1500,
+              "y": 1523,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1675.94,
+              "y": 1631.17,
+              "vx": 124.16,
+              "vy": -19.12
+            },
+            "worldView": {
+              "startX": 61,
+              "endX": 78,
+              "startY": 62,
+              "endY": 74
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 24
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 354,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 257,
+            "at": 23514.6,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.5,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 1694,
+              "y": 1640,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1869.59,
+              "y": 1750.35,
+              "vx": 112.4,
+              "vy": 110.7
+            },
+            "worldView": {
+              "startX": 69,
+              "endX": 86,
+              "startY": 67,
+              "endY": 79
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 27
+            },
+            "visible": {
+              "fish": 1,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 456,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 95,
+            "at": 20816.5,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.8,
+            "drawMs": 0.7,
+            "camera": {
+              "x": 1379,
+              "y": 1426,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1552.79,
+              "y": 1534.21,
+              "vx": 9.92,
+              "vy": -28.57
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 73,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 280,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 97,
+            "at": 20860.6,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.7,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1379,
+              "y": 1425,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1553.21,
+              "y": 1533.31,
+              "vx": 15.98,
+              "vy": -26.69
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 73,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 98,
+            "at": 20868.5,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.6,
+            "drawMs": 0.9,
+            "camera": {
+              "x": 1380,
+              "y": 1425,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1553.55,
+              "y": 1532.96,
+              "vx": 20.35,
+              "vy": -21.3
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 73,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 99,
+            "at": 20882.1,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.7,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1380,
+              "y": 1424,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1553.96,
+              "y": 1532.69,
+              "vx": 24.61,
+              "vy": -16.04
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 73,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 100,
+            "at": 20899,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.6,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1380,
+              "y": 1424,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1554.44,
+              "y": 1532.51,
+              "vx": 28.77,
+              "vy": -10.91
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 73,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 101,
+            "at": 20916,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.8,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 1381,
+              "y": 1424,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1554.99,
+              "y": 1532.41,
+              "vx": 32.84,
+              "vy": -5.9
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 73,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 103,
+            "at": 20950.7,
+            "rafDeltaMs": 16.67,
+            "updateMs": 4,
+            "drawMs": 0.6,
+            "camera": {
+              "x": 1382,
+              "y": 1424,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1556.28,
+              "y": 1532.46,
+              "vx": 40.67,
+              "vy": 3.76
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 73,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 104,
+            "at": 20967.6,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 2.3,
+            "camera": {
+              "x": 1383,
+              "y": 1424,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1557.02,
+              "y": 1532.6,
+              "vx": 44.45,
+              "vy": 8.42
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 106,
+            "at": 20999.3,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3,
+            "drawMs": 0.6,
+            "camera": {
+              "x": 1384,
+              "y": 1424,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1558.68,
+              "y": 1533.1,
+              "vx": 51.73,
+              "vy": 17.41
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 107,
+            "at": 21015.9,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.8,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1385,
+              "y": 1425,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1559.61,
+              "y": 1533.47,
+              "vx": 55.25,
+              "vy": 21.74
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 291,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 109,
+            "at": 21050.4,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.9,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1387,
+              "y": 1425,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1561.62,
+              "y": 1534.4,
+              "vx": 62.02,
+              "vy": 30.1
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 299,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 110,
+            "at": 21066.7,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 1388,
+              "y": 1426,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1562.71,
+              "y": 1534.97,
+              "vx": 65.29,
+              "vy": 34.13
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 299,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 112,
+            "at": 21099.2,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.6,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1390,
+              "y": 1427,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1565.04,
+              "y": 1536.3,
+              "vx": 71.59,
+              "vy": 41.9
+            },
+            "worldView": {
+              "startX": 56,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 299,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 115,
+            "at": 21148.4,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.7,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 1394,
+              "y": 1429,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1568.92,
+              "y": 1538.76,
+              "vx": 80.49,
+              "vy": 52.87
+            },
+            "worldView": {
+              "startX": 57,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 299,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 116,
+            "at": 21169.1,
+            "rafDeltaMs": 16.67,
+            "updateMs": 5,
+            "drawMs": 0.6,
+            "camera": {
+              "x": 1395,
+              "y": 1430,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1570.31,
+              "y": 1539.7,
+              "vx": 83.32,
+              "vy": 56.36
+            },
+            "worldView": {
+              "startX": 57,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 299,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 118,
+            "at": 21199.4,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.6,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1398,
+              "y": 1432,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1573.22,
+              "y": 1541.75,
+              "vx": 88.77,
+              "vy": 63.08
+            },
+            "worldView": {
+              "startX": 57,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 299,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 121,
+            "at": 21249.7,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.1,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 1403,
+              "y": 1436,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 1577.92,
+              "y": 1545.22,
+              "vx": 96.47,
+              "vy": 72.58
+            },
+            "worldView": {
+              "startX": 57,
+              "endX": 74,
+              "startY": 58,
+              "endY": 70
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 21
+            },
+            "visible": {
+              "fish": 3,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 303,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          }
+        ]
+      },
+      "metrics": {
+        "frameTotal": {
+          "samples": 198,
+          "avgMs": 4.94,
+          "maxMs": 14.49,
+          "lastMs": 3.2,
+          "context": {}
+        },
+        "updateTotal": {
+          "samples": 198,
+          "avgMs": 2.77,
+          "maxMs": 3.81,
+          "lastMs": 2.5,
+          "context": {}
+        },
+        "drawTotal": {
+          "samples": 198,
+          "avgMs": 1.83,
+          "maxMs": 11.26,
+          "lastMs": 0.5,
+          "context": {}
+        },
+        "drawWorld": {
+          "samples": 198,
+          "avgMs": 1.37,
+          "maxMs": 10.73,
+          "lastMs": 0,
+          "context": {
+            "dirty": false,
+            "chunks": 0,
+            "dirtyTiles": 0,
+            "terrainRevision": 61782,
+            "reason": "single-tile"
+          }
+        },
+        "drawBigSonarMap": null
+      },
+      "screenshot": {
+        "pngPath": "runs/water9-deeper-performance-implementation-2026-07-09/deep-diagonal-depth-360-end-canvas.png",
+        "grayPath": "runs/water9-deeper-performance-implementation-2026-07-09/deep-diagonal-depth-360-end-canvas-gray.png"
+      }
+    },
+    {
+      "requestedDepth": 780,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 780,
+        "depthMeters": 594,
+        "tileX": 33,
+        "tileY": 103,
+        "localWaterRatio": 0.314
+      },
+      "summary": {
+        "samples": 180,
+        "avgFrameMs": 16.67,
+        "p95FrameMs": 16.67,
+        "maxFrameMs": 16.68,
+        "framesOver50": 0,
+        "dominant": "worldViewChange",
+        "causeScores": {
+          "worldViewChange": 0,
+          "terrainDirtyRedraw": 0,
+          "entityVolume": 0,
+          "chartOverlay": 0,
+          "longTask": 0
+        },
+        "worst": [
+          {
+            "frame": 347,
+            "at": 25181.8,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -1.34
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 386,
+            "at": 25832,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.7,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 389,
+            "at": 25881.6,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.6,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 403,
+            "at": 26114.5,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.3,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 468,
+            "at": 27198.4,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.6,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 495,
+            "at": 27648.4,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.4,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.82,
+              "y": 2493.86,
+              "vx": -0.3,
+              "vy": -0.3
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 319,
+            "at": 24731.8,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804,
+              "y": 2484,
+              "vx": 0,
+              "vy": 0
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 320,
+            "at": 24743.9,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 0.7,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804.11,
+              "y": 2484,
+              "vx": 6.72,
+              "vy": 0
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 322,
+            "at": 24773.3,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.1,
+            "drawMs": 0.6,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804.56,
+              "y": 2484.24,
+              "vx": 15.78,
+              "vy": 9.38
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 324,
+            "at": 24798.4,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.5,
+            "drawMs": 0.6,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 805.31,
+              "y": 2484.77,
+              "vx": 24.42,
+              "vy": 18.32
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 326,
+            "at": 24841,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.3,
+            "drawMs": 9.5,
+            "camera": {
+              "x": 632,
+              "y": 2377,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 806.33,
+              "y": 2485.6,
+              "vx": 32.65,
+              "vy": 26.84
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 327,
+            "at": 24854.3,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.1,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 633,
+              "y": 2377,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 806.94,
+              "y": 2486.11,
+              "vx": 36.62,
+              "vy": 30.95
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 328,
+            "at": 24869.7,
+            "rafDeltaMs": 16.67,
+            "updateMs": 4,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 633,
+              "y": 2378,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 807.61,
+              "y": 2486.7,
+              "vx": 40.49,
+              "vy": 34.96
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 329,
+            "at": 24884.1,
+            "rafDeltaMs": 16.67,
+            "updateMs": 4.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 634,
+              "y": 2378,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 808.35,
+              "y": 2487.34,
+              "vx": 44.28,
+              "vy": 38.87
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 330,
+            "at": 24898,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 635,
+              "y": 2379,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 809.15,
+              "y": 2488.06,
+              "vx": 47.97,
+              "vy": 42.69
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 331,
+            "at": 24915.1,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 636,
+              "y": 2380,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 810.01,
+              "y": 2488.83,
+              "vx": 51.57,
+              "vy": 46.42
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 333,
+            "at": 24950.3,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 637,
+              "y": 2381,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 811.9,
+              "y": 2490.56,
+              "vx": 58.52,
+              "vy": 53.62
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 341,
+            "at": 25081.5,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.5,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.57,
+              "y": 2493.68,
+              "vx": 17.82,
+              "vy": 8.59
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 342,
+            "at": 25098.3,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.94,
+              "y": 2493.9,
+              "vx": 22.14,
+              "vy": 13.13
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 343,
+            "at": 25115.4,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.5,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.94,
+              "y": 2493.9,
+              "vx": -4.22,
+              "vy": -2.81
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          }
+        ]
+      },
+      "metrics": {
+        "frameTotal": {
+          "samples": 199,
+          "avgMs": 3.42,
+          "maxMs": 5.93,
+          "lastMs": 2.9,
+          "context": {}
+        },
+        "updateTotal": {
+          "samples": 199,
+          "avgMs": 2.68,
+          "maxMs": 3.65,
+          "lastMs": 2.4,
+          "context": {}
+        },
+        "drawTotal": {
+          "samples": 199,
+          "avgMs": 0.41,
+          "maxMs": 4.46,
+          "lastMs": 0.4,
+          "context": {}
+        },
+        "drawWorld": {
+          "samples": 199,
+          "avgMs": 0.03,
+          "maxMs": 4.24,
+          "lastMs": 0,
+          "context": {
+            "dirty": false,
+            "chunks": 0,
+            "dirtyTiles": 0,
+            "terrainRevision": 61782,
+            "reason": "single-tile"
+          }
+        },
+        "drawBigSonarMap": null
+      },
+      "screenshot": {
+        "pngPath": "runs/water9-deeper-performance-implementation-2026-07-09/deep-diagonal-depth-780-end-canvas.png",
+        "grayPath": "runs/water9-deeper-performance-implementation-2026-07-09/deep-diagonal-depth-780-end-canvas-gray.png"
+      }
+    },
+    {
+      "requestedDepth": 1140,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1140,
+        "depthMeters": 594,
+        "tileX": 33,
+        "tileY": 103,
+        "localWaterRatio": 0.314
+      },
+      "summary": {
+        "samples": 180,
+        "avgFrameMs": 16.67,
+        "p95FrameMs": 16.67,
+        "maxFrameMs": 16.68,
+        "framesOver50": 0,
+        "dominant": "worldViewChange",
+        "causeScores": {
+          "worldViewChange": 0,
+          "terrainDirtyRedraw": 0,
+          "entityVolume": 0,
+          "chartOverlay": 0,
+          "longTask": 0
+        },
+        "worst": [
+          {
+            "frame": 549,
+            "at": 28719,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.3,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 633,
+              "y": 2377,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 806.94,
+              "y": 2486.11,
+              "vx": 36.62,
+              "vy": 30.95
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 579,
+            "at": 29215.8,
+            "rafDeltaMs": 16.68,
+            "updateMs": 3.4,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 590,
+            "at": 29398.7,
+            "rafDeltaMs": 16.68,
+            "updateMs": 3,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 599,
+            "at": 29549.2,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.4,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 603,
+            "at": 29614.3,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.1,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 676,
+            "at": 30831.2,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.4,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 690,
+            "at": 31065.1,
+            "rafDeltaMs": 16.68,
+            "updateMs": 3.1,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 714,
+            "at": 31464.4,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.5,
+            "drawMs": 0.2,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.83,
+              "y": 2493.88,
+              "vx": -0.34,
+              "vy": -0.34
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 538,
+            "at": 28531.7,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.9,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804,
+              "y": 2484,
+              "vx": 0,
+              "vy": 0
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 540,
+            "at": 28564.7,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804,
+              "y": 2484,
+              "vx": 0,
+              "vy": 0
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 544,
+            "at": 28632.6,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804.56,
+              "y": 2484.24,
+              "vx": 15.78,
+              "vy": 9.38
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 545,
+            "at": 28649.3,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.2,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804.9,
+              "y": 2484.47,
+              "vx": 20.15,
+              "vy": 13.91
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 551,
+            "at": 28750,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.5,
+            "drawMs": 0.7,
+            "camera": {
+              "x": 634,
+              "y": 2378,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 808.35,
+              "y": 2487.34,
+              "vx": 44.27,
+              "vy": 38.87
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 552,
+            "at": 28765.6,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.4,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 635,
+              "y": 2379,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 809.15,
+              "y": 2488.05,
+              "vx": 47.96,
+              "vy": 42.69
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 553,
+            "at": 28781,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.3,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 636,
+              "y": 2380,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 810.01,
+              "y": 2488.83,
+              "vx": 51.57,
+              "vy": 46.42
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 554,
+            "at": 28798.5,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.5,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 637,
+              "y": 2380,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 810.93,
+              "y": 2489.66,
+              "vx": 55.08,
+              "vy": 50.06
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 555,
+            "at": 28814.6,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 637,
+              "y": 2381,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 811.9,
+              "y": 2490.56,
+              "vx": 58.52,
+              "vy": 53.62
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 556,
+            "at": 28831.1,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.5,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 638,
+              "y": 2382,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 812.93,
+              "y": 2491.51,
+              "vx": 61.87,
+              "vy": 57.08
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 557,
+            "at": 28857.4,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 9.2,
+            "camera": {
+              "x": 639,
+              "y": 2383,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 812.93,
+              "y": 2492.52,
+              "vx": -10.42,
+              "vy": 60.47
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 558,
+            "at": 28872.2,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3.2,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 639,
+              "y": 2384,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 812.84,
+              "y": 2493.58,
+              "vx": -5.42,
+              "vy": 63.78
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          }
+        ]
+      },
+      "metrics": {
+        "frameTotal": {
+          "samples": 198,
+          "avgMs": 3.36,
+          "maxMs": 5.65,
+          "lastMs": 2.7,
+          "context": {}
+        },
+        "updateTotal": {
+          "samples": 198,
+          "avgMs": 2.64,
+          "maxMs": 3.48,
+          "lastMs": 2.3,
+          "context": {}
+        },
+        "drawTotal": {
+          "samples": 198,
+          "avgMs": 0.38,
+          "maxMs": 4.13,
+          "lastMs": 0.4,
+          "context": {}
+        },
+        "drawWorld": {
+          "samples": 198,
+          "avgMs": 0.04,
+          "maxMs": 3.99,
+          "lastMs": 0,
+          "context": {
+            "dirty": false,
+            "chunks": 0,
+            "dirtyTiles": 0,
+            "terrainRevision": 61782,
+            "reason": "single-tile"
+          }
+        },
+        "drawBigSonarMap": null
+      },
+      "screenshot": {
+        "pngPath": "runs/water9-deeper-performance-implementation-2026-07-09/deep-diagonal-depth-1140-end-canvas.png",
+        "grayPath": "runs/water9-deeper-performance-implementation-2026-07-09/deep-diagonal-depth-1140-end-canvas-gray.png"
+      }
+    },
+    {
+      "requestedDepth": 1500,
+      "teleport": {
+        "ok": true,
+        "targetDepthMeters": 1500,
+        "depthMeters": 594,
+        "tileX": 33,
+        "tileY": 103,
+        "localWaterRatio": 0.314
+      },
+      "summary": {
+        "samples": 180,
+        "avgFrameMs": 16.76,
+        "p95FrameMs": 18.33,
+        "maxFrameMs": 18.33,
+        "framesOver50": 0,
+        "dominant": "worldViewChange",
+        "causeScores": {
+          "worldViewChange": 0,
+          "terrainDirtyRedraw": 0,
+          "entityVolume": 0,
+          "chartOverlay": 0,
+          "longTask": 0
+        },
+        "worst": [
+          {
+            "frame": 902,
+            "at": 34816.8,
+            "rafDeltaMs": 18.33,
+            "updateMs": 3.5,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.73,
+              "vy": -0.73
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 904,
+            "at": 34855.8,
+            "rafDeltaMs": 18.33,
+            "updateMs": 3,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 905,
+            "at": 34868.7,
+            "rafDeltaMs": 18.33,
+            "updateMs": 2.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 906,
+            "at": 34891.4,
+            "rafDeltaMs": 18.33,
+            "updateMs": 3.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 907,
+            "at": 34907.7,
+            "rafDeltaMs": 18.33,
+            "updateMs": 3.5,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 908,
+            "at": 34922.8,
+            "rafDeltaMs": 18.33,
+            "updateMs": 2.8,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 909,
+            "at": 34940.1,
+            "rafDeltaMs": 18.33,
+            "updateMs": 5.3,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 910,
+            "at": 34953.3,
+            "rafDeltaMs": 18.33,
+            "updateMs": 2.6,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 911,
+            "at": 34968.4,
+            "rafDeltaMs": 18.33,
+            "updateMs": 2.8,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 903,
+            "at": 34836,
+            "rafDeltaMs": 18.32,
+            "updateMs": 4.3,
+            "drawMs": 0.6,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.72,
+              "vy": -0.72
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 769,
+            "at": 32580.9,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.3,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 805.31,
+              "y": 2484.77,
+              "vx": 24.42,
+              "vy": 18.32
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 855,
+            "at": 34014.7,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.7,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 870,
+            "at": 34272.9,
+            "rafDeltaMs": 16.68,
+            "updateMs": 3.2,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 913,
+            "at": 34999.5,
+            "rafDeltaMs": 16.68,
+            "updateMs": 3,
+            "drawMs": 0.5,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 919,
+            "at": 35097.7,
+            "rafDeltaMs": 16.68,
+            "updateMs": 2.6,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.95,
+              "y": 2493.99,
+              "vx": -0.66,
+              "vy": -0.66
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 928,
+            "at": 35248.4,
+            "rafDeltaMs": 16.68,
+            "updateMs": 3.2,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 640,
+              "y": 2385,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 813.89,
+              "y": 2493.93,
+              "vx": -0.48,
+              "vy": -0.48
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 43,
+              "startY": 98,
+              "endY": 110
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 762,
+            "at": 32464.9,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.3,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804,
+              "y": 2484,
+              "vx": 0,
+              "vy": 0
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 764,
+            "at": 32513.1,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.4,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804,
+              "y": 2484,
+              "vx": 0,
+              "vy": 0
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 765,
+            "at": 32525.5,
+            "rafDeltaMs": 16.67,
+            "updateMs": 3,
+            "drawMs": 0.4,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804.11,
+              "y": 2484,
+              "vx": 6.72,
+              "vy": 0
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          },
+          {
+            "frame": 768,
+            "at": 32565.2,
+            "rafDeltaMs": 16.67,
+            "updateMs": 2.6,
+            "drawMs": 0.3,
+            "camera": {
+              "x": 631,
+              "y": 2376,
+              "width": 346,
+              "height": 216
+            },
+            "player": {
+              "x": 804.9,
+              "y": 2484.47,
+              "vx": 20.15,
+              "vy": 13.9
+            },
+            "worldView": {
+              "startX": 25,
+              "endX": 42,
+              "startY": 98,
+              "endY": 109
+            },
+            "chunks": {
+              "dirty": 0,
+              "cached": 39
+            },
+            "visible": {
+              "fish": 0,
+              "articulated": 0,
+              "articulatedParts": 0
+            },
+            "terrain": {
+              "dirty": false,
+              "dirtyChunks": 0,
+              "dirtyTiles": 0,
+              "reason": "single-tile"
+            },
+            "sonar": {
+              "open": false,
+              "zoom": 1,
+              "revealed": 537,
+              "contacts": 0,
+              "cache": {}
+            },
+            "longTasks": []
+          }
+        ]
+      },
+      "metrics": {
+        "frameTotal": {
+          "samples": 199,
+          "avgMs": 3.84,
+          "maxMs": 5.92,
+          "lastMs": 4.1,
+          "context": {}
+        },
+        "updateTotal": {
+          "samples": 199,
+          "avgMs": 3.03,
+          "maxMs": 4.54,
+          "lastMs": 3.4,
+          "context": {}
+        },
+        "drawTotal": {
+          "samples": 199,
+          "avgMs": 0.48,
+          "maxMs": 4.48,
+          "lastMs": 0.4,
+          "context": {}
+        },
+        "drawWorld": {
+          "samples": 199,
+          "avgMs": 0.03,
+          "maxMs": 4.22,
+          "lastMs": 0,
+          "context": {
+            "dirty": false,
+            "chunks": 0,
+            "dirtyTiles": 0,
+            "terrainRevision": 61782,
+            "reason": "single-tile"
+          }
+        },
+        "drawBigSonarMap": null
+      },
+      "screenshot": {
+        "pngPath": "runs/water9-deeper-performance-implementation-2026-07-09/deep-diagonal-depth-1500-end-canvas.png",
+        "grayPath": "runs/water9-deeper-performance-implementation-2026-07-09/deep-diagonal-depth-1500-end-canvas-gray.png"
+      }
+    }
+  ],
+  "worstFrames": [
+    {
+      "depth": 1500,
+      "frame": 902,
+      "at": 34816.8,
+      "rafDeltaMs": 18.33,
+      "updateMs": 3.5,
+      "drawMs": 0.5,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.73,
+        "vy": -0.73
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 904,
+      "at": 34855.8,
+      "rafDeltaMs": 18.33,
+      "updateMs": 3,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 905,
+      "at": 34868.7,
+      "rafDeltaMs": 18.33,
+      "updateMs": 2.7,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 906,
+      "at": 34891.4,
+      "rafDeltaMs": 18.33,
+      "updateMs": 3.7,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 907,
+      "at": 34907.7,
+      "rafDeltaMs": 18.33,
+      "updateMs": 3.5,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 908,
+      "at": 34922.8,
+      "rafDeltaMs": 18.33,
+      "updateMs": 2.8,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 909,
+      "at": 34940.1,
+      "rafDeltaMs": 18.33,
+      "updateMs": 5.3,
+      "drawMs": 0.5,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 910,
+      "at": 34953.3,
+      "rafDeltaMs": 18.33,
+      "updateMs": 2.6,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 911,
+      "at": 34968.4,
+      "rafDeltaMs": 18.33,
+      "updateMs": 2.8,
+      "drawMs": 0.5,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1500,
+      "frame": 903,
+      "at": 34836,
+      "rafDeltaMs": 18.32,
+      "updateMs": 4.3,
+      "drawMs": 0.6,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.72,
+        "vy": -0.72
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 360,
+      "frame": 151,
+      "at": 21748.3,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.5,
+      "drawMs": 0.5,
+      "camera": {
+        "x": 1463,
+        "y": 1487,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 1638.4,
+        "y": 1597.62,
+        "vx": 126.48,
+        "vy": 117.06
+      },
+      "worldView": {
+        "startX": 59,
+        "endX": 77,
+        "startY": 60,
+        "endY": 72
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 21
+      },
+      "visible": {
+        "fish": 3,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 324,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 360,
+      "frame": 169,
+      "at": 22049.1,
+      "rafDeltaMs": 16.68,
+      "updateMs": 3.2,
+      "drawMs": 0.5,
+      "camera": {
+        "x": 1500,
+        "y": 1523,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 1675.94,
+        "y": 1631.17,
+        "vx": 124.16,
+        "vy": -19.12
+      },
+      "worldView": {
+        "startX": 61,
+        "endX": 78,
+        "startY": 62,
+        "endY": 74
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 24
+      },
+      "visible": {
+        "fish": 3,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 354,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 360,
+      "frame": 257,
+      "at": 23514.6,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.5,
+      "drawMs": 0.3,
+      "camera": {
+        "x": 1694,
+        "y": 1640,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 1869.59,
+        "y": 1750.35,
+        "vx": 112.4,
+        "vy": 110.7
+      },
+      "worldView": {
+        "startX": 69,
+        "endX": 86,
+        "startY": 67,
+        "endY": 79
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 27
+      },
+      "visible": {
+        "fish": 1,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 456,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 780,
+      "frame": 347,
+      "at": 25181.8,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.7,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.66,
+        "vy": -1.34
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 780,
+      "frame": 386,
+      "at": 25832,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.7,
+      "drawMs": 0.3,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.66,
+        "vy": -0.66
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 780,
+      "frame": 389,
+      "at": 25881.6,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.6,
+      "drawMs": 0.5,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.66,
+        "vy": -0.66
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 780,
+      "frame": 403,
+      "at": 26114.5,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.3,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.66,
+        "vy": -0.66
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 780,
+      "frame": 468,
+      "at": 27198.4,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.6,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.95,
+        "y": 2493.99,
+        "vx": -0.66,
+        "vy": -0.66
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 780,
+      "frame": 495,
+      "at": 27648.4,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.4,
+      "drawMs": 0.3,
+      "camera": {
+        "x": 640,
+        "y": 2385,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 813.82,
+        "y": 2493.86,
+        "vx": -0.3,
+        "vy": -0.3
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 43,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    },
+    {
+      "depth": 1140,
+      "frame": 549,
+      "at": 28719,
+      "rafDeltaMs": 16.68,
+      "updateMs": 2.3,
+      "drawMs": 0.4,
+      "camera": {
+        "x": 633,
+        "y": 2377,
+        "width": 346,
+        "height": 216
+      },
+      "player": {
+        "x": 806.94,
+        "y": 2486.11,
+        "vx": 36.62,
+        "vy": 30.95
+      },
+      "worldView": {
+        "startX": 25,
+        "endX": 42,
+        "startY": 98,
+        "endY": 110
+      },
+      "chunks": {
+        "dirty": 0,
+        "cached": 39
+      },
+      "visible": {
+        "fish": 0,
+        "articulated": 0,
+        "articulatedParts": 0
+      },
+      "terrain": {
+        "dirty": false,
+        "dirtyChunks": 0,
+        "dirtyTiles": 0,
+        "reason": "single-tile"
+      },
+      "sonar": {
+        "open": false,
+        "zoom": 1,
+        "revealed": 537,
+        "contacts": 0,
+        "cache": {}
+      },
+      "longTasks": []
+    }
+  ],
+  "conclusion": "Largest sampled hitch is 18.33ms at requested depth 1500; dominant band causes: 360:worldViewChange, 780:worldViewChange, 1140:worldViewChange, 1500:worldViewChange.",
+  "errors": [],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 135 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5187/\n"
+  ]
+}

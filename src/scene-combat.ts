@@ -92,20 +92,26 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     const power = 8.8 + miningUpgradeBonus() * 2.35;
     if (sub) sub.fuel = Math.max(0, sub.fuel - fuelCost);
     else state.fuel = Math.max(0, state.fuel - fuelCost);
-    carveMiningTunnel(this, impact);
-    this.refreshFloraAnchorsAround(impact.tx, impact.ty, 7);
-    this.refreshFaunaAnchorsAround(impact.tx, impact.ty, 7);
-    for (const target of targets) {
-      const tile = this.getTile(target.x, target.y);
-      const def = tiles[tile];
-      if (!def.solid || tile === 'bedrock' || tile === 'anchorstone') continue;
-      this.damage[target.y][target.x] += power;
-      if (this.damage[target.y][target.x] >= def.hp) {
-        this.breakTile(target.x, target.y, tile, def, impact.x, impact.y);
+    this.beginTerrainMutationBatch(`mining:${targets.length}`);
+    try {
+      carveMiningTunnel(this, impact);
+      this.refreshFloraAnchorsAround(impact.tx, impact.ty, 7);
+      this.refreshFaunaAnchorsAround(impact.tx, impact.ty, 7);
+      for (const target of targets) {
+        const tile = this.getTile(target.x, target.y);
+        const def = tiles[tile];
+        if (!def.solid || tile === 'bedrock' || tile === 'anchorstone') continue;
+        this.damage[target.y][target.x] += power;
+        this.markTerrainVisualDirty(target.x, target.y, 'mining-damage');
+        if (this.damage[target.y][target.x] >= def.hp) {
+          this.breakTile(target.x, target.y, tile, def, impact.x, impact.y);
+        }
       }
+      releaseOpenedOreTiles(this, impact, targets);
+      this.terrainDirty = true;
+    } finally {
+      this.endTerrainMutationBatch('mining');
     }
-    releaseOpenedOreTiles(this, impact, targets);
-    this.terrainDirty = true;
     this.player.mineCooldown = mineCooldown();
     if (sub) sub.oxygen = Math.max(0, sub.oxygen - (0.08 + targets.length * 0.02));
     else state.oxygen -= 0.11 + targets.length * 0.035;
@@ -591,7 +597,7 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       this.damage[ty][tx] = def.hp * 0.28;
       this.terrainDirty = true;
       this.terrainBoundsKey = '';
-      this.markTerrainVisualDirty(tx, ty);
+      this.markTerrainVisualDirty(tx, ty, 'tile-chip');
       this.refreshFloraAnchorsAround(tx, ty, 5);
       this.refreshFaunaAnchorsAround(tx, ty, 5);
       this.terrainBreakEffects.push({ x: chipX, y: chipY, age: 0, life: 0.42, color: def.color, seed: hash(tx, ty, rng.seed), kind: 'break' });
@@ -603,10 +609,11 @@ export function breakTile(this: DeepdiveScene, tx: number, ty: number, tile: Til
       clearTerrainMaskTile(this, tx, ty);
     }
     this.world[ty][tx] = 'water';
+    this.terrainRevision += 1;
     this.damage[ty][tx] = 0;
     this.terrainDirty = true;
     this.terrainBoundsKey = '';
-    this.markTerrainVisualDirty(tx, ty);
+    this.markTerrainVisualDirty(tx, ty, 'tile-break');
     this.refreshEnvironmentPropsAround(tx, ty);
     this.refreshFloraAnchorsAround(tx, ty, 6);
     this.refreshFaunaAnchorsAround(tx, ty, 6);
@@ -661,6 +668,8 @@ function clearTerrainMaskTile(scene: DeepdiveScene, tx: number, ty: number) {
     }
     scene.terrainDirty = true;
     scene.terrainBoundsKey = '';
+    scene.terrainRevision += 1;
+    scene.markTerrainVisualDirty(tx, ty, 'clear-tile-mask');
   }
 
 function trimTerrainBreakEffects(scene: DeepdiveScene) {
@@ -734,16 +743,21 @@ export function detonateDynamite(this: DeepdiveScene, centerX: number, centerY: 
     const tx = Math.floor(centerX / TILE);
     const ty = Math.floor(centerY / TILE);
     let broken = 0;
-    for (let y = ty - DYNAMITE_RADIUS_TILES; y <= ty + DYNAMITE_RADIUS_TILES; y += 1) {
-      for (let x = tx - DYNAMITE_RADIUS_TILES; x <= tx + DYNAMITE_RADIUS_TILES; x += 1) {
-        const distance = Math.hypot(x - tx, y - ty);
-        if (distance > DYNAMITE_RADIUS_TILES + 0.15) continue;
-        const tile = this.getTile(x, y);
-        const def = tiles[tile];
-        if (!def.solid || tile === 'bedrock' || tile === 'anchorstone') continue;
-        this.breakTile(x, y, tile, def);
-        broken += 1;
+    this.beginTerrainMutationBatch('dynamite-radius');
+    try {
+      for (let y = ty - DYNAMITE_RADIUS_TILES; y <= ty + DYNAMITE_RADIUS_TILES; y += 1) {
+        for (let x = tx - DYNAMITE_RADIUS_TILES; x <= tx + DYNAMITE_RADIUS_TILES; x += 1) {
+          const distance = Math.hypot(x - tx, y - ty);
+          if (distance > DYNAMITE_RADIUS_TILES + 0.15) continue;
+          const tile = this.getTile(x, y);
+          const def = tiles[tile];
+          if (!def.solid || tile === 'bedrock' || tile === 'anchorstone') continue;
+          this.breakTile(x, y, tile, def);
+          broken += 1;
+        }
       }
+    } finally {
+      this.endTerrainMutationBatch('dynamite-radius');
     }
     const lifeHits = this.damageLifeInRadius(centerX, centerY, TILE * (DYNAMITE_RADIUS_TILES + 1.2), DYNAMITE_LIFE_DAMAGE, 'Dynamite');
     this.terrainDirty = true;

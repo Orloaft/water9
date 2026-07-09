@@ -3338,6 +3338,7 @@ export function restart(scene: DeepdiveScene) {
   state.selectedCargoIndex = 0;
   resetToolState();
   state.sonarRevealed.clear();
+  state.sonarRevealRevision += 1;
   state.sonarContacts = [];
   resetOxygenWarnings();
   clearVenom();

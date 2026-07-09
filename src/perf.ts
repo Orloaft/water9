@@ -1,4 +1,6 @@
 import type { DeepdiveScene } from './scene';
+import { TILE,WORLD_H,WORLD_W } from './constants';
+import { state } from './state';
 
 type PerfMetric = {
   key: string;
@@ -7,6 +9,22 @@ type PerfMetric = {
   maxMs: number;
   lastMs: number;
   context?: Record<string, number | string | boolean | null>;
+};
+
+type PerfFrameSample = {
+  frame: number;
+  at: number;
+  rafDeltaMs: number;
+  updateMs: number;
+  drawMs: number;
+  camera: { x: number; y: number; width: number; height: number };
+  player: { x: number; y: number; vx: number; vy: number };
+  worldView: { startX: number; endX: number; startY: number; endY: number };
+  chunks: { dirty: number; cached: number };
+  visible: { fish: number; articulated: number; articulatedParts: number };
+  terrain: { dirty: boolean; dirtyChunks: number; dirtyTiles: number; reason: string };
+  sonar: { open: boolean; zoom: number; revealed: number; contacts: number; cache?: Record<string, number | string | boolean | null> };
+  longTasks: Array<{ startTime: number; duration: number; name: string }>;
 };
 
 type PerfHudElements = {
@@ -20,6 +38,10 @@ let perfHudCollapsed = false;
 export type PerfTelemetry = {
   enabled: boolean;
   metrics: Record<string, PerfMetric>;
+  frames: PerfFrameSample[];
+  frameCapacity: number;
+  longTasks: Array<{ startTime: number; duration: number; name: string }>;
+  longTaskObserver?: PerformanceObserver;
   frame: number;
   lastLogAt: number;
   lastHudAt: number;
@@ -43,9 +65,12 @@ export function perfEnabled() {
 }
 
 export function createPerfTelemetry(): PerfTelemetry {
-  return {
+  const telemetry: PerfTelemetry = {
     enabled: perfEnabled(),
     metrics: {},
+    frames: [],
+    frameCapacity: 720,
+    longTasks: [],
     frame: 0,
     lastLogAt: 0,
     lastHudAt: 0,
@@ -61,6 +86,25 @@ export function createPerfTelemetry(): PerfTelemetry {
       lastReason: 'none',
     },
   };
+  if (telemetry.enabled && typeof PerformanceObserver !== 'undefined') {
+    try {
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          telemetry.longTasks.push({
+            startTime: Math.round(entry.startTime * 100) / 100,
+            duration: Math.round(entry.duration * 100) / 100,
+            name: entry.name || 'longtask',
+          });
+        }
+        if (telemetry.longTasks.length > 80) telemetry.longTasks.splice(0, telemetry.longTasks.length - 80);
+      });
+      observer.observe({ type: 'longtask', buffered: true });
+      telemetry.longTaskObserver = observer;
+    } catch {
+      // Long Task API is browser-dependent; perf mode keeps working without it.
+    }
+  }
+  return telemetry;
 }
 
 export function measurePerf<T>(
@@ -107,6 +151,53 @@ export function markTerrainDirty(scene: DeepdiveScene, reason: string) {
   scene.perfTelemetry.terrainDirtyReason = reason;
 }
 
+export function recordPerfFrame(scene: DeepdiveScene, rafDeltaMs: number) {
+  const perf = scene.perfTelemetry;
+  if (!perf?.enabled) return;
+  const camera = scene.cameras.main;
+  const view = camera.worldView;
+  const startX = Math.max(0, Math.floor(view.x / TILE) - 1);
+  const endX = Math.min(WORLD_W - 1, Math.ceil(view.right / TILE) + 1);
+  const startY = Math.max(0, Math.floor(view.y / TILE) - 1);
+  const endY = Math.min(WORLD_H - 1, Math.ceil(view.bottom / TILE) + 1);
+  const intersects = (x: number, y: number, radius = 40) => x >= view.x - radius && x <= view.right + radius && y >= view.y - radius && y <= view.bottom + radius;
+  const visibleFish = scene.fish.filter((fish) => !fish.dead && intersects(fish.x, fish.y, fish.radius + 24)).length;
+  const visibleArticulated = scene.articulatedCreatures.filter((creature) => !creature.dead && intersects(creature.x, creature.y, creature.radius + 80)).length;
+  const visibleParts = scene.articulatedCreatures
+    .filter((creature) => !creature.dead && intersects(creature.x, creature.y, creature.radius + 80))
+    .reduce((sum, creature) => sum + creature.parts.length, 0);
+  const now = performance.now();
+  const recentLongTasks = perf.longTasks.filter((task) => now - task.startTime < 1200).slice(-8);
+  const sonarCache = scene.bigSonarMapCacheStats ? { ...scene.bigSonarMapCacheStats } : undefined;
+  perf.frames.push({
+    frame: perf.frame,
+    at: Math.round(now * 100) / 100,
+    rafDeltaMs: round(rafDeltaMs),
+    updateMs: round(perf.metrics['update.total']?.lastMs ?? 0),
+    drawMs: round(perf.metrics['draw.total']?.lastMs ?? 0),
+    camera: { x: round(view.x), y: round(view.y), width: round(view.width), height: round(view.height) },
+    player: { x: round(scene.player.x), y: round(scene.player.y), vx: round(scene.player.vx), vy: round(scene.player.vy) },
+    worldView: { startX, endX, startY, endY },
+    chunks: { dirty: scene.terrainVisualDirtyChunks.size, cached: scene.terrainVisualChunks.size },
+    visible: { fish: visibleFish, articulated: visibleArticulated, articulatedParts: visibleParts },
+    terrain: {
+      dirty: scene.terrainDirty,
+      dirtyChunks: scene.terrainVisualDirtyChunks.size || scene.terrainLastMutationStats?.dirtyChunks || 0,
+      dirtyTiles: scene.terrainDirtyTiles?.size || scene.terrainLastMutationStats?.dirtyTiles || 0,
+      reason: scene.terrainMutationReason ?? scene.terrainLastMutationStats?.reason ?? perf.terrainDirtyReason,
+    },
+    sonar: {
+      open: state.sonarMapOpen,
+      zoom: round(state.sonarMapZoom || 1),
+      revealed: state.sonarRevealed.size,
+      contacts: state.sonarContacts.length,
+      cache: sonarCache,
+    },
+    longTasks: recentLongTasks,
+  });
+  if (perf.frames.length > perf.frameCapacity) perf.frames.splice(0, perf.frames.length - perf.frameCapacity);
+}
+
 export function perfSnapshot(scene: DeepdiveScene) {
   const perf = scene.perfTelemetry;
   if (!perf?.enabled) return { enabled: false };
@@ -117,6 +208,8 @@ export function perfSnapshot(scene: DeepdiveScene) {
     terrainMaskMutations: perf.terrainMaskMutations,
     terrainContactSamples: perf.terrainContactSamples,
     propRefresh: { ...perf.propRefresh },
+    frames: perf.frames.slice(-180),
+    longTasks: perf.longTasks.slice(-40),
     metrics: Object.fromEntries(Object.entries(perf.metrics).map(([key, metric]) => [
       key,
       {
@@ -130,9 +223,10 @@ export function perfSnapshot(scene: DeepdiveScene) {
   };
 }
 
-export function updatePerfHud(scene: DeepdiveScene) {
+export function updatePerfHud(scene: DeepdiveScene, rafDeltaMs = 0) {
   const perf = scene.perfTelemetry;
   if (!perf?.enabled) return;
+  recordPerfFrame(scene, rafDeltaMs);
   perf.frame += 1;
   if (perfHudDisabled()) {
     document.querySelector<HTMLElement>('#perf-hud')?.remove();

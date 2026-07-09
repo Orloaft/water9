@@ -32,6 +32,7 @@ export function rebuildTerrainMask(scene: DeepdiveScene) {
     scene.terrainMask = new Uint8Array();
     scene.terrainDirty = true;
     scene.terrainBoundsKey = '';
+    scene.terrainRevision += 1;
     return false;
   }
   const mask = new Uint8Array(TERRAIN_MASK_WIDTH * TERRAIN_MASK_HEIGHT);
@@ -44,6 +45,9 @@ export function rebuildTerrainMask(scene: DeepdiveScene) {
   normalizeTerrainMask(scene, 0, TERRAIN_MASK_WIDTH - 1, 0, TERRAIN_MASK_HEIGHT - 1, 5);
   scene.terrainDirty = true;
   scene.terrainBoundsKey = '';
+  scene.terrainRevision += 1;
+  scene.terrainVisualChunks.clear();
+  scene.terrainVisualDirtyChunks.clear();
   return true;
 }
 
@@ -73,6 +77,8 @@ export function syncTerrainMaskTile(scene: DeepdiveScene, tileX: number, tileY: 
   );
   scene.terrainDirty = true;
   scene.terrainBoundsKey = '';
+  scene.terrainRevision += 1;
+  scene.markTerrainRegionDirty(tileX - 2, tileX + 2, tileY - 2, tileY + 2, 'sync-tile-radius');
 }
 
 export function subtractTerrainMaskBrush(scene: DeepdiveScene, worldX: number, worldY: number, radius: number, strength = 0.65) {
@@ -102,6 +108,14 @@ export function subtractTerrainMaskBrush(scene: DeepdiveScene, worldX: number, w
   }
   scene.terrainDirty = true;
   scene.terrainBoundsKey = '';
+  scene.terrainRevision += 1;
+  scene.markTerrainRegionDirty(
+    Math.floor(minSx / TERRAIN_MASK_RES) - 1,
+    Math.floor(maxSx / TERRAIN_MASK_RES) + 1,
+    Math.floor(minSy / TERRAIN_MASK_RES) - 1,
+    Math.floor(maxSy / TERRAIN_MASK_RES) + 1,
+    'mask-brush-radius',
+  );
 }
 
 export function terrainMaskDensityAt(scene: DeepdiveScene, sx: number, sy: number) {

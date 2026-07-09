@@ -16,6 +16,7 @@ export const state = {
   selectedTool: 'drill' as ToolId,
   unlockedTools: createDefaultUnlockedTools(),
   sonarRevealed: new Set<string>(),
+  sonarRevealRevision: 0,
   sonarContacts: [] as SonarContact[],
   scannedSpecies: new Set<string>(),
   sampledSpecies: new Set<string>(),
