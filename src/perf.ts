@@ -17,7 +17,11 @@ type PerfMetric = {
 type PerfFrameSample = {
   frame: number;
   at: number;
+  frameStartAt: number;
+  postRenderAt: number;
   rafDeltaMs: number;
+  independentRafDeltaMs: number;
+  postRenderToRafMs: number;
   updateMs: number;
   drawMs: number;
   camera: { x: number; y: number; width: number; height: number };
@@ -30,7 +34,7 @@ type PerfFrameSample = {
   articulatedTiers: { full: number; near: number; far: number; offscreen: number; fullSteps: number; skippedSteps: number; terrainPasses: number };
   terrain: { dirty: boolean; dirtyChunks: number; dirtyTiles: number; reason: string; contactSamples: number; contactSamplesDelta: number };
   sonar: { open: boolean; zoom: number; revealed: number; contacts: number; cache?: Record<string, number | string | boolean | null> };
-  outer: { frameTotalMs: number; stepMs: number; renderMs: number; postStepToRenderMs: number; renderer: string };
+  outer: { frameTotalMs: number; stepMs: number; renderMs: number; postStepToRenderMs: number; telemetryMs: number; renderer: string };
   memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number; deltaUsedJSHeapSize: number };
   longTasks: Array<{ startTime: number; duration: number; name: string }>;
 };
@@ -66,6 +70,9 @@ export type PerfTelemetry = {
     preRenderAt: number;
     postRenderAt: number;
     rafDeltaMs: number;
+    independentRafDeltaMs: number;
+    lastIndependentRafAt: number;
+    telemetryMs: number;
     renderer: string;
   };
   fishTiers: {
@@ -121,6 +128,9 @@ export function createPerfTelemetry(): PerfTelemetry {
       preRenderAt: 0,
       postRenderAt: 0,
       rafDeltaMs: 0,
+      independentRafDeltaMs: 0,
+      lastIndependentRafAt: 0,
+      telemetryMs: 0,
       renderer: 'unknown',
     },
     fishTiers: {
@@ -213,11 +223,31 @@ export function recordPerf(
 
 export function installOuterPerfTelemetry(game: Phaser.Game, sceneForMetrics: () => DeepdiveScene | null | undefined) {
   if (!perfEnabled()) return;
+  const observePresentationCadence = (at: number) => {
+    const scene = sceneForMetrics();
+    const perf = scene?.perfTelemetry;
+    if (scene && perf?.enabled) {
+      const previousAt = perf.outerFrame.lastIndependentRafAt;
+      perf.outerFrame.lastIndependentRafAt = at;
+      if (previousAt > 0) {
+        const delta = at - previousAt;
+        perf.outerFrame.independentRafDeltaMs = delta;
+        recordPerf(scene, 'presentation.rafDelta', delta, { renderer: perf.outerFrame.renderer });
+        const sample = perf.frames[perf.frames.length - 1];
+        if (sample && sample.independentRafDeltaMs === 0) {
+          sample.independentRafDeltaMs = round(delta);
+          sample.postRenderToRafMs = round(Math.max(0, at - sample.postRenderAt));
+        }
+      }
+    }
+    requestAnimationFrame(observePresentationCadence);
+  };
+  requestAnimationFrame(observePresentationCadence);
   const events = Phaser.Core.Events;
   game.events.on(events.PRE_STEP, (_time: number, delta: number) => {
     const scene = sceneForMetrics();
     const perf = scene?.perfTelemetry;
-    if (!perf?.enabled) return;
+    if (!scene || !perf?.enabled) return;
     perf.outerFrame.installed = true;
     perf.outerFrame.stepStartAt = performance.now();
     perf.outerFrame.rafDeltaMs = delta;
@@ -227,14 +257,14 @@ export function installOuterPerfTelemetry(game: Phaser.Game, sceneForMetrics: ()
   game.events.on(events.POST_STEP, () => {
     const scene = sceneForMetrics();
     const perf = scene?.perfTelemetry;
-    if (!perf?.enabled || !perf.outerFrame.stepStartAt) return;
+    if (!scene || !perf?.enabled || !perf.outerFrame.stepStartAt) return;
     perf.outerFrame.postStepAt = performance.now();
     recordPerf(scene, 'outer.step', perf.outerFrame.postStepAt - perf.outerFrame.stepStartAt);
   });
   game.events.on(events.PRE_RENDER, () => {
     const scene = sceneForMetrics();
     const perf = scene?.perfTelemetry;
-    if (!perf?.enabled) return;
+    if (!scene || !perf?.enabled) return;
     perf.outerFrame.preRenderAt = performance.now();
     if (perf.outerFrame.postStepAt) {
       recordPerf(scene, 'outer.postStepToRender', perf.outerFrame.preRenderAt - perf.outerFrame.postStepAt);
@@ -243,7 +273,7 @@ export function installOuterPerfTelemetry(game: Phaser.Game, sceneForMetrics: ()
   game.events.on(events.POST_RENDER, () => {
     const scene = sceneForMetrics();
     const perf = scene?.perfTelemetry;
-    if (!perf?.enabled) return;
+    if (!scene || !perf?.enabled) return;
     perf.outerFrame.postRenderAt = performance.now();
     if (perf.outerFrame.preRenderAt) {
       recordPerf(scene, 'outer.render', perf.outerFrame.postRenderAt - perf.outerFrame.preRenderAt, { renderer: perf.outerFrame.renderer });
@@ -251,7 +281,12 @@ export function installOuterPerfTelemetry(game: Phaser.Game, sceneForMetrics: ()
     if (perf.outerFrame.stepStartAt) {
       recordPerf(scene, 'outer.frameTotal', perf.outerFrame.postRenderAt - perf.outerFrame.stepStartAt, { renderer: perf.outerFrame.renderer });
     }
-    recordPerfFrame(scene, perf.outerFrame.rafDeltaMs || 0);
+    const telemetryStartedAt = performance.now();
+    const sample = recordPerfFrame(scene, perf.outerFrame.rafDeltaMs || 0);
+    const telemetryMs = performance.now() - telemetryStartedAt;
+    perf.outerFrame.telemetryMs = telemetryMs;
+    if (sample) sample.outer.telemetryMs = round(telemetryMs);
+    recordPerf(scene, 'outer.postRenderTelemetry', telemetryMs, { renderer: perf.outerFrame.renderer });
     perf.frame += 1;
   });
 }
@@ -261,7 +296,7 @@ export function markTerrainDirty(scene: DeepdiveScene, reason: string) {
   scene.perfTelemetry.terrainDirtyReason = reason;
 }
 
-export function recordPerfFrame(scene: DeepdiveScene, rafDeltaMs: number) {
+export function recordPerfFrame(scene: DeepdiveScene, rafDeltaMs: number): PerfFrameSample | undefined {
   const perf = scene.perfTelemetry;
   if (!perf?.enabled) return;
   const camera = scene.cameras.main;
@@ -271,22 +306,42 @@ export function recordPerfFrame(scene: DeepdiveScene, rafDeltaMs: number) {
   const startY = Math.max(0, Math.floor(view.y / TILE) - 1);
   const endY = Math.min(WORLD_H - 1, Math.ceil(view.bottom / TILE) + 1);
   const intersects = (x: number, y: number, radius = 40) => x >= view.x - radius && x <= view.right + radius && y >= view.y - radius && y <= view.bottom + radius;
-  const visibleFish = scene.fish.filter((fish) => !fish.dead && intersects(fish.x, fish.y, fish.radius + 24)).length;
-  const visibleArticulated = scene.articulatedCreatures.filter((creature) => !creature.dead && intersects(creature.x, creature.y, creature.radius + 80)).length;
-  const visibleParts = scene.articulatedCreatures
-    .filter((creature) => !creature.dead && intersects(creature.x, creature.y, creature.radius + 80))
-    .reduce((sum, creature) => sum + creature.parts.length, 0);
+  let visibleFish = 0;
+  for (const fish of scene.fish) {
+    if (!fish.dead && intersects(fish.x, fish.y, fish.radius + 24)) visibleFish += 1;
+  }
+  let articulatedParts = 0;
+  let visibleArticulated = 0;
+  let visibleParts = 0;
+  for (const creature of scene.articulatedCreatures) {
+    articulatedParts += creature.parts.length;
+    if (!creature.dead && intersects(creature.x, creature.y, creature.radius + 80)) {
+      visibleArticulated += 1;
+      visibleParts += creature.parts.length;
+    }
+  }
   const now = performance.now();
   const recentLongTasks = perf.longTasks.slice(perf.lastLongTaskCursor);
   perf.lastLongTaskCursor = perf.longTasks.length;
-  const sonarCache = scene.bigSonarMapCacheStats ? { ...scene.bigSonarMapCacheStats } : undefined;
+  const sonarCache = {
+    hudHit: scene.hudSonarMapCacheStats?.hit ?? false,
+    hudBuildMs: scene.hudSonarMapCacheStats?.buildMs ?? 0,
+    fullChartHit: scene.bigSonarMapCacheStats?.hit ?? false,
+    fullChartBuildMs: scene.bigSonarMapCacheStats?.buildMs ?? 0,
+    fullChartZoomBucket: scene.bigSonarMapCacheStats?.zoomBucket ?? 0,
+  };
   const contactSamplesDelta = perf.terrainContactSamples - perf.lastTerrainContactSamples;
   perf.lastTerrainContactSamples = perf.terrainContactSamples;
-  const memory = memorySnapshot(perf);
-  perf.frames.push({
+  // Heap reads are diagnostic sampling, not frame-critical work.
+  const memory = perf.frame % 30 === 0 ? memorySnapshot(perf) : undefined;
+  const sample: PerfFrameSample = {
     frame: perf.frame,
     at: Math.round(now * 100) / 100,
+    frameStartAt: round(perf.outerFrame.stepStartAt),
+    postRenderAt: round(perf.outerFrame.postRenderAt || now),
     rafDeltaMs: round(rafDeltaMs),
+    independentRafDeltaMs: 0,
+    postRenderToRafMs: 0,
     updateMs: round(perf.metrics['update.total']?.lastMs ?? 0),
     drawMs: round(perf.metrics['draw.total']?.lastMs ?? 0),
     camera: { x: round(view.x), y: round(view.y), width: round(view.width), height: round(view.height) },
@@ -296,7 +351,7 @@ export function recordPerfFrame(scene: DeepdiveScene, rafDeltaMs: number) {
     entities: {
       fish: scene.fish.length,
       articulated: scene.articulatedCreatures.length,
-      articulatedParts: scene.articulatedCreatures.reduce((sum, creature) => sum + creature.parts.length, 0),
+      articulatedParts,
       flora: scene.flora.length,
     },
     visible: { fish: visibleFish, articulated: visibleArticulated, articulatedParts: visibleParts },
@@ -322,12 +377,15 @@ export function recordPerfFrame(scene: DeepdiveScene, rafDeltaMs: number) {
       stepMs: round(perf.metrics['outer.step']?.lastMs ?? 0),
       renderMs: round(perf.metrics['outer.render']?.lastMs ?? 0),
       postStepToRenderMs: round(perf.metrics['outer.postStepToRender']?.lastMs ?? 0),
+      telemetryMs: round(perf.outerFrame.telemetryMs),
       renderer: perf.outerFrame.renderer,
     },
     memory,
     longTasks: recentLongTasks,
-  });
+  };
+  perf.frames.push(sample);
   if (perf.frames.length > perf.frameCapacity) perf.frames.splice(0, perf.frames.length - perf.frameCapacity);
+  return sample;
 }
 
 export function perfSnapshot(scene: DeepdiveScene) {
@@ -340,7 +398,7 @@ export function perfSnapshot(scene: DeepdiveScene) {
     terrainMaskMutations: perf.terrainMaskMutations,
     terrainContactSamples: perf.terrainContactSamples,
     propRefresh: { ...perf.propRefresh },
-    frames: perf.frames.slice(-180),
+    frames: perf.frames.slice(-perf.frameCapacity),
     longTasks: perf.longTasks.slice(-40),
     metrics: Object.fromEntries(Object.entries(perf.metrics).map(([key, metric]) => [
       key,
@@ -353,6 +411,9 @@ export function perfSnapshot(scene: DeepdiveScene) {
         p50Ms: round(percentile(metric.windowSamples, 0.5)),
         p95Ms: round(percentile(metric.windowSamples, 0.95)),
         p99Ms: round(percentile(metric.windowSamples, 0.99)),
+        over20: countOver(metric.windowSamples, 20),
+        over33_34: countOver(metric.windowSamples, 33.34),
+        over50: countOver(metric.windowSamples, 50),
         lastMs: round(metric.lastMs),
         context: metric.context ?? {},
       },
@@ -384,15 +445,19 @@ export function updatePerfHud(scene: DeepdiveScene, rafDeltaMs = 0) {
     hud.root.setAttribute('aria-label', 'Perf HUD collapsed');
     return;
   }
-  const metricLine = (key: string) => {
+  const metricLine = (key: string, label = key) => {
     const metric = perf.metrics[key];
-    if (!metric) return `${key}: --`;
-    return `${key}: ${round(metric.avgMs)} avg ${round(metric.maxMs)} max`;
+    if (!metric) return `${label}: --`;
+    return `${label}: ${round(percentile(metric.windowSamples, 0.95))} p95 ${round(percentile(metric.windowSamples, 0.99))} p99 ${round(max(metric.windowSamples))} max`;
   };
   const counts = `fish ${scene.fish.length} art ${scene.articulatedCreatures.length}/${scene.articulatedCreatures.reduce((sum, creature) => sum + creature.parts.length, 0)} sub ${scene.subPartSprites ? Object.keys(scene.subPartSprites).length : 0} props ${scene.environmentProps.length}`;
   hud.body.textContent = [
     'perf',
-    metricLine('frame.total'),
+    metricLine('presentation.rafDelta', 'present cadence'),
+    metricLine('outer.frameTotal', 'CPU step+render'),
+    metricLine('outer.render'),
+    metricLine('outer.postRenderTelemetry', 'post-render telemetry'),
+    metricLine('frame.total', 'scene.update callback'),
     metricLine('update.total'),
     metricLine('draw.total'),
     metricLine('draw.world'),
@@ -480,6 +545,11 @@ function percentile(values: number[], percentileRank: number) {
   const sorted = [...values].sort((a, b) => a - b);
   const index = Math.min(sorted.length - 1, Math.floor(sorted.length * percentileRank));
   return sorted[index] ?? 0;
+}
+
+function countOver(values: number[], threshold: number) {
+  const count = values.filter((value) => value > threshold).length;
+  return { count, pct: values.length ? round((count / values.length) * 100) : 0 };
 }
 
 function rendererName(game: Phaser.Game) {

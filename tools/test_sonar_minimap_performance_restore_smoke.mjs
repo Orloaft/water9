@@ -4,6 +4,7 @@ import net from 'node:net';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
 import {
+  assertSteadyGameplayCadence,
   finishCadenceProbe,
   installBrowserPerfObservers,
   startCadenceProbe,
@@ -185,6 +186,14 @@ async function normalBandProof(page, band) {
   if (!gameStats || gameStats.litPixels < 1000 || gameStats.grayRange < 20) fail(`${band.name}: #game canvas capture was blank or unreadable`);
   if (drawBigSonarMap?.samples) fail(`${band.name}: ordinary swimming called draw.bigSonarMap`);
   if ((cadenceProbe?.independentRaf?.samples ?? 0) < 100) fail(`${band.name}: ordinary swim rAF probe did not collect enough samples`);
+  assertSteadyGameplayCadence({
+    label: `sonar minimap ${band.name}`,
+    independentRaf: cadenceProbe?.independentRaf ?? null,
+    perf: snap?.perf,
+    longTasks: cadenceProbe?.longTasks ?? [],
+    errors,
+    minFrames: 100,
+  });
   return {
     band,
     teleport,
@@ -257,6 +266,14 @@ try {
   const sonarBigMetric = sonarSnap?.perf?.metrics?.['draw.bigSonarMap'] ?? null;
   if (!sonarSnap?.ui?.sonarMapOpen || sonarSnap?.state?.selectedTool !== 'sonar') fail('sonar tool did not keep the full chart open');
   if (!sonarBigMetric?.samples) fail('sonar tool full chart did not measure draw.bigSonarMap');
+  assertSteadyGameplayCadence({
+    label: 'sonar full chart pan',
+    independentRaf: sonarCadenceProbe?.independentRaf ?? null,
+    perf: sonarSnap?.perf,
+    longTasks: sonarCadenceProbe?.longTasks ?? [],
+    errors,
+    minFrames: 60,
+  });
 
   report = {
     ok: errors.length === 0,

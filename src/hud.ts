@@ -74,6 +74,9 @@ export function renderHud() {
     state.bleed.active ? `BLEEDING x${state.bleed.stacks}: suit integrity is leaking for ${Math.ceil(state.bleed.duration)}s.` : '',
   ].filter(Boolean);
   const statusText = statusFlags.length ? `${statusFlags.join(' ')} ${state.status}` : state.status;
+  // The gauges markup changes frequently, but the sonar bitmap does not. Retain
+  // the live canvas node across DOM refreshes so its pixels/cache survive.
+  const retainedSonarCanvas = gauges.querySelector<HTMLCanvasElement>('#sonar-map');
   gauges.innerHTML = `
     <div class="readout">
       <div><strong>${state.credits}</strong><span>Credits</span></div>
@@ -92,6 +95,12 @@ export function renderHud() {
     ${cargoManifest()}
     <p class="status ${state.saveLoad.phase === 'error' ? 'is-error' : ''} ${state.venom.active || state.bleed.active ? 'is-venomed' : ''}">${statusText}</p>
   `;
+  const replacementSonarCanvas = gauges.querySelector<HTMLCanvasElement>('#sonar-map');
+  if (retainedSonarCanvas && replacementSonarCanvas && retainedSonarCanvas !== replacementSonarCanvas) {
+    replacementSonarCanvas.replaceWith(retainedSonarCanvas);
+  } else if (!retainedSonarCanvas && replacementSonarCanvas) {
+    gameScene()?.requestSonarMapDraw();
+  }
   renderGameOver(app);
   renderVictoryPanel(app);
   const bargeOpen = state.started && state.atBoat && !radioActive && !state.lost && !victoryActive;
@@ -114,7 +123,6 @@ export function renderHud() {
   biomeLoading.setAttribute('data-progress', String(Math.round(state.biomeLoading.progress * 100)));
   setStableHtml(biomeLoading, state.biomeLoading.active ? biomeLoadingPanel() : '');
   restoreControllerFocus();
-  gameScene()?.drawSonarMap();
 }
 
 export function objectivePanel() {
@@ -293,7 +301,7 @@ export function renderGameOver(app: HTMLDivElement) {
     </div>
     <button data-restart>Restart run</button>
   `;
-  gameScene()?.drawSonarMap();
+  gameScene()?.requestSonarMapDraw();
 }
 
 export function renderVictoryPanel(app: HTMLDivElement) {
@@ -326,7 +334,7 @@ export function renderVictoryPanel(app: HTMLDivElement) {
       <button data-restart data-focus-key="new-expedition">New Expedition</button>
     </div>
   `;
-  gameScene()?.drawSonarMap();
+  gameScene()?.requestSonarMapDraw();
 }
 
 export function setStableHtml(element: HTMLElement, html: string) {
@@ -1205,7 +1213,7 @@ export function openSonarMapFromTool() {
   state.sonarMapOpen = true;
   gameScene()?.captureSonarContacts();
   renderHud();
-  requestAnimationFrame(() => gameScene()?.drawSonarMap());
+  gameScene()?.requestSonarMapDraw();
   return true;
 }
 

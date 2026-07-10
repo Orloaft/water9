@@ -52,13 +52,13 @@ export function sonarPing(this: DeepdiveScene, ) {
       if (creature.state === 'patrol') creature.state = 'stalk';
       attracted += 1;
     }
-    this.drawSonarMap();
+    this.requestSonarMapDraw();
     state.status = attracted > 0
       ? `Sonar ping mapped nearby stone and drew ${attracted} hostile signal${attracted === 1 ? '' : 's'} closer.`
       : 'Sonar ping mapped nearby stone. No hostile signals answered.';
     if (openedChart) state.sonarMapOpen = true;
     renderHud();
-    this.drawSonarMap();
+    this.requestSonarMapDraw();
   }
 
 export function captureSonarContacts(this: DeepdiveScene, ) {
@@ -103,5 +103,5 @@ export function revealSonarAtWorld(this: DeepdiveScene, worldX: number, worldY: 
       }
     }
     if (changed) state.sonarRevealRevision += 1;
-    this.drawSonarMap();
+    this.requestSonarMapDraw();
   }

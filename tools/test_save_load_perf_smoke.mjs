@@ -245,9 +245,11 @@ try {
   const restoreRaf = restoreCadenceProbe?.independentRaf ?? null;
   const restoreLongTasks = restoreCadenceProbe?.longTasks?.filter((task) => task.duration >= 50) ?? [];
   if (!restoreRaf?.samples) fail('save/load restore transition did not record independent rAF samples');
-  if ((restoreRaf?.max ?? 0) > 1000) fail(`save/load restore transition had an unbounded frame gap: ${restoreRaf.max}ms`);
-  if (restoreLongTasks.some((task) => task.duration >= 1000)) {
-    fail(`save/load restore transition had a >=1000ms Long Task; max ${Math.round(Math.max(...restoreLongTasks.map((task) => task.duration))) }ms`);
+  if ((restoreRaf?.max ?? 0) > 100) fail(`save/load restore transition severe frame gap: ${restoreRaf.max}ms`);
+  if ((restoreRaf?.over50?.count ?? 0) > 1) fail(`save/load restore transition had ${restoreRaf.over50.count} frames over 50ms (one bounded handoff allowed)`);
+  if ((restoreRaf?.over33_34?.pct ?? 0) > 10) fail(`save/load restore transition sustained doubled frames: ${restoreRaf.over33_34.pct}%`);
+  if (restoreLongTasks.length > 1 || restoreLongTasks.some((task) => task.duration > 100)) {
+    fail(`save/load restore transition Long Task budget exceeded; count ${restoreLongTasks.length}, max ${Math.round(Math.max(0, ...restoreLongTasks.map((task) => task.duration)))}ms`);
   }
   assertSteadyGameplayCadence({
     label: 'save/load after restore settled swim',

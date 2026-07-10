@@ -491,10 +491,14 @@ export function drawGameOver(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D
 
 export function drawWorld(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
     const view = camera.worldView;
-    const startX = Math.max(0, Math.floor(view.x / TILE) - 1);
-    const endX = Math.min(WORLD_W - 1, Math.ceil(view.right / TILE) + 1);
-    const startY = Math.max(0, Math.floor(view.y / TILE) - 1);
-    const endY = Math.min(WORLD_H - 1, Math.ceil(view.bottom / TILE) + 1);
+    // Retain a snapped, padded terrain window so ordinary camera movement does
+    // not clear and rebuild all procedural terrain at every tile crossing.
+    const span = 4;
+    const padding = 2;
+    const startX = Math.max(0, Math.floor((Math.floor(view.x / TILE) - padding) / span) * span);
+    const endX = Math.min(WORLD_W - 1, Math.ceil((Math.ceil(view.right / TILE) + padding) / span) * span);
+    const startY = Math.max(0, Math.floor((Math.floor(view.y / TILE) - padding) / span) * span);
+    const endY = Math.min(WORLD_H - 1, Math.ceil((Math.ceil(view.bottom / TILE) + padding) / span) * span);
     const boundsKey = `${startX}:${endX}:${startY}:${endY}`;
     if (!this.terrainDirty && boundsKey === this.terrainBoundsKey) return;
 
@@ -4058,6 +4062,15 @@ export function drawSonarMap(this: DeepdiveScene, ) {
     measurePerf(this, 'draw.sonarMap', () => drawSonarMapBody.call(this));
   }
 
+export function requestSonarMapDraw(this: DeepdiveScene) {
+    if (this.sonarDrawScheduled) return;
+    this.sonarDrawScheduled = true;
+    requestAnimationFrame(() => {
+      this.sonarDrawScheduled = false;
+      this.drawSonarMap();
+    });
+  }
+
 type HudSonarStaticCache = {
   key: string;
   canvas: HTMLCanvasElement;
@@ -4217,7 +4230,15 @@ function ensureHudSonarStaticCache(scene: DeepdiveScene, size: number, centerX: 
       size,
     ].join(':');
     const cached = hudSonarStaticCaches.get(scene);
-    if (cached?.key === key) return cached;
+    if (cached?.key === key) {
+      scene.hudSonarMapCacheStats = {
+        hit: true,
+        buildMs: cached.buildMs,
+        revealedRevision: state.sonarRevealRevision,
+        terrainRevision: scene.terrainRevision,
+      };
+      return cached;
+    }
     const startedAt = performance.now();
     const raster = cached?.canvas ?? document.createElement('canvas');
     if (raster.width !== size || raster.height !== size) {
@@ -4258,6 +4279,12 @@ function ensureHudSonarStaticCache(scene: DeepdiveScene, size: number, centerX: 
     }
     const cache = { key, canvas: raster, buildMs: Math.round((performance.now() - startedAt) * 100) / 100 };
     hudSonarStaticCaches.set(scene, cache);
+    scene.hudSonarMapCacheStats = {
+      hit: false,
+      buildMs: cache.buildMs,
+      revealedRevision: state.sonarRevealRevision,
+      terrainRevision: scene.terrainRevision,
+    };
     return cache;
   }
 

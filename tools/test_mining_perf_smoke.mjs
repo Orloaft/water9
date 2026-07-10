@@ -147,7 +147,7 @@ try {
   const maxDirtyChunks = Math.max(0, ...dirtyContexts.map((entry) => entry.dirtyChunks ?? 0));
   const maxDirtyTiles = Math.max(0, ...dirtyContexts.map((entry) => entry.dirtyTiles ?? 0));
   if (!drawWorld?.samples) errors.push({ type: 'assertion', text: 'draw.world did not record samples' });
-  if ((drawWorld?.maxMs ?? 0) > 4) errors.push({ type: 'assertion', text: `draw.world maxMs too high: ${drawWorld?.maxMs}` });
+  if ((drawWorld?.windowMaxMs ?? drawWorld?.trueMaxMs ?? 0) > 4) errors.push({ type: 'assertion', text: `draw.world raw window max too high: ${drawWorld?.windowMaxMs ?? drawWorld?.trueMaxMs}` });
   if (maxDirtyChunks > 12) errors.push({ type: 'assertion', text: `dirty chunk count too high: ${maxDirtyChunks}` });
   assertSteadyGameplayCadence({
     label: 'mining terrain invalidation',

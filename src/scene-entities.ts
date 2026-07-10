@@ -1205,11 +1205,11 @@ export function updateSonarPings(this: DeepdiveScene, delta: number) {
       contact.age += delta;
     }
     if (hadPings) {
-      this.drawSonarMap();
+      this.requestSonarMapDraw();
     }
     if (state.sonarContacts.some((contact) => contact.age > 14)) {
       state.sonarContacts = state.sonarContacts.filter((contact) => contact.age <= 14);
-      this.drawSonarMap();
+      this.requestSonarMapDraw();
     }
   }
 

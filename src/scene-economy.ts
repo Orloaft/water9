@@ -113,7 +113,7 @@ export function acceptQuest(this: DeepdiveScene, id: string) {
         ? 'Forward outpost kit loaded. In Biome 3, press F near oxygen flora and solid terrain below 900 m to establish a limited air pocket.'
         : `${quest.title} accepted.`;
     renderHud();
-    this.drawSonarMap();
+    this.requestSonarMapDraw();
   }
 
 export function claimQuest(this: DeepdiveScene, id: string) {
@@ -128,7 +128,7 @@ export function claimQuest(this: DeepdiveScene, id: string) {
       ? `${quest.title} complete. ${quest.reward.toLocaleString()} credits transferred. Marlin fabrication voucher active: 12,000c discount.`
       : `${quest.title} complete. ${quest.reward.toLocaleString()} credits transferred.`;
     renderHud();
-    this.drawSonarMap();
+    this.requestSonarMapDraw();
   }
 
 export function travelToNextBiome(this: DeepdiveScene, ) {
@@ -189,7 +189,7 @@ export function updateQuestProgress(this: DeepdiveScene, ) {
     if (!quest || quest.completed || quest.claimed) return;
     quest.progress = Phaser.Math.Clamp(questProgressSource(quest) - quest.startValue, 0, quest.target);
     if (quest.progress < quest.target || quest.kind === 'nest') {
-      if (quest.kind === 'nest' && this.hasActiveNestLocator()) this.drawSonarMap();
+      if (quest.kind === 'nest' && this.hasActiveNestLocator()) this.requestSonarMapDraw();
       return;
     }
     this.completeQuest(quest, `${quest.title} complete. Return to the barge to collect ${quest.reward.toLocaleString()} credits.`);
@@ -202,7 +202,7 @@ export function completeQuest(this: DeepdiveScene, quest: Quest, status: string)
     state.status = status;
     this.spawnFloatingText('Quest complete', 0xffd166);
     renderHud();
-    this.drawSonarMap();
+    this.requestSonarMapDraw();
   }
 
 export function completeNestQuest(this: DeepdiveScene, room: SpecialRoom) {

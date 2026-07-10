@@ -139,8 +139,12 @@ async function finishRafProbe(page) {
       durationMs: Math.round(performance.now() - (probe?.startedAt ?? performance.now())),
       avgFrameMs: Math.round(avg * 100) / 100,
       p95FrameMs: Math.round(percentile(0.95) * 100) / 100,
+      p99FrameMs: Math.round(percentile(0.99) * 100) / 100,
       maxFrameMs: Math.round((probe?.maxFrameMs ?? 0) * 100) / 100,
       longFrames: probe?.longFrames ?? 0,
+      over20: frames.filter((frame) => frame > 20).length,
+      over33_34: frames.filter((frame) => frame > 33.34).length,
+      over50: frames.filter((frame) => frame > 50).length,
     };
   });
 }
@@ -276,13 +280,18 @@ try {
   if (!coveredByOverlay) fail('start transition did not record the loading overlay covering the opened radio dialogue');
   if (blockedByRadioOnly) fail('radio dialogue was visible without the loading overlay before world readiness');
   if (readyAfterStart?.world?.ready === false || readyAfterStart?.ui?.biomeLoading?.active) fail('world did not reach a non-loading ready state after start');
+  // Loading may have one bounded asset/world handoff, but multi-frame doubled
+  // cadence or a severe synchronous stall is never accepted silently.
+  if ((startupRaf?.maxFrameMs ?? 0) > 250) fail(`startup transition severe frame stall: ${startupRaf?.maxFrameMs}ms`);
+  if ((startupRaf?.over50 ?? 0) > 1) fail(`startup transition had ${startupRaf?.over50} frames over 50ms (one bounded handoff allowed)`);
+  if ((startupRaf?.over33_34 ?? 0) > 2) fail(`startup transition had sustained doubled frames: ${startupRaf?.over33_34}`);
   if (!teleport?.ok) fail(`teleportToReachableDepth failed: ${teleport?.reason ?? 'unknown'}`);
   for (const key of ['frame.total', 'update.total', 'draw.total', 'draw.sonarMap']) {
     if (!metric(key)?.samples) fail(`perf metric ${key} did not record samples`);
   }
   if (metric('draw.bigSonarMap')?.samples) fail('hidden big sonar map was redrawn during closed-map swimming');
-  if ((metric('frame.total')?.avgMs ?? 0) > 34) fail(`frame.total avg too high: ${metric('frame.total')?.avgMs}`);
-  if ((metric('draw.total')?.avgMs ?? 0) > 26) fail(`draw.total avg too high: ${metric('draw.total')?.avgMs}`);
+  if ((metric('frame.total')?.p95Ms ?? 0) > 34) fail(`frame.total raw-window p95 too high: ${metric('frame.total')?.p95Ms}`);
+  if ((metric('draw.total')?.p95Ms ?? 0) > 26) fail(`draw.total raw-window p95 too high: ${metric('draw.total')?.p95Ms}`);
   assertSteadyGameplayCadence({
     label: 'loading first settled swim',
     independentRaf: swimRaf,

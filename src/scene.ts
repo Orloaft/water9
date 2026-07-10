@@ -98,6 +98,8 @@ export class DeepdiveScene extends Phaser.Scene {
   terrainLastMutationStats = { reason: 'boot', dirtyTiles: 0, dirtyChunks: 0 };
   terrainRevision = 0;
   bigSonarMapCacheStats: Record<string, number | string | boolean | null> = {};
+  hudSonarMapCacheStats: Record<string, number | string | boolean | null> = {};
+  sonarDrawScheduled = false;
   environmentPropRefreshQueue: Array<{ minX: number; maxX: number; minY: number; maxY: number; reason: string }> = [];
   perfTelemetry: PerfTelemetry = createPerfTelemetry();
   worldReady = false;
@@ -881,7 +883,7 @@ export class DeepdiveScene extends Phaser.Scene {
       changed = true;
     }
     if (changed) {
-      this.drawSonarMap();
+      this.requestSonarMapDraw();
       return true;
     }
     return false;
@@ -1488,6 +1490,7 @@ export interface DeepdiveScene {
   drawFlares: OmitThisParameter<typeof renderingNs.drawFlares>;
   drawForwardOutpost: OmitThisParameter<typeof renderingNs.drawForwardOutpost>;
   drawSonarMap: OmitThisParameter<typeof renderingNs.drawSonarMap>;
+  requestSonarMapDraw: OmitThisParameter<typeof renderingNs.requestSonarMapDraw>;
   drawLooseItems: OmitThisParameter<typeof renderingNs.drawLooseItems>;
 }
 

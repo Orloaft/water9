@@ -238,6 +238,19 @@ try {
   const frames = perf?.frames ?? [];
   const independentRaf = cadenceProbe?.independentRaf ?? null;
   if (frames.length <= 30) errors.push({ type: 'assertion', text: 'perf frame buffer did not collect enough B4 frame samples' });
+  const density = {
+    fish: Math.max(0, ...frames.map((frame) => frame.entities?.fish ?? 0)),
+    articulated: Math.max(0, ...frames.map((frame) => frame.entities?.articulated ?? 0)),
+    articulatedParts: Math.max(0, ...frames.map((frame) => frame.entities?.articulatedParts ?? 0)),
+    visibleParts: Math.max(0, ...frames.map((frame) => frame.visible?.articulatedParts ?? 0)),
+    fullSteps: Math.max(0, ...frames.map((frame) => frame.articulatedTiers?.fullSteps ?? 0)),
+    terrainPasses: Math.max(0, ...frames.map((frame) => frame.articulatedTiers?.terrainPasses ?? 0)),
+  };
+  if (density.fish < 150) errors.push({ type: 'assertion', text: `B4 fish density floor missed: ${density.fish} < 150` });
+  if (density.articulated < 8 || density.articulatedParts < 80) errors.push({ type: 'assertion', text: `B4 articulated density floor missed: ${density.articulated}/${density.articulatedParts}` });
+  if (density.visibleParts < 5) errors.push({ type: 'assertion', text: `B4 visible articulated-part floor missed: ${density.visibleParts} < 5` });
+  if (density.fullSteps > 8) errors.push({ type: 'assertion', text: `B4 full simulation budget exceeded: ${density.fullSteps} > 8` });
+  if (density.terrainPasses > 18) errors.push({ type: 'assertion', text: `B4 terrain-correction budget exceeded: ${density.terrainPasses} > 18` });
   assertSteadyGameplayCadence({
     label: `B4 ${renderer}`,
     independentRaf,
@@ -262,6 +275,7 @@ try {
     classification: classify(perf, independentRaf),
     cadenceProbe: cadenceProbe ? { label: cadenceProbe.label, durationMs: cadenceProbe.durationMs } : null,
     independentRaf,
+    density,
     frameSummary: summarizeFrames(frames),
     metrics: {
       frameTotal: summarizePerfMetric(perf?.metrics?.['frame.total']),
