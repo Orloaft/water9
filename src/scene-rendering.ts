@@ -4058,6 +4058,14 @@ export function drawSonarMap(this: DeepdiveScene, ) {
     measurePerf(this, 'draw.sonarMap', () => drawSonarMapBody.call(this));
   }
 
+type HudSonarStaticCache = {
+  key: string;
+  canvas: HTMLCanvasElement;
+  buildMs: number;
+};
+
+const hudSonarStaticCaches = new WeakMap<DeepdiveScene, HudSonarStaticCache>();
+
 function drawSonarMapBody(this: DeepdiveScene) {
     const canvas = document.querySelector<HTMLCanvasElement>('#sonar-map');
     if (!this.world.length) return;
@@ -4083,48 +4091,21 @@ function drawSonarMapBody(this: DeepdiveScene) {
     const centerY = Math.floor(this.player.y / TILE);
     const viewRadius = 26;
     const cell = size / (viewRadius * 2 + 1);
+    const staticCache = ensureHudSonarStaticCache(this, size, centerX, centerY, viewRadius, cell);
     ctx.save();
     ctx.beginPath();
     ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
     ctx.clip();
-    for (let y = centerY - viewRadius; y <= centerY + viewRadius; y += 1) {
-      for (let x = centerX - viewRadius; x <= centerX + viewRadius; x += 1) {
-        if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
-        if (!state.sonarRevealed.has(sonarKey(x, y))) continue;
-        const tile = this.getTile(x, y);
-        const px = Math.floor((x - centerX + viewRadius) * cell);
-        const py = Math.floor((y - centerY + viewRadius) * cell);
-        const drawSize = Math.max(2, Math.ceil(cell) + 1);
-        const solid = tiles[tile].solid;
-        if (!solid) {
-          ctx.fillStyle = 'rgba(12, 88, 111, 0.42)';
-          ctx.fillRect(px, py, drawSize, drawSize);
-          continue;
-        }
-        const north = y <= 0 || !tiles[this.getTile(x, y - 1)].solid;
-        const south = y >= WORLD_H - 1 || !tiles[this.getTile(x, y + 1)].solid;
-        const west = x <= 0 || !tiles[this.getTile(x - 1, y)].solid;
-        const east = x >= WORLD_W - 1 || !tiles[this.getTile(x + 1, y)].solid;
-        const isEdge = north || south || west || east;
-        if (isEdge) {
-          ctx.fillStyle = sonarTileColor(tile, true);
-          ctx.fillRect(px, py, drawSize, drawSize);
-        } else if (tile === 'stone' || tile === 'sand' || tile === 'bedrock' || tile === 'anchorstone') {
-          ctx.fillStyle = sonarTileColor(tile, false);
-          ctx.fillRect(px, py, drawSize, drawSize);
-        } else if (tiles[tile].value > 0 || isArtifactTile(tile)) {
-          ctx.fillStyle = sonarTileColor(tile, false);
-          ctx.fillRect(px, py, drawSize, drawSize);
-        }
-      }
-    }
+    ctx.drawImage(staticCache.canvas, 0, 0);
     for (const ping of this.sonarPings) {
       const t = Phaser.Math.Clamp(ping.age / ping.life, 0, 1);
-      const radius = Phaser.Math.Linear(8, (SONAR_REVEAL_RADIUS_TILES / viewRadius) * (size / 2), t);
+      const px = size / 2 + ((ping.x / TILE) - centerX) * cell;
+      const py = size / 2 + ((ping.y / TILE) - centerY) * cell;
+      const radius = Phaser.Math.Linear(8, SONAR_REVEAL_RADIUS_TILES * cell, t);
       ctx.strokeStyle = `rgba(115, 251, 211, ${0.72 * (1 - t)})`;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(size / 2, size / 2, radius, 0, Math.PI * 2);
+      ctx.arc(px, py, radius, 0, Math.PI * 2);
       ctx.stroke();
     }
     const bargeX = WORLD_W * TILE * 0.5;
@@ -4222,6 +4203,62 @@ function drawSonarMapBody(this: DeepdiveScene) {
     ctx.lineTo(size / 2 - 5, size / 2 + 5);
     ctx.closePath();
     ctx.fill();
+  }
+
+function ensureHudSonarStaticCache(scene: DeepdiveScene, size: number, centerX: number, centerY: number, viewRadius: number, cell: number) {
+    const key = [
+      state.biome,
+      rng.seed,
+      state.sonarRevealRevision,
+      scene.terrainRevision,
+      centerX,
+      centerY,
+      viewRadius,
+      size,
+    ].join(':');
+    const cached = hudSonarStaticCaches.get(scene);
+    if (cached?.key === key) return cached;
+    const startedAt = performance.now();
+    const raster = cached?.canvas ?? document.createElement('canvas');
+    if (raster.width !== size || raster.height !== size) {
+      raster.width = size;
+      raster.height = size;
+    }
+    const ctx = raster.getContext('2d');
+    if (!ctx) {
+      const fallback = { key, canvas: raster, buildMs: 0 };
+      hudSonarStaticCaches.set(scene, fallback);
+      return fallback;
+    }
+    ctx.clearRect(0, 0, size, size);
+    const drawSize = Math.max(2, Math.ceil(cell) + 1);
+    for (let y = centerY - viewRadius; y <= centerY + viewRadius; y += 1) {
+      for (let x = centerX - viewRadius; x <= centerX + viewRadius; x += 1) {
+        if (x < 0 || y < 0 || x >= WORLD_W || y >= WORLD_H) continue;
+        if (!state.sonarRevealed.has(sonarKey(x, y))) continue;
+        const tile = scene.getTile(x, y);
+        const px = Math.floor((x - centerX + viewRadius) * cell);
+        const py = Math.floor((y - centerY + viewRadius) * cell);
+        const solid = tiles[tile].solid;
+        if (!solid) {
+          ctx.fillStyle = 'rgba(12, 88, 111, 0.42)';
+          ctx.fillRect(px, py, drawSize, drawSize);
+          continue;
+        }
+        const north = y <= 0 || !tiles[scene.getTile(x, y - 1)].solid;
+        const south = y >= WORLD_H - 1 || !tiles[scene.getTile(x, y + 1)].solid;
+        const west = x <= 0 || !tiles[scene.getTile(x - 1, y)].solid;
+        const east = x >= WORLD_W - 1 || !tiles[scene.getTile(x + 1, y)].solid;
+        const edge = north || south || west || east;
+        if (edge || tile === 'stone' || tile === 'sand' || tile === 'bedrock' || tile === 'anchorstone' || tiles[tile].value > 0 || isArtifactTile(tile)) {
+          ctx.fillStyle = sonarTileColor(tile, edge);
+          ctx.fillRect(px, py, drawSize, drawSize);
+        }
+      }
+    }
+    const cache = { key, canvas: raster, buildMs: Math.round((performance.now() - startedAt) * 100) / 100 };
+    hudSonarStaticCaches.set(scene, cache);
+    return cache;
   }
 
 type BigSonarStaticCache = {

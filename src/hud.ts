@@ -1230,6 +1230,7 @@ export function navigationPanel() {
         <span>Nav</span>
         <strong>${heading}</strong>
       </div>
+      <canvas id="sonar-map" width="224" height="224" aria-label="Local sonar minimap"></canvas>
       <dl>
         <div><dt>Dock</dt><dd>${Math.abs(dockDeltaTiles).toLocaleString()} ${dockVertical} / ${dockHorizontal}</dd></div>
         <div><dt>Chart</dt><dd>${state.sonarRevealed.size.toLocaleString()} cells</dd></div>

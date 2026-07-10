@@ -160,6 +160,37 @@ async function captureOverlay(page, name) {
   return path;
 }
 
+async function canvasPixelStats(page, selector) {
+  return page.evaluate((canvasSelector) => {
+    const canvas = document.querySelector(canvasSelector);
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return null;
+    const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let lit = 0;
+    let alpha = 0;
+    let contrastMin = 255;
+    let contrastMax = 0;
+    for (let i = 0; i < image.data.length; i += 4) {
+      const a = image.data[i + 3];
+      if (a > 0) alpha += 1;
+      const gray = Math.round(image.data[i] * 0.2126 + image.data[i + 1] * 0.7152 + image.data[i + 2] * 0.0722);
+      if (gray > 24 && a > 0) lit += 1;
+      if (a > 0) {
+        contrastMin = Math.min(contrastMin, gray);
+        contrastMax = Math.max(contrastMax, gray);
+      }
+    }
+    return {
+      width: canvas.width,
+      height: canvas.height,
+      alphaPixels: alpha,
+      litPixels: lit,
+      grayRange: contrastMax - contrastMin,
+    };
+  }, selector);
+}
+
 if (server) await waitForServer(baseUrl);
 
 const browser = await chromium.launch({ headless: true });
@@ -212,6 +243,7 @@ try {
     hudMiniMapPresent: Boolean(document.querySelector('#sonar-map')),
     navText: document.querySelector('.navigation-panel')?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
   }));
+  const normalMinimapStats = await canvasPixelStats(page, '#sonar-map');
   const normalCanvas = await captureCanvasPair(page, 'normal-swim-canvas');
   const normalBigMetric = afterNormal?.perf?.metrics?.['draw.bigSonarMap'] ?? null;
   report = {
@@ -223,6 +255,7 @@ try {
       state: afterNormal?.state,
       ui: afterNormal?.ui,
       dom: normalDom,
+      minimapStats: normalMinimapStats,
       raf: normalRaf,
       drawBigSonarMap: normalBigMetric,
       artifacts: normalCanvas,
@@ -281,11 +314,13 @@ try {
 
   if (!teleport?.ok) fail(`teleportToReachableDepth failed: ${teleport?.reason ?? 'unknown'}`);
   if (beforeNormal?.ui?.sonarMapOpen || afterNormal?.ui?.sonarMapOpen || normalDom.overlayOpen || normalDom.bigMapPresent) fail('ordinary swimming exposed the full sonar map');
-  if (normalDom.hudMiniMapPresent) fail('ordinary HUD still rendered the sonar minimap canvas');
+  if (!normalDom.hudMiniMapPresent) fail('ordinary HUD did not render the compact sonar minimap canvas');
+  if (!normalMinimapStats || normalMinimapStats.litPixels < 400 || normalMinimapStats.grayRange < 20) fail('ordinary HUD compact sonar minimap was blank or unreadable');
   if (normalBigMetric?.samples) fail('ordinary swimming called draw.bigSonarMap');
   if (!sonarOpen?.ui?.sonarMapOpen || sonarOpen?.state?.selectedTool !== 'sonar') fail('using sonar did not equip/open the full sonar chart');
   if (!sonarBigMetric?.samples) fail('sonar-use mode did not draw the big sonar map');
   if (afterDismiss?.ui?.sonarMapOpen || dismissedDom.overlayOpen || dismissedDom.bigMapPresent) fail('dismiss/unequip left the full sonar map visible');
+  if (!dismissedDom.hudMiniMapPresent) fail('dismiss/unequip removed the compact sonar minimap');
   if (afterDismiss?.state?.selectedTool !== 'drill') fail('dismiss/unequip did not return to the drill tool');
   assertSteadyGameplayCadence({
     label: 'sonar normal swim',
@@ -310,6 +345,7 @@ try {
       before: { selectedTool: beforeNormal?.state?.selectedTool, sonarMapOpen: beforeNormal?.ui?.sonarMapOpen },
       after: { selectedTool: afterNormal?.state?.selectedTool, sonarMapOpen: afterNormal?.ui?.sonarMapOpen },
       dom: normalDom,
+      minimapStats: normalMinimapStats,
       cadenceProbe: normalCadenceProbe ? { label: normalCadenceProbe.label, durationMs: normalCadenceProbe.durationMs } : null,
       raf: normalRaf,
       drawSonarMap: afterNormal?.perf?.metrics?.['draw.sonarMap'] ?? null,
