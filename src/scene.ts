@@ -21,7 +21,7 @@ import { ensureArticulatedTextures } from './articulated';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { createSubmarinePartSprites,ensureSubmarinePartTextures,setSubmarineDrillingFrameProvider } from './submarine-parts';
 import type { SubmarinePartSpriteMap } from './submarine-parts';
-import { ensureTerrainMask,syncTerrainMaskTile,terrainMaskContactForAabb,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
+import { beginStagedTerrainMaskNormalize,beginStagedTerrainMaskRebuild,ensureTerrainMask,fillStagedTerrainMaskRows,finishStagedTerrainMaskRebuild,normalizeStagedTerrainMaskRows,syncTerrainMaskTile,terrainMaskContactForAabb,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
 import { createPerfTelemetry,markTerrainDirty,measurePerf,recordPerf,updatePerfHud } from './perf';
 import type { PerfTelemetry } from './perf';
 
@@ -409,6 +409,62 @@ export class DeepdiveScene extends Phaser.Scene {
     if (this.worldReady) return;
     const startedAt = performance.now();
     const restoreFromSavedWorld = saveLoadNs.hasPendingLoadWorld();
+    const center = Math.floor(WORLD_W / 2);
+    const terrainRowBatch = 105;
+    const terrainSteps = [
+      {
+        status: 'Preparing deterministic terrain...',
+        progress: 0.36,
+        run: () => measurePerf(this, 'worldgen.terrainReset', () => this.beginWorldTerrainGeneration(), { biome: state.biome }),
+      },
+      ...Array.from({ length: Math.ceil(WORLD_H / terrainRowBatch) }, (_, batch) => {
+        const startY = batch * terrainRowBatch;
+        const endY = Math.min(WORLD_H, startY + terrainRowBatch);
+        return {
+          status: `Seeding terrain rows ${startY + 1}-${endY}...`,
+          progress: 0.37 + (endY / WORLD_H) * 0.07,
+          run: () => measurePerf(this, 'worldgen.terrainRows', () => this.generateWorldTerrainRows(startY, endY), { biome: state.biome, startY, endY }),
+        };
+      }),
+      { status: 'Opening the barge shaft...', progress: 0.445, run: () => this.openWorldStarterShaft() },
+      { status: 'Carving starter caverns...', progress: 0.45, run: () => this.carveStarterCaverns(center) },
+      { status: 'Carving deep routes...', progress: 0.46, run: () => this.carveDeepTunnelNetwork(center) },
+      { status: 'Laying anchorstone strata...', progress: 0.47, run: () => this.carveAnchorstoneStrata() },
+      { status: 'Opening special chambers...', progress: 0.48, run: () => this.injectSpecialRooms(center) },
+      { status: 'Shaping terrain lobes...', progress: 0.49, run: () => this.smoothTerrainSilhouetteInitialLobes() },
+      { status: 'Shaping terrain scallops...', progress: 0.495, run: () => this.smoothTerrainSilhouetteInitialScallops() },
+      { status: 'Smoothing terrain pass 1/2...', progress: 0.5, run: () => this.smoothTerrainSilhouettePass(0) },
+      { status: 'Smoothing terrain pass 2/2...', progress: 0.505, run: () => this.smoothTerrainSilhouettePass(1) },
+      { status: 'Finishing terrain lobes...', progress: 0.51, run: () => this.smoothTerrainSilhouetteFinalLobes() },
+      { status: 'Finishing terrain scallops...', progress: 0.515, run: () => this.smoothTerrainSilhouetteFinalScallops() },
+      { status: 'Reserving burrows...', progress: 0.52, run: () => this.reserveBobbitBurrows() },
+      { status: 'Reserving encounters...', progress: 0.525, run: () => this.reserveSignatureEncounters() },
+      { status: 'Placing ore seams...', progress: 0.53, run: () => this.populateOreVeins() },
+    ];
+    const maskRowBatch = 48;
+    const terrainMaskSteps = [
+      { status: 'Preparing terrain collision...', progress: 0.535, run: () => beginStagedTerrainMaskRebuild(this) },
+      ...Array.from({ length: Math.ceil(TERRAIN_MASK_HEIGHT / maskRowBatch) }, (_, batch) => {
+        const startSy = batch * maskRowBatch;
+        const endSy = Math.min(TERRAIN_MASK_HEIGHT, startSy + maskRowBatch);
+        return {
+          status: `Sculpting collision ${Math.round(endSy / TERRAIN_MASK_HEIGHT * 50)}%...`,
+          progress: 0.535 + (endSy / TERRAIN_MASK_HEIGHT) * 0.01,
+          run: () => fillStagedTerrainMaskRows(this, startSy, endSy),
+        };
+      }),
+      { status: 'Preparing collision contours...', progress: 0.546, run: () => beginStagedTerrainMaskNormalize(this) },
+      ...Array.from({ length: Math.ceil(TERRAIN_MASK_HEIGHT / maskRowBatch) }, (_, batch) => {
+        const startSy = batch * maskRowBatch;
+        const endSy = Math.min(TERRAIN_MASK_HEIGHT, startSy + maskRowBatch);
+        return {
+          status: `Smoothing collision ${50 + Math.round(endSy / TERRAIN_MASK_HEIGHT * 50)}%...`,
+          progress: 0.546 + (endSy / TERRAIN_MASK_HEIGHT) * 0.009,
+          run: () => normalizeStagedTerrainMaskRows(this, startSy, endSy),
+        };
+      }),
+      { status: 'Committing terrain collision...', progress: 0.555, run: () => finishStagedTerrainMaskRebuild(this) },
+    ];
     const steps = restoreFromSavedWorld
       ? [
         {
@@ -418,21 +474,18 @@ export class DeepdiveScene extends Phaser.Scene {
         },
         {
           status: 'Restoring diver position...',
-          progress: 0.96,
+          progress: 0.86,
           run: () => measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: true }), { biome: state.biome, worldApplied: true }),
+        },
+        {
+          status: 'Preparing restored presentation...',
+          progress: 0.96,
+          run: () => measurePerf(this, 'saveLoad.prewarmPresentation', () => this.draw(), { biome: state.biome }),
         },
       ]
       : [
-          {
-            status: 'Carving routes and ore seams...',
-            progress: 0.42,
-            run: () => measurePerf(this, 'worldgen.terrainBase', () => this.generateWorldTerrain(), { biome: state.biome }),
-          },
-          {
-            status: 'Sculpting terrain collision...',
-            progress: 0.54,
-            run: () => this.generateWorldTerrainMask(),
-          },
+          ...terrainSteps,
+          ...terrainMaskSteps,
           {
             status: 'Planting ledges and growth...',
             progress: 0.62,
@@ -490,6 +543,11 @@ export class DeepdiveScene extends Phaser.Scene {
               measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: false }), { biome: state.biome, worldApplied: false });
             },
           },
+          {
+            status: 'Preparing first presentation...',
+            progress: 0.985,
+            run: () => measurePerf(this, 'worldgen.firstPresentation', () => this.draw(), { biome: state.biome }),
+          },
         ];
     this.runBiomeGenerationStep(steps, startedAt, 0);
   }
@@ -500,14 +558,21 @@ export class DeepdiveScene extends Phaser.Scene {
     index: number,
   ) {
     if (this.worldReady) return;
-    const step = steps[index];
-    state.biomeLoading.phase = 'generating';
-    state.biomeLoading.status = step.status;
-    state.biomeLoading.progress = step.progress;
+    const frameBudgetStartedAt = performance.now();
+    let nextIndex = index;
+    while (nextIndex < steps.length) {
+      const step = steps[nextIndex];
+      state.biomeLoading.phase = 'generating';
+      state.biomeLoading.status = step.status;
+      state.biomeLoading.progress = step.progress;
+      step.run();
+      nextIndex += 1;
+      if (nextIndex < steps.length && performance.now() - frameBudgetStartedAt < 6) continue;
+      break;
+    }
     renderHud();
-    step.run();
-    if (index < steps.length - 1) {
-      this.time.delayedCall(0, () => this.runBiomeGenerationStep(steps, startedAt, index + 1));
+    if (nextIndex < steps.length) {
+      this.time.delayedCall(1, () => this.runBiomeGenerationStep(steps, startedAt, nextIndex));
       return;
     }
     recordPerf(this, 'worldgen.total', performance.now() - startedAt, { biome: state.biome, staged: true });
@@ -1392,6 +1457,10 @@ export interface DeepdiveScene {
   generateWorld: OmitThisParameter<typeof worldgenNs.generateWorld>;
   resetGeneratedWorldEntities: OmitThisParameter<typeof worldgenNs.resetGeneratedWorldEntities>;
   generateWorldTerrain: OmitThisParameter<typeof worldgenNs.generateWorldTerrain>;
+  beginWorldTerrainGeneration: OmitThisParameter<typeof worldgenNs.beginWorldTerrainGeneration>;
+  generateWorldTerrainRows: OmitThisParameter<typeof worldgenNs.generateWorldTerrainRows>;
+  finishWorldTerrainBase: OmitThisParameter<typeof worldgenNs.finishWorldTerrainBase>;
+  openWorldStarterShaft: OmitThisParameter<typeof worldgenNs.openWorldStarterShaft>;
   generateWorldTerrainMask: OmitThisParameter<typeof worldgenNs.generateWorldTerrainMask>;
   generateWorldEnvironmentProps: OmitThisParameter<typeof worldgenNs.generateWorldEnvironmentProps>;
   generateWorldFish: OmitThisParameter<typeof worldgenNs.generateWorldFish>;
@@ -1450,6 +1519,11 @@ export interface DeepdiveScene {
   carveDarkBasin: OmitThisParameter<typeof worldgenNs.carveDarkBasin>;
   carveRuinVaults: OmitThisParameter<typeof worldgenNs.carveRuinVaults>;
   smoothTerrainSilhouette: OmitThisParameter<typeof worldgenNs.smoothTerrainSilhouette>;
+  smoothTerrainSilhouetteInitialLobes: OmitThisParameter<typeof worldgenNs.smoothTerrainSilhouetteInitialLobes>;
+  smoothTerrainSilhouetteInitialScallops: OmitThisParameter<typeof worldgenNs.smoothTerrainSilhouetteInitialScallops>;
+  smoothTerrainSilhouettePass: OmitThisParameter<typeof worldgenNs.smoothTerrainSilhouettePass>;
+  smoothTerrainSilhouetteFinalLobes: OmitThisParameter<typeof worldgenNs.smoothTerrainSilhouetteFinalLobes>;
+  smoothTerrainSilhouetteFinalScallops: OmitThisParameter<typeof worldgenNs.smoothTerrainSilhouetteFinalScallops>;
   pickLanePoint: OmitThisParameter<typeof worldgenNs.pickLanePoint>;
   nearestLanePoint: OmitThisParameter<typeof worldgenNs.nearestLanePoint>;
   carveAnchorstoneStrata: OmitThisParameter<typeof worldgenNs.carveAnchorstoneStrata>;

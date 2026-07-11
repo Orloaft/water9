@@ -2661,12 +2661,12 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         };
       }),
       floraAnchors: {
-        terrainSurfaceSamples: sampleTerrainSurfaceAnchors(this, {
+        terrainSurfaceSamples: (!this.worldReady ? [] : sampleTerrainSurfaceAnchors(this, {
           minY: Math.max(SURFACE_Y, camera.worldView.y),
           maxY: Math.min(WORLD_H * TILE, camera.worldView.bottom),
           salt: 7,
           limit: 32,
-        }).map((anchor) => ({
+        })).map((anchor) => ({
           id: anchor.id,
           x: roundMetric(anchor.x),
           y: roundMetric(anchor.y),

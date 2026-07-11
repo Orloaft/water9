@@ -48,6 +48,12 @@ export function resetGeneratedWorldEntities(this: DeepdiveScene) {
 }
 
 export function generateWorldTerrain(this: DeepdiveScene) {
+  this.beginWorldTerrainGeneration();
+  this.generateWorldTerrainRows(0, WORLD_H);
+  this.finishWorldTerrainBase();
+}
+
+export function beginWorldTerrainGeneration(this: DeepdiveScene) {
   this.resetGeneratedWorldEntities();
   this.world = [];
   this.damage = [];
@@ -68,7 +74,12 @@ export function generateWorldTerrain(this: DeepdiveScene) {
   state.sonarMapPanX = 0;
   state.sonarMapPanY = 0;
   state.sonarMapZoom = 1;
-  for (let y = 0; y < WORLD_H; y += 1) {
+}
+
+export function generateWorldTerrainRows(this: DeepdiveScene, startY: number, endY: number) {
+  const start = Phaser.Math.Clamp(Math.floor(startY), 0, WORLD_H);
+  const end = Phaser.Math.Clamp(Math.floor(endY), start, WORLD_H);
+  for (let y = start; y < end; y += 1) {
     const row: Tile[] = [];
     const damageRow: number[] = [];
     for (let x = 0; x < WORLD_W; x += 1) {
@@ -78,7 +89,9 @@ export function generateWorldTerrain(this: DeepdiveScene) {
     this.world.push(row);
     this.damage.push(damageRow);
   }
+}
 
+export function finishWorldTerrainBase(this: DeepdiveScene) {
   const center = Math.floor(WORLD_W / 2);
   for (let y = 0; y < 12; y += 1) {
     for (let x = center - 5; x <= center + 5; x += 1) {
@@ -93,6 +106,57 @@ export function generateWorldTerrain(this: DeepdiveScene) {
   this.reserveBobbitBurrows();
   this.reserveSignatureEncounters();
   this.populateOreVeins();
+}
+
+export function openWorldStarterShaft(this: DeepdiveScene) {
+  const center = Math.floor(WORLD_W / 2);
+  for (let y = 0; y < 12; y += 1) {
+    for (let x = center - 5; x <= center + 5; x += 1) this.setTile(x, y, 'water');
+  }
+}
+
+export function smoothTerrainSilhouetteInitialLobes(this: DeepdiveScene) {
+  carveTerrainEdgeLobes(this, 0.32);
+}
+
+export function smoothTerrainSilhouetteInitialScallops(this: DeepdiveScene) {
+  carveTerrainEdgeScallops(this, 0.18);
+}
+
+export function smoothTerrainSilhouettePass(this: DeepdiveScene, pass: number) {
+  const next = this.world.map((row) => [...row]);
+  for (let y = 8; y < WORLD_H - 2; y += 1) {
+    for (let x = 2; x < WORLD_W - 2; x += 1) {
+      const tile = this.getTile(x, y);
+      if (tile === 'bedrock') continue;
+      const solid = tiles[tile].solid;
+      const neighborSolids = countSolidNeighbors(this, x, y);
+      const northWater = this.getTile(x, y - 1) === 'water';
+      const southWater = this.getTile(x, y + 1) === 'water';
+      const westWater = this.getTile(x - 1, y) === 'water';
+      const eastWater = this.getTile(x + 1, y) === 'water';
+      if (solid) {
+        const unsupportedColumn = (northWater || southWater) && westWater && eastWater;
+        const unsupportedShelf = (westWater || eastWater) && northWater && southWater;
+        const exposedSides = [northWater, southWater, westWater, eastWater].filter(Boolean).length;
+        const scallop = exposedSides >= 2
+          && neighborSolids <= 4
+          && hash(x * 149 + pass * 17, y * 151 - pass * 19, rng.seed + 13001) > 0.34;
+        if (unsupportedColumn || unsupportedShelf || neighborSolids <= 2 || scallop) next[y][x] = 'water';
+        continue;
+      }
+      if (neighborSolids >= 7 && hash(x * 157 + pass, y * 163 - pass, rng.seed + 13033) > 0.18) next[y][x] = 'stone';
+    }
+  }
+  this.world = next;
+}
+
+export function smoothTerrainSilhouetteFinalLobes(this: DeepdiveScene) {
+  carveTerrainEdgeLobes(this, 0.16);
+}
+
+export function smoothTerrainSilhouetteFinalScallops(this: DeepdiveScene) {
+  carveTerrainEdgeScallops(this, 0.12);
 }
 
 export function generateWorldTerrainMask(this: DeepdiveScene) {
@@ -2323,41 +2387,13 @@ export function carveRuinVaults(this: DeepdiveScene, center: number, basinY: num
   }
 
 export function smoothTerrainSilhouette(this: DeepdiveScene) {
-    carveTerrainEdgeLobes(this, 0.32);
-    carveTerrainEdgeScallops(this, 0.18);
+    this.smoothTerrainSilhouetteInitialLobes();
+    this.smoothTerrainSilhouetteInitialScallops();
     for (let pass = 0; pass < 2; pass += 1) {
-      const next = this.world.map((row) => [...row]);
-      for (let y = 8; y < WORLD_H - 2; y += 1) {
-        for (let x = 2; x < WORLD_W - 2; x += 1) {
-          const tile = this.getTile(x, y);
-          if (tile === 'bedrock') continue;
-          const solid = tiles[tile].solid;
-          const neighborSolids = countSolidNeighbors(this, x, y);
-          const northWater = this.getTile(x, y - 1) === 'water';
-          const southWater = this.getTile(x, y + 1) === 'water';
-          const westWater = this.getTile(x - 1, y) === 'water';
-          const eastWater = this.getTile(x + 1, y) === 'water';
-          if (solid) {
-            const unsupportedColumn = (northWater || southWater) && westWater && eastWater;
-            const unsupportedShelf = (westWater || eastWater) && northWater && southWater;
-            const exposedSides = [northWater, southWater, westWater, eastWater].filter(Boolean).length;
-            const scallop = exposedSides >= 2
-              && neighborSolids <= 4
-              && hash(x * 149 + pass * 17, y * 151 - pass * 19, rng.seed + 13001) > 0.34;
-            if (unsupportedColumn || unsupportedShelf || neighborSolids <= 2 || scallop) {
-              next[y][x] = 'water';
-            }
-            continue;
-          }
-          if (neighborSolids >= 7 && hash(x * 157 + pass, y * 163 - pass, rng.seed + 13033) > 0.18) {
-            next[y][x] = 'stone';
-          }
-        }
-      }
-      this.world = next;
+      this.smoothTerrainSilhouettePass(pass);
     }
-    carveTerrainEdgeLobes(this, 0.16);
-    carveTerrainEdgeScallops(this, 0.12);
+    this.smoothTerrainSilhouetteFinalLobes();
+    this.smoothTerrainSilhouetteFinalScallops();
   }
 
 function carveTerrainEdgeScallops(scene: DeepdiveScene, chance = 0.1) {

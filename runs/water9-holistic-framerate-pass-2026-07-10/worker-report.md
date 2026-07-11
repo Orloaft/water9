@@ -85,3 +85,54 @@ Manual inspection confirms normal runtime/HUD identity, preserved biome palette/
 - WebGL cannot be validated in this environment; AUTO/default must not change until a supported runtime comparison passes.
 - High-DPR, Tauri/desktop, integrated GPU, and compositor presentation/drop telemetry remain unsupported.
 - Two early smoke invocations used legacy environment variable names and rewrote untracked prior B4 proof artifacts. Tracked prior deep artifacts were restored exactly before staging; current durable proof is isolated under this run directory.
+
+## Follow-up from `2aff019`
+
+Status remains **PARTIAL**. This continuation removes the 1.18 s synchronous startup/world-mask stall, preserves save/load behavior, and confirms the dominant residual B4 issue is outside ordinary measured Canvas render spans. It does not complete the simultaneous-action fixture or cutoff-adjacent capture matrix, and strict presentation cadence still fails in headless Chromium.
+
+### Additional confirmed root causes and changes
+
+- Startup terrain generation is now a deterministic sequence of row batches and named topology/silhouette units. A 6 ms scheduler budget groups cheap units and yields through Phaser's next tick; progress reflects the last completed unit.
+- The full 832×3360 collision mask was the new largest single startup task. Its initial-density and normalization passes now operate on 48-row strips. Normalization reads the unchanged source mask and writes one staged target, preserving the former whole-pass result.
+- Genuine yielding exposed an instrumentation interaction: the loading smoke's repeated `playtestSnapshot()` sampled terrain anchors as soon as all rows existed, eagerly building the full mask before carving finished. Subsequent `setTile()` calls then normalized mask neighborhoods per carved tile. Loading-time snapshots now omit only terrain-surface samples until `worldReady`; production identity and post-ready proof are unchanged.
+- Clicking Start during generation similarly could request sonar reveal against an incomplete world. The reveal is deferred to the existing generation-complete reveal, preserving final sonar state.
+- Restore now has a separate cold-presentation prewarm unit after saved world/state/player application. Functional round-trip still passes.
+
+### Follow-up raw cadence
+
+Counts are `>20 / >33.34 / >50`.
+
+| Phase | Before p95 / p99 / max ms; counts | Follow-up p95 / p99 / max ms; counts | Result |
+|---|---|---|---|
+| Startup click-to-ready | `1183.3 / 1183.3 / 1183.3`; `9 / 8 / 7` | `50.1 / 83.4 / 83.4`; `42 / 31 / 5` | severe maximum fixed; strict pacing FAIL |
+| First settled swim | `33.4 / 33.4 / 50.0`; `75 / 28 / 0` | `16.8 / 33.3 / 33.4`; `4 / 1 / 0` | independent cadence PASS; cold draw CPU max still FAIL |
+| Restore transition | `83.3 / 83.3 / 83.3`; `7 / 5 / 3` | `33.4 / 83.3 / 83.3`; `3 / 3 / 3` | FAIL |
+| Post-restore settled swim | `33.3 / 33.4 / 33.4`; `29 / 9 / 0` | `16.7 / 16.8 / 50.0`; `2 / 2 / 0` | independent cadence PASS; draw CPU max still FAIL |
+
+Three simultaneous controlled B4 processes were also recorded as an environment-sensitivity comparison, not as acceptance repeats because they contend for the same headless Chromium/SwiftShader host. Independent-rAF results were:
+
+| B4 comparison | p95 / p99 / max ms | counts | outer frame p95 / max | Canvas render p95 / max |
+|---|---|---|---|---|
+| parallel 1 | `33.5 / 50.1 / 50.1` | `75 / 25 / 2` | `8.5 / 18.7` | `2.3 / 3.2` |
+| parallel 2 | `50.0 / 50.1 / 50.1` | `90 / 38 / 3` | `13.7 / 28.7` | `5.6 / 7.9` |
+| parallel 3 | `33.4 / 33.4 / 50.0` | `74 / 28 / 0` | `8.2 / 16.9` | `2.0 / 3.3` |
+
+The comparison strengthens the pacing diagnosis: repeats 1 and 3 miss presentation intervals while measured outer application work remains below 20 ms and Canvas render remains below 3.3 ms. Repeat 2 degrades under host contention in both application and presentation metrics. This is evidence of headless scheduling/capture sensitivity, not proof that real-browser B4 passes.
+
+### Follow-up verification and artifacts
+
+- PASS — `npm run build`.
+- PASS — `git diff --check`.
+- PASS — `npm run water9:save-load-smoke`; exact credits, biome, player position, and mined world round-trip retained.
+- FAIL — loading strict gate, despite maximum improving from 1183.3 to 83.4 ms; `artifacts/followup-loading-budgeted/report.json`.
+- FAIL — restore strict gate; post-restore independent cadence passes; `artifacts/followup-save-load/report.json`.
+- FAIL — three parallel B4 diagnostic comparisons; reports and color/grayscale live canvases under `artifacts/followup-b4-1/`, `followup-b4-2/`, and `followup-b4-3/`.
+- BLOCKED by pre-existing errors — `npx tsc --noEmit --pretty false`; the follow-up introduced no remaining diagnostic after the staged-mask type correction. Log: `artifacts/followup-tsc.log`.
+
+### Remaining acceptance blockers
+
+- Headless independent-rAF still shows sustained doubled/tripled presentation intervals during startup and B4 even when measured outer frame and Canvas render spans are low. A non-contended headed/native-compositor trace is still required to prove whether the remaining limit is headless scheduling/capture rather than the real application.
+- Restore transition remains at 83.3 ms maximum and needs its saved-world decode/state/sonar phases split more deeply; the new presentation prewarm requires a fresh isolated measurement.
+- Cold retained-terrain draws still produce 23–27 ms CPU maxima in settled loading/restore swims.
+- The requested simultaneous sonar-aggro + articulated/hostile + mining/detonation + flare/effects + highest-part-sub fixture and its action floors are not complete.
+- Narrow adjacent above/below biome-cutoff normal-play canvas and grayscale captures are not complete. Existing broad deep/sonar/B4 captures remain valid but do not satisfy this proof requirement.

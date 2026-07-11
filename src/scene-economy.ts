@@ -32,7 +32,9 @@ export function startRun(this: DeepdiveScene, ) {
     state.radioOpen = true;
     resetOxygenWarnings();
     this.resetPlayerStart();
-    this.revealSonarAtPlayer(8);
+    // Generation may now yield between deterministic terrain units. Do not build the
+    // terrain mask from a half-carved world; completion performs the same reveal.
+    if (this.worldReady) this.revealSonarAtPlayer(8);
     this.cameras.main.centerOn(this.player.x, this.player.y);
     renderHud();
   }

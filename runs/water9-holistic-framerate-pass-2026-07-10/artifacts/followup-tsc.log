@@ -1,0 +1,54 @@
+src/helpers.ts(2904,40): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+src/helpers.ts(2904,73): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+src/helpers.ts(2908,39): error TS2345: Argument of type 'StoryMilestoneId' is not assignable to parameter of type 'never'.
+  Type '"b1-first-signal"' is not assignable to type 'never'.
+src/helpers.ts(2909,32): error TS2345: Argument of type 'StoryMilestoneId' is not assignable to parameter of type 'never'.
+  Type '"b1-first-signal"' is not assignable to type 'never'.
+src/helpers.ts(2910,5): error TS7053: Element implicitly has an 'any' type because expression of type '"b1-first-signal:completed" | "b2-vent-proof:completed" | "b3-forward-pocket:completed" | "b4-reliquary-proof:completed"' can't be used to index type '{}'.
+  Property 'b1-first-signal:completed' does not exist on type '{}'.
+src/helpers.ts(2919,130): error TS2345: Argument of type 'StoryMilestoneId' is not assignable to parameter of type 'never'.
+  Type '"b1-first-signal"' is not assignable to type 'never'.
+src/helpers.ts(2920,3): error TS2322: Type 'StoryMilestoneId | ""' is not assignable to type '"b1-first-signal"'.
+  Type '"b2-vent-proof"' is not assignable to type '"b1-first-signal"'.
+src/helpers.ts(2924,3): error TS2322: Type 'StoryProgress' is not assignable to type '{ activeId: "b1-first-signal"; completed: never[]; flags: {}; heardRadio: never[]; }'.
+  Types of property 'activeId' are incompatible.
+    Type '"" | StoryMilestoneId' is not assignable to type '"b1-first-signal"'.
+      Type '""' is not assignable to type '"b1-first-signal"'.
+src/helpers.ts(2928,129): error TS2345: Argument of type 'StoryMilestoneId' is not assignable to parameter of type 'never'.
+  Type '"b1-first-signal"' is not assignable to type 'never'.
+src/helpers.ts(2993,18): error TS7053: Element implicitly has an 'any' type because expression of type '"b3-gulper-wake-proof"' can't be used to index type '{}'.
+  Property 'b3-gulper-wake-proof' does not exist on type '{}'.
+src/helpers.ts(3041,3): error TS2322: Type 'true' is not assignable to type 'false'.
+src/helpers.ts(3062,3): error TS2322: Type 'true' is not assignable to type 'false'.
+src/helpers.ts(3348,3): error TS2322: Type 'StoryProgress' is not assignable to type '{ activeId: "b1-first-signal"; completed: never[]; flags: {}; heardRadio: never[]; }'.
+  Types of property 'activeId' are incompatible.
+    Type '"" | StoryMilestoneId' is not assignable to type '"b1-first-signal"'.
+      Type '""' is not assignable to type '"b1-first-signal"'.
+src/save-load.ts(351,3): error TS2322: Type 'StoryProgress' is not assignable to type '{ activeId: "b1-first-signal"; completed: never[]; flags: {}; heardRadio: never[]; }'.
+  Types of property 'activeId' are incompatible.
+    Type '"" | StoryMilestoneId' is not assignable to type '"b1-first-signal"'.
+      Type '""' is not assignable to type '"b1-first-signal"'.
+src/save-load.ts(352,3): error TS2322: Type 'FinaleProgress' is not assignable to type '{ finalProofRecovered: false; endingSeen: false; heardRadio: string[]; finalProofSpecies: string; finalProofDepth: number; }'.
+  Types of property 'finalProofRecovered' are incompatible.
+    Type 'boolean' is not assignable to type 'false'.
+src/save-load.ts(424,16): error TS18048: 'savedWorld' is possibly 'undefined'.
+src/save-load.ts(438,32): error TS18048: 'savedWorld' is possibly 'undefined'.
+src/scene-articulated.ts(858,5): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ full: number; near: number; far: number; offscreen: number; fullSteps: number; skippedSteps: number; terrainPasses: number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ full: number; near: number; far: number; offscreen: number; fullSteps: number; skippedSteps: number; terrainPasses: number; }'.
+src/scene-combat.ts(914,5): error TS2304: Cannot find name 'resetOxygenWarnings'.
+src/scene-playtest.ts(134,12): error TS2339: Property 'reviewFrozen' does not exist on type 'Fish'.
+src/scene-playtest.ts(2600,38): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/scene-playtest.ts(3015,16): error TS2322: Type 'StoryProgress' is not assignable to type '{ activeId: "b1-first-signal"; completed: never[]; flags: {}; heardRadio: never[]; }'.
+  Types of property 'activeId' are incompatible.
+    Type '"" | StoryMilestoneId' is not assignable to type '"b1-first-signal"'.
+      Type '""' is not assignable to type '"b1-first-signal"'.
+src/scene-playtest.ts(3061,7): error TS7053: Element implicitly has an 'any' type because expression of type '"b3-gulper-wake-proof"' can't be used to index type '{}'.
+  Property 'b3-gulper-wake-proof' does not exist on type '{}'.
+src/scene-playtest.ts(4275,16): error TS2367: This comparison appears to be unintentional because the types '"articulatedContactPolishReview" | "collideArticulated" | "saveGame" | "loadGame" | "corruptSave" | "clearSave" | "setOxygen" | "setHull" | "recoverFinalProof" | "completeFinaleAtBarge" | ... 11 more ... | "brushFloraSmokeStage"' and '"resetPerfFrameBuffer"' have no overlap.
+src/scene-playtest.ts(4287,16): error TS2367: This comparison appears to be unintentional because the types '"articulatedContactPolishReview" | "collideArticulated" | "saveGame" | "loadGame" | "corruptSave" | "clearSave" | "setOxygen" | "setHull" | "recoverFinalProof" | "completeFinaleAtBarge" | ... 11 more ... | "brushFloraSmokeStage"' and '"exportPerfFrameBuffer"' have no overlap.
+src/terrain-mask.ts(96,3): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+      Types of property '[Symbol.toStringTag]' are incompatible.
+        Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.

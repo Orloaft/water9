@@ -10,6 +10,7 @@ export const TERRAIN_MASK_CELL = TILE / TERRAIN_MASK_RES;
 export const TERRAIN_MASK_WIDTH = WORLD_W * TERRAIN_MASK_RES;
 export const TERRAIN_MASK_HEIGHT = WORLD_H * TERRAIN_MASK_RES;
 export const TERRAIN_MASK_SOLID_THRESHOLD = 96;
+const stagedTerrainMaskTargets = new WeakMap<DeepdiveScene, Uint8Array>();
 
 export function terrainMaskWorldReady(scene: DeepdiveScene) {
   if (scene.world.length < WORLD_H) return false;
@@ -43,6 +44,57 @@ export function rebuildTerrainMask(scene: DeepdiveScene) {
   }
   scene.terrainMask = mask;
   normalizeTerrainMask(scene, 0, TERRAIN_MASK_WIDTH - 1, 0, TERRAIN_MASK_HEIGHT - 1, 1);
+  scene.terrainDirty = true;
+  scene.terrainBoundsKey = '';
+  scene.terrainRevision += 1;
+  scene.terrainVisualChunks.clear();
+  scene.terrainVisualDirtyChunks.clear();
+  return true;
+}
+
+export function beginStagedTerrainMaskRebuild(scene: DeepdiveScene) {
+  if (!terrainMaskWorldReady(scene)) return false;
+  scene.terrainMask = new Uint8Array(TERRAIN_MASK_WIDTH * TERRAIN_MASK_HEIGHT);
+  stagedTerrainMaskTargets.delete(scene);
+  return true;
+}
+
+export function fillStagedTerrainMaskRows(scene: DeepdiveScene, startSy: number, endSy: number) {
+  if (scene.terrainMask.length !== TERRAIN_MASK_WIDTH * TERRAIN_MASK_HEIGHT) return false;
+  const start = Math.max(0, Math.floor(startSy));
+  const end = Math.min(TERRAIN_MASK_HEIGHT, Math.max(start, Math.floor(endSy)));
+  for (let sy = start; sy < end; sy += 1) {
+    for (let sx = 0; sx < TERRAIN_MASK_WIDTH; sx += 1) {
+      scene.terrainMask[maskIndex(sx, sy)] = initialMaskDensity(scene, sx, sy);
+    }
+  }
+  return true;
+}
+
+export function beginStagedTerrainMaskNormalize(scene: DeepdiveScene) {
+  if (scene.terrainMask.length !== TERRAIN_MASK_WIDTH * TERRAIN_MASK_HEIGHT) return false;
+  stagedTerrainMaskTargets.set(scene, new Uint8Array(scene.terrainMask));
+  return true;
+}
+
+export function normalizeStagedTerrainMaskRows(scene: DeepdiveScene, startSy: number, endSy: number) {
+  const next = stagedTerrainMaskTargets.get(scene);
+  if (!next || scene.terrainMask.length !== TERRAIN_MASK_WIDTH * TERRAIN_MASK_HEIGHT) return false;
+  const start = Math.max(1, Math.floor(startSy));
+  const end = Math.min(TERRAIN_MASK_HEIGHT - 1, Math.max(start, Math.floor(endSy)));
+  for (let sy = start; sy < end; sy += 1) {
+    for (let sx = 1; sx < TERRAIN_MASK_WIDTH - 1; sx += 1) {
+      normalizeTerrainMaskCell(scene, next, sx, sy, 0);
+    }
+  }
+  return true;
+}
+
+export function finishStagedTerrainMaskRebuild(scene: DeepdiveScene) {
+  const next = stagedTerrainMaskTargets.get(scene);
+  if (!next) return false;
+  scene.terrainMask = new Uint8Array(next);
+  stagedTerrainMaskTargets.delete(scene);
   scene.terrainDirty = true;
   scene.terrainBoundsKey = '';
   scene.terrainRevision += 1;
@@ -535,40 +587,33 @@ function normalizeTerrainMask(
     const next = new Uint8Array(scene.terrainMask);
     for (let sy = fromY; sy <= toY; sy += 1) {
       for (let sx = fromX; sx <= toX; sx += 1) {
-        const index = maskIndex(sx, sy);
-        const current = scene.terrainMask[index];
-        const solid = current >= TERRAIN_MASK_SOLID_THRESHOLD;
-        const neighbors = countSolidMaskNeighbors(scene, sx, sy, 1);
-        const broad = countSolidMaskNeighbors(scene, sx, sy, 2);
-        const horizontalBridge = terrainMaskSolidInArray(scene.terrainMask, sx - 1, sy)
-          && terrainMaskSolidInArray(scene.terrainMask, sx + 1, sy);
-        const verticalBridge = terrainMaskSolidInArray(scene.terrainMask, sx, sy - 1)
-          && terrainMaskSolidInArray(scene.terrainMask, sx, sy + 1);
-        const isolatedVoid = !solid && (neighbors >= 7 || (neighbors >= 6 && broad >= 18));
-        const thinVoid = !solid && (
-          (horizontalBridge && countSolidMaskNeighbors(scene, sx, sy, 2) >= 13)
-          || (verticalBridge && countSolidMaskNeighbors(scene, sx, sy, 2) >= 13)
-        );
-        const unsupportedSolid = solid && (neighbors <= 2 || (neighbors <= 3 && broad <= 10));
-        const needleSolid = solid && (
-          (!terrainMaskSolidInArray(scene.terrainMask, sx - 1, sy) && !terrainMaskSolidInArray(scene.terrainMask, sx + 1, sy) && neighbors <= 4)
-          || (!terrainMaskSolidInArray(scene.terrainMask, sx, sy - 1) && !terrainMaskSolidInArray(scene.terrainMask, sx, sy + 1) && neighbors <= 4)
-        );
-        const edgeCut = solid && contourErosionAt(scene, sx, sy, pass, neighbors, broad);
-        if (isolatedVoid || thinVoid) {
-          next[index] = 235;
-        } else if (unsupportedSolid || needleSolid || edgeCut) {
-          next[index] = 0;
-        } else if (solid) {
-          const average = averageMaskDensity(scene.terrainMask, sx, sy);
-          next[index] = Math.max(TERRAIN_MASK_SOLID_THRESHOLD, Math.round(current * 0.72 + average * 0.28));
-        } else if (neighbors >= 5 && broad >= 14) {
-          next[index] = Math.max(current, 78);
-        }
+        normalizeTerrainMaskCell(scene, next, sx, sy, pass);
       }
     }
     scene.terrainMask = next;
   }
+}
+
+function normalizeTerrainMaskCell(scene: DeepdiveScene, next: Uint8Array, sx: number, sy: number, pass: number) {
+  const index = maskIndex(sx, sy);
+  const current = scene.terrainMask[index];
+  const solid = current >= TERRAIN_MASK_SOLID_THRESHOLD;
+  const neighbors = countSolidMaskNeighbors(scene, sx, sy, 1);
+  const broad = countSolidMaskNeighbors(scene, sx, sy, 2);
+  const horizontalBridge = terrainMaskSolidInArray(scene.terrainMask, sx - 1, sy) && terrainMaskSolidInArray(scene.terrainMask, sx + 1, sy);
+  const verticalBridge = terrainMaskSolidInArray(scene.terrainMask, sx, sy - 1) && terrainMaskSolidInArray(scene.terrainMask, sx, sy + 1);
+  const isolatedVoid = !solid && (neighbors >= 7 || (neighbors >= 6 && broad >= 18));
+  const thinVoid = !solid && ((horizontalBridge && broad >= 13) || (verticalBridge && broad >= 13));
+  const unsupportedSolid = solid && (neighbors <= 2 || (neighbors <= 3 && broad <= 10));
+  const needleSolid = solid && (
+    (!terrainMaskSolidInArray(scene.terrainMask, sx - 1, sy) && !terrainMaskSolidInArray(scene.terrainMask, sx + 1, sy) && neighbors <= 4)
+    || (!terrainMaskSolidInArray(scene.terrainMask, sx, sy - 1) && !terrainMaskSolidInArray(scene.terrainMask, sx, sy + 1) && neighbors <= 4)
+  );
+  const edgeCut = solid && contourErosionAt(scene, sx, sy, pass, neighbors, broad);
+  if (isolatedVoid || thinVoid) next[index] = 235;
+  else if (unsupportedSolid || needleSolid || edgeCut) next[index] = 0;
+  else if (solid) next[index] = Math.max(TERRAIN_MASK_SOLID_THRESHOLD, Math.round(current * 0.72 + averageMaskDensity(scene.terrainMask, sx, sy) * 0.28));
+  else if (neighbors >= 5 && broad >= 14) next[index] = Math.max(current, 78);
 }
 
 function contourErosionAt(scene: DeepdiveScene, sx: number, sy: number, pass: number, neighbors: number, broad: number) {

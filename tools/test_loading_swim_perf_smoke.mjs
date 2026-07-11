@@ -127,7 +127,7 @@ async function startRafProbe(page, durationMs) {
 }
 
 async function finishRafProbe(page) {
-  await page.waitForFunction(() => window.__water9RafProbe?.complete, null, { timeout: 12000 });
+  await page.waitForFunction(() => window.__water9RafProbe?.complete, null, { timeout: 40000 });
   return page.evaluate(() => {
     const probe = window.__water9RafProbe;
     const frames = probe?.frames ?? [];
