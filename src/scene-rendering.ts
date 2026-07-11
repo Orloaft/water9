@@ -3603,7 +3603,43 @@ export function drawPlayer(this: DeepdiveScene, ) {
     const swimSpeed = Math.hypot(p.vx, p.vy);
     const animation = diverAnimation(p.vx, p.vy, swimSpeed, p.mineCooldown, state.lost);
     for (const sprite of Object.values(this.diverPartSprites)) sprite.setVisible(false);
+    if (new URLSearchParams(window.location.search).get('diverMotionTest') === 'v3a' && !state.lost) {
+      this.drawV3MotionTestDiver(animation, angle, swimSpeed);
+      return;
+    }
     this.drawLegacyDiver(animation, angle, swimSpeed);
+  }
+
+export function drawV3MotionTestDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {
+    const p = this.player;
+    const now = performance.now() * 0.001;
+    const scannerActive = state.selectedTool === 'scanner' && p.scanTarget !== null;
+    if (scannerActive && !this.diverV3ScannerWasActive) this.diverV3ScannerStartedAt = now;
+    if (!scannerActive && this.diverV3ScannerWasActive) this.diverV3ScannerRecoverUntil = now + 0.65;
+    this.diverV3ScannerWasActive = scannerActive;
+
+    let frame: number;
+    if (scannerActive) {
+      frame = now - this.diverV3ScannerStartedAt < 0.18 ? 4 : 5;
+    } else if (now < this.diverV3ScannerRecoverUntil) {
+      frame = 6;
+    } else if (swimSpeed >= 9) {
+      frame = 2 + (Math.floor(now * 4.1) % 2);
+    } else {
+      frame = Math.floor(now * 1.9) % 2;
+    }
+
+    const pose = diverPose(animation === 'idle' ? 'idle' : 'swim', angle, p.facingSign);
+    this.playerSprite
+      .setTexture(`diver-v3-motion-${frame}`)
+      .setVisible(true)
+      .setPosition(p.x, p.y)
+      .setOrigin(64 / 128, 52 / 96)
+      .setFlipX(pose.flipX)
+      .setRotation(pose.rotation)
+      .setAlpha(1)
+      .setDepth(2.08);
+    fitImageWidth(this.playerSprite, 58 * PLAYER_DRAW_SCALE);
   }
 
 export function drawLegacyDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {

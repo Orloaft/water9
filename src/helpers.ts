@@ -496,6 +496,11 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
       scene.load.image(`diver-${animation}-${i}`, assetPath(`diver-${animation}-${i}`));
     }
   }
+  // Bounded Diver V3 Concept A motion-test slice. These authored bitmaps are
+  // selected only by the explicit `?diverMotionTest=v3a` runtime gate.
+  for (let i = 0; i < 7; i += 1) {
+    scene.load.image(`diver-v3-motion-${i}`, assetPath(`diver-v3-motion-${i}`));
+  }
   for (let i = 0; i < 4; i += 1) scene.load.image(`sub-cutter-beam-${i}`, assetPath(`sub-cutter-beam-${i}`));
   for (const [base, manifest] of Object.entries(PRELOADED_SPRITESHEET_MANIFESTS)) {
     spriteManifests[base] = manifest;

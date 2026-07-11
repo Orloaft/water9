@@ -109,6 +109,9 @@ export class DeepdiveScene extends Phaser.Scene {
   lastControllerHudRenderAt = 0;
   menuNavCooldown = 0;
   passiveSonarRevealTimer = 0;
+  diverV3ScannerStartedAt = 0;
+  diverV3ScannerRecoverUntil = 0;
+  diverV3ScannerWasActive = false;
   player = {
     x: WORLD_W * TILE * 0.5,
     y: BARGE_DOCK_Y,
@@ -1554,6 +1557,7 @@ export interface DeepdiveScene {
   drawFlora: OmitThisParameter<typeof renderingNs.drawFlora>;
   fishVisibilityAlpha: OmitThisParameter<typeof renderingNs.fishVisibilityAlpha>;
   drawPlayer: OmitThisParameter<typeof renderingNs.drawPlayer>;
+  drawV3MotionTestDiver: OmitThisParameter<typeof renderingNs.drawV3MotionTestDiver>;
   drawLegacyDiver: OmitThisParameter<typeof renderingNs.drawLegacyDiver>;
   drawArticulatedDiver: OmitThisParameter<typeof renderingNs.drawArticulatedDiver>;
   drawSub: OmitThisParameter<typeof renderingNs.drawSub>;

@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 1,
+  "authority": "Diver V3 Concept A motion-test only",
+  "authoredFacing": "right",
+  "cellSize": [
+    128,
+    96
+  ],
+  "safeBounds": [
+    6,
+    8,
+    122,
+    88
+  ],
+  "alpha": "binary runtime; soft graded transparent high-resolution masters retained",
+  "clips": {
+    "hover": {
+      "frames": [
+        0,
+        1
+      ],
+      "behavior": "loop"
+    },
+    "swim": {
+      "frames": [
+        2,
+        3
+      ],
+      "behavior": "loop"
+    },
+    "scanner": {
+      "frames": [
+        4,
+        5,
+        6
+      ],
+      "behavior": "deploy, hold while active, recover"
+    }
+  },
+  "frames": [
+    {
+      "index": 0,
+      "name": "hover-settle-a",
+      "clip": "hover",
+      "durationMs": 180,
+      "loopEnd": false,
+      "textureKey": "diver-v3-motion-0",
+      "source": "artifacts/masters/transparent/hover-settle-a.png",
+      "cell": [
+        0,
+        0,
+        128,
+        96
+      ],
+      "bounds": [
+        6,
+        26,
+        122,
+        79
+      ],
+      "pivot": [
+        64,
+        52
+      ],
+      "sockets": {
+        "lead_hand": [
+          113,
+          57
+        ],
+        "support_hand": [
+          96,
+          73
+        ],
+        "effect_origin": [
+          118,
+          57
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "name": "hover-settle-b",
+      "clip": "hover",
+      "durationMs": 180,
+      "loopEnd": true,
+      "textureKey": "diver-v3-motion-1",
+      "source": "artifacts/masters/transparent/hover-settle-b.png",
+      "cell": [
+        128,
+        0,
+        128,
+        96
+      ],
+      "bounds": [
+        6,
+        26,
+        122,
+        78
+      ],
+      "pivot": [
+        64,
+        52
+      ],
+      "sockets": {
+        "lead_hand": [
+          113,
+          58
+        ],
+        "support_hand": [
+          96,
+          72
+        ],
+        "effect_origin": [
+          118,
+          58
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "name": "swim-propulsion",
+      "clip": "swim",
+      "durationMs": 125,
+      "loopEnd": false,
+      "textureKey": "diver-v3-motion-2",
+      "source": "artifacts/masters/transparent/swim-propulsion.png",
+      "cell": [
+        256,
+        0,
+        128,
+        96
+      ],
+      "bounds": [
+        6,
+        31,
+        122,
+        73
+      ],
+      "pivot": [
+        64,
+        52
+      ],
+      "sockets": {
+        "lead_hand": [
+          115,
+          52
+        ],
+        "support_hand": [
+          89,
+          69
+        ],
+        "effect_origin": [
+          120,
+          52
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "name": "swim-cruise",
+      "clip": "swim",
+      "durationMs": 145,
+      "loopEnd": true,
+      "textureKey": "diver-v3-motion-3",
+      "source": "artifacts/masters/transparent/swim-cruise.png",
+      "cell": [
+        384,
+        0,
+        128,
+        96
+      ],
+      "bounds": [
+        6,
+        33,
+        122,
+        71
+      ],
+      "pivot": [
+        64,
+        52
+      ],
+      "sockets": {
+        "lead_hand": [
+          115,
+          51
+        ],
+        "support_hand": [
+          89,
+          68
+        ],
+        "effect_origin": [
+          120,
+          51
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "name": "scanner-deploy",
+      "clip": "scanner",
+      "durationMs": 130,
+      "loopEnd": false,
+      "textureKey": "diver-v3-motion-4",
+      "source": "artifacts/masters/transparent/scanner-deploy.png",
+      "cell": [
+        512,
+        0,
+        128,
+        96
+      ],
+      "bounds": [
+        6,
+        28,
+        122,
+        76
+      ],
+      "pivot": [
+        64,
+        52
+      ],
+      "sockets": {
+        "lead_hand": [
+          105,
+          61
+        ],
+        "support_hand": [
+          92,
+          61
+        ],
+        "effect_origin": [
+          119,
+          58
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "name": "scanner-hold",
+      "clip": "scanner",
+      "durationMs": 240,
+      "loopEnd": false,
+      "textureKey": "diver-v3-motion-5",
+      "source": "artifacts/masters/transparent/scanner-hold.png",
+      "cell": [
+        640,
+        0,
+        128,
+        96
+      ],
+      "bounds": [
+        6,
+        28,
+        122,
+        77
+      ],
+      "pivot": [
+        64,
+        52
+      ],
+      "sockets": {
+        "lead_hand": [
+          104,
+          58
+        ],
+        "support_hand": [
+          92,
+          62
+        ],
+        "effect_origin": [
+          120,
+          55
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "name": "scanner-recover",
+      "clip": "scanner",
+      "durationMs": 150,
+      "loopEnd": true,
+      "textureKey": "diver-v3-motion-6",
+      "source": "artifacts/masters/transparent/scanner-recover.png",
+      "cell": [
+        768,
+        0,
+        128,
+        96
+      ],
+      "bounds": [
+        6,
+        26,
+        122,
+        79
+      ],
+      "pivot": [
+        64,
+        52
+      ],
+      "sockets": {
+        "lead_hand": [
+          104,
+          61
+        ],
+        "support_hand": [
+          91,
+          63
+        ],
+        "effect_origin": [
+          118,
+          59
+        ]
+      }
+    }
+  ]
+}

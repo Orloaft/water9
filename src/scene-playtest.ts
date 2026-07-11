@@ -2543,6 +2543,8 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         vy: Math.round(this.player.vy),
         mineCooldown: roundMetric(this.player.mineCooldown),
         scanTarget: this.player.scanTarget ? this.player.scanTarget.species : '',
+        renderedTextureKey: this.playerSprite?.texture?.key ?? '',
+        diverMotionTest: new URLSearchParams(window.location.search).get('diverMotionTest') ?? '',
       },
       gameplayOre: gameplayOreSnapshot(this, camera),
       looseItems: this.looseItems.map((item) => ({
