@@ -62,16 +62,16 @@ Machine evidence: `artifacts/spec/export-validation.json`; durable hash list: `a
 
 ## Delivery
 
-`artifacts/delivery/diver-v3-swim-and-mine.gif` is a direct-canvas loop with a readable right-swim segment, a clean hard cut, then repeated live mining cycles and impact feedback. It contains no browser or debug chrome.
+`artifacts/delivery/diver-v3-swim-and-mine.gif` is a phone-readable recut made only from the accepted normal-play direct-canvas frames. A stable 480×360 crop follows the centered diver across both source scenes and is enlarged to 640×480; there are no camera jumps within either segment. The two-second swim receives a modest whole-frame lift (`brightness=0.035`, `gamma=1.15`, `saturation=1.08`) so the suit and limb motion survive phone playback without erasing the underwater mood. A clean hard cut leads into three seconds of ungraded live mining, containing repeated anticipation/contact/recoil poses, the live guide and target ring, and terrain impact feedback. It contains no browser or debug chrome.
 
-- Dimensions: **720×450**
+- Dimensions: **640×480**
 - Duration: **5.000 s**
 - Frames / rate: **60 frames at 12 fps**
 - Loop behavior: **infinite** (`loop=0`)
-- Byte size: **939,288 bytes**
-- SHA-256: `9bbc3bd2dd9ff92ab509a7db654cbe31b847ca0c8e9c82ef4197c9da186159a6`
+- Byte size: **1,745,776 bytes**
+- SHA-256: `07ff114dea82c144bf8f5cfa32f6a03521bf31486a21c3e6409db0069e0101a1`
 
-Best delivery PNGs (all direct `#game canvas` captures): `mid-swim-right.png`, `deep-swim-left.png`, `mine-contact-right.png`, and `mine-recoil-right.png`.
+Tight delivery PNGs, derived only by the same crop/scale and swim-wide grading from the direct `#game canvas` frames: `swim-readable.png`, `mining-anticipation.png`, `mining-contact.png`, and `mining-recoil.png`.
 
 ## Review evidence and blunt verdict
 
@@ -79,11 +79,12 @@ Best delivery PNGs (all direct `#game canvas` captures): `mid-swim-right.png`, `
 - Gameplay-scale grayscale review: `artifacts/review/swim-mine-grayscale.png`
 - Direct live-canvas color comparison: `artifacts/review/canvas-swim-mine-color.png`
 - Direct live-canvas grayscale comparison: `artifacts/review/canvas-swim-mine-grayscale.png`
+- Six-frame final-GIF contact sheet: `artifacts/review/diver-v3-delivery-contact-sheet.png`
 - Surface/mid/deep and mining canvas captures plus HUD/project companions: `artifacts/canvas/`
 
-**Verdict:** pass. Mining is no longer a static forward reach; the cutter has an unmistakable silhouette and the impact reads immediately. The strongest frame is full contact, where the cyan/copper barrel, gold impact, live guide, and existing debris rings converge without obscuring the diver. The recoil is visibly lower and shorter, so cadence remains legible even in grayscale.
+**Verdict:** pass after delivery recut. The original 720×450 full-canvas GIF was not acceptable for phone review: the diver was too small and the opening swim was near-black. In the corrected 640×480 crop, the diver is roughly 2.7× larger than the full-canvas source presentation, the swim limbs remain readable, and the cutter's raised/contact/lowered arc is unmistakable across multiple honest gameplay cycles. The target ring, cyan live guide, ore wall, and debris preserve enough context to prove that this is gameplay rather than an isolated sprite reel.
 
-The honest caveat is stylistic: the cutter is slightly more graphic and higher-contrast than the painterly suit, and tiny brass dents still collapse at gameplay scale. That contrast is currently functional rather than discordant—it is why the tool remains readable against dark rock. The deep swim capture also demonstrates that the accepted diver is intentionally small relative to the environment. Neither issue warrants another iteration for this bounded delivery.
+The honest caveat is that the swim-to-mining transition remains an intentional hard cut between two accepted normal-play capture locations, and the circular drill target partially overlaps the ore face. Neither obscures the diver or tool motion at phone size. The cutter remains slightly more graphic and higher-contrast than the painterly suit, but that contrast is functional against dark rock.
 
 ## Lineage
 
