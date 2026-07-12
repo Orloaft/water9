@@ -80,8 +80,8 @@ mislabelled image. This remains the only acceptance gap.
 
 ## Commit and final status
 
-Commit hash: pending.
+Commit hash: `cef364d`.
 
-Final status: pending commit. Remaining risk: visual canvas proof needs a working
+Final status: code and deterministic regression PASS; visual evidence BLOCKED. Remaining risk: visual canvas proof needs a working
 headless WebGL capture path or manual in-client capture; all deterministic live-scene
 topology/contact checks pass.
