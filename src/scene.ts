@@ -84,6 +84,7 @@ export class DeepdiveScene extends Phaser.Scene {
   oxygenLoop?: Phaser.Sound.BaseSound;
   creatureCallTimer = 0;
   drillingThisFrame = false;
+  diverV3MiningImpact: { x: number; y: number; at: number } | null = null;
   lastMiningFeedbackAt = 0;
   lastFishBiteSfxAt = -Infinity;
   terrainBoundsKey = '';
@@ -1559,6 +1560,7 @@ export interface DeepdiveScene {
   drawPlayer: OmitThisParameter<typeof renderingNs.drawPlayer>;
   drawV3MotionTestDiver: OmitThisParameter<typeof renderingNs.drawV3MotionTestDiver>;
   drawV3ARefinedDiver: OmitThisParameter<typeof renderingNs.drawV3ARefinedDiver>;
+  drawV3ARefinedMiningDiver: OmitThisParameter<typeof renderingNs.drawV3ARefinedMiningDiver>;
   drawLegacyDiver: OmitThisParameter<typeof renderingNs.drawLegacyDiver>;
   drawArticulatedDiver: OmitThisParameter<typeof renderingNs.drawArticulatedDiver>;
   drawSub: OmitThisParameter<typeof renderingNs.drawSub>;

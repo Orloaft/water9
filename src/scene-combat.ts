@@ -78,6 +78,7 @@ export function mineAt(this: DeepdiveScene, worldX: number, worldY: number) {
     const fuelReserve = sub ? sub.fuel : state.fuel;
     if (fuelReserve > 0) {
       this.drillingThisFrame = true;
+      this.diverV3MiningImpact = { x: impact.x, y: impact.y, at: this.time.now };
       emitDrillContactFeedback(this, impact, targets);
     }
     if (this.player.mineCooldown > 0) return;

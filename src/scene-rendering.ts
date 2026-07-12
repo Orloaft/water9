@@ -3604,6 +3604,10 @@ export function drawPlayer(this: DeepdiveScene, ) {
     const animation = diverAnimation(p.vx, p.vy, swimSpeed, p.mineCooldown, state.lost);
     for (const sprite of Object.values(this.diverPartSprites)) sprite.setVisible(false);
     const diverMotionTest = new URLSearchParams(window.location.search).get('diverMotionTest');
+    if (diverMotionTest === 'v3a-refined-mining' && !state.lost) {
+      this.drawV3ARefinedMiningDiver(animation, angle, swimSpeed);
+      return;
+    }
     if (diverMotionTest === 'v3a-refined' && !state.lost) {
       this.drawV3ARefinedDiver(animation, angle, swimSpeed);
       return;
@@ -3819,6 +3823,40 @@ export function drawV3ARefinedDiver(this: DeepdiveScene, animation: ReturnType<t
       .setDepth(2.08);
     fitImageWidth(this.playerSprite, 58 * PLAYER_DRAW_SCALE);
   }
+
+export function drawV3ARefinedMiningDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {
+  const p = this.player;
+  if (animation !== 'mine') {
+    this.drawV3ARefinedDiver(animation, angle, swimSpeed);
+    return;
+  }
+  const progress = 1 - Phaser.Math.Clamp(p.mineCooldown / Math.max(0.01, mineCooldown()), 0, 1);
+  const frame = progress < 0.22 ? 10 : progress < 0.48 ? 11 : progress < 0.73 ? 12 : 13;
+  const pose = diverPose('mine', angle, p.facingSign);
+  const authoredFacing = pose.flipX ? 'l' : 'r';
+
+  const impact = this.diverV3MiningImpact;
+  if (this.drillingThisFrame && impact && this.time.now - impact.at < 120) {
+    const socketReach = scaledEntity(29);
+    const socketX = p.x + Math.cos(pose.rotation) * (pose.flipX ? -socketReach : socketReach);
+    const socketY = p.y + Math.sin(pose.rotation) * (pose.flipX ? -socketReach : socketReach);
+    this.actors.lineStyle(2, 0x58dbe3, 0.62);
+    this.actors.lineBetween(socketX, socketY, impact.x, impact.y);
+    this.actors.fillStyle(0xf0c75e, 0.78);
+    this.actors.fillCircle(impact.x, impact.y, scaledEntity(frame === 11 ? 3.2 : 1.8));
+  }
+
+  this.playerSprite
+    .setTexture(`diver-v3-refined-mining-${authoredFacing}-${frame}`)
+    .setVisible(true)
+    .setPosition(p.x, p.y)
+    .setOrigin(64 / 128, 52 / 96)
+    .setFlipX(false)
+    .setRotation(pose.rotation)
+    .setAlpha(1)
+    .setDepth(2.08);
+  fitImageWidth(this.playerSprite, 58 * PLAYER_DRAW_SCALE);
+}
 
 export function drawSub(this: DeepdiveScene, ) {
     const sub = state.activeSub;
