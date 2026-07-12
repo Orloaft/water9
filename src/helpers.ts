@@ -501,6 +501,13 @@ export function loadGeneratedAssets(scene: Phaser.Scene) {
   for (let i = 0; i < 7; i += 1) {
     scene.load.image(`diver-v3-motion-${i}`, assetPath(`diver-v3-motion-${i}`));
   }
+  // Registration-locked review refinement. Right and authored-left bitmaps are
+  // selected only by `?diverMotionTest=v3a-refined`; default play is unchanged.
+  for (const facing of ['r', 'l']) {
+    for (let i = 0; i < 10; i += 1) {
+      scene.load.image(`diver-v3-refined-${facing}-${i}`, assetPath(`diver-v3-refined-${facing}-${i}`));
+    }
+  }
   for (let i = 0; i < 4; i += 1) scene.load.image(`sub-cutter-beam-${i}`, assetPath(`sub-cutter-beam-${i}`));
   for (const [base, manifest] of Object.entries(PRELOADED_SPRITESHEET_MANIFESTS)) {
     spriteManifests[base] = manifest;

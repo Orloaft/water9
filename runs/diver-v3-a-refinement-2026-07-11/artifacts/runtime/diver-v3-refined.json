@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "authority": "Diver V3 Concept A refinement review slice only",
+  "gate": "diverMotionTest=v3a-refined",
+  "cellSize": [
+    128,
+    96
+  ],
+  "safeBounds": [
+    5,
+    7,
+    123,
+    89
+  ],
+  "pivot": [
+    64,
+    52
+  ],
+  "registrationLandmark": {
+    "name": "cyan faceplate center",
+    "target": [
+      99,
+      43
+    ]
+  },
+  "alpha": "binary runtime; transparent RGB zero",
+  "leftFacing": "authored relight/asymmetry correction after orientation reversal; not raw mirror authority",
+  "clips": {
+    "hover": [
+      0,
+      1,
+      2
+    ],
+    "swim": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "scanner": [
+      7,
+      8,
+      9
+    ]
+  },
+  "frames": [
+    {
+      "index": 0,
+      "name": "hover-settle-a",
+      "clip": "hover",
+      "durationMs": 120,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-0",
+      "leftTexture": "diver-v3-refined-l-0",
+      "rightBounds": [
+        23,
+        29,
+        107,
+        68
+      ],
+      "leftBounds": [
+        21,
+        29,
+        105,
+        68
+      ],
+      "effectSocket": null
+    },
+    {
+      "index": 1,
+      "name": "hover-inbetween",
+      "clip": "hover",
+      "durationMs": 120,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-1",
+      "leftTexture": "diver-v3-refined-l-1",
+      "rightBounds": [
+        25,
+        30,
+        106,
+        64
+      ],
+      "leftBounds": [
+        22,
+        30,
+        103,
+        64
+      ],
+      "effectSocket": null
+    },
+    {
+      "index": 2,
+      "name": "hover-settle-b",
+      "clip": "hover",
+      "durationMs": 120,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-2",
+      "leftTexture": "diver-v3-refined-l-2",
+      "rightBounds": [
+        21,
+        28,
+        107,
+        67
+      ],
+      "leftBounds": [
+        21,
+        28,
+        107,
+        67
+      ],
+      "effectSocket": null
+    },
+    {
+      "index": 3,
+      "name": "swim-propulsion",
+      "clip": "swim",
+      "durationMs": 82,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-3",
+      "leftTexture": "diver-v3-refined-l-3",
+      "rightBounds": [
+        14,
+        27,
+        123,
+        66
+      ],
+      "leftBounds": [
+        5,
+        27,
+        114,
+        66
+      ],
+      "effectSocket": null
+    },
+    {
+      "index": 4,
+      "name": "swim-transition-a",
+      "clip": "swim",
+      "durationMs": 82,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-4",
+      "leftTexture": "diver-v3-refined-l-4",
+      "rightBounds": [
+        26,
+        30,
+        107,
+        62
+      ],
+      "leftBounds": [
+        21,
+        30,
+        102,
+        62
+      ],
+      "effectSocket": null
+    },
+    {
+      "index": 5,
+      "name": "swim-cruise",
+      "clip": "swim",
+      "durationMs": 92,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-5",
+      "leftTexture": "diver-v3-refined-l-5",
+      "rightBounds": [
+        16,
+        29,
+        122,
+        63
+      ],
+      "leftBounds": [
+        6,
+        29,
+        112,
+        63
+      ],
+      "effectSocket": null
+    },
+    {
+      "index": 6,
+      "name": "swim-transition-b",
+      "clip": "swim",
+      "durationMs": 82,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-6",
+      "leftTexture": "diver-v3-refined-l-6",
+      "rightBounds": [
+        15,
+        30,
+        119,
+        66
+      ],
+      "leftBounds": [
+        9,
+        30,
+        113,
+        66
+      ],
+      "effectSocket": null
+    },
+    {
+      "index": 7,
+      "name": "scanner-deploy",
+      "clip": "scanner",
+      "durationMs": 220,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-7",
+      "leftTexture": "diver-v3-refined-l-7",
+      "rightBounds": [
+        28,
+        30,
+        113,
+        66
+      ],
+      "leftBounds": [
+        15,
+        30,
+        100,
+        66
+      ],
+      "effectSocket": {
+        "right": [
+          116,
+          52
+        ],
+        "left": [
+          12,
+          52
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "name": "scanner-hold",
+      "clip": "scanner",
+      "durationMs": 240,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-8",
+      "leftTexture": "diver-v3-refined-l-8",
+      "rightBounds": [
+        24,
+        28,
+        121,
+        69
+      ],
+      "leftBounds": [
+        7,
+        28,
+        104,
+        69
+      ],
+      "effectSocket": {
+        "right": [
+          116,
+          52
+        ],
+        "left": [
+          12,
+          52
+        ]
+      }
+    },
+    {
+      "index": 9,
+      "name": "scanner-recover",
+      "clip": "scanner",
+      "durationMs": 150,
+      "pivot": [
+        64,
+        52
+      ],
+      "rightTexture": "diver-v3-refined-r-9",
+      "leftTexture": "diver-v3-refined-l-9",
+      "rightBounds": [
+        25,
+        30,
+        110,
+        69
+      ],
+      "leftBounds": [
+        18,
+        30,
+        103,
+        69
+      ],
+      "effectSocket": {
+        "right": [
+          116,
+          52
+        ],
+        "left": [
+          12,
+          52
+        ]
+      }
+    }
+  ]
+}

@@ -3603,7 +3603,12 @@ export function drawPlayer(this: DeepdiveScene, ) {
     const swimSpeed = Math.hypot(p.vx, p.vy);
     const animation = diverAnimation(p.vx, p.vy, swimSpeed, p.mineCooldown, state.lost);
     for (const sprite of Object.values(this.diverPartSprites)) sprite.setVisible(false);
-    if (new URLSearchParams(window.location.search).get('diverMotionTest') === 'v3a' && !state.lost) {
+    const diverMotionTest = new URLSearchParams(window.location.search).get('diverMotionTest');
+    if (diverMotionTest === 'v3a-refined' && !state.lost) {
+      this.drawV3ARefinedDiver(animation, angle, swimSpeed);
+      return;
+    }
+    if (diverMotionTest === 'v3a' && !state.lost) {
       this.drawV3MotionTestDiver(animation, angle, swimSpeed);
       return;
     }
@@ -3761,6 +3766,59 @@ function articulatedDiverPartPose(
   }
   return { x, y, rotation };
 }
+
+export function drawV3ARefinedDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {
+    const p = this.player;
+    const now = performance.now() * 0.001;
+    const scannerActive = state.selectedTool === 'scanner' && p.scanTarget !== null;
+    if (scannerActive && !this.diverV3ScannerWasActive) this.diverV3ScannerStartedAt = now;
+    if (!scannerActive && this.diverV3ScannerWasActive) this.diverV3ScannerRecoverUntil = now + 0.65;
+    this.diverV3ScannerWasActive = scannerActive;
+
+    let frame: number;
+    if (scannerActive) {
+      frame = now - this.diverV3ScannerStartedAt < 0.22 ? 7 : 8;
+    } else if (now < this.diverV3ScannerRecoverUntil) {
+      frame = 9;
+    } else if (swimSpeed >= 9) {
+      const swimPhase = (now * 1000) % 338;
+      frame = swimPhase < 82 ? 3 : swimPhase < 164 ? 4 : swimPhase < 256 ? 5 : 6;
+    } else {
+      frame = Math.floor(now * (1000 / 120)) % 3;
+    }
+
+    const pose = diverPose(animation === 'idle' ? 'idle' : 'swim', angle, p.facingSign);
+    const authoredFacing = pose.flipX ? 'l' : 'r';
+
+    // The modular scanner cone is live-state driven and begins at the painted
+    // sensor socket. It is never baked into the body bitmap.
+    if (scannerActive && p.scanTarget) {
+      const socketReach = scaledEntity(24);
+      const socketX = p.x + Math.cos(pose.rotation) * (pose.flipX ? -socketReach : socketReach);
+      const socketY = p.y + Math.sin(pose.rotation) * (pose.flipX ? -socketReach : socketReach);
+      const dx = p.scanTarget.x - socketX;
+      const dy = p.scanTarget.y - socketY;
+      const length = Math.max(1, Math.hypot(dx, dy));
+      const nx = -dy / length;
+      const ny = dx / length;
+      const halfWidth = scaledEntity(8);
+      this.actors.fillStyle(0x64e8f1, 0.10);
+      this.actors.fillTriangle(socketX, socketY, p.scanTarget.x + nx * halfWidth, p.scanTarget.y + ny * halfWidth, p.scanTarget.x - nx * halfWidth, p.scanTarget.y - ny * halfWidth);
+      this.actors.lineStyle(1, 0x9ef7f4, 0.48);
+      this.actors.lineBetween(socketX, socketY, p.scanTarget.x, p.scanTarget.y);
+    }
+
+    this.playerSprite
+      .setTexture(`diver-v3-refined-${authoredFacing}-${frame}`)
+      .setVisible(true)
+      .setPosition(p.x, p.y)
+      .setOrigin(64 / 128, 52 / 96)
+      .setFlipX(false)
+      .setRotation(pose.rotation)
+      .setAlpha(1)
+      .setDepth(2.08);
+    fitImageWidth(this.playerSprite, 58 * PLAYER_DRAW_SCALE);
+  }
 
 export function drawSub(this: DeepdiveScene, ) {
     const sub = state.activeSub;

@@ -1558,6 +1558,7 @@ export interface DeepdiveScene {
   fishVisibilityAlpha: OmitThisParameter<typeof renderingNs.fishVisibilityAlpha>;
   drawPlayer: OmitThisParameter<typeof renderingNs.drawPlayer>;
   drawV3MotionTestDiver: OmitThisParameter<typeof renderingNs.drawV3MotionTestDiver>;
+  drawV3ARefinedDiver: OmitThisParameter<typeof renderingNs.drawV3ARefinedDiver>;
   drawLegacyDiver: OmitThisParameter<typeof renderingNs.drawLegacyDiver>;
   drawArticulatedDiver: OmitThisParameter<typeof renderingNs.drawArticulatedDiver>;
   drawSub: OmitThisParameter<typeof renderingNs.drawSub>;
