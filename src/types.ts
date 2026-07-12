@@ -97,6 +97,7 @@ export type PlaytestCommand =
   | 'liveArticulatedReview'
   | 'advanceLiveArticulatedReview'
   | 'largeThreatRippleTurnReview'
+  | 'glasshookWallFoldReview'
   | 'articulatedBudgetReview'
   | 'focusArticulatedCamera'
   | 'reviewArticulated'

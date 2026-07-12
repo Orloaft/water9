@@ -3755,6 +3755,140 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
           x: roundMetric(offscreen.x),
         },
       };
+    } else if (command === 'glasshookWallFoldReview') {
+      const payload = typeof value === 'object' && value !== null
+        ? value as { scenario?: 'right-wall' | 'left-wall' | 'corner'; frames?: number }
+        : {};
+      const scenario = payload.scenario === 'left-wall' || payload.scenario === 'corner' ? payload.scenario : 'right-wall';
+      const frames = Phaser.Math.Clamp(Math.floor(Number(payload.frames) || 210), 90, 420);
+      const manifest = articulatedCreatureDefs().find((candidate) => candidate.id === 'abyssal-glasshook-skulk');
+      if (!manifest) return { ok: false, reason: 'glasshook-manifest-missing' };
+      const reviewX = Math.floor(WORLD_W * TILE * 0.5);
+      const reviewY = Math.floor(SURFACE_Y + 520);
+      const direction = scenario === 'left-wall' ? -1 : 1;
+      const wallX = reviewX + direction * 208;
+      const wallTileX = Math.floor(wallX / TILE);
+      const topY = reviewY - 168;
+      const clearMinX = Math.max(2, Math.floor((reviewX - 440) / TILE));
+      const clearMaxX = Math.min(WORLD_W - 3, Math.ceil((reviewX + 440) / TILE));
+      const clearMinY = Math.max(6, Math.floor((reviewY - 320) / TILE));
+      const clearMaxY = Math.min(WORLD_H - 3, Math.ceil((reviewY + 320) / TILE));
+      for (let ty = clearMinY; ty <= clearMaxY; ty += 1) {
+        for (let tx = clearMinX; tx <= clearMaxX; tx += 1) this.setTile(tx, ty, 'water');
+      }
+      for (let ty = Math.floor((reviewY - 260) / TILE); ty <= Math.ceil((reviewY + 260) / TILE); ty += 1) {
+        for (let tx = wallTileX - 1; tx <= wallTileX + 1; tx += 1) this.setTile(tx, ty, 'stone');
+      }
+      if (scenario === 'corner') {
+        const cornerTileY = Math.floor(topY / TILE);
+        for (let ty = cornerTileY - 1; ty <= cornerTileY + 1; ty += 1) {
+          for (let tx = Math.min(Math.floor(reviewX / TILE), wallTileX); tx <= Math.max(Math.floor(reviewX / TILE), wallTileX); tx += 1) this.setTile(tx, ty, 'stone');
+        }
+      }
+      rebuildTerrainMask(this);
+      this.fish = [];
+      this.flora = [];
+      this.hazards = [];
+      this.larvae = [];
+      this.articulatedCreatures.forEach((candidate) => candidate.parts.forEach((part) => part.sprite?.destroy()));
+      this.articulatedCreatures = [];
+      const startY = scenario === 'corner' ? topY + 128 : reviewY;
+      const creature = createArticulatedCreature(this, manifest, reviewX - direction * 178, startY);
+      creature.homeX = creature.x;
+      creature.homeY = creature.y;
+      creature.facingSign = direction as 1 | -1;
+      creature.vx = direction * creature.speed * 1.2;
+      creature.vy = scenario === 'corner' ? -68 : 0;
+      creature.turn = undefined;
+      creature.aggro = 12;
+      creature.state = 'lunge';
+      creature.stateTimer = 99;
+      creature.grabCooldown = 999;
+      creature.bumpCooldown = 999;
+      creature.stunned = 0;
+      creature.parts.forEach((part) => {
+        part.hp = part.maxHp;
+        part.detached = false;
+        part.hurtFlash = 0;
+      });
+      this.articulatedCreatures.push(creature);
+      this.player.x = wallX - direction * 64;
+      this.player.y = scenario === 'corner' ? topY + 34 : reviewY;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      this.player.facing.set(-direction, 0);
+      this.player.facingSign = -direction as 1 | -1;
+      state.started = true;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.radioOpen = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.lost = false;
+      state.won = false;
+      state.hull = 999;
+      state.oxygen = oxygenMax();
+      state.depth = Math.max(0, Math.round((this.player.y - SURFACE_Y) / 6));
+      this.updateArticulatedParts(creature, 0);
+      const metrics = (label: string, frame: number) => {
+        const chainIds = ['head', 'thorax', 'abdomen-2', 'abdomen-3', 'tail-stem', 'tail-fan'];
+        const chain = chainIds.map((id) => creature.parts.find((part) => part.id === id)).filter((part): part is NonNullable<typeof part> => Boolean(part));
+        const bends = chain.slice(1, -1).map((part, index) => {
+          const before = chain[index];
+          const after = chain[index + 2];
+          const ax = part.x - before.x;
+          const ay = part.y - before.y;
+          const bx = after.x - part.x;
+          const by = after.y - part.y;
+          return (ax * bx + ay * by) / Math.max(0.001, Math.hypot(ax, ay) * Math.hypot(bx, by));
+        });
+        let maxNonNeighborOverlap = 0;
+        for (let i = 0; i < chain.length; i += 1) {
+          for (let j = i + 2; j < chain.length; j += 1) {
+            const a = chain[i];
+            const b = chain[j];
+            const limit = partManifest(creature, a).hitRadius * ENTITY_SCALE + partManifest(creature, b).hitRadius * ENTITY_SCALE;
+            maxNonNeighborOverlap = Math.max(maxNonNeighborOverlap, Phaser.Math.Clamp((limit - Phaser.Math.Distance.Between(a.x, a.y, b.x, b.y)) / Math.max(1, limit), 0, 1));
+          }
+        }
+        const joints = this.articulatedJointMetrics(creature);
+        return {
+          label,
+          frame,
+          x: roundMetric(creature.x),
+          y: roundMetric(creature.y),
+          vx: roundMetric(creature.vx),
+          vy: roundMetric(creature.vy),
+          state: creature.state,
+          facingSign: creature.facingSign,
+          historySamples: creature.turn?.history.length ?? 0,
+          minChainDot: roundMetric(Math.min(...bends, 1)),
+          reversedBends: bends.filter((bend) => bend < -0.2).length,
+          maxNonNeighborOverlap: roundMetric(maxNonNeighborOverlap),
+          maxJointError: roundMetric(joints.reduce((max, joint) => Math.max(max, joint.error), 0)),
+          maxConstraintError: roundMetric(creature.spine.reduce((max, node) => Math.max(max, node.constraintError), 0)),
+          terrainContacts: creature.parts.filter((part) => part.terrainContact > 0).map((part) => ({ id: part.id, contact: roundMetric(part.terrainContact), nx: roundMetric(part.terrainNormalX), ny: roundMetric(part.terrainNormalY) })),
+          parts: chain.map((part) => ({ id: part.id, x: roundMetric(part.x), y: roundMetric(part.y), rotation: roundMetric(part.rotation) })),
+        };
+      };
+      const samples = [metrics('before', 0)];
+      for (let frame = 1; frame <= frames; frame += 1) {
+        this.updateArticulatedCreatures(1 / 60);
+        if (frame % 30 === 0 || frame === frames) samples.push(metrics(`frame-${frame}`, frame));
+      }
+      this.cameras.main.centerOn((creature.x + this.player.x) * 0.5, (creature.y + this.player.y) * 0.5);
+      state.paused = true;
+      refreshPlaytestCamera(this);
+      this.draw();
+      const worst = samples.reduce((current, sample) => (
+        sample.maxNonNeighborOverlap > current.maxNonNeighborOverlap
+          || sample.reversedBends > current.reversedBends
+          || sample.maxJointError > current.maxJointError
+          ? sample
+          : current
+      ), samples[0]);
+      return { ok: true, scenario, biome: state.biome, wall: { x: wallX, topY, direction }, samples, worst, snapshot: this.playtestSnapshot() };
     } else if (command === 'largeThreatRippleTurnReview') {
       const manifest = articulatedCreatureDefs().find((candidate) => ['abyssal-gulper', 'abyssal-serpent', 'abyssal-crownmaw', 'abyssal-reliquary-wyrm', 'abyssal-glasshook-skulk'].includes(candidate.id) && state.biome >= candidate.minBiome)
         ?? articulatedCreatureDefs().find((candidate) => candidate.id !== 'abyssal-mandible-bobbit' && state.biome >= candidate.minBiome)

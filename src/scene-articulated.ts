@@ -34,7 +34,6 @@ const largeRippleTurnIds = new Set([
   'abyssal-serpent',
   'abyssal-gulper',
   'abyssal-crownmaw',
-  'abyssal-glasshook-skulk',
   'abyssal-reliquary-wyrm',
 ]);
 
