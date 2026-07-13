@@ -1,0 +1,644 @@
+{
+  "schema": "water9/swimming-backgrounds-slice1-artifacts@1",
+  "generatedAt": "2026-07-13T19:14:59.154Z",
+  "repo": "/mnt/nxt-dev/water9",
+  "branch": "swimming-backgrounds",
+  "startingHead": "04f9e4d",
+  "productCommit": "same commit as this manifest",
+  "artifactRoot": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1",
+  "captureMetadata": {
+    "runtime": "actual normal-play DeepdiveScene #game canvas with live DOM HUD",
+    "renderer": "Canvas",
+    "viewport": [
+      1440,
+      900
+    ],
+    "metricRegion": "Canvas backing store only; live DOM HUD excluded",
+    "captureGeneratedAt": "2026-07-13T19:10:29.628Z",
+    "captureIds": [
+      {
+        "id": "b1-110m-cutoff-before",
+        "biome": 1,
+        "targetDepth": 110,
+        "actualDepth": 108,
+        "tileX": 48,
+        "activeBandBlend": {
+          "from": "surface",
+          "to": "upper",
+          "progress": 0.388,
+          "fromAlpha": 0.612,
+          "toAlpha": 0.388,
+          "cutoffDepth": 120,
+          "startDepth": 40,
+          "endDepth": 200,
+          "widthMeters": 160,
+          "lowerToTransitionDeep": false
+        }
+      },
+      {
+        "id": "b1-130m-cutoff-after",
+        "biome": 1,
+        "targetDepth": 130,
+        "actualDepth": 132,
+        "tileX": 48,
+        "activeBandBlend": {
+          "from": "surface",
+          "to": "upper",
+          "progress": 0.612,
+          "fromAlpha": 0.388,
+          "toAlpha": 0.612,
+          "cutoffDepth": 120,
+          "startDepth": 40,
+          "endDepth": 200,
+          "widthMeters": 160,
+          "lowerToTransitionDeep": false
+        }
+      },
+      {
+        "id": "b2-510m-cutoff-before",
+        "biome": 2,
+        "targetDepth": 510,
+        "actualDepth": 510,
+        "tileX": 30,
+        "activeBandBlend": {
+          "from": "upper",
+          "to": "mid",
+          "progress": 0.407,
+          "fromAlpha": 0.593,
+          "toAlpha": 0.407,
+          "cutoffDepth": 520,
+          "startDepth": 440,
+          "endDepth": 600,
+          "widthMeters": 160,
+          "lowerToTransitionDeep": false
+        }
+      },
+      {
+        "id": "b2-530m-cutoff-after",
+        "biome": 2,
+        "targetDepth": 530,
+        "actualDepth": 528,
+        "tileX": 30,
+        "activeBandBlend": {
+          "from": "upper",
+          "to": "mid",
+          "progress": 0.575,
+          "fromAlpha": 0.425,
+          "toAlpha": 0.575,
+          "cutoffDepth": 520,
+          "startDepth": 440,
+          "endDepth": 600,
+          "widthMeters": 160,
+          "lowerToTransitionDeep": false
+        }
+      },
+      {
+        "id": "b3-1030m-cutoff-before",
+        "biome": 3,
+        "targetDepth": 1030,
+        "actualDepth": 1032,
+        "tileX": 86,
+        "activeBandBlend": {
+          "from": "mid",
+          "to": "lower",
+          "progress": 0.425,
+          "fromAlpha": 0.575,
+          "toAlpha": 0.425,
+          "cutoffDepth": 1040,
+          "startDepth": 960,
+          "endDepth": 1120,
+          "widthMeters": 160,
+          "lowerToTransitionDeep": false
+        }
+      },
+      {
+        "id": "b3-1050m-cutoff-after",
+        "biome": 3,
+        "targetDepth": 1050,
+        "actualDepth": 1050,
+        "tileX": 86,
+        "activeBandBlend": {
+          "from": "mid",
+          "to": "lower",
+          "progress": 0.593,
+          "fromAlpha": 0.407,
+          "toAlpha": 0.593,
+          "cutoffDepth": 1040,
+          "startDepth": 960,
+          "endDepth": 1120,
+          "widthMeters": 160,
+          "lowerToTransitionDeep": false
+        }
+      },
+      {
+        "id": "b4-1430m-cutoff-before",
+        "biome": 4,
+        "targetDepth": 1430,
+        "actualDepth": 1428,
+        "tileX": 25,
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.388,
+          "fromAlpha": 0.612,
+          "toAlpha": 0.388,
+          "cutoffDepth": 1440,
+          "startDepth": 1360,
+          "endDepth": 1520,
+          "widthMeters": 160,
+          "lowerToTransitionDeep": true
+        }
+      },
+      {
+        "id": "b4-1450m-cutoff-after",
+        "biome": 4,
+        "targetDepth": 1450,
+        "actualDepth": 1452,
+        "tileX": 25,
+        "activeBandBlend": {
+          "from": "lower",
+          "to": "transitionDeep",
+          "progress": 0.612,
+          "fromAlpha": 0.388,
+          "toAlpha": 0.612,
+          "cutoffDepth": 1440,
+          "startDepth": 1360,
+          "endDepth": 1520,
+          "widthMeters": 160,
+          "lowerToTransitionDeep": true
+        }
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b1-110m-cutoff-before-color.png",
+      "relativePath": "b1-110m-cutoff-before-color.png",
+      "bytes": 413972,
+      "sha256": "a83cab496cbff6a7987378ba2e3add81741becc147ea8e7dc10c17ebe89ace03",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b1-110m-cutoff-before-grayscale.png",
+      "relativePath": "b1-110m-cutoff-before-grayscale.png",
+      "bytes": 238959,
+      "sha256": "b165ea9928312474fe4fd4eb479b495a3206370a752f8c7553679411990984b9",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b1-130m-cutoff-after-color.png",
+      "relativePath": "b1-130m-cutoff-after-color.png",
+      "bytes": 428824,
+      "sha256": "86ddf17f4554620de2c97f223b98dc9d1b140c4ef43015c0c46d3478086c5bb2",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b1-130m-cutoff-after-grayscale.png",
+      "relativePath": "b1-130m-cutoff-after-grayscale.png",
+      "bytes": 247584,
+      "sha256": "09e6b6329315220b582280bebdaf140486764f919b6c85aa13adaba1f86a3bc8",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b2-510m-cutoff-before-color.png",
+      "relativePath": "b2-510m-cutoff-before-color.png",
+      "bytes": 512476,
+      "sha256": "4f90f3aa7afe83fa35e8f2f70a9174a75ba02ad009c346ea67a6d7b0078d2ef9",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b2-510m-cutoff-before-grayscale.png",
+      "relativePath": "b2-510m-cutoff-before-grayscale.png",
+      "bytes": 287952,
+      "sha256": "8cabc92f8e39ff47c6a5a4057c8cd16ad1d60442ea3c7ee0486cc3fab198ff77",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b2-530m-cutoff-after-color.png",
+      "relativePath": "b2-530m-cutoff-after-color.png",
+      "bytes": 509270,
+      "sha256": "f9ff435417ff4bd4f460c2ebcd6c1f8e888b101f7d908e090cca6742c75bce05",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b2-530m-cutoff-after-grayscale.png",
+      "relativePath": "b2-530m-cutoff-after-grayscale.png",
+      "bytes": 285108,
+      "sha256": "44c783b6478c26f3337e6a1bfc6e89ea842e45a5131fbdd6de0cf2c4c3c22844",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b3-1030m-cutoff-before-color.png",
+      "relativePath": "b3-1030m-cutoff-before-color.png",
+      "bytes": 575020,
+      "sha256": "2e8d319d6396a3c6f763a440185fe5bd4424b496398da0a74084336fac679b67",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b3-1030m-cutoff-before-grayscale.png",
+      "relativePath": "b3-1030m-cutoff-before-grayscale.png",
+      "bytes": 341296,
+      "sha256": "372d0eb293049e56c8af323e3d8b97698cd5f3a729753185cacdd7ce4da99b39",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b3-1050m-cutoff-after-color.png",
+      "relativePath": "b3-1050m-cutoff-after-color.png",
+      "bytes": 646880,
+      "sha256": "5ed6dfa30293fb8721465e88c30accc3ba36648a6044e05b47d532326fdb2283",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b3-1050m-cutoff-after-grayscale.png",
+      "relativePath": "b3-1050m-cutoff-after-grayscale.png",
+      "bytes": 372813,
+      "sha256": "32106f2ddde3496d01e5c64f4f1a853e3ad7f91798bda236c3c98fa0d6bd4e71",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-1430m-cutoff-before-color.png",
+      "relativePath": "b4-1430m-cutoff-before-color.png",
+      "bytes": 310858,
+      "sha256": "f25f4f2b77d580a32349175da969b8911226cf2c610c975b3197ac2d576b4edf",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-1430m-cutoff-before-grayscale.png",
+      "relativePath": "b4-1430m-cutoff-before-grayscale.png",
+      "bytes": 191871,
+      "sha256": "a65b2dabf73879a0d1c0161bb8d1bfc5e7d5657bf0519c1f9ecd877147b659b0",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-1450m-cutoff-after-color.png",
+      "relativePath": "b4-1450m-cutoff-after-color.png",
+      "bytes": 360525,
+      "sha256": "5ca3d8638c949b427f00dd79e42495ef81f0fdcabf208aec60cd11635f1f267e",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-1450m-cutoff-after-grayscale.png",
+      "relativePath": "b4-1450m-cutoff-after-grayscale.png",
+      "bytes": 209435,
+      "sha256": "adcaf919a52eb40e8efbd68cec30d8c67b65e96dca326aeb034c323e362ef1fe",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-busy-deep-canvas-end-canvas-gray.png",
+      "relativePath": "b4-busy-deep-canvas-end-canvas-gray.png",
+      "bytes": 211621,
+      "sha256": "ac04fce1160a436c8e466f6f72cbe63b464c91bfa10a7b890ba0e67b70606415",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-busy-deep-canvas-end-canvas.png",
+      "relativePath": "b4-busy-deep-canvas-end-canvas.png",
+      "bytes": 376696,
+      "sha256": "17ad514ae7fd9429d660d8d6fb584eafb79abc08296257626014fbaedfdaa67c",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-busy-deep-canvas-start-canvas-gray.png",
+      "relativePath": "b4-busy-deep-canvas-start-canvas-gray.png",
+      "bytes": 397383,
+      "sha256": "ffaf7530773669923c51e2c50b38b83af3025395afd78fdc5628a8de387a0dc4",
+      "role": "grayscale-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-busy-deep-canvas-start-canvas.png",
+      "relativePath": "b4-busy-deep-canvas-start-canvas.png",
+      "bytes": 613572,
+      "sha256": "0d60d6c191a24464d92043f8627cba7c8c753e9f0ee6a4eaabc5954b29340b0a",
+      "role": "color-visual-proof"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-canvas-25s-gate.json",
+      "relativePath": "b4-canvas-25s-gate.json",
+      "bytes": 50583,
+      "sha256": "3471fb25d03555178d6a13fd4ef5c378ec23a7a8c170b9dd8227fb31c2a37893",
+      "role": "settled-b4-canvas-performance-measurement"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/b4-canvas-25s-gate.log",
+      "relativePath": "b4-canvas-25s-gate.log",
+      "bytes": 50583,
+      "sha256": "3471fb25d03555178d6a13fd4ef5c378ec23a7a8c170b9dd8227fb31c2a37893",
+      "role": "settled-b4-canvas-performance-log"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/lighting-visibility-smoke.json",
+      "relativePath": "lighting-visibility-smoke.json",
+      "bytes": 3335,
+      "sha256": "28e07eea18458190c755a63d154a311baf0da7c8bc693e16e48236d08fadeee5",
+      "role": "lighting-visibility-smoke"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/presentation-smoke.json",
+      "relativePath": "presentation-smoke.json",
+      "bytes": 4397,
+      "sha256": "eb1332dd812ef68a9e46e14cfc7f8e522fb9bdf477ad510090f491a701538fcc",
+      "role": "presentation-smoke"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b1-110m-cutoff-before-color.png",
+      "relativePath": "rejected-depth-conversion/b1-110m-cutoff-before-color.png",
+      "bytes": 424407,
+      "sha256": "a7d149227690bf3c45e54f51aabfe6c0b9a281def5191a785e4584e4e73ade59",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b1-110m-cutoff-before-grayscale.png",
+      "relativePath": "rejected-depth-conversion/b1-110m-cutoff-before-grayscale.png",
+      "bytes": 248394,
+      "sha256": "af2f3d6b8a025c1eeab1c3d1a756c65b75099a46766f5c3852ad8e4e2a7ffc3b",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b1-130m-cutoff-after-color.png",
+      "relativePath": "rejected-depth-conversion/b1-130m-cutoff-after-color.png",
+      "bytes": 416568,
+      "sha256": "bba2bc4ed84e1d210d358572ecf7bd9890ef51c9f7801611646c3791389203bf",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b1-130m-cutoff-after-grayscale.png",
+      "relativePath": "rejected-depth-conversion/b1-130m-cutoff-after-grayscale.png",
+      "bytes": 245487,
+      "sha256": "81b3cf57fea1afc3e105b6fa9727b4f85cf96ca741f2a73158cac3b78670f617",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b2-510m-cutoff-before-color.png",
+      "relativePath": "rejected-depth-conversion/b2-510m-cutoff-before-color.png",
+      "bytes": 288735,
+      "sha256": "2f9b466979a68f3376e556a9c988e89613fb74d93711ca7777561c18d1c24c34",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b2-510m-cutoff-before-grayscale.png",
+      "relativePath": "rejected-depth-conversion/b2-510m-cutoff-before-grayscale.png",
+      "bytes": 179097,
+      "sha256": "7336a4231070d3bc5bbab626424f7b379882e84766ddf6d258204db5e82483ab",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b2-530m-cutoff-after-color.png",
+      "relativePath": "rejected-depth-conversion/b2-530m-cutoff-after-color.png",
+      "bytes": 364389,
+      "sha256": "f7b238a39ca5ceb43be75bb4ee32fd6cc1e26a1bf5cb12be1c58e1d01f4f0935",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b2-530m-cutoff-after-grayscale.png",
+      "relativePath": "rejected-depth-conversion/b2-530m-cutoff-after-grayscale.png",
+      "bytes": 209173,
+      "sha256": "94a44f61fd29521ca76b0c6b17def5bf21a39d3ed72dfa202b6cdf50bd4e448a",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b3-1030m-cutoff-before-color.png",
+      "relativePath": "rejected-depth-conversion/b3-1030m-cutoff-before-color.png",
+      "bytes": 667232,
+      "sha256": "47ce6801c1982cd6ed477a1e1281c1df9b2d732eef4e9f404b37c875f532bef8",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b3-1030m-cutoff-before-grayscale.png",
+      "relativePath": "rejected-depth-conversion/b3-1030m-cutoff-before-grayscale.png",
+      "bytes": 380980,
+      "sha256": "98bac3c0ec38a6764d590e73829028a0acea9c89a9a71aba1f581e9f6e206873",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b3-1050m-cutoff-after-color.png",
+      "relativePath": "rejected-depth-conversion/b3-1050m-cutoff-after-color.png",
+      "bytes": 602920,
+      "sha256": "fb7df86ac1fe6e1fb5996bef24fc1fbef84a7e47d44fde7ec2f961fe9b95fff7",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b3-1050m-cutoff-after-grayscale.png",
+      "relativePath": "rejected-depth-conversion/b3-1050m-cutoff-after-grayscale.png",
+      "bytes": 346599,
+      "sha256": "75be3e3ec9c0fcab970dd313005d669fc84aa96fbf85fb456a22b4e459a39386",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b4-1430m-cutoff-before-color.png",
+      "relativePath": "rejected-depth-conversion/b4-1430m-cutoff-before-color.png",
+      "bytes": 426766,
+      "sha256": "20d6cc7f23f46aed961f4b571b9b1385a40eaa3439dfa303be9363be00ae592d",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b4-1430m-cutoff-before-grayscale.png",
+      "relativePath": "rejected-depth-conversion/b4-1430m-cutoff-before-grayscale.png",
+      "bytes": 258781,
+      "sha256": "11366083c8db3b6132fce1bf816c0f40361fc2510205e79dd9a67e362f44673e",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b4-1450m-cutoff-after-color.png",
+      "relativePath": "rejected-depth-conversion/b4-1450m-cutoff-after-color.png",
+      "bytes": 473336,
+      "sha256": "72dacc4dbb6e19c498b0ea2837a231fd20c55c6835593572f15ca718ebf1e71e",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/b4-1450m-cutoff-after-grayscale.png",
+      "relativePath": "rejected-depth-conversion/b4-1450m-cutoff-after-grayscale.png",
+      "bytes": 279494,
+      "sha256": "7d3a9803a7eff08c0ab3e7727c6419e6214aee184c46e502a3d77eaf7957c570",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-depth-conversion/slice1-visual-evidence-rejected.json",
+      "relativePath": "rejected-depth-conversion/slice1-visual-evidence-rejected.json",
+      "bytes": 17809,
+      "sha256": "c992a6e4263c1bfe2cd6fcbd3cec917f9a3089fa635c630291939ca4980a6d6b",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b1-110m-cutoff-before-color.png",
+      "relativePath": "rejected-direct-centerline/b1-110m-cutoff-before-color.png",
+      "bytes": 410136,
+      "sha256": "fba1454c6edef676d22258fddc646fa254df6d22adc5b9c5dde20891d4fee8e1",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b1-110m-cutoff-before-grayscale.png",
+      "relativePath": "rejected-direct-centerline/b1-110m-cutoff-before-grayscale.png",
+      "bytes": 238093,
+      "sha256": "c1985ccd16422238b6c4f09b9a097d6567f8115f2ab0b7f09bb67d737880d2d0",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b1-130m-cutoff-after-color.png",
+      "relativePath": "rejected-direct-centerline/b1-130m-cutoff-after-color.png",
+      "bytes": 421884,
+      "sha256": "65f96f5ba0b9b417b22b9eed41923f9bb9acef873181f149d47a4be9da22222a",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b1-130m-cutoff-after-grayscale.png",
+      "relativePath": "rejected-direct-centerline/b1-130m-cutoff-after-grayscale.png",
+      "bytes": 241769,
+      "sha256": "93842ba41c37fc838e775ebc8019ea9eebe7d3edc3038527cf8d49c913c365dc",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b2-510m-cutoff-before-color.png",
+      "relativePath": "rejected-direct-centerline/b2-510m-cutoff-before-color.png",
+      "bytes": 498920,
+      "sha256": "f5a551578b2e248695e8e093f6a1fcad6993e13493ff50024d99095ff816dceb",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b2-510m-cutoff-before-grayscale.png",
+      "relativePath": "rejected-direct-centerline/b2-510m-cutoff-before-grayscale.png",
+      "bytes": 294113,
+      "sha256": "6144b9bfb0ef24ab26d3c6c0387ed8fdd4d547dee056342fa6765789eac21fe2",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b2-530m-cutoff-after-color.png",
+      "relativePath": "rejected-direct-centerline/b2-530m-cutoff-after-color.png",
+      "bytes": 409466,
+      "sha256": "948982c36d6aa4b7b3c7631a8e88dc042893cabd75295e7eb334aae34a7dd00b",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b2-530m-cutoff-after-grayscale.png",
+      "relativePath": "rejected-direct-centerline/b2-530m-cutoff-after-grayscale.png",
+      "bytes": 255127,
+      "sha256": "ed7f1bbfd63ddf0d83450cc15df3a14ac889f2a5c8e9d699209ad820a83dafde",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b3-1030m-cutoff-before-color.png",
+      "relativePath": "rejected-direct-centerline/b3-1030m-cutoff-before-color.png",
+      "bytes": 930490,
+      "sha256": "ce6fe42650cd9b0a0b92f70ce71d3c74cf2f92a3c61633d6d341ef4b2e515074",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b3-1030m-cutoff-before-grayscale.png",
+      "relativePath": "rejected-direct-centerline/b3-1030m-cutoff-before-grayscale.png",
+      "bytes": 582673,
+      "sha256": "fadf42b35eb3215767e398e7127453b244f342344e394af17179cf4c471b9db4",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b3-1050m-cutoff-after-color.png",
+      "relativePath": "rejected-direct-centerline/b3-1050m-cutoff-after-color.png",
+      "bytes": 1273922,
+      "sha256": "6d10ebad5dc7dd3c7c96dd5917f6e2adea7358e2b4d8b6e812b498978c82eef3",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b3-1050m-cutoff-after-grayscale.png",
+      "relativePath": "rejected-direct-centerline/b3-1050m-cutoff-after-grayscale.png",
+      "bytes": 758645,
+      "sha256": "397456cccf10067a023bddea1e62fb93bac60044c390e52b1a1e4ebaf2afbf8e",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b4-1430m-cutoff-before-color.png",
+      "relativePath": "rejected-direct-centerline/b4-1430m-cutoff-before-color.png",
+      "bytes": 469046,
+      "sha256": "b4fa90a6e60aa346bb2de19d748897e12bfe6eebac1785f7d6122af3a2c412c3",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b4-1430m-cutoff-before-grayscale.png",
+      "relativePath": "rejected-direct-centerline/b4-1430m-cutoff-before-grayscale.png",
+      "bytes": 308486,
+      "sha256": "e26f0d82b097c15969fa58307a79220efd560b27853285c987e844d02450ab52",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b4-1450m-cutoff-after-color.png",
+      "relativePath": "rejected-direct-centerline/b4-1450m-cutoff-after-color.png",
+      "bytes": 696263,
+      "sha256": "313730b13de92136cb39d215e6fa3e44a4a68bd1eba2d7510d10b93e62e574b2",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/b4-1450m-cutoff-after-grayscale.png",
+      "relativePath": "rejected-direct-centerline/b4-1450m-cutoff-after-grayscale.png",
+      "bytes": 425158,
+      "sha256": "e5455b539bf36ff01c1bea729c987962fac828acbc7f9c2aefeffd2cc356426c",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/rejected-direct-centerline/slice1-visual-evidence-rejected.json",
+      "relativePath": "rejected-direct-centerline/slice1-visual-evidence-rejected.json",
+      "bytes": 18263,
+      "sha256": "052ddccce06bb8bced2e1d5c5f0e5995e4218c81e458a0c97a71a077d6ab292a",
+      "role": "rejected-comparison-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/save-load-smoke.json",
+      "relativePath": "save-load-smoke.json",
+      "bytes": 1271,
+      "sha256": "a306e7bfcc4dc91c5b4768b8ff3a75d27e396023b8440fac23190e696613fead",
+      "role": "save-load-smoke"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/slice1-visual-evidence.json",
+      "relativePath": "slice1-visual-evidence.json",
+      "bytes": 19188,
+      "sha256": "e44a18d9cfe534e06da72264d2a581194fa8c8b77a8306aab174e9db68e1a6f7",
+      "role": "normal-play-capture-metrics-and-provenance"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/typescript-after.txt",
+      "relativePath": "typescript-after.txt",
+      "bytes": 5677,
+      "sha256": "d8dd9ab80539313a48508f305ff91b14a3286ccda5509aeac6bcb79701ed591f",
+      "role": "post-change-typescript-result"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/typescript-baseline.txt",
+      "relativePath": "typescript-baseline.txt",
+      "bytes": 5677,
+      "sha256": "87749e1c66e6a9f74466f7da463a7c5ea7424b84fd79030dcce86c136f981dac",
+      "role": "inherited-typescript-baseline"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/water9-presentation-smoke-desktop-2026-06-28.png",
+      "relativePath": "water9-presentation-smoke-desktop-2026-06-28.png",
+      "bytes": 366900,
+      "sha256": "c2c6d042d02c61da8e6e96677ba6b2277568d66108c034a1040feb8dcbf17eb9",
+      "role": "presentation-smoke"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/water9-presentation-smoke-narrow-2026-06-28.png",
+      "relativePath": "water9-presentation-smoke-narrow-2026-06-28.png",
+      "bytes": 309360,
+      "sha256": "21ad3cd46af74c2d775315b7b53ca70c6ab4b4b42cd0afb9fc4150385dc0d903",
+      "role": "presentation-smoke"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/water9-terrain-outline-soften-2026-06-28-biome-2.png",
+      "relativePath": "water9-terrain-outline-soften-2026-06-28-biome-2.png",
+      "bytes": 619989,
+      "sha256": "ea5fc7872b3f28673b693b3b76a04373ea5b84a9b9f153110f66f615254e35ab",
+      "role": "supporting-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/water9-terrain-outline-soften-2026-06-28-biome-3.png",
+      "relativePath": "water9-terrain-outline-soften-2026-06-28-biome-3.png",
+      "bytes": 454454,
+      "sha256": "c749fdccf76f8deebc48e9de3b708e5274919f57f228bccf34e74efc8235d3b0",
+      "role": "supporting-evidence"
+    },
+    {
+      "path": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice1/water9-terrain-outline-soften-2026-06-28-biome-4.png",
+      "relativePath": "water9-terrain-outline-soften-2026-06-28-biome-4.png",
+      "bytes": 377716,
+      "sha256": "b6d0638e8785ad492be9159ae412b818648c1f4e9abafe9d73e22d30b6ec627e",
+      "role": "supporting-evidence"
+    }
+  ]
+}

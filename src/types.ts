@@ -72,6 +72,7 @@ export type PlaytestCommand =
   | 'refill'
   | 'teleportDepth'
   | 'teleportToReachableDepth'
+  | 'teleportToCutoffOpenWater'
   | 'centerCameraOnPlayer'
   | 'clearProofOverlays'
   | 'teleportToFlora'

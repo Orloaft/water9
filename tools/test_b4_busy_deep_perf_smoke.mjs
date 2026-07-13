@@ -16,6 +16,9 @@ const renderer = process.env.WATER9_B4_RENDERER === 'webgl' ? 'webgl' : 'canvas'
 const reportPath = process.env.WATER9_B4_PERF_REPORT ?? `${outDir}/b4-busy-deep-${renderer}-perf-smoke.json`;
 const host = '127.0.0.1';
 const requestedPort = Number(process.env.WATER9_B4_PERF_PORT ?? 5180);
+const probeDurationMs = Number(process.env.WATER9_B4_PERF_DURATION_MS ?? 3600);
+const warmupDurationMs = Number(process.env.WATER9_B4_PERF_WARMUP_MS ?? 650);
+const slice1Gate = process.env.WATER9_B4_SLICE1_GATE === '1';
 
 await mkdir(outDir, { recursive: true });
 
@@ -221,14 +224,14 @@ try {
   await command(page, 'teleportToArticulated');
   await command(page, 'refill');
   await command(page, 'clearProofOverlays');
-  await sleep(650);
+  await sleep(warmupDurationMs);
   const startShot = await captureCanvasPair(page, `b4-busy-deep-${renderer}-start-canvas`);
   await command(page, 'resetPerfFrameBuffer');
   await startCadenceProbe(page, `b4-busy-deep-${renderer}`);
   await sleep(80);
   await page.keyboard.down('ArrowRight');
   await page.keyboard.down('ArrowDown');
-  await sleep(3600);
+  await sleep(probeDurationMs);
   await page.keyboard.up('ArrowRight');
   await page.keyboard.up('ArrowDown');
   await sleep(360);
@@ -257,7 +260,22 @@ try {
     perf,
     longTasks: cadenceProbe?.longTasks ?? [],
     errors,
+    thresholds: slice1Gate ? {
+      rafP95Ms: 17.5,
+      rafP99Ms: 25,
+      rafOver33Pct: 1,
+      outerFrameP95Ms: 8,
+    } : {},
   });
+  const backgroundCompositeP95Ms = [
+    'draw.parallax',
+    'draw.waterColumn',
+    'draw.backgroundAnchors',
+    'draw.darkness',
+  ].reduce((sum, key) => sum + (perf?.metrics?.[key]?.p95Ms ?? 0), 0);
+  if (slice1Gate && backgroundCompositeP95Ms > 1) {
+    errors.push({ type: 'assertion', text: `combined background/water/landmark/darkness p95 ${round(backgroundCompositeP95Ms)}ms exceeds 1ms` });
+  }
   report = {
     ok: errors.length === 0,
     renderer,
@@ -271,6 +289,9 @@ try {
       heldKeys: ['ArrowRight', 'ArrowDown'],
       viewport: { width: 1280, height: 800 },
       sonarExpectedOpen: false,
+      warmupDurationMs,
+      probeDurationMs,
+      slice1Gate,
     },
     classification: classify(perf, independentRaf),
     cadenceProbe: cadenceProbe ? { label: cadenceProbe.label, durationMs: cadenceProbe.durationMs } : null,
@@ -289,6 +310,11 @@ try {
       outerRender: summarizePerfMetric(perf?.metrics?.['outer.render']),
       outerPostStepToRender: summarizePerfMetric(perf?.metrics?.['outer.postStepToRender']),
       outerFrameTotal: summarizePerfMetric(perf?.metrics?.['outer.frameTotal']),
+      drawParallax: summarizePerfMetric(perf?.metrics?.['draw.parallax']),
+      drawWaterColumn: summarizePerfMetric(perf?.metrics?.['draw.waterColumn']),
+      drawBackgroundAnchors: summarizePerfMetric(perf?.metrics?.['draw.backgroundAnchors']),
+      drawDarkness: summarizePerfMetric(perf?.metrics?.['draw.darkness']),
+      backgroundCompositeP95Ms: round(backgroundCompositeP95Ms),
     },
     longTasks: {
       count: perf?.longTasks?.length ?? 0,

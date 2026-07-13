@@ -4,7 +4,7 @@ import { BARGE_DOCKING_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BARGE_DOCK_Y,BARGE_DRAW_S
 import { tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { ambientDarknessOpacity,animatedFrame,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,scaledEntity,sonarKey,sonarTileColor,specialRoomEffectCenter,spriteManifests,subDef,swimPose,swimTopSpeed,terrainBodyColorForTile,terrainLookForBiome } from './helpers';
+import { animatedFrame,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishFrameCount,fitImageHeight,fitImageWidth,hash,isArtifactTile,isOreTile,lightBeamHalfWidth,lightBeamLength,lightRadius,mineCooldown,scaledEntity,sonarKey,sonarTileColor,specialRoomEffectCenter,spriteManifests,subDef,swimPose,swimTopSpeed,terrainBodyColorForTile,terrainLookForBiome } from './helpers';
 import type { DeepdiveScene } from './scene';
 import { DIVER_ARTICULATED_PART_SPECS } from './diver-articulated';
 import { hideSubmarinePartSprites,renderSubmarineParts } from './submarine-parts';
@@ -27,7 +27,7 @@ export function draw(this: DeepdiveScene, ) {
     this.lampGloom.clear();
     this.overlay.clear();
     this.parallaxBackdrop.clear();
-    camera.setBackgroundColor(depthColor(state.depth));
+    camera.setBackgroundColor(environmentProfile.cameraClearColor);
 	    this.updateForegroundTerrainPresentation(environmentProfile);
 	    measurePerf(this, 'draw.parallax', () => this.drawParallax(camera, environmentProfile));
     measurePerf(this, 'draw.waterColumn', () => this.drawWaterColumn(camera, environmentProfile));
@@ -62,9 +62,11 @@ export function draw(this: DeepdiveScene, ) {
   }
 
 export function updateForegroundTerrainPresentation(this: DeepdiveScene, profile = environmentVisualProfileFor(state.biome, state.depth)) {
-    const transitionDeepBlend = profile.activeBandBlend.from === 'lower' && profile.activeBandBlend.to === 'transitionDeep'
-      ? profile.activeBandBlend.progress
-      : profile.depthBand === 'transitionDeep' ? 1 : 0;
+    const transitionDeepBlend = profile.activeBandBlend.to === 'transitionDeep'
+      ? profile.activeBandBlend.toAlpha
+      : profile.activeBandBlend.from === 'transitionDeep'
+        ? profile.activeBandBlend.fromAlpha
+        : 0;
     this.terrain.setAlpha(Phaser.Math.Linear(1, TRANSITION_DEEP_TERRAIN_ALPHA, transitionDeepBlend));
     this.terrainEdges.setAlpha(Phaser.Math.Linear(1, TRANSITION_DEEP_TERRAIN_EDGE_ALPHA, transitionDeepBlend));
     this.oreOverburden.setAlpha(Phaser.Math.Linear(1, TRANSITION_DEEP_ORE_OVERBURDEN_ALPHA, transitionDeepBlend));
@@ -106,14 +108,7 @@ export function drawParallax(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D
       const sourceWidth = Math.max(1, source.width);
       const sourceHeight = Math.max(1, source.height);
       const coverScale = Math.max((view.width + padding * 2) / sourceWidth, (view.height + padding * 2) / sourceHeight, 1) * layerProfile.scale;
-      const band = profile.bands.find((candidate) => candidate.id === layerProfile.band);
-      const bandTop = band ? SURFACE_Y + band.startDepth * 6 - band.blendPx : view.y - padding;
-      const bandBottom = band ? SURFACE_Y + band.endDepth * 6 + band.blendPx : view.bottom + padding;
-      const bandFade = band
-        ? Phaser.Math.Clamp((view.bottom - bandTop) / Math.max(1, band.blendPx), 0, 1)
-          * Phaser.Math.Clamp((bandBottom - view.y) / Math.max(1, band.blendPx), 0, 1)
-        : 1;
-      const displayAlpha = layerProfile.alpha * bandFade;
+      const displayAlpha = layerProfile.alpha * profile.readability.scenicAlphaScale;
       if (displayAlpha <= 0.04) {
         layer.setVisible(false);
         continue;
@@ -429,6 +424,22 @@ function drawWaterColumnVolumeGraphics(scene: DeepdiveScene, camera: Phaser.Came
   }
 }
 
+function protectedCorridorAlphaScale(
+  playerX: number,
+  playerY: number,
+  centerX: number,
+  centerY: number,
+  width: number,
+  height: number,
+  radius: number,
+  alphaFloor: number,
+) {
+  const dx = Math.max(Math.abs(playerX - centerX) - width * 0.5, 0);
+  const dy = Math.max(Math.abs(playerY - centerY) - height * 0.5, 0);
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  return Phaser.Math.Linear(alphaFloor, 1, Phaser.Math.SmoothStep(distance / Math.max(1, radius), 0, 1));
+}
+
 function drawBackgroundAnchors(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof environmentVisualProfileFor>) {
   const view = camera.worldView;
   const anchors = environmentAnchorSilhouettesFor(profile, view.x, view.right, view.y, view.bottom);
@@ -450,12 +461,22 @@ function drawBackgroundAnchors(scene: DeepdiveScene, camera: Phaser.Cameras.Scen
       const sprite = cached?.scene ? cached : scene.add.image(parallaxX, parallaxY, textureKey).setDepth(-8.4).setOrigin(0.5);
       scene.backgroundAnchorSprites[spriteIndex] = sprite;
       const crop = anchor.textureCrop;
+      const corridorAlpha = protectedCorridorAlphaScale(
+        scene.player.x,
+        scene.player.y,
+        parallaxX,
+        parallaxY,
+        anchor.width,
+        anchor.height,
+        profile.readability.corridorRadius,
+        profile.readability.landmarkAlphaFloor,
+      );
       sprite
         .setTexture(textureKey)
         .setDepth(biome1OrganicAnchor ? -6.77 : -7.3)
         .setVisible(true)
         .setPosition(parallaxX, parallaxY)
-        .setAlpha(Phaser.Math.Clamp(anchor.alpha * (ruinVaultAnchor ? (profile.activeBand.id === 'lower' ? 0.06 : 0.2) : 1), 0, 1))
+        .setAlpha(Phaser.Math.Clamp(anchor.alpha * corridorAlpha * (ruinVaultAnchor ? (profile.activeBand.id === 'lower' ? 0.06 : 0.2) : 1), 0, 1))
         .setTint(ruinVaultAnchor ? 0x718fa2 : 0xffffff)
         .setBlendMode(Phaser.BlendModes.NORMAL);
       if (crop) {
@@ -3934,59 +3955,127 @@ export function drawSub(this: DeepdiveScene, ) {
     }
   }
 
+function polygonArea(points: Phaser.Math.Vector2[]) {
+  let area = 0;
+  for (let index = 0; index < points.length; index += 1) {
+    const point = points[index];
+    const next = points[(index + 1) % points.length];
+    area += point.x * next.y - next.x * point.y;
+  }
+  return area * 0.5;
+}
+
+function appendOcclusionHole(graphics: Phaser.GameObjects.Graphics, points: Phaser.Math.Vector2[]) {
+  if (points.length < 3) return;
+  const ordered = polygonArea(points) > 0 ? [...points].reverse() : points;
+  graphics.moveTo(ordered[0].x, ordered[0].y);
+  for (let index = 1; index < ordered.length; index += 1) graphics.lineTo(ordered[index].x, ordered[index].y);
+  graphics.closePath();
+}
+
+function ellipsePolygon(cx: number, cy: number, rx: number, ry = rx, segments = 20) {
+  return Array.from({ length: segments }, (_, index) => {
+    const angle = (index / segments) * Math.PI * 2;
+    return new Phaser.Math.Vector2(cx + Math.cos(angle) * rx, cy + Math.sin(angle) * ry);
+  });
+}
+
+function drawOcclusionLayer(
+  scene: DeepdiveScene,
+  view: Phaser.Geom.Rectangle,
+  dir: Phaser.Math.Vector2,
+  normal: Phaser.Math.Vector2,
+  alpha: number,
+  expansion: number,
+  separationRadius: number,
+  protectedThreats: DeepdiveScene['fish'],
+) {
+  const cx = scene.player.x;
+  const cy = scene.player.y;
+  const length = lightBeamLength() + expansion * 0.7;
+  const nearWidth = 16 + expansion;
+  const farWidth = lightBeamHalfWidth() + expansion;
+  const back = expansion * 0.34;
+  const beam = [
+    new Phaser.Math.Vector2(cx - dir.x * back + normal.x * nearWidth, cy - dir.y * back + normal.y * nearWidth),
+    new Phaser.Math.Vector2(cx + dir.x * length + normal.x * farWidth, cy + dir.y * length + normal.y * farWidth),
+    new Phaser.Math.Vector2(cx + dir.x * length - normal.x * farWidth, cy + dir.y * length - normal.y * farWidth),
+    new Phaser.Math.Vector2(cx - dir.x * back - normal.x * nearWidth, cy - dir.y * back - normal.y * nearWidth),
+  ];
+
+  scene.darkness.fillStyle(0x000205, alpha);
+  scene.darkness.beginPath();
+  scene.darkness.moveTo(view.x, view.y);
+  scene.darkness.lineTo(view.right, view.y);
+  scene.darkness.lineTo(view.right, view.bottom);
+  scene.darkness.lineTo(view.x, view.bottom);
+  scene.darkness.closePath();
+  appendOcclusionHole(scene.darkness, beam);
+  appendOcclusionHole(scene.darkness, ellipsePolygon(cx, cy, separationRadius + expansion * 0.72));
+  for (const fish of protectedThreats) {
+    appendOcclusionHole(scene.darkness, ellipsePolygon(fish.x, fish.y, fish.radius * 2.05 + 5 + expansion * 0.35));
+  }
+
+  for (const flare of scene.flares) {
+    const t = Phaser.Math.Clamp(flare.age / flare.life, 0, 1);
+    const radius = FLARE_LIGHT_RADIUS * (1 - Phaser.Math.SmoothStep(t, 0.72, 1));
+    if (radius > 8) appendOcclusionHole(scene.darkness, ellipsePolygon(flare.x, flare.y, radius + expansion * 0.5));
+  }
+  for (const item of scene.looseItems) {
+    if (item.utility === 'flare' && !item.landed) {
+      appendOcclusionHole(scene.darkness, ellipsePolygon(item.x, item.y, FLARE_LIGHT_RADIUS * 0.62 + expansion * 0.5));
+    }
+  }
+  for (const room of scene.specialRooms) {
+    if (room.kind !== 'biolume') continue;
+    const center = specialRoomEffectCenter(room);
+    appendOcclusionHole(scene.darkness, ellipsePolygon(center.x, center.y, room.rx * 1.04 + expansion * 0.4, room.ry + expansion * 0.4));
+  }
+  scene.darkness.fillPath();
+}
+
+function drawLocalSeparationField(
+  scene: DeepdiveScene,
+  profile: ReturnType<typeof environmentVisualProfileFor>,
+) {
+  const steps = 12;
+  const radius = profile.readability.localSeparationRadius;
+  const feather = profile.readability.lampFeatherWorldPx;
+  const alpha = profile.readability.localSeparationAlpha / steps;
+  for (let index = steps - 1; index >= 0; index -= 1) {
+    const t = index / Math.max(1, steps - 1);
+    scene.lampGloom.fillStyle(0x88c7c7, alpha * Phaser.Math.Linear(0.42, 1, 1 - t));
+    scene.lampGloom.fillCircle(scene.player.x, scene.player.y, radius + feather * t);
+  }
+}
+
 export function drawDarkness(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
-    const darkness = darknessAtDepth();
-    if (darkness <= 0) return;
     const profile = environmentVisualProfileFor(state.biome, state.depth);
+    const darkness = profile.darkness.value;
+    if (darkness <= 0) return;
     const view = camera.worldView;
-    const left = view.x;
-    const right = view.right;
-    const top = view.y;
-    const bottom = view.bottom;
-    const cx = this.player.x;
-    const cy = this.player.y;
     const dir = this.player.facing.clone().normalize();
     const normal = new Phaser.Math.Vector2(-dir.y, dir.x);
-    const length = lightBeamLength();
-    const nearWidth = 16;
-    const farWidth = lightBeamHalfWidth();
-    const haloRadius = 23;
-    const beam = [
-      new Phaser.Math.Vector2(cx + normal.x * nearWidth, cy + normal.y * nearWidth),
-      new Phaser.Math.Vector2(cx + dir.x * length + normal.x * farWidth, cy + dir.y * length + normal.y * farWidth),
-      new Phaser.Math.Vector2(cx + dir.x * length - normal.x * farWidth, cy + dir.y * length - normal.y * farWidth),
-      new Phaser.Math.Vector2(cx - normal.x * nearWidth, cy - normal.y * nearWidth),
-    ];
+    const protectedThreats = this.fish
+      .filter((fish) => fish.hostile && !fish.dead && (fish.aggroCue > 0.05 || fish.aggro > 0.05))
+      .map((fish) => ({ fish, distance: Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y) }))
+      .filter(({ distance }) => distance <= 190)
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 4)
+      .map(({ fish }) => fish);
 
-    this.darkness.fillStyle(0x000205, ambientDarknessOpacity(darkness));
-    this.darkness.fillRect(left, top, view.width, view.height);
+    this.darkness.fillStyle(0x000205, profile.darkness.ambientOpacity);
+    this.darkness.fillRect(view.x, view.y, view.width, view.height);
 
-    const occlusion = darknessOpacity(darkness);
-    this.darkness.fillStyle(0x000205, occlusion);
-    const stripHeight = 4;
-    for (let y = top; y < bottom; y += stripHeight) {
-      const nextY = Math.min(y + stripHeight, bottom);
-      const sampleY = (y + nextY) * 0.5;
-      const litIntervals = this.lampIntervalsAtY(sampleY, beam, haloRadius, left, right);
-      let cursor = left;
-      for (const interval of litIntervals) {
-        if (interval.left > cursor) this.darkness.fillRect(cursor, y, interval.left - cursor, nextY - y);
-        cursor = Math.max(cursor, interval.right);
-      }
-      if (cursor < right) this.darkness.fillRect(cursor, y, right - cursor, nextY - y);
+    const falloffSteps = 12;
+    const layerAlpha = 1 - Math.pow(1 - profile.darkness.maskOpacity, 1 / falloffSteps);
+    for (let index = 0; index < falloffSteps; index += 1) {
+      const expansion = profile.readability.lampFeatherWorldPx * (index / Math.max(1, falloffSteps - 1));
+      drawOcclusionLayer(this, view, dir, normal, layerAlpha, expansion, profile.readability.localSeparationRadius, protectedThreats);
     }
 
     drawPostDarknessWaterColumnVeil(this, camera, profile);
-
-    const edgeAlpha = Math.min(0.5, darkness * 0.34);
-    this.lampGloom.lineStyle(8, 0x020509, edgeAlpha);
-    this.lampGloom.lineBetween(beam[0].x, beam[0].y, beam[1].x, beam[1].y);
-    this.lampGloom.lineBetween(beam[3].x, beam[3].y, beam[2].x, beam[2].y);
-    this.lampGloom.lineStyle(2, 0x9fb3b8, 0.03 + state.upgrades.lamp * 0.008);
-    this.lampGloom.lineBetween(beam[0].x, beam[0].y, beam[1].x, beam[1].y);
-    this.lampGloom.lineBetween(beam[3].x, beam[3].y, beam[2].x, beam[2].y);
-    this.lampGloom.lineStyle(4, 0x020509, Math.min(0.3, darkness * 0.18));
-    this.lampGloom.strokeCircle(cx, cy, haloRadius);
+    drawLocalSeparationField(this, profile);
   }
 
 function drawPostDarknessWaterColumnVeil(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof environmentVisualProfileFor>) {
@@ -3997,10 +4086,10 @@ function drawPostDarknessWaterColumnVeil(scene: DeepdiveScene, camera: Phaser.Ca
     const time = scene.time.now / 1000;
     const guardX = scene.player.x;
     const guardY = scene.player.y;
-    const guardRadius = veil.guardRadius;
-    const brineMid = profile.biome === 2 && profile.activeBand.id === 'mid';
-    const midnightLower = profile.biome === 3 && profile.activeBand.id === 'lower';
-    const ruinLower = profile.biome === 4 && profile.activeBand.id === 'lower';
+    const guardRadius = Math.max(veil.guardRadius, profile.readability.corridorRadius);
+    const brineMid = profile.biome === 2 && veil.layers.includes('horizontal-brine-ribbons');
+    const midnightLower = profile.biome === 3 && veil.layers.includes('midnight-cold-water-haze');
+    const ruinLower = profile.biome === 4 && veil.layers.includes('cold-ruin-veil');
 
     if (brineMid) {
       drawGuardedScreenVeil(scene.lampGloom, view, 0x102823, 0.075, guardX, guardY, guardRadius);

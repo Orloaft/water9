@@ -629,6 +629,44 @@ function reachableOpenWaterPoint(scene: DeepdiveScene, targetDepthMeters: number
   return best;
 }
 
+function cutoffOpenWaterPoint(scene: DeepdiveScene, boundaryDepthMeters: number, preferredTileX?: number) {
+  const rowFor = (depth: number) => Phaser.Math.Clamp(
+    Math.round((SURFACE_Y + (depth / 6) * TILE) / TILE),
+    4,
+    WORLD_H - 2,
+  );
+  const beforeY = rowFor(boundaryDepthMeters - 10);
+  const afterY = rowFor(boundaryDepthMeters + 10);
+  const center = Math.floor(WORLD_W / 2);
+  let best: { x: number; beforeY: number; afterY: number; score: number; localWaterRatio: number } | null = null;
+  for (let x = 12; x < WORLD_W - 12; x += 1) {
+    if (Number.isFinite(preferredTileX) && x !== Math.round(preferredTileX as number)) continue;
+    if (tiles[scene.getTile(x, beforeY)].solid || tiles[scene.getTile(x, afterY)].solid) continue;
+    let water = 0;
+    let cells = 0;
+    for (const row of [beforeY, afterY]) {
+      for (let y = row - 5; y <= row + 5; y += 1) {
+        for (let sampleX = x - 8; sampleX <= x + 8; sampleX += 1) {
+          cells += 1;
+          if (!tiles[scene.getTile(sampleX, y)].solid) water += 1;
+        }
+      }
+    }
+    const localWaterRatio = water / Math.max(1, cells);
+    const worldX = x * TILE + TILE * 0.5;
+    const threatClearance = scene.fish.reduce((minimum, fish) => {
+      if (fish.dead) return minimum;
+      const beforeDistance = Phaser.Math.Distance.Between(worldX, beforeY * TILE + TILE * 0.5, fish.x, fish.y) - fish.radius;
+      const afterDistance = Phaser.Math.Distance.Between(worldX, afterY * TILE + TILE * 0.5, fish.x, fish.y) - fish.radius;
+      return Math.min(minimum, beforeDistance, afterDistance);
+    }, 480);
+    const clearanceScore = Phaser.Math.Clamp(threatClearance, 0, 480) * 0.04;
+    const score = localWaterRatio * 100 + clearanceScore - Math.abs(x - center) * 0.04;
+    if (!best || score > best.score) best = { x, beforeY, afterY, score, localWaterRatio };
+  }
+  return best;
+}
+
 function colorHex(value: number) {
   return `#${value.toString(16).padStart(6, '0')}`;
 }
@@ -707,9 +745,10 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
       depthBand: profile.depthBand,
       activeBand: profile.activeBand.id,
       activeBandBlend: {
-        from: profile.activeBandBlend.from,
-        to: profile.activeBandBlend.to,
+        ...profile.activeBandBlend,
         progress: roundMetric(profile.activeBandBlend.progress),
+        fromAlpha: roundMetric(profile.activeBandBlend.fromAlpha),
+        toAlpha: roundMetric(profile.activeBandBlend.toAlpha),
         lowerToTransitionDeep: profile.activeBandBlend.from === 'lower' && profile.activeBandBlend.to === 'transitionDeep',
       },
       cameraClearColor: profile.cameraClearColor,
@@ -776,6 +815,14 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
       value: roundMetric(profile.darkness.value),
       ambientOpacity: roundMetric(profile.darkness.ambientOpacity),
       maskOpacity: roundMetric(profile.darkness.maskOpacity),
+    },
+    readability: {
+      corridorRadius: roundMetric(profile.readability.corridorRadius),
+      scenicAlphaScale: roundMetric(profile.readability.scenicAlphaScale),
+      landmarkAlphaFloor: roundMetric(profile.readability.landmarkAlphaFloor),
+      localSeparationRadius: roundMetric(profile.readability.localSeparationRadius),
+      localSeparationAlpha: roundMetric(profile.readability.localSeparationAlpha),
+      lampFeatherWorldPx: roundMetric(profile.readability.lampFeatherWorldPx),
     },
     worldSpaceNoise: {
       ...profile.background.worldSpaceNoise,
@@ -873,8 +920,8 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
       profileCount: profile.background.anchors.count,
       visibleCount: anchors.length,
       transitionBlendCounts: {
-        outgoingLower: anchors.filter((anchor) => anchor.transitionBlendRole === 'outgoingLower').length,
-        incomingTransition: anchors.filter((anchor) => anchor.transitionBlendRole === 'incomingTransition').length,
+        outgoing: anchors.filter((anchor) => anchor.transitionBlendRole === 'outgoing').length,
+        incoming: anchors.filter((anchor) => anchor.transitionBlendRole === 'incoming').length,
       },
       assets: profile.background.anchors.assets.map((asset) => ({
         id: asset.id,
@@ -3423,6 +3470,36 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         depthMeters: state.depth,
         tileX: point.x,
         tileY: point.y,
+        localWaterRatio: roundMetric(point.localWaterRatio),
+      };
+    } else if (command === 'teleportToCutoffOpenWater') {
+      const payload = typeof value === 'object' && value !== null ? value as { boundaryDepth?: number; depthMeters?: number; tileX?: number } : {};
+      const boundaryDepth = Phaser.Math.Clamp(Number(payload.boundaryDepth) || 0, 10, Math.floor((WORLD_H * TILE - SURFACE_Y - TILE) / 6) - 10);
+      const depthMeters = Phaser.Math.Clamp(Number(payload.depthMeters) || boundaryDepth, boundaryDepth - 10, boundaryDepth + 10);
+      const point = cutoffOpenWaterPoint(this, boundaryDepth, payload.tileX);
+      if (!point) return { ok: false, reason: 'no-cutoff-open-water' };
+      const tileY = depthMeters < boundaryDepth ? point.beforeY : point.afterY;
+      this.player.x = point.x * TILE + TILE * 0.5;
+      this.player.y = tileY * TILE + TILE * 0.5;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.radioOpen = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.sonarMapOpen = false;
+      state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
+      this.cameras.main.centerOn(this.player.x, this.player.y);
+      refreshPlaytestCamera(this);
+      return {
+        ok: true,
+        boundaryDepthMeters: Math.round(boundaryDepth),
+        targetDepthMeters: Math.round(depthMeters),
+        depthMeters: state.depth,
+        tileX: point.x,
+        tileY,
         localWaterRatio: roundMetric(point.localWaterRatio),
       };
     } else if (command === 'centerCameraOnPlayer') {
