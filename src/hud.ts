@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { BargeTab,Biome,CargoItem,FishSpecies,Flora,FloraSpecies,Quest,RadioMessage,ScanRarity,ShopItem,SubDef,SubTier,SubVehicle,TitlePanel,ToolId,Upgrade,UpgradeId } from './types';
+import { finishActiveProgressionRadio } from './progression-radio';
 import { BARGE_DOCK_Y,FUEL_REFILL_AMOUNT,MARLIN_VOUCHER_DISCOUNT,SUB_FUEL_COST,SUB_OXYGEN_COST,TILE,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,upgrades } from './content';
 import { behaviorLogbookMotion,fishBehaviorProfile } from './fauna-behavior';
@@ -447,9 +448,9 @@ export function radioDialoguePanel() {
         ${portrait}
       </div>
       <div class="radio-dialogue__body">
-        <span>${message.role}</span>
-        <strong>${message.speaker}</strong>
-        <p>${message.text}</p>
+        <span>${escapeHtml(message.role)}</span>
+        <strong>${escapeHtml(message.speaker)}</strong>
+        <p>${escapeHtml(message.text)}</p>
       </div>
       <button data-radio-next data-focus-key="radio-next">${final ? 'Resume' : 'Continue'}</button>
     </div>
@@ -462,6 +463,7 @@ export function advanceRadioDialogue() {
   if (state.radioIndex >= state.radioMessages.length) {
     state.radioOpen = false;
     state.radioIndex = 0;
+    finishActiveProgressionRadio();
   }
 }
 

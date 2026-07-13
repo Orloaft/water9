@@ -3382,6 +3382,8 @@ export function restart(scene: DeepdiveScene) {
   state.radioMessages = [];
   state.radioIndex = 0;
   state.radioOpen = false;
+  state.progressionRadioQueue = [];
+  state.progressionRadioActiveId = '';
   state.selectedSubTier = null;
   state.activeSub = null;
   state.carrierSub = null;

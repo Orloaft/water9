@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import type { ArticulatedCreature,Biome,CargoItem,Fish,Flora,PlaytestCommand,ShopItem,SubTier,TerrainSurfaceAnchor,Tile } from './types';
+import type { ArticulatedCreature,Biome,CargoItem,Fish,Flora,PlaytestCommand,Quest,QuestKind,ShopItem,SubTier,TerrainSurfaceAnchor,Tile } from './types';
 import { BARGE_DOCK_Y,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,PLAYER_FORWARD_REACH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,activeQuest,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,completeFinaleAtBarge,continueSurveyAfterEnding,createDefaultStoryProgress,createConsumableItem,createSubVehicle,currentPinnedStoryObjective,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,fuelMax,generateQuestBoard,hash,isLargeArticulatedThreat,isOreTile,oxygenMax,parallaxProfileFor,recoverFinalProof,refillAtBoat,resetFinaleProgress,resetToolState,restart,scaledDepthPx,scaledEntity,selectTool,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,syncStoryProgress,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
+import { LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,activeQuest,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,completeFinaleAtBarge,continueSurveyAfterEnding,createDefaultStoryProgress,createConsumableItem,createSubVehicle,currentApexSpecies,currentPinnedStoryObjective,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,fuelMax,generateQuestBoard,hash,isLargeArticulatedThreat,isOreTile,oxygenMax,parallaxProfileFor,recoverFinalProof,refillAtBoat,resetFinaleProgress,resetToolState,restart,scaledDepthPx,scaledEntity,selectTool,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,syncStoryProgress,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
@@ -12,6 +12,7 @@ import { usesLargeThreatRippleTurning } from './scene-articulated';
 import type { DeepdiveScene } from './scene';
 import { rebuildTerrainMask,sampleTerrainSurfaceAnchors,subtractTerrainMaskBrush,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt,validateTerrainSurfaceAnchor } from './terrain-mask';
 import { perfSnapshot } from './perf';
+import { PROGRESSION_RADIO_PREFIX,resetProgressionRadio } from './progression-radio';
 
 function refreshPlaytestCamera(scene: DeepdiveScene) {
   scene.cameras.main.preRender();
@@ -2573,6 +2574,12 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         carrierSub,
         hasSavedGame: hasSavedGame(),
         saveLoad: { ...state.saveLoad },
+        progressionRadio: {
+          activeId: state.progressionRadioActiveId,
+          queue: state.progressionRadioQueue.map((event) => ({ ...event })),
+          index: state.radioIndex,
+          messages: state.radioMessages.map((message) => ({ ...message })),
+        },
       },
       ui: {
         paused: state.paused,
@@ -3182,6 +3189,104 @@ function stageStoryMilestoneSmoke(this: DeepdiveScene, value?: unknown) {
     renderHud();
     return { ok: true, milestone, mode, snapshot: this.playtestSnapshot() };
   }
+
+const progressionQuestKinds: QuestKind[] = ['depth', 'scan', 'sample', 'ore', 'nest', 'gulperSurvey', 'forwardOutpost'];
+
+function resetProgressionRadioSmoke() {
+  resetProgressionRadio();
+  const heardRadio = state.story.heardRadio as string[];
+  heardRadio.splice(0, heardRadio.length, ...heardRadio.filter((id) => !id.startsWith(PROGRESSION_RADIO_PREFIX)));
+  state.radioOpen = false;
+  state.radioIndex = 0;
+  state.radioMessages = [];
+  state.paused = false;
+  state.logbookOpen = false;
+  state.cargoOpen = false;
+  state.sonarMapOpen = false;
+  state.lost = false;
+  state.won = false;
+  state.started = true;
+}
+
+function progressionSmokeQuest(kind: QuestKind, id: string, target = 3): Quest {
+  return {
+    id,
+    kind,
+    title: `Smoke ${kind}`,
+    client: 'Regression desk',
+    text: 'Progression radio regression fixture.',
+    reward: 100,
+    target,
+    progress: 0,
+    startValue: 0,
+    accepted: true,
+    completed: false,
+    claimed: false,
+  };
+}
+
+function stageProgressionQuestRadio(this: DeepdiveScene, value?: unknown) {
+  const request = value && typeof value === 'object' ? value as Record<string, unknown> : {};
+  const requestedKind = String(request.kind ?? 'depth');
+  if (!(progressionQuestKinds as string[]).includes(requestedKind)) return { ok: false, reason: 'invalid quest kind' };
+  if (request.reset !== false) resetProgressionRadioSmoke();
+  const kind = requestedKind as QuestKind;
+  const id = String(request.id ?? `progression-smoke-${kind}`);
+  const target = Math.max(1, Math.round(Number(request.target) || (kind === 'ore' ? 1250 : kind === 'depth' || kind === 'gulperSurvey' ? 1350 : 3)));
+  state.biome = Phaser.Math.Clamp(Number(request.biome) || (kind === 'gulperSurvey' || kind === 'forwardOutpost' ? 3 : 1), 1, 4) as Biome;
+  state.atBoat = false;
+  state.docked = false;
+  state.depth = kind === 'forwardOutpost' ? 940 : Math.max(state.depth, target);
+  state.forwardOutpost.floraSpecies = kind === 'forwardOutpost' ? 'Black Fan' : state.forwardOutpost.floraSpecies;
+  const quest = progressionSmokeQuest(kind, id, target);
+  this.completeQuest(quest, `${quest.title} complete.`);
+  const queuedAfterFirst = state.progressionRadioQueue.length;
+  this.completeQuest(quest, 'Duplicate completion should be ignored.');
+  return { ok: true, kind, queuedAfterFirst, queuedAfterSecond: state.progressionRadioQueue.length, snapshot: this.playtestSnapshot() };
+}
+
+function stageProgressionBackToBack(this: DeepdiveScene) {
+  resetProgressionRadioSmoke();
+  state.paused = true;
+  state.atBoat = false;
+  state.docked = false;
+  const first = progressionSmokeQuest('scan', 'progression-smoke-fifo-scan', 4);
+  const second = progressionSmokeQuest('ore', 'progression-smoke-fifo-ore', 1600);
+  this.completeQuest(first, 'First FIFO event complete.');
+  this.completeQuest(second, 'Second FIFO event complete.');
+  const queuedIds = state.progressionRadioQueue.map((event) => event.id);
+  state.paused = false;
+  renderHud();
+  return { ok: true, queuedIds, snapshot: this.playtestSnapshot() };
+}
+
+function stageProgressionTravel(this: DeepdiveScene, value?: unknown) {
+  const request = value && typeof value === 'object' ? value as Record<string, unknown> : {};
+  const from = Phaser.Math.Clamp(Number(request.from) || 1, 1, 3) as 1 | 2 | 3;
+  if (request.reset !== false) resetProgressionRadioSmoke();
+  state.biome = from;
+  state.atBoat = true;
+  state.docked = true;
+  state.credits = 100000;
+  state.maxDepth = from === 1 ? 900 : from === 2 ? 1100 : 1250;
+  state.scannedSpecies.clear();
+  for (const species of biomeFish[from]) state.scannedSpecies.add(species.species);
+  state.scannedSpecies.add(currentApexSpecies());
+  state.sampledSpecies.clear();
+  state.sonarRevealed.clear();
+  const sonarCells = from === 1 ? 2400 : from === 2 ? 3200 : 4200;
+  for (let i = 0; i < sonarCells; i += 1) state.sonarRevealed.add(`progression-travel:${from}:${i}`);
+  state.sonarRevealRevision += 1;
+  this.travelToNextBiome();
+  return {
+    ok: true,
+    from,
+    to: state.biome,
+    radioOpenBeforeRestartCompletion: state.radioOpen,
+    activeBeforeRestartCompletion: state.progressionRadioActiveId,
+    queuedIds: state.progressionRadioQueue.map((event) => event.id),
+  };
+}
 
 export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, value?: unknown) {
     if (command !== 'reviewArticulated' && command !== 'advanceArticulatedReview' && command !== 'advanceArticulatedDamageReview') {
@@ -4687,6 +4792,12 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       return { ok, snapshot: this.playtestSnapshot() };
     } else if (command === 'storyMilestoneSmokeStage') {
       return stageStoryMilestoneSmoke.call(this, value);
+    } else if (command === 'progressionRadioQuestSmokeStage') {
+      return stageProgressionQuestRadio.call(this, value);
+    } else if (command === 'progressionRadioBackToBackSmokeStage') {
+      return stageProgressionBackToBack.call(this);
+    } else if (command === 'progressionRadioTravelSmokeStage') {
+      return stageProgressionTravel.call(this, value);
     }
     renderHud();
     return this.playtestSnapshot();

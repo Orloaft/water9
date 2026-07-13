@@ -121,6 +121,9 @@ export type PlaytestCommand =
   | 'completeFinaleAtBarge'
   | 'continueSurvey'
   | 'storyMilestoneSmokeStage'
+  | 'progressionRadioQuestSmokeStage'
+  | 'progressionRadioBackToBackSmokeStage'
+  | 'progressionRadioTravelSmokeStage'
   | 'largeThreatDrillImmunityReview'
   | 'selectTool'
   | 'buyShopItem'
@@ -897,6 +900,17 @@ export interface RadioMessage {
   role: string;
   text: string;
   from?: 'npc' | 'player';
+}
+
+export interface ProgressionRadioEvent {
+  id: string;
+  type: 'quest' | 'arrival';
+  biome: Biome;
+  questKind?: QuestKind;
+  questId?: string;
+  target?: number;
+  resultDepth?: number;
+  floraSpecies?: string;
 }
 
 export interface Quest {

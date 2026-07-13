@@ -78,6 +78,16 @@ async function snapshot(page) {
   return page.evaluate(() => window.__AQUA_PLAYTEST__?.snapshot?.() ?? null);
 }
 
+async function dismissRadio(page) {
+  let guard = 0;
+  while (await page.locator('#radio-dialogue.is-open button[data-radio-next]').count()) {
+    await page.locator('#radio-dialogue.is-open button[data-radio-next]').click();
+    await page.waitForTimeout(40);
+    guard += 1;
+    if (guard > 12) throw new Error('radio dialogue did not close within 12 lines');
+  }
+}
+
 async function waitForWorld(page) {
   await page.waitForFunction(() => {
     const snap = window.__AQUA_PLAYTEST__?.snapshot?.();
@@ -253,6 +263,7 @@ try {
   const afterQuestSample = await snapshot(page);
   const activeQuest = afterQuestSample?.state?.questBoard?.find((quest) => quest.id === afterQuestSample?.state?.activeQuestId);
   if (!activeQuest?.completed || activeQuest?.kind !== 'sample') fail(`sample quest did not complete from harvest: ${JSON.stringify(activeQuest)}`);
+  await dismissRadio(page);
   await command(page, 'dock');
   await command(page, 'claimActiveQuest');
   await page.waitForTimeout(300);

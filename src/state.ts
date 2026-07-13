@@ -1,4 +1,4 @@
-import type { BargeTab, Biome, CargoItem, FinaleProgress, Quest, RadioMessage, SonarContact, StoryProgress, SubTier, SubVehicle, TitlePanel, ToolId, UpgradeId } from './types';
+import type { BargeTab, Biome, CargoItem, FinaleProgress, ProgressionRadioEvent, Quest, RadioMessage, SonarContact, StoryProgress, SubTier, SubVehicle, TitlePanel, ToolId, UpgradeId } from './types';
 import { BASE_OXYGEN,FORWARD_OUTPOST_MAX_CHARGE,FORWARD_OUTPOST_OXYGEN_RADIUS,FORWARD_OUTPOST_OXYGEN_REFILL } from './constants';
 import { createDefaultUnlockedTools } from './tools';
 
@@ -59,6 +59,8 @@ export const state = {
   radioMessages: [] as RadioMessage[],
   radioIndex: 0,
   radioOpen: false,
+  progressionRadioQueue: [] as ProgressionRadioEvent[],
+  progressionRadioActiveId: '',
   musicEnabled: true,
   musicVolume: 1,
   sfxVolume: 1,

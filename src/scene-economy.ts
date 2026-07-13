@@ -6,6 +6,7 @@ import { state } from './state';
 import { rng } from './rng';
 import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,createConsumableItem,finaleLocksSurvey,fuelMax,fuelRefillCost,questProgressSource,refillAtBoat,resetOxygenWarnings,restart,shopItem,subDef,syncStoryProgress,upgradeCost,upgradeMax } from './helpers';
 import { biomeName,openingRadioMessages,renderHud } from './hud';
+import { queueBiomeArrivalRadio,queueQuestCompletionRadio } from './progression-radio';
 import type { DeepdiveScene } from './scene';
 
 export function buy(this: DeepdiveScene, id: UpgradeId) {
@@ -178,6 +179,7 @@ export function travelToNextBiome(this: DeepdiveScene, ) {
     state.carrierSub = null;
     const nextBiome = (state.biome + 1) as Biome;
     state.biome = nextBiome;
+    queueBiomeArrivalRadio(nextBiome as 2 | 3 | 4);
     syncStoryProgress();
     state.status = `Barge retrofitted. Welcome to ${biomeName()}.`;
     rng.seed = Math.floor(Math.random() * 1_000_000);
@@ -201,6 +203,7 @@ export function completeQuest(this: DeepdiveScene, quest: Quest, status: string)
     if (quest.completed || quest.claimed) return;
     quest.completed = true;
     quest.progress = quest.target;
+    queueQuestCompletionRadio(quest);
     state.status = status;
     this.spawnFloatingText('Quest complete', 0xffd166);
     renderHud();

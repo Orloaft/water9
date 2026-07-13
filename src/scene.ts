@@ -24,6 +24,7 @@ import type { SubmarinePartSpriteMap } from './submarine-parts';
 import { beginStagedTerrainMaskNormalize,beginStagedTerrainMaskRebuild,ensureTerrainMask,fillStagedTerrainMaskRows,finishStagedTerrainMaskRebuild,normalizeStagedTerrainMaskRows,syncTerrainMaskTile,terrainMaskContactForAabb,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,terrainMaskDensityAt } from './terrain-mask';
 import { createPerfTelemetry,markTerrainDirty,measurePerf,recordPerf,updatePerfHud } from './perf';
 import type { PerfTelemetry } from './perf';
+import { tryPresentProgressionRadio } from './progression-radio';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.Image[] = [];
@@ -271,6 +272,13 @@ export class DeepdiveScene extends Phaser.Scene {
     const delta = deltaMs / 1000;
     const controls = this.readControls();
     if (this.handleGlobalControllerActions(controls)) return;
+    if (tryPresentProgressionRadio()) {
+      renderHud();
+      measurePerf(this, 'draw.total', () => this.draw());
+      this.updateAudio(delta);
+      updatePerfHud(this, deltaMs);
+      return;
+    }
     if (canDiveFromBargeShortcut() && Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) {
       this.diveFromBarge();
       return;

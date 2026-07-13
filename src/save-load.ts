@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { Biome,CargoItem,FinaleProgress,ForwardOutpost,Quest,StoryProgress,SubTier,SubVehicle,Tile,ToolId,UpgradeId } from './types';
+import type { Biome,CargoItem,FinaleProgress,ForwardOutpost,ProgressionRadioEvent,Quest,StoryProgress,SubTier,SubVehicle,Tile,ToolId,UpgradeId } from './types';
 import { BASE_OXYGEN,FORWARD_OUTPOST_MAX_CHARGE,FORWARD_OUTPOST_OXYGEN_RADIUS,FORWARD_OUTPOST_OXYGEN_REFILL,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { state } from './state';
 import { rng } from './rng';
@@ -7,6 +7,7 @@ import { clampSelectedCargoIndex,clearBleed,clearVenom,createDefaultStoryProgres
 import { normalizeSelectedTool, normalizeUnlockedTools } from './tools';
 import type { DeepdiveScene } from './scene';
 import { rebuildTerrainMask,syncTerrainMaskTile,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_WIDTH } from './terrain-mask';
+import { normalizeProgressionRadioQueue } from './progression-radio';
 
 export const SAVE_STORAGE_KEY = 'water9.save.v1';
 export const SAVE_VERSION = 1;
@@ -81,6 +82,7 @@ interface SavedGame {
     auxSubActive: boolean;
     marlinVoucherAvailable?: boolean;
     story?: StoryProgress;
+    progressionRadioQueue?: ProgressionRadioEvent[];
     finale?: FinaleProgress;
     won: boolean;
     lost: boolean;
@@ -259,6 +261,7 @@ function buildSave(scene: DeepdiveScene): SavedGame {
         flags: { ...state.story.flags },
         heardRadio: [...state.story.heardRadio],
       },
+      progressionRadioQueue: state.progressionRadioQueue.map((event) => ({ ...event })),
       finale: {
         finalProofRecovered: state.finale.finalProofRecovered,
         endingSeen: state.finale.endingSeen,
@@ -348,6 +351,8 @@ function applySavedState(save: SavedGame) {
   state.auxSubActive = Boolean(save.state.auxSubActive);
   state.marlinVoucherAvailable = Boolean(save.state.marlinVoucherAvailable && !state.subOwned[2]);
   state.story = normalizeStoryProgress(save.state.story ?? createDefaultStoryProgress());
+  state.progressionRadioQueue = normalizeProgressionRadioQueue(save.state.progressionRadioQueue, state.story.heardRadio);
+  state.progressionRadioActiveId = '';
   state.finale = restoreFinaleProgress(save.state.finale, Boolean(save.state.won));
   state.won = Boolean(save.state.won);
   state.lost = Boolean(save.state.lost);
