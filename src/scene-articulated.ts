@@ -3,7 +3,8 @@ import type { ArticulatedCreature, ArticulatedCreatureManifest, ArticulatedPartM
 import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,PLAYER_CONTACT_RADIUS,TILE,WORLD_H,WORLD_W } from './constants';
 import { state } from './state';
 import { articulatedBehaviorFor,articulatedCreatureDef,articulatedCreatureDefs,articulatedPrototypeRuntimeEnabled,articulatedSpawnBudgetForBiome,articulatedSpawnPriority,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
-import { darknessAtDepth, largeThreatDynamiteDamageMultiplier, lightRadius, rarityColor, scaledDepthPx } from './helpers';
+import { darknessAtDepth,isLargeArticulatedThreat, largeThreatDynamiteDamageMultiplier, lightRadius, rarityColor, scaledDepthPx } from './helpers';
+import { LOCAL_SEPARATION_POLICY,largeThreatPartAlpha,largeThreatPartScale,priorityEdgeAlpha } from './interaction-readability';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 import { terrainMaskContactForCapsule } from './terrain-mask';
@@ -1938,6 +1939,12 @@ export function articulatedMobilityScale(this: DeepdiveScene, creature: Articula
 }
 
 export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+  const nearestThreatDistance = Math.min(
+    ...this.fish.filter((candidate) => candidate.hostile && !candidate.dead && this.fishVisibilityAlpha(candidate, camera) > 0.18)
+      .map((candidate) => Phaser.Math.Distance.Between(this.player.x, this.player.y, candidate.x, candidate.y)),
+    ...this.articulatedCreatures.filter((candidate) => candidate.hostile && !candidate.dead && this.articulatedVisibilityAlpha(candidate, camera) > 0.18)
+      .map((candidate) => Phaser.Math.Distance.Between(this.player.x, this.player.y, candidate.x, candidate.y)),
+  );
   for (const creature of this.articulatedCreatures) {
     if (creature.dead) {
       creature.parts.forEach((part) => part.sprite?.setVisible(false));
@@ -1953,6 +1960,8 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
     const attacking = creature.state === 'lunge' || creature.state === 'grab';
     const murkTint = murkTintFor(creature);
     const rippleTurning = usesLargeThreatRippleTurning(creature);
+    const largeThreat = isLargeArticulatedThreat(creature);
+    const presentationDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y);
     const spineManifests = rippleTurning
       ? creature.manifest.parts
         .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
@@ -1989,6 +1998,20 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       this.articulatedBridges.lineStyle(Math.max(2, overlay.bridgeWidth * 0.38), bridgeCoreColor, coreAlpha);
       this.articulatedBridges.lineBetween(overlay.parentAnchorX, overlay.parentAnchorY, overlay.childAnchorX, overlay.childAnchorY);
     }
+    if (state.depth >= 900 && creature.hostile && presentationDistance <= 300 && presentationDistance <= nearestThreatDistance + 0.01) {
+      const actionablePart = this.articulatedBitePart(creature)
+        ?? creature.parts.find((part) => this.isDangerousArticulatedPart(creature, part) && !part.detached && part.hp > 0);
+      if (actionablePart) {
+        const manifest = partManifest(creature, actionablePart);
+        this.readabilityEdges.lineStyle(1.4, LOCAL_SEPARATION_POLICY.priorityEdgeColor, priorityEdgeAlpha('threat', presentationDistance, 300));
+        this.readabilityEdges.strokeEllipse(
+          actionablePart.x,
+          actionablePart.y,
+          Math.max(12, manifest.hitRadius * PART_WORLD_SCALE * 2),
+          Math.max(8, manifest.hitRadius * PART_WORLD_SCALE * 1.45),
+        );
+      }
+    }
     for (const part of creature.parts) {
       const manifest = partManifest(creature, part);
       const damageAlpha = part.detached ? 0.62 : part.hp <= 0 ? (manifest.damagedTextureKey ? 0.94 : 0.26) : 1;
@@ -2003,14 +2026,23 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         : part.hp <= 0 && manifest.damagedTextureKey
           ? manifest.damagedTextureKey
           : manifest.textureKey;
+      const presentationRole = this.isDangerousArticulatedPart(creature, part)
+        ? 'danger'
+        : manifest.motion.kind === 'root'
+          ? 'root'
+          : manifest.motion.kind === 'tail'
+            ? 'tail'
+            : 'body';
+      const presentationAlpha = largeThreat ? largeThreatPartAlpha(presentationDistance, presentationRole) : 1;
+      const presentationScale = largeThreat ? largeThreatPartScale(presentationDistance, presentationRole) : 1;
       part.sprite
         ?.setTexture(textureKey)
         .setVisible(true)
         .setPosition(part.x, part.y)
         .setOrigin(manifest.origin[0], manifest.origin[1])
         .setRotation(part.rotation)
-        .setAlpha((creature.stunned > 0 ? alpha * 0.68 : alpha) * damageAlpha)
-        .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE, manifest.size[1] * PART_WORLD_SCALE)
+        .setAlpha((creature.stunned > 0 ? alpha * 0.68 : alpha) * damageAlpha * presentationAlpha)
+        .setDisplaySize(manifest.size[0] * PART_WORLD_SCALE * presentationScale, manifest.size[1] * PART_WORLD_SCALE * presentationScale)
         .setDepth(dynamicDepth);
       if (part.sprite) {
         part.sprite.scaleX = Math.abs(part.sprite.scaleX) * (rippleTurning ? 1 : creature.facingSign < 0 ? -1 : 1);
@@ -2033,6 +2065,7 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         continue;
       }
       const textureKey = severed && manifest.severedTextureKey ? manifest.severedTextureKey : manifest.textureKey;
+      const overlayPresentationScale = largeThreat ? largeThreatPartScale(presentationDistance, 'body') : 1;
       overlay.sprite
         ?.setTexture(textureKey)
         .setVisible(true)
@@ -2041,8 +2074,8 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
         .setRotation(overlay.rotation)
         .setAlpha(alpha * (severed ? Math.min(1, socketStyleValue(creature, manifest, 'alpha', 0.82) + 0.12) : socketStyleValue(creature, manifest, 'alpha', 0.82)))
         .setDisplaySize(
-          overlay.width || manifest.size[0] * PART_WORLD_SCALE,
-          overlay.height || manifest.size[1] * PART_WORLD_SCALE,
+          (overlay.width || manifest.size[0] * PART_WORLD_SCALE) * overlayPresentationScale,
+          (overlay.height || manifest.size[1] * PART_WORLD_SCALE) * overlayPresentationScale,
         )
         .setDepth(2.1 + manifest.depth);
       if (overlay.sprite) {

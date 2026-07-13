@@ -11,6 +11,7 @@ import { hideSubmarinePartSprites,renderSubmarineParts } from './submarine-parts
 import { ensureTerrainMask,TERRAIN_MASK_CELL,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainBoundarySupported,terrainLocalSolidSupport,terrainMaskBoundaryCell,terrainMaskDensityAt,terrainMaskExposureVector,terrainMaskInteriorFillCell,terrainMaskSolid } from './terrain-mask';
 import { measurePerf } from './perf';
 import { ACTUAL_GPT_ORE_STAMPS,type ActualGptOreTile } from './ore-actual-gpt-stamps';
+import { LOCAL_SEPARATION_POLICY,landmarkFocalAlphaScale,priorityEdgeAlpha,targetSeparationAlpha,type InteractionCorridor,type ReadabilityTarget } from './interaction-readability';
 
 const TERRAIN_VISIBILITY_WASH_ALPHA = 0.034;
 const TERRAIN_VISIBILITY_GLOW_ALPHA = 0.052;
@@ -27,10 +28,13 @@ export function draw(this: DeepdiveScene, ) {
     this.lampGloom.clear();
     this.overlay.clear();
     this.parallaxBackdrop.clear();
+	this.readabilityBackdrop.clear();
+    this.readabilityEdges.clear();
     camera.setBackgroundColor(environmentProfile.cameraClearColor);
 	    this.updateForegroundTerrainPresentation(environmentProfile);
 	    measurePerf(this, 'draw.parallax', () => this.drawParallax(camera, environmentProfile));
     measurePerf(this, 'draw.waterColumn', () => this.drawWaterColumn(camera, environmentProfile));
+	measurePerf(this, 'draw.localSeparation', () => drawInteractionReadabilityBackdrop(this, camera, environmentProfile));
 	    measurePerf(this, 'draw.world', () => this.drawWorld(camera), {
       dirty: this.terrainDirty,
       chunks: this.terrainVisualDirtyChunks.size,
@@ -426,6 +430,7 @@ function protectedCorridorAlphaScale(
 function drawBackgroundAnchors(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera, profile: ReturnType<typeof environmentVisualProfileFor>) {
   const view = camera.worldView;
   const anchors = environmentAnchorSilhouettesFor(profile, view.x, view.right, view.y, view.bottom);
+  const interactionCorridors = visibleInteractionCorridors(scene, camera);
   let spriteIndex = 0;
   for (const anchor of anchors) {
     const parallaxX = anchor.x + view.x * (1 - anchor.parallaxFactor);
@@ -454,18 +459,20 @@ function drawBackgroundAnchors(scene: DeepdiveScene, camera: Phaser.Cameras.Scen
         profile.readability.corridorRadius,
         profile.readability.landmarkAlphaFloor,
       );
+      const focalAlpha = landmarkFocalAlphaScale(parallaxX, parallaxY, interactionCorridors);
       sprite
         .setTexture(textureKey)
         .setDepth(biome1OrganicAnchor ? -6.77 : -7.3)
         .setVisible(true)
         .setPosition(parallaxX, parallaxY)
-        .setAlpha(Phaser.Math.Clamp(anchor.alpha * corridorAlpha, 0, 1))
+        .setAlpha(Phaser.Math.Clamp(anchor.alpha * corridorAlpha * focalAlpha, 0, 1))
         .setTint(ruinVaultAnchor ? 0x718fa2 : 0xffffff)
         .setBlendMode(Phaser.BlendModes.NORMAL);
       sprite.setData('compositionRole', anchor.compositionRole ?? null);
       sprite.setData('stableLocationKey', anchor.stableLocationKey ?? null);
       sprite.setData('projectedAreaRatio', anchor.projectedAreaRatio ?? null);
       sprite.setData('corridorOverlapRatio', anchor.corridorOverlapRatio ?? null);
+      sprite.setData('interactionFocalAlphaScale', focalAlpha);
       if (crop) {
         sprite.setCrop(crop[0], crop[1], crop[2], crop[3]);
       } else {
@@ -479,6 +486,79 @@ function drawBackgroundAnchors(scene: DeepdiveScene, camera: Phaser.Cameras.Scen
   for (let i = spriteIndex; i < scene.backgroundAnchorSprites.length; i += 1) {
     scene.backgroundAnchorSprites[i].setVisible(false);
   }
+}
+
+function visibleInteractionCorridors(scene: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera): InteractionCorridor[] {
+  const view = camera.worldView;
+  const candidates = [
+    ...scene.fish.filter((fish) => fish.hostile && !fish.dead && scene.fishVisibilityAlpha(fish, camera) > 0.18)
+      .map((fish) => ({ x: fish.x, y: fish.y, distance: Phaser.Math.Distance.Between(scene.player.x, scene.player.y, fish.x, fish.y) })),
+    ...scene.articulatedCreatures.filter((creature) => creature.hostile && !creature.dead && !creature.bobbitBurrow && scene.articulatedVisibilityAlpha(creature, camera) > 0.18)
+      .map((creature) => ({ x: creature.x, y: creature.y, distance: Phaser.Math.Distance.Between(scene.player.x, scene.player.y, creature.x, creature.y) })),
+    ...scene.looseItems.filter((item) => !item.collected)
+      .map((item) => ({ x: item.x, y: item.y, distance: Phaser.Math.Distance.Between(scene.player.x, scene.player.y, item.x, item.y) })),
+  ]
+    .filter((target) => target.distance <= LOCAL_SEPARATION_POLICY.actionableRange && Phaser.Geom.Rectangle.Contains(view, target.x, target.y))
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, LOCAL_SEPARATION_POLICY.maxTargets);
+  return candidates.map((target) => ({
+    fromX: scene.player.x,
+    fromY: scene.player.y,
+    toX: target.x,
+    toY: target.y,
+    radius: LOCAL_SEPARATION_POLICY.corridorRadius,
+  }));
+}
+
+function drawSoftBackdropTarget(graphics: Phaser.GameObjects.Graphics, target: ReadabilityTarget) {
+  const steps = LOCAL_SEPARATION_POLICY.falloffSteps;
+  for (let index = steps - 1; index >= 0; index -= 1) {
+    const t = index / Math.max(1, steps - 1);
+    const layerAlpha = target.alpha / steps * Phaser.Math.Linear(0.35, 1, 1 - t);
+    graphics.fillStyle(0x000205, layerAlpha);
+    graphics.fillEllipse(target.x, target.y, (target.radiusX + 28 * t) * 2, (target.radiusY + 24 * t) * 2);
+  }
+}
+
+function drawInteractionReadabilityBackdrop(
+  scene: DeepdiveScene,
+  camera: Phaser.Cameras.Scene2D.Camera,
+  profile: ReturnType<typeof environmentVisualProfileFor>,
+) {
+  scene.readabilityBackdrop.setData('targetCount', 0);
+  if (profile.biome < 2 || profile.darkness.value < 0.2) return;
+  const targets: Array<ReadabilityTarget & { distance: number }> = [];
+  for (const fish of scene.fish) {
+    if (!fish.hostile || fish.dead || scene.fishVisibilityAlpha(fish, camera) <= 0.18) continue;
+    const distance = Phaser.Math.Distance.Between(scene.player.x, scene.player.y, fish.x, fish.y);
+    if (distance > LOCAL_SEPARATION_POLICY.threatRange) continue;
+    targets.push({ kind: 'threat', x: fish.x, y: fish.y, radiusX: fish.radius * 2.4 + 10, radiusY: fish.radius * 1.8 + 9, alpha: targetSeparationAlpha('threat', distance, LOCAL_SEPARATION_POLICY.threatRange), distance });
+  }
+  for (const creature of scene.articulatedCreatures) {
+    if (!creature.hostile || creature.dead || creature.bobbitBurrow || scene.articulatedVisibilityAlpha(creature, camera) <= 0.18) continue;
+    const distance = Phaser.Math.Distance.Between(scene.player.x, scene.player.y, creature.x, creature.y);
+    if (distance > LOCAL_SEPARATION_POLICY.threatRange) continue;
+    const visibleParts = creature.parts
+      .filter((part) => !part.detached && part.hp > 0 && Phaser.Geom.Rectangle.Contains(camera.worldView, part.x, part.y))
+      .sort((a, b) => Phaser.Math.Distance.Between(scene.player.x, scene.player.y, a.x, a.y) - Phaser.Math.Distance.Between(scene.player.x, scene.player.y, b.x, b.y))
+      .slice(0, 3);
+    if (visibleParts.length) {
+      for (const part of visibleParts) targets.push({ kind: 'threat', x: part.x, y: part.y, radiusX: 46, radiusY: 34, alpha: targetSeparationAlpha('threat', distance, LOCAL_SEPARATION_POLICY.threatRange), distance });
+    } else {
+      targets.push({ kind: 'threat', x: creature.x, y: creature.y, radiusX: Math.min(108, creature.radius * 2.25), radiusY: Math.min(78, creature.radius * 1.45), alpha: targetSeparationAlpha('threat', distance, LOCAL_SEPARATION_POLICY.threatRange), distance });
+    }
+  }
+  for (const item of scene.looseItems) {
+    if (item.collected) continue;
+    const distance = Phaser.Math.Distance.Between(scene.player.x, scene.player.y, item.x, item.y);
+    if (distance > LOCAL_SEPARATION_POLICY.actionableRange) continue;
+    targets.push({ kind: 'actionable', x: item.x, y: item.y, radiusX: 24, radiusY: 20, alpha: targetSeparationAlpha('actionable', distance, LOCAL_SEPARATION_POLICY.actionableRange), distance });
+  }
+  targets.sort((a, b) => a.distance - b.distance);
+  const boundedTargets = targets.slice(0, LOCAL_SEPARATION_POLICY.maxTargets);
+  scene.readabilityBackdrop.setData('targetCount', boundedTargets.length);
+  scene.readabilityBackdrop.setData('targetKinds', boundedTargets.map((target) => target.kind));
+  for (const target of boundedTargets) drawSoftBackdropTarget(scene.readabilityBackdrop, target);
 }
 
 export function drawGameOver(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
@@ -3395,6 +3475,12 @@ export function drawBobbitBurrows(this: DeepdiveScene, camera: Phaser.Cameras.Sc
   }
 
 export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
+    const nearestThreatDistance = Math.min(
+      ...this.fish.filter((candidate) => candidate.hostile && !candidate.dead && this.fishVisibilityAlpha(candidate, camera) > 0.18)
+        .map((candidate) => Phaser.Math.Distance.Between(this.player.x, this.player.y, candidate.x, candidate.y)),
+      ...this.articulatedCreatures.filter((candidate) => candidate.hostile && !candidate.dead && this.articulatedVisibilityAlpha(candidate, camera) > 0.18)
+        .map((candidate) => Phaser.Math.Distance.Between(this.player.x, this.player.y, candidate.x, candidate.y)),
+    );
     for (const fish of this.fish) {
       if (fish.dead) {
         fish.sprite?.setVisible(false);
@@ -3438,6 +3524,10 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         .setRotation(pose.rotation)
         .setOrigin(pose.originX, pose.originY);
       fitImageWidth(fish.sprite, desiredWidth);
+      if (state.depth >= 900 && fish.hostile && threatDistance <= LOCAL_SEPARATION_POLICY.actionableRange && threatDistance <= nearestThreatDistance + 0.01) {
+        this.readabilityEdges.lineStyle(1.4, LOCAL_SEPARATION_POLICY.priorityEdgeColor, priorityEdgeAlpha('threat', threatDistance));
+        this.readabilityEdges.strokeEllipse(fish.x, fish.y, desiredWidth * 0.92, Math.max(fish.radius * 1.7, 8));
+      }
       if (fish.hurtFlash > 0) {
         this.actors.lineStyle(2, 0xfff7df, fish.hurtFlash * bodyAlpha);
         this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(5));
@@ -3614,18 +3704,28 @@ export function drawPlayer(this: DeepdiveScene, ) {
     const diverMotionTest = new URLSearchParams(window.location.search).get('diverMotionTest');
     if (diverMotionTest === 'v3a-refined-mining' && !state.lost) {
       this.drawV3ARefinedMiningDiver(animation, angle, swimSpeed);
+      drawDiverPriorityEdge(this);
       return;
     }
     if (diverMotionTest === 'v3a-refined' && !state.lost) {
       this.drawV3ARefinedDiver(animation, angle, swimSpeed);
+      drawDiverPriorityEdge(this);
       return;
     }
     if (diverMotionTest === 'v3a' && !state.lost) {
       this.drawV3MotionTestDiver(animation, angle, swimSpeed);
+      drawDiverPriorityEdge(this);
       return;
     }
     this.drawLegacyDiver(animation, angle, swimSpeed);
+    drawDiverPriorityEdge(this);
   }
+
+function drawDiverPriorityEdge(scene: DeepdiveScene) {
+  if (state.depth < 900 || state.lost) return;
+  scene.readabilityEdges.lineStyle(1.4, LOCAL_SEPARATION_POLICY.priorityEdgeColor, priorityEdgeAlpha('diver'));
+  scene.readabilityEdges.strokeEllipse(scene.player.x, scene.player.y, scaledEntity(29), scaledEntity(18));
+}
 
 export function drawV3MotionTestDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {
     const p = this.player;

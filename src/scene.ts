@@ -31,6 +31,8 @@ import type { CameraLeadSpring } from './swimming-feel';
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.Image[] = [];
   parallaxBackdrop!: Phaser.GameObjects.Graphics;
+  readabilityBackdrop!: Phaser.GameObjects.Graphics;
+  readabilityEdges!: Phaser.GameObjects.Graphics;
   waterColumnLayers: Phaser.GameObjects.TileSprite[] = [];
   terrain!: Phaser.GameObjects.Graphics;
   terrainEdges!: Phaser.GameObjects.Graphics;
@@ -163,6 +165,7 @@ export class DeepdiveScene extends Phaser.Scene {
       .setDepth(-12 + index)
       .setScrollFactor(1));
     this.parallaxBackdrop = this.add.graphics().setDepth(-7.5);
+    this.readabilityBackdrop = this.add.graphics().setDepth(-6.72);
     this.waterColumnLayers = [0, 1, 2, 3].map((index) => this.add
       .tileSprite(0, 0, 1, 1, 'parallax-shallow-0')
       .setOrigin(0)
@@ -202,6 +205,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.actors = this.add.graphics().setDepth(3);
     this.darkness = this.add.graphics().setDepth(5);
     this.lampGloom = this.add.graphics().setDepth(6);
+    this.readabilityEdges = this.add.graphics().setDepth(6.4);
     this.overlay = this.add.graphics().setDepth(7);
     ensureArticulatedTextures(this);
     this.sceneInitialized = true;

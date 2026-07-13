@@ -1,0 +1,51 @@
+{
+  "schema": "water9/swimming-backgrounds-slice4-trace-analysis@1",
+  "capturedAt": "2026-07-13",
+  "trace": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice4/performance-trace/b4-canvas-25s-trace.json",
+  "report": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice4/performance-trace/b4-canvas-traced-25s.json",
+  "capture": {
+    "renderer": "canvas",
+    "warmupMs": 5000,
+    "observationMs": 25000,
+    "requested": { "biome": 4, "depthMeters": 1650 },
+    "actual": { "biome": 4, "depthMeters": 1650 },
+    "enclosureClassification": "open-deep-water",
+    "terrainModified": false
+  },
+  "cadence": {
+    "independentRafSamples": 1423,
+    "p95Ms": 33.3,
+    "p99Ms": 33.4,
+    "over33_34Pct": 2.67,
+    "maxMs": 50.1,
+    "outerFrameP95Ms": 5.0,
+    "backgroundCompositeP95Ms": 0.8
+  },
+  "traceAggregates": [
+    { "event": "ProxyMain::BeginMainFrame", "totalMs": 23979.0, "count": 1424, "maxMs": 37.07 },
+    { "event": "LayerTreeHost::DoUpdateLayers", "totalMs": 17681.3, "count": 1425, "maxMs": 26.2 },
+    { "event": "Canvas2DResourceProviderSharedImage::ProduceCanvasResource", "totalMs": 17629.0, "count": 2850, "maxMs": 25.248 },
+    { "event": "AnimationCallback", "totalMs": 5200.0, "count": 1424, "maxMs": 21.6 },
+    { "event": "MajorGC", "totalMs": 35.6, "count": 1, "maxMs": 35.6 }
+  ],
+  "attribution": "The dominant missing wall-clock cost is Chromium Canvas shared-image production/compositor presentation: two ProduceCanvasResource events per presented frame account for 17.629 s while instrumented product frame work remains within its 8 ms budget. This is a browser/host presentation path, not an unmeasured Water9 update or background-composite hotspot.",
+  "boundedExperiments": [
+    {
+      "name": "canvas-desynchronized",
+      "result": "rejected",
+      "reason": "Independent rAF over 33.34 ms worsened to 22.41% and a 64 ms long task appeared."
+    },
+    {
+      "name": "will-read-frequently",
+      "result": "rejected",
+      "reason": "Short-run independent rAF over 33.34 ms worsened to 11.76%."
+    },
+    {
+      "name": "80-percent-backing-store",
+      "result": "rejected",
+      "reason": "Short-run over 33.34 ms worsened to 11.33%, rAF p99 reached 50 ms, outer-frame p95 reached 8.5 ms, and background composite p95 reached 1.2 ms."
+    }
+  ],
+  "productDecision": "All three experiments were reverted. The final product retains full-resolution Canvas and the established gameplay load; no gate or observation duration was weakened.",
+  "gateStatus": "FAIL"
+}

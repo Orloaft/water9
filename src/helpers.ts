@@ -1101,9 +1101,9 @@ const ENVIRONMENT_BAND_CUTOFFS: Array<{
   widthMeters: number;
 }> = [
   { from: 'surface', to: 'upper', cutoffDepth: 120, widthMeters: 160 },
-  { from: 'upper', to: 'mid', cutoffDepth: 520, widthMeters: 160 },
+  { from: 'upper', to: 'mid', cutoffDepth: 520, widthMeters: 200 },
   { from: 'mid', to: 'lower', cutoffDepth: 1040, widthMeters: 160 },
-  { from: 'lower', to: 'transitionDeep', cutoffDepth: 1440, widthMeters: 160 },
+  { from: 'lower', to: 'transitionDeep', cutoffDepth: 1440, widthMeters: 220 },
 ];
 
 const ENVIRONMENT_INCOMING_ANCHOR_CAP = 2;

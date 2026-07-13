@@ -19,6 +19,7 @@ const requestedPort = Number(process.env.WATER9_B4_PERF_PORT ?? 5180);
 const probeDurationMs = Number(process.env.WATER9_B4_PERF_DURATION_MS ?? 3600);
 const warmupDurationMs = Number(process.env.WATER9_B4_PERF_WARMUP_MS ?? 650);
 const slice1Gate = process.env.WATER9_B4_SLICE1_GATE === '1';
+const tracePath = process.env.WATER9_B4_TRACE_PATH ?? '';
 
 await mkdir(outDir, { recursive: true });
 
@@ -188,6 +189,7 @@ if (server) await waitForServer(baseUrl);
 const errors = [];
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+const cdp = tracePath ? await page.context().newCDPSession(page) : null;
 await installBrowserPerfObservers(page);
 await page.addInitScript(() => {
   window.__water9RafDeltas = [];
@@ -220,22 +222,57 @@ try {
   await command(page, 'dive');
   await command(page, 'maxUpgrades');
   await command(page, 'refill');
-  const teleport = await command(page, 'teleportToReachableDepth', 1650);
-  await command(page, 'teleportToArticulated');
+  const teleport = await command(page, 'stageDeepBiomePresentation', { requestedDepthMeters: 1650, creatureId: 'abyssal-gulper', standOff: 235 });
+  if (!teleport?.ok || teleport?.actual?.biome !== 4 || teleport?.actual?.depthMeters < 1450 || teleport?.terrainModified !== false) {
+    errors.push({ type: 'assertion', text: `deep B4 staging failed: ${JSON.stringify(teleport)}` });
+  }
   await command(page, 'refill');
   await command(page, 'clearProofOverlays');
   await sleep(warmupDurationMs);
   const startShot = await captureCanvasPair(page, `b4-busy-deep-${renderer}-start-canvas`);
   await command(page, 'resetPerfFrameBuffer');
+  if (cdp) {
+    await cdp.send('Tracing.start', {
+      transferMode: 'ReturnAsStream',
+      categories: 'devtools.timeline,v8,blink,cc,gpu,disabled-by-default-devtools.timeline.frame,disabled-by-default-devtools.timeline.stack',
+      options: 'sampling-frequency=10000',
+    });
+  }
   await startCadenceProbe(page, `b4-busy-deep-${renderer}`);
   await sleep(80);
-  await page.keyboard.down('ArrowRight');
-  await page.keyboard.down('ArrowDown');
-  await sleep(probeDurationMs);
-  await page.keyboard.up('ArrowRight');
-  await page.keyboard.up('ArrowDown');
+  const movementPhases = [
+    ['ArrowRight', 'ArrowDown'],
+    ['ArrowLeft', 'ArrowUp'],
+  ];
+  const phaseDurationMs = 1250;
+  const movementStartedAt = Date.now();
+  let movementPhase = 0;
+  while (Date.now() - movementStartedAt < probeDurationMs) {
+    const keys = movementPhases[movementPhase % movementPhases.length];
+    for (const key of keys) await page.keyboard.down(key);
+    await sleep(Math.min(phaseDurationMs, probeDurationMs - (Date.now() - movementStartedAt)));
+    for (const key of keys) await page.keyboard.up(key);
+    movementPhase += 1;
+  }
   await sleep(360);
   const cadenceProbe = await finishCadenceProbe(page);
+  let trace = null;
+  if (cdp) {
+    const complete = new Promise((resolveComplete) => cdp.once('Tracing.tracingComplete', resolveComplete));
+    await cdp.send('Tracing.end');
+    const completion = await complete;
+    const chunks = [];
+    let eof = false;
+    while (!eof) {
+      const result = await cdp.send('IO.read', { handle: completion.stream });
+      chunks.push(result.base64Encoded ? Buffer.from(result.data, 'base64') : Buffer.from(result.data));
+      eof = result.eof;
+    }
+    await cdp.send('IO.close', { handle: completion.stream });
+    const bytes = Buffer.concat(chunks);
+    await writeFile(tracePath, bytes);
+    trace = { path: tracePath, bytes: bytes.length, format: 'Chrome DevTools trace JSON' };
+  }
   const perf = (await command(page, 'exportPerfFrameBuffer'))?.perf;
   const endShot = await captureCanvasPair(page, `b4-busy-deep-${renderer}-end-canvas`);
   const frames = perf?.frames ?? [];
@@ -284,9 +321,10 @@ try {
     scenario: {
       name: 'visually-busy-high-entity-deep-area',
       biome: 4,
-      depthCommand: 'teleportToReachableDepth(1650)',
-      articulatedCommand: 'teleportToArticulated',
-      heldKeys: ['ArrowRight', 'ArrowDown'],
+      depthCommand: 'stageDeepBiomePresentation({ requestedDepthMeters: 1650 })',
+      articulatedCommand: 'abyssal-gulper existing encounter',
+      heldKeys: ['alternating ArrowRight+ArrowDown', 'ArrowLeft+ArrowUp'],
+      movementPhaseDurationMs: phaseDurationMs,
       viewport: { width: 1280, height: 800 },
       sonarExpectedOpen: false,
       warmupDurationMs,
@@ -295,6 +333,7 @@ try {
     },
     classification: classify(perf, independentRaf),
     cadenceProbe: cadenceProbe ? { label: cadenceProbe.label, durationMs: cadenceProbe.durationMs } : null,
+    trace,
     independentRaf,
     density,
     frameSummary: summarizeFrames(frames),
