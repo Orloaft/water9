@@ -1235,6 +1235,7 @@ export class DeepdiveScene extends Phaser.Scene {
     state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
     state.maxDepth = Math.max(state.maxDepth, state.depth);
     const wasAtBoat = state.atBoat;
+    const dockedThisFrame = !wasAtBoat && !state.docked && state.started && this.isAtBoat();
     state.atBoat = state.docked || this.isAtBoat();
     if (state.atBoat) {
       if (state.venom.active) {
@@ -1245,7 +1246,7 @@ export class DeepdiveScene extends Phaser.Scene {
         clearBleed();
         state.status = 'Barge medics sealed the suit bleed.';
       }
-      if (!wasAtBoat && state.started) {
+      if (dockedThisFrame) {
         state.docked = true;
         this.player.x = WORLD_W * TILE * 0.5;
         this.player.y = BARGE_DOCK_Y;
@@ -1273,6 +1274,7 @@ export class DeepdiveScene extends Phaser.Scene {
         clampSelectedCargoIndex();
       }
       refillAtBoat(delta);
+      if (dockedThisFrame) this.saveGame();
     } else {
       if (state.pilotingSub && state.activeSub) {
         state.activeSub.oxygen = Math.max(0, state.activeSub.oxygen - oxygenDrain() * 0.55 * delta);

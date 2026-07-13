@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { ArticulatedCreature,Biome,CargoItem,Fish,Flora,PlaytestCommand,ShopItem,SubTier,TerrainSurfaceAnchor,Tile } from './types';
-import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,PLAYER_FORWARD_REACH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { BARGE_DOCK_Y,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,PLAYER_FORWARD_REACH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
@@ -3194,13 +3194,13 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
     } else if (command === 'dive') {
       this.diveFromBarge();
     } else if (command === 'dock') {
-      state.docked = true;
-      state.atBoat = true;
-      this.resetPlayerStart();
-      clearVenom();
-      clearBleed();
-      refillAtBoat();
-      completeFinaleAtBarge();
+      state.docked = false;
+      state.atBoat = false;
+      this.player.x = WORLD_W * TILE * 0.5;
+      this.player.y = BARGE_DOCK_Y - 1;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      this.updateSystems(0);
     } else if (command === 'setBiome') {
       const biome = Phaser.Math.Clamp(Number(value) || 1, 1, 4) as Biome;
       state.biome = biome;
