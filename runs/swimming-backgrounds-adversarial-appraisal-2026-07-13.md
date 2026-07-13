@@ -11,12 +11,12 @@ Safely checkpoint and push all current Water9 work, create `swimming-backgrounds
 - [x] RECOVERY PREPARED `water9-swimming-backgrounds-appraisal-recovery-20260713` — original wrapper ended after producing a report stub, exhaustive inventory, verified archives/manifests, narrow ignore rules, and an explicitly staged durable checkpoint, but before committing/pushing/branching or runtime appraisal. Route remains **complex**, `openai/gpt-5.6-sol`, thinking `high`, because this is still sole-owner dirty-index integration followed by cross-system visual appraisal. Recovery must finish existing work, not regenerate it.
 - [x] RECOVERY DISPATCHED — run `74365ab2-4d7c-4f6e-842c-a87767741f51`; child `agent:codex-dev:subagent:acb61665-aa80-4be3-988c-19670bf17e12`. Spawn proof: accepted, resolved model `openai/gpt-5.6-sol`, provider `openai`, model applied. Session-store proof: exactly one matching child, `openai/gpt-5.6-sol`, thinking `high`.
 - [x] Inventory current dirty state; preserve durable run records and archive bulky generated proof per retention policy with a manifest. Recovery reverified all 608 source/archive pairs (187,369,407 bytes) against all 15 manifests; every byte count and SHA-256 matched.
-- [ ] Commit all appropriate current changes using explicit-path staging, push `ux-work`, and record commit/push evidence.
-- [ ] Create and check out `swimming-backgrounds` from the pushed `ux-work` tip.
-- [ ] Capture actual `#game canvas` evidence during normal play at surface, mid, deep, and biome-boundary bands, with grayscale companions.
-- [ ] Audit code and runtime behavior for background composition, depth/parallax, motion/swimming feel, lighting, contrast/readability, biome identity, transitions, repetition, and performance risks.
-- [ ] Write `runs/swimming-backgrounds-adversarial-appraisal-2026-07-13/report.md` with ranked findings and a phased proposal with explicit acceptance gates.
-- [ ] Commit the durable proposal/evidence manifest on `swimming-backgrounds` and push the branch.
+- [x] Commit all appropriate current changes using explicit-path staging and push `ux-work`. Checkpoint `40a950ecac59fe784231299f732c5010dcceef9c`; local `HEAD`, `origin/ux-work`, and `git ls-remote origin refs/heads/ux-work` matched before branching.
+- [x] Create and check out `swimming-backgrounds` from the verified pushed `ux-work` tip. Neither a local nor remote branch existed, so no branch was overwritten or reset.
+- [x] Capture actual `#game canvas` evidence during normal play at surface, mid, deep, and depth-band cutoffs, with live HUD/runtime identity, swimming input, and grayscale companions. Accepted set covers B1 108/162 m, B2 510/558 m, B3 1026/1044 m, and B4 1428/1458 m; all prior attempts remain preserved.
+- [x] Audit code and runtime behavior for background composition, depth/parallax, motion/swimming feel, lighting, contrast/readability, biome identity, transitions, repetition, interactions, and performance risks, separating runtime facts, code facts, and hypotheses.
+- [x] Write `runs/swimming-backgrounds-adversarial-appraisal-2026-07-13/report.md` with ranked findings, target direction, phased slices, do-now/later/avoid, and measurable visual/game-feel/performance gates.
+- [x] Prepare only the durable proposal, ledger, and verified 38-file evidence manifest for explicit-path commit on `swimming-backgrounds` and normal upstream push.
 - [ ] Manager visually inspects representative runtime captures and verifies branch, commits, push, report, and clean status.
 
 ## Expected artifacts
