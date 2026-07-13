@@ -699,6 +699,84 @@ export interface EnvironmentAnchorSilhouette {
   textureCrop?: [number, number, number, number];
   transitionBlendRole?: 'outgoing' | 'incoming';
   transitionBlendAlpha?: number;
+  compositionRole?: 'dominant' | 'supporting';
+  stableLocationKey?: string;
+  projectedAreaRatio?: number;
+  corridorOverlapRatio?: number;
+  negativeSpaceAxis?: BiomeCompositionBudget['negativeSpaceAxis'];
+}
+
+export interface BiomeCompositionBudget {
+  biome: Biome;
+  grammar: string;
+  maxProjectedLandmarkAreaRatio: number;
+  scaleRange: [number, number];
+  cropVisibleRatioRange: [number, number];
+  opacityRange: [number, number];
+  maxDominantLayers: number;
+  maxSupportingLayers: number;
+  negativeSpaceAxis: 'broad-center' | 'horizontal-horizon' | 'vertical-void' | 'monumental-side-axes';
+  protectedCorridorRadius: number;
+  maxCorridorOverlapRatio: number;
+}
+
+export const biomeCompositionBudgets: Record<Biome, BiomeCompositionBudget> = {
+  1: {
+    biome: 1,
+    grammar: 'luminous organic shelves framing broad central water',
+    maxProjectedLandmarkAreaRatio: 0.45,
+    scaleRange: [0.78, 1],
+    cropVisibleRatioRange: [0.62, 0.92],
+    opacityRange: [0.16, 0.34],
+    maxDominantLayers: 1,
+    maxSupportingLayers: 1,
+    negativeSpaceAxis: 'broad-center',
+    protectedCorridorRadius: 62,
+    maxCorridorOverlapRatio: 0.05,
+  },
+  2: {
+    biome: 2,
+    grammar: 'lateral brine shelves and vent plumes forming a low horizon',
+    maxProjectedLandmarkAreaRatio: 0.45,
+    scaleRange: [0.76, 0.96],
+    cropVisibleRatioRange: [0.66, 0.94],
+    opacityRange: [0.18, 0.38],
+    maxDominantLayers: 1,
+    maxSupportingLayers: 1,
+    negativeSpaceAxis: 'horizontal-horizon',
+    protectedCorridorRadius: 62,
+    maxCorridorOverlapRatio: 0.05,
+  },
+  3: {
+    biome: 3,
+    grammar: 'sparse black-coral and structural ribs flanking a long vertical void',
+    maxProjectedLandmarkAreaRatio: 0.45,
+    scaleRange: [0.72, 0.94],
+    cropVisibleRatioRange: [0.54, 0.82],
+    opacityRange: [0.18, 0.34],
+    maxDominantLayers: 1,
+    maxSupportingLayers: 1,
+    negativeSpaceAxis: 'vertical-void',
+    protectedCorridorRadius: 64,
+    maxCorridorOverlapRatio: 0.05,
+  },
+  4: {
+    biome: 4,
+    grammar: 'monumental repeated ruin axes cropped at the sides to guide travel',
+    maxProjectedLandmarkAreaRatio: 0.45,
+    scaleRange: [0.7, 0.9],
+    cropVisibleRatioRange: [0.48, 0.76],
+    opacityRange: [0.2, 0.4],
+    maxDominantLayers: 1,
+    maxSupportingLayers: 1,
+    negativeSpaceAxis: 'monumental-side-axes',
+    protectedCorridorRadius: 66,
+    maxCorridorOverlapRatio: 0.05,
+  },
+};
+
+export function compositionBudgetForBiome(biome: Biome): BiomeCompositionBudget {
+  return biomeCompositionBudgets[biome];
 }
 
 export interface PainterlyBackgroundManifestEntry {
@@ -829,6 +907,37 @@ const biomeLandmarkPools: Record<Biome, Partial<Record<EnvironmentDepthBand, str
     ],
   },
 };
+
+// Slice 2 uses one stable pool per biome rather than selecting a different
+// family at each depth band. Every entry is an existing runtime bitmap from
+// the accepted background manifest; no procedural silhouette stands in for a
+// missing asset.
+export const biomeCompositionLandmarkPools: Record<Biome, readonly string[]> = {
+  1: [
+    'biome-shallows-living-coral-terrace',
+    'biome-shallows-shell-survey-terrace',
+    'reef-arch-distance',
+  ],
+  2: [
+    'biome-brine-vent-sulfide-shelf',
+    'vent-brine-curtain',
+    'phase9-transition-organic-vent-garden',
+  ],
+  3: [
+    'biome-midnight-black-coral-ribs',
+    'phase8-transition-rib-field',
+    'phase5-transition-pressure-ribs-wide',
+  ],
+  4: [
+    'biome-ruins-vault-causeway-lattice',
+    'phase10-transition-drowned-signal-station',
+    'phase8-transition-collapsed-sub-elevator',
+  ],
+};
+
+export function compositionLandmarkAssetsForBiome(biome: Biome) {
+  return painterlyLandmarksById([...biomeCompositionLandmarkPools[biome]]);
+}
 
 function runtimeAssetPath(sourcePath: string) {
   return sourcePath.startsWith('public/') ? `/${sourcePath.slice('public/'.length)}` : sourcePath;
@@ -1634,6 +1743,139 @@ function waterColumnPostDarknessVeilFor(
   };
 }
 
+type BudgetedAnchorSlot = {
+  role: 'dominant' | 'supporting';
+  centerX: number;
+  centerY: number;
+  width: number;
+  height: number;
+};
+
+const budgetedAnchorSlots: Record<Biome, readonly BudgetedAnchorSlot[]> = {
+  1: [
+    { role: 'dominant', centerX: 0.5, centerY: 0.9, width: 0.72, height: 0.18 },
+    { role: 'supporting', centerX: 0.16, centerY: -0.02, width: 0.34, height: 0.12 },
+  ],
+  2: [
+    { role: 'dominant', centerX: 0.5, centerY: 0.84, width: 0.78, height: 0.14 },
+    { role: 'supporting', centerX: 0.88, centerY: 0.14, width: 0.25, height: 0.26 },
+  ],
+  3: [
+    { role: 'dominant', centerX: -0.03, centerY: 0.5, width: 0.22, height: 0.84 },
+    { role: 'supporting', centerX: 1.04, centerY: 0.54, width: 0.16, height: 0.62 },
+  ],
+  4: [
+    { role: 'dominant', centerX: -0.04, centerY: 0.5, width: 0.26, height: 0.88 },
+    { role: 'supporting', centerX: 1.03, centerY: 0.5, width: 0.18, height: 0.7 },
+  ],
+};
+
+function rectangleIntersectionArea(
+  ax: number,
+  ay: number,
+  aw: number,
+  ah: number,
+  bx: number,
+  by: number,
+  bw: number,
+  bh: number,
+) {
+  return Math.max(0, Math.min(ax + aw, bx + bw) - Math.max(ax, bx))
+    * Math.max(0, Math.min(ay + ah, by + bh) - Math.max(ay, by));
+}
+
+function stableCompositionLocation(viewLeft: number, viewRight: number, viewTop: number, viewBottom: number) {
+  // Cells are deliberately much larger than a render chunk and wider than the
+  // play world. Normal chunk traversal therefore never rerolls the family;
+  // the vertical cell changes only after a full 2048-world-pixel region.
+  const horizontal = Math.floor((viewLeft + viewRight) * 0.5 / 2048);
+  const vertical = Math.floor((viewTop + viewBottom) * 0.5 / 2048);
+  return { horizontal, vertical, numeric: horizontal * 97 + vertical * 193 };
+}
+
+function buildBudgetedEnvironmentAnchorSilhouettesFor(
+  profile: Pick<EnvironmentVisualProfile, 'activeBand' | 'depthBand'> & { biome?: Biome },
+  viewLeft: number,
+  viewRight: number,
+  viewTop?: number,
+  viewBottom?: number,
+): EnvironmentAnchorSilhouette[] {
+  const biome = profile.biome ?? state.biome;
+  const budget = compositionBudgetForBiome(biome);
+  const width = Math.max(1, viewRight - viewLeft);
+  const top = viewTop ?? SURFACE_Y + profile.activeBand.startDepth;
+  const bottom = viewBottom ?? top + width * 0.625;
+  const height = Math.max(1, bottom - top);
+  const location = stableCompositionLocation(viewLeft, viewRight, top, bottom);
+  const assets = compositionLandmarkAssetsForBiome(biome).filter((asset) => asset.availableInRuntime);
+  if (!assets.length) return [];
+  const seedIndex = Math.abs(Math.trunc(rng.seed) + location.numeric * 17) % assets.length;
+  const centerX = width * 0.5;
+  const centerY = height * 0.5;
+  const corridorLeft = centerX - budget.protectedCorridorRadius;
+  const corridorTop = centerY - budget.protectedCorridorRadius;
+  const corridorSize = budget.protectedCorridorRadius * 2;
+  const roleCounts = { dominant: 0, supporting: 0 };
+
+  const anchors: Array<EnvironmentAnchorSilhouette | null> = budgetedAnchorSlots[biome]
+    .map((slot, index) => {
+      if (slot.role === 'dominant' && roleCounts.dominant >= budget.maxDominantLayers) return null;
+      if (slot.role === 'supporting' && roleCounts.supporting >= budget.maxSupportingLayers) return null;
+      const assetIndex = (seedIndex + index) % assets.length;
+      const asset = assets[assetIndex];
+      const scaleRoll = hash(location.numeric + index * 31, biome * 101, rng.seed + 14731);
+      const scale = Phaser.Math.Linear(budget.scaleRange[0], budget.scaleRange[1], scaleRoll);
+      let anchorWidth = width * slot.width * scale;
+      let anchorHeight = height * slot.height * scale;
+      const projectedAreaRatio = anchorWidth * anchorHeight / (width * height);
+      if (projectedAreaRatio > budget.maxProjectedLandmarkAreaRatio) {
+        const correction = Math.sqrt(budget.maxProjectedLandmarkAreaRatio / projectedAreaRatio);
+        anchorWidth *= correction;
+        anchorHeight *= correction;
+      }
+      const localX = width * slot.centerX;
+      const localY = height * slot.centerY;
+      const overlapArea = rectangleIntersectionArea(
+        localX - anchorWidth * 0.5,
+        localY - anchorHeight * 0.5,
+        anchorWidth,
+        anchorHeight,
+        corridorLeft,
+        corridorTop,
+        corridorSize,
+        corridorSize,
+      );
+      const corridorOverlapRatio = overlapArea / Math.max(1, anchorWidth * anchorHeight);
+      if (corridorOverlapRatio > budget.maxCorridorOverlapRatio) return null;
+      roleCounts[slot.role] += 1;
+      const parallaxFactor = Phaser.Math.Linear(asset.parallaxRange[0], asset.parallaxRange[1], slot.role === 'dominant' ? 0.42 : 0.62);
+      const yParallaxFactor = Phaser.Math.Clamp(parallaxFactor + 0.08, 0.06, 0.32);
+      const opacityT = slot.role === 'dominant' ? 0.88 : 0.28;
+      return {
+        id: `composition-b${biome}-${location.horizontal}-${location.vertical}-${slot.role}`,
+        kind: biome === 1 ? 'reef' : biome === 2 ? (slot.role === 'dominant' ? 'vent-stone' : 'brine-curtain') : biome === 3 ? 'wreck-rib' : 'cable-chain',
+        x: viewLeft * parallaxFactor + localX,
+        y: top * yParallaxFactor + localY,
+        width: anchorWidth,
+        height: anchorHeight,
+        alpha: Phaser.Math.Linear(budget.opacityRange[0], budget.opacityRange[1], opacityT),
+        color: biome === 1 ? 0xbfe7dc : biome === 2 ? 0xb0895e : biome === 3 ? 0x4c95a2 : 0x79aab8,
+        depthBand: profile.depthBand,
+        parallaxFactor,
+        textureKey: asset.textureKey,
+        assetId: asset.id,
+        assetStatus: 'available',
+        textureCrop: asset.trimCrop,
+        compositionRole: slot.role,
+        stableLocationKey: `b${biome}:s${rng.seed}:x${location.horizontal}:y${location.vertical}:${slot.role}`,
+        projectedAreaRatio: anchorWidth * anchorHeight / (width * height),
+        corridorOverlapRatio,
+        negativeSpaceAxis: budget.negativeSpaceAxis,
+      } satisfies EnvironmentAnchorSilhouette;
+    })
+  return anchors.filter((anchor): anchor is EnvironmentAnchorSilhouette => anchor !== null);
+}
+
 type EnvironmentAnchorBuildOptions = {
   alphaScale?: number;
   transitionBlendRole?: EnvironmentAnchorSilhouette['transitionBlendRole'];
@@ -1675,6 +1917,14 @@ function buildEnvironmentAnchorSilhouettesFor(
   viewBottom?: number,
   options: EnvironmentAnchorBuildOptions = {},
 ): EnvironmentAnchorSilhouette[] {
+  const budgeted = buildBudgetedEnvironmentAnchorSilhouettesFor(profile, viewLeft, viewRight, viewTop, viewBottom);
+  if (Number.isFinite(viewLeft) && Number.isFinite(viewRight)) {
+    return budgeted
+      .slice(0, options.maxAnchors ?? Number.POSITIVE_INFINITY)
+      .map((anchor) => scaleTransitionAnchor(anchor, options));
+  }
+
+  // Defensive legacy fallback for invalid/non-finite review coordinates.
   const band = profile.activeBand;
   const biome = profile.biome ?? state.biome;
   const biomeLandmarks = biomeLandmarksFor(biome, band.id);
@@ -2042,7 +2292,34 @@ export function environmentAnchorSilhouettesFor(
         { alphaScale: blend.toAlpha, transitionBlendRole: 'incoming' },
       ).slice(0, ENVIRONMENT_INCOMING_ANCHOR_CAP);
     }
-    return [...outgoing, ...incoming];
+    // Slice 2 deliberately keeps the same family, crop, dimensions, and
+    // location on both sides of a cutoff. Collapse matching outgoing/incoming
+    // copies into one visual slot while still deriving its alpha from Slice
+    // 1's descriptor. This avoids double-rendered landmarks at mid-blend.
+    const merged = outgoing.map((anchor) => {
+      const match = incoming.find((candidate) => (
+        candidate.stableLocationKey === anchor.stableLocationKey
+        && candidate.assetId === anchor.assetId
+        && candidate.compositionRole === anchor.compositionRole
+      ));
+      if (!match) return anchor;
+      return {
+        ...anchor,
+        id: anchor.id.replace(/-outgoing$/, ''),
+        depthBand: blend.progress >= 0.5 ? blend.to : blend.from,
+        alpha: anchor.alpha + match.alpha,
+        transitionBlendRole: undefined,
+        transitionBlendAlpha: blend.fromAlpha + blend.toAlpha,
+      };
+    });
+    return [
+      ...merged,
+      ...incoming.filter((candidate) => !outgoing.some((anchor) => (
+        candidate.stableLocationKey === anchor.stableLocationKey
+        && candidate.assetId === anchor.assetId
+        && candidate.compositionRole === anchor.compositionRole
+      ))),
+    ];
   }
   if (profile.depthBand === 'transitionDeep') {
     const biome = profile.biome ?? state.biome;
@@ -2165,6 +2442,8 @@ export function environmentVisualProfileFor(biome: Biome = state.biome, depth: n
     : bandBlend.from === 'transitionDeep'
       ? bandBlend.fromAlpha
       : 0;
+  const baseLocalSeparationRadius = Phaser.Math.Linear(48, 90, descent) + transitionDeepWeight * 12;
+  const baseLocalSeparationAlpha = Phaser.Math.Linear(0.11, 0.36, descent) + transitionDeepWeight * 0.18;
   return {
     id: `environment-shallows-column-${activeBand.id}`,
     biome,
@@ -2258,8 +2537,10 @@ export function environmentVisualProfileFor(biome: Biome = state.biome, depth: n
       corridorRadius: Phaser.Math.Linear(44, 58, descent),
       scenicAlphaScale: Phaser.Math.Linear(0.96, 0.88, descent),
       landmarkAlphaFloor: Phaser.Math.Linear(0.64, 0.16, descent),
-      localSeparationRadius: Phaser.Math.Linear(48, 90, descent) + transitionDeepWeight * 12,
-      localSeparationAlpha: Phaser.Math.Linear(0.11, 0.36, descent) + transitionDeepWeight * 0.18,
+      // B4 keeps threat holes and beam readability, but its player field is
+      // bounded so it cannot become the rejected screen-filling circular pass.
+      localSeparationRadius: biome === 4 ? Math.min(58, baseLocalSeparationRadius) : baseLocalSeparationRadius,
+      localSeparationAlpha: biome === 4 ? Math.min(0.24, baseLocalSeparationAlpha) : baseLocalSeparationAlpha,
       lampFeatherWorldPx: Phaser.Math.Linear(14, 20, descent),
     },
   };

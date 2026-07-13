@@ -4,7 +4,7 @@ import { BARGE_DOCK_Y,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEP
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state } from './state';
 import { rng } from './rng';
-import { LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,activeQuest,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,completeFinaleAtBarge,continueSurveyAfterEnding,createDefaultStoryProgress,createConsumableItem,createSubVehicle,currentApexSpecies,currentPinnedStoryObjective,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,fuelMax,generateQuestBoard,hash,isLargeArticulatedThreat,isOreTile,oxygenMax,parallaxProfileFor,recoverFinalProof,refillAtBoat,resetFinaleProgress,resetToolState,restart,scaledDepthPx,scaledEntity,selectTool,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,syncStoryProgress,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
+import { LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,activeQuest,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,completeFinaleAtBarge,compositionBudgetForBiome,continueSurveyAfterEnding,createDefaultStoryProgress,createConsumableItem,createSubVehicle,currentApexSpecies,currentPinnedStoryObjective,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,fuelMax,generateQuestBoard,hash,isLargeArticulatedThreat,isOreTile,oxygenMax,parallaxProfileFor,recoverFinalProof,refillAtBoat,resetFinaleProgress,resetToolState,restart,scaledDepthPx,scaledEntity,selectTool,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,syncStoryProgress,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
@@ -659,8 +659,19 @@ function cutoffOpenWaterPoint(scene: DeepdiveScene, boundaryDepthMeters: number,
       const beforeDistance = Phaser.Math.Distance.Between(worldX, beforeY * TILE + TILE * 0.5, fish.x, fish.y) - fish.radius;
       const afterDistance = Phaser.Math.Distance.Between(worldX, afterY * TILE + TILE * 0.5, fish.x, fish.y) - fish.radius;
       return Math.min(minimum, beforeDistance, afterDistance);
-    }, 480);
-    const clearanceScore = Phaser.Math.Clamp(threatClearance, 0, 480) * 0.04;
+    }, 1200);
+    const articulatedClearance = scene.articulatedCreatures.reduce((minimum, creature) => {
+      if (creature.dead || !creature.hostile || creature.bobbitBurrow) return minimum;
+      // The articulated bitmap chain extends well beyond its gameplay radius;
+      // reserve its full visual footprint when staging a normal-play cutoff
+      // capture so the evidence helper does not teleport into an active apex.
+      const visualRadius = creature.radius * 20;
+      const beforeDistance = Phaser.Math.Distance.Between(worldX, beforeY * TILE + TILE * 0.5, creature.x, creature.y) - visualRadius;
+      const afterDistance = Phaser.Math.Distance.Between(worldX, afterY * TILE + TILE * 0.5, creature.x, creature.y) - visualRadius;
+      return Math.min(minimum, beforeDistance, afterDistance);
+    }, 1200);
+    const combinedThreatClearance = Math.min(threatClearance, articulatedClearance);
+    const clearanceScore = Phaser.Math.Clamp(combinedThreatClearance, 0, 1200) * 0.12;
     const score = localWaterRatio * 100 + clearanceScore - Math.abs(x - center) * 0.04;
     if (!best || score > best.score) best = { x, beforeY, afterY, score, localWaterRatio };
   }
@@ -698,6 +709,10 @@ function renderedBackgroundAnchorSprites(scene: DeepdiveScene) {
         alpha: roundMetric(sprite.alpha),
         tint: `#${sprite.tintTopLeft.toString(16).padStart(6, '0')}`,
         blendMode: sprite.blendMode,
+        compositionRole: sprite.getData('compositionRole') ?? null,
+        stableLocationKey: sprite.getData('stableLocationKey') ?? null,
+        projectedAreaRatio: sprite.getData('projectedAreaRatio') ?? null,
+        corridorOverlapRatio: sprite.getData('corridorOverlapRatio') ?? null,
         crop: sprite.isCropped ? {
           x: roundMetric(sprite.frame.cutX),
           y: roundMetric(sprite.frame.cutY),
@@ -916,6 +931,7 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
       }),
     },
     anchors: {
+      compositionBudget: compositionBudgetForBiome(state.biome),
       repeatMode: profile.background.anchors.repeatMode,
       profileCount: profile.background.anchors.count,
       visibleCount: anchors.length,
@@ -954,6 +970,11 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
         textureKey: anchor.textureKey ?? null,
         transitionBlendRole: anchor.transitionBlendRole ?? null,
         transitionBlendAlpha: anchor.transitionBlendAlpha !== undefined ? roundMetric(anchor.transitionBlendAlpha) : null,
+        compositionRole: anchor.compositionRole ?? null,
+        stableLocationKey: anchor.stableLocationKey ?? null,
+        projectedAreaRatio: anchor.projectedAreaRatio !== undefined ? roundMetric(anchor.projectedAreaRatio) : null,
+        corridorOverlapRatio: anchor.corridorOverlapRatio !== undefined ? roundMetric(anchor.corridorOverlapRatio) : null,
+        negativeSpaceAxis: anchor.negativeSpaceAxis ?? null,
       })),
     },
     renderedBitmapAnchors: renderedBackgroundAnchorSprites(scene),
