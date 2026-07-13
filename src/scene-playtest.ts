@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { ArticulatedCreature,Biome,CargoItem,Fish,Flora,PlaytestCommand,Quest,QuestKind,ShopItem,SubTier,TerrainSurfaceAnchor,Tile } from './types';
 import { BARGE_DOCK_Y,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,PLAYER_FORWARD_REACH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
-import { state } from './state';
+import { setCameraLeadEnabled,state } from './state';
 import { rng } from './rng';
 import { LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,activeQuest,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,completeFinaleAtBarge,compositionBudgetForBiome,continueSurveyAfterEnding,createDefaultStoryProgress,createConsumableItem,createSubVehicle,currentApexSpecies,currentPinnedStoryObjective,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,fuelMax,generateQuestBoard,hash,isLargeArticulatedThreat,isOreTile,oxygenMax,parallaxProfileFor,recoverFinalProof,refillAtBoat,resetFinaleProgress,resetToolState,restart,scaledDepthPx,scaledEntity,selectTool,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,syncStoryProgress,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
@@ -2676,6 +2676,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         width: roundMetric(camera.worldView.width),
         height: roundMetric(camera.worldView.height),
         zoom: roundMetric(camera.zoom),
+        lead: Object.fromEntries(Object.entries(this.cameraLeadTelemetry()).map(([key, value]) => [key, typeof value === 'number' ? roundMetric(value) : value])),
       },
       parallax: {
         profile: parallaxProfile.id,
@@ -2723,6 +2724,7 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         scanTarget: this.player.scanTarget ? this.player.scanTarget.species : '',
         renderedTextureKey: this.playerSprite?.texture?.key ?? '',
         diverMotionTest: new URLSearchParams(window.location.search).get('diverMotionTest') ?? '',
+        motionIntent: { ...this.player.motionIntent },
       },
       gameplayOre: gameplayOreSnapshot(this, camera),
       looseItems: this.looseItems.map((item) => ({
@@ -3523,10 +3525,166 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         tileY,
         localWaterRatio: roundMetric(point.localWaterRatio),
       };
+    } else if (command === 'teleportToSwimLane') {
+      const payload = typeof value === 'object' && value !== null
+        ? value as { x?: number; y?: number; depthMeters?: number }
+        : {};
+      const length = Math.hypot(Number(payload.x) || 0, Number(payload.y) || 0);
+      const directionX = length > 0 ? (Number(payload.x) || 0) / length : 1;
+      const directionY = length > 0 ? (Number(payload.y) || 0) / length : 0;
+      const perpendicularX = -directionY;
+      const perpendicularY = directionX;
+      const targetTileY = Phaser.Math.Clamp(
+        Math.round((SURFACE_Y + (Number(payload.depthMeters) || 400) / 6 * TILE) / TILE),
+        8,
+        WORLD_H - 18,
+      );
+      let best: { x: number; y: number; score: number } | null = null;
+      for (let tileY = Math.max(8, targetTileY - 36); tileY <= Math.min(WORLD_H - 18, targetTileY + 36); tileY += 1) {
+        for (let tileX = 8; tileX < WORLD_W - 8; tileX += 1) {
+          const worldX = tileX * TILE + TILE * 0.5;
+          const worldY = tileY * TILE + TILE * 0.5;
+          let clear = true;
+          for (let step = -1; step <= 15 && clear; step += 0.5) {
+            for (const lateral of [-8, 0, 8]) {
+              if (this.collides(
+                worldX + directionX * step * TILE + perpendicularX * lateral,
+                worldY + directionY * step * TILE + perpendicularY * lateral,
+              )) {
+                clear = false;
+                break;
+              }
+            }
+          }
+          if (!clear) continue;
+          const score = Math.abs(tileY - targetTileY) * 4 + Math.abs(tileX - WORLD_W * 0.5);
+          if (!best || score < best.score) best = { x: worldX, y: worldY, score };
+        }
+      }
+      if (!best) return { ok: false, reason: 'no-existing-collision-free-swim-lane' };
+      this.player.x = best.x;
+      this.player.y = best.y;
+      this.player.vx = 0;
+      this.player.vy = 0;
+      this.swimInput = { x: 0, y: 0, hasInput: false };
+      state.started = true;
+      state.docked = false;
+      state.atBoat = false;
+      state.paused = false;
+      state.radioOpen = false;
+      state.logbookOpen = false;
+      state.cargoOpen = false;
+      state.sonarMapOpen = false;
+      state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
+      this.resetCameraLead();
+      return {
+        ok: true,
+        x: roundMetric(best.x),
+        y: roundMetric(best.y),
+        depthMeters: state.depth,
+        directionX: roundMetric(directionX),
+        directionY: roundMetric(directionY),
+        corridorLengthTiles: 16,
+        terrainModified: false,
+      };
     } else if (command === 'centerCameraOnPlayer') {
-      this.cameras.main.centerOn(this.player.x, this.player.y);
+      this.resetCameraLead();
       refreshPlaytestCamera(this);
       return { ok: true, x: Math.round(this.player.x), y: Math.round(this.player.y) };
+    } else if (command === 'setCameraLead') {
+      setCameraLeadEnabled(value !== false);
+      this.resetCameraLead();
+      renderHud();
+      return { ok: true, enabled: state.cameraLeadEnabled, camera: this.cameraLeadTelemetry() };
+    } else if (command === 'swimTelemetry') {
+      return {
+        ok: true,
+        now: performance.now(),
+        player: {
+          x: this.player.x,
+          y: this.player.y,
+          vx: this.player.vx,
+          vy: this.player.vy,
+          motionIntent: { ...this.player.motionIntent },
+          renderedTextureKey: this.playerSprite?.texture?.key ?? '',
+        },
+        camera: {
+          zoom: this.cameras.main.zoom,
+          lead: this.cameraLeadTelemetry(),
+        },
+      };
+    } else if (command === 'cameraAimInvariantProbe') {
+      const camera = this.cameras.main;
+      this.resetCameraLead();
+      let miningPoint: { x: number; y: number } | null = null;
+      let solidCollisionPoint: { x: number; y: number } | null = null;
+      for (let tileY = 7; tileY < WORLD_H - 2 && (!miningPoint || !solidCollisionPoint); tileY += 1) {
+        for (let tileX = 2; tileX < WORLD_W - 2 && (!miningPoint || !solidCollisionPoint); tileX += 1) {
+          const tile = this.getTile(tileX, tileY);
+          const x = tileX * TILE + TILE * 0.5;
+          const y = tileY * TILE + TILE * 0.5;
+          if (!solidCollisionPoint && this.collides(x, y)) solidCollisionPoint = { x, y };
+          if (!miningPoint && tiles[tile].solid && tile !== 'bedrock' && tile !== 'anchorstone') miningPoint = { x, y };
+        }
+      }
+      if (!miningPoint || !solidCollisionPoint) return { ok: false, reason: 'missing-invariant-fixture' };
+      const directions = [
+        ['east', 1, 0], ['southeast', Math.SQRT1_2, Math.SQRT1_2],
+        ['south', 0, 1], ['southwest', -Math.SQRT1_2, Math.SQRT1_2],
+        ['west', -1, 0], ['northwest', -Math.SQRT1_2, -Math.SQRT1_2],
+        ['north', 0, -1], ['northeast', Math.SQRT1_2, -Math.SQRT1_2],
+      ] as const;
+      const sample = (directionX: number, directionY: number) => {
+        const worldX = this.player.x + directionX * PLAYER_FORWARD_REACH;
+        const worldY = this.player.y + directionY * PLAYER_FORWARD_REACH;
+        const screenX = (worldX - camera.worldView.x) * camera.zoom;
+        const screenY = (worldY - camera.worldView.y) * camera.zoom;
+        const restored = camera.getWorldPoint(screenX, screenY);
+        const miningScreenX = (miningPoint.x - camera.worldView.x) * camera.zoom;
+        const miningScreenY = (miningPoint.y - camera.worldView.y) * camera.zoom;
+        const restoredMining = camera.getWorldPoint(miningScreenX, miningScreenY);
+        const targets = this.mineTargets(
+          Math.floor(restoredMining.x / TILE), Math.floor(restoredMining.y / TILE),
+          restoredMining.x, restoredMining.y, true, false, restoredMining.x, restoredMining.y,
+        ).map((target) => `${target.x},${target.y}`);
+        return {
+          restoredX: restored.x,
+          restoredY: restored.y,
+          miningRestoredX: restoredMining.x,
+          miningRestoredY: restoredMining.y,
+          openCollision: this.collides(this.player.x, this.player.y),
+          solidCollision: this.collides(solidCollisionPoint.x, solidCollisionPoint.y),
+          targets,
+          reach: Phaser.Math.Distance.Between(this.player.x, this.player.y, restored.x, restored.y),
+        };
+      };
+      const results = directions.map(([direction, x, y]) => {
+        camera.centerOn(this.player.x, this.player.y);
+        refreshPlaytestCamera(this);
+        const baseline = sample(x, y);
+        camera.centerOn(
+          this.player.x + x * camera.worldView.width * 0.05,
+          this.player.y + y * camera.worldView.height * 0.05,
+        );
+        refreshPlaytestCamera(this);
+        const led = sample(x, y);
+        return {
+          direction,
+          worldDrift: Phaser.Math.Distance.Between(baseline.restoredX, baseline.restoredY, led.restoredX, led.restoredY),
+          miningWorldDrift: Phaser.Math.Distance.Between(baseline.miningRestoredX, baseline.miningRestoredY, led.miningRestoredX, led.miningRestoredY),
+          reachDrift: Math.abs(baseline.reach - led.reach),
+          collisionMatch: baseline.openCollision === led.openCollision && baseline.solidCollision === led.solidCollision,
+          miningTargetMatch: baseline.targets.join('|') === led.targets.join('|'),
+          baseline,
+          led,
+        };
+      });
+      this.resetCameraLead();
+      return {
+        ok: results.every((result) => result.worldDrift < 1e-6 && result.miningWorldDrift < 1e-6 && result.reachDrift < 1e-6 && result.collisionMatch && result.miningTargetMatch && result.baseline.targets.length > 0 && result.baseline.solidCollision && !result.baseline.openCollision),
+        fixtures: { miningPoint, solidCollisionPoint },
+        results,
+      };
     } else if (command === 'clearProofOverlays') {
       state.radioOpen = false;
       state.radioIndex = 0;

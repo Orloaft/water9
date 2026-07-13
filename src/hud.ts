@@ -4,7 +4,7 @@ import { finishActiveProgressionRadio } from './progression-radio';
 import { BARGE_DOCK_Y,FUEL_REFILL_AMOUNT,MARLIN_VOUCHER_DISCOUNT,SUB_FUEL_COST,SUB_OXYGEN_COST,TILE,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,shopItems,subDefs,upgrades } from './content';
 import { behaviorLogbookMotion,fishBehaviorProfile } from './fauna-behavior';
-import { state,ui } from './state';
+import { setCameraLeadEnabled,state,ui } from './state';
 import { articulatedCreatureDefs } from './articulated';
 import { activeQuest,bargeUpgradeCost,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clampSelectedCargoIndex,continueSurveyAfterEnding,currentPinnedStoryObjective,finaleLocksSurvey,fishAssetKey,fishRarity,floraAssetKey,floraRarity,fuelMax,fuelRefillCost,hullMax,lifeCatalogTotal,oxygenMax,rarityLabel,restart,selectTool,subDef,subEffectiveCost,subRepairCost,upgradeCost,upgradeMax } from './helpers';
 import { gameScene } from './game-ref';
@@ -361,6 +361,10 @@ export function titlePanel() {
         <div class="setting-row">
           <strong>Unhardcore</strong>
           <button data-toggle-unhardcore data-focus-key="title-unhardcore">${state.unhardcore ? 'On' : 'Off'}</button>
+        </div>
+        <div class="setting-row">
+          <strong>Swimming camera lead</strong>
+          <button data-toggle-camera-lead data-focus-key="title-camera-lead">${state.cameraLeadEnabled ? 'On' : 'Off'}</button>
         </div>
       </div>
       <div class="title-actions">
@@ -736,6 +740,14 @@ export function bindUiEvents(app: HTMLDivElement) {
     if (unhardcoreButton) {
       event.preventDefault();
       state.unhardcore = !state.unhardcore;
+      renderHud();
+      return;
+    }
+    const cameraLeadButton = target.closest<HTMLButtonElement>('button[data-toggle-camera-lead]');
+    if (cameraLeadButton) {
+      event.preventDefault();
+      setCameraLeadEnabled(!state.cameraLeadEnabled);
+      gameScene()?.resetCameraLead();
       renderHud();
       return;
     }
@@ -1342,6 +1354,7 @@ export function pauseMenuPanel() {
     </div>
     <div class="pause-actions">
       <button data-pause>Resume</button>
+      <button data-toggle-camera-lead data-focus-key="pause-camera-lead">Camera lead: ${state.cameraLeadEnabled ? 'On' : 'Off'}</button>
       <button data-sonar-map data-focus-key="pause-sonar-map">${state.selectedTool === 'sonar' ? 'Sonar Chart' : 'Equip Sonar First'}</button>
       <button data-save-game data-focus-key="pause-save">Save game</button>
       <button data-load-game data-focus-key="pause-load" ${hasSavedGame() ? '' : 'disabled'}>Load game</button>

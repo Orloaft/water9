@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import type { ArticulatedCreature,ArticulatedCreatureManifest,Biome,CargoItem,DiverAnimation,EnvironmentBackgroundRepeatMode,EnvironmentDepthBand,EnvironmentPainterlyBackgroundRole,EnvironmentReadabilityRisk,Fish,FishSpecies,FloraSpecies,Hazard,InventoryItemKind,Quest,ScanRarity,ScanTarget,ShopItem,SpecialRoom,StoryMilestoneId,StoryProgress,SubTier,SubVehicle,Tile,ToolId,Upgrade,UpgradeId,VeinRule } from './types';
 import { audioKeys,BARGE_DOCK_Y,BARGE_PLATFORM_ENTRANCE_LEFT,BARGE_PLATFORM_ENTRANCE_RIGHT,BARGE_PLATFORM_ENTRANCE_TOP,BARGE_PLATFORM_GRID_H,BARGE_PLATFORM_GRID_W,BARGE_PLATFORM_HEIGHT,BARGE_PLATFORM_WIDTH,BARGE_UPGRADE_COST,BASE_OXYGEN,deepScale,diverFrameCounts,ENTITY_SCALE,FUEL_REFILL_AMOUNT,FUEL_REFILL_COST,MARLIN_VOUCHER_DISCOUNT,MINE_FUEL_COST,SUB_REPAIR_COST_PER_POINT,SURFACE_Y,TARGET_DEPTH,TILE,WORLD_H,WORLD_W } from './constants';
+import type { SwimAnimationIntent } from './swimming-feel';
 import { biomeFish,biomeFlora,shopItems,subDefs,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
@@ -2987,9 +2988,14 @@ export function animatedFrame(phase: number, speed: number, frames: number, fps 
   return Math.floor((phase * rate * fps) % frames);
 }
 
-export function diverAnimation(vx: number, vy: number, speed: number, mineCooldownRemaining: number, lost: boolean): DiverAnimation {
+export function diverAnimation(vx: number, vy: number, speed: number, mineCooldownRemaining: number, lost: boolean, intent?: SwimAnimationIntent): DiverAnimation {
   if (lost) return 'die';
   if (mineCooldownRemaining > 0.04) return 'mine';
+  if (intent?.vertical === 'ascend') return 'ascend';
+  if (intent?.vertical === 'descend') return 'descend';
+  if (intent?.phase === 'coast' || intent?.phase === 'brake') return 'hover';
+  if (intent?.phase === 'cruise') return 'boost';
+  if (intent?.phase === 'acceleration') return 'swim';
   if (speed < 9) return 'idle';
   return speed > swimTopSpeed() * 0.78 ? 'boost' : 'swim';
 }
@@ -3029,6 +3035,8 @@ export function diverDisplayWidth(animation: DiverAnimation) {
   if (animation === 'recoil' || animation === 'damage') return 42;
   if (animation === 'die' || animation === 'revive') return 39;
   if (animation === 'idle') return 40;
+  if (animation === 'ascend' || animation === 'descend') return 42;
+  if (animation === 'hover') return 40;
   return 32;
 }
 

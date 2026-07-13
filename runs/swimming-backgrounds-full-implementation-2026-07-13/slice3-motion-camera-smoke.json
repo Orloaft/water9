@@ -1,0 +1,629 @@
+{
+  "schema": "water9/swimming-camera-feel-smoke@1",
+  "generatedAt": "2026-07-13T21:14:39.840Z",
+  "ok": true,
+  "port": 5187,
+  "openWater": {
+    "ok": true,
+    "x": 852,
+    "y": 1716,
+    "depthMeters": 402,
+    "directionX": 1,
+    "directionY": 0,
+    "corridorLengthTiles": 16,
+    "terrainModified": false
+  },
+  "deterministic": {
+    "parameters": {
+      "swim": {
+        "baseTopSpeed": 106,
+        "baseThrust": 285,
+        "dockThrust": 620,
+        "upgradeThrust": 34,
+        "propulsiveDrag": 1.35,
+        "coastDrag": 2.55,
+        "cruiseThreshold": 0.78,
+        "idleThreshold": 9,
+        "verticalIntentThreshold": 0.72,
+        "reversalDotThreshold": -0.08
+      },
+      "camera": {
+        "leadViewportFraction": 0.05,
+        "minLeadViewportFraction": 0.03,
+        "maxLeadViewportFraction": 0.07,
+        "fullLeadSpeedRatio": 0.9,
+        "leadStartSpeedRatio": 0.15,
+        "springAngularFrequency": 32,
+        "restPositionEpsilon": 0.04,
+        "restVelocityEpsilon": 0.04
+      }
+    },
+    "t90Ms": 446.00000000000034,
+    "reversalZeroMs": 302.0000000000002,
+    "coastBelow10Ms": 903.0000000000007,
+    "terminal": [
+      {
+        "direction": "east",
+        "speed": 106
+      },
+      {
+        "direction": "southeast",
+        "speed": 106
+      },
+      {
+        "direction": "south",
+        "speed": 106
+      },
+      {
+        "direction": "southwest",
+        "speed": 106
+      },
+      {
+        "direction": "west",
+        "speed": 106
+      },
+      {
+        "direction": "northwest",
+        "speed": 106
+      },
+      {
+        "direction": "north",
+        "speed": 106
+      },
+      {
+        "direction": "northeast",
+        "speed": 106
+      }
+    ],
+    "terminalSpreadPercent": 0,
+    "intents": [
+      {
+        "direction": "east",
+        "acceleration": {
+          "phase": "acceleration",
+          "vertical": "level",
+          "direction": "east"
+        },
+        "cruise": {
+          "phase": "cruise",
+          "vertical": "level",
+          "direction": "east"
+        },
+        "brake": {
+          "phase": "brake",
+          "vertical": "level",
+          "direction": "east"
+        },
+        "accelerationAnimation": "swim",
+        "cruiseAnimation": "boost",
+        "brakeAnimation": "hover"
+      },
+      {
+        "direction": "southeast",
+        "acceleration": {
+          "phase": "acceleration",
+          "vertical": "level",
+          "direction": "southeast"
+        },
+        "cruise": {
+          "phase": "cruise",
+          "vertical": "level",
+          "direction": "southeast"
+        },
+        "brake": {
+          "phase": "brake",
+          "vertical": "level",
+          "direction": "southeast"
+        },
+        "accelerationAnimation": "swim",
+        "cruiseAnimation": "boost",
+        "brakeAnimation": "hover"
+      },
+      {
+        "direction": "south",
+        "acceleration": {
+          "phase": "acceleration",
+          "vertical": "descend",
+          "direction": "south"
+        },
+        "cruise": {
+          "phase": "cruise",
+          "vertical": "descend",
+          "direction": "south"
+        },
+        "brake": {
+          "phase": "brake",
+          "vertical": "descend",
+          "direction": "south"
+        },
+        "accelerationAnimation": "descend",
+        "cruiseAnimation": "descend",
+        "brakeAnimation": "descend"
+      },
+      {
+        "direction": "southwest",
+        "acceleration": {
+          "phase": "acceleration",
+          "vertical": "level",
+          "direction": "southwest"
+        },
+        "cruise": {
+          "phase": "cruise",
+          "vertical": "level",
+          "direction": "southwest"
+        },
+        "brake": {
+          "phase": "brake",
+          "vertical": "level",
+          "direction": "southwest"
+        },
+        "accelerationAnimation": "swim",
+        "cruiseAnimation": "boost",
+        "brakeAnimation": "hover"
+      },
+      {
+        "direction": "west",
+        "acceleration": {
+          "phase": "acceleration",
+          "vertical": "level",
+          "direction": "west"
+        },
+        "cruise": {
+          "phase": "cruise",
+          "vertical": "level",
+          "direction": "west"
+        },
+        "brake": {
+          "phase": "brake",
+          "vertical": "level",
+          "direction": "west"
+        },
+        "accelerationAnimation": "swim",
+        "cruiseAnimation": "boost",
+        "brakeAnimation": "hover"
+      },
+      {
+        "direction": "northwest",
+        "acceleration": {
+          "phase": "acceleration",
+          "vertical": "level",
+          "direction": "northwest"
+        },
+        "cruise": {
+          "phase": "cruise",
+          "vertical": "level",
+          "direction": "northwest"
+        },
+        "brake": {
+          "phase": "brake",
+          "vertical": "level",
+          "direction": "northwest"
+        },
+        "accelerationAnimation": "swim",
+        "cruiseAnimation": "boost",
+        "brakeAnimation": "hover"
+      },
+      {
+        "direction": "north",
+        "acceleration": {
+          "phase": "acceleration",
+          "vertical": "ascend",
+          "direction": "north"
+        },
+        "cruise": {
+          "phase": "cruise",
+          "vertical": "ascend",
+          "direction": "north"
+        },
+        "brake": {
+          "phase": "brake",
+          "vertical": "ascend",
+          "direction": "north"
+        },
+        "accelerationAnimation": "ascend",
+        "cruiseAnimation": "ascend",
+        "brakeAnimation": "ascend"
+      },
+      {
+        "direction": "northeast",
+        "acceleration": {
+          "phase": "acceleration",
+          "vertical": "level",
+          "direction": "northeast"
+        },
+        "cruise": {
+          "phase": "cruise",
+          "vertical": "level",
+          "direction": "northeast"
+        },
+        "brake": {
+          "phase": "brake",
+          "vertical": "level",
+          "direction": "northeast"
+        },
+        "accelerationAnimation": "swim",
+        "cruiseAnimation": "boost",
+        "brakeAnimation": "hover"
+      }
+    ],
+    "coast": {
+      "intent": {
+        "phase": "coast",
+        "vertical": "level",
+        "direction": "idle"
+      },
+      "animation": "hover"
+    },
+    "camera": {
+      "maxLeadFraction": 0.05,
+      "settleMs": 221,
+      "resting": {
+        "x": 0,
+        "y": 0,
+        "vx": 0,
+        "vy": 0,
+        "targetX": 0,
+        "targetY": 0
+      },
+      "disabledTarget": {
+        "x": 0,
+        "y": 0,
+        "strength": 0
+      }
+    }
+  },
+  "live": {
+    "acceleration90Ms": 465.7,
+    "reversalZeroMs": 315.7,
+    "coastBelow10Ms": 916.2,
+    "maxLeadViewportFraction": 0.04999989360319395,
+    "settleBelowHalfPixelMs": 233.5,
+    "restSamples": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "leadBeforeDisable": {
+      "enabled": true,
+      "x": 17.157689755973852,
+      "y": 0,
+      "targetX": 0,
+      "targetY": 0,
+      "velocityX": -202.97120629250327,
+      "velocityY": 0,
+      "viewportFraction": 0.04410717160918728,
+      "configuredFraction": 0.05
+    },
+    "immediatelyDisabled": {
+      "enabled": false,
+      "x": 0,
+      "y": 0,
+      "targetX": 0,
+      "targetY": 0,
+      "velocityX": 0,
+      "velocityY": 0,
+      "viewportFraction": 0,
+      "configuredFraction": 0.05
+    },
+    "persistedDisabled": false,
+    "persistedEnabled": true
+  },
+  "invariance": {
+    "ok": true,
+    "fixtures": {
+      "miningPoint": {
+        "x": 60,
+        "y": 180
+      },
+      "solidCollisionPoint": {
+        "x": 84,
+        "y": 180
+      }
+    },
+    "results": [
+      {
+        "direction": "east",
+        "worldDrift": 0,
+        "miningWorldDrift": 0,
+        "reachDrift": 0,
+        "collisionMatch": true,
+        "miningTargetMatch": true,
+        "baseline": {
+          "restoredX": 924.3398914186232,
+          "restoredY": 1715.3783562714555,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 25.412997844775706
+        },
+        "led": {
+          "restoredX": 924.3398914186232,
+          "restoredY": 1715.3783562714555,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 25.412997844775706
+        }
+      },
+      {
+        "direction": "southeast",
+        "worldDrift": 1.1368683772161603e-13,
+        "miningWorldDrift": 1.1368683772161603e-13,
+        "reachDrift": 7.815970093361102e-14,
+        "collisionMatch": true,
+        "miningTargetMatch": true,
+        "baseline": {
+          "restoredX": 916.7246678276146,
+          "restoredY": 1733.763132345372,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 25.139988382263393
+        },
+        "led": {
+          "restoredX": 916.7246678276147,
+          "restoredY": 1733.763132345372,
+          "miningRestoredX": 59.40540463981881,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 25.13998838226347
+        }
+      },
+      {
+        "direction": "south",
+        "worldDrift": 2.2737367544323206e-13,
+        "miningWorldDrift": 0,
+        "reachDrift": 2.2737367544323206e-13,
+        "collisionMatch": true,
+        "miningTargetMatch": true,
+        "baseline": {
+          "restoredX": 898.3398917536979,
+          "restoredY": 1741.3783559363808,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 25.3853206899843
+        },
+        "led": {
+          "restoredX": 898.3398917536979,
+          "restoredY": 1741.378355936381,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 25.38532068998453
+        }
+      },
+      {
+        "direction": "southwest",
+        "worldDrift": 0,
+        "miningWorldDrift": 0,
+        "reachDrift": 0,
+        "collisionMatch": true,
+        "miningTargetMatch": true,
+        "baseline": {
+          "restoredX": 879.9551156797812,
+          "restoredY": 1733.763132345372,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 25.99511148569293
+        },
+        "led": {
+          "restoredX": 879.9551156797812,
+          "restoredY": 1733.763132345372,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 25.99511148569293
+        }
+      },
+      {
+        "direction": "west",
+        "worldDrift": 1.1368683772161603e-13,
+        "miningWorldDrift": 1.1368683772161603e-13,
+        "reachDrift": 1.1723955140041653e-13,
+        "collisionMatch": true,
+        "miningTargetMatch": true,
+        "baseline": {
+          "restoredX": 872.3398920887727,
+          "restoredY": 1715.3783562714555,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 26.601870245220603
+        },
+        "led": {
+          "restoredX": 872.3398920887728,
+          "restoredY": 1715.3783562714555,
+          "miningRestoredX": 59.40540463981881,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 26.601870245220486
+        }
+      },
+      {
+        "direction": "northwest",
+        "worldDrift": 4.547473508864641e-13,
+        "miningWorldDrift": 2.2737367544323206e-13,
+        "reachDrift": 3.232969447708456e-13,
+        "collisionMatch": true,
+        "miningTargetMatch": true,
+        "baseline": {
+          "restoredX": 879.9551156797812,
+          "restoredY": 1696.993580197539,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 26.860025021242784
+        },
+        "led": {
+          "restoredX": 879.9551156797812,
+          "restoredY": 1696.9935801975394,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664135,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 26.86002502124246
+        }
+      },
+      {
+        "direction": "north",
+        "worldDrift": 2.2737367544323206e-13,
+        "miningWorldDrift": 0,
+        "reachDrift": 2.2737367544323206e-13,
+        "collisionMatch": true,
+        "miningTargetMatch": true,
+        "baseline": {
+          "restoredX": 898.3398917536979,
+          "restoredY": 1689.3783566065304,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 26.62828296133224
+        },
+        "led": {
+          "restoredX": 898.3398917536979,
+          "restoredY": 1689.3783566065306,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 26.628282961332012
+        }
+      },
+      {
+        "direction": "northeast",
+        "worldDrift": 4.687428401686771e-13,
+        "miningWorldDrift": 2.5421149729252077e-13,
+        "reachDrift": 2.5224267119483557e-13,
+        "collisionMatch": true,
+        "miningTargetMatch": true,
+        "baseline": {
+          "restoredX": 916.7246678276146,
+          "restoredY": 1696.993580197539,
+          "miningRestoredX": 59.4054046398187,
+          "miningRestoredY": 179.37837606664112,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 26.033327464012782
+        },
+        "led": {
+          "restoredX": 916.7246678276147,
+          "restoredY": 1696.9935801975394,
+          "miningRestoredX": 59.40540463981881,
+          "miningRestoredY": 179.37837606664135,
+          "openCollision": false,
+          "solidCollision": true,
+          "targets": [
+            "2,7"
+          ],
+          "reach": 26.03332746401253
+        }
+      }
+    ]
+  },
+  "errors": [],
+  "serverLogs": "\n  VITE v8.0.12  ready in 153 ms\n\n  ➜  Local:   http://127.0.0.1:5187/\n"
+}

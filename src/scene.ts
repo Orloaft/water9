@@ -25,6 +25,8 @@ import { beginStagedTerrainMaskNormalize,beginStagedTerrainMaskRebuild,ensureTer
 import { createPerfTelemetry,markTerrainDirty,measurePerf,recordPerf,updatePerfHud } from './perf';
 import type { PerfTelemetry } from './perf';
 import { tryPresentProgressionRadio } from './progression-radio';
+import { CAMERA_FEEL,SWIM_FEEL,cameraLeadSpringStep,cameraLeadTarget,cameraLeadViewportFraction,classifySwimAnimationIntent,swimVelocityStep,zeroCameraLeadSpring } from './swimming-feel';
+import type { CameraLeadSpring } from './swimming-feel';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.Image[] = [];
@@ -117,6 +119,8 @@ export class DeepdiveScene extends Phaser.Scene {
   diverV3ScannerStartedAt = 0;
   diverV3ScannerRecoverUntil = 0;
   diverV3ScannerWasActive = false;
+  cameraLead: CameraLeadSpring = zeroCameraLeadSpring();
+  swimInput = { x: 0, y: 0, hasInput: false };
   player = {
     x: WORLD_W * TILE * 0.5,
     y: BARGE_DOCK_Y,
@@ -128,6 +132,7 @@ export class DeepdiveScene extends Phaser.Scene {
     scanCooldown: 0,
     sonarCooldown: 0,
     scanTarget: null as ScanTarget | null,
+    motionIntent: classifySwimAnimationIntent(0, 0, 0, 0, SWIM_FEEL.baseTopSpeed),
   };
   hudTimer = 0;
 
@@ -348,7 +353,7 @@ export class DeepdiveScene extends Phaser.Scene {
       this.updatePassiveSonarReveal(delta);
       this.updateQuestProgress();
       this.updateCameraZoom();
-      this.cameras.main.centerOn(this.player.x, this.player.y);
+      this.updateSwimCamera(delta);
       this.processEnvironmentPropRefreshQueue();
       });
       measurePerf(this, 'draw.total', () => this.draw());
@@ -382,7 +387,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.updateFlares(delta);
     this.updateSonarPings(delta);
     this.updateCameraZoom();
-    this.cameras.main.centerOn(this.player.x, this.player.y);
+    this.updateSwimCamera(delta);
     this.processEnvironmentPropRefreshQueue();
     });
     measurePerf(this, 'draw.total', () => this.draw());
@@ -1047,6 +1052,8 @@ export class DeepdiveScene extends Phaser.Scene {
     this.player.y = BARGE_DOCK_Y;
     this.player.vx = 0;
     this.player.vy = 0;
+    this.swimInput = { x: 0, y: 0, hasInput: false };
+    this.player.motionIntent = classifySwimAnimationIntent(0, 0, 0, 0, swimTopSpeed());
     this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
     this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
     this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
@@ -1074,6 +1081,7 @@ export class DeepdiveScene extends Phaser.Scene {
     const latchedBobbit = this.latchedBobbit();
     const activeBobbitDrag = this.activeBobbitDrag();
     if (activeBobbitDrag?.bobbitBurrow?.captured === 'player') {
+      this.swimInput = { x: 0, y: 0, hasInput: false };
       if (hasInput) {
         this.rotateFacingToward(input.angle(), delta, 7.2);
         this.updatePlayerFacing(input.x);
@@ -1094,6 +1102,8 @@ export class DeepdiveScene extends Phaser.Scene {
       this.player.y = latchedBobbit.latchY;
       this.player.vx = 0;
       this.player.vy = 0;
+      this.swimInput = { x: 0, y: 0, hasInput: false };
+      this.player.motionIntent = classifySwimAnimationIntent(0, 0, 0, 0, swimTopSpeed());
       if (hasInput) {
         this.rotateFacingToward(input.angle(), delta, 7.2);
         this.updatePlayerFacing(input.x);
@@ -1108,18 +1118,13 @@ export class DeepdiveScene extends Phaser.Scene {
     }
 
     const topSpeed = swimTopSpeed();
-    const thrust = (this.isAtBoat() ? 620 : 300) + swimUpgradeBonus() * 34;
-    this.player.vx += input.x * thrust * delta;
-    this.player.vy += input.y * thrust * delta;
-    const drag = input.lengthSq() > 0 ? 1.45 : 2.65;
-    const dragFactor = Math.exp(-drag * delta);
-    this.player.vx *= dragFactor;
-    this.player.vy *= dragFactor;
-    const speed = Math.hypot(this.player.vx, this.player.vy);
-    if (speed > topSpeed) {
-      this.player.vx = (this.player.vx / speed) * topSpeed;
-      this.player.vy = (this.player.vy / speed) * topSpeed;
-    }
+    const thrust = (this.isAtBoat() ? SWIM_FEEL.dockThrust : SWIM_FEEL.baseThrust) + swimUpgradeBonus() * SWIM_FEEL.upgradeThrust;
+    const motion = swimVelocityStep(this.player.vx, this.player.vy, input.x, input.y, delta, topSpeed, thrust);
+    this.player.vx = motion.vx;
+    this.player.vy = motion.vy;
+    const speed = motion.speed;
+    this.swimInput = { x: motion.input.x, y: motion.input.y, hasInput };
+    this.player.motionIntent = classifySwimAnimationIntent(input.x, input.y, this.player.vx, this.player.vy, topSpeed);
     const latchedLarvae = this.larvae.filter((larva) => larva.latched).length;
     if (latchedLarvae > 0) {
       const drag = Math.max(0.66, 1 - latchedLarvae * 0.08);
@@ -1151,11 +1156,58 @@ export class DeepdiveScene extends Phaser.Scene {
       this.establishForwardOutpost();
     }
     const pointer = this.input.activePointer;
-    if (pointer.isDown) this.mineAt(pointer.worldX, pointer.worldY);
+    if (pointer.isDown) {
+      const worldPointer = pointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
+      this.mineAt(worldPointer.x, worldPointer.y);
+    }
     const primaryX = this.player.x + this.player.facing.x * PLAYER_FORWARD_REACH;
     const primaryY = this.player.y + this.player.facing.y * PLAYER_FORWARD_REACH;
     const selectedToolScanHeld = controls.mineHeld && this.useSelectedToolPrimary(delta, primaryX, primaryY);
     this.scanNearbyLife(delta, controls.scanHeld || selectedToolScanHeld);
+  }
+
+  updateSwimCamera(delta: number) {
+    const camera = this.cameras.main;
+    if (!state.cameraLeadEnabled) {
+      this.cameraLead = zeroCameraLeadSpring();
+      camera.centerOn(this.player.x, this.player.y);
+      camera.preRender();
+      return;
+    }
+    camera.preRender();
+    const target = cameraLeadTarget(
+      this.swimInput.hasInput ? this.swimInput.x : 0,
+      this.swimInput.hasInput ? this.swimInput.y : 0,
+      Math.hypot(this.player.vx, this.player.vy),
+      swimTopSpeed(),
+      camera.worldView.width,
+      camera.worldView.height,
+      true,
+    );
+    this.cameraLead = cameraLeadSpringStep(this.cameraLead, target.x, target.y, delta);
+    camera.centerOn(this.player.x + this.cameraLead.x, this.player.y + this.cameraLead.y);
+    camera.preRender();
+  }
+
+  resetCameraLead() {
+    this.cameraLead = zeroCameraLeadSpring();
+    this.cameras.main.centerOn(this.player.x, this.player.y);
+    this.cameras.main.preRender();
+  }
+
+  cameraLeadTelemetry() {
+    const camera = this.cameras.main;
+    return {
+      enabled: state.cameraLeadEnabled,
+      x: this.cameraLead.x,
+      y: this.cameraLead.y,
+      targetX: this.cameraLead.targetX,
+      targetY: this.cameraLead.targetY,
+      velocityX: this.cameraLead.vx,
+      velocityY: this.cameraLead.vy,
+      viewportFraction: cameraLeadViewportFraction(this.cameraLead, camera.worldView.width, camera.worldView.height),
+      configuredFraction: CAMERA_FEEL.leadViewportFraction,
+    };
   }
 
   updatePlayerFacing(horizontalIntent: number) {

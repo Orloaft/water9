@@ -3609,7 +3609,7 @@ export function drawPlayer(this: DeepdiveScene, ) {
     const p = this.player;
     const angle = p.facing.angle();
     const swimSpeed = Math.hypot(p.vx, p.vy);
-    const animation = diverAnimation(p.vx, p.vy, swimSpeed, p.mineCooldown, state.lost);
+    const animation = diverAnimation(p.vx, p.vy, swimSpeed, p.mineCooldown, state.lost, p.motionIntent);
     for (const sprite of Object.values(this.diverPartSprites)) sprite.setVisible(false);
     const diverMotionTest = new URLSearchParams(window.location.search).get('diverMotionTest');
     if (diverMotionTest === 'v3a-refined-mining' && !state.lost) {
