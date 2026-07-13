@@ -89,6 +89,7 @@ export type PlaytestCommand =
   | 'terrainMineAt'
   | 'perfGuardrailReview'
   | 'biomeLoadingReview'
+  | 'entityLifecycleDiagnostics'
   | 'articulatedContactPolishReview'
   | 'teleportToArticulated'
   | 'teleportToBobbitBurrow'

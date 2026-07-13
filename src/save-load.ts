@@ -168,11 +168,10 @@ export function loadGame(this: DeepdiveScene) {
     startedAt: performance.now(),
     completedAt: 0,
   };
-  if (this.worldReady && savedWorldMatchesRuntime(parsed.save.world)) {
-    this.beginBiomeGenerationTransition(0);
-  } else {
-    this.scene.restart();
-  }
+  // Keep the active scene and its loader intact. A scene restart while preload is
+  // still settling can requeue partial texture sets, and restoring terrain alone
+  // leaves the restarted scene without generated fauna/flora GameObjects.
+  if (this.sceneInitialized) this.beginBiomeGenerationTransition(0);
   return { ok: true, version: parsed.save.version, savedAt: parsed.save.savedAt, loadId: requestId };
 }
 

@@ -22,6 +22,109 @@ function clearPlaytestFloatingText(scene: DeepdiveScene) {
   scene.floatingTexts = [];
 }
 
+function spriteLifecycleDiagnostics(scene: DeepdiveScene, sprite: Phaser.GameObjects.Image | undefined) {
+  if (!sprite) return null;
+  const textureKey = sprite.texture?.key ?? '';
+  const frame = sprite.frame;
+  const sourceImage = textureKey && scene.textures.exists(textureKey)
+    ? scene.textures.get(textureKey).getSourceImage() as { width?: number; height?: number } | undefined
+    : undefined;
+  const crop = (sprite as unknown as { _crop?: { x?: number; y?: number; width?: number; height?: number } })._crop;
+  return {
+    active: sprite.active,
+    visible: sprite.visible,
+    textureKey,
+    textureResident: Boolean(textureKey && scene.textures.exists(textureKey)),
+    sourceWidth: sourceImage?.width ?? 0,
+    sourceHeight: sourceImage?.height ?? 0,
+    frameName: frame?.name ?? null,
+    frameWidth: frame?.width ?? 0,
+    frameHeight: frame?.height ?? 0,
+    frameCutX: frame?.cutX ?? 0,
+    frameCutY: frame?.cutY ?? 0,
+    frameCutWidth: frame?.cutWidth ?? 0,
+    frameCutHeight: frame?.cutHeight ?? 0,
+    cropped: sprite.isCropped,
+    crop: crop ? {
+      x: crop.x ?? 0,
+      y: crop.y ?? 0,
+      width: crop.width ?? 0,
+      height: crop.height ?? 0,
+    } : null,
+    tint: {
+      topLeft: sprite.tintTopLeft,
+      topRight: sprite.tintTopRight,
+      bottomLeft: sprite.tintBottomLeft,
+      bottomRight: sprite.tintBottomRight,
+      fill: sprite.tintFill,
+      active: sprite.isTinted,
+    },
+    alpha: roundMetric(sprite.alpha),
+    displayWidth: roundMetric(sprite.displayWidth),
+    displayHeight: roundMetric(sprite.displayHeight),
+    attachedToScene: sprite.scene === scene,
+    attachedToDisplayList: scene.sys.displayList.list.includes(sprite),
+  };
+}
+
+function entityLifecycleDiagnostics(scene: DeepdiveScene) {
+  const fish = scene.fish.map((entry) => ({
+    species: entry.species,
+    x: roundMetric(entry.x),
+    y: roundMetric(entry.y),
+    dead: entry.dead,
+    sprite: spriteLifecycleDiagnostics(scene, entry.sprite),
+  }));
+  const flora = scene.flora.map((entry) => ({
+    species: entry.species,
+    source: entry.source ?? 'biome',
+    x: roundMetric(entry.x),
+    y: roundMetric(entry.y),
+    dead: entry.dead,
+    sprite: spriteLifecycleDiagnostics(scene, entry.sprite),
+  }));
+  const articulated = scene.articulatedCreatures.map((creature) => ({
+    id: creature.id,
+    species: creature.species,
+    dead: creature.dead,
+    parts: creature.parts.map((part) => ({ id: part.id, detached: part.detached, sprite: spriteLifecycleDiagnostics(scene, part.sprite) })),
+    socketOverlays: creature.socketOverlays.map((overlay) => ({ id: overlay.id, sprite: spriteLifecycleDiagnostics(scene, overlay.sprite) })),
+  }));
+  const hazards = scene.hazards.map((entry) => ({ sprite: spriteLifecycleDiagnostics(scene, entry.sprite) }));
+  const bobbits = scene.bobbits.map((entry) => ({ sprite: spriteLifecycleDiagnostics(scene, entry.sprite) }));
+  const nestEggs = scene.nestEggs.map((entry) => ({ sprite: spriteLifecycleDiagnostics(scene, entry.sprite) }));
+  const larvae = scene.larvae.map((entry) => ({ sprite: spriteLifecycleDiagnostics(scene, entry.sprite) }));
+  const visibleCount = (entries: Array<{ sprite: ReturnType<typeof spriteLifecycleDiagnostics> }>) => entries.filter((entry) => entry.sprite?.visible).length;
+  return {
+    biome: state.biome,
+    worldReady: scene.worldReady,
+    biomeLoading: { ...state.biomeLoading },
+    counts: {
+      fish: fish.length,
+      visibleFish: visibleCount(fish),
+      flora: flora.length,
+      visibleFlora: visibleCount(flora),
+      articulated: articulated.length,
+      visibleArticulatedParts: articulated.reduce((sum, creature) => sum + visibleCount(creature.parts), 0),
+      hazards: hazards.length,
+      visibleHazards: visibleCount(hazards),
+      bobbits: bobbits.length,
+      visibleBobbits: visibleCount(bobbits),
+      nestEggs: nestEggs.length,
+      visibleNestEggs: visibleCount(nestEggs),
+      larvae: larvae.length,
+      visibleLarvae: visibleCount(larvae),
+    },
+    fish,
+    flora,
+    articulated,
+    hazards,
+    bobbits,
+    nestEggs,
+    larvae,
+  };
+}
+
 function stageSelectedToolSmoke(scene: DeepdiveScene, mode: 'terrain' | 'life') {
   if (scene.world.length < WORLD_H || scene.world.some((row) => !row || row.length < WORLD_W)) {
     scene.generateWorld();
@@ -3461,6 +3564,8 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       return stagePerfGuardrailReview(this, payload.cleanupVisualActors === true);
     } else if (command === 'biomeLoadingReview') {
       return { ...state.biomeLoading, worldReady: this.worldReady };
+    } else if (command === 'entityLifecycleDiagnostics') {
+      return entityLifecycleDiagnostics(this);
     } else if (command === 'teleportToArticulated') {
       const payload = typeof value === 'object' && value !== null ? value as { creatureId?: string } : {};
       const creature = this.articulatedCreatures.find((candidate) => !candidate.dead && (!payload.creatureId || candidate.id === payload.creatureId));

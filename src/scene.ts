@@ -104,6 +104,9 @@ export class DeepdiveScene extends Phaser.Scene {
   environmentPropRefreshQueue: Array<{ minX: number; maxX: number; minY: number; maxY: number; reason: string }> = [];
   perfTelemetry: PerfTelemetry = createPerfTelemetry();
   worldReady = false;
+  generatedBiome: Biome | 0 = 0;
+  sceneInitialized = false;
+  biomeGenerationRequestId = 0;
   gamepadButtonsDown = new Set<number>();
   browserGamepadIndex = -1;
   gamepadEventCleanup?: () => void;
@@ -136,6 +139,7 @@ export class DeepdiveScene extends Phaser.Scene {
   }
 
 	  create() {
+	    this.sceneInitialized = false;
 	    this.cameras.main.setBounds(0, 0, WORLD_W * TILE, WORLD_H * TILE);
     this.cameras.main.setRoundPixels(true);
     this.tileSprites = [];
@@ -194,6 +198,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.lampGloom = this.add.graphics().setDepth(6);
     this.overlay = this.add.graphics().setDepth(7);
     ensureArticulatedTextures(this);
+    this.sceneInitialized = true;
     this.beginBiomeGenerationTransition();
 	  }
 
@@ -247,6 +252,7 @@ export class DeepdiveScene extends Phaser.Scene {
   }
 
   shutdown() {
+    this.sceneInitialized = false;
     this.gamepadEventCleanup?.();
     this.gamepadEventCleanup = undefined;
   }
@@ -383,6 +389,7 @@ export class DeepdiveScene extends Phaser.Scene {
   }
 
   beginBiomeGenerationTransition(delayMs = 90) {
+    const requestId = ++this.biomeGenerationRequestId;
     this.worldReady = false;
     state.biomeLoading = {
       active: true,
@@ -395,7 +402,7 @@ export class DeepdiveScene extends Phaser.Scene {
       completedAt: 0,
     };
     renderHud();
-    this.time.delayedCall(delayMs, () => this.finishBiomeGenerationTransition());
+    this.time.delayedCall(delayMs, () => this.finishBiomeGenerationTransition(requestId));
   }
 
   updateBiomeGenerationLoading() {
@@ -409,10 +416,14 @@ export class DeepdiveScene extends Phaser.Scene {
     }
   }
 
-  finishBiomeGenerationTransition() {
-    if (this.worldReady) return;
+  finishBiomeGenerationTransition(requestId = this.biomeGenerationRequestId) {
+    if (requestId !== this.biomeGenerationRequestId || this.worldReady) return;
     const startedAt = performance.now();
     const restoreFromSavedWorld = saveLoadNs.hasPendingLoadWorld();
+    const reuseExistingEntities = restoreFromSavedWorld
+      && this.generatedBiome === state.biome
+      && this.fish.length > 0
+      && this.flora.length > 0;
     const center = Math.floor(WORLD_W / 2);
     const terrainRowBatch = 105;
     const terrainSteps = [
@@ -469,32 +480,7 @@ export class DeepdiveScene extends Phaser.Scene {
       }),
       { status: 'Committing terrain collision...', progress: 0.555, run: () => finishStagedTerrainMaskRebuild(this) },
     ];
-    const steps = restoreFromSavedWorld
-      ? [
-        {
-          status: 'Restoring saved terrain...',
-          progress: 0.5,
-          run: () => measurePerf(this, 'saveLoad.restoreWorld', () => this.applyPendingLoadWorld(), { biome: state.biome }),
-        },
-        {
-          status: 'Restoring diver position...',
-          progress: 0.86,
-          run: () => measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: true }), { biome: state.biome, worldApplied: true }),
-        },
-        {
-          status: 'Preparing restored presentation...',
-          progress: 0.96,
-          run: () => measurePerf(this, 'saveLoad.prewarmPresentation', () => this.draw(), { biome: state.biome }),
-        },
-      ]
-      : [
-          ...terrainSteps,
-          ...terrainMaskSteps,
-          {
-            status: 'Planting ledges and growth...',
-            progress: 0.62,
-            run: () => this.generateWorldEnvironmentProps(),
-          },
+    const entitySteps = [
           {
             status: 'Placing fauna routes...',
             progress: 0.72,
@@ -544,7 +530,7 @@ export class DeepdiveScene extends Phaser.Scene {
             run: () => {
               this.generateWorldArticulated();
               this.finishWorldGeneration();
-              measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: false }), { biome: state.biome, worldApplied: false });
+              measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: restoreFromSavedWorld }), { biome: state.biome, worldApplied: restoreFromSavedWorld });
             },
           },
           {
@@ -553,15 +539,57 @@ export class DeepdiveScene extends Phaser.Scene {
             run: () => measurePerf(this, 'worldgen.firstPresentation', () => this.draw(), { biome: state.biome }),
           },
         ];
-    this.runBiomeGenerationStep(steps, startedAt, 0);
+    const steps = restoreFromSavedWorld
+      ? [
+          {
+            status: 'Restoring saved terrain...',
+            progress: 0.5,
+            run: () => {
+              if (!reuseExistingEntities) {
+                this.resetGeneratedWorldEntities();
+                this.bobbitBurrows = [];
+                this.encounterReservations = [];
+                this.sideTunnelPocketCandidates = [];
+                this.specialRooms = [];
+              }
+              measurePerf(this, 'saveLoad.restoreWorld', () => this.applyPendingLoadWorld(), { biome: state.biome });
+            },
+          },
+          ...(reuseExistingEntities
+            ? [
+                {
+                  status: 'Restoring diver position...',
+                  progress: 0.96,
+                  run: () => measurePerf(this, 'saveLoad.applyPendingLoad', () => this.applyPendingLoad({ worldApplied: true }), { biome: state.biome, worldApplied: true }),
+                },
+                {
+                  status: 'Preparing restored presentation...',
+                  progress: 0.985,
+                  run: () => measurePerf(this, 'saveLoad.prewarmPresentation', () => this.draw(), { biome: state.biome }),
+                },
+              ]
+            : entitySteps),
+        ]
+      : [
+          ...terrainSteps,
+          ...terrainMaskSteps,
+          {
+            status: 'Planting ledges and growth...',
+            progress: 0.62,
+            run: () => this.generateWorldEnvironmentProps(),
+          },
+          ...entitySteps,
+        ];
+    this.runBiomeGenerationStep(steps, startedAt, 0, requestId);
   }
 
   runBiomeGenerationStep(
     steps: Array<{ status: string; progress: number; run: () => void }>,
     startedAt: number,
     index: number,
+    requestId = this.biomeGenerationRequestId,
   ) {
-    if (this.worldReady) return;
+    if (requestId !== this.biomeGenerationRequestId || this.worldReady) return;
     const frameBudgetStartedAt = performance.now();
     let nextIndex = index;
     while (nextIndex < steps.length) {
@@ -576,11 +604,12 @@ export class DeepdiveScene extends Phaser.Scene {
     }
     renderHud();
     if (nextIndex < steps.length) {
-      this.time.delayedCall(1, () => this.runBiomeGenerationStep(steps, startedAt, nextIndex));
+      this.time.delayedCall(1, () => this.runBiomeGenerationStep(steps, startedAt, nextIndex, requestId));
       return;
     }
     recordPerf(this, 'worldgen.total', performance.now() - startedAt, { biome: state.biome, staged: true });
     this.worldReady = true;
+    this.generatedBiome = state.biome;
     state.biomeLoading.phase = 'complete';
     state.biomeLoading.status = 'Barge systems synchronized.';
     state.biomeLoading.progress = 1;
@@ -591,7 +620,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.updateAudio(0);
     renderHud();
     this.time.delayedCall(180, () => {
-      if (state.biomeLoading.phase !== 'complete') return;
+      if (requestId !== this.biomeGenerationRequestId || state.biomeLoading.phase !== 'complete') return;
       state.biomeLoading.active = false;
       state.biomeLoading.phase = 'idle';
       renderHud();
