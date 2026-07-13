@@ -17,7 +17,8 @@ Safely checkpoint and push all current Water9 work, create `swimming-backgrounds
 - [x] Audit code and runtime behavior for background composition, depth/parallax, motion/swimming feel, lighting, contrast/readability, biome identity, transitions, repetition, interactions, and performance risks, separating runtime facts, code facts, and hypotheses.
 - [x] Write `runs/swimming-backgrounds-adversarial-appraisal-2026-07-13/report.md` with ranked findings, target direction, phased slices, do-now/later/avoid, and measurable visual/game-feel/performance gates.
 - [x] Prepare only the durable proposal, ledger, and verified 38-file evidence manifest for explicit-path commit on `swimming-backgrounds` and normal upstream push.
-- [ ] Manager visually inspects representative runtime captures and verifies branch, commits, push, report, and clean status.
+- [x] Manager visually inspected the representative color/grayscale runtime captures and verified branch, commits, push, report, manifest, and clean status. The evidence confirms B1 as the strongest current benchmark, the B2 cutoff discontinuity, deep-field readability loss, stepped lamp geometry, and B3/B4 composition crowding. REPORTED 2026-07-13.
+- [x] WRAP PREPARED `water9-swimming-backgrounds-appraisal-wrap-20260713` — routing: **routine**, `openai/gpt-5.6-luna`, thinking `medium`; rationale: bounded administrative explicit-path commit/push of the already-reviewed ledger tick only, with no product or report judgment remaining.
 
 ## Expected artifacts
 
