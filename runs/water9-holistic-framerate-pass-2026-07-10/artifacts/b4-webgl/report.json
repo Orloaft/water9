@@ -1,0 +1,22 @@
+{
+  "ok": false,
+  "renderer": "webgl",
+  "url": "http://127.0.0.1:5188/?playtest=1&biome=4&perf=1&perfHud=0&renderer=webgl",
+  "errors": [
+    {
+      "type": "pageerror",
+      "text": "Framebuffer status: Framebuffer Unsupported"
+    },
+    {
+      "type": "exception",
+      "text": "page.waitForFunction: Timeout 10000ms exceeded.\n    at /mnt/nxt-dev/water9/tools/test_b4_busy_deep_perf_smoke.mjs:207:14"
+    }
+  ],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 132 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5188/\n",
+    "7:40:34 PM [vite] (client) [Unhandled error] Error: Framebuffer status: Framebuffer Unsupported\n > WebGLFramebufferWrapper.createResource node_modules/phaser/dist/phaser.js:193853:18\n > new WebGLFramebufferWrapper node_modules/phaser/dist/phaser.js:193814:13\n > WebGLRenderer.createFramebuffer node_modules/phaser/dist/phaser.js:182352:26\n > RenderTarget.init node_modules/phaser/dist/phaser.js:176955:36\n > new RenderTarget node_modules/phaser/dist/phaser.js:176926:13\n > WebGLRenderer.boot node_modules/phaser/dist/phaser.js:181004:28\n > TextureManager.emit node_modules/phaser/dist/phaser.js:218:32\n > TextureManager.updatePending node_modules/phaser/dist/phaser.js:216452:17\n > TextureManager.emit node_modules/phaser/dist/phaser.js:199:34\n > image.onload node_modules/phaser/dist/phaser.js:216598:22\n\n",
+    "7:40:34 PM [vite] (client) [console.warn] WebGL Context lost. Renderer disabled\n",
+    "7:40:35 PM [vite] (client) [console.warn] WebGL Context restored. Renderer running again.\n"
+  ]
+}

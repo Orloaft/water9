@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "auditInputs": [
+    "../../../current-diver-sprite-audit-2026-07-11/report.md",
+    "../../../current-diver-sprite-audit-2026-07-11/artifacts/proposed-diver-v2-manifest.example.json",
+    "../../../current-diver-sprite-audit-2026-07-11/artifacts/current-diver-all-frames-color.png",
+    "../../../current-diver-sprite-audit-2026-07-11/artifacts/current-diver-all-frames-grayscale.png",
+    "../../../current-diver-sprite-audit-2026-07-11/artifacts/runtime-mid-swim-hud.png",
+    "../../../current-diver-sprite-audit-2026-07-11/artifacts/runtime-surface-idle-hud.png",
+    "../../../current-diver-sprite-audit-2026-07-11/artifacts/runtime-tool-scanner-live.png"
+  ],
+  "generatedReference": {
+    "chroma": "../master/master-reference-generated-chroma.png",
+    "chromaSha256": "c4a4243d3c6feb6621a975a4a64f301ad735ec9267f37494fcc1b5715fb3767a",
+    "cutout": "../master/master-reference-generated-cutout.png",
+    "cutoutSha256": "26f74e2f129a3c4ee85b9461d8ab117eec2aa5323b91a8c9a298714564fcc17d",
+    "removal": "installed imagegen remove_chroma_key.py; auto-key border; soft matte; thresholds 12/220; despill",
+    "keySample": "#fb03f9",
+    "transparentPixels": 1161830,
+    "partiallyTransparentPixels": 14603,
+    "note": "Partial alpha exists only in the high-resolution reference cutout; no generated pixels or partial alpha were copied into production cells."
+  },
+  "selectedMaster": {
+    "file": "../master/selected-master-board.png",
+    "sha256": "8ce864742dda5cdf8f8c6b0ba43e5b7acb263e72515138468f4fd91455c43014",
+    "pixelMasters": ["../production/body/idle_hover_00.png", "../production/body/swim_cruise_00.png", "../production/body/scanner_deploy_02.png", "../production/body/scanner_scan_hold_00.png"],
+    "derivation": "Corrected hand-authored deterministic Pillow geometry at native 128x96 resolution, informed by the unchanged selected master; no generated pixels, independent generated frames, resampling, or tracing into body pixels."
+  },
+  "production": {
+    "generator": "../../generate_assets.py",
+    "validator": "../../validate_assets.py",
+    "palette": "diver-v2-palette.json",
+    "manifest": "diver-v2-manifest.json",
+    "method": "Corrected four-key gate first, followed by propagation from shared helmet/neck/chest/pack, thick armored limb/joint, boot/fin, scanner, and effect primitives; explicit transitions and loop phases; nearest-neighbor review scaling.",
+    "rejectedFirstPass": "../rejected-first-pass/",
+    "beforeAfterReview": "../review/corrected-key-gate-before-after-master.png",
+    "hashLedger": "artifact-hashes.json",
+    "correctionPrompt": "../../../diver-v2-asset-production-2026-07-11.correction.prompt.md",
+    "newAiGenerations": 0
+  },
+  "correctedKeyHashes": {
+    "idle_hover_00": "ab85e4891aee5b1a5e72abc4f6baaa86659098474224fb02db72effb76da3d60",
+    "swim_cruise_00": "db6f43f5152b9a6bd6baf06a91aab4f68780a8d2c48be1f3c1ca897fa6130458",
+    "scanner_deploy_02": "4c650a12b9d431923ee61fc4c05e6102c59ca57dd585219f253aa57d93172bb9",
+    "scanner_scan_hold_00": "61d321e0fde27d0b2ced649df2c53bede9c1af19880004afdedf227f745f43d8"
+  }
+}

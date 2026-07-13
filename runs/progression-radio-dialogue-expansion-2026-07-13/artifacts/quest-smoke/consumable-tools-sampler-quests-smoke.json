@@ -1,0 +1,233 @@
+{
+  "ok": true,
+  "baseUrl": "http://127.0.0.1:5191/?playtest=1&biome=1",
+  "port": 5191,
+  "commands": {
+    "build": "npm run build",
+    "smoke": "node tools/test_consumable_tools_sampler_quests_smoke.mjs"
+  },
+  "stun": {
+    "buyStun": {
+      "ok": true,
+      "id": "stun-grenade",
+      "cargoCount": 1,
+      "unlockedTools": {
+        "drill": true,
+        "scanner": true,
+        "sonar": true,
+        "sampler": true,
+        "flare": false,
+        "stun": true,
+        "charge": false
+      },
+      "status": "Stun Grenade loaded into cargo slot 1. Stun tool fitted on key 6."
+    },
+    "stage": {
+      "ok": true,
+      "species": "Mantis Shrimp",
+      "grenades": 1
+    },
+    "grenadesBefore": 1,
+    "grenadesAfter": 0,
+    "stunnedAfter": 4.552,
+    "emptyStatus": "No stun grenade loaded. Buy or recover one before firing the stun tool."
+  },
+  "sale": {
+    "saleStage": {
+      "ok": true,
+      "saleCargoValue": 1395,
+      "oreSaleValue": 1340,
+      "cargoBefore": [
+        {
+          "id": "copper",
+          "kind": "ore",
+          "value": 90
+        },
+        {
+          "id": "relic",
+          "kind": "artifact",
+          "value": 1250
+        },
+        {
+          "id": "flora-sample",
+          "kind": "sample",
+          "value": 55
+        },
+        {
+          "id": "stun-grenade",
+          "kind": "consumable",
+          "value": 0
+        },
+        {
+          "id": "dynamite",
+          "kind": "consumable",
+          "value": 0
+        },
+        {
+          "id": "flare",
+          "kind": "consumable",
+          "value": 0
+        },
+        {
+          "id": "oxygen-tank",
+          "kind": "consumable",
+          "value": 0
+        },
+        {
+          "id": "fuel-tank",
+          "kind": "consumable",
+          "value": 0
+        },
+        {
+          "id": "first-aid-kit",
+          "kind": "consumable",
+          "value": 0
+        },
+        {
+          "id": "antivenom",
+          "kind": "consumable",
+          "value": 0
+        },
+        {
+          "id": "injector-knife",
+          "kind": "tool",
+          "value": 0
+        }
+      ]
+    },
+    "remainingIds": [
+      "antivenom",
+      "dynamite",
+      "first-aid-kit",
+      "flare",
+      "fuel-tank",
+      "injector-knife",
+      "oxygen-tank",
+      "stun-grenade"
+    ],
+    "creditsAfter": 1395,
+    "oreSoldCreditsAfter": 1340
+  },
+  "sampler": {
+    "species": "Glass Kelp",
+    "sampleItems": [
+      {
+        "id": "flora-sample",
+        "name": "Glass Kelp Sample",
+        "kind": "sample",
+        "value": 30,
+        "sampleSpecies": "Glass Kelp"
+      }
+    ],
+    "beforeCargo": 0,
+    "afterCargo": 1,
+    "floraDead": true,
+    "saveResult": {
+      "ok": true,
+      "version": 1,
+      "savedAt": "2026-07-13T16:18:27.272Z",
+      "bytes": 49532
+    },
+    "loadResult": {
+      "ok": true,
+      "version": 1,
+      "savedAt": "2026-07-13T16:18:27.272Z",
+      "loadId": 1
+    },
+    "afterLoadCargoItems": [
+      {
+        "id": "flora-sample",
+        "name": "Glass Kelp Sample",
+        "kind": "sample",
+        "value": 30,
+        "sampleSpecies": "Glass Kelp"
+      }
+    ],
+    "afterLoadSampledSpecies": [
+      "Glass Kelp"
+    ]
+  },
+  "quests": {
+    "sampleQuestKinds": {
+      "1": [
+        "ore",
+        "scan",
+        "depth",
+        "sample"
+      ],
+      "2": [
+        "ore",
+        "scan",
+        "depth",
+        "sample"
+      ],
+      "3": [
+        "ore",
+        "scan",
+        "depth",
+        "forwardOutpost",
+        "sample",
+        "gulperSurvey"
+      ],
+      "4": [
+        "ore",
+        "scan",
+        "depth",
+        "sample"
+      ]
+    },
+    "completedQuest": {
+      "id": "sample-957333-1",
+      "kind": "sample",
+      "title": "Flora Sample Contract",
+      "client": "Wet Lab Procurement",
+      "text": "Harvest 1 distinct gameplay flora sample with the sampler. Sell the physical vials later for cargo credits.",
+      "reward": 1200,
+      "target": 1,
+      "progress": 1,
+      "startValue": 0,
+      "accepted": true,
+      "completed": true,
+      "claimed": false
+    },
+    "claimedQuest": {
+      "id": "sample-957333-1",
+      "kind": "sample",
+      "title": "Flora Sample Contract",
+      "client": "Wet Lab Procurement",
+      "text": "Harvest 1 distinct gameplay flora sample with the sampler. Sell the physical vials later for cargo credits.",
+      "reward": 1200,
+      "target": 1,
+      "progress": 1,
+      "startValue": 0,
+      "accepted": true,
+      "completed": true,
+      "claimed": true
+    }
+  },
+  "artifacts": {
+    "stun-tool-selected-used": {
+      "color": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/stun-tool-selected-used.png",
+      "grayscale": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/stun-tool-selected-used-grayscale.png",
+      "selector": "#game canvas"
+    },
+    "sampler-harvest-sample-cargo": {
+      "color": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/sampler-harvest-sample-cargo.png",
+      "grayscale": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/sampler-harvest-sample-cargo-grayscale.png",
+      "selector": "#game canvas"
+    },
+    "barge-sample-contract-claim": {
+      "color": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/barge-sample-contract-claim.png",
+      "grayscale": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/barge-sample-contract-claim-grayscale.png",
+      "selector": "page"
+    }
+  },
+  "canvasStats": {
+    "exists": true,
+    "width": 1280,
+    "height": 800,
+    "variedSamples": 89,
+    "lumaRange": 194
+  },
+  "errors": []
+}

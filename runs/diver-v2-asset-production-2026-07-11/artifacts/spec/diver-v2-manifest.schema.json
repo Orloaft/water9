@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "diver-v2-manifest.schema.json",
+  "title": "Water9 Diver v2 narrow-slice manifest",
+  "type": "object",
+  "required": ["schemaVersion", "cellSize", "contentSafeBounds", "anchor", "clips", "frames", "attachments", "effects"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "cellSize": { "const": [128, 96] },
+    "contentSafeBounds": { "const": [8, 8, 120, 88] },
+    "anchor": { "const": [56, 48] },
+    "facingAuthored": { "const": "right" },
+    "filter": { "const": "nearest" },
+    "clips": { "type": "object" },
+    "frames": { "type": "object" },
+    "attachments": { "type": "object" },
+    "effects": { "type": "object" }
+  },
+  "additionalProperties": true
+}

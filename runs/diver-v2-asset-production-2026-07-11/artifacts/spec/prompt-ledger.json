@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "generations": [
+    {
+      "id": "master-reference-01",
+      "route": "built-in image generation (image_gen)",
+      "useCase": "stylized-concept",
+      "retained": true,
+      "productionStatus": "reference-only-not-shipped-sprite",
+      "sourceOutput": "../master/master-reference-generated-chroma.png",
+      "chromaRemovedOutput": "../master/master-reference-generated-cutout.png",
+      "selectedDerivative": "../master/selected-master-board.png",
+      "prompt": "Use case: stylized-concept\nAsset type: character construction reference board for a pixel-art game sprite\nPrimary request: Create a single coherent model sheet for one compact industrial saturation diver, preserving exactly the same character identity across views and poses.\nScene/backdrop: perfectly flat solid #ff00ff chroma-key background for background removal; one uniform color, no shadows, gradients, texture, reflections, floor plane, or lighting variation.\nSubject: oversized cyan pressure helmet and faceplate; short armored brass and near-black torso; weighted boots and compact fins; twin-cylinder rebreather backpack; one readable working hand and one bracing arm. Show five separated figures: canonical right-facing orthographic hover side view, canonical right-facing cruise-neutral horizontal side view, front construction view, back construction view, and right-facing three-quarter construction view. Compact working diver, not astronaut.\nStyle/medium: clean low-resolution pixel-art concept with deliberately clustered pixels, broad shapes, consistent anatomy, no antialiasing, no painterly texture.\nComposition/framing: five fully separated full-body figures in one row with generous padding; all same native character scale; no cropping; right-facing side views are canonical.\nLighting/mood: broad upper-left lighting, restrained highlights, rugged industrial.\nColor palette: near-black outline, dark rubber, oxidized brass shadows, warm brass mids/lights, cyan/teal visor; no #ff00ff in subject; approximately 20 body colors.\nMaterials/textures: pressure suit brass plates, matte black rubber joints, glassy cyan faceplate, steel backpack bands; simplified for sprite readability.\nConstraints: identical helmet diameter, torso volume, backpack placement, limb lengths, camera, palette, and material language across every figure. Strong horizontal cruise silhouette. No sharp directional baked glints that would break mirroring. No text, labels, glyphs, decals, numbers, watermark, cast shadow, contact shadow, reflection, environment, effects, beam, cone, ring, bubbles, exhaust, sparks, HUD, or glow."
+    }
+  ],
+  "rejectedGenerations": [],
+  "correctionPasses": [
+    {
+      "id": "pixel-production-correction-01",
+      "sourcePrompt": "../../../diver-v2-asset-production-2026-07-11.correction.prompt.md",
+      "route": "deterministic native pixel authorship from the locked selected master; no new AI generation",
+      "keyGate": [
+        "idle_hover_00",
+        "swim_cruise_00",
+        "scanner_deploy_02",
+        "scanner_scan_hold_00"
+      ],
+      "keyReview": "../review/corrected-key-gate-before-after-master.png",
+      "instructions": "Preserve the selected high-resolution master and palette/manifest contract. Replace schematic anatomy with a compact continuous pressure-suit silhouette, 9-10 px armored limbs, heavy joints/gloves/boots/fins, interlocking helmet-neck-chest-pack mass, disciplined 2-4 px material clusters, buoyant hover settle, 2.1:1 compact cruise, and an unmistakable braced industrial scanner sequence that reads at 30 px without effects/HUD.",
+      "productionStatus": "corrected-native-pixel-production",
+      "newGenerations": 0
+    }
+  ],
+  "note": "The only AI generation remains the selected high-resolution construction reference. Both pixel passes were deterministic native authorship; the first is preserved as rejected evidence and the second is the corrected production set."
+}

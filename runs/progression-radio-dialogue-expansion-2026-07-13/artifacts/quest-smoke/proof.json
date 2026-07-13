@@ -1,0 +1,28 @@
+{
+  "method": "Playwright normal play captures from #game canvas plus viewport capture for quest board; grayscale companions use CSS grayscale filter before screenshot.",
+  "baseUrl": "http://127.0.0.1:5191/?playtest=1&biome=1",
+  "port": 5191,
+  "commands": [
+    "npm run build",
+    "node tools/test_consumable_tools_sampler_quests_smoke.mjs"
+  ],
+  "artifacts": {
+    "stun-tool-selected-used": {
+      "color": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/stun-tool-selected-used.png",
+      "grayscale": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/stun-tool-selected-used-grayscale.png",
+      "selector": "#game canvas"
+    },
+    "sampler-harvest-sample-cargo": {
+      "color": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/sampler-harvest-sample-cargo.png",
+      "grayscale": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/sampler-harvest-sample-cargo-grayscale.png",
+      "selector": "#game canvas"
+    },
+    "barge-sample-contract-claim": {
+      "color": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/barge-sample-contract-claim.png",
+      "grayscale": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/barge-sample-contract-claim-grayscale.png",
+      "selector": "page"
+    }
+  },
+  "reportPath": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-smoke/consumable-tools-sampler-quests-smoke.json",
+  "errors": []
+}

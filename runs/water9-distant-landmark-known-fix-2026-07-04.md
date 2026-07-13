@@ -23,11 +23,11 @@ Rejected proof/failure modes:
 Checklist:
 - [x] Implementation owner — session-key `agent:codex-dev:mgr-water9-distant-landmark-known-fix` — expected artifacts: patch/commit safety report, normal gameplay canvas color + grayscale proof under `runs/water9-distant-landmark-known-fix-2026-07-04/proof/`, and worker report at `runs/water9-distant-landmark-known-fix-2026-07-04/report.md`.
 - [x] Recovery implementation owner if first wrapper stalls — session-key `agent:codex-dev:mgr-water9-distant-landmark-known-fix-recovery` — expected artifacts: same report/proof paths, with explicit note that task `19578584-073d-423c-a05b-0e5a4b20dea0` only created a stub and was cancelled.
-- [ ] Mechanic correction owner — session-key `agent:codex-dev:mgr-water9-distant-landmark-mechanic-correction` — expected artifacts: corrected patch, color + grayscale normal gameplay proof under `runs/water9-distant-landmark-known-fix-2026-07-04/mechanic-correction-proof/`, and report `runs/water9-distant-landmark-known-fix-2026-07-04/mechanic-correction-report.md`.
-- [ ] Micro mechanic patch owner — session-key `agent:codex-dev:mgr-water9-distant-landmark-micro-mechanic-patch` — expected artifacts: tiny patch, proof under `runs/water9-distant-landmark-known-fix-2026-07-04/micro-mechanic-proof/`, and report `runs/water9-distant-landmark-known-fix-2026-07-04/micro-mechanic-report.md`.
+- [x] Mechanic correction owner — ABANDONED 2026-07-09 by Alex; stale rejected mechanic path will not be relaunched from this ledger.
+- [x] Micro mechanic patch owner — ABANDONED 2026-07-09 by Alex; no further micro-patch recovery from this stale ledger.
 - [x] Asset/runtime restoration owner — session-key `agent:codex-dev:mgr-water9-distant-landmark-asset-runtime-restore` — expected artifacts: source/cutout/runtime patch, color + grayscale normal gameplay proof under `runs/water9-distant-landmark-known-fix-2026-07-04/asset-runtime-restore-proof/`, and report `runs/water9-distant-landmark-known-fix-2026-07-04/asset-runtime-restore-report.md`.
-- [ ] Manager visual acceptance — inspect normal gameplay `#game canvas` proof at B1 119/180, B2 760, B3 1260, B4 1260 in color and grayscale against the July 3 reference.
-- [ ] Commit decision — commit only if manager visual acceptance passes and dirty-state safety is clear; explicit-path staging only.
+- [x] Manager visual acceptance — ABANDONED 2026-07-09 by Alex; existing proof remains not accepted and will not be reported as a pass.
+- [x] Commit decision — ABANDONED 2026-07-09 by Alex; no commit will be made from this stale ledger.
 
 Acceptance rule:
 Only accepted after manager visual inspection of live normal gameplay `#game canvas` captures, color and grayscale, at B1 surface 119, B1 upper 180, B2 mid 760, B3 lower 1260, and B4 lower 1260. The result must match the subtle wide July 3 background-read and must prove the rejected B1 procedural shapes and B2 vertical chimney/shaft read are gone.
@@ -47,3 +47,5 @@ Progress log:
 - 2026-07-06 heartbeat: no active task found for this stale pending ledger; asked Alex whether to continue or mark it ABANDONED.
 - 2026-07-07 heartbeat: no active task found and no new acceptable artifacts for the next pending mechanic/acceptance items; asked Alex whether to continue or mark this stale landmark fix ABANDONED.
 - 2026-07-08 heartbeat: no active task found and existing mechanic/asset proof remains not accepted; asked Alex whether to continue or mark this stale landmark fix ABANDONED.
+- 2026-07-09 heartbeat: no active task found and no accepted mechanic/visual proof exists for the next pending items; asked Alex whether to continue or mark this stale landmark fix ABANDONED.
+- 2026-07-09 Alex: abandon the stale landmark ledger. Manager marked remaining mechanic, micro-patch, acceptance, and commit-decision items ABANDONED; do not heartbeat or relaunch this stale fix path.

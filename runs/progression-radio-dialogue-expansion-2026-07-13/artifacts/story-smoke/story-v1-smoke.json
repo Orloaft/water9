@@ -1,0 +1,122 @@
+{
+  "ok": false,
+  "oldDefault": {
+    "activeId": "b1-first-signal",
+    "completed": [],
+    "flags": {},
+    "heardRadio": []
+  },
+  "b1": {
+    "objectiveText": "EXPEDITION MILESTONE\nB1 Expedition: First Signal\n\nReturn to the barge with scan, sample, sonar, and depth proof for the B2 route.",
+    "ready": {
+      "activeId": "b1-first-signal",
+      "completed": [],
+      "flags": {},
+      "heardRadio": []
+    },
+    "complete": {
+      "activeId": "",
+      "completed": [
+        "b1-first-signal"
+      ],
+      "flags": {
+        "b1-first-signal:completed": true
+      },
+      "heardRadio": [
+        "story-b1-first-signal-complete"
+      ]
+    }
+  },
+  "saveLoad": {
+    "activeId": "",
+    "completed": [
+      "b1-first-signal"
+    ],
+    "flags": {
+      "b1-first-signal:completed": true
+    },
+    "heardRadio": [
+      "story-b1-first-signal-complete"
+    ]
+  },
+  "b2Selected": {
+    "story": {
+      "activeId": "b2-vent-proof",
+      "completed": [
+        "b1-first-signal"
+      ],
+      "flags": {
+        "b1-first-signal:completed": true
+      },
+      "heardRadio": [
+        "story-b1-first-signal-complete"
+      ]
+    },
+    "objective": {
+      "id": "b2-vent-proof",
+      "title": "B2 Expedition: Vent Proof",
+      "detail": "Scan and sample Brine Grass for the safe vent chemistry baseline.",
+      "complete": false,
+      "progress": 0
+    }
+  },
+  "b4": {
+    "proof": {
+      "finalProofRecovered": true,
+      "story": {
+        "activeId": "b4-reliquary-proof",
+        "completed": [
+          "b1-first-signal",
+          "b2-vent-proof",
+          "b3-forward-pocket"
+        ],
+        "flags": {
+          "b1-first-signal:completed": true,
+          "b2-vent-proof:completed": true,
+          "b3-forward-pocket:completed": true
+        },
+        "heardRadio": [
+          "story-b1-first-signal-complete",
+          "story-b2-vent-proof-complete",
+          "story-b3-forward-pocket-complete"
+        ]
+      }
+    },
+    "victory": {
+      "won": true,
+      "story": {
+        "activeId": "",
+        "completed": [
+          "b1-first-signal",
+          "b2-vent-proof",
+          "b3-forward-pocket",
+          "b4-reliquary-proof"
+        ],
+        "flags": {
+          "b1-first-signal:completed": true,
+          "b2-vent-proof:completed": true,
+          "b3-forward-pocket:completed": true,
+          "b4-reliquary-proof:completed": true
+        },
+        "heardRadio": [
+          "story-b1-first-signal-complete",
+          "story-b2-vent-proof-complete",
+          "story-b3-forward-pocket-complete",
+          "story-b4-reliquary-proof-complete"
+        ]
+      }
+    }
+  },
+  "screenshotPath": "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/story-smoke/story-v1-pinned-objective.png",
+  "errors": [
+    {
+      "type": "pageerror",
+      "text": "Cannot read properties of undefined (reading 'sys')"
+    }
+  ],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 201 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5190/\n",
+    "12:16:14 PM [vite] (client) [Unhandled error] TypeError: Cannot read properties of undefined (reading 'sys')\n > Image.setTexture node_modules/phaser/dist/phaser.js:45368:34\n > DeepdiveScene.drawFish src/scene-rendering.ts:3422:56\n    3420 |          : animatedFrame(fish.phase, frameSpeed, fishFrameCount(fish.assetKey), fish.hostile ? 3.3 : 4.2);\n    3421 |        if (fish.sprite) {\n    3422 |          if (spriteManifests[fish.assetKey]) fish.sprite.setTexture(fish.assetKey).setFrame(frame);\n         |                                                          ^\n    3423 |          else fish.sprite.setTexture(`${fish.assetKey}-${frame}`);\n    3424 |        }\n > measurePerf.count src/scene-rendering.ts:52:46\n > measurePerf src/perf.ts:187:29\n > DeepdiveScene.draw src/scene-rendering.ts:52:4\n > measurePerf.biome src/scene.ts:576:90\n > measurePerf src/perf.ts:187:29\n > Object.run src/scene.ts:576:29\n > DeepdiveScene.runBiomeGenerationStep src/scene.ts:608:11\n > TimerEvent.callback src/scene.ts:615:42\n\n"
+  ]
+}

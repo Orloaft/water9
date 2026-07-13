@@ -1,0 +1,64 @@
+{
+  "$schema": "./diver-v2-manifest.schema.json",
+  "schemaVersion": 1,
+  "image": "diver-v2.png",
+  "imageSize": [1024, 1024],
+  "cellSize": [128, 96],
+  "contentSafeBounds": [8, 8, 120, 88],
+  "padding": 2,
+  "extrusion": 1,
+  "facingAuthored": "right",
+  "mirrorForLeft": true,
+  "filter": "nearest",
+  "premultiplyAlpha": false,
+  "anchor": [56, 48],
+  "collision": {
+    "policy": "gameplay-owned-not-frame-owned",
+    "radius": 8,
+    "contactRadius": 10
+  },
+  "slots": {
+    "frontHand": [78, 47],
+    "backHand": [65, 45],
+    "backpack": [37, 39],
+    "effectOrigin": [91, 47]
+  },
+  "clips": {
+    "idle_hover": { "frames": ["idle_hover_00", "idle_hover_01", "idle_hover_02", "idle_hover_03", "idle_hover_04", "idle_hover_05"], "durationsMs": [180, 180, 180, 180, 180, 180], "loop": true },
+    "swim_accel": { "frames": ["swim_accel_00", "swim_accel_01", "swim_accel_02", "swim_accel_03"], "durationsMs": [90, 90, 90, 110], "loop": false },
+    "swim_cruise": { "frames": ["swim_cruise_00", "swim_cruise_01", "swim_cruise_02", "swim_cruise_03", "swim_cruise_04", "swim_cruise_05", "swim_cruise_06", "swim_cruise_07"], "durationsMs": [90, 90, 90, 90, 90, 90, 90, 90], "loop": true },
+    "swim_decel": { "frames": ["swim_decel_00", "swim_decel_01", "swim_decel_02", "swim_decel_03"], "durationsMs": [90, 100, 110, 130], "loop": false }
+  },
+  "frames": {
+    "idle_hover_00": { "rect": [2, 2, 128, 96], "pivot": [56, 48], "events": [] },
+    "idle_hover_01": { "rect": [132, 2, 128, 96], "pivot": [56, 48], "events": [] },
+    "idle_hover_02": { "rect": [262, 2, 128, 96], "pivot": [56, 48], "events": [] },
+    "idle_hover_03": { "rect": [392, 2, 128, 96], "pivot": [56, 48], "events": [] },
+    "idle_hover_04": { "rect": [522, 2, 128, 96], "pivot": [56, 48], "events": [] },
+    "idle_hover_05": { "rect": [652, 2, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_accel_00": { "rect": [2, 100, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_accel_01": { "rect": [132, 100, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_accel_02": { "rect": [262, 100, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_accel_03": { "rect": [392, 100, 128, 96], "pivot": [56, 48], "events": ["enterCruise"] },
+    "swim_cruise_00": { "rect": [2, 198, 128, 96], "pivot": [56, 48], "events": ["kick"] },
+    "swim_cruise_01": { "rect": [132, 198, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_cruise_02": { "rect": [262, 198, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_cruise_03": { "rect": [392, 198, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_cruise_04": { "rect": [522, 198, 128, 96], "pivot": [56, 48], "events": ["kick"] },
+    "swim_cruise_05": { "rect": [652, 198, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_cruise_06": { "rect": [782, 198, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_cruise_07": { "rect": [2, 296, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_decel_00": { "rect": [132, 296, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_decel_01": { "rect": [262, 296, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_decel_02": { "rect": [392, 296, 128, 96], "pivot": [56, 48], "events": [] },
+    "swim_decel_03": { "rect": [522, 296, 128, 96], "pivot": [56, 48], "events": ["enterHover"] }
+  },
+  "validation": {
+    "requireUniqueFrameNames": true,
+    "requireRectsInBounds": true,
+    "requirePivotConsistency": true,
+    "requireTransparentCorners": true,
+    "allowedAlpha": [0, 255],
+    "paletteFile": "diver-v2.gpl"
+  }
+}

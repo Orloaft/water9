@@ -1,0 +1,134 @@
+{
+  "ok": true,
+  "errors": [],
+  "opening": {
+    "first": {
+      "text": "Geology channel Dr. Vale Barge receiver is live. Bring up any ore, alloy, or strange mineral you cut free and my lab will buy it by weight. Continue",
+      "speaker": "Dr. Vale",
+      "role": "Geology channel",
+      "button": "Continue",
+      "clipped": false
+    },
+    "second": {
+      "text": "Diver channel You Copy that. If it shines, crumbles, or hums in a way I do not like, it goes in the cargo grid. Continue",
+      "speaker": "You",
+      "role": "Diver channel",
+      "button": "Continue",
+      "clipped": false
+    },
+    "resumed": true
+  },
+  "quests": {
+    "depth": {
+      "eventId": "progression-v1:quest:progression-smoke-depth",
+      "lineCount": 3,
+      "firstSpeaker": "Dr. Vale",
+      "once": true
+    },
+    "scan": {
+      "eventId": "progression-v1:quest:progression-smoke-scan",
+      "lineCount": 3,
+      "firstSpeaker": "Dr. Sato",
+      "once": true
+    },
+    "sample": {
+      "eventId": "progression-v1:quest:progression-smoke-sample",
+      "lineCount": 3,
+      "firstSpeaker": "Dr. Sato",
+      "once": true
+    },
+    "ore": {
+      "eventId": "progression-v1:quest:progression-smoke-ore",
+      "lineCount": 3,
+      "firstSpeaker": "Dr. Vale",
+      "once": true
+    },
+    "nest": {
+      "eventId": "progression-v1:quest:progression-smoke-nest",
+      "lineCount": 4,
+      "firstSpeaker": "Dr. Sato",
+      "once": true
+    },
+    "gulperSurvey": {
+      "eventId": "progression-v1:quest:progression-smoke-gulperSurvey",
+      "lineCount": 4,
+      "firstSpeaker": "Dr. Sato",
+      "once": true
+    },
+    "forwardOutpost": {
+      "eventId": "progression-v1:quest:progression-smoke-forwardOutpost",
+      "lineCount": 4,
+      "firstSpeaker": "Chief Alvarez",
+      "once": true
+    }
+  },
+  "arrivals": {
+    "biome2": {
+      "eventId": "progression-v1:arrival:biome-2",
+      "lineCount": 5,
+      "postRestart": true,
+      "once": true,
+      "ui": {
+        "text": "Barge engineering channel Chief Alvarez Chief Alvarez on deck. Barge anchors are holding above Brine Vent Shelf, and I have recalibrated the submersible seals for heat and salt. Continue",
+        "speaker": "Chief Alvarez",
+        "role": "Barge engineering channel",
+        "button": "Continue",
+        "clipped": false
+      }
+    },
+    "biome3": {
+      "eventId": "progression-v1:arrival:biome-3",
+      "lineCount": 5,
+      "postRestart": true,
+      "once": true,
+      "ui": {
+        "text": "Barge engineering channel Chief Alvarez Midnight Trench anchorage is live. The anchorstone will stop your drill cold, so use it for bearings and save fuel. Continue",
+        "speaker": "Chief Alvarez",
+        "role": "Barge engineering channel",
+        "button": "Continue",
+        "clipped": false
+      }
+    },
+    "biome4": {
+      "eventId": "progression-v1:arrival:biome-4",
+      "lineCount": 5,
+      "postRestart": true,
+      "once": true,
+      "ui": {
+        "text": "Geology channel Dr. Vale Ancient Ruins anchorage confirmed. Glass Obelisks and Circuit Kelp are following structures, not geology; the drowned architects built this place. Continue",
+        "speaker": "Dr. Vale",
+        "role": "Geology channel",
+        "button": "Continue",
+        "clipped": false
+      }
+    }
+  },
+  "fifo": {
+    "queuedIds": [
+      "progression-v1:quest:progression-smoke-fifo-scan",
+      "progression-v1:quest:progression-smoke-fifo-ore"
+    ],
+    "deliveredIds": [
+      "progression-v1:quest:progression-smoke-fifo-scan",
+      "progression-v1:quest:progression-smoke-fifo-ore"
+    ]
+  },
+  "saveLoad": {
+    "heardPreserved": [
+      "progression-v1:quest:progression-smoke-fifo-scan",
+      "progression-v1:quest:progression-smoke-fifo-ore"
+    ],
+    "pendingDelivered": "progression-v1:quest:progression-smoke-fifo-ore",
+    "legacyQueueDefaulted": true
+  },
+  "captures": [
+    "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-completion-depth-viewport.png",
+    "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/quest-completion-depth-canvas.png",
+    "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/biome-2-arrival-viewport.png",
+    "runs/progression-radio-dialogue-expansion-2026-07-13/artifacts/biome-2-arrival-canvas.png"
+  ],
+  "serverLogs": [
+    "\n  VITE v8.0.12  ready in 159 ms\n\n",
+    "  ➜  Local:   http://127.0.0.1:5194/\n"
+  ]
+}

@@ -18,8 +18,8 @@ Rejected current direction:
 
 Checklist:
 - [x] Forensic read-only audit — session-key `agent:codex-dev:mgr-water9-distant-landmark-damage-control-audit` — expected artifact `runs/water9-distant-landmark-damage-control-2026-07-04/forensic-report.md`
-- [ ] Restoration implementation owner — session-key TBD after audit — expected artifacts: patch/commit, normal gameplay canvas proof for B1 surface/upper, B2 mid, B3 lower, B4 lower, grayscale proof, report.
-- [ ] Manager visual acceptance — compare live `#game canvas` captures against Alex's reference target before reporting accepted.
+- [x] Restoration implementation owner — ABANDONED 2026-07-09 by Alex; stale rejected recovery path will not be continued from this ledger.
+- [x] Manager visual acceptance — ABANDONED 2026-07-09 by Alex; no accepted proof will be reported from this ledger.
 
 Iteration log:
 - 2026-07-04 14:49 manager: rejected/cancelled restore attempt `agent:codex-dev:mgr-water9-distant-landmark-damage-control-restore` before acceptance. Proof existed at `runs/water9-distant-landmark-damage-control-2026-07-04/restore-proof/restore-proof-contact-sheet.png`, but B2 still read as vertical dark pillars/spotlight instead of the July 3 horizontal sulfide shelf, B3 was nearly blank except lamp cone instead of pale shelf, and B1 still showed obvious flat shell-arch geometry. Do not resume this result or commit it as a pass.
@@ -27,6 +27,8 @@ Iteration log:
 - 2026-07-06 heartbeat: no active task found for this stale pending ledger; asked Alex whether to continue or mark it ABANDONED.
 - 2026-07-07 heartbeat: no active task found and no new acceptable artifacts for the next pending item; asked Alex whether to continue or mark this stale landmark recovery ABANDONED.
 - 2026-07-08 heartbeat: no active task found and existing proof artifacts remain explicitly rejected; asked Alex whether to continue or mark this stale landmark recovery ABANDONED.
+- 2026-07-09 heartbeat: no active task found and rejected proof artifacts still do not satisfy the next pending restoration item; asked Alex whether to continue or mark this stale landmark recovery ABANDONED.
+- 2026-07-09 Alex: abandon the stale landmark ledger. Manager marked pending restoration and visual-acceptance items ABANDONED; do not heartbeat or relaunch this stale recovery path.
 
 Acceptance rule:
 Only accept after manager inspection of normal gameplay `#game canvas` color + grayscale captures at B1 surface/upper, B2 mid, B3 lower, and B4 lower. The result must match the subtle wide background-read of Alex's reference, not the oversized foreground-cutout recovery proofs.
