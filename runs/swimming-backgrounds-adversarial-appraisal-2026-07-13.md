@@ -19,6 +19,7 @@ Safely checkpoint and push all current Water9 work, create `swimming-backgrounds
 - [x] Prepare only the durable proposal, ledger, and verified 38-file evidence manifest for explicit-path commit on `swimming-backgrounds` and normal upstream push.
 - [x] Manager visually inspected the representative color/grayscale runtime captures and verified branch, commits, push, report, manifest, and clean status. The evidence confirms B1 as the strongest current benchmark, the B2 cutoff discontinuity, deep-field readability loss, stepped lamp geometry, and B3/B4 composition crowding. REPORTED 2026-07-13.
 - [x] WRAP PREPARED `water9-swimming-backgrounds-appraisal-wrap-20260713` — routing: **routine**, `openai/gpt-5.6-luna`, thinking `medium`; rationale: bounded administrative explicit-path commit/push of the already-reviewed ledger tick only, with no product or report judgment remaining.
+- [x] WRAP DISPATCHED — run `bb0c370d-256b-4751-8554-a2ed9b316609`; child `agent:codex-dev:subagent:3c0a68b3-8423-44c3-9d58-5ca51253cba2`. Spawn proof: accepted, resolved model `openai/gpt-5.6-luna`, provider `openai`, model applied. Session-store proof: exactly one matching child, `openai/gpt-5.6-luna`, thinking `medium`.
 
 ## Expected artifacts
 
