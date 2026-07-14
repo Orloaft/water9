@@ -12,7 +12,8 @@ const outDir = resolve(root, 'visual-matrix');
 const host = '127.0.0.1';
 const requestedPort = Number(process.env.WATER9_SLICE4_PORT ?? 5186);
 const viewport = { width: 1440, height: 900 };
-const seeds = [101, 202, 303];
+const seeds = (process.env.WATER9_SLICE4_SEEDS ?? '101,202,303').split(',').map(Number).filter(Number.isFinite);
+const biomes = (process.env.WATER9_SLICE4_BIOMES ?? '1,2,3,4').split(',').map(Number).filter((value) => value >= 1 && value <= 4);
 const depths = [110, 510, 530, 1030, 1050, 1430, 1450];
 const cutoffs = new Map([[110, 120], [510, 520], [530, 520], [1030, 1040], [1050, 1040], [1430, 1440], [1450, 1440]]);
 const head = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).trim();
@@ -105,8 +106,13 @@ async function canvasMetrics(page, snapshot, probe) {
       for (let ai = 0; ai < 64; ai += 1) {
         const angle = ai / 64 * Math.PI * 2;
         const band = [];
+        const rotation = edgeRoi.rotation ?? 0;
+        const cosRotation = Math.cos(rotation);
+        const sinRotation = Math.sin(rotation);
         for (let scale = 0.4; scale <= 0.62; scale += 0.005) {
-          band.push(lumaAt(edgeRoi.centerX + Math.cos(angle) * edgeRoi.width * scale, edgeRoi.centerY + Math.sin(angle) * edgeRoi.height * scale));
+          const localX = Math.cos(angle) * edgeRoi.width * scale;
+          const localY = Math.sin(angle) * edgeRoi.height * scale;
+          band.push(lumaAt(edgeRoi.centerX + localX * cosRotation - localY * sinRotation, edgeRoi.centerY + localX * sinRotation + localY * cosRotation));
         }
         values.push(Math.max(...band) - Math.min(...band));
       }
@@ -129,7 +135,7 @@ async function canvasMetrics(page, snapshot, probe) {
     return {
       exists: true,
       backing: [canvas.width, canvas.height],
-      roiDefinition: 'HUD-excluded raw canvas; draw, gameplay-authoritative ROI query, and pixel read are atomic in one browser evaluation; diver priority ellipse, hostile-fish presentation/hit ellipse, and dangerous articulated-part hit ellipse only; 64 rays sample the 0.40–0.62 normalized ellipse boundary band at 0.005 steps; each contributes peak-to-trough luma across the composited edge; result is ray p75',
+      roiDefinition: 'Raw #game canvas only; draw, off-canvas gameplay-authoritative ROI-coordinate query, and pixel read are atomic in one browser evaluation; no ROI geometry is drawn into captured pixels; rotated diver/fish/articulated-sprite presentation ellipses are derived from live sprite dimensions and pose; 64 rays sample the 0.40–0.62 normalized ellipse boundary band at 0.005 steps; each contributes peak-to-trough luma across the composited edge; result is ray p75',
       meanLuma: Number((sum / samples).toFixed(2)),
       belowLuma24Pct: Number((below24 / samples * 100).toFixed(2)),
       diverEdgeContrast: ellipticalEdgeContrast(liveRoi.player.edgeRoi),
@@ -142,15 +148,15 @@ async function canvasMetrics(page, snapshot, probe) {
 }
 
 const recognitionOrder = [];
-for (const biome of [1, 2, 3, 4]) for (const seed of seeds) recognitionOrder.push({ biome, seed, depth: 760 });
+for (const biome of biomes) for (const seed of seeds) recognitionOrder.push({ biome, seed, depth: 760 });
 recognitionOrder.sort((a, b) => ((a.seed * 53 + a.biome * 211) % 997) - ((b.seed * 53 + b.biome * 211) % 997));
 const recognitionIds = new Map(recognitionOrder.map((entry, index) => [`${entry.biome}:${entry.seed}`, `C${String(index + 1).padStart(2, '0')}`]));
-const evidence = { schema: 'water9/swimming-backgrounds-slice4-visual-evidence@1', generatedAt: new Date().toISOString(), repo, branch, head, port, renderer: 'canvas', viewport, provenance: 'actual normal-play DeepdiveScene #game canvas at gameplay zoom with live Water9 DOM HUD for acceptance captures; raw canvas-only output used only for metrics and blind cards; no backgroundReview or substitute scene; deep threat/prompt scenario transparently uses Slice 4 playtest staging in existing unmodified water', runtimeErrors, captures: [], adversarial: [] };
+const evidence = { schema: 'water9/swimming-backgrounds-slice4-recovery-visual-evidence@1', generatedAt: new Date().toISOString(), repo, branch, head, port, renderer: 'canvas', viewport, provenance: 'actual normal-play DeepdiveScene #game canvas pixels at gameplay zoom; no DOM HUD, debug/measurement overlay, backgroundReview, or substitute scene; metrics use off-canvas ROI coordinates and atomic raw-canvas pixel sampling; deep threat/prompt scenario transparently uses Slice 4 playtest staging in existing unmodified water', managerAcceptance: 'OPEN', runtimeErrors, captures: [], adversarial: [] };
 let browser;
 try {
   await waitForServer();
   browser = await chromium.launch({ headless: true });
-  for (const biome of [1, 2, 3, 4]) for (const seed of seeds) {
+  for (const biome of biomes) for (const seed of seeds) {
     const page = await browser.newPage({ viewport, deviceScaleFactor: 1 });
     page.on('pageerror', (error) => runtimeErrors.push({ type: 'pageerror', biome, seed, text: error.message }));
     page.on('console', (message) => { if (message.type() === 'error' && !message.text().startsWith('Texture key already in use:')) runtimeErrors.push({ type: 'console', biome, seed, text: message.text() }); });
@@ -161,23 +167,25 @@ try {
     const pairedX = new Map();
     for (const targetDepth of depths) {
       const boundaryDepth = cutoffs.get(targetDepth);
-      const teleport = targetDepth === 110
+      const stagedDeepThreat = biome === 4 && targetDepth >= 1430;
+      const teleport = stagedDeepThreat
+        ? await command(page, 'stageDeepBiomePresentation', { requestedDepthMeters: targetDepth, creatureId: 'abyssal-gulper', standOff: 420 })
+        : targetDepth === 110
         ? await command(page, 'teleportToSwimLane', { x: 1, y: 0, depthMeters: targetDepth })
         : await command(page, 'teleportToCutoffOpenWater', { boundaryDepth, depthMeters: targetDepth, tileX: pairedX.get(boundaryDepth) });
       if (!teleport?.ok || teleport.terrainModified === true) throw new Error(`B${biome} seed ${seed} ${targetDepth} existing-water staging failed: ${JSON.stringify(teleport)}`);
-      if (targetDepth !== 110 && !pairedX.has(boundaryDepth)) pairedX.set(boundaryDepth, teleport.tileX);
+      if (!stagedDeepThreat && targetDepth !== 110 && !pairedX.has(boundaryDepth)) pairedX.set(boundaryDepth, teleport.tileX);
       await command(page, 'centerCameraOnPlayer'); await command(page, 'clearProofOverlays'); await command(page, 'refill'); await page.waitForTimeout(160);
+      await command(page, 'clearProofOverlays');
       const snapshot = await page.evaluate(() => window.__AQUA_PLAYTEST__.snapshot());
       const probe = await immediateCommand(page, 'interactionReadabilityProbe');
       const metrics = await canvasMetrics(page, snapshot, probe);
       const id = `b${biome}-s${seed}-${targetDepth}m`;
       const colorPath = resolve(outDir, 'normal-play', `${id}-color.png`);
       const grayPath = resolve(outDir, 'normal-play', `${id}-grayscale.png`);
-      await page.screenshot({ path: colorPath, fullPage: false });
-      await page.evaluate(() => { document.documentElement.style.filter = 'grayscale(1)'; });
-      await page.screenshot({ path: grayPath, fullPage: false });
-      await page.evaluate(() => { document.documentElement.style.filter = ''; });
-      evidence.captures.push({ id, biome, seed, targetDepth, actualDepth: snapshot.state.depth, depthBand: snapshot.environmentVisualProfile.activeProfile.depthBand, teleport, snapshot: { camera: snapshot.camera, player: snapshot.player, anchors: snapshot.environmentVisualProfile.renderedBitmapAnchors }, probe, metrics, colorPath, grayscalePath: grayPath, acceptedEvidence: true });
+      await writeFile(colorPath, await rawCanvasPng(page, false));
+      await writeFile(grayPath, await rawCanvasPng(page, true));
+      evidence.captures.push({ id, biome, seed, targetDepth, actualDepth: snapshot.state.depth, depthBand: snapshot.environmentVisualProfile.activeProfile.depthBand, teleport, snapshot: { camera: snapshot.camera, player: snapshot.player, anchors: snapshot.environmentVisualProfile.renderedBitmapAnchors }, probe, metrics, colorPath, grayscalePath: grayPath, workerInspected: false, managerAcceptance: 'OPEN' });
     }
     const lane = await command(page, 'teleportToSwimLane', { x: 1, y: 0, depthMeters: 760 });
     if (!lane?.ok || lane.terrainModified !== false) throw new Error(`recognition lane failed B${biome} seed ${seed}`);
@@ -197,9 +205,9 @@ try {
       const id = `b3-s${seed}-1050m-threat-prompt`;
       const colorPath = resolve(outDir, 'adversarial', `${id}-color.png`);
       const grayPath = resolve(outDir, 'adversarial', `${id}-grayscale.png`);
-      await page.screenshot({ path: colorPath, fullPage: false });
-      await page.evaluate(() => { document.documentElement.style.filter = 'grayscale(1)'; }); await page.screenshot({ path: grayPath, fullPage: false }); await page.evaluate(() => { document.documentElement.style.filter = ''; });
-      evidence.adversarial.push({ id, biome, seed, requestedDepth: 1050, actualDepth: snapshot.state.depth, staging: { ...staging, threatStage }, prompt, probe, metrics, colorPath, grayscalePath: grayPath, acceptedEvidence: metrics.diverEdgeContrast >= 25 && metrics.minimumThreatEdgeContrast >= 25 });
+      await writeFile(colorPath, await rawCanvasPng(page, false));
+      await writeFile(grayPath, await rawCanvasPng(page, true));
+      evidence.adversarial.push({ id, biome, seed, requestedDepth: 1050, actualDepth: snapshot.state.depth, staging: { ...staging, threatStage }, prompt, probe, metrics, colorPath, grayscalePath: grayPath, contrastGatePass: metrics.diverEdgeContrast >= 25 && metrics.minimumThreatEdgeContrast >= 25, workerInspected: false, managerAcceptance: 'OPEN' });
     }
     if (biome === 4) {
       const staging = await command(page, 'stageDeepBiomePresentation', { requestedDepthMeters: 1650, creatureId: 'abyssal-gulper', standOff: 235 });
@@ -212,14 +220,14 @@ try {
       const id = `b4-s${seed}-1650m-threat-prompt`;
       const colorPath = resolve(outDir, 'adversarial', `${id}-color.png`);
       const grayPath = resolve(outDir, 'adversarial', `${id}-grayscale.png`);
-      await page.screenshot({ path: colorPath, fullPage: false });
-      await page.evaluate(() => { document.documentElement.style.filter = 'grayscale(1)'; }); await page.screenshot({ path: grayPath, fullPage: false }); await page.evaluate(() => { document.documentElement.style.filter = ''; });
-      evidence.adversarial.push({ id, biome, seed, requestedDepth: 1650, actualDepth: snapshot.state.depth, staging, prompt, probe, metrics, colorPath, grayscalePath: grayPath, acceptedEvidence: metrics.diverEdgeContrast >= 25 && metrics.minimumThreatEdgeContrast >= 25 });
+      await writeFile(colorPath, await rawCanvasPng(page, false));
+      await writeFile(grayPath, await rawCanvasPng(page, true));
+      evidence.adversarial.push({ id, biome, seed, requestedDepth: 1650, actualDepth: snapshot.state.depth, staging, prompt, probe, metrics, colorPath, grayscalePath: grayPath, contrastGatePass: metrics.diverEdgeContrast >= 25 && metrics.minimumThreatEdgeContrast >= 25, workerInspected: false, managerAcceptance: 'OPEN' });
     }
     await page.close();
   }
   const cutoffPairs = [];
-  for (const biome of [1, 2, 3, 4]) for (const seed of seeds) for (const [before, after] of [[510, 530], [1030, 1050], [1430, 1450]]) {
+  for (const biome of biomes) for (const seed of seeds) for (const [before, after] of [[510, 530], [1030, 1050], [1430, 1450]]) {
     const a = evidence.captures.find((capture) => capture.biome === biome && capture.seed === seed && capture.targetDepth === before);
     const b = evidence.captures.find((capture) => capture.biome === biome && capture.seed === seed && capture.targetDepth === after);
     cutoffPairs.push({ biome, seed, before, after, meanLumaDelta: Number(Math.abs(a.metrics.meanLuma - b.metrics.meanLuma).toFixed(2)), belowLuma24DeltaPctPoints: Number(Math.abs(a.metrics.belowLuma24Pct - b.metrics.belowLuma24Pct).toFixed(2)), identityStable: JSON.stringify(a.snapshot.anchors.map((x) => x.stableLocationKey)) === JSON.stringify(b.snapshot.anchors.map((x) => x.stableLocationKey)) });
@@ -257,7 +265,7 @@ try {
   async function walk(directory) { for (const entry of await readdir(directory, { withFileTypes: true })) { const path = resolve(directory, entry.name); if (entry.isDirectory()) await walk(path); else files.push(path); } }
   await walk(outDir);
   const artifacts = [];
-  for (const path of files.sort()) artifacts.push({ path, relativePath: relative(root, path), bytes: (await stat(path)).size, sha256: createHash('sha256').update(await readFile(path)).digest('hex'), role: path.includes('/recognition/') ? 'hud-free-label-free-recognition-card' : path.endsWith('visual-evidence.json') ? 'visual-measurements' : path.includes('/adversarial/') ? 'normal-play-adversarial-threat-prompt-proof' : path.includes('/normal-play/') ? 'normal-play-traversal-proof' : 'recognition-deck-metadata', acceptedEvidence: true });
+  for (const path of files.sort()) artifacts.push({ path, relativePath: relative(root, path), bytes: (await stat(path)).size, sha256: createHash('sha256').update(await readFile(path)).digest('hex'), role: path.includes('/recognition/') ? 'hud-free-label-free-recognition-card' : path.endsWith('visual-evidence.json') ? 'visual-measurements' : path.includes('/adversarial/') ? 'normal-play-adversarial-threat-prompt-proof' : path.includes('/normal-play/') ? 'normal-play-traversal-proof' : 'recognition-deck-metadata', status: 'WORKER_EVIDENCE_MANAGER_ACCEPTANCE_OPEN', managerAccepted: false });
   await writeFile(resolve(outDir, 'capture-manifest.json'), `${JSON.stringify({ schema: 'water9/swimming-backgrounds-slice4-capture-manifest@1', generatedAt: new Date().toISOString(), artifactRoot: root, captureProvenance: evidence.provenance, artifacts }, null, 2)}\n`);
 } finally {
   await browser?.close().catch(() => {});

@@ -22,16 +22,19 @@ export const LOCAL_SEPARATION_POLICY = Object.freeze({
   falloffSteps: 8,
   threatRange: 300,
   actionableRange: 190,
-  threatAlpha: 0.48,
-  actionableAlpha: 0.38,
+  diverAlpha: 0.56,
+  threatAlpha: 0.72,
+  actionableAlpha: 0.55,
   promptBacking: 0x020509,
   promptText: 0xfff7df,
   promptContrastFloor: 4.5,
   corridorRadius: 54,
   focalPointFloor: 0.08,
-  priorityEdgeColor: 0xd8f0ec,
-  diverEdgeAlpha: 0.84,
-  threatEdgeAlpha: 0.82,
+  largeThreatCameraRange: 1000,
+  largeThreatCameraReleaseRange: 1300,
+  largeThreatCameraZoom: 1,
+  largeThreatViewportOccupancyMax: 0.42,
+  largeThreatRouteCorridorMin: 0.4,
 });
 
 export function smoothUnit(value: number) {
@@ -40,7 +43,7 @@ export function smoothUnit(value: number) {
 }
 
 export function targetSeparationAlpha(kind: ReadabilityTargetKind, distance: number, range: number) {
-  if (kind === 'diver') return 0.28;
+  if (kind === 'diver') return LOCAL_SEPARATION_POLICY.diverAlpha;
   const peak = kind === 'threat'
     ? LOCAL_SEPARATION_POLICY.threatAlpha
     : kind === 'prompt'
@@ -89,20 +92,11 @@ export function contrastRatio(foreground: number, background: number) {
 }
 
 export function largeThreatPartAlpha(distance: number, role: 'danger' | 'root' | 'body' | 'tail') {
-  const close = 1 - smoothUnit((distance - 150) / 180);
   const floor = role === 'danger' ? 1 : role === 'root' ? 0.88 : role === 'body' ? 0.72 : 0.56;
-  return 1 - close * (1 - floor);
+  return floor;
 }
 
 export function largeThreatPartScale(distance: number, role: 'danger' | 'root' | 'body' | 'tail') {
   if (role === 'danger') return 1;
-  const close = 1 - smoothUnit((distance - 105) / 210);
-  const floor = role === 'root' ? 0.74 : role === 'body' ? 0.64 : 0.58;
-  return 1 - close * (1 - floor);
-}
-
-export function priorityEdgeAlpha(kind: 'diver' | 'threat', distance = 0, range: number = LOCAL_SEPARATION_POLICY.actionableRange) {
-  const peak = kind === 'diver' ? LOCAL_SEPARATION_POLICY.diverEdgeAlpha : LOCAL_SEPARATION_POLICY.threatEdgeAlpha;
-  if (kind === 'diver') return peak;
-  return peak * (0.82 + 0.18 * (1 - smoothUnit(distance / Math.max(1, range))));
+  return role === 'root' ? 0.74 : role === 'body' ? 0.64 : 0.58;
 }

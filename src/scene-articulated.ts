@@ -4,7 +4,7 @@ import { BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,PLAYER_CONTACT_RADIUS,TILE,WORLD_H,W
 import { state } from './state';
 import { articulatedBehaviorFor,articulatedCreatureDef,articulatedCreatureDefs,articulatedPrototypeRuntimeEnabled,articulatedSpawnBudgetForBiome,articulatedSpawnPriority,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
 import { darknessAtDepth,isLargeArticulatedThreat, largeThreatDynamiteDamageMultiplier, lightRadius, rarityColor, scaledDepthPx } from './helpers';
-import { LOCAL_SEPARATION_POLICY,largeThreatPartAlpha,largeThreatPartScale,priorityEdgeAlpha } from './interaction-readability';
+import { largeThreatPartAlpha,largeThreatPartScale } from './interaction-readability';
 import { renderHud } from './hud';
 import type { DeepdiveScene } from './scene';
 import { terrainMaskContactForCapsule } from './terrain-mask';
@@ -1939,12 +1939,6 @@ export function articulatedMobilityScale(this: DeepdiveScene, creature: Articula
 }
 
 export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
-  const nearestThreatDistance = Math.min(
-    ...this.fish.filter((candidate) => candidate.hostile && !candidate.dead && this.fishVisibilityAlpha(candidate, camera) > 0.18)
-      .map((candidate) => Phaser.Math.Distance.Between(this.player.x, this.player.y, candidate.x, candidate.y)),
-    ...this.articulatedCreatures.filter((candidate) => candidate.hostile && !candidate.dead && this.articulatedVisibilityAlpha(candidate, camera) > 0.18)
-      .map((candidate) => Phaser.Math.Distance.Between(this.player.x, this.player.y, candidate.x, candidate.y)),
-  );
   for (const creature of this.articulatedCreatures) {
     if (creature.dead) {
       creature.parts.forEach((part) => part.sprite?.setVisible(false));
@@ -1962,6 +1956,13 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
     const rippleTurning = usesLargeThreatRippleTurning(creature);
     const largeThreat = isLargeArticulatedThreat(creature);
     const presentationDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y);
+    const presentLargeThreatPart = (part: ArticulatedPartState) => (
+      !largeThreat
+      || presentationDistance <= 330
+      || this.isDangerousArticulatedPart(creature, part)
+      || partManifest(creature, part).motion.kind === 'root'
+      || part.id === 'body-1'
+    );
     const spineManifests = rippleTurning
       ? creature.manifest.parts
         .filter((manifest) => manifest.motion.kind === 'body' || manifest.motion.kind === 'tail')
@@ -1981,7 +1982,7 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       const manifest = overlayManifestById(creature, overlay);
       const parent = manifest ? creature.parts.find((part) => part.id === manifest.parentId) : undefined;
       const child = manifest ? creature.parts.find((part) => part.id === manifest.childId) : undefined;
-      if (!manifest || !parent || !child || parent.detached || child.detached || overlay.bridgeWidth <= 0) continue;
+      if (!manifest || !parent || !child || parent.detached || child.detached || overlay.bridgeWidth <= 0 || !presentLargeThreatPart(parent) || !presentLargeThreatPart(child)) continue;
       const bridgeAlpha = alpha * (creature.stunned > 0
         ? socketStyleValue(creature, manifest, 'bridgeStunnedAlpha', 0.18)
         : socketStyleValue(creature, manifest, 'bridgeAlpha', 0.32));
@@ -1998,21 +1999,11 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       this.articulatedBridges.lineStyle(Math.max(2, overlay.bridgeWidth * 0.38), bridgeCoreColor, coreAlpha);
       this.articulatedBridges.lineBetween(overlay.parentAnchorX, overlay.parentAnchorY, overlay.childAnchorX, overlay.childAnchorY);
     }
-    if (state.depth >= 900 && creature.hostile && presentationDistance <= 300 && presentationDistance <= nearestThreatDistance + 0.01) {
-      const actionablePart = this.articulatedBitePart(creature)
-        ?? creature.parts.find((part) => this.isDangerousArticulatedPart(creature, part) && !part.detached && part.hp > 0);
-      if (actionablePart) {
-        const manifest = partManifest(creature, actionablePart);
-        this.readabilityEdges.lineStyle(1.4, LOCAL_SEPARATION_POLICY.priorityEdgeColor, priorityEdgeAlpha('threat', presentationDistance, 300));
-        this.readabilityEdges.strokeEllipse(
-          actionablePart.x,
-          actionablePart.y,
-          Math.max(12, manifest.hitRadius * PART_WORLD_SCALE * 2),
-          Math.max(8, manifest.hitRadius * PART_WORLD_SCALE * 1.45),
-        );
-      }
-    }
     for (const part of creature.parts) {
+      if (!presentLargeThreatPart(part)) {
+        part.sprite?.setVisible(false);
+        continue;
+      }
       const manifest = partManifest(creature, part);
       const damageAlpha = part.detached ? 0.62 : part.hp <= 0 ? (manifest.damagedTextureKey ? 0.94 : 0.26) : 1;
       const dynamicDepth =
@@ -2060,7 +2051,7 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
       const parent = manifest ? creature.parts.find((part) => part.id === manifest.parentId) : undefined;
       const child = manifest ? creature.parts.find((part) => part.id === manifest.childId) : undefined;
       const severed = Boolean(manifest?.severedTextureKey && parent && child?.detached && !parent.detached);
-      if (!manifest || !parent || !child || parent.detached || (child.detached && !severed)) {
+      if (!manifest || !parent || !child || parent.detached || (child.detached && !severed) || !presentLargeThreatPart(parent) || !presentLargeThreatPart(child)) {
         overlay.sprite?.setVisible(false);
         continue;
       }
@@ -2130,11 +2121,19 @@ export function drawArticulatedCreatures(this: DeepdiveScene, camera: Phaser.Cam
 export function articulatedVisibilityAlpha(this: DeepdiveScene, creature: ArticulatedCreature, camera: Phaser.Cameras.Scene2D.Camera) {
   const margin = 180;
   const view = camera.worldView;
-  const onCamera =
-    creature.x > view.x - margin &&
-    creature.x < view.right + margin &&
-    creature.y > view.y - margin &&
-    creature.y < view.bottom + margin;
+  const onCamera = (
+    creature.x > view.x - margin
+    && creature.x < view.right + margin
+    && creature.y > view.y - margin
+    && creature.y < view.bottom + margin
+  ) || (isLargeArticulatedThreat(creature) && creature.parts.some((part) => (
+      !part.detached
+      && part.hp > 0
+      && part.x > view.x - margin
+      && part.x < view.right + margin
+      && part.y > view.y - margin
+      && part.y < view.bottom + margin
+    )));
   if (!onCamera) return creature.scanned ? 0.28 : 0;
   if (state.depth < 180) return creature.scanned ? 1 : 0.94;
   const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y);

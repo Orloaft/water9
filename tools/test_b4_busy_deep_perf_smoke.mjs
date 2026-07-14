@@ -16,10 +16,11 @@ const renderer = process.env.WATER9_B4_RENDERER === 'webgl' ? 'webgl' : 'canvas'
 const reportPath = process.env.WATER9_B4_PERF_REPORT ?? `${outDir}/b4-busy-deep-${renderer}-perf-smoke.json`;
 const host = '127.0.0.1';
 const requestedPort = Number(process.env.WATER9_B4_PERF_PORT ?? 5180);
-const probeDurationMs = Number(process.env.WATER9_B4_PERF_DURATION_MS ?? 3600);
-const warmupDurationMs = Number(process.env.WATER9_B4_PERF_WARMUP_MS ?? 650);
-const slice1Gate = process.env.WATER9_B4_SLICE1_GATE === '1';
+const probeDurationMs = Number(process.env.WATER9_B4_PERF_DURATION_MS ?? 25000);
+const warmupDurationMs = Number(process.env.WATER9_B4_PERF_WARMUP_MS ?? 3000);
+const slice1Gate = process.env.WATER9_B4_SLICE1_GATE !== '0';
 const tracePath = process.env.WATER9_B4_TRACE_PATH ?? '';
+const standOff = Number(process.env.WATER9_B4_STAND_OFF ?? 570);
 
 await mkdir(outDir, { recursive: true });
 
@@ -43,7 +44,8 @@ async function choosePort() {
 
 const port = process.env.PLAYTEST_URL ? 0 : await choosePort();
 const rendererQuery = renderer === 'webgl' ? '&renderer=webgl' : '';
-const baseUrl = process.env.PLAYTEST_URL ?? `http://${host}:${port}/?playtest=1&biome=4&perf=1&perfHud=0${rendererQuery}`;
+const seed = Number(process.env.WATER9_B4_PERF_SEED ?? 101);
+const baseUrl = process.env.PLAYTEST_URL ?? `http://${host}:${port}/?playtest=1&biome=4&seed=${seed}&perf=1&perfHud=0${rendererQuery}`;
 const server = process.env.PLAYTEST_URL ? null : spawn(resolve('node_modules/.bin/vite'), ['--host', host, '--port', String(port), '--strictPort'], {
   cwd: process.cwd(),
   stdio: ['ignore', 'pipe', 'pipe'],
@@ -75,6 +77,46 @@ async function command(page, name, value) {
 
 async function snapshot(page) {
   return page.evaluate(() => window.__AQUA_PLAYTEST__?.snapshot?.() ?? null);
+}
+
+async function gameplayStateSample(page, elapsedMs) {
+  return page.evaluate((elapsed) => {
+    const snapshot = window.__AQUA_PLAYTEST__?.snapshot?.() ?? null;
+    return {
+      elapsedMs: elapsed,
+      biome: snapshot?.state?.biome ?? null,
+      depth: snapshot?.state?.depth ?? null,
+      started: snapshot?.state?.started ?? false,
+      lost: snapshot?.state?.lost ?? true,
+      hull: snapshot?.state?.hull ?? 0,
+      oxygen: snapshot?.state?.oxygen ?? 0,
+      paused: snapshot?.ui?.paused ?? true,
+      radioOpen: snapshot?.ui?.radioOpen ?? true,
+      logbookOpen: snapshot?.ui?.logbookOpen ?? true,
+      cargoOpen: snapshot?.ui?.cargoOpen ?? true,
+      sonarMapOpen: snapshot?.ui?.sonarMapOpen ?? true,
+      biomeLoading: snapshot?.ui?.biomeLoading?.active ?? true,
+      gameOverOverlay: Boolean(document.querySelector('#game-over')),
+      victoryOverlay: Boolean(document.querySelector('#victory-panel')),
+    };
+  }, elapsedMs);
+}
+
+function gameplayActive(sample) {
+  return sample?.biome === 4
+    && sample.depth >= 1450
+    && sample.started === true
+    && sample.lost === false
+    && sample.hull > 0
+    && sample.oxygen > 0
+    && sample.paused === false
+    && sample.radioOpen === false
+    && sample.logbookOpen === false
+    && sample.cargoOpen === false
+    && sample.sonarMapOpen === false
+    && sample.biomeLoading === false
+    && sample.gameOverOverlay === false
+    && sample.victoryOverlay === false;
 }
 
 async function waitForWorldReady(page) {
@@ -191,6 +233,16 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
 const cdp = tracePath ? await page.context().newCDPSession(page) : null;
 await installBrowserPerfObservers(page);
+await page.addInitScript((deterministicSeed) => {
+  let value = deterministicSeed >>> 0;
+  Math.random = () => {
+    value = (value + 0x6d2b79f5) >>> 0;
+    let mixed = value;
+    mixed = Math.imul(mixed ^ (mixed >>> 15), mixed | 1);
+    mixed ^= mixed + Math.imul(mixed ^ (mixed >>> 7), mixed | 61);
+    return ((mixed ^ (mixed >>> 14)) >>> 0) / 4294967296;
+  };
+}, seed);
 await page.addInitScript(() => {
   window.__water9RafDeltas = [];
   window.__water9RafLast = 0;
@@ -222,13 +274,22 @@ try {
   await command(page, 'dive');
   await command(page, 'maxUpgrades');
   await command(page, 'refill');
-  const teleport = await command(page, 'stageDeepBiomePresentation', { requestedDepthMeters: 1650, creatureId: 'abyssal-gulper', standOff: 235 });
+  const teleport = await command(page, 'stageDeepBiomePresentation', { requestedDepthMeters: 1650, creatureId: 'abyssal-gulper', standOff, minimumOtherHostileClearance: 600, minimumLocalWaterRatio: 0.9, preferredPlayerSide: 'right' });
   if (!teleport?.ok || teleport?.actual?.biome !== 4 || teleport?.actual?.depthMeters < 1450 || teleport?.terrainModified !== false) {
     errors.push({ type: 'assertion', text: `deep B4 staging failed: ${JSON.stringify(teleport)}` });
   }
   await command(page, 'refill');
   await command(page, 'clearProofOverlays');
   await sleep(warmupDurationMs);
+  const warmupState = await gameplayStateSample(page, -warmupDurationMs);
+  if (!gameplayActive(warmupState)) errors.push({ type: 'assertion', text: `B4 warmup did not settle in active normal play: ${JSON.stringify(warmupState)}` });
+  const presentationProbe = await command(page, 'interactionReadabilityProbe');
+  const gulperPresentation = presentationProbe?.largeThreats?.find((threat) => threat.id === 'abyssal-gulper') ?? null;
+  if (!gulperPresentation) errors.push({ type: 'assertion', text: 'B4 presentation probe did not include the live gulper' });
+  if ((gulperPresentation?.viewportOccupancy ?? 1) > 0.42) errors.push({ type: 'assertion', text: `B4 gulper occupancy ${gulperPresentation?.viewportOccupancy} exceeds 0.42` });
+  if ((gulperPresentation?.routeClearWidthRatio ?? 0) < 0.4) errors.push({ type: 'assertion', text: `B4 route corridor ${gulperPresentation?.routeClearWidthRatio} is below 0.4` });
+  if (!gulperPresentation?.sideStaged) errors.push({ type: 'assertion', text: 'B4 gulper was not side-staged' });
+  if (gulperPresentation?.authoritative?.dangerousParts?.some((part) => !part.hitCenterWithinRenderBounds)) errors.push({ type: 'assertion', text: 'B4 dangerous hit center escaped rendered anatomy' });
   const startShot = await captureCanvasPair(page, `b4-busy-deep-${renderer}-start-canvas`);
   await command(page, 'resetPerfFrameBuffer');
   if (cdp) {
@@ -240,20 +301,16 @@ try {
   }
   await startCadenceProbe(page, `b4-busy-deep-${renderer}`);
   await sleep(80);
-  const movementPhases = [
-    ['ArrowRight', 'ArrowDown'],
-    ['ArrowLeft', 'ArrowUp'],
-  ];
-  const phaseDurationMs = 1250;
-  const movementStartedAt = Date.now();
-  let movementPhase = 0;
-  while (Date.now() - movementStartedAt < probeDurationMs) {
-    const keys = movementPhases[movementPhase % movementPhases.length];
-    for (const key of keys) await page.keyboard.down(key);
-    await sleep(Math.min(phaseDurationMs, probeDurationMs - (Date.now() - movementStartedAt)));
-    for (const key of keys) await page.keyboard.up(key);
-    movementPhase += 1;
+  const gameplaySamples = [];
+  const measuredStartedAt = Date.now();
+  while (Date.now() - measuredStartedAt < probeDurationMs) {
+    const elapsedMs = Date.now() - measuredStartedAt;
+    gameplaySamples.push(await gameplayStateSample(page, elapsedMs));
+    await sleep(Math.min(500, probeDurationMs - elapsedMs));
   }
+  gameplaySamples.push(await gameplayStateSample(page, Date.now() - measuredStartedAt));
+  const inactiveSamples = gameplaySamples.filter((sample) => !gameplayActive(sample));
+  if (inactiveSamples.length) errors.push({ type: 'assertion', text: `${inactiveSamples.length}/${gameplaySamples.length} measured B4 samples left active overlay-free normal play` });
   await sleep(360);
   const cadenceProbe = await finishCadenceProbe(page);
   let trace = null;
@@ -320,17 +377,27 @@ try {
     teleport,
     scenario: {
       name: 'visually-busy-high-entity-deep-area',
+      seed,
       biome: 4,
       depthCommand: 'stageDeepBiomePresentation({ requestedDepthMeters: 1650 })',
       articulatedCommand: 'abyssal-gulper existing encounter',
-      heldKeys: ['alternating ArrowRight+ArrowDown', 'ArrowLeft+ArrowUp'],
-      movementPhaseDurationMs: phaseDurationMs,
+      standOff,
+      input: 'settled normal-play idle; no pause/menu/test overlay and no measured-interval refill',
       viewport: { width: 1280, height: 800 },
       sonarExpectedOpen: false,
       warmupDurationMs,
       probeDurationMs,
       slice1Gate,
     },
+    gameplayContinuity: {
+      requested: { biome: 4, depthMeters: 1650 },
+      actualAtWarmupEnd: warmupState,
+      sampleIntervalMs: 500,
+      samples: gameplaySamples,
+      inactiveSampleCount: gameplaySamples.filter((sample) => !gameplayActive(sample)).length,
+      stayedGameplayActive: gameplaySamples.length > 0 && gameplaySamples.every(gameplayActive),
+    },
+    presentation: gulperPresentation,
     classification: classify(perf, independentRaf),
     cadenceProbe: cadenceProbe ? { label: cadenceProbe.label, durationMs: cadenceProbe.durationMs } : null,
     trace,

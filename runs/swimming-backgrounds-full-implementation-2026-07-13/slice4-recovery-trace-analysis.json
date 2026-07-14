@@ -1,0 +1,67 @@
+{
+  "schema": "water9/swimming-backgrounds-slice4-recovery-trace-analysis@1",
+  "capturedAt": "2026-07-13",
+  "trace": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice4-recovery/performance-authoritative/b4-canvas-25s-trace.json",
+  "tracedReport": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice4-recovery/performance-authoritative/b4-canvas-traced-25s.json",
+  "finalStrictReport": "/home/orlovboros/artifacts/managers/water9/swimming-backgrounds-full-implementation-2026-07-13/slice4-recovery/performance-authoritative/b4-canvas-strict-alive-25s.json",
+  "tracedTrial": {
+    "presentationZoom": 1.35,
+    "requestedBiome": 4,
+    "requestedDepthMeters": 1650,
+    "actualBiome": 4,
+    "actualDepthMeters": 1710,
+    "terrainModified": false,
+    "worldView": { "width": 948, "height": 593 },
+    "visibleArticulatedParts": 19,
+    "independentRaf": {
+      "samples": 536,
+      "p95Ms": 66.7,
+      "p99Ms": 99.9,
+      "over33_34Pct": 75.56,
+      "maxMs": 183.4
+    },
+    "outerFrameP95Ms": 14.7,
+    "backgroundCompositeP95Ms": 1.7,
+    "postWarmupLongTasksOver50Ms": 36,
+    "maxLongTaskMs": 179
+  },
+  "traceDirectedDecision": {
+    "finding": "The 1.35x trial exposed 19 articulated parts and materially increased articulated/render work. Camera crop alone could not solve the old screen-spanning chain without expanding the visible workload.",
+    "change": "Use a three-part distant giant-threat presentation LOD (authoritative jaw, head, leading body) that restores the full chain before contact range. This made a 1.0x side-composition camera viable while retaining unchanged collision shapes, bite anchor, reach, aggro, turning, viewport resolution, duration, and strict thresholds.",
+    "notClaimed": "The traced trial and final untraced run have different instrumentation overhead, so their wall-clock values are not presented as a controlled A/B benchmark. Product telemetry and presentation probes establish the workload and occupancy change."
+  },
+  "finalStrict": {
+    "presentationZoom": 1,
+    "requestedBiome": 4,
+    "requestedDepthMeters": 1650,
+    "actualBiome": 4,
+    "actualDepthMeters": 1890,
+    "terrainModified": false,
+    "gameplayContinuitySamples": 49,
+    "measuredIntervalStayedGameplayActive": true,
+    "finalHull": 360,
+    "worldView": { "width": 1280, "height": 800 },
+    "maximumVisibleArticulatedParts": 10,
+    "presentation": {
+      "visibleParts": 3,
+      "viewportOccupancy": 0.017,
+      "routeClearWidthRatio": 0.447,
+      "sideStaged": true,
+      "authoritativeDangerousHitCentersWithinRenderBounds": true,
+      "state": "patrol",
+      "aggro": 0
+    },
+    "independentRaf": {
+      "samples": 1069,
+      "p95Ms": 33.4,
+      "p99Ms": 50,
+      "over33_34Pct": 15.25,
+      "maxMs": 83.4
+    },
+    "outerFrameP95Ms": 7.7,
+    "backgroundCompositeP95Ms": 0.9,
+    "settledLongTaskObservationsOver50Ms": 4,
+    "maxLongTaskMs": 81,
+    "gateStatus": "FAIL"
+  }
+}

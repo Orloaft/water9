@@ -1,6 +1,6 @@
 {
   "schema": "water9/slice4-interaction-readability-smoke@1",
-  "generatedAt": "2026-07-13T22:57:14.276Z",
+  "generatedAt": "2026-07-14T01:49:26.787Z",
   "ok": true,
   "port": 5187,
   "coverage": {
@@ -27,16 +27,19 @@
     "falloffSteps": 8,
     "threatRange": 300,
     "actionableRange": 190,
-    "threatAlpha": 0.48,
-    "actionableAlpha": 0.38,
+    "diverAlpha": 0.56,
+    "threatAlpha": 0.72,
+    "actionableAlpha": 0.55,
     "promptBacking": 132361,
     "promptText": 16775135,
     "promptContrastFloor": 4.5,
     "corridorRadius": 54,
     "focalPointFloor": 0.08,
-    "priorityEdgeColor": 14217452,
-    "diverEdgeAlpha": 0.84,
-    "threatEdgeAlpha": 0.82
+    "largeThreatCameraRange": 1000,
+    "largeThreatCameraReleaseRange": 1300,
+    "largeThreatCameraZoom": 1,
+    "largeThreatViewportOccupancyMax": 0.42,
+    "largeThreatRouteCorridorMin": 0.4
   },
   "prompt": {
     "minimumContrastRatio": 6.3744,
@@ -90,31 +93,31 @@
       "body": 0.72,
       "tail": 0.56,
       "dangerScale": 1,
-      "rootScale": 0.7706997084548105,
-      "bodyScale": 0.6825072886297376,
-      "tailScale": 0.6295918367346938
+      "rootScale": 0.74,
+      "bodyScale": 0.64,
+      "tailScale": 0.58
     },
     {
       "distance": 235,
       "danger": 1,
-      "root": 0.9350051440329218,
-      "body": 0.8483453360768175,
-      "tail": 0.7616855281207133,
+      "root": 0.88,
+      "body": 0.72,
+      "tail": 0.56,
       "dangerScale": 1,
-      "rootScale": 0.9155512363675629,
-      "bodyScale": 0.8830709426627794,
-      "tailScale": 0.8635827664399093
+      "rootScale": 0.74,
+      "bodyScale": 0.64,
+      "tailScale": 0.58
     },
     {
       "distance": 330,
       "danger": 1,
-      "root": 1,
-      "body": 1,
-      "tail": 1,
+      "root": 0.88,
+      "body": 0.72,
+      "tail": 0.56,
       "dangerScale": 1,
-      "rootScale": 1,
-      "bodyScale": 1,
-      "tailScale": 1
+      "rootScale": 0.74,
+      "bodyScale": 0.64,
+      "tailScale": 0.58
     }
   ],
   "staging": {
@@ -127,13 +130,14 @@
     "actual": {
       "biome": 4,
       "depthMeters": 1650,
-      "x": 1025,
+      "x": 1532,
       "y": 6708
     },
     "focus": {
-      "x": 1260,
+      "x": 1812,
       "y": 6708,
-      "distance": 235
+      "distance": 280,
+      "side": "right-of-player"
     },
     "enclosure": {
       "classification": "open-deep-water",
@@ -148,10 +152,13 @@
         "y": 6036
       },
       "to": {
-        "x": 1260,
+        "x": 1812,
         "y": 6708
       }
-    }
+    },
+    "nearestOtherHostileDistance": 364.33,
+    "minimumOtherHostileClearance": 180,
+    "minimumLocalWaterRatio": 0.58
   },
   "runtimeProbe": {
     "ok": true,
@@ -163,44 +170,193 @@
     },
     "player": {
       "bounds": {
-        "x": 585.34,
-        "y": 326.587,
-        "width": 109.52,
-        "height": 132.752
+        "x": 625.2,
+        "y": 380.267,
+        "width": 29.6,
+        "height": 35.879
       },
       "edgeRoi": {
-        "centerX": 640.1,
-        "centerY": 399.6,
-        "width": 77.256,
-        "height": 47.952
+        "centerX": 640,
+        "centerY": 400,
+        "width": 26.048,
+        "height": 29.421,
+        "rotation": 0
       },
-      "x": 640.1,
-      "y": 399.6
+      "x": 640,
+      "y": 400
     },
     "threats": [
       {
         "kind": "articulated-part",
         "id": "abyssal-gulper:jaw",
         "actionable": true,
-        "distance": 161.235,
+        "distance": 196.638,
         "bounds": {
-          "x": 807.316,
-          "y": -132.826,
-          "width": 646.123,
-          "height": 511.21
+          "x": 722.509,
+          "y": 263.256,
+          "width": 174.121,
+          "height": 136.932
         },
         "edgeRoi": {
-          "centerX": 1219.093,
-          "centerY": 255.849,
-          "width": 117.216,
-          "height": 84.982
+          "centerX": 833.922,
+          "centerY": 367.434,
+          "width": 134.323,
+          "height": 75.816,
+          "rotation": -2.85
+        }
+      }
+    ],
+    "largeThreats": [
+      {
+        "id": "abyssal-gulper",
+        "distance": 258.02,
+        "side": "right",
+        "sideStaged": true,
+        "cameraZoom": 1,
+        "renderBounds": [
+          {
+            "id": "tail",
+            "bounds": {
+              "x": 874.131,
+              "y": 402.391,
+              "width": 91.738,
+              "height": 68.437
+            }
+          },
+          {
+            "id": "tail-base",
+            "bounds": {
+              "x": 877.797,
+              "y": 386.535,
+              "width": 84.406,
+              "height": 60.001
+            }
+          },
+          {
+            "id": "body-4",
+            "bounds": {
+              "x": 886.135,
+              "y": 376,
+              "width": 67.73,
+              "height": 54.43
+            }
+          },
+          {
+            "id": "body-3",
+            "bounds": {
+              "x": 880.703,
+              "y": 358.705,
+              "width": 78.595,
+              "height": 69.121
+            }
+          },
+          {
+            "id": "body-2",
+            "bounds": {
+              "x": 870.506,
+              "y": 361.872,
+              "width": 83.208,
+              "height": 78.668
+            }
+          },
+          {
+            "id": "body-1",
+            "bounds": {
+              "x": 850.438,
+              "y": 329.26,
+              "width": 103.182,
+              "height": 111.602
+            }
+          },
+          {
+            "id": "dorsal-fin",
+            "bounds": {
+              "x": 881.972,
+              "y": 400.899,
+              "width": 88.184,
+              "height": 58.055
+            }
+          },
+          {
+            "id": "pectoral-fin",
+            "bounds": {
+              "x": 908.244,
+              "y": 292.182,
+              "width": 86.401,
+              "height": 70.927
+            }
+          },
+          {
+            "id": "head",
+            "bounds": {
+              "x": 720.396,
+              "y": 337.607,
+              "width": 122.98,
+              "height": 94.635
+            }
+          },
+          {
+            "id": "jaw",
+            "bounds": {
+              "x": 722.509,
+              "y": 263.256,
+              "width": 174.121,
+              "height": 136.932
+            }
+          }
+        ],
+        "clippedUnionBounds": {
+          "x": 720.396,
+          "y": 263.256,
+          "width": 274.249,
+          "height": 207.572
+        },
+        "viewportOccupancy": 0.056,
+        "routeClearWidthRatio": 0.467,
+        "authoritative": {
+          "dangerousParts": [
+            {
+              "id": "jaw",
+              "hitShape": {
+                "centerX": 873.903,
+                "centerY": 351.005,
+                "halfWidth": 74.58,
+                "halfHeight": 46.858,
+                "radius": 34.992,
+                "halfLength": 41.328
+              },
+              "renderBounds": {
+                "x": 722.509,
+                "y": 263.256,
+                "width": 174.121,
+                "height": 136.932
+              },
+              "hitCenterWithinRenderBounds": true
+            }
+          ],
+          "biteAnchor": {
+            "x": 1774.217,
+            "y": 6811.827,
+            "distanceToPlayer": 263.531
+          },
+          "contactRadius": 10,
+          "aggro": 4.5,
+          "aggroCue": 0.394,
+          "state": "stalk",
+          "turning": {
+            "heading": -2.884,
+            "angularVelocity": 0.141,
+            "historySamples": 8
+          }
         }
       }
     ],
     "readabilityBackdrop": {
       "depth": -6.72,
-      "targetCount": 2,
+      "targetCount": 4,
       "targetKinds": [
+        "diver",
+        "threat",
         "threat",
         "threat"
       ]
@@ -208,7 +364,8 @@
     "readabilityEdges": {
       "depth": 6.4,
       "darknessDepth": 5,
-      "overlayDepth": 7
+      "overlayDepth": 7,
+      "visibleGeometry": "none"
     },
     "terrainDepth": 0,
     "prompt": {
@@ -218,6 +375,149 @@
       "paddingY": 2
     }
   },
+  "largeThreatPresentation": {
+    "id": "abyssal-gulper",
+    "distance": 258.02,
+    "side": "right",
+    "sideStaged": true,
+    "cameraZoom": 1,
+    "renderBounds": [
+      {
+        "id": "tail",
+        "bounds": {
+          "x": 874.131,
+          "y": 402.391,
+          "width": 91.738,
+          "height": 68.437
+        }
+      },
+      {
+        "id": "tail-base",
+        "bounds": {
+          "x": 877.797,
+          "y": 386.535,
+          "width": 84.406,
+          "height": 60.001
+        }
+      },
+      {
+        "id": "body-4",
+        "bounds": {
+          "x": 886.135,
+          "y": 376,
+          "width": 67.73,
+          "height": 54.43
+        }
+      },
+      {
+        "id": "body-3",
+        "bounds": {
+          "x": 880.703,
+          "y": 358.705,
+          "width": 78.595,
+          "height": 69.121
+        }
+      },
+      {
+        "id": "body-2",
+        "bounds": {
+          "x": 870.506,
+          "y": 361.872,
+          "width": 83.208,
+          "height": 78.668
+        }
+      },
+      {
+        "id": "body-1",
+        "bounds": {
+          "x": 850.438,
+          "y": 329.26,
+          "width": 103.182,
+          "height": 111.602
+        }
+      },
+      {
+        "id": "dorsal-fin",
+        "bounds": {
+          "x": 881.972,
+          "y": 400.899,
+          "width": 88.184,
+          "height": 58.055
+        }
+      },
+      {
+        "id": "pectoral-fin",
+        "bounds": {
+          "x": 908.244,
+          "y": 292.182,
+          "width": 86.401,
+          "height": 70.927
+        }
+      },
+      {
+        "id": "head",
+        "bounds": {
+          "x": 720.396,
+          "y": 337.607,
+          "width": 122.98,
+          "height": 94.635
+        }
+      },
+      {
+        "id": "jaw",
+        "bounds": {
+          "x": 722.509,
+          "y": 263.256,
+          "width": 174.121,
+          "height": 136.932
+        }
+      }
+    ],
+    "clippedUnionBounds": {
+      "x": 720.396,
+      "y": 263.256,
+      "width": 274.249,
+      "height": 207.572
+    },
+    "viewportOccupancy": 0.056,
+    "routeClearWidthRatio": 0.467,
+    "authoritative": {
+      "dangerousParts": [
+        {
+          "id": "jaw",
+          "hitShape": {
+            "centerX": 873.903,
+            "centerY": 351.005,
+            "halfWidth": 74.58,
+            "halfHeight": 46.858,
+            "radius": 34.992,
+            "halfLength": 41.328
+          },
+          "renderBounds": {
+            "x": 722.509,
+            "y": 263.256,
+            "width": 174.121,
+            "height": 136.932
+          },
+          "hitCenterWithinRenderBounds": true
+        }
+      ],
+      "biteAnchor": {
+        "x": 1774.217,
+        "y": 6811.827,
+        "distanceToPlayer": 263.531
+      },
+      "contactRadius": 10,
+      "aggro": 4.5,
+      "aggroCue": 0.394,
+      "state": "stalk",
+      "turning": {
+        "heading": -2.884,
+        "angularVelocity": 0.141,
+        "historySamples": 8
+      }
+    }
+  },
   "errors": [],
-  "serverLogs": "\n  VITE v8.0.12  ready in 181 ms\n\n  ➜  Local:   http://127.0.0.1:5187/\n"
+  "serverLogs": "\n  VITE v8.0.12  ready in 136 ms\n\n  ➜  Local:   http://127.0.0.1:5187/\n"
 }

@@ -11,7 +11,7 @@ import { hideSubmarinePartSprites,renderSubmarineParts } from './submarine-parts
 import { ensureTerrainMask,TERRAIN_MASK_CELL,TERRAIN_MASK_HEIGHT,TERRAIN_MASK_RES,TERRAIN_MASK_SOLID_THRESHOLD,TERRAIN_MASK_WIDTH,terrainBoundarySupported,terrainLocalSolidSupport,terrainMaskBoundaryCell,terrainMaskDensityAt,terrainMaskExposureVector,terrainMaskInteriorFillCell,terrainMaskSolid } from './terrain-mask';
 import { measurePerf } from './perf';
 import { ACTUAL_GPT_ORE_STAMPS,type ActualGptOreTile } from './ore-actual-gpt-stamps';
-import { LOCAL_SEPARATION_POLICY,landmarkFocalAlphaScale,priorityEdgeAlpha,targetSeparationAlpha,type InteractionCorridor,type ReadabilityTarget } from './interaction-readability';
+import { LOCAL_SEPARATION_POLICY,landmarkFocalAlphaScale,targetSeparationAlpha,type InteractionCorridor,type ReadabilityTarget } from './interaction-readability';
 
 const TERRAIN_VISIBILITY_WASH_ALPHA = 0.034;
 const TERRAIN_VISIBILITY_GLOW_ALPHA = 0.052;
@@ -527,7 +527,15 @@ function drawInteractionReadabilityBackdrop(
 ) {
   scene.readabilityBackdrop.setData('targetCount', 0);
   if (profile.biome < 2 || profile.darkness.value < 0.2) return;
-  const targets: Array<ReadabilityTarget & { distance: number }> = [];
+  const targets: Array<ReadabilityTarget & { distance: number }> = [{
+    kind: 'diver',
+    x: scene.player.x,
+    y: scene.player.y,
+    radiusX: scaledEntity(21),
+    radiusY: scaledEntity(17),
+    alpha: targetSeparationAlpha('diver', 0, 1),
+    distance: 0,
+  }];
   for (const fish of scene.fish) {
     if (!fish.hostile || fish.dead || scene.fishVisibilityAlpha(fish, camera) <= 0.18) continue;
     const distance = Phaser.Math.Distance.Between(scene.player.x, scene.player.y, fish.x, fish.y);
@@ -3475,12 +3483,6 @@ export function drawBobbitBurrows(this: DeepdiveScene, camera: Phaser.Cameras.Sc
   }
 
 export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Camera) {
-    const nearestThreatDistance = Math.min(
-      ...this.fish.filter((candidate) => candidate.hostile && !candidate.dead && this.fishVisibilityAlpha(candidate, camera) > 0.18)
-        .map((candidate) => Phaser.Math.Distance.Between(this.player.x, this.player.y, candidate.x, candidate.y)),
-      ...this.articulatedCreatures.filter((candidate) => candidate.hostile && !candidate.dead && this.articulatedVisibilityAlpha(candidate, camera) > 0.18)
-        .map((candidate) => Phaser.Math.Distance.Between(this.player.x, this.player.y, candidate.x, candidate.y)),
-    );
     for (const fish of this.fish) {
       if (fish.dead) {
         fish.sprite?.setVisible(false);
@@ -3524,10 +3526,6 @@ export function drawFish(this: DeepdiveScene, camera: Phaser.Cameras.Scene2D.Cam
         .setRotation(pose.rotation)
         .setOrigin(pose.originX, pose.originY);
       fitImageWidth(fish.sprite, desiredWidth);
-      if (state.depth >= 900 && fish.hostile && threatDistance <= LOCAL_SEPARATION_POLICY.actionableRange && threatDistance <= nearestThreatDistance + 0.01) {
-        this.readabilityEdges.lineStyle(1.4, LOCAL_SEPARATION_POLICY.priorityEdgeColor, priorityEdgeAlpha('threat', threatDistance));
-        this.readabilityEdges.strokeEllipse(fish.x, fish.y, desiredWidth * 0.92, Math.max(fish.radius * 1.7, 8));
-      }
       if (fish.hurtFlash > 0) {
         this.actors.lineStyle(2, 0xfff7df, fish.hurtFlash * bodyAlpha);
         this.actors.strokeCircle(fish.x, fish.y, fish.radius + scaledEntity(5));
@@ -3704,28 +3702,18 @@ export function drawPlayer(this: DeepdiveScene, ) {
     const diverMotionTest = new URLSearchParams(window.location.search).get('diverMotionTest');
     if (diverMotionTest === 'v3a-refined-mining' && !state.lost) {
       this.drawV3ARefinedMiningDiver(animation, angle, swimSpeed);
-      drawDiverPriorityEdge(this);
       return;
     }
     if (diverMotionTest === 'v3a-refined' && !state.lost) {
       this.drawV3ARefinedDiver(animation, angle, swimSpeed);
-      drawDiverPriorityEdge(this);
       return;
     }
     if (diverMotionTest === 'v3a' && !state.lost) {
       this.drawV3MotionTestDiver(animation, angle, swimSpeed);
-      drawDiverPriorityEdge(this);
       return;
     }
     this.drawLegacyDiver(animation, angle, swimSpeed);
-    drawDiverPriorityEdge(this);
   }
-
-function drawDiverPriorityEdge(scene: DeepdiveScene) {
-  if (state.depth < 900 || state.lost) return;
-  scene.readabilityEdges.lineStyle(1.4, LOCAL_SEPARATION_POLICY.priorityEdgeColor, priorityEdgeAlpha('diver'));
-  scene.readabilityEdges.strokeEllipse(scene.player.x, scene.player.y, scaledEntity(29), scaledEntity(18));
-}
 
 export function drawV3MotionTestDiver(this: DeepdiveScene, animation: ReturnType<typeof diverAnimation>, angle: number, swimSpeed: number) {
     const p = this.player;

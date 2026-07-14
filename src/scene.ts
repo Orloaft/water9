@@ -4,7 +4,7 @@ import { audioKeys,audioVolumes,BARGE_DOCKING_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BA
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { activeQuest,ambientDarknessOpacity,animatedFrame,axis,bargeSolidAtWorld,bargeUpgradeCost,cargoCapacity,cargoIconForTile,cargoKindForTile,cargoSaleBreakdown,checkOxygenWarnings,clampSelectedCargoIndex,clearBleed,clearVenom,completeFinaleAtBarge,createConsumableItem,createSubVehicle,currentApexSpecies,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,finaleLocksSurvey,fishAssetKey,fishFrameCount,fishMaxHp,fitImageHeight,fitImageWidth,floraAssetKey,floraMaxHp,fuelMax,fuelRefillCost,generateQuestBoard,generateTile,hash,hullMax,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,loadGeneratedAssets,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenDrain,oxygenMax,parallaxAlphas,parallaxPrefix,parallaxSpeeds,pointInRoom,predatorBiteCooldown,questProgressSource,rarityColor,rarityLabel,refillAtBoat,resetOxygenWarnings,restart,scaledDepthPx,scaledEntity,scannableRarity,scanReward,shopItem,sonarKey,sonarTileColor,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange,subRepairCost,swimPose,swimTopSpeed,swimUpgradeBonus,tileTextureKey,updateFacingFromVelocity,upgradeCost,upgradeMax,veinRuleAt,veinRulesForBiome,venomousFish } from './helpers';
+import { activeQuest,ambientDarknessOpacity,animatedFrame,axis,bargeSolidAtWorld,bargeUpgradeCost,cargoCapacity,cargoIconForTile,cargoKindForTile,cargoSaleBreakdown,checkOxygenWarnings,clampSelectedCargoIndex,clearBleed,clearVenom,completeFinaleAtBarge,createConsumableItem,createSubVehicle,currentApexSpecies,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,finaleLocksSurvey,fishAssetKey,fishFrameCount,fishMaxHp,fitImageHeight,fitImageWidth,floraAssetKey,floraMaxHp,fuelMax,fuelRefillCost,generateQuestBoard,generateTile,hash,hullMax,isArtifactTile,isLargeArticulatedThreat,lightBeamHalfWidth,lightBeamLength,lightRadius,loadGeneratedAssets,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenDrain,oxygenMax,parallaxAlphas,parallaxPrefix,parallaxSpeeds,pointInRoom,predatorBiteCooldown,questProgressSource,rarityColor,rarityLabel,refillAtBoat,resetOxygenWarnings,restart,scaledDepthPx,scaledEntity,scannableRarity,scanReward,shopItem,sonarKey,sonarTileColor,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange,subRepairCost,swimPose,swimTopSpeed,swimUpgradeBonus,tileTextureKey,updateFacingFromVelocity,upgradeCost,upgradeMax,veinRuleAt,veinRulesForBiome,venomousFish } from './helpers';
 import { activateMenuButton,activeMenuButtons,advanceRadioDialogue,availableUpgrades,biomeName,canDiveFromBargeShortcut,clearControllerFocus,closeSonarMapToPause,focusMenuButton,focusUiButton,menuButtonKey,nextMenuButton,openingRadioMessages,openSonarMapFromTool,renderHud,roundMetric,toggleLogbook,unlockAchievement,updateFpsTracker } from './hud';
 import * as sonarNs from './scene-sonar';
 import * as economyNs from './scene-economy';
@@ -27,6 +27,7 @@ import type { PerfTelemetry } from './perf';
 import { tryPresentProgressionRadio } from './progression-radio';
 import { CAMERA_FEEL,SWIM_FEEL,cameraLeadSpringStep,cameraLeadTarget,cameraLeadViewportFraction,classifySwimAnimationIntent,swimVelocityStep,zeroCameraLeadSpring } from './swimming-feel';
 import type { CameraLeadSpring } from './swimming-feel';
+import { LOCAL_SEPARATION_POLICY } from './interaction-readability';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.Image[] = [];
@@ -122,6 +123,8 @@ export class DeepdiveScene extends Phaser.Scene {
   diverV3ScannerRecoverUntil = 0;
   diverV3ScannerWasActive = false;
   cameraLead: CameraLeadSpring = zeroCameraLeadSpring();
+  largeThreatCameraOffset = new Phaser.Math.Vector2();
+  largeThreatCompositionActive = false;
   swimInput = { x: 0, y: 0, hasInput: false };
   player = {
     x: WORLD_W * TILE * 0.5,
@@ -646,7 +649,18 @@ export class DeepdiveScene extends Phaser.Scene {
 
   updateCameraZoom() {
     const baseZoom = this.scale.width < 700 ? 1.35 : 1.85;
-    const zoom = baseZoom * CAMERA_ZOOM_MULTIPLIER;
+    const standardZoom = baseZoom * CAMERA_ZOOM_MULTIPLIER;
+    const largeThreatDistances = state.biome >= 3 ? this.articulatedCreatures?.filter((creature) => (
+      !creature.dead && creature.hostile && isLargeArticulatedThreat(creature)
+    )).map((creature) => Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y)) ?? [] : [];
+    if (largeThreatDistances.some((distance) => distance <= LOCAL_SEPARATION_POLICY.largeThreatCameraRange)) {
+      this.largeThreatCompositionActive = true;
+    } else if (!largeThreatDistances.length || largeThreatDistances.every((distance) => distance > LOCAL_SEPARATION_POLICY.largeThreatCameraReleaseRange)) {
+      this.largeThreatCompositionActive = false;
+    }
+    const zoom = this.largeThreatCompositionActive
+      ? Math.min(standardZoom, LOCAL_SEPARATION_POLICY.largeThreatCameraZoom)
+      : standardZoom;
     if (Math.abs(this.cameras.main.zoom - zoom) > 0.01) {
       this.cameras.main.setZoom(zoom);
       this.terrainDirty = true;
@@ -1172,13 +1186,39 @@ export class DeepdiveScene extends Phaser.Scene {
 
   updateSwimCamera(delta: number) {
     const camera = this.cameras.main;
+    camera.preRender();
+    const nearestLargeThreat = state.biome >= 3
+      ? this.articulatedCreatures.filter((creature) => !creature.dead && creature.hostile && isLargeArticulatedThreat(creature))
+        .map((creature) => ({ creature, distance: Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y) }))
+        .filter((entry) => entry.distance <= (this.largeThreatCompositionActive
+          ? LOCAL_SEPARATION_POLICY.largeThreatCameraReleaseRange
+          : LOCAL_SEPARATION_POLICY.largeThreatCameraRange))
+        .sort((a, b) => a.distance - b.distance)[0]
+      : undefined;
+    let compositionTargetX = 0;
+    let compositionTargetY = 0;
+    if (nearestLargeThreat) {
+      const dx = nearestLargeThreat.creature.x - this.player.x;
+      const dy = nearestLargeThreat.creature.y - this.player.y;
+      const length = Math.max(1, Math.hypot(dx, dy));
+      const compositionT = Phaser.Math.Clamp(
+        (nearestLargeThreat.distance - 300) / Math.max(1, LOCAL_SEPARATION_POLICY.largeThreatCameraRange - 300),
+        0,
+        1,
+      );
+      const compositionFraction = Math.min(0.02, Phaser.Math.SmoothStep(compositionT, 0, 1) * 0.6);
+      compositionTargetX = (dx / length) * camera.worldView.width * compositionFraction;
+      compositionTargetY = (dy / length) * camera.worldView.height * Math.min(0.16, compositionFraction);
+    }
+    const compositionBlend = Math.min(1, delta * 3.2);
+    this.largeThreatCameraOffset.x = Phaser.Math.Linear(this.largeThreatCameraOffset.x, compositionTargetX, compositionBlend);
+    this.largeThreatCameraOffset.y = Phaser.Math.Linear(this.largeThreatCameraOffset.y, compositionTargetY, compositionBlend);
     if (!state.cameraLeadEnabled) {
       this.cameraLead = zeroCameraLeadSpring();
-      camera.centerOn(this.player.x, this.player.y);
+      camera.centerOn(this.player.x + this.largeThreatCameraOffset.x, this.player.y + this.largeThreatCameraOffset.y);
       camera.preRender();
       return;
     }
-    camera.preRender();
     const target = cameraLeadTarget(
       this.swimInput.hasInput ? this.swimInput.x : 0,
       this.swimInput.hasInput ? this.swimInput.y : 0,
@@ -1189,12 +1229,14 @@ export class DeepdiveScene extends Phaser.Scene {
       true,
     );
     this.cameraLead = cameraLeadSpringStep(this.cameraLead, target.x, target.y, delta);
-    camera.centerOn(this.player.x + this.cameraLead.x, this.player.y + this.cameraLead.y);
+    camera.centerOn(this.player.x + this.cameraLead.x + this.largeThreatCameraOffset.x, this.player.y + this.cameraLead.y + this.largeThreatCameraOffset.y);
     camera.preRender();
   }
 
   resetCameraLead() {
     this.cameraLead = zeroCameraLeadSpring();
+    this.largeThreatCameraOffset.set(0, 0);
+    this.largeThreatCompositionActive = false;
     this.cameras.main.centerOn(this.player.x, this.player.y);
     this.cameras.main.preRender();
   }

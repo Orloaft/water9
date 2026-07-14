@@ -113,7 +113,7 @@ try {
   await page.waitForFunction(() => window.__AQUA_PLAYTEST__?.snapshot?.()?.state?.started === true, null, { timeout: 10000 });
   await page.evaluate(() => window.__AQUA_PLAYTEST__.command('dive'));
   await page.evaluate(() => window.__AQUA_PLAYTEST__.command('maxUpgrades'));
-  const staging = await page.evaluate(() => window.__AQUA_PLAYTEST__.command('stageDeepBiomePresentation', { requestedDepthMeters: 1650, creatureId: 'abyssal-gulper', standOff: 235 }));
+  const staging = await page.evaluate(() => window.__AQUA_PLAYTEST__.command('stageDeepBiomePresentation', { requestedDepthMeters: 1650, creatureId: 'abyssal-gulper', standOff: 280 }));
   await page.waitForTimeout(300);
   const probe = await page.evaluate(() => window.__AQUA_PLAYTEST__.command('interactionReadabilityProbe'));
   if (!staging?.ok || staging.actual?.biome !== 4 || staging.actual?.depthMeters < 1450 || staging.terrainModified !== false) fail(`deep staging invalid: ${JSON.stringify(staging)}`);
@@ -121,11 +121,24 @@ try {
   if ((probe?.readabilityBackdrop?.targetCount ?? 0) < 1 || (probe?.readabilityBackdrop?.targetCount ?? 99) > deterministic.policy.maxTargets) fail(`local separation target count ${probe?.readabilityBackdrop?.targetCount} is outside bounds`);
   if (!(probe?.readabilityBackdrop?.depth < probe?.terrainDepth)) fail('local separation layer is not background-only');
   if (!(probe?.readabilityEdges?.depth > probe?.readabilityEdges?.darknessDepth && probe?.readabilityEdges?.depth < probe?.readabilityEdges?.overlayDepth)) fail('priority edge layer must composite above darkness and below gameplay overlays');
+  if (probe?.readabilityEdges?.visibleGeometry !== 'none') fail('readability edge layer contains visible geometry');
   if (!probe?.player?.bounds || !(probe?.threats?.length > 0)) fail('runtime readability ROIs lack player or visible threat bounds');
+  const gulperPresentation = probe?.largeThreats?.find((threat) => threat.id === 'abyssal-gulper');
+  if (!gulperPresentation) fail('runtime presentation probe did not include the staged gulper');
+  if ((gulperPresentation?.viewportOccupancy ?? 1) > deterministic.policy.largeThreatViewportOccupancyMax) fail(`gulper viewport occupancy ${gulperPresentation?.viewportOccupancy} exceeds ${deterministic.policy.largeThreatViewportOccupancyMax}`);
+  if ((gulperPresentation?.routeClearWidthRatio ?? 0) < deterministic.policy.largeThreatRouteCorridorMin) fail(`gulper route corridor ${gulperPresentation?.routeClearWidthRatio} is below ${deterministic.policy.largeThreatRouteCorridorMin}`);
+  if (!gulperPresentation?.sideStaged) fail('gulper was not staged to one side of the player');
+  if ((gulperPresentation?.cameraZoom ?? 99) > deterministic.policy.largeThreatCameraZoom + 0.01) fail(`gulper composition camera did not settle: ${gulperPresentation?.cameraZoom}`);
+  if (gulperPresentation?.authoritative?.dangerousParts?.some((part) => !part.hitCenterWithinRenderBounds)) fail('authoritative dangerous-part hit center escaped the rendered anatomy');
+  if (!gulperPresentation?.authoritative?.biteAnchor || !(gulperPresentation.authoritative.contactRadius > 0)) fail('gulper bite/reach authority was not reported');
+  if (!(gulperPresentation?.authoritative?.aggro > 0) || (gulperPresentation?.authoritative?.turning?.historySamples ?? 0) < 1) fail('gulper aggro/turning runtime did not remain live');
 
   const source = await readFile('src/scene-entities.ts', 'utf8');
+  const renderingSource = await readFile('src/scene-rendering.ts', 'utf8');
+  const articulatedSource = await readFile('src/scene-articulated.ts', 'utf8');
   if (!source.includes("backgroundColor: '#020509'")) fail('floating interaction text lacks the composited backing');
   if (!source.includes('padding: { x: 3, y: 2 }')) fail('floating interaction text lacks bounded backing padding');
+  if (renderingSource.includes('readabilityEdges.stroke') || articulatedSource.includes('readabilityEdges.stroke')) fail('normal runtime still draws readability measurement outlines');
 
   report = {
     schema: 'water9/slice4-interaction-readability-smoke@1',
@@ -138,6 +151,7 @@ try {
     giantThreat: deterministic.giantThreat,
     staging,
     runtimeProbe: probe,
+    largeThreatPresentation: gulperPresentation,
     errors,
     serverLogs: serverLogs.join('').slice(-3000),
   };
