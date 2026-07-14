@@ -2,19 +2,6 @@ import type { BargeTab, Biome, CargoItem, FinaleProgress, ProgressionRadioEvent,
 import { BASE_OXYGEN,FORWARD_OUTPOST_MAX_CHARGE,FORWARD_OUTPOST_OXYGEN_RADIUS,FORWARD_OUTPOST_OXYGEN_REFILL } from './constants';
 import { createDefaultUnlockedTools } from './tools';
 
-export const ACCESSIBILITY_STORAGE_KEY = 'water9.accessibility.v1';
-
-function initialCameraLeadEnabled() {
-  try {
-    const raw = typeof window !== 'undefined' ? window.localStorage.getItem(ACCESSIBILITY_STORAGE_KEY) : null;
-    if (!raw) return true;
-    const value = JSON.parse(raw) as { cameraLeadEnabled?: unknown };
-    return value.cameraLeadEnabled !== false;
-  } catch {
-    return true;
-  }
-}
-
 export const state = {
   biome: 1 as Biome,
   credits: 0,
@@ -78,7 +65,6 @@ export const state = {
   musicVolume: 1,
   sfxVolume: 1,
   unhardcore: false,
-  cameraLeadEnabled: initialCameraLeadEnabled(),
   achievements: new Set<string>(),
   subOwned: {
     1: false,
@@ -161,20 +147,5 @@ export const state = {
     recentTimer: 0,
   },
 };
-
-export function setCameraLeadEnabled(enabled: boolean) {
-  state.cameraLeadEnabled = Boolean(enabled);
-  try {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify({
-        schema: 'water9/accessibility',
-        version: 1,
-        cameraLeadEnabled: state.cameraLeadEnabled,
-      }));
-    }
-  } catch {
-    // The option remains active for this session when persistence is unavailable.
-  }
-}
 
 export const ui = { eventsBound: false, focusKey: '' };

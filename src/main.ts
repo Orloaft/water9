@@ -6,7 +6,6 @@ import { setGame, gameScene } from './game-ref';
 import { renderHud } from './hud';
 import { state } from './state';
 import { installOuterPerfTelemetry } from './perf';
-import { rng } from './rng';
 
 function installPlaytestApi() {
   const isDev = (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV;
@@ -21,13 +20,9 @@ function installPlaytestApi() {
 const params = new URLSearchParams(window.location.search);
 const sandboxMode = params.has('sandbox') || params.get('mode') === 'sandbox' || params.has('entity');
 const playtestBiome = Number(params.get('biome'));
-const playtestSeed = Number(params.get('seed'));
 
 if (params.has('playtest') && Number.isFinite(playtestBiome) && playtestBiome >= 1 && playtestBiome <= 4) {
   state.biome = Math.floor(playtestBiome) as 1 | 2 | 3 | 4;
-}
-if (params.has('playtest') && Number.isFinite(playtestSeed)) {
-  rng.seed = Math.max(0, Math.floor(playtestSeed));
 }
 
 if (!sandboxMode) renderHud();

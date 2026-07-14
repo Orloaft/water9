@@ -1162,8 +1162,6 @@ export function spawnFloatingText(this: DeepdiveScene, message: string, color: n
         stroke: '#020509',
         fontSize: '9px',
         strokeThickness: 3,
-        backgroundColor: '#020509',
-        padding: { x: 3, y: 2 },
       },
     );
     label.setOrigin(0.5);

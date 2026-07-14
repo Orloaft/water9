@@ -241,7 +241,7 @@ const ARTICULATED_SPAWN_BUDGETS: Record<'normal' | 'prototype', Record<Biome, nu
 function prototypeRuntimeEnabled() {
   if (typeof window === 'undefined') return false;
   const params = new URLSearchParams(window.location.search);
-  return params.has('prototypeThreats') || params.get('threats') === 'prototype' || (params.has('playtest') && !params.has('normalThreats'));
+  return params.has('prototypeThreats') || params.get('threats') === 'prototype' || params.has('playtest');
 }
 
 export function articulatedPrototypeRuntimeEnabled() {

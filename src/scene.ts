@@ -4,7 +4,7 @@ import { audioKeys,audioVolumes,BARGE_DOCKING_HALF_WIDTH,BARGE_DOCKING_ZONE_Y,BA
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
 import { state,ui } from './state';
 import { rng } from './rng';
-import { activeQuest,ambientDarknessOpacity,animatedFrame,axis,bargeSolidAtWorld,bargeUpgradeCost,cargoCapacity,cargoIconForTile,cargoKindForTile,cargoSaleBreakdown,checkOxygenWarnings,clampSelectedCargoIndex,clearBleed,clearVenom,completeFinaleAtBarge,createConsumableItem,createSubVehicle,currentApexSpecies,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,finaleLocksSurvey,fishAssetKey,fishFrameCount,fishMaxHp,fitImageHeight,fitImageWidth,floraAssetKey,floraMaxHp,fuelMax,fuelRefillCost,generateQuestBoard,generateTile,hash,hullMax,isArtifactTile,isLargeArticulatedThreat,lightBeamHalfWidth,lightBeamLength,lightRadius,loadGeneratedAssets,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenDrain,oxygenMax,parallaxAlphas,parallaxPrefix,parallaxSpeeds,pointInRoom,predatorBiteCooldown,questProgressSource,rarityColor,rarityLabel,refillAtBoat,resetOxygenWarnings,restart,scaledDepthPx,scaledEntity,scannableRarity,scanReward,shopItem,sonarKey,sonarTileColor,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange,subRepairCost,swimPose,swimTopSpeed,swimUpgradeBonus,tileTextureKey,updateFacingFromVelocity,upgradeCost,upgradeMax,veinRuleAt,veinRulesForBiome,venomousFish } from './helpers';
+import { activeQuest,ambientDarknessOpacity,animatedFrame,axis,bargeSolidAtWorld,bargeUpgradeCost,cargoCapacity,cargoIconForTile,cargoKindForTile,cargoSaleBreakdown,checkOxygenWarnings,clampSelectedCargoIndex,clearBleed,clearVenom,completeFinaleAtBarge,createConsumableItem,createSubVehicle,currentApexSpecies,darknessAtDepth,darknessOpacity,depthColor,diverAnimation,diverDisplayWidth,diverFrame,diverOrigin,diverPose,finaleLocksSurvey,fishAssetKey,fishFrameCount,fishMaxHp,fitImageHeight,fitImageWidth,floraAssetKey,floraMaxHp,fuelMax,fuelRefillCost,generateQuestBoard,generateTile,hash,hullMax,isArtifactTile,lightBeamHalfWidth,lightBeamLength,lightRadius,loadGeneratedAssets,mineCooldown,miningFuelCost,miningUpgradeBonus,oxygenDrain,oxygenMax,parallaxAlphas,parallaxPrefix,parallaxSpeeds,pointInRoom,predatorBiteCooldown,questProgressSource,rarityColor,rarityLabel,refillAtBoat,resetOxygenWarnings,restart,scaledDepthPx,scaledEntity,scannableRarity,scanReward,shopItem,sonarKey,sonarTileColor,subCollisionHalfExtents,subDef,subDirectionalReach,subMiningRange,subRepairCost,swimPose,swimTopSpeed,swimUpgradeBonus,tileTextureKey,updateFacingFromVelocity,upgradeCost,upgradeMax,veinRuleAt,veinRulesForBiome,venomousFish } from './helpers';
 import { activateMenuButton,activeMenuButtons,advanceRadioDialogue,availableUpgrades,biomeName,canDiveFromBargeShortcut,clearControllerFocus,closeSonarMapToPause,focusMenuButton,focusUiButton,menuButtonKey,nextMenuButton,openingRadioMessages,openSonarMapFromTool,renderHud,roundMetric,toggleLogbook,unlockAchievement,updateFpsTracker } from './hud';
 import * as sonarNs from './scene-sonar';
 import * as economyNs from './scene-economy';
@@ -25,15 +25,10 @@ import { beginStagedTerrainMaskNormalize,beginStagedTerrainMaskRebuild,ensureTer
 import { createPerfTelemetry,markTerrainDirty,measurePerf,recordPerf,updatePerfHud } from './perf';
 import type { PerfTelemetry } from './perf';
 import { tryPresentProgressionRadio } from './progression-radio';
-import { CAMERA_FEEL,SWIM_FEEL,cameraLeadSpringStep,cameraLeadTarget,cameraLeadViewportFraction,classifySwimAnimationIntent,swimVelocityStep,zeroCameraLeadSpring } from './swimming-feel';
-import type { CameraLeadSpring } from './swimming-feel';
-import { LOCAL_SEPARATION_POLICY } from './interaction-readability';
 
 export class DeepdiveScene extends Phaser.Scene {
   parallaxLayers: Phaser.GameObjects.Image[] = [];
   parallaxBackdrop!: Phaser.GameObjects.Graphics;
-  readabilityBackdrop!: Phaser.GameObjects.Graphics;
-  readabilityEdges!: Phaser.GameObjects.Graphics;
   waterColumnLayers: Phaser.GameObjects.TileSprite[] = [];
   terrain!: Phaser.GameObjects.Graphics;
   terrainEdges!: Phaser.GameObjects.Graphics;
@@ -122,10 +117,6 @@ export class DeepdiveScene extends Phaser.Scene {
   diverV3ScannerStartedAt = 0;
   diverV3ScannerRecoverUntil = 0;
   diverV3ScannerWasActive = false;
-  cameraLead: CameraLeadSpring = zeroCameraLeadSpring();
-  largeThreatCameraOffset = new Phaser.Math.Vector2();
-  largeThreatCompositionActive = false;
-  swimInput = { x: 0, y: 0, hasInput: false };
   player = {
     x: WORLD_W * TILE * 0.5,
     y: BARGE_DOCK_Y,
@@ -137,7 +128,6 @@ export class DeepdiveScene extends Phaser.Scene {
     scanCooldown: 0,
     sonarCooldown: 0,
     scanTarget: null as ScanTarget | null,
-    motionIntent: classifySwimAnimationIntent(0, 0, 0, 0, SWIM_FEEL.baseTopSpeed),
   };
   hudTimer = 0;
 
@@ -168,7 +158,6 @@ export class DeepdiveScene extends Phaser.Scene {
       .setDepth(-12 + index)
       .setScrollFactor(1));
     this.parallaxBackdrop = this.add.graphics().setDepth(-7.5);
-    this.readabilityBackdrop = this.add.graphics().setDepth(-6.72);
     this.waterColumnLayers = [0, 1, 2, 3].map((index) => this.add
       .tileSprite(0, 0, 1, 1, 'parallax-shallow-0')
       .setOrigin(0)
@@ -208,7 +197,6 @@ export class DeepdiveScene extends Phaser.Scene {
     this.actors = this.add.graphics().setDepth(3);
     this.darkness = this.add.graphics().setDepth(5);
     this.lampGloom = this.add.graphics().setDepth(6);
-    this.readabilityEdges = this.add.graphics().setDepth(6.4);
     this.overlay = this.add.graphics().setDepth(7);
     ensureArticulatedTextures(this);
     this.sceneInitialized = true;
@@ -360,7 +348,7 @@ export class DeepdiveScene extends Phaser.Scene {
       this.updatePassiveSonarReveal(delta);
       this.updateQuestProgress();
       this.updateCameraZoom();
-      this.updateSwimCamera(delta);
+      this.cameras.main.centerOn(this.player.x, this.player.y);
       this.processEnvironmentPropRefreshQueue();
       });
       measurePerf(this, 'draw.total', () => this.draw());
@@ -394,7 +382,7 @@ export class DeepdiveScene extends Phaser.Scene {
     this.updateFlares(delta);
     this.updateSonarPings(delta);
     this.updateCameraZoom();
-    this.updateSwimCamera(delta);
+    this.cameras.main.centerOn(this.player.x, this.player.y);
     this.processEnvironmentPropRefreshQueue();
     });
     measurePerf(this, 'draw.total', () => this.draw());
@@ -649,18 +637,7 @@ export class DeepdiveScene extends Phaser.Scene {
 
   updateCameraZoom() {
     const baseZoom = this.scale.width < 700 ? 1.35 : 1.85;
-    const standardZoom = baseZoom * CAMERA_ZOOM_MULTIPLIER;
-    const largeThreatDistances = state.biome >= 3 ? this.articulatedCreatures?.filter((creature) => (
-      !creature.dead && creature.hostile && isLargeArticulatedThreat(creature)
-    )).map((creature) => Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y)) ?? [] : [];
-    if (largeThreatDistances.some((distance) => distance <= LOCAL_SEPARATION_POLICY.largeThreatCameraRange)) {
-      this.largeThreatCompositionActive = true;
-    } else if (!largeThreatDistances.length || largeThreatDistances.every((distance) => distance > LOCAL_SEPARATION_POLICY.largeThreatCameraReleaseRange)) {
-      this.largeThreatCompositionActive = false;
-    }
-    const zoom = this.largeThreatCompositionActive
-      ? Math.min(standardZoom, LOCAL_SEPARATION_POLICY.largeThreatCameraZoom)
-      : standardZoom;
+    const zoom = baseZoom * CAMERA_ZOOM_MULTIPLIER;
     if (Math.abs(this.cameras.main.zoom - zoom) > 0.01) {
       this.cameras.main.setZoom(zoom);
       this.terrainDirty = true;
@@ -1070,8 +1047,6 @@ export class DeepdiveScene extends Phaser.Scene {
     this.player.y = BARGE_DOCK_Y;
     this.player.vx = 0;
     this.player.vy = 0;
-    this.swimInput = { x: 0, y: 0, hasInput: false };
-    this.player.motionIntent = classifySwimAnimationIntent(0, 0, 0, 0, swimTopSpeed());
     this.player.mineCooldown = Math.max(0, this.player.mineCooldown - delta);
     this.player.scanCooldown = Math.max(0, this.player.scanCooldown - delta);
     this.player.sonarCooldown = Math.max(0, this.player.sonarCooldown - delta);
@@ -1099,7 +1074,6 @@ export class DeepdiveScene extends Phaser.Scene {
     const latchedBobbit = this.latchedBobbit();
     const activeBobbitDrag = this.activeBobbitDrag();
     if (activeBobbitDrag?.bobbitBurrow?.captured === 'player') {
-      this.swimInput = { x: 0, y: 0, hasInput: false };
       if (hasInput) {
         this.rotateFacingToward(input.angle(), delta, 7.2);
         this.updatePlayerFacing(input.x);
@@ -1120,8 +1094,6 @@ export class DeepdiveScene extends Phaser.Scene {
       this.player.y = latchedBobbit.latchY;
       this.player.vx = 0;
       this.player.vy = 0;
-      this.swimInput = { x: 0, y: 0, hasInput: false };
-      this.player.motionIntent = classifySwimAnimationIntent(0, 0, 0, 0, swimTopSpeed());
       if (hasInput) {
         this.rotateFacingToward(input.angle(), delta, 7.2);
         this.updatePlayerFacing(input.x);
@@ -1136,13 +1108,18 @@ export class DeepdiveScene extends Phaser.Scene {
     }
 
     const topSpeed = swimTopSpeed();
-    const thrust = (this.isAtBoat() ? SWIM_FEEL.dockThrust : SWIM_FEEL.baseThrust) + swimUpgradeBonus() * SWIM_FEEL.upgradeThrust;
-    const motion = swimVelocityStep(this.player.vx, this.player.vy, input.x, input.y, delta, topSpeed, thrust);
-    this.player.vx = motion.vx;
-    this.player.vy = motion.vy;
-    const speed = motion.speed;
-    this.swimInput = { x: motion.input.x, y: motion.input.y, hasInput };
-    this.player.motionIntent = classifySwimAnimationIntent(input.x, input.y, this.player.vx, this.player.vy, topSpeed);
+    const thrust = (this.isAtBoat() ? 620 : 300) + swimUpgradeBonus() * 34;
+    this.player.vx += input.x * thrust * delta;
+    this.player.vy += input.y * thrust * delta;
+    const drag = input.lengthSq() > 0 ? 1.45 : 2.65;
+    const dragFactor = Math.exp(-drag * delta);
+    this.player.vx *= dragFactor;
+    this.player.vy *= dragFactor;
+    const speed = Math.hypot(this.player.vx, this.player.vy);
+    if (speed > topSpeed) {
+      this.player.vx = (this.player.vx / speed) * topSpeed;
+      this.player.vy = (this.player.vy / speed) * topSpeed;
+    }
     const latchedLarvae = this.larvae.filter((larva) => larva.latched).length;
     if (latchedLarvae > 0) {
       const drag = Math.max(0.66, 1 - latchedLarvae * 0.08);
@@ -1174,86 +1151,11 @@ export class DeepdiveScene extends Phaser.Scene {
       this.establishForwardOutpost();
     }
     const pointer = this.input.activePointer;
-    if (pointer.isDown) {
-      const worldPointer = pointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
-      this.mineAt(worldPointer.x, worldPointer.y);
-    }
+    if (pointer.isDown) this.mineAt(pointer.worldX, pointer.worldY);
     const primaryX = this.player.x + this.player.facing.x * PLAYER_FORWARD_REACH;
     const primaryY = this.player.y + this.player.facing.y * PLAYER_FORWARD_REACH;
     const selectedToolScanHeld = controls.mineHeld && this.useSelectedToolPrimary(delta, primaryX, primaryY);
     this.scanNearbyLife(delta, controls.scanHeld || selectedToolScanHeld);
-  }
-
-  updateSwimCamera(delta: number) {
-    const camera = this.cameras.main;
-    camera.preRender();
-    const nearestLargeThreat = state.biome >= 3
-      ? this.articulatedCreatures.filter((creature) => !creature.dead && creature.hostile && isLargeArticulatedThreat(creature))
-        .map((creature) => ({ creature, distance: Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y) }))
-        .filter((entry) => entry.distance <= (this.largeThreatCompositionActive
-          ? LOCAL_SEPARATION_POLICY.largeThreatCameraReleaseRange
-          : LOCAL_SEPARATION_POLICY.largeThreatCameraRange))
-        .sort((a, b) => a.distance - b.distance)[0]
-      : undefined;
-    let compositionTargetX = 0;
-    let compositionTargetY = 0;
-    if (nearestLargeThreat) {
-      const dx = nearestLargeThreat.creature.x - this.player.x;
-      const dy = nearestLargeThreat.creature.y - this.player.y;
-      const length = Math.max(1, Math.hypot(dx, dy));
-      const compositionT = Phaser.Math.Clamp(
-        (nearestLargeThreat.distance - 300) / Math.max(1, LOCAL_SEPARATION_POLICY.largeThreatCameraRange - 300),
-        0,
-        1,
-      );
-      const compositionFraction = Math.min(0.02, Phaser.Math.SmoothStep(compositionT, 0, 1) * 0.6);
-      compositionTargetX = (dx / length) * camera.worldView.width * compositionFraction;
-      compositionTargetY = (dy / length) * camera.worldView.height * Math.min(0.16, compositionFraction);
-    }
-    const compositionBlend = Math.min(1, delta * 3.2);
-    this.largeThreatCameraOffset.x = Phaser.Math.Linear(this.largeThreatCameraOffset.x, compositionTargetX, compositionBlend);
-    this.largeThreatCameraOffset.y = Phaser.Math.Linear(this.largeThreatCameraOffset.y, compositionTargetY, compositionBlend);
-    if (!state.cameraLeadEnabled) {
-      this.cameraLead = zeroCameraLeadSpring();
-      camera.centerOn(this.player.x + this.largeThreatCameraOffset.x, this.player.y + this.largeThreatCameraOffset.y);
-      camera.preRender();
-      return;
-    }
-    const target = cameraLeadTarget(
-      this.swimInput.hasInput ? this.swimInput.x : 0,
-      this.swimInput.hasInput ? this.swimInput.y : 0,
-      Math.hypot(this.player.vx, this.player.vy),
-      swimTopSpeed(),
-      camera.worldView.width,
-      camera.worldView.height,
-      true,
-    );
-    this.cameraLead = cameraLeadSpringStep(this.cameraLead, target.x, target.y, delta);
-    camera.centerOn(this.player.x + this.cameraLead.x + this.largeThreatCameraOffset.x, this.player.y + this.cameraLead.y + this.largeThreatCameraOffset.y);
-    camera.preRender();
-  }
-
-  resetCameraLead() {
-    this.cameraLead = zeroCameraLeadSpring();
-    this.largeThreatCameraOffset.set(0, 0);
-    this.largeThreatCompositionActive = false;
-    this.cameras.main.centerOn(this.player.x, this.player.y);
-    this.cameras.main.preRender();
-  }
-
-  cameraLeadTelemetry() {
-    const camera = this.cameras.main;
-    return {
-      enabled: state.cameraLeadEnabled,
-      x: this.cameraLead.x,
-      y: this.cameraLead.y,
-      targetX: this.cameraLead.targetX,
-      targetY: this.cameraLead.targetY,
-      velocityX: this.cameraLead.vx,
-      velocityY: this.cameraLead.vy,
-      viewportFraction: cameraLeadViewportFraction(this.cameraLead, camera.worldView.width, camera.worldView.height),
-      configuredFraction: CAMERA_FEEL.leadViewportFraction,
-    };
   }
 
   updatePlayerFacing(horizontalIntent: number) {

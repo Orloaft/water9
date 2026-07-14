@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import type { ArticulatedCreature,Biome,CargoItem,Fish,Flora,PlaytestCommand,Quest,QuestKind,ShopItem,SubTier,TerrainSurfaceAnchor,Tile } from './types';
-import { BARGE_DOCK_Y,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,PLAYER_CONTACT_RADIUS,PLAYER_FORWARD_REACH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
+import { BARGE_DOCK_Y,BOBBIT_ESCAPE_SECONDS,ENTITY_SCALE,FORWARD_OUTPOST_MIN_DEPTH,PLAYER_FORWARD_REACH,SURFACE_Y,TILE,WORLD_H,WORLD_W } from './constants';
 import { biomeFish,biomeFlora,tiles,upgrades } from './content';
-import { setCameraLeadEnabled,state } from './state';
+import { state } from './state';
 import { rng } from './rng';
-import { LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,activeQuest,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,completeFinaleAtBarge,compositionBudgetForBiome,continueSurveyAfterEnding,createDefaultStoryProgress,createConsumableItem,createSubVehicle,currentApexSpecies,currentPinnedStoryObjective,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,fuelMax,generateQuestBoard,hash,isLargeArticulatedThreat,isOreTile,oxygenMax,parallaxProfileFor,recoverFinalProof,refillAtBoat,resetFinaleProgress,resetToolState,restart,scaledDepthPx,scaledEntity,selectTool,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,syncStoryProgress,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
+import { LARGE_THREAT_DYNAMITE_DAMAGE_MULTIPLIER,activeQuest,biomeChartingProgress,canTravelToNextBiome,cargoCapacity,clearBleed,clearVenom,completeFinaleAtBarge,continueSurveyAfterEnding,createDefaultStoryProgress,createConsumableItem,createSubVehicle,currentApexSpecies,currentPinnedStoryObjective,darknessAtDepth,environmentAnchorSilhouettesFor,environmentVisualProfileFor,fishAssetKey,fishMaxHp,floraAssetKey,floraMaxHp,fuelMax,generateQuestBoard,hash,isLargeArticulatedThreat,isOreTile,oxygenMax,parallaxProfileFor,recoverFinalProof,refillAtBoat,resetFinaleProgress,resetToolState,restart,scaledDepthPx,scaledEntity,selectTool,shopItem,specialRoomEffectCenter,subDef,subEffectiveCost,syncStoryProgress,terrainLookDepthBandForTileY,terrainLookForBiome,upgradeMax } from './helpers';
 import { availableUpgrades,biomeName,renderHud,roundMetric } from './hud';
 import { hasSavedGame } from './save-load';
 import { articulatedCreatureDefs,articulatedManifestInfo,articulatedPlaceholderTextureKeys,articulatedPrototypeRuntimeEnabled,articulatedRuntimeSpawnMode,articulatedSpawnBudgetForBiome,createArticulatedCreature,partManifest,shouldSpawnArticulatedCreature } from './articulated';
@@ -629,202 +629,6 @@ function reachableOpenWaterPoint(scene: DeepdiveScene, targetDepthMeters: number
   return best;
 }
 
-function classifyExistingEnclosure(scene: DeepdiveScene, x: number, y: number) {
-  const tileX = Math.floor(x / TILE);
-  const tileY = Math.floor(y / TILE);
-  let water = 0;
-  let cells = 0;
-  let boundarySolids = 0;
-  for (let oy = -8; oy <= 8; oy += 1) {
-    for (let ox = -13; ox <= 13; ox += 1) {
-      const sampleX = Phaser.Math.Clamp(tileX + ox, 0, WORLD_W - 1);
-      const sampleY = Phaser.Math.Clamp(tileY + oy, 0, WORLD_H - 1);
-      const solid = tiles[scene.getTile(sampleX, sampleY)].solid;
-      cells += 1;
-      if (!solid) water += 1;
-      if ((Math.abs(ox) === 13 || Math.abs(oy) === 8) && solid) boundarySolids += 1;
-    }
-  }
-  const localWaterRatio = water / Math.max(1, cells);
-  const boundarySolidRatio = boundarySolids / (2 * 27 + 2 * 15);
-  const classification = localWaterRatio >= 0.9 && boundarySolidRatio < 0.08
-    ? 'open-deep-water'
-    : localWaterRatio >= 0.72 && boundarySolidRatio >= 0.12
-    ? 'enclosed-deep-arena'
-    : localWaterRatio >= 0.55
-      ? 'mixed-deep-corridor'
-      : 'constrained-pocket';
-  return { classification, localWaterRatio: roundMetric(localWaterRatio), boundarySolidRatio: roundMetric(boundarySolidRatio) };
-}
-
-function existingDeepPresentationPoint(scene: DeepdiveScene, requestedDepthMeters: number, standOff: number, minimumHostileClearance: number, minimumLocalWaterRatio: number, preferredPlayerSide: -1 | 1) {
-  const minY = Phaser.Math.Clamp(Math.ceil((SURFACE_Y + (1400 / 6) * TILE) / TILE), 12, WORLD_H - 3);
-  const targetY = Phaser.Math.Clamp(Math.round((SURFACE_Y + (requestedDepthMeters / 6) * TILE) / TILE), minY, WORLD_H - 3);
-  let best: { x: number; y: number; score: number; localWaterRatio: number } | null = null;
-  const standOffTiles = Math.ceil(standOff / TILE);
-  const edgeMarginTiles = preferredPlayerSide > 0 ? 20 : 16;
-  for (let tileY = minY; tileY < WORLD_H - 2; tileY += 1) {
-    for (let tileX = edgeMarginTiles + standOffTiles; tileX < WORLD_W - edgeMarginTiles - standOffTiles; tileX += 1) {
-      if (tiles[scene.getTile(tileX, tileY)].solid || tiles[scene.getTile(tileX + preferredPlayerSide * standOffTiles, tileY)].solid) continue;
-      let water = 0;
-      let cells = 0;
-      for (let oy = -8; oy <= 8; oy += 1) {
-        for (let ox = -13; ox <= 13; ox += 1) {
-          cells += 1;
-          if (!tiles[scene.getTile(tileX + ox, tileY + oy)].solid) water += 1;
-        }
-      }
-      const localWaterRatio = water / Math.max(1, cells);
-      if (localWaterRatio < minimumLocalWaterRatio) continue;
-      const stagedPlayerX = tileX * TILE + TILE * 0.5 + preferredPlayerSide * standOff;
-      const stagedPlayerY = tileY * TILE + TILE * 0.5;
-      const hostileClearance = Math.min(
-        ...scene.fish.filter((fish) => fish.hostile && !fish.dead).map((fish) => Phaser.Math.Distance.Between(stagedPlayerX, stagedPlayerY, fish.x, fish.y)),
-        ...scene.articulatedCreatures.filter((creature) => creature.hostile && !creature.dead).map((creature) => Phaser.Math.Distance.Between(stagedPlayerX, stagedPlayerY, creature.x, creature.y)),
-      );
-      if (hostileClearance < minimumHostileClearance) continue;
-      const score = localWaterRatio * 320 + Math.min(hostileClearance, 600) * 0.08 - Math.abs(tileY - targetY) * 1.6 - Math.abs(tileX - WORLD_W * 0.5) * 0.08;
-      if (!best || score > best.score) best = { x: tileX * TILE + TILE * 0.5, y: tileY * TILE + TILE * 0.5, score, localWaterRatio };
-    }
-  }
-  return best;
-}
-
-function stageDeepBiomePresentation(scene: DeepdiveScene, value: unknown) {
-  const payload = typeof value === 'object' && value !== null
-    ? value as { requestedDepthMeters?: number; creatureId?: string; standOff?: number; minimumOtherHostileClearance?: number; minimumLocalWaterRatio?: number; preferredPlayerSide?: 'left' | 'right' }
-    : {};
-  if (!scene.readabilityBackdrop) scene.readabilityBackdrop = scene.add.graphics().setDepth(-6.72);
-  const requestedDepthMeters = Phaser.Math.Clamp(Number(payload.requestedDepthMeters) || 1650, 1400, 1800);
-  const creatureId = payload.creatureId ?? 'abyssal-gulper';
-  const creature = scene.articulatedCreatures.find((candidate) => !candidate.dead && !candidate.bobbitBurrow && candidate.id === creatureId);
-  const reservation = scene.encounterReservations.find((candidate) => candidate.creatureId === creatureId);
-  const standOff = Phaser.Math.Clamp(Number(payload.standOff) || 235, 210, 1000);
-  const minimumOtherHostileClearance = Phaser.Math.Clamp(Number(payload.minimumOtherHostileClearance) || 180, 180, 1200);
-  const minimumLocalWaterRatio = Phaser.Math.Clamp(Number(payload.minimumLocalWaterRatio) || 0.58, 0.58, 1);
-  const preferredPlayerSide = payload.preferredPlayerSide === 'right' ? 1 : -1;
-  const deepPoint = existingDeepPresentationPoint(scene, requestedDepthMeters, standOff, minimumOtherHostileClearance, minimumLocalWaterRatio, preferredPlayerSide);
-  if (!deepPoint) return { ok: false, reason: 'missing-existing-deep-water-pocket', requestedDepthMeters, creatureId };
-  const originalFocus = creature ? { x: creature.x, y: creature.y } : reservation ? { x: reservation.homeX, y: reservation.homeY } : null;
-  if (!creature || !originalFocus) return { ok: false, reason: 'missing-existing-deep-encounter', requestedDepthMeters, creatureId };
-  const focusX = deepPoint.x;
-  const focusY = deepPoint.y;
-  creature.x = focusX;
-  creature.y = focusY;
-  creature.homeX = focusX;
-  creature.homeY = focusY;
-  creature.facingSign = -1;
-  creature.turn = undefined;
-  creature.vx = -0.001;
-  creature.vy = 0;
-  creature.state = 'patrol';
-  creature.stateTimer = 0;
-  creature.attackBlend = 0;
-  creature.aggro = 0;
-  creature.aggroCue = 0;
-  scene.updateArticulatedParts(creature, 0);
-  creature.vx = 0;
-  const candidates = [-1, 1].map((side) => ({
-    x: Phaser.Math.Clamp(focusX + side * standOff, 20, WORLD_W * TILE - 20),
-    y: Phaser.Math.Clamp(focusY, 20, WORLD_H * TILE - 20),
-    side,
-  })).filter((point) => !scene.collides(point.x, point.y)).map((point) => ({
-    ...point,
-    hostileClearance: Math.min(
-      ...scene.fish.filter((fish) => fish.hostile && !fish.dead).map((fish) => Phaser.Math.Distance.Between(point.x, point.y, fish.x, fish.y)),
-      ...scene.articulatedCreatures.filter((candidate) => candidate !== creature && candidate.hostile && !candidate.dead).map((candidate) => Phaser.Math.Distance.Between(point.x, point.y, candidate.x, candidate.y)),
-    ),
-  }));
-  const point = candidates.find((candidate) => candidate.side === preferredPlayerSide && candidate.hostileClearance >= minimumOtherHostileClearance)
-    ?? candidates.find((candidate) => candidate.hostileClearance >= minimumOtherHostileClearance);
-  if (!point) return { ok: false, reason: 'existing-deep-encounter-has-no-water-stand-off', requestedDepthMeters, creatureId };
-  creature.facingSign = point.side as -1 | 1;
-  creature.turn = undefined;
-  creature.vx = point.side * 0.001;
-  scene.updateArticulatedParts(creature, 0);
-  creature.vx = 0;
-  scene.player.x = point.x;
-  scene.player.y = point.y;
-  scene.player.vx = 0;
-  scene.player.vy = 0;
-  scene.player.facing.set(point.side < 0 ? 1 : -1, 0);
-  scene.player.facingSign = scene.player.facing.x < 0 ? -1 : 1;
-  state.started = true;
-  state.docked = false;
-  state.atBoat = false;
-  state.paused = false;
-  state.radioOpen = false;
-  state.logbookOpen = false;
-  state.cargoOpen = false;
-  state.sonarMapOpen = false;
-  state.depth = Math.max(0, Math.floor((scene.player.y - SURFACE_Y) / TILE) * 6);
-  scene.cameras.main.centerOn(scene.player.x, scene.player.y);
-  refreshPlaytestCamera(scene);
-  const enclosure = classifyExistingEnclosure(scene, scene.player.x, scene.player.y);
-  return {
-    ok: state.biome === 4 && state.depth >= 1400,
-    requested: { biome: 4, depthMeters: Math.round(requestedDepthMeters), creatureId },
-    actual: { biome: state.biome, depthMeters: state.depth, x: roundMetric(scene.player.x), y: roundMetric(scene.player.y) },
-    focus: { x: roundMetric(focusX), y: roundMetric(focusY), distance: roundMetric(Phaser.Math.Distance.Between(scene.player.x, scene.player.y, focusX, focusY)), side: point.side < 0 ? 'right-of-player' : 'left-of-player' },
-    enclosure,
-    terrainModified: false,
-    source: 'existing-runtime-creature-relocated-to-existing-water',
-    creatureRelocation: { from: { x: roundMetric(originalFocus.x), y: roundMetric(originalFocus.y) }, to: { x: roundMetric(focusX), y: roundMetric(focusY) } },
-    nearestOtherHostileDistance: Number.isFinite(point.hostileClearance) ? roundMetric(point.hostileClearance) : null,
-    minimumOtherHostileClearance,
-    minimumLocalWaterRatio,
-  };
-}
-
-function cutoffOpenWaterPoint(scene: DeepdiveScene, boundaryDepthMeters: number, preferredTileX?: number) {
-  const rowFor = (depth: number) => Phaser.Math.Clamp(
-    Math.round((SURFACE_Y + (depth / 6) * TILE) / TILE),
-    4,
-    WORLD_H - 2,
-  );
-  const beforeY = rowFor(boundaryDepthMeters - 10);
-  const afterY = rowFor(boundaryDepthMeters + 10);
-  const center = Math.floor(WORLD_W / 2);
-  let best: { x: number; beforeY: number; afterY: number; score: number; localWaterRatio: number } | null = null;
-  for (let x = 12; x < WORLD_W - 12; x += 1) {
-    if (Number.isFinite(preferredTileX) && x !== Math.round(preferredTileX as number)) continue;
-    if (tiles[scene.getTile(x, beforeY)].solid || tiles[scene.getTile(x, afterY)].solid) continue;
-    let water = 0;
-    let cells = 0;
-    for (const row of [beforeY, afterY]) {
-      for (let y = row - 5; y <= row + 5; y += 1) {
-        for (let sampleX = x - 8; sampleX <= x + 8; sampleX += 1) {
-          cells += 1;
-          if (!tiles[scene.getTile(sampleX, y)].solid) water += 1;
-        }
-      }
-    }
-    const localWaterRatio = water / Math.max(1, cells);
-    const worldX = x * TILE + TILE * 0.5;
-    const threatClearance = scene.fish.reduce((minimum, fish) => {
-      if (fish.dead) return minimum;
-      const beforeDistance = Phaser.Math.Distance.Between(worldX, beforeY * TILE + TILE * 0.5, fish.x, fish.y) - fish.radius;
-      const afterDistance = Phaser.Math.Distance.Between(worldX, afterY * TILE + TILE * 0.5, fish.x, fish.y) - fish.radius;
-      return Math.min(minimum, beforeDistance, afterDistance);
-    }, 1200);
-    const articulatedClearance = scene.articulatedCreatures.reduce((minimum, creature) => {
-      if (creature.dead || !creature.hostile) return minimum;
-      // The articulated bitmap chain extends well beyond its gameplay radius;
-      // reserve its full visual footprint when staging a normal-play cutoff
-      // capture so the evidence helper does not teleport into an active apex.
-      const visualRadius = creature.radius * 20;
-      const beforeDistance = Phaser.Math.Distance.Between(worldX, beforeY * TILE + TILE * 0.5, creature.x, creature.y) - visualRadius;
-      const afterDistance = Phaser.Math.Distance.Between(worldX, afterY * TILE + TILE * 0.5, creature.x, creature.y) - visualRadius;
-      return Math.min(minimum, beforeDistance, afterDistance);
-    }, 1200);
-    const combinedThreatClearance = Math.min(threatClearance, articulatedClearance);
-    const clearanceScore = Phaser.Math.Clamp(combinedThreatClearance, 0, 1200) * 0.12;
-    const score = localWaterRatio * 100 + clearanceScore - Math.abs(x - center) * 0.04;
-    if (!best || score > best.score) best = { x, beforeY, afterY, score, localWaterRatio };
-  }
-  return best;
-}
-
 function colorHex(value: number) {
   return `#${value.toString(16).padStart(6, '0')}`;
 }
@@ -856,11 +660,6 @@ function renderedBackgroundAnchorSprites(scene: DeepdiveScene) {
         alpha: roundMetric(sprite.alpha),
         tint: `#${sprite.tintTopLeft.toString(16).padStart(6, '0')}`,
         blendMode: sprite.blendMode,
-        compositionRole: sprite.getData('compositionRole') ?? null,
-        stableLocationKey: sprite.getData('stableLocationKey') ?? null,
-        projectedAreaRatio: sprite.getData('projectedAreaRatio') ?? null,
-        corridorOverlapRatio: sprite.getData('corridorOverlapRatio') ?? null,
-        interactionFocalAlphaScale: sprite.getData('interactionFocalAlphaScale') ?? null,
         crop: sprite.isCropped ? {
           x: roundMetric(sprite.frame.cutX),
           y: roundMetric(sprite.frame.cutY),
@@ -908,10 +707,9 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
       depthBand: profile.depthBand,
       activeBand: profile.activeBand.id,
       activeBandBlend: {
-        ...profile.activeBandBlend,
+        from: profile.activeBandBlend.from,
+        to: profile.activeBandBlend.to,
         progress: roundMetric(profile.activeBandBlend.progress),
-        fromAlpha: roundMetric(profile.activeBandBlend.fromAlpha),
-        toAlpha: roundMetric(profile.activeBandBlend.toAlpha),
         lowerToTransitionDeep: profile.activeBandBlend.from === 'lower' && profile.activeBandBlend.to === 'transitionDeep',
       },
       cameraClearColor: profile.cameraClearColor,
@@ -978,14 +776,6 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
       value: roundMetric(profile.darkness.value),
       ambientOpacity: roundMetric(profile.darkness.ambientOpacity),
       maskOpacity: roundMetric(profile.darkness.maskOpacity),
-    },
-    readability: {
-      corridorRadius: roundMetric(profile.readability.corridorRadius),
-      scenicAlphaScale: roundMetric(profile.readability.scenicAlphaScale),
-      landmarkAlphaFloor: roundMetric(profile.readability.landmarkAlphaFloor),
-      localSeparationRadius: roundMetric(profile.readability.localSeparationRadius),
-      localSeparationAlpha: roundMetric(profile.readability.localSeparationAlpha),
-      lampFeatherWorldPx: roundMetric(profile.readability.lampFeatherWorldPx),
     },
     worldSpaceNoise: {
       ...profile.background.worldSpaceNoise,
@@ -1079,13 +869,12 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
       }),
     },
     anchors: {
-      compositionBudget: compositionBudgetForBiome(state.biome),
       repeatMode: profile.background.anchors.repeatMode,
       profileCount: profile.background.anchors.count,
       visibleCount: anchors.length,
       transitionBlendCounts: {
-        outgoing: anchors.filter((anchor) => anchor.transitionBlendRole === 'outgoing').length,
-        incoming: anchors.filter((anchor) => anchor.transitionBlendRole === 'incoming').length,
+        outgoingLower: anchors.filter((anchor) => anchor.transitionBlendRole === 'outgoingLower').length,
+        incomingTransition: anchors.filter((anchor) => anchor.transitionBlendRole === 'incomingTransition').length,
       },
       assets: profile.background.anchors.assets.map((asset) => ({
         id: asset.id,
@@ -1118,11 +907,6 @@ function backgroundReviewSnapshot(scene: DeepdiveScene, label = 'snapshot', stag
         textureKey: anchor.textureKey ?? null,
         transitionBlendRole: anchor.transitionBlendRole ?? null,
         transitionBlendAlpha: anchor.transitionBlendAlpha !== undefined ? roundMetric(anchor.transitionBlendAlpha) : null,
-        compositionRole: anchor.compositionRole ?? null,
-        stableLocationKey: anchor.stableLocationKey ?? null,
-        projectedAreaRatio: anchor.projectedAreaRatio !== undefined ? roundMetric(anchor.projectedAreaRatio) : null,
-        corridorOverlapRatio: anchor.corridorOverlapRatio !== undefined ? roundMetric(anchor.corridorOverlapRatio) : null,
-        negativeSpaceAxis: anchor.negativeSpaceAxis ?? null,
       })),
     },
     renderedBitmapAnchors: renderedBackgroundAnchorSprites(scene),
@@ -2824,7 +2608,6 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         width: roundMetric(camera.worldView.width),
         height: roundMetric(camera.worldView.height),
         zoom: roundMetric(camera.zoom),
-        lead: Object.fromEntries(Object.entries(this.cameraLeadTelemetry()).map(([key, value]) => [key, typeof value === 'number' ? roundMetric(value) : value])),
       },
       parallax: {
         profile: parallaxProfile.id,
@@ -2850,9 +2633,6 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
       },
       environmentVisualProfile: backgroundReviewSnapshot(this, 'snapshot', false),
       sceneDepths: {
-        readabilityBackdrop: roundMetric(this.readabilityBackdrop?.depth ?? null),
-        readabilityTargetCount: this.readabilityBackdrop?.getData('targetCount') ?? 0,
-        readabilityTargetKinds: this.readabilityBackdrop?.getData('targetKinds') ?? [],
         articulatedBridges: roundMetric(this.articulatedBridges?.depth ?? null),
         actors: roundMetric(this.actors?.depth ?? null),
         darkness: roundMetric(this.darkness?.depth ?? null),
@@ -2875,7 +2655,6 @@ export function playtestSnapshot(this: DeepdiveScene, ) {
         scanTarget: this.player.scanTarget ? this.player.scanTarget.species : '',
         renderedTextureKey: this.playerSprite?.texture?.key ?? '',
         diverMotionTest: new URLSearchParams(window.location.search).get('diverMotionTest') ?? '',
-        motionIntent: { ...this.player.motionIntent },
       },
       gameplayOre: gameplayOreSnapshot(this, camera),
       looseItems: this.looseItems.map((item) => ({
@@ -3646,198 +3425,10 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
         tileY: point.y,
         localWaterRatio: roundMetric(point.localWaterRatio),
       };
-    } else if (command === 'stageDeepBiomePresentation') {
-      return stageDeepBiomePresentation(this, value);
-    } else if (command === 'teleportToCutoffOpenWater') {
-      const payload = typeof value === 'object' && value !== null ? value as { boundaryDepth?: number; depthMeters?: number; tileX?: number } : {};
-      const boundaryDepth = Phaser.Math.Clamp(Number(payload.boundaryDepth) || 0, 10, Math.floor((WORLD_H * TILE - SURFACE_Y - TILE) / 6) - 10);
-      const depthMeters = Phaser.Math.Clamp(Number(payload.depthMeters) || boundaryDepth, boundaryDepth - 10, boundaryDepth + 10);
-      const point = cutoffOpenWaterPoint(this, boundaryDepth, payload.tileX);
-      if (!point) return { ok: false, reason: 'no-cutoff-open-water' };
-      const tileY = depthMeters < boundaryDepth ? point.beforeY : point.afterY;
-      this.player.x = point.x * TILE + TILE * 0.5;
-      this.player.y = tileY * TILE + TILE * 0.5;
-      this.player.vx = 0;
-      this.player.vy = 0;
-      state.docked = false;
-      state.atBoat = false;
-      state.paused = false;
-      state.radioOpen = false;
-      state.logbookOpen = false;
-      state.cargoOpen = false;
-      state.sonarMapOpen = false;
-      state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
+    } else if (command === 'centerCameraOnPlayer') {
       this.cameras.main.centerOn(this.player.x, this.player.y);
       refreshPlaytestCamera(this);
-      return {
-        ok: true,
-        boundaryDepthMeters: Math.round(boundaryDepth),
-        targetDepthMeters: Math.round(depthMeters),
-        depthMeters: state.depth,
-        tileX: point.x,
-        tileY,
-        localWaterRatio: roundMetric(point.localWaterRatio),
-      };
-    } else if (command === 'teleportToSwimLane') {
-      const payload = typeof value === 'object' && value !== null
-        ? value as { x?: number; y?: number; depthMeters?: number }
-        : {};
-      const length = Math.hypot(Number(payload.x) || 0, Number(payload.y) || 0);
-      const directionX = length > 0 ? (Number(payload.x) || 0) / length : 1;
-      const directionY = length > 0 ? (Number(payload.y) || 0) / length : 0;
-      const perpendicularX = -directionY;
-      const perpendicularY = directionX;
-      const targetTileY = Phaser.Math.Clamp(
-        Math.round((SURFACE_Y + (Number(payload.depthMeters) || 400) / 6 * TILE) / TILE),
-        8,
-        WORLD_H - 18,
-      );
-      let best: { x: number; y: number; score: number } | null = null;
-      for (let tileY = Math.max(8, targetTileY - 36); tileY <= Math.min(WORLD_H - 18, targetTileY + 36); tileY += 1) {
-        for (let tileX = 8; tileX < WORLD_W - 8; tileX += 1) {
-          const worldX = tileX * TILE + TILE * 0.5;
-          const worldY = tileY * TILE + TILE * 0.5;
-          let clear = true;
-          for (let step = -1; step <= 15 && clear; step += 0.5) {
-            for (const lateral of [-8, 0, 8]) {
-              if (this.collides(
-                worldX + directionX * step * TILE + perpendicularX * lateral,
-                worldY + directionY * step * TILE + perpendicularY * lateral,
-              )) {
-                clear = false;
-                break;
-              }
-            }
-          }
-          if (!clear) continue;
-          const score = Math.abs(tileY - targetTileY) * 4 + Math.abs(tileX - WORLD_W * 0.5);
-          if (!best || score < best.score) best = { x: worldX, y: worldY, score };
-        }
-      }
-      if (!best) return { ok: false, reason: 'no-existing-collision-free-swim-lane' };
-      this.player.x = best.x;
-      this.player.y = best.y;
-      this.player.vx = 0;
-      this.player.vy = 0;
-      this.swimInput = { x: 0, y: 0, hasInput: false };
-      state.started = true;
-      state.docked = false;
-      state.atBoat = false;
-      state.paused = false;
-      state.radioOpen = false;
-      state.logbookOpen = false;
-      state.cargoOpen = false;
-      state.sonarMapOpen = false;
-      state.depth = Math.max(0, Math.floor((this.player.y - SURFACE_Y) / TILE) * 6);
-      this.resetCameraLead();
-      return {
-        ok: true,
-        x: roundMetric(best.x),
-        y: roundMetric(best.y),
-        depthMeters: state.depth,
-        directionX: roundMetric(directionX),
-        directionY: roundMetric(directionY),
-        corridorLengthTiles: 16,
-        terrainModified: false,
-      };
-    } else if (command === 'centerCameraOnPlayer') {
-      this.resetCameraLead();
-      refreshPlaytestCamera(this);
       return { ok: true, x: Math.round(this.player.x), y: Math.round(this.player.y) };
-    } else if (command === 'setCameraLead') {
-      setCameraLeadEnabled(value !== false);
-      this.resetCameraLead();
-      renderHud();
-      return { ok: true, enabled: state.cameraLeadEnabled, camera: this.cameraLeadTelemetry() };
-    } else if (command === 'swimTelemetry') {
-      return {
-        ok: true,
-        now: performance.now(),
-        player: {
-          x: this.player.x,
-          y: this.player.y,
-          vx: this.player.vx,
-          vy: this.player.vy,
-          motionIntent: { ...this.player.motionIntent },
-          renderedTextureKey: this.playerSprite?.texture?.key ?? '',
-        },
-        camera: {
-          zoom: this.cameras.main.zoom,
-          lead: this.cameraLeadTelemetry(),
-        },
-      };
-    } else if (command === 'cameraAimInvariantProbe') {
-      const camera = this.cameras.main;
-      this.resetCameraLead();
-      let miningPoint: { x: number; y: number } | null = null;
-      let solidCollisionPoint: { x: number; y: number } | null = null;
-      for (let tileY = 7; tileY < WORLD_H - 2 && (!miningPoint || !solidCollisionPoint); tileY += 1) {
-        for (let tileX = 2; tileX < WORLD_W - 2 && (!miningPoint || !solidCollisionPoint); tileX += 1) {
-          const tile = this.getTile(tileX, tileY);
-          const x = tileX * TILE + TILE * 0.5;
-          const y = tileY * TILE + TILE * 0.5;
-          if (!solidCollisionPoint && this.collides(x, y)) solidCollisionPoint = { x, y };
-          if (!miningPoint && tiles[tile].solid && tile !== 'bedrock' && tile !== 'anchorstone') miningPoint = { x, y };
-        }
-      }
-      if (!miningPoint || !solidCollisionPoint) return { ok: false, reason: 'missing-invariant-fixture' };
-      const directions = [
-        ['east', 1, 0], ['southeast', Math.SQRT1_2, Math.SQRT1_2],
-        ['south', 0, 1], ['southwest', -Math.SQRT1_2, Math.SQRT1_2],
-        ['west', -1, 0], ['northwest', -Math.SQRT1_2, -Math.SQRT1_2],
-        ['north', 0, -1], ['northeast', Math.SQRT1_2, -Math.SQRT1_2],
-      ] as const;
-      const sample = (directionX: number, directionY: number) => {
-        const worldX = this.player.x + directionX * PLAYER_FORWARD_REACH;
-        const worldY = this.player.y + directionY * PLAYER_FORWARD_REACH;
-        const screenX = (worldX - camera.worldView.x) * camera.zoom;
-        const screenY = (worldY - camera.worldView.y) * camera.zoom;
-        const restored = camera.getWorldPoint(screenX, screenY);
-        const miningScreenX = (miningPoint.x - camera.worldView.x) * camera.zoom;
-        const miningScreenY = (miningPoint.y - camera.worldView.y) * camera.zoom;
-        const restoredMining = camera.getWorldPoint(miningScreenX, miningScreenY);
-        const targets = this.mineTargets(
-          Math.floor(restoredMining.x / TILE), Math.floor(restoredMining.y / TILE),
-          restoredMining.x, restoredMining.y, true, false, restoredMining.x, restoredMining.y,
-        ).map((target) => `${target.x},${target.y}`);
-        return {
-          restoredX: restored.x,
-          restoredY: restored.y,
-          miningRestoredX: restoredMining.x,
-          miningRestoredY: restoredMining.y,
-          openCollision: this.collides(this.player.x, this.player.y),
-          solidCollision: this.collides(solidCollisionPoint.x, solidCollisionPoint.y),
-          targets,
-          reach: Phaser.Math.Distance.Between(this.player.x, this.player.y, restored.x, restored.y),
-        };
-      };
-      const results = directions.map(([direction, x, y]) => {
-        camera.centerOn(this.player.x, this.player.y);
-        refreshPlaytestCamera(this);
-        const baseline = sample(x, y);
-        camera.centerOn(
-          this.player.x + x * camera.worldView.width * 0.05,
-          this.player.y + y * camera.worldView.height * 0.05,
-        );
-        refreshPlaytestCamera(this);
-        const led = sample(x, y);
-        return {
-          direction,
-          worldDrift: Phaser.Math.Distance.Between(baseline.restoredX, baseline.restoredY, led.restoredX, led.restoredY),
-          miningWorldDrift: Phaser.Math.Distance.Between(baseline.miningRestoredX, baseline.miningRestoredY, led.miningRestoredX, led.miningRestoredY),
-          reachDrift: Math.abs(baseline.reach - led.reach),
-          collisionMatch: baseline.openCollision === led.openCollision && baseline.solidCollision === led.solidCollision,
-          miningTargetMatch: baseline.targets.join('|') === led.targets.join('|'),
-          baseline,
-          led,
-        };
-      });
-      this.resetCameraLead();
-      return {
-        ok: results.every((result) => result.worldDrift < 1e-6 && result.miningWorldDrift < 1e-6 && result.reachDrift < 1e-6 && result.collisionMatch && result.miningTargetMatch && result.baseline.targets.length > 0 && result.baseline.solidCollision && !result.baseline.openCollision),
-        fixtures: { miningPoint, solidCollisionPoint },
-        results,
-      };
     } else if (command === 'clearProofOverlays') {
       state.radioOpen = false;
       state.radioIndex = 0;
@@ -4023,130 +3614,6 @@ export function playtestCommand(this: DeepdiveScene, command: PlaytestCommand, v
       return stageStrayOreDropReview(this);
     } else if (command === 'interactionEdgeProof') {
       return stageInteractionEdgeProof(this, value);
-	} else if (command === 'interactionReadabilityProbe') {
-	  if (!this.readabilityBackdrop) this.readabilityBackdrop = this.add.graphics().setDepth(-6.72);
-	  this.draw();
-	  const camera = this.cameras.main;
-	  const boundsFor = (sprite: Phaser.GameObjects.Image | undefined) => {
-	    if (!sprite?.visible) return null;
-	    const bounds = sprite.getBounds();
-	    return {
-	      x: roundMetric((bounds.x - camera.worldView.x) * camera.zoom),
-	      y: roundMetric((bounds.y - camera.worldView.y) * camera.zoom),
-	      width: roundMetric(bounds.width * camera.zoom),
-	      height: roundMetric(bounds.height * camera.zoom),
-	    };
-	  };
-	  const ellipseRoi = (x: number, y: number, worldWidth: number, worldHeight: number, rotation = 0) => ({
-	    centerX: roundMetric((x - camera.worldView.x) * camera.zoom),
-	    centerY: roundMetric((y - camera.worldView.y) * camera.zoom),
-	    width: roundMetric(worldWidth * camera.zoom),
-	    height: roundMetric(worldHeight * camera.zoom),
-	    rotation: roundMetric(rotation),
-	  });
-	  const clippedRect = (bounds: { x: number; y: number; width: number; height: number } | null) => {
-	    if (!bounds) return null;
-	    const x = Math.max(0, bounds.x);
-	    const y = Math.max(0, bounds.y);
-	    const right = Math.min(camera.width, bounds.x + bounds.width);
-	    const bottom = Math.min(camera.height, bounds.y + bounds.height);
-	    return right > x && bottom > y ? { x, y, right, bottom, width: right - x, height: bottom - y } : null;
-	  };
-	  const threats = [
-	    ...this.fish.filter((fish) => fish.hostile && !fish.dead && fish.sprite?.visible).map((fish) => ({
-	      kind: 'fish', id: fish.species, actionable: state.depth >= 900 && Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y) <= 190, distance: roundMetric(Phaser.Math.Distance.Between(this.player.x, this.player.y, fish.x, fish.y)), bounds: boundsFor(fish.sprite), edgeRoi: ellipseRoi(fish.x, fish.y, (fish.sprite?.displayWidth ?? fish.radius * 3.8) * 0.9, (fish.sprite?.displayHeight ?? fish.radius * 1.7) * 0.82, fish.sprite?.rotation ?? 0),
-	    })),
-	    ...this.articulatedCreatures.filter((creature) => creature.hostile && !creature.dead).flatMap((creature) => creature.parts
-	      .filter((part) => !part.detached && part.hp > 0 && part.sprite?.visible && this.isDangerousArticulatedPart(creature, part))
-	      .map((part) => ({
-	        kind: 'articulated-part', id: `${creature.id}:${part.id}`, actionable: state.depth >= 900 && Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y) <= 300, distance: roundMetric(Phaser.Math.Distance.Between(this.player.x, this.player.y, part.x, part.y)), bounds: boundsFor(part.sprite), edgeRoi: ellipseRoi(part.x, part.y, (part.sprite?.displayWidth ?? Math.max(12, partManifest(creature, part).hitRadius * ENTITY_SCALE * 2)) * 0.88, (part.sprite?.displayHeight ?? Math.max(8, partManifest(creature, part).hitRadius * ENTITY_SCALE * 1.45)) * 0.78, part.sprite?.rotation ?? part.rotation),
-	      }))),
-	  ].filter((entry) => entry.actionable && entry.edgeRoi.centerX + entry.edgeRoi.width * 0.5 > 0 && entry.edgeRoi.centerX - entry.edgeRoi.width * 0.5 < camera.width && entry.edgeRoi.centerY + entry.edgeRoi.height * 0.5 > 0 && entry.edgeRoi.centerY - entry.edgeRoi.height * 0.5 < camera.height)
-	    .sort((a, b) => a.distance - b.distance)
-	    .slice(0, 1);
-	  const largeThreats = this.articulatedCreatures.filter((creature) => !creature.dead && isLargeArticulatedThreat(creature)).map((creature) => {
-	    const renderBounds = creature.parts.filter((part) => !part.detached && part.hp > 0 && part.sprite?.visible)
-	      .map((part) => ({ id: part.id, bounds: boundsFor(part.sprite) }))
-	      .filter((entry): entry is { id: string; bounds: { x: number; y: number; width: number; height: number } } => Boolean(entry.bounds));
-	    const clipped = renderBounds.map((entry) => clippedRect(entry.bounds)).filter((entry): entry is NonNullable<ReturnType<typeof clippedRect>> => Boolean(entry));
-	    const union = clipped.length ? {
-	      x: Math.min(...clipped.map((entry) => entry.x)),
-	      y: Math.min(...clipped.map((entry) => entry.y)),
-	      right: Math.max(...clipped.map((entry) => entry.right)),
-	      bottom: Math.max(...clipped.map((entry) => entry.bottom)),
-	    } : null;
-	    const playerScreenX = (this.player.x - camera.worldView.x) * camera.zoom;
-	    const threatScreenX = (creature.x - camera.worldView.x) * camera.zoom;
-	    const side = threatScreenX >= playerScreenX ? 'right' : 'left';
-	    const routeClearWidth = union
-	      ? side === 'right' ? Math.max(0, Math.min(playerScreenX - 42, union.x)) : Math.max(0, camera.width - Math.max(playerScreenX + 42, union.right))
-	      : camera.width;
-	    const dangerousParts = creature.parts.filter((part) => !part.detached && part.hp > 0 && this.isDangerousArticulatedPart(creature, part)).map((part) => {
-	      const shape = this.articulatedPartHitShape(creature, part);
-	      const halfWidth = (Math.abs(Math.cos(shape.rotation)) * shape.halfLength + shape.radius) * camera.zoom;
-	      const halfHeight = (Math.abs(Math.sin(shape.rotation)) * shape.halfLength + shape.radius) * camera.zoom;
-	      const centerX = (shape.centerX - camera.worldView.x) * camera.zoom;
-	      const centerY = (shape.centerY - camera.worldView.y) * camera.zoom;
-	      const render = boundsFor(part.sprite);
-	      return {
-	        id: part.id,
-	        hitShape: { centerX: roundMetric(centerX), centerY: roundMetric(centerY), halfWidth: roundMetric(halfWidth), halfHeight: roundMetric(halfHeight), radius: roundMetric(shape.radius * camera.zoom), halfLength: roundMetric(shape.halfLength * camera.zoom) },
-	        renderBounds: render,
-	        hitCenterWithinRenderBounds: Boolean(render && centerX >= render.x - 1 && centerX <= render.x + render.width + 1 && centerY >= render.y - 1 && centerY <= render.y + render.height + 1),
-	      };
-	    });
-	    const biteAnchor = this.articulatedBiteAnchorWorld(creature);
-	    return {
-	      id: creature.id,
-	      distance: roundMetric(Phaser.Math.Distance.Between(this.player.x, this.player.y, creature.x, creature.y)),
-	      side,
-	      sideStaged: Math.abs(threatScreenX - playerScreenX) >= camera.width * 0.18,
-	      cameraZoom: roundMetric(camera.zoom),
-	      renderBounds,
-	      clippedUnionBounds: union ? { x: roundMetric(union.x), y: roundMetric(union.y), width: roundMetric(union.right - union.x), height: roundMetric(union.bottom - union.y) } : null,
-	      viewportOccupancy: union ? roundMetric(((union.right - union.x) * (union.bottom - union.y)) / (camera.width * camera.height)) : 0,
-	      routeClearWidthRatio: roundMetric(routeClearWidth / camera.width),
-	      authoritative: {
-	        dangerousParts,
-	        biteAnchor: biteAnchor ? { x: roundMetric(biteAnchor.x), y: roundMetric(biteAnchor.y), distanceToPlayer: roundMetric(Phaser.Math.Distance.Between(this.player.x, this.player.y, biteAnchor.x, biteAnchor.y)) } : null,
-	        contactRadius: PLAYER_CONTACT_RADIUS,
-	        aggro: roundMetric(creature.aggro),
-	        aggroCue: roundMetric(creature.aggroCue),
-	        state: creature.state,
-	        turning: { heading: roundMetric(creature.turn?.heading ?? 0), angularVelocity: roundMetric(creature.turn?.angularVelocity ?? 0), historySamples: creature.turn?.history.length ?? 0 },
-	      },
-	    };
-	  }).filter((creature) => creature.renderBounds.length > 0);
-	  return {
-	    ok: true,
-	    biome: state.biome,
-	    depth: state.depth,
-	    canvas: { width: camera.width, height: camera.height },
-	    player: { bounds: boundsFor(this.playerSprite), edgeRoi: ellipseRoi(this.player.x, this.player.y, (this.playerSprite.displayWidth || scaledEntity(29)) * 0.88, (this.playerSprite.displayHeight || scaledEntity(18)) * 0.82, this.playerSprite.rotation), x: roundMetric((this.player.x - camera.worldView.x) * camera.zoom), y: roundMetric((this.player.y - camera.worldView.y) * camera.zoom) },
-	    threats,
-	    largeThreats,
-	    readabilityBackdrop: { depth: this.readabilityBackdrop.depth, targetCount: this.readabilityBackdrop.getData('targetCount') ?? 0, targetKinds: this.readabilityBackdrop.getData('targetKinds') ?? [] },
-	    readabilityEdges: { depth: this.readabilityEdges.depth, darknessDepth: this.darkness.depth, overlayDepth: this.overlay.depth, visibleGeometry: 'none' },
-	    terrainDepth: this.terrain.depth,
-	    prompt: { foreground: 0xfff7df, backing: 0x020509, paddingX: 3, paddingY: 2 },
-	  };
-	} else if (command === 'stageInteractionReadabilityPrompt') {
-	  clearPlaytestFloatingText(this);
-	  this.spawnFloatingText('BREAK FREE', 0xff4f64);
-	  return { ok: true, message: 'BREAK FREE', foreground: 0xff4f64, backing: 0x020509, depth: state.depth, biome: state.biome };
-	} else if (command === 'stageInteractionReadabilityFish') {
-	  const fish = this.fish.find((candidate) => candidate.hostile && !candidate.dead);
-	  const point = [-1, 1]
-	    .map((side) => ({ x: this.player.x + side * 92, y: this.player.y + 4, side }))
-	    .find((candidate) => !this.collides(candidate.x, candidate.y));
-	  if (!fish || !point) return { ok: false, reason: !fish ? 'missing-hostile-fish' : 'missing-existing-water-stand-off' };
-	  fish.x = point.x;
-	  fish.y = point.y;
-	  fish.vx = 0;
-	  fish.vy = 0;
-	  fish.facingSign = point.side < 0 ? 1 : -1;
-	  this.draw();
-	  return { ok: true, biome: state.biome, depthMeters: state.depth, species: fish.species, x: roundMetric(fish.x), y: roundMetric(fish.y), distance: 92, terrainModified: false };
 	    } else if (command === 'terrainMineAt') {
 	      const payload = typeof value === 'object' && value !== null ? value as { worldX?: number; worldY?: number; repeats?: number } : {};
 	      const repeats = Phaser.Math.Clamp(Math.floor(Number(payload.repeats) || 1), 1, 12);
